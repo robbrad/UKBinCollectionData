@@ -1,0 +1,44 @@
+{
+    "bins": [
+        {
+            "BinType": "Empty Standard Garden Waste",
+            "collectionDate": "30/01/2020"
+        },
+        {
+            "BinType": "Empty Standard Mixed Recycling",
+            "collectionDate": "30/01/2020"
+        },
+        {
+            "BinType": "Empty Standard General Waste",
+            "collectionDate": "06/02/2020"
+        },
+        {
+            "BinType": "Empty Standard Mixed Recycling",
+            "collectionDate": "13/02/2020"
+        },
+        {
+            "BinType": "Empty Standard Garden Waste",
+            "collectionDate": "13/02/2020"
+        },
+        {
+            "BinType": "Empty Standard General Waste",
+            "collectionDate": "20/02/2020"
+        },
+        {
+            "BinType": "Empty Standard Mixed Recycling",
+            "collectionDate": "27/02/2020"
+        },
+        {
+            "BinType": "Empty Standard Garden Waste",
+            "collectionDate": "27/02/2020"
+        },
+        {
+            "BinType": "Empty Standard General Waste",
+            "collectionDate": "05/03/2020"
+        },
+        {
+            "BinType": "Empty Standard Garden Waste",
+            "collectionDate": "12/03/2020"
+        }
+    ]
+}
