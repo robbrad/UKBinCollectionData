@@ -1,4 +1,6 @@
 *
 !*.json
 !*.py
+!scripts/*.py
+!outputs/*.json
 !.gitignore
