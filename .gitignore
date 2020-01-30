@@ -1,6 +1,6 @@
 *
 !*.json
 !*.py
-!scripts/*.py
-!outputs/*.json
+!/scripts
+!/outputs
 !.gitignore
