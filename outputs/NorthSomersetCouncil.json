@@ -1,0 +1,24 @@
+{
+    "bins": [
+        {
+            "BinType": "Rubbish",
+            "collectionDate": "Monday 23 March",
+            "nextCollectionDate": "Monday 6 April"
+        },
+        {
+            "BinType": "Recycling",
+            "collectionDate": "Monday 16 March",
+            "nextCollectionDate": "Monday 23 March"
+        },
+        {
+            "BinType": "Garden waste",
+            "collectionDate": "Monday 16 March",
+            "nextCollectionDate": "Monday 30 March"
+        },
+        {
+            "BinType": "Food",
+            "collectionDate": "Monday 16 March",
+            "nextCollectionDate": "Monday 23 March"
+        }
+    ]
+}
