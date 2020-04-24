@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "BinType": "Domestic Waste",
+            "NextCollectionDate": "2020-05-05"
+        },
+        {
+            "BinType": "Recycling",
+            "NextCollectionDate": "2020-04-28"
+        },
+        {
+            "BinType": "Garden Waste",
+            "NextCollectionDate": "2020-04-24"
+        }
+    ]
+}
