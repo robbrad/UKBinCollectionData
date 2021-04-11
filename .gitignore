@@ -1,6 +1,8 @@
 *
 !*.json
 !*.py
+!PipFile
+!Pipfile.lock
 !/scripts
 !/outputs
 !.gitignore
