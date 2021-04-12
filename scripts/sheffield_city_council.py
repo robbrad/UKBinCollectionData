@@ -1,7 +1,7 @@
+'''This script pulls (in one hit) the data from
+Sheffield City Council Bins Data and outputs json'''
+
 #!/usr/bin/env python3
-
-#This script pulls (in one hit) the data from Sheffield City Council Bins Data
-
 import json
 import re
 #import the wonderful Beautiful Soup and the URL grabber
@@ -37,9 +37,12 @@ for row in rows:
     cells = row.find_all("td", {"class" : lambda L: L and L.startswith('service-name')})
 
     if len(cells) > 0:
-        collectionDatesRawData = row.find_all("td", {"class" : lambda L: L and L.startswith('next-service')})[0].get_text(strip=True)
-        collectionDate = collectionDatesRawData[16:len(collectionDatesRawData)].split(",")    
-        binType = row.find_all("td", {"class" : lambda L: L and L.startswith('service-name')})[0].h4.get_text(strip=True)
+        collectionDatesRawData = \
+            row.find_all("td", {"class" : lambda L: L and L.startswith('next-service')})\
+            [0].get_text(strip=True)
+        collectionDate = collectionDatesRawData[16:len(collectionDatesRawData)].split(",")
+        binType = row.find_all("td", {"class" : lambda L: L and L.startswith('service-name')})\
+            [0].h4.get_text(strip=True)
 
         for collectDate in collectionDate:
             #Make each Bin element in the JSON

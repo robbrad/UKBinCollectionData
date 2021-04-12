@@ -2,12 +2,12 @@
 
 #This script pulls (in one hit) the data from Cheshire East Council Bins Data
 
+import json
+import re
 #import the wonderful Beautiful Soup and the URL grabber
 from urllib.request import Request, urlopen
-import json
+
 from bs4 import BeautifulSoup
-import pdb
-import re
 
 #Set a user agent so we look like a browser ;-)
 user_agent = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'

@@ -21,7 +21,7 @@ soup.prettify()
 data = {"bins":[]}
 
 for bins in soup.findAll("div", {"class" : lambda L: L and L.startswith('mb10 ind-waste-')}):
-    
+
     #Get the type of bin
     binTypes = bins.find_all("div", {"class" : 'mb10'})
     binType = binTypes[0].get_text(strip=True)
@@ -29,15 +29,15 @@ for bins in soup.findAll("div", {"class" : lambda L: L and L.startswith('mb10 in
     #Find the collection dates
     binCollections = bins.find_all("div", {"class" : lambda L: L and L.startswith('col-sm-4')})
 
-    
+
     if binCollections:
         lastCollections = binCollections[0].find_all("div")
         nextCollections = binCollections[1].find_all("div")
-        
+
         #Get the collection date
         lastCollection = lastCollections[1].get_text(strip=True)
         nextCollection = nextCollections[1].get_text(strip=True)
-        
+
         if lastCollection:
             dict_data = {
              "BinType": binType,
