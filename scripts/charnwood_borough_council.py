@@ -7,7 +7,7 @@ payload={}
 
 # Charnwood uses a cookie to determine the location for the request which has a unique id for your property along with the address
 # For this reason it cannot be programatically populated
-# go to my.charnwood.gov.uk and search for your address, then inspect your cookie for the website and take the 'my_location' value and populate into the variable below
+# go to my.charnwood.gov.uk and search for your address, then inspect your cookie for the website and take the 'my_location' value and populate into the parameter below
 my_location = 'xxxxxx'
 
 req = Request('https://my.charnwood.gov.uk/')
@@ -28,11 +28,9 @@ for bins in soup.findAll("ul", {"class" : 'refuse'}):
 
     if binCollection:
       for bin in binCollection:
-          collectiondate = bin.find("strong", {"class" : 'date'})
-          bintype = bin.find("a")
           dict_data = {
-           "CollectionDate": collectiondate.contents[0],
-           "BinType": bintype.contents[0],
+           "CollectionDate": bin.find("strong", {"class" : 'date'}).contents[0],
+           "BinType": bin.find("a").contents[0],
           }
 
           data["bins"].append(dict_data)
