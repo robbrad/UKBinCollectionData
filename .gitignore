@@ -6,3 +6,6 @@
 !/scripts
 !/outputs
 !.gitignore
+!tests
+!councils
+!TO_BE_CONVERTED
