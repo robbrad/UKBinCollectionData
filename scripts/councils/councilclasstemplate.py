@@ -18,16 +18,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins":[]}
 
-        for element in soup.find_all("strong"):
-        
-            binType = element.next_element
-            binType = binType.lstrip()
-            collectionDate = element.next_sibling.next_element.next_element
-
-            dict_data = {
-             "type": binType,
-             "collectionDate": collectionDate,
-            }
-            data["bins"].append(dict_data)
+        for bins in soup.select('div[class*="service-item"]'):
+            binType = bins.div.h3.text.strip()
+            binCollection = bins.select('div > p')[1].get_text(strip=True)
+            #binImage = "https://myaccount.stockport.gov.uk" + bins.img['src']
+            if binCollection: # batteries don't have a service date or other info associated with them.
+                data[binType] = binCollection
 
         return data
