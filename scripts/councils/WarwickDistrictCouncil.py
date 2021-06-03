@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # This script pulls (in one hit) the data
 # from Warick District Council Bins Data
 
