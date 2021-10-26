@@ -5,15 +5,12 @@ import sys
 from get_bin_data import AbstractGetBinDataClass
 
 # We use this method to dynamically import the council processor
-SRC_PATH = os.path.join('councils')
-module_path = os.path.realpath(
-    os.path.join(os.path.dirname(__file__), SRC_PATH)
-)
+SRC_PATH = os.path.join("councils")
+module_path = os.path.realpath(os.path.join(os.path.dirname(__file__), SRC_PATH))
 sys.path.append(module_path)
 
 
-def client_code(get_bin_data_class: AbstractGetBinDataClass,
-                address_url) -> None:
+def client_code(get_bin_data_class: AbstractGetBinDataClass, address_url) -> None:
     """
     The client code calls the template method to execute the algorithm. Client
     code does not have to know the concrete class of an object it works with,

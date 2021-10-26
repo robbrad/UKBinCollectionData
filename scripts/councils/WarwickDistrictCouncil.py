@@ -13,6 +13,7 @@ class CouncilClass(AbstractGetBinDataClass):
     baseclass. They can also override some
     operations with a default implementation.
     """
+
     def parse_data(self, page) -> None:
         # Make a BS4 object
         soup = BeautifulSoup(page.text, features="html.parser")
@@ -27,8 +28,8 @@ class CouncilClass(AbstractGetBinDataClass):
             collectionDate = element.next_sibling.next_element.next_element
 
             dict_data = {
-             "type": binType,
-             "collectionDate": collectionDate,
+                "type": binType,
+                "collectionDate": collectionDate,
             }
             data["bins"].append(dict_data)
 

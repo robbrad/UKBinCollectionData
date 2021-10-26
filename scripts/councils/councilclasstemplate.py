@@ -25,7 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
             binType = bins.div.h3.text.strip()
             binCollection = bins.select("div > p")[1].get_text(strip=True)
             # binImage = "https://myaccount.stockport.gov.uk"   bins.img['src']
-            if (binCollection):
+            if binCollection:
                 data[binType] = binCollection
 
         return data
