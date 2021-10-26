@@ -2,7 +2,7 @@
 import re
 
 from bs4 import BeautifulSoup
-from ..get_bin_data import AbstractGetBinDataClass
+from get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
