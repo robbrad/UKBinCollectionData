@@ -1,0 +1,68 @@
+{
+    "bins": [
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2021-12-17"
+        },
+        {
+            "BinType": "Blue Bin",
+            "collectionDate": "2021-12-17"
+        },
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2021-12-23"
+        },
+        {
+            "BinType": "Green Bin",
+            "collectionDate": "2021-12-23"
+        },
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2022-01-04"
+        },
+        {
+            "BinType": "Blue Bin",
+            "collectionDate": "2022-01-04"
+        },
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2022-01-10"
+        },
+        {
+            "BinType": "Green Bin",
+            "collectionDate": "2022-01-10"
+        },
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2022-01-15"
+        },
+        {
+            "BinType": "Blue Bin",
+            "collectionDate": "2022-01-15"
+        },
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2022-01-21"
+        },
+        {
+            "BinType": "Green Bin",
+            "collectionDate": "2022-01-21"
+        },
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2022-01-28"
+        },
+        {
+            "BinType": "Blue Bin",
+            "collectionDate": "2022-01-28"
+        },
+        {
+            "BinType": "Black Bag",
+            "collectionDate": "2022-02-04"
+        },
+        {
+            "BinType": "Green Bin",
+            "collectionDate": "2022-02-04"
+        }
+    ]
+}
