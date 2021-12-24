@@ -30,14 +30,14 @@ for element in soup.find_all("strong"):
     else:
         collectionInfo = element.next_sibling.next_sibling.next_sibling.next_sibling
 
-    binType = str(element)[str(element).find("(") + 1 : str(element).find(")")]
+    bin_type = str(element)[str(element).find("(") + 1 : str(element).find(")")]
     collectionDate = str(
         datetime.strptime(
             str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"
         ).date()
     )
 
-    dict_data = {"BinType": binType, "NextCollectionDate": collectionDate}
+    dict_data = {"bin_type": bin_type, "NextCollectionDate": collectionDate}
 
     # Add data to the main JSON Wrapper
     data["bins"].append(dict_data)

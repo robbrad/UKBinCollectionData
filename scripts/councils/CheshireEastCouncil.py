@@ -13,7 +13,7 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page) -> None:
+    def parse_data(self, page: str) -> dict:
         # Make a BS4 object
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
@@ -32,12 +32,12 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
             labels = cells[0].find_all("label")
-            binType = labels[2].get_text(strip=True)
+            bin_type = labels[2].get_text(strip=True)
             collectionDate = labels[1].get_text(strip=True)
 
             # Make each Bin element in the JSON
             dict_data = {
-                "BinType": binType,
+                "bin_type": bin_type,
                 "collectionDate": collectionDate,
             }
 

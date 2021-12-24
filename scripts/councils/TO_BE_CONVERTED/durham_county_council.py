@@ -26,10 +26,10 @@ for bins in soup.findAll(
         and L.startswith("page_PageContentHolder_template_pnlArticleBody")
     },
 ):
-    binType = bins.h2.text
+    bin_type = bins.h2.text
     binDates = bins.find_all("p")
     binCollection = binDates[1].get_text(strip=True).split(": ", 1)[-1].split(".", 1)[0]
-    data[binType] = binCollection
+    data[bin_type] = binCollection
 
 json_data = json.dumps(data)
 

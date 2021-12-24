@@ -43,14 +43,14 @@ for row in rows:
         collectionDate = collectionDatesRawData[16 : len(collectionDatesRawData)].split(
             ","
         )
-        binType = row.find_all(
+        bin_type = row.find_all(
             "td", {"class": lambda L: L and L.startswith("service-name")}
         )[0].h4.get_text(strip=True)
 
         for collectDate in collectionDate:
             # Make each Bin element in the JSON
             dict_data = {
-                "BinType": binType,
+                "bin_type": bin_type,
                 "collectionDate": collectDate,
             }
 

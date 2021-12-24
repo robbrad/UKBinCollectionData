@@ -12,7 +12,7 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page) -> None:
+    def parse_data(self, page: str) -> dict:
         # Make a BS4 object
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
@@ -20,13 +20,13 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {}
 
         for bins in soup.select('div[class*="service-item"]'):
-            binType = bins.div.h3.text.strip()
+            bin_type = bins.div.h3.text.strip()
             binCollection = bins.select("div > p")[1].get_text(strip=True)
             # binImage = "https://myaccount.stockport.gov.uk" + bins.img['src']
 
             # batteries don't have a service date or other
             # info associated with them.
             if binCollection:
-                data[binType] = binCollection
+                data[bin_type] = binCollection
 
         return data

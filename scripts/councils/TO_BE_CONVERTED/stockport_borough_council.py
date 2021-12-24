@@ -20,13 +20,13 @@ soup.prettify()
 data = {}
 
 for bins in soup.select('div[class*="service-item"]'):
-    binType = bins.div.h3.text.strip()
+    bin_type = bins.div.h3.text.strip()
     binCollection = bins.select("div > p")[1].get_text(strip=True)
     # binImage = "https://myaccount.stockport.gov.uk" + bins.img['src']
     if (
         binCollection
     ):  # batteries don't have a service date or other info associated with them.
-        data[binType] = binCollection
+        data[bin_type] = binCollection
 
 json_data = json.dumps(data)
 

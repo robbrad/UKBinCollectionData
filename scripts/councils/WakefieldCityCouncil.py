@@ -12,7 +12,7 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page) -> None:
+    def parse_data(self, page: str) -> dict:
         # Make a BS4 object
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
@@ -24,8 +24,8 @@ class CouncilClass(AbstractGetBinDataClass):
         ):
 
             # Get the type of bin
-            binTypes = bins.find_all("div", {"class": "mb10"})
-            binType = binTypes[0].get_text(strip=True)
+            bin_types = bins.find_all("div", {"class": "mb10"})
+            bin_type = bin_types[0].get_text(strip=True)
 
             # Find the collection dates
             binCollections = bins.find_all(
@@ -42,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 if lastCollection:
                     dict_data = {
-                        "BinType": binType,
+                        "bin_type": bin_type,
                         "Last Collection Date": lastCollection,
                         "Next Collection Date": nextCollection,
                     }

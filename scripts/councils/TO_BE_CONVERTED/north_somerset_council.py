@@ -28,13 +28,13 @@ data = {"bins": []}
 for row in rows:
     cells = row.find_all("td")
     if cells:
-        binType = cells[0].get_text(strip=True)
+        bin_type = cells[0].get_text(strip=True)
         collectionDate = cells[1].get_text(strip=True)
         nextCollectionDate = cells[2].get_text(strip=True)
 
         # Make each Bin element in the JSON
         dict_data = {
-            "BinType": binType,
+            "bin_type": bin_type,
             "collectionDate": collectionDate,
             "nextCollectionDate": nextCollectionDate,
         }

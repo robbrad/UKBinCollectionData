@@ -20,9 +20,9 @@ soup.prettify()
 data = {}
 
 for bins in soup.findAll("div", {"class": lambda L: L and L.startswith("bg-")}):
-    binType = bins.h3.text
+    bin_type = bins.h3.text
     binCollection = bins.find_all("strong")[-1].text
-    data[f"{binType}"] = f"{binCollection}"
+    data[f"{bin_type}"] = f"{binCollection}"
 
 json_data = json.dumps(data)
 

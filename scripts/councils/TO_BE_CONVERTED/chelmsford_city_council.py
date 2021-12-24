@@ -38,14 +38,14 @@ for row in rows:
 
     # set the vars per bin and date for each row
     cells = row.find_all("td")
-    binType = cells[1].get_text()
+    bin_type = cells[1].get_text()
     lcDate = cells[2].get_text()
     ncDate = cells[3].get_text()
     fcDate = cells[4].get_text()
 
     # Make each Bin element in the JSON
     dict_data = {
-        "BinType": binType,
+        "bin_type": bin_type,
         "Last Collection Date": lcDate,
         "Next Collection Date": ncDate,
         "Following Collection Date": fcDate,

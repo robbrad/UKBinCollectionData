@@ -14,7 +14,7 @@ class CouncilClass(AbstractGetBinDataClass):
     operations with a default implementation.
     """
 
-    def parse_data(self, page) -> None:
+    def parse_data(self, page: str) -> dict:
         # Make a BS4 object
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
@@ -23,12 +23,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for element in soup.find_all("strong"):
 
-            binType = element.next_element
-            binType = binType.lstrip()
+            bin_type = element.next_element
+            bin_type = bin_type.lstrip()
             collectionDate = element.next_sibling.next_element.next_element
 
             dict_data = {
-                "type": binType,
+                "type": bin_type,
                 "collectionDate": collectionDate,
             }
             data["bins"].append(dict_data)

@@ -19,12 +19,12 @@ soup.prettify()
 data = {}
 
 for bins in soup.findAll("div", {"class": "service-wrapper"}):
-    binType = bins.h3.text.strip()
+    bin_type = bins.h3.text.strip()
     binCollection = bins.find("td", {"class": "next-service"})
     if (
         binCollection
     ):  # batteries don't have a service date or other info associated with them.
-        data[binType] = binCollection.contents[-1].strip()
+        data[bin_type] = binCollection.contents[-1].strip()
 
 json_data = json.dumps(data)
 
