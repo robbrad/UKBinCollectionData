@@ -6,14 +6,12 @@
 !*.py
 !PipFile
 !Pipfile.lock
+!.gitignore
 
 # Or these folders...
 !/scripts
 !/outputs
-
+!.github
 !tests
 !councils
 !TO_BE_CONVERTED
-
-#Wildcard allows
-!.git*
