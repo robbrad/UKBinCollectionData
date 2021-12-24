@@ -1,11 +1,19 @@
+# Ignore everything
 *
+
+# But not these files...
 !*.json
 !*.py
 !PipFile
 !Pipfile.lock
+
+# Or these folders...
 !/scripts
 !/outputs
-!.gitignore
+
 !tests
 !councils
 !TO_BE_CONVERTED
+
+#Wildcard allows
+!.git*
