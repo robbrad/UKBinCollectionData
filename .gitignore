@@ -1,8 +1,19 @@
+# Ignore everything
 *
+
+# But not these files...
 !*.json
 !*.py
 !PipFile
 !Pipfile.lock
+!.gitignore
+
+# Or these folders...
 !/scripts
 !/outputs
-!.gitignore
+!.github
+!.github/ISSUE_TEMPLATE
+!.github/ISSUE_TEMPLATE/*.yaml
+!tests
+!councils
+!TO_BE_CONVERTED

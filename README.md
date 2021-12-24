@@ -12,3 +12,6 @@ Please use responsibly - I take no responsibility for the use of these scripts, 
 Please help raise an issue to creation for your council or contribute for your council via a pull request!
 
 The dream would be to make each of these into one common lib
+
+
+python collect_data.py <council_class_name> "<collection_url>"
