@@ -12,6 +12,8 @@
 !/scripts
 !/outputs
 !.github
+!.github/ISSUE_TEMPLATE
+!.github/ISSUE_TEMPLATE/*.yaml
 !tests
 !councils
 !TO_BE_CONVERTED

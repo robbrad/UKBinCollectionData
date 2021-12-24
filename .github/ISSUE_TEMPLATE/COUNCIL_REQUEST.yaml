@@ -1,0 +1,27 @@
+name: Council Request
+description: Request for a council to be added to the repository
+labels: ['Class: enhancement']
+
+body:
+    - type: input
+      id: council
+      attributes:
+          label: Name of Council
+          description: What council are you wishing to be added
+          placeholder: e.g. Huntingdon District Council
+      validations:
+          required: true
+    - type: input
+      id: postcode
+      attributes:
+          label: Example Postcode
+          description: Please provide and example postcode for the area
+          placeholder: e.g. PE7 3YQ
+      validations:
+          required: true
+    - type: textarea
+      id: extra
+      attributes:
+          label: Additional Information
+          description: Add any other information here
+          placeholder: Links to the councils site, information you have already gathered
