@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "collectionDate": "Mon 10 Jan then every alternate Mon",
+            "type": "GardenBin"
+        },
+        {
+            "collectionDate": "Wed 29 Dec then Tue 11 Jan then every alternate Tue",
+            "type": "Refuse"
+        },
+        {
+            "collectionDate": "Wed 29 Dec then Thu 6 Jan(Adjusted for Day late new year)  then every Wed",
+            "type": "Recycling"
+        }
+    ]
+}
