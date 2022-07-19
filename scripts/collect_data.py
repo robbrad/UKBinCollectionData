@@ -21,8 +21,8 @@ def client_code(get_bin_data_class: AbstractGetBinDataClass, address_url) -> Non
 
 
 if __name__ == "__main__":
-    council_module_str = sys.argv[1]
-    address_url = sys.argv[2]
+    council_module_str = "LeedsCityCouncil"       # sys.argv[1]
+    address_url = "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day"      # sys.argv[2]
     council_module = importlib.import_module(council_module_str)
 
     client_code(council_module.CouncilClass(), address_url)
