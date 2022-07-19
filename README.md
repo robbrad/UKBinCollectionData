@@ -1,7 +1,7 @@
 # UKBinCollectionData
 UK Council Bin Collection Data Parser - Outputting Bin Data as a JSON
 
-Born from https://community.home-assistant.io/t/bin-waste-collection/
+Born from https://community.home-assistant.io/t/bin-waste-collection/55451
 
 Reference : https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/791684/List_of_councils_in_England_2019.pdf
 
@@ -17,3 +17,5 @@ python collect_data.py <council_class_name> "<collection_url>"
 
 ### UPRN Finder
 Some councils make use of the UPRN (Unique property reference number) to identify your property. You can find yours here: https://www.findmyaddress.co.uk/search
+
+python collect_data.py <council_class_name> "<collection_url>"
