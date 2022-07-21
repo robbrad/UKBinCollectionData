@@ -23,20 +23,22 @@ class CouncilClass(AbstractGetBinDataClass):
         address_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_premises.csv"
         collections_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_jobs.csv"
 
+        # Prompt for postcode if not in **kwargs
         if kwargs.get("postcode") == "" or kwargs.get("postcode") is None:
             print("What is your postcode?")
             user_postcode = input("> ").replace(" ", "")
         else:
             user_postcode = kwargs.get("postcode").replace(" ", "")
 
+        # Prompt for PAON if not in **kwargs
         if kwargs.get("paon") == "" or kwargs.get("paon") is None:
             print("What is your house number/name?")
             user_paon = input("> ").replace(" ", "")
         else:
             user_paon = kwargs.get("paon").replace(" ", "")
 
-        data: dict[datetime, str] = {}
-        prop_id = 0
+        data = {"bins": []}     # dictionary for data
+        prop_id = 0             # LCC use city wide URPNs in this dataset
 
         # Get address csv and give it headers (pandas bypasses downloading the file)
         print("Getting address data...")
@@ -66,15 +68,14 @@ class CouncilClass(AbstractGetBinDataClass):
             if row.PropertyId == prop_id:
                 time = datetime.strptime('070000', '%H%M%S').time()
                 date_obj = datetime.strptime(row.CollectionDate, '%d/%m/%y')
-                combined_date = datetime.combine(date_obj, time)
+                combined_date = datetime.combine(date_obj, time).strftime('%d/%m/%y %H:%M:%S')
                 job_list.append([row.BinType, combined_date])
 
         # If jobs exist, sort list by date order. Load list into dictionary to return
         print("Processing collections...")
         if len(job_list) > 0:
-            job_list.sort(key=lambda x: (x[1]))
-            for job in job_list:
-                data.update({job[1].strftime("%d/%m/%y"): job[0]})
+            job_list.sort(key=lambda x: datetime.strptime(x[1], '%d/%m/%y %H:%M:%S'))
+            data.update({"bins": job_list})
         else:
             print("No bin collections found for property!")
 
