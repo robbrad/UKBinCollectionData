@@ -39,6 +39,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}     # dictionary for data
         prop_id = 0             # LCC use city wide URPNs in this dataset
+        result_row = None       # store the property as a row
 
         # Get address csv and give it headers (pandas bypasses downloading the file)
         print("Getting address data...")
@@ -57,13 +58,15 @@ class CouncilClass(AbstractGetBinDataClass):
             if str(row.Postcode).replace(" ", "") == user_postcode:
                 if row.PropertyNo == user_paon:
                     prop_id = row.PropertyId
+                    result_row = row
                     print(f"Reference: {str(prop_id)}")
                     continue
 
         # For every match on the property id in the collections data, add the bin type and date to list
         # Note: time is 7am as that's when LCC ask bins to be out by
         job_list = []
-        print(f"Finding collections for property reference: {user_paon}, {user_postcode}...")
+        print(f"Finding collections for property reference: {result_row.PropertyNo} {result_row.Street} "
+              f"{result_row.Postcode}...")
         for row in coll.itertuples():
             if row.PropertyId == prop_id:
                 time = datetime.strptime('070000', '%H%M%S').time()
