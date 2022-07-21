@@ -15,7 +15,7 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
+    def parse_data(self, page: str) -> dict:
         user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
         headers = {"User-Agent": user_agent}
 
@@ -23,19 +23,8 @@ class CouncilClass(AbstractGetBinDataClass):
         address_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_premises.csv"
         collections_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_jobs.csv"
 
-        # Prompt for postcode if not in **kwargs
-        if kwargs.get("postcode") == "" or kwargs.get("postcode") is None:
-            print("What is your postcode?")
-            user_postcode = input("> ").replace(" ", "")
-        else:
-            user_postcode = kwargs.get("postcode").replace(" ", "")
-
-        # Prompt for PAON if not in **kwargs
-        if kwargs.get("paon") == "" or kwargs.get("paon") is None:
-            print("What is your house number/name?")
-            user_paon = input("> ").replace(" ", "")
-        else:
-            user_paon = kwargs.get("paon").replace(" ", "")
+        user_postcode = ""  # Postcode with no spaces (LS11AA rather than LS1 1AA)
+        user_paon = ""      # House number
 
         data = {"bins": []}     # dictionary for data
         prop_id = 0             # LCC use city wide URPNs in this dataset
