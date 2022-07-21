@@ -43,7 +43,7 @@ class AbstractGetBinDataClass(ABC):
         return full_page
 
     @abstractmethod
-    def parse_data(self, page: str, **kwargs) -> dict:
+    def parse_data(self, page: str) -> dict:
         """Abstract method that takes a page as a string
 
         Keyword arguments:
