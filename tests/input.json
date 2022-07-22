@@ -3,7 +3,8 @@
     "chelmsford_city_council": "100022887131",
     "CheshireEastCouncil": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1621149987573",
     "HuntingdonDistrictCouncil": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
-    "LeedsCityCouncil": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day"
+    "LeedsCityCouncil": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
+    "NELincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
     "TorridgeDistrictCouncil": "10091078762",
