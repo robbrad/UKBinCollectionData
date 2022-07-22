@@ -59,7 +59,9 @@ class AbstractGetBinDataClass(ABC):
         """
         # Form a JSON wrapper
         # Make the JSON
-        json_data = json.dumps(bin_data_dict, sort_keys=True, indent=4)
+
+        json_data = json.dumps(bin_data_dict, sort_keys=False, indent=4)
 
         # Output the data
         print(json_data)
+        return json_data
