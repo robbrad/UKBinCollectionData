@@ -6,6 +6,7 @@
     "LeedsCityCouncil": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
     "NELincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
+    "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
     "TorridgeDistrictCouncil": "10091078762",
     "WakefieldCityCouncil": "https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=63183644",
