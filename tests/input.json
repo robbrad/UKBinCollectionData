@@ -7,5 +7,6 @@
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
     "bromley_borough_council": "100022887131",
     "chelmsford_city_council": "100022887131",
-    "TorridgeDistrictCouncil": "10091078762"
+    "TorridgeDistrictCouncil": "10091078762",
+    "NELincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline"
 }
