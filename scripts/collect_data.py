@@ -15,7 +15,7 @@ parser.add_argument("module", type=str, help="Name of council module to use")
 parser.add_argument("URL", type=str, help="URL to parse")
 parser.add_argument("-p", "--postcode", type=str, help="Postcode to parse", required=False)
 parser.add_argument("-n", "--number", type=str, help="House number to parse", required=False)
-parser.add_argument("-u", "--UPRN", type=str, help="UPRN to parse", required=False)
+parser.add_argument("-u", "--uprn", type=str, help="UPRN to parse", required=False)
 args = parser.parse_args()
 
 
