@@ -35,5 +35,6 @@ if __name__ == "__main__":
     council_module = importlib.import_module(council_module_str)
     postcode = args.postcode
     paon = args.number
+    uprn = args.uprn
 
-    client_code(council_module.CouncilClass(), address_url, postcode=postcode, paon=paon)
+    client_code(council_module.CouncilClass(), address_url, postcode=postcode, paon=paon, uprn=uprn)
