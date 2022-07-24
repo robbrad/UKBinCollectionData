@@ -1,21 +1,81 @@
-# UKBinCollectionData
-UK Council Bin Collection Data Parser - Outputting Bin Data as a JSON
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
-Born from https://community.home-assistant.io/t/bin-waste-collection/55451
+![GitHub](https://img.shields.io/github/license/robbrad/UKBinCollectionData?style=for-the-badge) ![GitHub issues](https://img.shields.io/github/issues-raw/robbrad/UKBinCollectionData?style=for-the-badge) ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/robbrad/UKBinCollectionData?style=for-the-badge)
+![GitHub contributors](https://img.shields.io/github/contributors/robbrad/UKBinCollectionData?style=for-the-badge)
+# UK Bin Collection Data (UKBCD)
+This project aims to provide a neat and standard way of providing bin collection data in JSON format from UK councils that have no API to do so.
 
-Reference : https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/791684/List_of_councils_in_England_2019.pdf
+Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulsoup4/) to scrape data, although others use different approaches, such as emulating web browser behaviour, or reading data from CSV files.
 
-This is a list of Python3 Scripts which use Beautiful Soup 4 to pull Bin Collection data into a JSON where a council does not provide a restful API - Yes Yes Yes any script could break when a council changes their site - but until they provide a service for programmatic consumption then stript on-ward. 
+[![](https://img.shields.io/badge/--41BDF5?logo=homeassistant&logoColor=white&label=HomeAssistant+Thread)](https://community.home-assistant.io/t/bin-waste-collection/55451) [![](https://img.shields.io/badge/--181717?logo=github&logoColor=white&label=Request+a+council)](https://github.com/robbrad/UKBinCollectionData/issues/new/choose)
 
-Please use responsibly - I take no responsibility for the use of these scripts, I created this to get better at Python and Beautiful Soup.
+## Usage
+```commandline
+PS G:\Projects\Python\UKBinCollectionData\scripts
+usage: collect_data.py [-h] [-p POSTCODE] [-n NUMBER] [-u UPRN] module URL
 
-Please help raise an issue to creation for your council or contribute for your council via a pull request!
+positional arguments:
+  module                Name of council module to use                           (required)
+  URL                   URL to parse                                            (required)
 
-The dream would be to make each of these into one common lib
+options:
+  -h, --help                            show this help message                  (optional)
+  -p POSTCODE, --postcode POSTCODE      Postcode to parse - should include      (optional)
+                                        a space and be wrapped in double
+                                        quotes                                  
+  -n NUMBER, --number NUMBER            House number to parse                   (optional)
+  -u UPRN, --uprn UPRN                  UPRN to parse                           (optional)
+```
 
-python collect_data.py <council_class_name> "<collection_url>"
+### Quickstart
+The basic command to execute a script is:
+```commandline
+python collect_data.py <council_name> "<collection_url>"
+```
+where ```council_name``` is the name of the council's .py script (without the .py) and ```collection_url``` is the URL to scrape.
+The help documentation refers to these as "module" and "URL", respectively. Supported council scripts can be found in the `/scripts/councils/` folder.
+
+Some scripts require additional parameters, for example, when a UPRN is not passed in a URL, or when the script is not scraping a web page.
+For example, the Leeds City Council script needs two additional parameters - a postcode, and a house number. This is done like so:
+
+```commandline
+python collect_data.py LeedsCityCouncil https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day -p "LS1 2JG" -n 41
+```
+- A **postcode** can be passed with `-p "postcode"` or `--postcode "postcode"`. The postcode must always include a space in the middle and
+be wrapped in double quotes (due to how command line arguments are handled).
+- A **house number** can be passed with `-n number` or `--number number`.
+- A **UPRN reference** can be passed with `-u uprn` or `--uprn uprn`.
+
+To check the parameters needed for your council's script, please check the [project wiki](https://github.com/robbrad/UKBinCollectionData/wiki) for more information.
+
+### Project dependencies
+Some scripts rely on external packages to function. A list of required scripts for both development and execution can be found in the project's [PIPFILE](https://github.com/robbrad/UKBinCollectionData/blob/master/Pipfile).
 
 ### UPRN Finder
-Some councils make use of the UPRN (Unique property reference number) to identify your property. You can find yours here: https://www.findmyaddress.co.uk/search
+Some councils make use of the UPRN (Unique property reference number) to identify your property. You can find yours [here](https://www.findmyaddress.co.uk/search).
 
-python collect_data.py <council_class_name> "<collection_url>"
+## Requesting your council
+To make a request for your council, first check the [Issues](https://github.com/robbrad/UKBinCollectionData/issues) page to make sure it has not already been requested. If not, please fill in a new [Council Request](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) form, including as much information as possible, including:
+- Name of the council
+- URL to bin collections
+- An example postcode and/or UPRN (whichever is relevant)
+- Any further information
+
+Please be aware that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get a script.
+
+## FAQ
+#### I've got an issue/support question - what do I do?
+Please post in the [HomeAssistant thread](https://community.home-assistant.io/t/bin-waste-collection/55451) or raise a new (non council request) [issue](https://github.com/robbrad/UKBinCollectionData/issues/new).
+
+#### I'd like to contribute, where do I start?
+Contributions are always welcome! ~~See ```CONTRIBUTING.md``` to get started.~~ Please adhere to the project's [code of conduct](https://github.com/robbrad/UKBinCollectionData/blob/master/CODE_OF_CONDUCT.md).
+
+Temporary note: ```CONTRIBUTING.md``` hasn't been written yet. 
+- If you're new to coding/Python/BeautifulSoup, feel free to check [here](https://github.com/robbrad/UKBinCollectionData/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for issues that are good for newcomers!
+- If you would like to try writing your own scraper, feel free to fork this project and use existing scrapers as a base for your approach (or `councilclasstemplate.py`).
+
+## Contributors
+<a href="https://github.com/robbrad/UKBinCollectionData/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=robbrad/UKBinCollectionData"  alt="Image of contributors"/>
+</a>
+

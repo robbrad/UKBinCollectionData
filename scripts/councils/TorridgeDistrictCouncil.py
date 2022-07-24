@@ -14,7 +14,7 @@ class CouncilClass(AbstractGetBinDataClass):
     baseclass. They can also override some
     operations with a default implementation.
     """
-    def get_data(cls, uprn) -> str:
+    def get_data(cls, uprn, **kwargs) -> str:
         """This method makes the request to the council
 
         Keyword arguments:

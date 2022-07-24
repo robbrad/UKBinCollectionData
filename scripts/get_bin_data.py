@@ -16,14 +16,17 @@ class AbstractGetBinDataClass(ABC):
 
     Keyword arguments: None
     """
-    def template_method(self, address_url: str) -> None:
+    def template_method(self, address_url: str, **kwargs) -> None:
         """The main template method that is constructed
 
         Keyword arguments:
         address_url -- the url to get the data from
         """
+        this_postcode = kwargs.get("postcode", None)
+        this_paon = kwargs.get("paon", None)
+        this_uprn = kwargs.get("uprn", None)
         page = self.get_data(address_url)
-        bin_data_dict = self.parse_data(page)
+        bin_data_dict = self.parse_data(page, postcode=this_postcode, paon=this_paon, uprn=this_uprn)
         self.output_json(bin_data_dict)
 
     @classmethod
@@ -43,7 +46,7 @@ class AbstractGetBinDataClass(ABC):
         return full_page
 
     @abstractmethod
-    def parse_data(self, page: str) -> dict:
+    def parse_data(self, page: str, **kwargs) -> dict:
         """Abstract method that takes a page as a string
 
         Keyword arguments:
