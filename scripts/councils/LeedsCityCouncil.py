@@ -12,7 +12,7 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str) -> dict:
+    def parse_data(self, page: str, **kwargs) -> dict:
         """
         Parse council provided CSVs to get the latest bin collections for address
         """
