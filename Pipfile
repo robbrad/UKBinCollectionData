@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 requests = "*"
 bs4 = "*"
+pandas = "*"
 
 [dev-packages]
 pylint = "*"
@@ -13,6 +14,7 @@ pytest = "*"
 coverage = "*"
 flake8 = "*"
 black = "*"
+
 
 [requires]
 python_version = "3.8"
