@@ -1,13 +1,10 @@
-# This script pulls (in one hit) the data
-# from Warick District Council Bins Data
-import os
 from datetime import datetime
-import pandas as pd
 from get_bin_data import AbstractGetBinDataClass
+
+import pandas as pd
 import urllib.request
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the base
@@ -15,37 +12,27 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
-        user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
-        headers = {"User-Agent": user_agent}
-
+    def parse_data(self, page: str) -> dict:
+        """
+        Parse council provided CSVs to get the latest bin collections for address
+        """
         # URLs to data sources
         address_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_premises.csv"
         collections_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_jobs.csv"
 
-        # Prompt for postcode if not in **kwargs
-        if kwargs.get("postcode") == "" or kwargs.get("postcode") is None:
-            print("What is your postcode?")
-            user_postcode = input("> ").replace(" ", "")
-        else:
-            user_postcode = kwargs.get("postcode").replace(" ", "")
+        # Change these two
+        user_postcode = ""  # Postcode
+        user_paon = ""  # House number
 
-        # Prompt for PAON if not in **kwargs
-        if kwargs.get("paon") == "" or kwargs.get("paon") is None:
-            print("What is your house number/name?")
-            user_paon = input("> ").replace(" ", "")
-        else:
-            user_paon = kwargs.get("paon").replace(" ", "")
-
-        data = {"bins": []}     # dictionary for data
-        prop_id = 0             # LCC use city wide URPNs in this dataset
-        result_row = None       # store the property as a row
+        data = {"bins": []}  # dictionary for data
+        prop_id = 0  # LCC use city wide URPNs in this dataset
+        result_row = None  # store the property as a row
 
         # Get address csv and give it headers (pandas bypasses downloading the file)
         print("Getting address data...")
         with urllib.request.urlopen(address_csv_url) as response:
             addr = pd.read_csv(response, names=["PropertyId", "PropertyName", "PropertyNo", "Street",
-                                                             "Town", "City", "Postcode"], sep=",")
+                                                "Town", "City", "Postcode"], sep=",")
 
         # Get collections csv and give it headers
         print("Getting collection data...")
@@ -55,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # Find the property id from the address data
         print("Finding property reference...")
         for row in addr.itertuples():
-            if str(row.Postcode).replace(" ", "") == user_postcode:
+            if str(row.Postcode).replace(" ", "") == user_postcode.replace(" ", ""):
                 if row.PropertyNo == user_paon:
                     prop_id = row.PropertyId
                     result_row = row
