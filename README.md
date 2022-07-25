@@ -11,7 +11,7 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 
 ## Usage
 ```commandline
-PS G:\Projects\Python\UKBinCollectionData\scripts
+PS G:\Projects\Python\UKBinCollectionData\uk_bin_collection\collect_data.py
 usage: collect_data.py [-h] [-p POSTCODE] [-n NUMBER] [-u UPRN] module URL
 
 positional arguments:
@@ -33,7 +33,7 @@ The basic command to execute a script is:
 python collect_data.py <council_name> "<collection_url>"
 ```
 where ```council_name``` is the name of the council's .py script (without the .py) and ```collection_url``` is the URL to scrape.
-The help documentation refers to these as "module" and "URL", respectively. Supported council scripts can be found in the `/scripts/councils/` folder.
+The help documentation refers to these as "module" and "URL", respectively. Supported council scripts can be found in the `uk_bin_collection/uk_bin_collection/councils` folder.
 
 Some scripts require additional parameters, for example, when a UPRN is not passed in a URL, or when the script is not scraping a web page.
 For example, the Leeds City Council script needs two additional parameters - a postcode, and a house number. This is done like so:

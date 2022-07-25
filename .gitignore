@@ -7,6 +7,10 @@
 !PipFile
 !Pipfile.lock
 !.gitignore
+!*.toml
+!*.md
+!*.rst
+!LICENSE
 
 # Or these folders...
 !.github

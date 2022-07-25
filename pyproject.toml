@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "uk_bin_collection"
+version = "0.1.0"
+description = ""
+readme = "README.md"
+authors = ["Robert Bradley <robbrad182@gmail.com>"]
+packages = [
+    { include = "uk_bin_collection", from = "." },
+]
+include = ["uk_bin_collection"]
+
+[tool.poetry.urls]
+issues = "https://github.com/robbrad/UKBinCollectionData/issues"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dev-dependencies]
+python = "^3.8"
+pylint = "*"
+pytest = "*"
+coverage = "*"
+flake8 = "*"
+black = "*"
+behave = "*"
+
+[tool.poetry.scripts]
+uk_bin_collection = "uk_bin_collection.uk_bin_collection:collect_data"
+
+[tool.dephell.main]
+versioning = "semver"
+from = {format = "poetrylock", path = "poetry.lock"}
+envs = ["main"]
+to = {format = "poetry", path = "pyproject.toml"}
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "*"
+bs4 = "*"
+pandas = "*"
