@@ -9,11 +9,9 @@
 !.gitignore
 
 # Or these folders...
-!/scripts
-!/outputs
 !.github
 !.github/ISSUE_TEMPLATE
 !.github/ISSUE_TEMPLATE/*.yaml
-!tests
-!councils
+!uk_bin_collection
+!uk_bin_collection/*/*
 !TO_BE_CONVERTED
