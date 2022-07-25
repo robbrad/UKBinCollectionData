@@ -49,7 +49,9 @@ be wrapped in double quotes (due to how command line arguments are handled).
 To check the parameters needed for your council's script, please check the [project wiki](https://github.com/robbrad/UKBinCollectionData/wiki) for more information.
 
 ### Project dependencies
-Some scripts rely on external packages to function. A list of required scripts for both development and execution can be found in the project's [PIPFILE](https://github.com/robbrad/UKBinCollectionData/blob/master/Pipfile).
+Some scripts rely on external packages to function. A list of required scripts for both development and execution can be found in the project's [PROJECT_TOML](https://github.com/robbrad/UKBinCollectionData/blob/feature/%2353_integration_tests/pyproject.toml) 
+Install can be done via 
+`poetry install` from within the root of the repo .
 
 ### UPRN Finder
 Some councils make use of the UPRN (Unique property reference number) to identify your property. You can find yours [here](https://www.findmyaddress.co.uk/search).
