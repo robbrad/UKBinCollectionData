@@ -13,5 +13,6 @@
 !.github/ISSUE_TEMPLATE
 !.github/ISSUE_TEMPLATE/*.yaml
 !uk_bin_collection
-!uk_bin_collection/*/*
+!uk_bin_collection/**/*
+__pycache__
 !TO_BE_CONVERTED
