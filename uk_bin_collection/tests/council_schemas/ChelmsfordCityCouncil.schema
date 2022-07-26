@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome10",
+    "$ref": "#/definitions/Welcome8",
     "definitions": {
-        "Welcome10": {
+        "Welcome8": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,33 +16,32 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome10"
+            "title": "Welcome8"
         },
         "Bin": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "bin_type": {
-                    "$ref": "#/definitions/BinType"
+                "BinType": {
+                    "type": "string"
                 },
-                "collectionDate": {
+                "Following Collection Date": {
+                    "type": "string"
+                },
+                "Last Collection Date": {
+                    "type": "string"
+                },
+                "Next Collection Date": {
                     "type": "string"
                 }
             },
             "required": [
-                "bin_type",
-                "collectionDate"
+                "BinType",
+                "Following Collection Date",
+                "Last Collection Date",
+                "Next Collection Date"
             ],
             "title": "Bin"
-        },
-        "BinType": {
-            "type": "string",
-            "enum": [
-                "Empty Standard Mixed Recycling",
-                "Empty Standard Garden Waste",
-                "Empty Standard General Waste"
-            ],
-            "title": "BinType"
         }
     }
 }
