@@ -23,8 +23,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         BinTypes = ["Domestic", "Recycle", "Organic"]
 
-        for i, date in enumerate(soup.find('ul', class_='d-print-none').find_all('li')):
-            data.append({"BinType": BinTypes[i], "NextCollection": date.find('strong').get_text(strip=True)})
-            ++i;
+        for i, date in enumerate(soup.find("ul", class_="d-print-none").find_all("li")):
+            data.append(
+                {
+                    "BinType": BinTypes[i],
+                    "NextCollection": date.find("strong").get_text(strip=True),
+                }
+            )
+            ++i
 
         return data

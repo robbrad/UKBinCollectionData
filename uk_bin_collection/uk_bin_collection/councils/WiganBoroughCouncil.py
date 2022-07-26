@@ -23,9 +23,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for bins in soup.findAll("div", {"class": "BinsRecycling"}):
             bin_type = bins.div.h2.text.strip()
-            binCollection = bins.find("div", {"class": "dateWrapper-next"})[0].get_text(strip=True)
+            binCollection = bins.find("div", {"class": "dateWrapper-next"})[0].get_text(
+                strip=True
+            )
             # binImage = "https://myaccount.stockport.gov.uk"   bins.img['src']
-            if (binCollection):
+            if binCollection:
                 data[bin_type] = binCollection
 
         return data

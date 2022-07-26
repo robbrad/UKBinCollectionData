@@ -21,7 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
         results = []
         table = soup.find("table", {"class": "multitable"})
         table_body = table.find("tbody")
-        rows = table_body.find_all('tr')
+        rows = table_body.find_all("tr")
 
         for row in rows:
             row_values = [text.text for text in row.contents]
@@ -45,7 +45,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     collection_date = "NaN"
 
                 dict_data = {
-                    "type":           bin_type,
+                    "type": bin_type,
                     "collectionDate": collection_date,
                 }
                 data["bins"].append(dict_data)

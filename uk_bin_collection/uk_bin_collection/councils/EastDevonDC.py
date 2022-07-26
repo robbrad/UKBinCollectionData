@@ -35,30 +35,38 @@ class CouncilClass(AbstractGetBinDataClass):
                 current_month = datetime.strptime(element.text, "%B %Y").strftime("%m")
                 current_year = datetime.strptime(element.text, "%B %Y").strftime("%Y")
             elif regular_collection_class_name in element_tag:
-                week_value = element.find_next("span", {"class": f"{regular_collection_class_name}"})
+                week_value = element.find_next(
+                    "span", {"class": f"{regular_collection_class_name}"}
+                )
                 day_of_week = re.sub(regex_string, "", week_value.text).strip()
-                collection_date = datetime(int(current_year), int(current_month), int(day_of_week)).strftime("%d/%m/%Y")
+                collection_date = datetime(
+                    int(current_year), int(current_month), int(day_of_week)
+                ).strftime("%d/%m/%Y")
                 collections = week_value.find_next_siblings("span")
                 for item in collections:
                     x = item.text
                     bin_type = item.text.strip()
                     if len(bin_type) > 1:
                         dict_data = {
-                            "type":           bin_type,
+                            "type": bin_type,
                             "collectionDate": collection_date,
                         }
                         data["bins"].append(dict_data)
             elif holiday_collection_class_name in element_tag:
-                week_value = element.find_next("span", {"class": f"{holiday_collection_class_name}"})
+                week_value = element.find_next(
+                    "span", {"class": f"{holiday_collection_class_name}"}
+                )
                 day_of_week = re.sub(regex_string, "", week_value.text).strip()
-                collection_date = datetime(int(current_year), int(current_month), int(day_of_week)).strftime("%d/%m/%Y")
+                collection_date = datetime(
+                    int(current_year), int(current_month), int(day_of_week)
+                ).strftime("%d/%m/%Y")
                 collections = week_value.find_next_siblings("span")
                 for item in collections:
                     x = item.text
                     bin_type = item.text.strip()
                     if len(bin_type) > 1:
                         dict_data = {
-                            "type":           bin_type + " (bank holiday replacement)",
+                            "type": bin_type + " (bank holiday replacement)",
                             "collectionDate": collection_date,
                         }
                         data["bins"].append(dict_data)

@@ -30,8 +30,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 raise ValueError("Invalid postcode")
         except Exception as ex:
             print(f"Exception encountered: {ex}")
-            print("Please check the provided postcode. If this error continues, please first trying setting the "
-                  "postcode manually on line 24 before raising an issue.")
+            print(
+                "Please check the provided postcode. If this error continues, please first trying setting the "
+                "postcode manually on line 24 before raising an issue."
+            )
             exit(1)
 
         try:
@@ -39,8 +41,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 raise ValueError("Invalid house number")
         except Exception as ex:
             print(f"Exception encountered: {ex}")
-            print("Please check the provided house number. If this error continues, please first trying setting the "
-                  "house number manually on line 25 before raising an issue.")
+            print(
+                "Please check the provided house number. If this error continues, please first trying setting the "
+                "house number manually on line 25 before raising an issue."
+            )
             exit(1)
 
         data = {"bins": []}  # dictionary for data
@@ -50,18 +54,34 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get address csv and give it headers (pandas bypasses downloading the file)
         print("Getting address data...")
         with urllib.request.urlopen(address_csv_url) as response:
-            addr = pd.read_csv(response, names=["PropertyId", "PropertyName", "PropertyNo", "Street",
-                                                "Town", "City", "Postcode"], sep=",")
+            addr = pd.read_csv(
+                response,
+                names=[
+                    "PropertyId",
+                    "PropertyName",
+                    "PropertyNo",
+                    "Street",
+                    "Town",
+                    "City",
+                    "Postcode",
+                ],
+                sep=",",
+            )
 
         # Get collections csv and give it headers
         print("Getting collection data...")
         with urllib.request.urlopen(collections_csv_url) as response:
-            coll = pd.read_csv(response, names=["PropertyId", "BinType", "CollectionDate"], sep=",")
+            coll = pd.read_csv(
+                response, names=["PropertyId", "BinType", "CollectionDate"], sep=","
+            )
 
         # Find the property id from the address data
         print("Finding property reference...")
         for row in addr.itertuples():
-            if str(row.Postcode).replace(" ", "").lower() == user_postcode.replace(" ", "").lower():
+            if (
+                str(row.Postcode).replace(" ", "").lower()
+                == user_postcode.replace(" ", "").lower()
+            ):
                 if row.PropertyNo == user_paon:
                     prop_id = row.PropertyId
                     result_row = row
@@ -75,21 +95,23 @@ class CouncilClass(AbstractGetBinDataClass):
         #      f"{result_row.Postcode}...")
         for row in coll.itertuples():
             if row.PropertyId == prop_id:
-                time = datetime.strptime('070000', '%H%M%S').time()
-                date_obj = datetime.strptime(row.CollectionDate, '%d/%m/%y')
-                combined_date = datetime.combine(date_obj, time).strftime('%d/%m/%Y %H:%M:%S')
+                time = datetime.strptime("070000", "%H%M%S").time()
+                date_obj = datetime.strptime(row.CollectionDate, "%d/%m/%y")
+                combined_date = datetime.combine(date_obj, time).strftime(
+                    "%d/%m/%Y %H:%M:%S"
+                )
 
                 job_list.append([row.BinType, combined_date])
 
         # If jobs exist, sort list by date order. Load list into dictionary to return
         print("Processing collections...")
         if len(job_list) > 0:
-            job_list.sort(key=lambda x: datetime.strptime(x[1], '%d/%m/%Y %H:%M:%S'))
+            job_list.sort(key=lambda x: datetime.strptime(x[1], "%d/%m/%Y %H:%M:%S"))
             for i in range(len(job_list)):
-                job_date = datetime.strptime(job_list[i][1], '%d/%m/%Y %H:%M:%S')
+                job_date = datetime.strptime(job_list[i][1], "%d/%m/%Y %H:%M:%S")
                 if datetime.now() < job_date:
                     dict_data = {
-                        "type":           job_list[i][0],
+                        "type": job_list[i][0],
                         "collectionDate": job_list[i][1],
                     }
                     data["bins"].append(dict_data)

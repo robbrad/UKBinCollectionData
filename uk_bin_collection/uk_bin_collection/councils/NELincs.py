@@ -20,7 +20,9 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         # Get list items that can be seen on page
-        for element in soup.find_all("li", {"class": "list-group-item p-0 p-3 bin-collection-item"}):
+        for element in soup.find_all(
+            "li", {"class": "list-group-item p-0 p-3 bin-collection-item"}
+        ):
 
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]
@@ -35,7 +37,9 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         # Get hidden list items too
-        for element in soup.find_all("li", {"class": "list-group-item p-0 p-3 bin-collection-item d-none"}):
+        for element in soup.find_all(
+            "li", {"class": "list-group-item p-0 p-3 bin-collection-item d-none"}
+        ):
 
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]

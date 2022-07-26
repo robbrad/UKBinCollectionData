@@ -26,9 +26,9 @@ class BearerAuth(requests.auth.AuthBase):
 # Taken from https://gist.github.com/Vopaaz/c5da9c71b7ac0723860fd48ffb977f27
 def parse_header(raw_header: str) -> dict:
     """
-Parses a header string and returns one that can be useful
-    :param raw_header: header as a string, with values to separate as pipe (|)
-    :return: header in a dictionary format that can be used in requests
+    Parses a header string and returns one that can be useful
+        :param raw_header: header as a string, with values to separate as pipe (|)
+        :return: header in a dictionary format that can be used in requests
     """
     header = dict()
     for line in raw_header.split("|"):
@@ -46,9 +46,9 @@ Parses a header string and returns one that can be useful
 
 def parse_token(text: str) -> str:
     """
-Parses the response text to find the JWT token, which will always be the longest item in the list (I think)
-    :param text: The response text from the server
-    :return: Only the JWT token, as a string
+    Parses the response text to find the JWT token, which will always be the longest item in the list (I think)
+        :param text: The response text from the server
+        :return: Only the JWT token, as a string
     """
     # You'd have thought I'd use something like etree for this, but that doesn't work so going for a hacky approach
     xml_list = text.split('"')
@@ -58,29 +58,37 @@ Parses the response text to find the JWT token, which will always be the longest
 
 def get_jwt() -> str:
     """
-Gets a JSON web token from the authentication server
-    :return: A JWT token as a string
+    Gets a JSON web token from the authentication server
+        :return: A JWT token as a string
     """
-    auth_url = "https://authwebservice.cardiff.gov.uk/AuthenticationWebService.asmx?op=GetJWT"
-    options_headers_str = "Accept: */*|Accept-Encoding: gzip, " \
-                          "deflate, br|Accept-Language: en-GB,en;q=0.9|Access-Control-Request-Headers: content-type" \
-                          "|Access-Control-Request-Method: POST|Connection: keep-alive|Host: " \
-                          "authwebservice.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: " \
-                          "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty" \
-                          "|Sec-Fetch-Mode: cors|Sec-Fetch-Site: same-site|User-Agent: Mozilla/5.0 (Windows NT 10.0; " \
-                          "Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+    auth_url = (
+        "https://authwebservice.cardiff.gov.uk/AuthenticationWebService.asmx?op=GetJWT"
+    )
+    options_headers_str = (
+        "Accept: */*|Accept-Encoding: gzip, "
+        "deflate, br|Accept-Language: en-GB,en;q=0.9|Access-Control-Request-Headers: content-type"
+        "|Access-Control-Request-Method: POST|Connection: keep-alive|Host: "
+        "authwebservice.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
+        "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty"
+        "|Sec-Fetch-Mode: cors|Sec-Fetch-Site: same-site|User-Agent: Mozilla/5.0 (Windows NT 10.0; "
+        "Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+    )
 
-    request_headers_str = "Accept: */*|Accept-Encoding: gzip, deflate, br|Accept-Language: en-GB,en;q=0.9|Connection: " \
-                          "keep-alive|Content-Length: 284|Content-Type: text/xml; charset=\"UTF-8\"|Host: " \
-                          "authwebservice.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: " \
-                          "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: " \
-                          "same-site|Sec-GPC: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
-                          "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+    request_headers_str = (
+        "Accept: */*|Accept-Encoding: gzip, deflate, br|Accept-Language: en-GB,en;q=0.9|Connection: "
+        'keep-alive|Content-Length: 284|Content-Type: text/xml; charset="UTF-8"|Host: '
+        "authwebservice.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
+        "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: "
+        "same-site|Sec-GPC: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+    )
 
-    payload = "<?xml version='1.0' encoding='utf-8'?><soap:Envelope " \
-              "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' " \
-              "xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'><soap:Body><GetJWT xmlns='http://tempuri.org/' " \
-              "/></soap:Body></soap:Envelope> "
+    payload = (
+        "<?xml version='1.0' encoding='utf-8'?><soap:Envelope "
+        "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' "
+        "xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'><soap:Body><GetJWT xmlns='http://tempuri.org/' "
+        "/></soap:Body></soap:Envelope> "
+    )
 
     options_headers = parse_header(options_headers_str)
     request_headers = parse_header(request_headers_str)
@@ -118,31 +126,37 @@ class CouncilClass(AbstractGetBinDataClass):
                 raise ValueError("Invalid UPRN")
         except Exception as ex:
             print(f"Exception encountered: {ex}")
-            print("Please check the provided UPRN. If this error continues, please first trying setting the "
-                  "UPRN manually on line 115 before raising an issue.")
+            print(
+                "Please check the provided UPRN. If this error continues, please first trying setting the "
+                "UPRN manually on line 115 before raising an issue."
+            )
 
         data = {"bins": []}
         token = get_jwt()
 
         api_url = "https://api.cardiff.gov.uk/WasteManagement/api/WasteCollection"
-        options_header_str = "Accept: */*|Accept-Encoding: gzip, deflate, br|Accept-Language: en-GB," \
-                             "en;q=0.9|Access-Control-Request-Headers: authorization," \
-                             "content-type|Access-Control-Request-Method: POST|Connection: keep-alive|Host: " \
-                             "api.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: " \
-                             "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: " \
-                             "same-site|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (" \
-                             "KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
-        response_header_str = "Accept: application/json, text/javascript, */*; q=0.01|Accept-Encoding: gzip, deflate, " \
-                              f"br|Accept-Language: en-GB,en;q=0.9|Authorization: {token}|Connection: " \
-                              "keep-alive|Content-Length: 62|Content-Type: application/json; charset=UTF-8|Host: " \
-                              "api.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: " \
-                              "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: " \
-                              "same-site|Sec-GPC: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) " \
-                              "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+        options_header_str = (
+            "Accept: */*|Accept-Encoding: gzip, deflate, br|Accept-Language: en-GB,"
+            "en;q=0.9|Access-Control-Request-Headers: authorization,"
+            "content-type|Access-Control-Request-Method: POST|Connection: keep-alive|Host: "
+            "api.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
+            "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: "
+            "same-site|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ("
+            "KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+        )
+        response_header_str = (
+            "Accept: application/json, text/javascript, */*; q=0.01|Accept-Encoding: gzip, deflate, "
+            f"br|Accept-Language: en-GB,en;q=0.9|Authorization: {token}|Connection: "
+            "keep-alive|Content-Length: 62|Content-Type: application/json; charset=UTF-8|Host: "
+            "api.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
+            "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: "
+            "same-site|Sec-GPC: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+        )
 
-        payload = '{ "systemReference": "web", "language": "eng", ' \
-                  f'"uprn": {uprn} ' \
-                  '}'
+        payload = (
+            '{ "systemReference": "web", "language": "eng", ' f'"uprn": {uprn} ' "}"
+        )
 
         options_header = parse_header(options_header_str)
         response_header = parse_header(response_header_str)
@@ -150,7 +164,9 @@ class CouncilClass(AbstractGetBinDataClass):
         # payload, then add here
         try:
             options = requests.options(api_url, headers=options_header)
-            response = requests.post(api_url, headers=response_header, auth=BearerAuth(token), data=payload)
+            response = requests.post(
+                api_url, headers=response_header, auth=BearerAuth(token), data=payload
+            )
             if not options.ok or not response.ok:
                 raise ValueError("Invalid server response code finding UPRN!")
 
@@ -167,13 +183,15 @@ class CouncilClass(AbstractGetBinDataClass):
         for week in collections:
             collection = [(k, v) for k, v in week.items()]
             collection_date = collection[1][1]
-            collection_date = datetime.strptime(collection_date, "%Y-%m-%dT%H:%M:%S").strftime("%d/%m/%Y")
+            collection_date = datetime.strptime(
+                collection_date, "%Y-%m-%dT%H:%M:%S"
+            ).strftime("%d/%m/%Y")
 
             for bin in collection[3][1]:
                 bin_type = bin.get("type")
 
                 dict_data = {
-                    "type":           bin_type,
+                    "type": bin_type,
                     "collectionDate": collection_date,
                 }
                 data["bins"].append(dict_data)

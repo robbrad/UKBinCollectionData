@@ -24,7 +24,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             bin_type = element.next_element
             bin_type = bin_type.lstrip()
-            collectionDate = element.next_sibling.next_element.next_element.text.lstrip()
+            collectionDate = (
+                element.next_sibling.next_element.next_element.text.lstrip()
+            )
 
             dict_data = {
                 "type": bin_type,

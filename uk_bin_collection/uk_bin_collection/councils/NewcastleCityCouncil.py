@@ -27,13 +27,17 @@ class CouncilClass(AbstractGetBinDataClass):
             if "Green Bin (Domestic Waste) details:" in str(element):
                 collectionInfo = element.next_sibling.find("br").next_element
             else:
-                collectionInfo = element.next_sibling.next_sibling.next_sibling.next_sibling
+                collectionInfo = (
+                    element.next_sibling.next_sibling.next_sibling.next_sibling
+                )
 
             bin_type = str(element)[str(element).find("(") + 1 : str(element).find(")")]
             collectionDate = str(
                 datetime.strptime(
                     str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"
-                ).date().strftime('%d/%m/%Y')
+                )
+                .date()
+                .strftime("%d/%m/%Y")
             )
 
             dict_data = {"BinType": bin_type, "NextCollectionDate": collectionDate}

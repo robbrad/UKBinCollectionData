@@ -16,6 +16,7 @@ class AbstractGetBinDataClass(ABC):
 
     Keyword arguments: None
     """
+
     def template_method(self, address_url: str, **kwargs) -> None:
         """The main template method that is constructed
 
@@ -26,7 +27,9 @@ class AbstractGetBinDataClass(ABC):
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
         page = self.get_data(address_url)
-        bin_data_dict = self.parse_data(page, postcode=this_postcode, paon=this_paon, uprn=this_uprn)
+        bin_data_dict = self.parse_data(
+            page, postcode=this_postcode, paon=this_paon, uprn=this_uprn
+        )
         return self.output_json(bin_data_dict)
 
     @classmethod
