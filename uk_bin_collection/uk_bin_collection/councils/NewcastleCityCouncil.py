@@ -3,7 +3,7 @@
 # This script pulls (in one hit) the data from
 # Newcastle City Council Bins Data
 from bs4 import BeautifulSoup
-from get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from datetime import datetime
 
 

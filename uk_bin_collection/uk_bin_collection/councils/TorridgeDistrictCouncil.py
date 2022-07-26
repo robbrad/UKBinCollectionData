@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from xml.etree import ElementTree
 import requests
 
