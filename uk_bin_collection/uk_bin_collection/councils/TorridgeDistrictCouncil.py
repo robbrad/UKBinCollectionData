@@ -1,6 +1,3 @@
-# This script pulls (in one hit) the data
-# from Warick District Council Bins Data
-
 from bs4 import BeautifulSoup
 from get_bin_data import AbstractGetBinDataClass
 from xml.etree import ElementTree
@@ -14,7 +11,7 @@ class CouncilClass(AbstractGetBinDataClass):
     baseclass. They can also override some
     operations with a default implementation.
     """
-    def get_data(cls, uprn, **kwargs) -> str:
+    def get_data(cls, page: str, **kwargs) -> str:
         """This method makes the request to the council
 
         Keyword arguments:
@@ -23,6 +20,15 @@ class CouncilClass(AbstractGetBinDataClass):
         # Set a user agent so we look like a browser ;-)
         user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
         headers = {"User-Agent": user_agent, "Content-Type": "text/xml"}
+
+        uprn = kwargs.get("uprn")
+        try:
+            if uprn is None or uprn == "":
+                raise ValueError("Invalid UPRN")
+        except Exception as ex:
+            print(f"Exception encountered: {ex}")
+            print("Please check the provided UPRN. If this error continues, please first trying setting the "
+                  "UPRN manually on line 115 before raising an issue.")
 
         # Make the Request - change the URL - find out your property number
         # URL
