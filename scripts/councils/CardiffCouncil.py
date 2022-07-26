@@ -112,7 +112,14 @@ class CouncilClass(AbstractGetBinDataClass):
         Parse council provided CSVs to get the latest bin collections for address
         """
         # Change this
-        uprn = "XXXXXXXX"
+        uprn = kwargs.get("uprn")
+        try:
+            if uprn is None or uprn == "":
+                raise ValueError("Invalid UPRN")
+        except Exception as ex:
+            print(f"Exception encountered: {ex}")
+            print("Please check the provided UPRN. If this error continues, please first trying setting the "
+                  "UPRN manually on line 115 before raising an issue.")
 
         data = {"bins": []}
         token = get_jwt()
