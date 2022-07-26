@@ -1,6 +1,3 @@
-# This script pulls (in one hit) the data
-# from Warick District Council Bins Data
-
 from bs4 import BeautifulSoup
 from get_bin_data import AbstractGetBinDataClass
 from xml.etree import ElementTree
