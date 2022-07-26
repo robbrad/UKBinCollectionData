@@ -7,6 +7,7 @@
 !PipFile
 !Pipfile.lock
 !.gitignore
+!.md
 
 # Or these folders...
 !/scripts
