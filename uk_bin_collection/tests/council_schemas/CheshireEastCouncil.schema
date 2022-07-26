@@ -1,0 +1,50 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#", 
+	"$id": "https://example.com/object1658786578.json", 
+	"title": "Root", 
+	"type": "object",
+	"required": [
+		"bins"
+	],
+	"properties": {
+		"bins": {
+			"$id": "#root/bins", 
+			"title": "Bins", 
+			"type": "array",
+			"default": [],
+			"items":{
+				"$id": "#root/bins/items", 
+				"title": "Items", 
+				"type": "object",
+				"required": [
+					"bin_type",
+					"collectionDate"
+				],
+				"properties": {
+					"bin_type": {
+						"$id": "#root/bins/items/bin_type", 
+						"title": "Bin_type", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"Empty Standard Mixed Recycling"
+						],
+						"pattern": "^.*$"
+					},
+					"collectionDate": {
+						"$id": "#root/bins/items/collectionDate", 
+						"title": "Collectiondate", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"29/07/2022"
+						],
+						"pattern": "^.*$"
+					}
+				}
+			}
+
+		}
+	}
+}

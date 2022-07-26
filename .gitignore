@@ -11,6 +11,7 @@
 !*.md
 !*.rst
 !LICENSE
+!*.schema
 
 # Or these folders...
 !.github
