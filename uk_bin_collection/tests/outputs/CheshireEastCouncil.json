@@ -1,44 +1,44 @@
 {
     "bins": [
         {
-            "BinType": "Empty Standard Garden Waste",
-            "collectionDate": "30/01/2020"
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "29/07/2022"
         },
         {
-            "BinType": "Empty Standard Mixed Recycling",
-            "collectionDate": "30/01/2020"
+            "bin_type": "Empty Standard Garden Waste",
+            "collectionDate": "29/07/2022"
         },
         {
-            "BinType": "Empty Standard General Waste",
-            "collectionDate": "06/02/2020"
+            "bin_type": "Empty Standard General Waste",
+            "collectionDate": "05/08/2022"
         },
         {
-            "BinType": "Empty Standard Mixed Recycling",
-            "collectionDate": "13/02/2020"
+            "bin_type": "Empty Standard Garden Waste",
+            "collectionDate": "12/08/2022"
         },
         {
-            "BinType": "Empty Standard Garden Waste",
-            "collectionDate": "13/02/2020"
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "12/08/2022"
         },
         {
-            "BinType": "Empty Standard General Waste",
-            "collectionDate": "20/02/2020"
+            "bin_type": "Empty Standard General Waste",
+            "collectionDate": "19/08/2022"
         },
         {
-            "BinType": "Empty Standard Mixed Recycling",
-            "collectionDate": "27/02/2020"
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "26/08/2022"
         },
         {
-            "BinType": "Empty Standard Garden Waste",
-            "collectionDate": "27/02/2020"
+            "bin_type": "Empty Standard Garden Waste",
+            "collectionDate": "26/08/2022"
         },
         {
-            "BinType": "Empty Standard General Waste",
-            "collectionDate": "05/03/2020"
+            "bin_type": "Empty Standard General Waste",
+            "collectionDate": "02/09/2022"
         },
         {
-            "BinType": "Empty Standard Garden Waste",
-            "collectionDate": "12/03/2020"
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "09/09/2022"
         }
     ]
 }
