@@ -4,7 +4,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
 
@@ -25,7 +24,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             bin_type = element.next_element
             bin_type = bin_type.lstrip()
-            collectionDate = element.next_sibling.next_element.next_element
+            collectionDate = element.next_sibling.next_element.next_element.text.lstrip()
 
             dict_data = {
                 "type": bin_type,
