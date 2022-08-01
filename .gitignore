@@ -17,6 +17,7 @@
 !.github
 !.github/ISSUE_TEMPLATE
 !.github/ISSUE_TEMPLATE/*.yaml
+!.github/workflows
 !.github/workflows/*.yml
 !uk_bin_collection
 !uk_bin_collection/**/*
