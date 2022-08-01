@@ -23,3 +23,4 @@
 !uk_bin_collection/**/*
 __pycache__
 !TO_BE_CONVERTED
+!Makefile
