@@ -12,12 +12,18 @@
 !*.rst
 !LICENSE
 !*.schema
+!Makefile
+!dependabot.yaml
+!poetry.lock
 
 # Or these folders...
 !.github
 !.github/ISSUE_TEMPLATE
 !.github/ISSUE_TEMPLATE/*.yaml
+!.github/workflows
+!.github/workflows/*.yml
 !uk_bin_collection
 !uk_bin_collection/**/*
 __pycache__
 !TO_BE_CONVERTED
+
