@@ -8,21 +8,20 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9, '3.10']
+        poetry-version: [1.1.0]
+    steps:
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install poetry
-        poetry install
-    - name: Upload coverage to Codecov
-      if: matrix.python-version == 3.7 && success()
-      uses: codecov/codecov-action@v1
+    - name: Run image
+      uses: abatilo/actions-poetry@v2.0.0
       with:
-        files: coverage.xml
-        flags: unittests
-        name: codecov-agent-behave
-        path_to_write_report: codecov_report.txt
+        poetry-version: ${{ matrix.poetry-version }}
+    - name: Install
+      run: make install
+    - name: run tests
+      run: make integration-tests
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v1
