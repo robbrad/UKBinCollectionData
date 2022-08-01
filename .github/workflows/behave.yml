@@ -24,9 +24,9 @@ jobs:
       run: make install
     - name: run integration tests
       run: make integration-tests
-    - name: Upload Coverage to Codecov
+    - name: Upload Integration Test Coverage to Codecov
       uses: codecov/codecov-action@v3    
     - name: run unit tests
       run: make unit-tests
-    - name: Upload Coverage to Codecov
+    - name: Upload Unit Test Coverage to Codecov
       uses: codecov/codecov-action@v3
