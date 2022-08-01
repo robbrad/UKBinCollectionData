@@ -22,7 +22,11 @@ jobs:
       run: poetry run pip install 'setuptools==57.5.0'
     - name: Install
       run: make install
-    - name: run tests
+    - name: run integration tests
       run: make integration-tests
-    - name: Upload Coverage to Codecov
+    - name: Upload Integration Test Coverage to Codecov
+      uses: codecov/codecov-action@v3    
+    - name: run unit tests
+      run: make unit-tests
+    - name: Upload Unit Test Coverage to Codecov
       uses: codecov/codecov-action@v3

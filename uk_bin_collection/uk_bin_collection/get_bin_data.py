@@ -5,6 +5,14 @@ Keyword arguments: None
 """
 import json
 from abc import ABC, abstractmethod
+import logging
+from logging.config import dictConfig
+
+LOGGING_CONFIG=dict(version=1,formatters={'f':{'format':'%(asctime)s %(name)-12s %(levelname)-8s %(message)s'}},handlers={'h':{'class':'logging.StreamHandler','formatter':'f','level':logging.INFO}},root={'handlers':['h'],'level':logging.INFO})
+def setup_logging(logging_config,logger_name):
+	try:logging.config.dictConfig(logging_config);logger=logging.getLogger(logger_name);return logger
+	except Exception as exp:raise exp
+LOGGER=setup_logging(LOGGING_CONFIG,None)
 
 # import the wonderful Beautiful Soup and the URL grabber
 import requests
@@ -44,9 +52,13 @@ class AbstractGetBinDataClass(ABC):
         headers = {"User-Agent": user_agent}
 
         # Make the Request - change the URL - find out your property number
-        full_page = requests.get(url, headers, verify=False)
-
-        return full_page
+        try:
+            full_page = requests.get(url, headers, verify=False)
+            return full_page
+        except requests.exceptions.HTTPError as errh:LOGGER.error(f"Http Error: {errh}")
+        except requests.exceptions.ConnectionError as errc:LOGGER.error(f"Error Connecting: {errc}")
+        except requests.exceptions.Timeout as errt:LOGGER.error(f"Timeout Error: {errt}")
+        except requests.exceptions.RequestException as err:LOGGER.error(f"Oops: Something Else {err}")
 
     @abstractmethod
     def parse_data(self, page: str, **kwargs) -> dict:
