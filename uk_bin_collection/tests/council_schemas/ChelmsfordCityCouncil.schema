@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome8",
+    "definitions": {
+        "Welcome8": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "Welcome8"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "BinType": {
+                    "type": "string"
+                },
+                "Following Collection Date": {
+                    "type": "string"
+                },
+                "Last Collection Date": {
+                    "type": "string"
+                },
+                "Next Collection Date": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "BinType",
+                "Following Collection Date",
+                "Last Collection Date",
+                "Next Collection Date"
+            ],
+            "title": "Bin"
+        }
+    }
+}

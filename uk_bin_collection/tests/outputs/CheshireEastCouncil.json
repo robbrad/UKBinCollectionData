@@ -1,0 +1,44 @@
+{
+    "bins": [
+        {
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "29/07/2022"
+        },
+        {
+            "bin_type": "Empty Standard Garden Waste",
+            "collectionDate": "29/07/2022"
+        },
+        {
+            "bin_type": "Empty Standard General Waste",
+            "collectionDate": "05/08/2022"
+        },
+        {
+            "bin_type": "Empty Standard Garden Waste",
+            "collectionDate": "12/08/2022"
+        },
+        {
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "12/08/2022"
+        },
+        {
+            "bin_type": "Empty Standard General Waste",
+            "collectionDate": "19/08/2022"
+        },
+        {
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "26/08/2022"
+        },
+        {
+            "bin_type": "Empty Standard Garden Waste",
+            "collectionDate": "26/08/2022"
+        },
+        {
+            "bin_type": "Empty Standard General Waste",
+            "collectionDate": "02/09/2022"
+        },
+        {
+            "bin_type": "Empty Standard Mixed Recycling",
+            "collectionDate": "09/09/2022"
+        }
+    ]
+}

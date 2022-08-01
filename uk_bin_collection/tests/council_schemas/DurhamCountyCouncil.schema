@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome9",
+    "definitions": {
+        "Welcome9": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "Recycling and rubbish collections": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Recycling and rubbish collections"
+            ],
+            "title": "Welcome9"
+        }
+    }
+}
