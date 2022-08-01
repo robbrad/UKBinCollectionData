@@ -7,14 +7,17 @@
 !PipFile
 !Pipfile.lock
 !.gitignore
+!*.toml
 !.md
+!*.rst
+!LICENSE
+!*.schema
 
 # Or these folders...
-!/scripts
-!/outputs
 !.github
 !.github/ISSUE_TEMPLATE
 !.github/ISSUE_TEMPLATE/*.yaml
-!tests
-!councils
+!uk_bin_collection
+!uk_bin_collection/**/*
+__pycache__
 !TO_BE_CONVERTED

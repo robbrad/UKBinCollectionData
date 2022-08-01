@@ -1,0 +1,35 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome10",
+    "definitions": {
+        "Welcome10": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "Paper and cardboard": {
+                    "type": "string"
+                },
+                "Non-recyclable refuse": {
+                    "type": "string"
+                },
+                "Food waste": {
+                    "type": "string"
+                },
+                "Plastic, glass and tins": {
+                    "type": "string"
+                },
+                "Green Garden Waste (Subscription)": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Food waste",
+                "Green Garden Waste (Subscription)",
+                "Non-recyclable refuse",
+                "Paper and cardboard",
+                "Plastic, glass and tins"
+            ],
+            "title": "Welcome10"
+        }
+    }
+}
