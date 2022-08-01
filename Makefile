@@ -25,3 +25,4 @@ pycodestyle:
 integration-tests: ## runs unit tests for the project
 	mkdir -p reports/junit/
 	poetry run coverage run -m behave uk_bin_collection/tests/features/
+	poerty run coverage xml
