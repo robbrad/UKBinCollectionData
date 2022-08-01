@@ -1,0 +1,20 @@
+{
+    "bins": [
+        {
+            "type": "Recycling bin",
+            "collectionDate": "02/08/2022"
+        },
+        {
+            "type": "Rubbish bin",
+            "collectionDate": "09/08/2022"
+        },
+        {
+            "type": "Recycling bin",
+            "collectionDate": "16/08/2022"
+        },
+        {
+            "type": "Rubbish bin",
+            "collectionDate": "23/08/2022"
+        }
+    ]
+}
