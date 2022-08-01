@@ -23,6 +23,9 @@ pycodestyle:
 
 ## @Testing runs unit tests
 integration-tests: ## runs unit tests for the project
-	mkdir -p reports/junit/
 	poetry run coverage run -m behave uk_bin_collection/tests/features/
+	poetry run coverage xml
+
+unit-tests:
+	poetry run coverage run -m pytest
 	poetry run coverage xml
