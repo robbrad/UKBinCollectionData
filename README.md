@@ -9,6 +9,8 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 
 [![](https://img.shields.io/badge/--41BDF5?logo=homeassistant&logoColor=white&label=HomeAssistant+Thread)](https://community.home-assistant.io/t/bin-waste-collection/55451) [![](https://img.shields.io/badge/--181717?logo=github&logoColor=white&label=Request+a+council)](https://github.com/robbrad/UKBinCollectionData/issues/new/choose)
 
+---
+
 ## Usage
 ```commandline
 PS G:\Projects\Python\UKBinCollectionData\uk_bin_collection\collect_data.py
@@ -26,6 +28,7 @@ options:
   -n NUMBER, --number NUMBER            House number to parse                   (optional)
   -u UPRN, --uprn UPRN                  UPRN to parse                           (optional)
 ```
+
 
 ### Quickstart
 The basic command to execute a script is:
@@ -48,10 +51,12 @@ be wrapped in double quotes (due to how command line arguments are handled).
 
 To check the parameters needed for your council's script, please check the [project wiki](https://github.com/robbrad/UKBinCollectionData/wiki) for more information.
 
+
 ### Project dependencies
 Some scripts rely on external packages to function. A list of required scripts for both development and execution can be found in the project's [PROJECT_TOML](https://github.com/robbrad/UKBinCollectionData/blob/feature/%2353_integration_tests/pyproject.toml) 
 Install can be done via 
-`poetry install` from within the root of the repo .
+`poetry install` from within the root of the repo.
+
 
 ### UPRN Finder
 Some councils make use of the UPRN (Unique property reference number) to identify your property. You can find yours [here](https://www.findmyaddress.co.uk/search).
@@ -64,6 +69,8 @@ To make a request for your council, first check the [Issues](https://github.com/
 - Any further information
 
 Please be aware that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get a script.
+
+---
 
 ## FAQ
 #### I've got an issue/support question - what do I do?
