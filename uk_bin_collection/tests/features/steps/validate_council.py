@@ -14,7 +14,11 @@ def step_impl(context, council_name):
 @when('we scrape the data from "{council}"')
 def step_impl(context, council):
     context.council = council
-    args = [council, context.metadata["url"]]
+    if "uprn" in context.metadata:
+        uprn = context.metadata["uprn"]
+    else:
+        uprn = ''
+    args = [council, context.metadata["url"], f'-u={uprn}']
     context.parse_result = collect_data.main(args)
     pass
 
@@ -28,5 +32,5 @@ def step_impl(context):
 @then("the output should validate against the schema")
 def step_impl(context):
     council_schema = file_handler.load_schema_file(f"{context.council}.schema")
-    file_handler.validate_json_schema(context.parse_result, council_schema)
-    assert context.failed is False
+    schema_result = file_handler.validate_json_schema(context.parse_result, council_schema)
+    assert schema_result is True
