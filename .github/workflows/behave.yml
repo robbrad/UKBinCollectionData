@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, '3.10']
+        python-version: [3.7, 3.8, 3.9, '3.10']
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -19,7 +19,7 @@ jobs:
         python -m pip install poetry
         poetry install
     - name: Upload coverage to Codecov
-      if: matrix.python-version == 3.6 && success()
+      if: matrix.python-version == 3.7 && success()
       uses: codecov/codecov-action@v1
       with:
         files: coverage.xml
