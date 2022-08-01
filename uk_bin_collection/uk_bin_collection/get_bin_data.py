@@ -44,7 +44,7 @@ class AbstractGetBinDataClass(ABC):
         headers = {"User-Agent": user_agent}
 
         # Make the Request - change the URL - find out your property number
-        full_page = requests.get(url, headers)
+        full_page = requests.get(url, headers, verify=False)
 
         return full_page
 
