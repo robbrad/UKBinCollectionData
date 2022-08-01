@@ -1,4 +1,4 @@
-name: Test Behave agent
+name: Test Councils
 
 on: [push]
 
