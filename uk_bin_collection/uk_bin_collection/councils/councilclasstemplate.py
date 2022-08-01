@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-
-# This script pulls (in one hit) the data from
-# Warick District Council Bins Data
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
