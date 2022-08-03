@@ -36,5 +36,5 @@ jobs:
       if: success() || failure()    # run this step even if previous step failed
       with:
         name: JEST Tests            # Name of the check run which will be created
-        path: build/TESTS-*.xml    # Path to test results
+        path: build/behave.reports/TESTS-validate_council_outputs.xml    # Path to test results
         reporter: jest-junit        # Format of test results     
