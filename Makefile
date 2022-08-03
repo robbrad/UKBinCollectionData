@@ -23,7 +23,7 @@ pycodestyle:
 
 ## @Testing runs unit tests
 integration-tests: ## runs unit tests for the project
-	poetry run coverage run -m behave uk_bin_collection/tests/features/
+	poetry run coverage run -m behave -f html -o behave-report.html uk_bin_collection/tests/features/
 	poetry run coverage xml
 
 unit-tests:

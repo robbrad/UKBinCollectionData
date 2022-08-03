@@ -15,6 +15,7 @@
 !Makefile
 !dependabot.yaml
 !poetry.lock
+!behave.ini
 
 # Or these folders...
 !.github
