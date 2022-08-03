@@ -4,7 +4,6 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 import pandas as pd
 import urllib.request
-import re
 
 
 class CouncilClass(AbstractGetBinDataClass):
