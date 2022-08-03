@@ -1,30 +1,10 @@
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 import re
 import requests
 import json
 from datetime import datetime
-
-
-def parse_header(raw_header: str) -> dict:
-    """
-    Parses a header string and returns one that can be useful
-        :rtype: dict
-        :param raw_header: header as a string, with values to separate as pipe (|)
-        :return: header in a dictionary format that can be used in requests
-    """
-    header = dict()
-    for line in raw_header.split("|"):
-
-        if line.startswith(":"):
-            a, b = line[1:].split(":", 1)
-            a = f":{a}"
-        else:
-            a, b = line.split(":", 1)
-
-        header[a.strip()] = b.strip()
-
-    return header
 
 
 def get_address_uprn(postcode: str, paon: str, api_url: str) -> str:
@@ -79,16 +59,8 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode_re = "^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$"
         data = {"bins": []}
 
-        try:
-            if user_postcode is None or not re.fullmatch(postcode_re, user_postcode):
-                raise ValueError("Invalid postcode")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided postcode. If this error continues, please first trying setting the "
-                "postcode manually on line 24 before raising an issue."
-            )
-            exit(1)
+        check_postcode(user_postcode)
+        check_paon(user_paon)
 
         try:
             if user_paon is None:
