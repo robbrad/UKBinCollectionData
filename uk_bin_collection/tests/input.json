@@ -21,7 +21,9 @@
         "house_number":"1"
     },
     "MidSussexDistrictCouncil": {
-        "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/"
+        "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
+        "postcode":"RH16 1SS",
+        "house_number":"OAKLANDS"      
     },
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
