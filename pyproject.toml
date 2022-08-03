@@ -24,6 +24,8 @@ flake8 = "*"
 black = "*"
 behave = "*"
 jsonschema = "^4.7.2"
+behave-html-formatter = "^0.9.10"
+allure-behave = "^2.9.45"
 
 [tool.poetry.scripts]
 uk_bin_collection = "uk_bin_collection.uk_bin_collection:collect_data"

@@ -6,10 +6,10 @@ Feature: Test each council output matches expected results in /outputs
         Then the result is valid json
         And the output should validate against the schema
 
-        Examples: Councils to Test
+        Examples: Testing : <council>
             | council      |
             | BlackburnCouncil |
-            | CardiffCityCouncil |
+            | CardiffCouncil |
             | CheshireEastCouncil |
             | LeedsCityCouncil |
             | MidSussexDistrictCouncil |
