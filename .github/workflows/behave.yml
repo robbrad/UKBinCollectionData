@@ -14,27 +14,53 @@ jobs:
     - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Run image
       uses: abatilo/actions-poetry@v2.1.5
       with:
         poetry-version: ${{ matrix.poetry-version }}
+
     - name: setuptools < 58.0.0
       run: poetry run pip install 'setuptools==57.5.0'
+
     - name: Install
       run: make install
+
     - name: run integration tests
       run: make integration-tests
+      continue-on-error: true
+
     - name: Upload Integration Test Coverage to Codecov
-      uses: codecov/codecov-action@v3    
+      uses: codecov/codecov-action@v3
+ 
     - name: run unit tests
       run: make unit-tests
+
     - name: Upload Unit Test Coverage to Codecov
       uses: codecov/codecov-action@v3
-    - name: Test Report
-      uses: phoenix-actions/test-reporting@v8
-      id: test-report               # Set ID reference for step
-      if: success() || failure()    # run this step even if previous step failed
+
+    - name: Get Allure history
+      uses: actions/checkout@v2
+      if: always()
+      continue-on-error: true
       with:
-        name: JEST Tests            # Name of the check run which will be created
-        path: build/behave.reports/TESTS*.xml    # Path to test results
-        reporter: java-junit        # Format of test results     
+        ref: gh-pages
+        path: gh-pages
+
+    - name: Allure Report action from marketplace
+      uses: simple-elf/allure-report-action@master
+      if: always()
+      #id: allure-report
+      with:
+        allure_results: allure-results
+        #gh_pages: gh-pages
+        #allure_report: allure-report
+        allure_history: allure-history
+
+    - name: Deploy report to Github Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v2
+      env:
+        PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: allure-history
