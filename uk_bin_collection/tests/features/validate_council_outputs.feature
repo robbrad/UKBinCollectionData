@@ -11,6 +11,7 @@ Feature: Test each council output matches expected results in /outputs
             | BlackburnCouncil |
             | CardiffCouncil |
             | CheshireEastCouncil |
+            | CrawleyBoroughCouncil |
             | LeedsCityCouncil |
             | MidSussexDistrictCouncil |
             | SouthTynesideCouncil |
