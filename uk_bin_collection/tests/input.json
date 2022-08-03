@@ -5,6 +5,7 @@
     },
     "BromleyBoroughCouncil": "100022887131",
     "CardiffCouncil": "https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx",
+    "CastlepointDistrictCouncil": "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar",
     "ChelmsfordCityCouncil": "100022887131",
     "CheshireEastCouncil": {
         "url" : "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1621149987573",

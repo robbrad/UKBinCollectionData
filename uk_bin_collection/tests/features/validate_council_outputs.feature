@@ -10,6 +10,7 @@ Feature: Test each council output matches expected results in /outputs
             | council      |
             | BlackburnCouncil |
             | CardiffCityCouncil |
+            | CastlepointDistrictCouncil |
             | CheshireEastCouncil |
             | LeedsCityCouncil |
             | MidSussexDistrictCouncil |

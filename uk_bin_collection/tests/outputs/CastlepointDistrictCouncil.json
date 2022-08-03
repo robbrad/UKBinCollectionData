@@ -1,0 +1,40 @@
+{
+    "bins": [
+        {
+            "type": "Pink collection",
+            "collectionDate": "01/08/2022"
+        },
+        {
+            "type": "Normal collection",
+            "collectionDate": "08/08/2022"
+        },
+        {
+            "type": "Pink collection",
+            "collectionDate": "15/08/2022"
+        },
+        {
+            "type": "Normal collection",
+            "collectionDate": "22/08/2022"
+        },
+        {
+            "type": "Pink collection",
+            "collectionDate": "30/08/2022"
+        },
+        {
+            "type": "Normal collection",
+            "collectionDate": "05/09/2022"
+        },
+        {
+            "type": "Pink collection",
+            "collectionDate": "12/09/2022"
+        },
+        {
+            "type": "Normal collection",
+            "collectionDate": "19/09/2022"
+        },
+        {
+            "type": "Pink collection",
+            "collectionDate": "26/09/2022"
+        }
+    ]
+}
