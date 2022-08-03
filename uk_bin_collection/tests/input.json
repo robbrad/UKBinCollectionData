@@ -28,7 +28,9 @@
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
     "SouthTynesideCouncil": {
-        "url": "https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates"
+        "url": "https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates",
+        "postcode":"NE33 3JW",
+        "house_number":"1"
     },
     "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
