@@ -1,6 +1,6 @@
 name: Test Councils
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -30,3 +30,4 @@ jobs:
       run: make unit-tests
     - name: Upload Unit Test Coverage to Codecov
       uses: codecov/codecov-action@v3
+      

@@ -4,7 +4,6 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 import pandas as pd
 import urllib.request
-import re
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -33,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
         result_row = None  # store the property as a row
 
         # Get address csv and give it headers (pandas bypasses downloading the file)
-        print("Getting address data...")
+        # print("Getting address data...")
         with urllib.request.urlopen(address_csv_url) as response:
             addr = pd.read_csv(
                 response,
@@ -50,14 +49,14 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         # Get collections csv and give it headers
-        print("Getting collection data...")
+        # print("Getting collection data...")
         with urllib.request.urlopen(collections_csv_url) as response:
             coll = pd.read_csv(
                 response, names=["PropertyId", "BinType", "CollectionDate"], sep=","
             )
 
         # Find the property id from the address data
-        print("Finding property reference...")
+        # ("Finding property reference...")
         for row in addr.itertuples():
             if (
                 str(row.Postcode).replace(" ", "").lower()
@@ -65,8 +64,7 @@ class CouncilClass(AbstractGetBinDataClass):
             ):
                 if row.PropertyNo == user_paon:
                     prop_id = row.PropertyId
-                    result_row = row
-                    print(f"Reference: {str(prop_id)}")
+                    # print(f"Reference: {str(prop_id)}")
                     continue
 
         # For every match on the property id in the collections data, add the bin type and date to list
@@ -85,7 +83,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 job_list.append([row.BinType, combined_date])
 
         # If jobs exist, sort list by date order. Load list into dictionary to return
-        print("Processing collections...")
+        # print("Processing collections...")
         if len(job_list) > 0:
             job_list.sort(key=lambda x: datetime.strptime(x[1], "%d/%m/%Y %H:%M:%S"))
             for i in range(len(job_list)):

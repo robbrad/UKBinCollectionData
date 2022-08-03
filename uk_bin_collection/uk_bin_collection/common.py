@@ -47,3 +47,24 @@ def get_date_with_ordinal(date_number: int) -> str:
     return str(date_number) + (
         "th" if 4 <= date_number % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(date_number % 10, "th")
     )
+
+
+def parse_header(raw_header: str) -> dict:
+    """
+    Parses a header string and returns one that can be useful
+        :rtype: dict
+        :param raw_header: header as a string, with values to separate as pipe (|)
+        :return: header in a dictionary format that can be used in requests
+    """
+    header = dict()
+    for line in raw_header.split("|"):
+
+        if line.startswith(":"):
+            a, b = line[1:].split(":", 1)
+            a = f":{a}"
+        else:
+            a, b = line.split(":", 1)
+
+        header[a.strip()] = b.strip()
+
+    return header
