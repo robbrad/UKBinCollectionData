@@ -1,30 +1,10 @@
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from datetime import datetime
 from collections import OrderedDict
 
 import requests
 import json
-
-
-# Taken from https://gist.github.com/Vopaaz/c5da9c71b7ac0723860fd48ffb977f27
-def parse_header(raw_header: str) -> dict:
-    """
-    Parses a header string and returns one that can be useful
-        :param raw_header: header as a string, with values to separate as pipe (|)
-        :return: header in a dictionary format that can be used in requests
-    """
-    header = dict()
-    for line in raw_header.split("|"):
-
-        if line.startswith(":"):
-            a, b = line[1:].split(":", 1)
-            a = f":{a}"
-        else:
-            a, b = line.split(":", 1)
-
-        header[a.strip()] = b.strip()
-
-    return header
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -74,16 +54,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 # Work out the most recent collection date to display
                 if (
-                    datetime.today().date()
-                    <= current_collection_date.date()
-                    < next_collection_date.date()
+                        datetime.today().date()
+                        <= current_collection_date.date()
+                        < next_collection_date.date()
                 ):
                     collection_date = current_collection_date
                 else:
                     collection_date = next_collection_date
 
                 dict_data = {
-                    "type": bin_type,
+                    "type":           bin_type,
                     "collectionDate": collection_date.strftime("%d/%m/%Y"),
                 }
                 data["bins"].append(dict_data)
