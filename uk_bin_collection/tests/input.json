@@ -17,7 +17,8 @@
     "HuntingdonDistrictCouncil": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
     "LeedsCityCouncil": {
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
-        "uprn": "72512051"
+        "postcode":"LS6 2SE",
+        "house_number":"1"
     },
     "MidSussexDistrictCouncil": {
         "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/"

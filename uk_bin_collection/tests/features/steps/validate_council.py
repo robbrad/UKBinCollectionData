@@ -18,7 +18,15 @@ def step_impl(context, council):
         uprn = context.metadata["uprn"]
     else:
         uprn = ''
-    args = [council, context.metadata["url"], f'-u={uprn}']
+    if "postcode" in context.metadata:
+        postcode = context.metadata["postcode"]
+    else:
+        postcode = ''
+    if "house_number" in context.metadata:
+        house_number = context.metadata["house_number"]
+    else:
+        house_number = ''
+    args = [council, context.metadata["url"], f'-u={uprn}', f'-p={postcode}', f'-n={house_number}']
     context.parse_result = collect_data.main(args)
     pass
 
