@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from datetime import datetime
 
@@ -33,27 +34,9 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode_re = "^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$"
         user_full_addr = f"{user_paon} {user_postcode}"
 
-        try:
-            if user_postcode is None or not re.fullmatch(postcode_re, user_postcode):
-                raise ValueError("Invalid postcode")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided postcode. If this error continues, please first trying setting the "
-                "postcode manually on line 24 before raising an issue."
-            )
-            exit(1)
+        check_postcode(user_postcode)
+        check_paon(user_paon)
 
-        try:
-            if user_paon is None:
-                raise ValueError("Invalid house number")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided house number. If this error continues, please first trying setting the "
-                "house number manually on line 25 before raising an issue."
-            )
-            exit(1)
         form_data = {"PostCodeStep.strAddressSearch": user_postcode, "AddressStep.strAddressSelect": user_full_addr,
                      "Next":                          "true", "StepIndex": "1"}
 
@@ -82,7 +65,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 details = row.find_all_next("td")
                 dict_data = {
                     "type":           details[1].get_text().replace("collection", "").strip(),
-                    "collectionDate": datetime.strptime(details[2].get_text(), "%A %d %B %Y").strftime("%d/%m/%Y")
+                    "collectionDate": datetime.strptime(details[2].get_text(), "%A %d %B %Y").strftime(date_format)
                 }
                 data["bins"].append(dict_data)
                 row_index += 1
