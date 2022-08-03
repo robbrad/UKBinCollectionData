@@ -56,7 +56,7 @@ Checks that the UPRN exists
 
 def get_date_with_ordinal(date_number: int) -> str:
     """
-
+Return ordinal text on day of date
     :rtype: str
     :param date_number: Date number as an integer (e.g. 4)
     :return: Return date with ordinal suffix (e.g. 4th)
@@ -68,7 +68,7 @@ def get_date_with_ordinal(date_number: int) -> str:
 
 def parse_header(raw_header: str) -> dict:
     """
-    Parses a header string and returns one that can be useful
+Parses a header string and returns one that can be useful
         :rtype: dict
         :param raw_header: header as a string, with values to separate as pipe (|)
         :return: header in a dictionary format that can be used in requests
