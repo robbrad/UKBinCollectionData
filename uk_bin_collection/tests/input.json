@@ -16,6 +16,7 @@
     "MidSussexDistrictCouncil": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
+    "SouthTynesideCouncil": "https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates",
     "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
     "TorridgeDistrictCouncil": "10091078762",

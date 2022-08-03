@@ -12,4 +12,5 @@ Feature: Test each council output matches expected results in /outputs
             | CheshireEastCouncil |
             | LeedsCityCouncil |
             | MidSussexDistrictCouncil |
+            | SouthTynesideCouncil |
             | WarwickDistrictCouncil |

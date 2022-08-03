@@ -1,0 +1,84 @@
+{
+    "bins": [
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "05/08/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "12/08/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "19/08/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "26/08/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "02/09/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "09/09/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "16/09/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "23/09/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "30/09/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "07/10/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "14/10/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "21/10/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "28/10/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "04/11/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "11/11/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "18/11/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "25/11/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "02/12/2022"
+        },
+        {
+            "type": "Recycling (blue)",
+            "collectionDate": "09/12/2022"
+        },
+        {
+            "type": "Household",
+            "collectionDate": "16/12/2022"
+        }
+    ]
+}
