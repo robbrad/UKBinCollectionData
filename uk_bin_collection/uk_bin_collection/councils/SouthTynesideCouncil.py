@@ -1,7 +1,6 @@
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-import re
 import requests
 import json
 from datetime import datetime
@@ -56,7 +55,6 @@ class CouncilClass(AbstractGetBinDataClass):
         api_url = "https://www.southtyneside.gov.uk/apiserver/ajaxlibrary/"
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
-        postcode_re = "^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$"
         data = {"bins": []}
 
         check_postcode(user_postcode)
