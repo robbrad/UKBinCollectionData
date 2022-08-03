@@ -1,4 +1,5 @@
 from datetime import datetime
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 import pandas as pd
@@ -23,29 +24,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
-        postcode_re = "^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$"
 
-        try:
-            if user_postcode is None or not re.fullmatch(postcode_re, user_postcode):
-                raise ValueError("Invalid postcode")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided postcode. If this error continues, please first trying setting the "
-                "postcode manually on line 24 before raising an issue."
-            )
-            exit(1)
-
-        try:
-            if user_paon is None:
-                raise ValueError("Invalid house number")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided house number. If this error continues, please first trying setting the "
-                "house number manually on line 25 before raising an issue."
-            )
-            exit(1)
+        check_postcode(user_postcode)
+        check_paon(user_paon)
 
         data = {"bins": []}  # dictionary for data
         prop_id = 0  # LCC use city wide URPNs in this dataset
