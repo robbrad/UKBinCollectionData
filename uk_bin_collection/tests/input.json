@@ -13,6 +13,7 @@
     "EastDevonDC": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
     "HuntingdonDistrictCouncil": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
     "LeedsCityCouncil": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
+    "MidSussexDistrictCouncil": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
     "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
