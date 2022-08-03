@@ -4,7 +4,7 @@
         "uprn": "100010733027"
     },
     "BromleyBoroughCouncil": "100022887131",
-    "CardiffCityCouncil": { "url" :"https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx"},
+    "CardiffCouncil": { "url" :"https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx"},
     "ChelmsfordCityCouncil": "100022887131",
     "CheshireEastCouncil": {
         "url" : "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1621149987573",

@@ -9,7 +9,7 @@ Feature: Test each council output matches expected results in /outputs
         Examples: Councils to Test
             | council      |
             | BlackburnCouncil |
-            | CardiffCityCouncil |
+            | CardiffCouncil |
             | CheshireEastCouncil |
             | LeedsCityCouncil |
             | MidSussexDistrictCouncil |
