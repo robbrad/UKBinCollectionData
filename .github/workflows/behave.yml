@@ -27,7 +27,7 @@ jobs:
       run: make install
 
     - name: run integration tests
-      run: make integration-tests
+      run: make matrix=${{ matrix.python-version }} integration-tests
       continue-on-error: true
 
     - name: Upload Integration Test Coverage to Codecov
@@ -52,10 +52,12 @@ jobs:
       if: always()
       #id: allure-report
       with:
-        allure_results: allure-results
+        allure_results: build/${{ matrix.python-version }}/allure-results
         #gh_pages: gh-pages
         #allure_report: allure-report
+        subfolder: ${{ matrix.python-version }}
         allure_history: allure-history
+        target_url: robbrad.github.io/UKBinCollectionData/${{ github.run_number }}
 
     - name: Deploy report to Github Pages
       if: always()
