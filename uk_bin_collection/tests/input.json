@@ -8,6 +8,10 @@
         "url": "https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx",
         "uprn": "100100112419"
     },
+    "CastlepointDistrictCouncil":{
+        "url": "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar",
+        "uprn": "4525"
+    },
     "ChelmsfordCityCouncil": "100022887131",
     "CheshireEastCouncil": {
         "url": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1621149987573",
@@ -23,7 +27,7 @@
     "MidSussexDistrictCouncil": {
         "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
         "postcode":"RH16 1SS",
-        "house_number":"OAKLANDS"      
+        "house_number":"OAKLANDS"
     },
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
