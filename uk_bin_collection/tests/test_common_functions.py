@@ -12,7 +12,7 @@ def test_check_postcode_invalid(capfd):
     with pytest.raises(SystemExit) as exc_info:
         result = check_postcode(invalid_postcode)
     out, err = capfd.readouterr()
-    assert out == 'Exception encountered: Invalid postcode\nPlease check the provided postcode. If this error continues, please first trying setting the postcode manually on line 24 before raising an issue.\n'
+    assert out.startswith('Exception encountered: Invalid postcode')
     assert exc_info.type == SystemExit
     assert exc_info.value.code == 1
 
@@ -26,7 +26,7 @@ def test_check_paon_invalid(capfd):
     with pytest.raises(SystemExit) as exc_info:
         result = check_paon(invalid_house_num)
     out, err = capfd.readouterr()
-    assert out == 'Exception encountered: Invalid house number\nPlease check the provided house number. If this error continues, please first trying setting the house number manually on line 25 before raising an issue.\n'
+    assert out.startswith('Exception encountered: Invalid house number')
     assert exc_info.type == SystemExit
     assert exc_info.value.code == 1
 
