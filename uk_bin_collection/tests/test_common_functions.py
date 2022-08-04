@@ -42,3 +42,8 @@ def test_get_date_with_ordinal_exception():
     assert exc_info.type == TypeError
     assert exc_info.value.args[0] == 'not all arguments converted during string formatting'
 
+def test_parse_header():
+    input_header = 'i:am|:a:test:header|value:test'
+    result = parse_header(input_header)
+    assert result == {'i': 'am', ':a': 'test:header', 'value': 'test'}
+    assert type(result) is dict
