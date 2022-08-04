@@ -12,6 +12,7 @@ Checks a postcode exists and validates UK formatting against a RegEx string
     try:
         if postcode is None or not re.fullmatch(postcode_re, postcode):
             raise ValueError("Invalid postcode")
+        return True
     except Exception as ex:
         print(f"Exception encountered: {ex}")
         print(
@@ -29,6 +30,7 @@ Checks that PAON data exists
     try:
         if paon is None:
             raise ValueError("Invalid house number")
+        return True
     except Exception as ex:
         print(f"Exception encountered: {ex}")
         print(
