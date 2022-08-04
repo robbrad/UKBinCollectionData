@@ -4,7 +4,7 @@
 The project uses [poetry](https://python-poetry.org/docs/) to manage dependencies and setup the build environment
 
 # Getting Started
-`
+```
 #install Python 3.8 or 3.9 (currently only these two are supported 3.10 in the future)
 pip install poetry
 
@@ -15,7 +15,7 @@ cd UKBinCollectionData
 #Install Dependencies 
 poetry install
 poetry shell
-`
+```
 
 # What you need for a council
 ## Approach
@@ -35,12 +35,12 @@ The input.json should match the council class name eg CheshireEastCouncil and ha
 **Note:** If you want the intergration test to work you must supply an actual working url / urpn / postcode (I usually choose a business address - the councils is a good one) so people dont get upset that their address was used for testing)
 
 Example:
-`
+```
     "CheshireEastCouncil": {
         "url": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1621149987573",
         "uprn": "100012791226"
     }
-`
+```
 
 #### The schemas
 Generate an output for a council and pass it though the [JSON schema converter](https://jsonformatter.org/json-to-jsonschema) save the file with the same name as the class eg CheshireEastCouncil.schema in the [schemas folder](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/council_schemas)
@@ -49,11 +49,11 @@ Generate an output for a council and pass it though the [JSON schema converter](
 The feature file will remain mostly static but if you want the feature to run for a specific council(again it must match the name of the council under test) then it needs adding as a line item in this file [table](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/features/validate_council_outputs.feature)
 
 #### Running The behave suite of tests
-`
+```
 cd UKBinCollectionData
 poetry shell
 behave -D runner.continue_after_failed_step=true uk_bin_collection/tests/features/
-`
+```
 
 #### Github Actions Integration Tests
 The [Github actions](https://github.com/robbrad/UKBinCollectionData/actions/workflows/behave.yml) is set to run on push and pull_requests
@@ -72,10 +72,10 @@ The CodeCov.io report can be found [here](https://app.codecov.io/gh/robbrad/UKBi
 As well as integration testing the repo is setup to test some of the stactic methods as well to ensure basic core functionality
 
 #### Running the Unitests
-`
+```
 cd UKBinCollectionData
 poetry shell
 poetry run coverage run -m pytest
 poetry run coverage xml
-`
+```
 
