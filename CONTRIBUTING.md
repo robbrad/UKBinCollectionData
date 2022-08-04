@@ -4,6 +4,7 @@
 The project uses [poetry](https://python-poetry.org/docs/) to manage dependencies and setup the build environment
 
 # Getting Started
+## Environment Setup
 ```
 #install Python 3.8 or 3.9 (currently only these two are supported 3.10 in the future)
 pip install poetry
