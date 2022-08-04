@@ -12,7 +12,16 @@ Feature: Test each council output matches expected results in /outputs
             | CardiffCouncil |
             | CheshireEastCouncil |
             | CrawleyBoroughCouncil |
+            | EastDevonDC |
+            | HuntingdonDistrictCouncil |
             | LeedsCityCouncil |
             | MidSussexDistrictCouncil |
+            | NELincs |
+            | NewcastleCityCouncil |
             | SouthTynesideCouncil |
+            | StHelensBC |
+            | StockportBoroughCouncil |
+            | TorridgeDistrictCouncil |
+            | WakefieldCityCouncil |
             | WarwickDistrictCouncil |
+            | WiganBoroughCouncil |
