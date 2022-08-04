@@ -64,7 +64,7 @@ It uses a [Makefile](https://github.com/robbrad/UKBinCollectionData/blob/master/
 #### Results
 
 ##### Allure Report
-The Github Actions publishes the Allure Behave Test results to [Github Pages](https://robbrad.github.io/UKBinCollectionData/) you can check this to see if a council is still working as expected
+The Github Actions publishes the Allure Behave Test results to Github Pages: https://robbrad.github.io/UKBinCollectionData/<python_version> you can check this to see if a council is still working as expected
 
 ##### CodeCov Report
 The CodeCov.io report can be found [here](https://app.codecov.io/gh/robbrad/UKBinCollectionData) 
