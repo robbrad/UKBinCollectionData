@@ -43,5 +43,9 @@
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "uprn": "100070263793"
+    },
+    "YorkCouncil": {
+        "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
+        "uprn": "100050535540"
     }
 }
