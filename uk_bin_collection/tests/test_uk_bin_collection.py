@@ -1,4 +1,4 @@
-from uk_bin_collection import __version__
+from uk_bin_collection.uk_bin_collection import __version__
 
 
 def test_version():

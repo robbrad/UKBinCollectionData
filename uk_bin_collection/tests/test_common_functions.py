@@ -1,4 +1,4 @@
-from uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import *
 import pytest
 
 
