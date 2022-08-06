@@ -1,4 +1,4 @@
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass as agbdc
+from uk_bin_collection.get_bin_data import AbstractGetBinDataClass as agbdc
 
 import json
 from unittest import mock
