@@ -42,7 +42,6 @@ jobs:
       with:
         gcov_ignore: **/tests
 
- 
     - name: run unit tests
       run: make unit-tests
 
