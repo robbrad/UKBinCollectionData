@@ -45,6 +45,8 @@ jobs:
 
     - name: Upload Unit Test Coverage to Codecov
       uses: codecov/codecov-action@v3
+      with:
+        gcov_ignore: uk_bin_collection/tests/
 
     - name: Get Allure history
       uses: actions/checkout@v2
