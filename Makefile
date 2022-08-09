@@ -23,9 +23,9 @@ pycodestyle:
 
 ## @Testing runs unit tests
 integration-tests: ## runs unit tests for the project
-	poetry run coverage run -m behave -D runner.continue_after_failed_step=true --format=allure_behave.formatter:AllureFormatter -o build/$(matrix)/allure-results uk_bin_collection/tests/features/
+	poetry run coverage run --omit "*/tests/*" -m behave -D runner.continue_after_failed_step=true --format=allure_behave.formatter:AllureFormatter -o build/$(matrix)/allure-results uk_bin_collection/tests/features/
 	poetry run coverage xml
 
 unit-tests:
-	poetry run coverage run -m pytest
+	poetry run coverage run --omit "*/tests/*" -m pytest
 	poetry run coverage xml
