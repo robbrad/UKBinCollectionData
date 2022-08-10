@@ -8,36 +8,36 @@ from datetime import datetime
 
 def get_address_uprn(postcode: str, paon: str, api_url: str) -> str:
     """
-Gets the UPRN and address in desired format
-    :rtype: str
-    :param postcode: Postcode to use
-    :param paon: House number to use
-    :param api_url: API to POST
-    :return: UPRN and postcode in str format
+    Gets the UPRN and address in desired format
+        :rtype: str
+        :param postcode: Postcode to use
+        :param paon: House number to use
+        :param api_url: API to POST
+        :return: UPRN and postcode in str format
     """
     addr = ""
-    payload = json.dumps({
-        "jsonrpc": "2.0",
-        "id":      "1642260173663",
-        "method":  "ictGetAddressList",
-        "params":  {
-            "postcode":  f"{postcode.replace(' ', '')}",
-            "localonly": "true"
+    payload = json.dumps(
+        {
+            "jsonrpc": "2.0",
+            "id": "1642260173663",
+            "method": "ictGetAddressList",
+            "params": {"postcode": f"{postcode.replace(' ', '')}", "localonly": "true"},
         }
-    })
-    headers = {
-        'Content-Type': 'application/json'
-    }
+    )
+    headers = {"Content-Type": "application/json"}
     response = requests.post(api_url, data=payload, headers=headers)
 
     json_response = json.loads(response.content)
-    results = json_response['result']
+    results = json_response["result"]
     result_line = ""
 
     for item in results:
         while len(result_line) < 1:
-            result_line = [element for element in item.get("Address").split()
-                           if item.get("Address").split()[0] == paon.strip()]
+            result_line = [
+                element
+                for element in item.get("Address").split()
+                if item.get("Address").split()[0] == paon.strip()
+            ]
             addr = item.get("UPRN") + "|" + item.get("Address")
             break
 
@@ -75,17 +75,15 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = get_address_uprn(user_postcode, user_paon, api_url)
 
         # Set up payload and headers, then post to API to get schedule
-        payload = json.dumps({
-            "jsonrpc": "2.0",
-            "id":      "1642260412610",
-            "method":  "wtGetBinCollectionDates",
-            "params":  {
-                "addresscode": uprn
+        payload = json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "id": "1642260412610",
+                "method": "wtGetBinCollectionDates",
+                "params": {"addresscode": uprn},
             }
-        })
-        headers = {
-            'Content-Type': 'application/json'
-        }
+        )
+        headers = {"Content-Type": "application/json"}
         response = requests.request("POST", api_url, headers=headers, data=payload)
 
         # Break down the resulting JSON and load into dictionary
@@ -95,8 +93,10 @@ class CouncilClass(AbstractGetBinDataClass):
             collections_in_month = month["Collections"]
             for item in collections_in_month:
                 dict_data = {
-                    "type":           item["Type"],
-                    "collectionDate": datetime.strptime(item["DateString"], "%d %B %Y").strftime("%d/%m/%Y")
+                    "type": item["Type"],
+                    "collectionDate": datetime.strptime(
+                        item["DateString"], "%d %B %Y"
+                    ).strftime("%d/%m/%Y"),
                 }
                 data["bins"].append(dict_data)
 

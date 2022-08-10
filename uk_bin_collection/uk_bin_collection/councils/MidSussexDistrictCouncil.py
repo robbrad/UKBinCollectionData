@@ -9,9 +9,9 @@ import requests
 
 def get_token(res) -> str:
     """
-Get a UFPRT code for the form data to be processed
-    :param res:
-    :return:
+    Get a UFPRT code for the form data to be processed
+        :param res:
+        :return:
     """
     soup = BeautifulSoup(res, features="html.parser")
     soup.prettify()
@@ -37,8 +37,12 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
         check_paon(user_paon)
 
-        form_data = {"PostCodeStep.strAddressSearch": user_postcode, "AddressStep.strAddressSelect": user_full_addr,
-                     "Next":                          "true", "StepIndex": "1"}
+        form_data = {
+            "PostCodeStep.strAddressSearch": user_postcode,
+            "AddressStep.strAddressSelect": user_full_addr,
+            "Next": "true",
+            "StepIndex": "1",
+        }
 
         # Get a ufprt by posting here (I have no idea how ufprt works, so may as well grab one from the server)
         init = requests.post(api_url, data=form_data)
@@ -64,8 +68,10 @@ class CouncilClass(AbstractGetBinDataClass):
             else:
                 details = row.find_all_next("td")
                 dict_data = {
-                    "type":           details[1].get_text().replace("collection", "").strip(),
-                    "collectionDate": datetime.strptime(details[2].get_text(), "%A %d %B %Y").strftime(date_format)
+                    "type": details[1].get_text().replace("collection", "").strip(),
+                    "collectionDate": datetime.strptime(
+                        details[2].get_text(), "%A %d %B %Y"
+                    ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
                 row_index += 1

@@ -163,7 +163,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_type = bin.get("type")
 
                 dict_data = {
-                    "type":           bin_type,
+                    "type": bin_type,
                     "collectionDate": collection_date,
                 }
                 data["bins"].append(dict_data)

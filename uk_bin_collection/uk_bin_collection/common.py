@@ -5,8 +5,8 @@ date_format = "%d/%m/%Y"
 
 def check_postcode(postcode: str):
     """
-Checks a postcode exists and validates UK formatting against a RegEx string
-    :param postcode: Postcode to parse
+    Checks a postcode exists and validates UK formatting against a RegEx string
+        :param postcode: Postcode to parse
     """
     postcode_re = "^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$"
     try:
@@ -24,8 +24,8 @@ Checks a postcode exists and validates UK formatting against a RegEx string
 
 def check_paon(paon: str):
     """
-Checks that PAON data exists
-    :param paon: PAON data to check, usually house number
+    Checks that PAON data exists
+        :param paon: PAON data to check, usually house number
     """
     try:
         if paon is None:
@@ -42,8 +42,8 @@ Checks that PAON data exists
 
 def check_uprn(uprn: str):
     """
-Checks that the UPRN exists
-    :param uprn: UPRN to check
+    Checks that the UPRN exists
+        :param uprn: UPRN to check
     """
     try:
         if uprn is None or uprn == "":
@@ -58,22 +58,24 @@ Checks that the UPRN exists
 
 def get_date_with_ordinal(date_number: int) -> str:
     """
-Return ordinal text on day of date
-    :rtype: str
-    :param date_number: Date number as an integer (e.g. 4)
-    :return: Return date with ordinal suffix (e.g. 4th)
+    Return ordinal text on day of date
+        :rtype: str
+        :param date_number: Date number as an integer (e.g. 4)
+        :return: Return date with ordinal suffix (e.g. 4th)
     """
     return str(date_number) + (
-        "th" if 4 <= date_number % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(date_number % 10, "th")
+        "th"
+        if 4 <= date_number % 100 <= 20
+        else {1: "st", 2: "nd", 3: "rd"}.get(date_number % 10, "th")
     )
 
 
 def parse_header(raw_header: str) -> dict:
     """
-Parses a header string and returns one that can be useful
-        :rtype: dict
-        :param raw_header: header as a string, with values to separate as pipe (|)
-        :return: header in a dictionary format that can be used in requests
+    Parses a header string and returns one that can be useful
+            :rtype: dict
+            :param raw_header: header as a string, with values to separate as pipe (|)
+            :return: header in a dictionary format that can be used in requests
     """
     header = dict()
     for line in raw_header.split("|"):
