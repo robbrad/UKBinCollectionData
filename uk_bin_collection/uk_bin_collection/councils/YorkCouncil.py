@@ -14,7 +14,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
-        api_url = "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/"
+        api_url = (
+            "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/"
+        )
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
         response = requests.get(f"{api_url}{uprn}")
@@ -23,14 +25,16 @@ class CouncilClass(AbstractGetBinDataClass):
         collection_tuple = []
 
         for item in json_response:
-            collection_date = datetime.strptime(item.get("nextCollection"), "%Y-%m-%dT%H:%M:%S").strftime(date_format)
+            collection_date = datetime.strptime(
+                item.get("nextCollection"), "%Y-%m-%dT%H:%M:%S"
+            ).strftime(date_format)
             collection_tuple.append((item.get("service"), collection_date))
 
         ordered_data = sorted(collection_tuple, key=lambda x: x[1])
 
         for item in ordered_data:
             dict_data = {
-                "type":           item[0],
+                "type": item[0],
                 "collectionDate": item[1],
             }
             data["bins"].append(dict_data)

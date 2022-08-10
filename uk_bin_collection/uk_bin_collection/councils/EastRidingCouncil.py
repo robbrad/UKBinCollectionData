@@ -30,11 +30,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # East riding seems to return the information per postcode, so we only need the first entry for the bin dates
 
-        collection_date = datetime.strptime(json_response[0].get("BlueDate"), "%Y-%m-%dT%H:%M:%S").strftime(date_format)
+        collection_date = datetime.strptime(
+            json_response[0].get("BlueDate"), "%Y-%m-%dT%H:%M:%S"
+        ).strftime(date_format)
         collection_tuple.append(("Blue Bin", collection_date))
-        collection_date = datetime.strptime(json_response[0].get("GreenDate"), "%Y-%m-%dT%H:%M:%S").strftime(date_format)
+        collection_date = datetime.strptime(
+            json_response[0].get("GreenDate"), "%Y-%m-%dT%H:%M:%S"
+        ).strftime(date_format)
         collection_tuple.append(("Green Bin", collection_date))
-        collection_date = datetime.strptime(json_response[0].get("BrownDate"), "%Y-%m-%dT%H:%M:%S").strftime(date_format)
+        collection_date = datetime.strptime(
+            json_response[0].get("BrownDate"), "%Y-%m-%dT%H:%M:%S"
+        ).strftime(date_format)
         collection_tuple.append(("Brown Bin", collection_date))
 
         ordered_data = sorted(collection_tuple, key=lambda x: x[1])
