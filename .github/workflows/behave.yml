@@ -39,12 +39,16 @@ jobs:
 
     - name: Upload Integration Test Coverage to Codecov
       uses: codecov/codecov-action@v3
- 
+      with:
+        gcov_ignore: uk_bin_collection/tests/**
+
     - name: run unit tests
       run: make unit-tests
 
     - name: Upload Unit Test Coverage to Codecov
       uses: codecov/codecov-action@v3
+      with:
+        gcov_ignore: uk_bin_collection/tests/**
 
     - name: Get Allure history
       uses: actions/checkout@v2
@@ -64,7 +68,7 @@ jobs:
         #allure_report: allure-report
         subfolder: ${{ matrix.python-version }}
         allure_history: allure-history
-        target_url: robbrad.github.io/UKBinCollectionData/${{ github.run_number }}
+        report_url: robbrad.github.io/UKBinCollectionData/${{ github.run_number }}
 
     - name: Deploy report to Github Pages
       if: always()
