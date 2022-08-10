@@ -1,7 +1,6 @@
 from uk_bin_collection.common import *
 import pytest
 
-
 def test_check_postcode_valid():
     valid_postcode = "SW1A 1AA"
     result = check_postcode(valid_postcode)
@@ -33,12 +32,22 @@ def test_check_paon_invalid(capfd):
     assert exc_info.type == SystemExit
     assert exc_info.value.code == 1
 
+def test_get_data_check_uprn():
+    uprn = "1"
+    result = check_uprn(uprn)
+    assert result is None
+
+def test_get_data_check_uprn_exception(capfd):
+    uprn = None
+    result = check_uprn(uprn)
+    out, err = capfd.readouterr()
+    assert out.startswith("Exception encountered: ")
+
 
 def test_get_date_with_ordinal():
     date_number = 1
     result = get_date_with_ordinal(date_number)
     assert result == "1st"
-
 
 def test_get_date_with_ordinal_exception():
     date_number = "a"
