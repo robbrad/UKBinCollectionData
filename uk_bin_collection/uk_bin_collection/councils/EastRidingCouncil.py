@@ -22,14 +22,12 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode = kwargs.get("postcode")
 
         # Url is built from multiple parameters
-
         response = requests.get(f"{api_url}{api_key}{api_license}&Postcode={postcode}")
         json_response = json.loads(response.content)["dataReturned"]
         data = {"bins": []}
         collection_tuple = []
 
         # East riding seems to return the information per postcode, so we only need the first entry for the bin dates
-
         collection_date = datetime.strptime(
             json_response[0].get("BlueDate"), "%Y-%m-%dT%H:%M:%S"
         ).strftime(date_format)
