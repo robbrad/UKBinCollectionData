@@ -1,0 +1,20 @@
+{
+    "bins": [
+        {
+            "type": "Blue Bin",
+            "collectionDate": "29/08/2022"
+        },
+        {
+            "type": "Green Bin",
+            "collectionDate": "29/08/2022"
+        },
+        {
+            "type": "Black / Grey Bin",
+            "collectionDate": "29/08/2022"
+        },
+        {
+            "type": "Brown Bin",
+            "collectionDate": "05/09/2022"
+        }
+    ]
+}

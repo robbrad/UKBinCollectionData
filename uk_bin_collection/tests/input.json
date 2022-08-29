@@ -28,6 +28,10 @@
         "postcode":"LS6 2SE",
         "house_number":"1"
     },
+    "ManchesterCityCouncil": {
+        "url": "https://www.manchester.gov.uk/bincollections",
+        "uprn": "000077048077"
+    },
     "MidSussexDistrictCouncil": {
         "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
         "postcode":"RH16 1SS",
