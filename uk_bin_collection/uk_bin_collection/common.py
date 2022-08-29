@@ -16,8 +16,7 @@ def check_postcode(postcode: str):
     except Exception as ex:
         print(f"Exception encountered: {ex}")
         print(
-            "Please check the provided postcode. If this error continues, please first trying setting the "
-            "postcode manually before raising an issue."
+            "Please check the provided postcode"
         )
         exit(1)
 
@@ -34,8 +33,7 @@ def check_paon(paon: str):
     except Exception as ex:
         print(f"Exception encountered: {ex}")
         print(
-            "Please check the provided house number. If this error continues, please first trying setting the "
-            "house number manually before raising an issue."
+            "Please check the provided house number."
         )
         exit(1)
 
@@ -48,11 +46,11 @@ def check_uprn(uprn: str):
     try:
         if uprn is None or uprn == "":
             raise ValueError("Invalid UPRN")
+        return True
     except Exception as ex:
         print(f"Exception encountered: {ex}")
         print(
-            "Please check the provided UPRN. If this error continues, please first trying setting the "
-            "UPRN manually on line 115 before raising an issue."
+            "Please check the provided UPRN."
         )
 
 
