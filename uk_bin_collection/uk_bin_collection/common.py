@@ -1,6 +1,18 @@
 import re
 
+import holidays
+from enum import Enum, unique, auto
+from datetime import datetime, date
+
 date_format = "%d/%m/%Y"
+
+
+class Region(Enum):
+    UK = 1
+    ENGLAND = 2
+    NORTHERN_IRELAND = 3
+    SCOTLAND = 4
+    WALES = 5
 
 
 def check_postcode(postcode: str):
@@ -87,3 +99,19 @@ def parse_header(raw_header: str) -> dict:
         header[a.strip()] = b.strip()
 
     return header
+
+
+def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
+    """
+Checks if a given date is a public holiday.
+    :param date_to_check: Date to check if holiday
+    :param region: The UK nation to check. Defaults to UK.
+    :return: Bool - true if a holiday, false if not
+    """
+    uk_holidays = holidays.country_holidays('GB', subdiv=region.name)
+
+    if date_to_check in uk_holidays:
+        return True
+    else:
+        return False
+
