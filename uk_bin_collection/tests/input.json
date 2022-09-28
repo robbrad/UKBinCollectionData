@@ -56,6 +56,11 @@
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "uprn": "100070263793"
     },
+    "WaverleyBoroughCouncil": {
+        "url": "https://wav-wrp.whitespacews.com/",
+        "postcode": "GU9 9QG",
+        "house_number": "23"
+    },
     "WindsorAndMaidenheadCouncil": {
         "url": "https://my.rbwm.gov.uk/special/find-your-collection-dates",
         "postcode": "TW19 5NF",
