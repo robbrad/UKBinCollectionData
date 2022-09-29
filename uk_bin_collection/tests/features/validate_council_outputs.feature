@@ -27,6 +27,7 @@ Feature: Test each council output matches expected results in /outputs
             | TorridgeDistrictCouncil |
             | WakefieldCityCouncil |
             | WarwickDistrictCouncil |
+            | WaverleyBoroughCouncil |
             | WiganBoroughCouncil |
             | WindsorAndMaidenheadCouncil |
             | YorkCouncil |

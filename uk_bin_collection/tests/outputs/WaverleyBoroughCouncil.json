@@ -1,0 +1,44 @@
+{
+    "bins": [
+        {
+            "type": "Food Waste Collection Service",
+            "collectionDate": "30/09/2022"
+        },
+        {
+            "type": "Recycling Collection Service",
+            "collectionDate": "30/09/2022"
+        },
+        {
+            "type": "Domestic Waste Collection Service",
+            "collectionDate": "07/10/2022"
+        },
+        {
+            "type": "Food Waste Collection Service",
+            "collectionDate": "07/10/2022"
+        },
+        {
+            "type": "Food Waste Collection Service",
+            "collectionDate": "14/10/2022"
+        },
+        {
+            "type": "Recycling Collection Service",
+            "collectionDate": "14/10/2022"
+        },
+        {
+            "type": "Domestic Waste Collection Service",
+            "collectionDate": "21/10/2022"
+        },
+        {
+            "type": "Food Waste Collection Service",
+            "collectionDate": "21/10/2022"
+        },
+        {
+            "type": "Food Waste Collection Service",
+            "collectionDate": "28/10/2022"
+        },
+        {
+            "type": "Recycling Collection Service",
+            "collectionDate": "28/10/2022"
+        }
+    ]
+}
