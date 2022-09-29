@@ -644,7 +644,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<4"
-content-hash = "d433bc540f271ea5898073d9375ac9026c4510b0f46d87a4c5a2f568db6e55e8"
+content-hash = "6c17df9dc6d8bb3c995d5c086a748d4fa73de1ae8c7706e94c437c2f9a25aef7"
 
 [metadata.files]
 allure-behave = [
