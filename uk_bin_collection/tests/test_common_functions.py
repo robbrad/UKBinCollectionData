@@ -1,6 +1,7 @@
 from uk_bin_collection.common import *
 import pytest
 
+
 def test_check_postcode_valid():
     valid_postcode = "SW1A 1AA"
     result = check_postcode(valid_postcode)
@@ -32,10 +33,12 @@ def test_check_paon_invalid(capfd):
     assert exc_info.type == SystemExit
     assert exc_info.value.code == 1
 
+
 def test_get_data_check_uprn():
     uprn = "1"
     result = check_uprn(uprn)
     assert result is True
+
 
 def test_get_data_check_uprn_exception(capfd):
     uprn = None
@@ -48,6 +51,7 @@ def test_get_date_with_ordinal():
     date_number = 1
     result = get_date_with_ordinal(date_number)
     assert result == "1st"
+
 
 def test_get_date_with_ordinal_exception():
     date_number = "a"
@@ -67,11 +71,12 @@ def test_parse_header():
 
 
 def test_is_holiday():
-    date = '20'
-    result = is_holiday('2022, 12, 25')
+    date = "20"
+    result = is_holiday("2022, 12, 25")
     assert result is True
 
+
 def test_is_not_holiday():
-    date = '20'
-    result = is_holiday('2022, 12, 01')
+    date = "20"
+    result = is_holiday("2022, 12, 01")
     assert result is False
