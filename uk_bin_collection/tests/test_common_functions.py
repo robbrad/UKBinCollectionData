@@ -35,7 +35,7 @@ def test_check_paon_invalid(capfd):
 def test_get_data_check_uprn():
     uprn = "1"
     result = check_uprn(uprn)
-    assert result is None
+    assert result is True
 
 def test_get_data_check_uprn_exception(capfd):
     uprn = None
@@ -64,3 +64,14 @@ def test_parse_header():
     result = parse_header(input_header)
     assert result == {"i": "am", ":a": "test:header", "value": "test"}
     assert type(result) is dict
+
+
+def test_is_holiday():
+    date = '20'
+    result = is_holiday('2022, 12, 25')
+    assert result is True
+
+def test_is_not_holiday():
+    date = '20'
+    result = is_holiday('2022, 12, 01')
+    assert result is False
