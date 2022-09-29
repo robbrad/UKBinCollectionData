@@ -23,71 +23,79 @@ class CouncilClass(AbstractGetBinDataClass):
         s = requests.session()
 
         service_type_headers = {
-            'Accept':                    'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,'
-                                         'image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language':           'en-GB,en;q=0.9',
-            'Cache-Control':             'max-age=0',
-            'Connection':                'keep-alive',
-            'Referer':                   'https://www.bristol.gov.uk/',
-            'Sec-Fetch-Dest':            'document',
-            'Sec-Fetch-Mode':            'navigate',
-            'Sec-Fetch-Site':            'cross-site',
-            'Sec-Fetch-User':            '?1',
-            'Sec-GPC':                   '1',
-            'Upgrade-Insecure-Requests': '1',
-            'User-Agent':                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
-                                         'like Gecko) Chrome/105.0.0.0 Safari/537.36',
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
+            "image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Cache-Control": "max-age=0",
+            "Connection": "keep-alive",
+            "Referer": "https://www.bristol.gov.uk/",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "cross-site",
+            "Sec-Fetch-User": "?1",
+            "Sec-GPC": "1",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+            "like Gecko) Chrome/105.0.0.0 Safari/537.36",
         }
         service_type_params = {
-            'servicetypeid': '7dce896c-b3ba-ea11-a812-000d3a7f1cdc',
+            "servicetypeid": "7dce896c-b3ba-ea11-a812-000d3a7f1cdc",
         }
-        response = s.get('https://bristolcouncil.powerappsportals.com/completedynamicformunauth/',
-                         params=service_type_params,
-                         headers=service_type_headers)
+        response = s.get(
+            "https://bristolcouncil.powerappsportals.com/completedynamicformunauth/",
+            params=service_type_params,
+            headers=service_type_headers,
+        )
 
         llpg_headers = {
-            'Accept':                    '*/*',
-            'Accept-Language':           'en-GB,en;q=0.9',
-            'Connection':                'keep-alive',
-            'Ocp-Apim-Subscription-Key': '47ffd667d69c4a858f92fc38dc24b150',
-            'Ocp-Apim-Trace':            'true',
-            'Origin':                    'https://bristolcouncil.powerappsportals.com',
-            'Referer':                   'https://bristolcouncil.powerappsportals.com/',
-            'Sec-Fetch-Dest':            'empty',
-            'Sec-Fetch-Mode':            'cors',
-            'Sec-Fetch-Site':            'cross-site',
-            'Sec-GPC':                   '1',
-            'User-Agent':                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, '
-                                         'like Gecko) Chrome/105.0.0.0 Safari/537.36',
+            "Accept": "*/*",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Connection": "keep-alive",
+            "Ocp-Apim-Subscription-Key": "47ffd667d69c4a858f92fc38dc24b150",
+            "Ocp-Apim-Trace": "true",
+            "Origin": "https://bristolcouncil.powerappsportals.com",
+            "Referer": "https://bristolcouncil.powerappsportals.com/",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "cross-site",
+            "Sec-GPC": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
+            "like Gecko) Chrome/105.0.0.0 Safari/537.36",
         }
         llpg_uprn = "UPRN" + user_uprn
         llpg_json_data = {
-            'Uprn': llpg_uprn,
+            "Uprn": llpg_uprn,
         }
-        response = s.post('https://bcprdapidyna002.azure-api.net/bcprdfundyna001-llpg/DetailedLLPG',
-                          headers=llpg_headers, json=llpg_json_data)
+        response = s.post(
+            "https://bcprdapidyna002.azure-api.net/bcprdfundyna001-llpg/DetailedLLPG",
+            headers=llpg_headers,
+            json=llpg_json_data,
+        )
 
         headers = {
-            'Accept':                    '*/*',
-            'Accept-Language':           'en-GB,en;q=0.9',
-            'Connection':                'keep-alive',
+            "Accept": "*/*",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Connection": "keep-alive",
             # Already added when you pass json=
             # 'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': '47ffd667d69c4a858f92fc38dc24b150',
-            'Ocp-Apim-Trace':            'true',
-            'Origin':                    'https://bristolcouncil.powerappsportals.com',
-            'Referer':                   'https://bristolcouncil.powerappsportals.com/',
-            'Sec-Fetch-Dest':            'empty',
-            'Sec-Fetch-Mode':            'cors',
-            'Sec-Fetch-Site':            'cross-site',
-            'Sec-GPC':                   '1',
-            'User-Agent':                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+            "Ocp-Apim-Subscription-Key": "47ffd667d69c4a858f92fc38dc24b150",
+            "Ocp-Apim-Trace": "true",
+            "Origin": "https://bristolcouncil.powerappsportals.com",
+            "Referer": "https://bristolcouncil.powerappsportals.com/",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "cross-site",
+            "Sec-GPC": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
         }
         json_data = {
-            'uprn': user_uprn,
+            "uprn": user_uprn,
         }
-        response = s.post('https://bcprdapidyna002.azure-api.net/bcprdfundyna001-alloy/NextCollectionDates',
-                          headers=headers, json=json_data)
+        response = s.post(
+            "https://bcprdapidyna002.azure-api.net/bcprdfundyna001-alloy/NextCollectionDates",
+            headers=headers,
+            json=json_data,
+        )
 
         # Make a BS4 object
         soup = BeautifulSoup(response.text, features="html.parser")
@@ -119,18 +127,16 @@ class CouncilClass(AbstractGetBinDataClass):
         collections = []
         for bin in collection_data:
             bin_type = bin["containerName"]
-            next_collection = datetime.strptime(bin["collection"][0]["nextCollectionDate"], "%Y-%m-%dT%H:%M:%S") \
-                .strftime(date_format)
+            next_collection = datetime.strptime(
+                bin["collection"][0]["nextCollectionDate"], "%Y-%m-%dT%H:%M:%S"
+            ).strftime(date_format)
             # Could work out next date using the roundDescription and the is_holiday function in common.py
             collections.append((bin_type, next_collection))
 
         ordered_data = sorted(collections, key=lambda x: x[1])
         data = {"bins": []}
         for item in ordered_data:
-            dict_data = {
-                "type": item[0],
-                "collectionDate": item[1]
-            }
+            dict_data = {"type": item[0], "collectionDate": item[1]}
             data["bins"].append(dict_data)
 
         return data

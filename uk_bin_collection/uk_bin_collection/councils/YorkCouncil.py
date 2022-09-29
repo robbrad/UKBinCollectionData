@@ -14,7 +14,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
-        api_url = "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/"
+        api_url = (
+            "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/"
+        )
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 

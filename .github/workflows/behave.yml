@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8, 3.9]
-        poetry-version: [1.1.0]
+        poetry-version: [1.2.1]
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
@@ -26,9 +26,6 @@ jobs:
       uses: abatilo/actions-poetry@v2.1.6
       with:
         poetry-version: ${{ matrix.poetry-version }}
-
-    - name: setuptools < 58.0.0
-      run: poetry run pip install 'setuptools==57.5.0'
 
     - name: Install
       run: make install
@@ -68,7 +65,7 @@ jobs:
         #allure_report: allure-report
         subfolder: ${{ matrix.python-version }}
         allure_history: allure-history
-        report_url: robbrad.github.io/UKBinCollectionData/${{ github.run_number }}
+        keep_reports: 20
 
     - name: Deploy report to Github Pages
       if: always()

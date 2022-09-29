@@ -13,19 +13,20 @@ include = ["uk_bin_collection"]
 issues = "https://github.com/robbrad/UKBinCollectionData/issues"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dev-dependencies]
-pylint = "*"
-pytest = "*"
+allure-behave = "^2.9.45"
+behave = "*"
+behave-html-formatter = "^0.9.10"
+black = "*"
 coverage = "*"
 flake8 = "*"
-black = "*"
-behave = "*"
 jsonschema = "^4.7.2"
-behave-html-formatter = "^0.9.10"
-allure-behave = "^2.9.45"
+pylint = "*"
+pytest = "*"
+setuptools = "*"
 
 [tool.poetry.scripts]
 uk_bin_collection = "uk_bin_collection.uk_bin_collection:collect_data"
@@ -37,8 +38,9 @@ envs = ["main"]
 to = {format = "poetry", path = "pyproject.toml"}
 
 [tool.poetry.dependencies]
+bs4 = "*"
+holidays = ">=0.16"
+pandas = "*"
 python = ">=3.8,<4"
 requests = "*"
-bs4 = "*"
-pandas = "*"
-holidays = ">=0.16"
+

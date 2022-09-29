@@ -40,7 +40,7 @@ class AbstractGetBinDataClass(ABC):
     Keyword arguments: None
     """
 
-    def template_method(self, address_url: str, **kwargs) -> None: # pragma: no cover
+    def template_method(self, address_url: str, **kwargs) -> None:  # pragma: no cover
         """The main template method that is constructed
 
         Keyword arguments:

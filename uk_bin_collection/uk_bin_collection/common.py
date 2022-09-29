@@ -27,9 +27,7 @@ def check_postcode(postcode: str):
         return True
     except Exception as ex:
         print(f"Exception encountered: {ex}")
-        print(
-            "Please check the provided postcode"
-        )
+        print("Please check the provided postcode")
         exit(1)
 
 
@@ -44,9 +42,7 @@ def check_paon(paon: str):
         return True
     except Exception as ex:
         print(f"Exception encountered: {ex}")
-        print(
-            "Please check the provided house number."
-        )
+        print("Please check the provided house number.")
         exit(1)
 
 
@@ -61,9 +57,7 @@ def check_uprn(uprn: str):
         return True
     except Exception as ex:
         print(f"Exception encountered: {ex}")
-        print(
-            "Please check the provided UPRN."
-        )
+        print("Please check the provided UPRN.")
 
 
 def get_date_with_ordinal(date_number: int) -> str:
@@ -103,12 +97,12 @@ def parse_header(raw_header: str) -> dict:
 
 def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
     """
-Checks if a given date is a public holiday.
-    :param date_to_check: Date to check if holiday
-    :param region: The UK nation to check. Defaults to UK.
-    :return: Bool - true if a holiday, false if not
+    Checks if a given date is a public holiday.
+        :param date_to_check: Date to check if holiday
+        :param region: The UK nation to check. Defaults to UK.
+        :return: Bool - true if a holiday, false if not
     """
-    uk_holidays = holidays.country_holidays('GB', subdiv=region.name)
+    uk_holidays = holidays.country_holidays("GB", subdiv=region.name)
 
     if date_to_check in uk_holidays:
         return True

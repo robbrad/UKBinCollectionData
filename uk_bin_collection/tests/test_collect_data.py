@@ -33,7 +33,7 @@ def mocked_requests_get(*args, **kwargs):
             return errorType
 
     if args[0] == "aurl":
-        return MockResponse({"test_data":"test"}, 200, None)
+        return MockResponse({"test_data": "test"}, 200, None)
     elif args[0] == "HTTPError":
         return MockResponse({}, 999, "HTTPError")
     elif args[0] == "ConnectionError":
@@ -49,16 +49,18 @@ def mocked_requests_get(*args, **kwargs):
 
 # Unit tests
 
+
 def test_logging_exception():
     logging_dict = "SW1A 1AA"
     with pytest.raises(ValueError) as exc_info:
-        result = setup_logging(logging_dict, 'ROOT' )
-    assert exc_info.typename == 'ValueError'
+        result = setup_logging(logging_dict, "ROOT")
+    assert exc_info.typename == "ValueError"
+
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_get_data(mock_get):
     page_data = agbdc.get_data("aurl")
-    assert page_data.text == {'test_data': 'test'}
+    assert page_data.text == {"test_data": "test"}
 
 
 @pytest.mark.parametrize(

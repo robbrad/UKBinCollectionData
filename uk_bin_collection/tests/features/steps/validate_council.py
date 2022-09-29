@@ -17,16 +17,22 @@ def step_impl(context, council):
     if "uprn" in context.metadata:
         uprn = context.metadata["uprn"]
     else:
-        uprn = ''
+        uprn = ""
     if "postcode" in context.metadata:
         postcode = context.metadata["postcode"]
     else:
-        postcode = ''
+        postcode = ""
     if "house_number" in context.metadata:
         house_number = context.metadata["house_number"]
     else:
-        house_number = ''
-    args = [council, context.metadata["url"], f'-u={uprn}', f'-p={postcode}', f'-n={house_number}']
+        house_number = ""
+    args = [
+        council,
+        context.metadata["url"],
+        f"-u={uprn}",
+        f"-p={postcode}",
+        f"-n={house_number}",
+    ]
     context.parse_result = collect_data.main(args)
     pass
 
@@ -40,5 +46,7 @@ def step_impl(context):
 @then("the output should validate against the schema")
 def step_impl(context):
     council_schema = file_handler.load_schema_file(f"{context.council}.schema")
-    schema_result = file_handler.validate_json_schema(context.parse_result, council_schema)
+    schema_result = file_handler.validate_json_schema(
+        context.parse_result, council_schema
+    )
     assert schema_result is True
