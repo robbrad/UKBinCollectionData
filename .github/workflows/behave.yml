@@ -27,8 +27,8 @@ jobs:
       with:
         poetry-version: ${{ matrix.poetry-version }}
 
-    - name: setuptools < 58.0.0
-      run: poetry run pip install 'setuptools==57.5.0'
+    - name: setuptools < 65.4.0
+      run: poetry run pip install 'setuptools==65.4.0'
 
     - name: Install
       run: make install
