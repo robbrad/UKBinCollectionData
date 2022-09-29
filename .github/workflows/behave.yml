@@ -65,7 +65,7 @@ jobs:
         #allure_report: allure-report
         subfolder: ${{ matrix.python-version }}
         allure_history: allure-history
-        report_url: robbrad.github.io/UKBinCollectionData/${{ github.run_number }}
+        keep_reports: 20
 
     - name: Deploy report to Github Pages
       if: always()
