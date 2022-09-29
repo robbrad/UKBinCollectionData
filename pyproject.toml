@@ -26,7 +26,6 @@ flake8 = "*"
 jsonschema = "^4.7.2"
 pylint = "*"
 pytest = "*"
-setuptools = "^65.4.0"
 
 [tool.poetry.scripts]
 uk_bin_collection = "uk_bin_collection.uk_bin_collection:collect_data"
