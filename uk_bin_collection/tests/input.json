@@ -61,6 +61,11 @@
         "postcode": "GU9 9QG",
         "house_number": "23"
     },
+    "WiganBoroughCouncil": {
+        "url": "https://apps.wigan.gov.uk/MyNeighbourhood/",
+        "postcode": "WN24UQ",
+        "uprn": "010093942934"
+    },
     "WindsorAndMaidenheadCouncil": {
         "url": "https://my.rbwm.gov.uk/special/find-your-collection-dates",
         "postcode": "TW19 5NF",

@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "Black Bin": {
+      "type": "string"
+    },
+    "Brown Bin": {
+      "type": "string"
+    },
+    "Green Bin": {
+      "type": "string"
+    },
+    "Blue Bin": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "Black Bin",
+    "Brown Bin",
+    "Green Bin",
+    "Blue Bin"
+  ]
+}
