@@ -63,8 +63,8 @@
         "house_number": "23"
     },
     "WealdenDistrictCouncil": {
-    "url": "https://www.wealden.gov.uk/recycling-and-waste/bin-search/",
-    "uprn": "10033413624"
+        "url": "https://www.wealden.gov.uk/recycling-and-waste/bin-search/",
+        "uprn": "10033413624"
     },
     "WiganBoroughCouncil": {
         "url": "https://apps.wigan.gov.uk/MyNeighbourhood/",
