@@ -9,6 +9,7 @@ Feature: Test each council output matches expected results in /outputs
         Examples: Testing : <council>
             | council      |
             | BlackburnCouncil |
+            | BoltonCouncil |
             | BristolCityCouncil |
             | CardiffCouncil |
             | CastlepointDistrictCouncil |
