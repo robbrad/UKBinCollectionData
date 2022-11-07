@@ -29,6 +29,7 @@ Feature: Test each council output matches expected results in /outputs
             | WakefieldCityCouncil |
             | WarwickDistrictCouncil |
             | WaverleyBoroughCouncil |
+            | WealdenDistrictCouncil |
             | WiganBoroughCouncil |
             | WindsorAndMaidenheadCouncil |
             | YorkCouncil |
