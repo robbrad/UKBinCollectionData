@@ -17,6 +17,7 @@ Feature: Test each council output matches expected results in /outputs
             | CrawleyBoroughCouncil |
             | DoncasterCouncil |
             | EastDevonDC |
+            | FenlandDistrictCouncil |
             | HuntingdonDistrictCouncil |
             | LeedsCityCouncil |
             | ManchesterCityCouncil |

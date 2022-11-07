@@ -31,6 +31,10 @@
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
         "postcode": "HU178LL"
     },
+    "FenlandDistrictCouncil":{
+        "url": "https://www.fenland.gov.uk/article/13114/",
+        "uprn": "200002981143"
+    },
     "HuntingdonDistrictCouncil": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
     "LeedsCityCouncil": {
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
