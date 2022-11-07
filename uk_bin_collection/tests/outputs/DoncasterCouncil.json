@@ -1,0 +1,36 @@
+{
+    "bins": [
+        {
+            "type": "Recycling",
+            "collectionDate": "10/11/2022"
+        },
+        {
+            "type": "Green",
+            "collectionDate": "10/11/2022"
+        },
+        {
+            "type": "Bulky",
+            "collectionDate": "15/11/2022"
+        },
+        {
+            "type": "Re-Use",
+            "collectionDate": "15/11/2022"
+        },
+        {
+            "type": "Black",
+            "collectionDate": "17/11/2022"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "24/11/2022"
+        },
+        {
+            "type": "Green",
+            "collectionDate": "24/11/2022"
+        },
+        {
+            "type": "Black",
+            "collectionDate": "01/12/2022"
+        }
+    ]
+}
