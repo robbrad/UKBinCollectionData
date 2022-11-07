@@ -40,6 +40,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
         response = requests.get(base_url, params=params)
 
+        # 200 = ok. I got a 500 in testing, so assumed no data for that address
+        if response.status_code != 200:
+            raise ValueError("No bins found for provided UPRN.")
+
         # Load the json results
         json_results = json.loads(response.text)["slots"]
 
