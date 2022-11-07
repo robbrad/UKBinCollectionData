@@ -15,6 +15,7 @@ Feature: Test each council output matches expected results in /outputs
             | CastlepointDistrictCouncil |
             | CheshireEastCouncil |
             | CrawleyBoroughCouncil |
+            | DoncasterCouncil |
             | EastDevonDC |
             | HuntingdonDistrictCouncil |
             | LeedsCityCouncil |
