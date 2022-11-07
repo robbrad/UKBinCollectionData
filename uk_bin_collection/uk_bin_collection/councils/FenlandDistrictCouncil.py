@@ -44,6 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         response = requests.get('https://www.fenland.gov.uk/article/13114/', params=params, headers=headers)
 
+        # Returned data is just json, so we can get what we need
         json_data = json.loads(response.text)["features"][0]["properties"]["upcoming"]
         data = {"bins": []}
 
