@@ -1,4 +1,8 @@
 {
+    "BexleyCouncil": {
+        "url": "https://www.bexley.gov.uk/",
+        "uprn": "spamstorage@live.co.uk"
+    },
     "BlackburnCouncil": {
         "url": "https://mybins.blackburn.gov.uk/api/mybins/getbincollectiondays?uprn=100010733027&month=8&year=2022",
         "uprn": "100010733027"
