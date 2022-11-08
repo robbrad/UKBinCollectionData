@@ -56,6 +56,11 @@
     },
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
+    "SouthAyrshireCouncil": {
+        "url": "https://www.south-ayrshire.gov.uk/",
+        "postcode":"KA19 7BN",
+        "uprn": "141003134"
+    },
     "SouthTynesideCouncil": {
         "url": "https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates",
         "postcode":"NE33 3JW",

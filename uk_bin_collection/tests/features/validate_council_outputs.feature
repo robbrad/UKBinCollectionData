@@ -25,6 +25,7 @@ Feature: Test each council output matches expected results in /outputs
             | MidSussexDistrictCouncil |
             | NELincs |
             | NewcastleCityCouncil |
+            | SouthAyrshireCouncil |
             | SouthTynesideCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
