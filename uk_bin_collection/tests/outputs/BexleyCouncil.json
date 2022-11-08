@@ -1,0 +1,128 @@
+{
+    "bins": [
+        {
+            "type": "Food recycling box",
+            "collectionDate": "08/11/2022"
+        },
+        {
+            "type": "Paper and Cardboard wheeled bin",
+            "collectionDate": "08/11/2022"
+        },
+        {
+            "type": "Waste wheeled bin",
+            "collectionDate": "08/11/2022"
+        },
+        {
+            "type": "Chargeable garden waste bin",
+            "collectionDate": "15/11/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "15/11/2022"
+        },
+        {
+            "type": "Plastics and Glass wheeled bin",
+            "collectionDate": "15/11/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "22/11/2022"
+        },
+        {
+            "type": "Paper and Cardboard wheeled bin",
+            "collectionDate": "22/11/2022"
+        },
+        {
+            "type": "Waste wheeled bin",
+            "collectionDate": "22/11/2022"
+        },
+        {
+            "type": "Chargeable garden waste bin",
+            "collectionDate": "29/11/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "29/11/2022"
+        },
+        {
+            "type": "Plastics and Glass wheeled bin",
+            "collectionDate": "29/11/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "06/12/2022"
+        },
+        {
+            "type": "Paper and Cardboard wheeled bin",
+            "collectionDate": "06/12/2022"
+        },
+        {
+            "type": "Waste wheeled bin",
+            "collectionDate": "06/12/2022"
+        },
+        {
+            "type": "Chargeable garden waste bin",
+            "collectionDate": "13/12/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "13/12/2022"
+        },
+        {
+            "type": "Plastics and Glass wheeled bin",
+            "collectionDate": "13/12/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "20/12/2022"
+        },
+        {
+            "type": "Paper and Cardboard wheeled bin",
+            "collectionDate": "20/12/2022"
+        },
+        {
+            "type": "Waste wheeled bin",
+            "collectionDate": "20/12/2022"
+        },
+        {
+            "type": "Chargeable garden waste bin",
+            "collectionDate": "27/12/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "27/12/2022"
+        },
+        {
+            "type": "Plastics and Glass wheeled bin",
+            "collectionDate": "27/12/2022"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "03/01/2023"
+        },
+        {
+            "type": "Paper and Cardboard wheeled bin",
+            "collectionDate": "03/01/2023"
+        },
+        {
+            "type": "Waste wheeled bin",
+            "collectionDate": "03/01/2023"
+        },
+        {
+            "type": "Chargeable garden waste bin",
+            "collectionDate": "10/01/2023"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "10/01/2023"
+        },
+        {
+            "type": "Plastics and Glass wheeled bin",
+            "collectionDate": "10/01/2023"
+        },
+        {
+            "type": "Food recycling box",
+            "collectionDate": "17/01/2023"
+        }
+    ]
+}
