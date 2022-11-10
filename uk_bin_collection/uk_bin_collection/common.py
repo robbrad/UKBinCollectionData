@@ -74,6 +74,16 @@ def get_date_with_ordinal(date_number: int) -> str:
     )
 
 
+def remove_ordinal_indicator_from_date_string(date_string: str) -> str:
+    """
+    Remove the ordinal indicator from a written date as a string.
+    E.g. June 12th 2022 -> June 12 2022
+    :rtype: str
+    """
+    ord_day_pattern = re.compile(r"(?<=\d)(st|nd|rd|th)")
+    return re.compile(ord_day_pattern).sub("", date_string)
+
+
 def parse_header(raw_header: str) -> dict:
     """
     Parses a header string and returns one that can be useful
