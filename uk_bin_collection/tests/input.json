@@ -1,4 +1,8 @@
 {
+    "BCPCouncil": {
+        "url": "https://online.bcpcouncil.gov.uk/bindaylookup/",
+        "uprn": "100040810214"
+    },
     "BexleyCouncil": {
         "url": "https://www.bexley.gov.uk/",
         "uprn": "spamstorage@live.co.uk"

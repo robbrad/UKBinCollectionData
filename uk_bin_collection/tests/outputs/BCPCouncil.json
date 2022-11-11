@@ -1,0 +1,28 @@
+{
+    "bins": [
+        {
+            "type": "Recycling",
+            "collectionDate": "16/11/2022"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "22/11/2022"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "23/11/2022"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "30/11/2022"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "06/12/2022"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "07/12/2022"
+        }
+    ]
+}
