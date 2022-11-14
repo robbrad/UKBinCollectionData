@@ -17,7 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        # UPRN is passed in via a cookie
+        # UPRN is passed in via a cookie. Set cookies/params and GET the page
         cookies = {
             'JSESSIONID': '96F2A15C14569B2ED2BBEB140FE86532',
             'SVBINZONE':  f'SOUTH%3AUPRN%40{user_uprn}',
@@ -41,24 +41,30 @@ class CouncilClass(AbstractGetBinDataClass):
             'ebd':      '0',
             'ebz':      '1_1668467255368',
         }
-
         response = requests.get('https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb', params=params,
                                 headers=headers, cookies=cookies)
+
+        # Parse response text for super speedy finding
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
 
         data = {"bins": []}
 
+        # Page has slider info side by side, which are two instances of this class
         for bin in soup.find_all("div", {"class": "binextra"}):
             bin_info = bin.text.split("-")
             try:
+                # No date validation since year isn't included on webpage
                 bin_date = bin_info[0].strip()
                 bin_type = str.capitalize(bin_info[1].strip())
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
+
+            # Build data dict for each entry
             dict_data = {
                 "type":           bin_type,
                 "collectionDate": bin_date,
             }
             data["bins"].append(dict_data)
+
         return data
