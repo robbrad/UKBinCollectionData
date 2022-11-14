@@ -17,6 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
+        # UPRN is passed in via a cookie
         cookies = {
             'JSESSIONID': '96F2A15C14569B2ED2BBEB140FE86532',
             'SVBINZONE':  f'SOUTH%3AUPRN%40{user_uprn}',
@@ -40,8 +41,6 @@ class CouncilClass(AbstractGetBinDataClass):
             'ebd':      '0',
             'ebz':      '1_1668467255368',
         }
-
-        s = requests.session()
 
         response = requests.get('https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb', params=params,
                                 headers=headers, cookies=cookies)
