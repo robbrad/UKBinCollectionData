@@ -1,8 +1,8 @@
+import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-import requests
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -16,7 +16,6 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
-
 
         cookies = {
             'JSESSIONID': '96F2A15C14569B2ED2BBEB140FE86532',
