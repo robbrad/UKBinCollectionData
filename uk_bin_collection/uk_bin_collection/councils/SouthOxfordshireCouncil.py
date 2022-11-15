@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # UPRN is passed in via a cookie. Set cookies/params and GET the page
         cookies = {
-            'JSESSIONID': '96F2A15C14569B2ED2BBEB140FE86532',
+            # 'JSESSIONID': '96F2A15C14569B2ED2BBEB140FE86532',
             'SVBINZONE':  f'SOUTH%3AUPRN%40{user_uprn}',
         }
         headers = {
@@ -39,7 +39,7 @@ class CouncilClass(AbstractGetBinDataClass):
         params = {
             'SOVA_TAG': 'SOUTH',
             'ebd':      '0',
-            'ebz':      '1_1668467255368',
+            # 'ebz':      '1_1668467255368',
         }
         response = requests.get('https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb', params=params,
                                 headers=headers, cookies=cookies)
