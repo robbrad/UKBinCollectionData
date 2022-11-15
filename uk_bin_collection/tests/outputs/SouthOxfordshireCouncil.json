@@ -1,0 +1,12 @@
+{
+    "bins": [
+        {
+            "type": "Food bin, green bin, textiles and garden waste bin",
+            "collectionDate": "Friday 18 November"
+        },
+        {
+            "type": "Food bin, grey bin and small electrical items",
+            "collectionDate": "Friday 25 November"
+        }
+    ]
+}
