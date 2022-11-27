@@ -3,9 +3,6 @@ import argparse
 import os
 import sys
 
-x = os.name
-print(x)
-
 if os.name == "nt":
     from get_bin_data import AbstractGetBinDataClass
 else:
