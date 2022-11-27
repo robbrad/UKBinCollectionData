@@ -3,7 +3,10 @@ import argparse
 import os
 import sys
 
-if os.name == "Windows":
+x = os.name
+print(x)
+
+if os.name == "nt":
     from get_bin_data import AbstractGetBinDataClass
 else:
     from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
