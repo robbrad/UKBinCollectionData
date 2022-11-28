@@ -102,6 +102,10 @@
         "postcode": "TW19 5NF",
         "house_number": "11"
     },
+    "TamesideMBCouncil": {
+        "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
+        "uprn": "100012835362"
+    },
     "YorkCouncil": {
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
         "uprn": "100050535540"
