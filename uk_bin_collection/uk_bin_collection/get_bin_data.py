@@ -68,7 +68,7 @@ class AbstractGetBinDataClass(ABC):
 
         # Make the Request - change the URL - find out your property number
         try:
-            full_page = requests.get(url, headers, verify=False)
+            full_page = requests.get(url, headers)
             return full_page
         except requests.exceptions.HTTPError as errh:
             LOGGER.error(f"Http Error: {errh}")
