@@ -23,6 +23,7 @@ pycodestyle:
 
 ## @Testing runs unit tests
 integration-tests: ## runs unit tests for the project
+	poetry run cd uk_bin_collection/tests/
 	poetry run coverage run --omit "*/tests/*" -m behavex --parallel-processes 4 -D runner.continue_after_failed_step=true -o build/$(matrix)/allure-results
 
 unit-tests:
