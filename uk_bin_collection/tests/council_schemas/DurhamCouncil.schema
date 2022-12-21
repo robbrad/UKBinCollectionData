@@ -1,0 +1,13 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "type": "object",
+    "properties": {
+        "gardenwaste": { "type": "string", "format": "date" },
+        "recycling":   { "type": "string", "format": "date" },
+        "rubbish":     { "type": "string", "format": "date" }
+    },
+    "required": [
+        "recycling",
+        "rubbish"
+    ]
+}
