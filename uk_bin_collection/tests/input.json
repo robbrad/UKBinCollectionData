@@ -31,8 +31,12 @@
         "uprn": "100012791226"
     },
     "DoncasterCouncil": {
-    "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
-    "uprn": "100050768956"
+        "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
+        "uprn": "100050768956"
+    },
+    "DurhamCouncil": {
+        "url": "https://www.durham.gov.uk/bincollections?uprn=",
+        "uprn": "200003218818"
     },
     "EastDevonDC": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
     "EastRidingCouncil": {
@@ -61,6 +65,7 @@
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewarkAndSherwoodDC": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
+    "NorthLanarkshireCouncil": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
     "SouthAyrshireCouncil": {
         "url": "https://www.south-ayrshire.gov.uk/",
         "postcode":"KA19 7BN",

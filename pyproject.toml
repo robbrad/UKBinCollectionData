@@ -19,6 +19,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.dev-dependencies]
 allure-behave = "^2.9.45"
 behave = "*"
+behavex = "*"
 behave-html-formatter = "^0.9.10"
 black = "*"
 coverage = "*"

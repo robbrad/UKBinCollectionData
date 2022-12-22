@@ -18,6 +18,7 @@ Feature: Test each council output matches expected results in /outputs
             | CheshireEastCouncil |
             | CrawleyBoroughCouncil |
             | DoncasterCouncil |
+            | DurhamCouncil |
             | EastDevonDC |
             | FenlandDistrictCouncil |
             | HuntingdonDistrictCouncil |
@@ -27,6 +28,7 @@ Feature: Test each council output matches expected results in /outputs
             | NELincs |
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
+            | NorthLanarkshireCouncil |
             | SouthAyrshireCouncil |
             | SouthOxfordshireCouncil |
             | SouthTynesideCouncil |
