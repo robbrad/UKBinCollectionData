@@ -6,6 +6,8 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/robbrad/UKBinCollectionData/Test%20Councils?style=for-the-badge)
 ![Codecov](https://img.shields.io/codecov/c/gh/robbrad/UKBinCollectionData?style=for-the-badge)
 
+[![pages-build-deployment](https://github.com/robbrad/UKBinCollectionData/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/robbrad/UKBinCollectionData/actions/workflows/pages/pages-build-deployment) [![Test Councils](https://github.com/robbrad/UKBinCollectionData/actions/workflows/behave.yml/badge.svg)](https://github.com/robbrad/UKBinCollectionData/actions/workflows/behave.yml)
+
 # UK Bin Collection Data (UKBCD)
 This project aims to provide a neat and standard way of providing bin collection data in JSON format from UK councils that have no API to do so.
 
@@ -73,6 +75,13 @@ To make a request for your council, first check the [Issues](https://github.com/
 - Any further information
 
 Please be aware that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get a script.
+
+---
+
+## Reports
+
+- [3.9](https://robbrad.github.io/UKBinCollectionData/3.9/)
+- [3.8](https://robbrad.github.io/UKBinCollectionData/3.8/)
 
 ---
 
