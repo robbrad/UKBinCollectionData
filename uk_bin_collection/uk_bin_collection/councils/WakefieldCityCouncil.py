@@ -1,7 +1,10 @@
 # This script pulls (in one hit) the data
 # from Warick District Council Bins Data
 from bs4 import BeautifulSoup
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+import requests
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -13,40 +16,73 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
 
+        # UPRN passed in as an argument
+        user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
+
+        cookies = {
+            'visid_incap_2049675':    'xZCc/tFgSzaFmZD7XkN3koJGuGMAAAAAQUIPAAAAAAB7QGC8d+Jmlk0i3y06Zer6',
+            'WSS_FullScreenMode':     'false',
+            'incap_ses_1184_2049675': 'a2ZQQ9lCM3wa4+23mWpuEHnAuGMAAAAAfl4ebLXAvItl6dCfbMEWoQ==',
+        }
+        headers = {
+            'authority':                 'www.wakefield.gov.uk',
+            'accept':                    'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'accept-language':           'en-GB,en;q=0.9',
+            'referer':                   'https://www.wakefield.gov.uk/',
+            'sec-ch-ua':                 '"Not?A_Brand";v="8", "Chromium";v="108", "Brave";v="108"',
+            'sec-ch-ua-mobile':          '?0',
+            'sec-ch-ua-platform':        '"Windows"',
+            'sec-fetch-dest':            'document',
+            'sec-fetch-mode':            'navigate',
+            'sec-fetch-site':            'same-origin',
+            'sec-fetch-user':            '?1',
+            'sec-gpc':                   '1',
+            'upgrade-insecure-requests': '1',
+            'user-agent':                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        }
+
+        params = {
+            'uprn': user_uprn,
+        }
+
+        # Make a GET for the data with correct params and cookies
+        response = requests.get('https://www.wakefield.gov.uk/site/Where-I-Live-Results', params=params,
+                                cookies=cookies, headers=headers, verify=False)
+
+        # Have BS4 process the page
+        soup = BeautifulSoup(response.text, features="html.parser")
+        soup.prettify()
         data = {"bins": []}
 
-        for bins in soup.findAll(
-            "div", {"class": lambda L: L and L.startswith("mb10 ind-waste-")}
-        ):
+        # Start a tuple for collections with (TYPE:DATE). Add the first for the bin types since they're separate
+        # elements on the page. All dates are parsed from text to datetime
+        collections = [("Household waste",
+                        datetime.strptime(soup.select("#ctl00_PlaceHolderMain_Waste_output > div:nth-child(4) > "
+                                                      "div:nth-child(3) > div:nth-child(2)")[0].text, "%d/%m/%Y")),
+                       ("Mixed recycling",
+                        datetime.strptime(soup.select("#ctl00_PlaceHolderMain_Waste_output > div:nth-child(6) > "
+                                                      "div:nth-child(3) > div:nth-child(2)")[0].text, "%d/%m/%Y"))]
 
-            # Get the type of bin
-            bin_types = bins.find_all("div", {"class": "mb10"})
-            bin_type = bin_types[0].get_text(strip=True)
+        # Process the hidden future collection dates by adding them to the tuple
+        household_future_table = soup.find("table", {"class": "mb10 wilWasteContent RESIDUAL (D)FutureData"}) \
+            .find_all("td")
+        for x in household_future_table:
+            collections.append(("Household waste", datetime.strptime(x.text, "%d/%m/%Y")))
+        recycling_future_table = soup.find("table", {"class": "mb10 wilWasteContent RECYCLING (D)FutureData"})\
+            .find_all("td")
+        for x in recycling_future_table:
+            collections.append(("Mixed recycling", datetime.strptime(x.text, "%d/%m/%Y")))
 
-            # Find the collection dates
-            binCollections = bins.find_all(
-                "div", {"class": lambda L: L and L.startswith("col-sm-4")}
-            )
-
-            if binCollections:
-                lastCollections = binCollections[0].find_all("div")
-                nextCollections = binCollections[1].find_all("div")
-
-                # Get the collection date
-                lastCollection = lastCollections[1].get_text(strip=True)
-                nextCollection = nextCollections[1].get_text(strip=True)
-
-                if lastCollection:
-                    dict_data = {
-                        "bin_type": bin_type,
-                        "Last Collection Date": lastCollection,
-                        "Next Collection Date": nextCollection,
-                    }
-
-                    data["bins"].append(dict_data)
+        # Order the data by datetime, then add to and return it as a dictionary
+        ordered_data = sorted(collections, key=lambda x: x[1])
+        data = {"bins": []}
+        for item in ordered_data:
+            dict_data = {
+                "type":           item[0],
+                "collectionDate": item[1].strftime(date_format)
+            }
+            data["bins"].append(dict_data)
 
         return data
