@@ -1,0 +1,368 @@
+{
+    "bins": [
+        {
+            "type": "Black Bag",
+            "collectionDate": "12/01/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "12/01/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "19/01/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "26/01/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "26/01/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "02/02/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "09/02/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "09/02/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "16/02/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "23/02/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "23/02/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "02/03/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "09/03/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "09/03/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "16/03/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "16/03/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "23/03/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "23/03/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "30/03/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "30/03/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "06/04/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "06/04/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "13/04/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "13/04/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "20/04/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "20/04/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "27/04/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "27/04/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "04/05/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "04/05/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "11/05/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "11/05/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "18/05/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "18/05/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "25/05/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "25/05/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "01/06/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "01/06/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "08/06/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "08/06/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "15/06/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "15/06/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "22/06/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "22/06/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "29/06/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "29/06/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "06/07/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "06/07/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "13/07/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "13/07/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "20/07/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "20/07/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "03/08/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "03/08/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "10/08/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "10/08/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "17/08/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "17/08/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "24/08/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "24/08/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "31/08/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "31/08/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "07/09/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "07/09/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "14/09/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "14/09/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "21/09/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "21/09/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "28/09/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "28/09/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "05/10/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "05/10/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "12/10/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "12/10/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "19/10/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "19/10/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "26/10/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "26/10/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "02/11/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "02/11/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "09/11/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "09/11/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "16/11/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "16/11/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "23/11/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "23/11/2023"
+        },
+        {
+            "type": "Black Bag",
+            "collectionDate": "30/11/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "30/11/2023"
+        },
+        {
+            "type": "Separated recycling",
+            "collectionDate": "07/12/2023"
+        }
+    ]
+}
