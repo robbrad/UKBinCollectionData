@@ -1,0 +1,48 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome8",
+    "definitions": {
+        "Welcome8": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "Welcome8"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/Type"
+                },
+                "collectionDate": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "collectionDate",
+                "type"
+            ],
+            "title": "Bin"
+        },
+        "Type": {
+            "type": "string",
+            "enum": [
+                "Special collection (bookable)",
+                "Regular bin (green)",
+                "Recycling bin (grey)"
+            ],
+            "title": "Type"
+        }
+    }
+}
