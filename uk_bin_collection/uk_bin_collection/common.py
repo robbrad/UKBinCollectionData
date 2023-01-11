@@ -138,3 +138,7 @@ Returns a list of dates of a given weekday from a start date for the given amoun
     """
     return pd.date_range(start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount)\
         .strftime('%d/%m/%Y').tolist()
+
+
+def remove_alpha_characters(input_string: str) -> str:
+    return ''.join(c for c in input_string if c.isdigit() or c == " ")
