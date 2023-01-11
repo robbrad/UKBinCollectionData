@@ -52,8 +52,8 @@ class CouncilClass(AbstractGetBinDataClass):
         # Load the JSON and seek out the bin week text, then add it to the calendar URL and make a GET request.
         bin_week = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Your_Refuse_round_is"]).replace(" ", "-")
         weekly_collection = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Recycling__type"]).capitalize()
-        # schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/{bin_week}.aspx"
-        schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/Monday-Week-2.aspx"
+        weekly_dates = dates_in_period(datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48)
+        schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/{bin_week}.aspx"
         response = requests.get(schedule_url, verify=False)
 
         # BS4 parses the calendar
@@ -120,6 +120,8 @@ class CouncilClass(AbstractGetBinDataClass):
                         collections.append((table_headers[2].text.strip(), bin_date))
                     except Exception as ex:
                         continue
+        for date in weekly_dates:
+            collections.append((weekly_collection, datetime.strptime(date, date_format)))
 
         ordered_data = sorted(collections, key=lambda x: x[1])
         data = {"bins": []}
