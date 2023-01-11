@@ -1,3 +1,5 @@
+import math
+from datetime import *
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -15,14 +17,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        requests.packages.urllib3.disable_warnings()
         data = {"bins": []}
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
+        # Get form data
         s = requests.session()
-
         cookies = {
             'has_js':                                '1',
             'SSESS6ec6d5d2d471c0357053d5993a839bce': 'nDJusnUyqrl2rk8LaiyDv3VaLUwSadRLGLPUpG2e2PY',
@@ -137,27 +140,53 @@ class CouncilClass(AbstractGetBinDataClass):
             'form_build_id': 'form-O65oY-ly-CYJlnQrhohK2uS1OP-4vXsS3CqYXD7-BeM',
             'form_id':       'ntc_address_wizard',
         }
+        collections = []
 
         response = s.post('https://my.northtyneside.gov.uk/system/ajax', cookies=cookies, headers=headers,
                           data=ajax_data, verify=False)
         response = s.post('https://my.northtyneside.gov.uk/category/81/bin-collection-dates', cookies=cookies,
                           headers=headers, data=uprn_data, verify=False)
 
-        # Make a BS4 object
+        # Parse form page and get the day of week text
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
         bin_text = soup.find("section", {"class": "block block-ntc-bins clearfix"})
         regular_text = bin_text.select("p:nth-child(2) > strong")[0].text.strip()
         special_text = bin_text.select("p:nth-child(4) > strong")[0].text.strip()
 
-        regular_collections = dates_in_period(datetime.today(), days_of_week.get(regular_text.capitalize()))
+        # Since calendar only shows until end of March 2024, work out how many weeks that is
+        weeks_total = math.floor((datetime(2024, 4, 1) - datetime.now()).days / 7)
+
+        # Convert day text to series of dates using previous calculation
+        regular_collections = dates_in_period(datetime.today(), days_of_week.get(regular_text.capitalize()),
+                                              amount=weeks_total)
         special_collections = dates_in_period(datetime.today(), days_of_week.get(special_text.capitalize()))
 
-        for bins in soup.select('div[class*="service-item"]'):
-            bin_type = bins.div.h3.text.strip()
-            binCollection = bins.select("div > p")[1].get_text(strip=True)
-            # binImage = "https://myaccount.stockport.gov.uk"   bins.img['src']
-            if binCollection:
-                data[bin_type] = binCollection
+        # Differentiate between regular and recycling bins
+        for item in regular_collections:
+            item_as_date = datetime.strptime(item, date_format)
+            # Check if holiday (calendar only has one day that's a holiday, and it's moved to the next day)
+            if is_holiday(item_as_date, Region.ENGLAND):
+                item_as_date += timedelta(days=1)
+            # Use the isoweek number to separate collections - at the time of writing 11th Jan is week 2, which
+            # is for the grey bin
+            if (item_as_date.date().isocalendar().week % 2) == 0:
+                collections.append(("Recycling bin (grey)", item_as_date))
+            else:
+                collections.append(("Regular bin (green)", item_as_date))
+
+        # Add the special collection dates to the collection tuple
+        collections += [("Special collection (bookable)", datetime.strptime(item, date_format))
+                        for item in special_collections]
+
+        # Sort the collections tuple by date, the add to dictionary and return
+        ordered_data = sorted(collections, key=lambda x: x[1])
+        data = {"bins": []}
+        for item in ordered_data:
+            dict_data = {
+                "type": item[0],
+                "collectionDate": item[1].strftime(date_format),
+            }
+            data["bins"].append(dict_data)
 
         return data
