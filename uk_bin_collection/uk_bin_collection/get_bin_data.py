@@ -63,7 +63,8 @@ class AbstractGetBinDataClass(ABC):
         url -- the url to get the data from
         """
         # Set a user agent so we look like a browser ;-)
-        user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
+                     "Chrome/108.0.0.0 Safari/537.36"
         headers = {"User-Agent": user_agent}
 
         # Make the Request - change the URL - find out your property number
