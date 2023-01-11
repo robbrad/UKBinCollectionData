@@ -1,11 +1,19 @@
+import calendar
 import re
 from datetime import datetime
 from enum import Enum
 
 import holidays
+import pandas as pd
 
 date_format = "%d/%m/%Y"
-
+days_of_week = {"Monday": 0,
+                "Tuesday": 1,
+                "Wednesday": 2,
+                "Thursday": 3,
+                "Friday": 4,
+                "Saturday": 5,
+                "Sunday": 6}
 
 class Region(Enum):
     UK = 1
@@ -118,3 +126,15 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         return True
     else:
         return False
+
+
+def dates_in_period(start: datetime, day_of_week: int, amount=8) -> list[datetime]:
+    """
+Returns a list of dates of a given weekday from a start date for the given amount of weeks.
+    :param start: Start date
+    :param day_of_week: Day of week number. Recommended to use calendar.DAY (Monday=0, Sunday=6)
+    :param amount: Number of weeks to get dates. Defaults to 8 weeks.
+    :return: List of dates where the specified weekday is in the period
+    """
+    return pd.date_range(start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount)\
+        .strftime('%d/%m/%Y').tolist()
