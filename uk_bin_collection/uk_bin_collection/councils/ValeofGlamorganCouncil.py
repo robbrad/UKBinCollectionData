@@ -1,12 +1,11 @@
+import calendar
 import json
-
-from bs4 import BeautifulSoup
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 import requests
-import json
-import calendar
+from bs4 import BeautifulSoup
+
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -49,7 +48,8 @@ class CouncilClass(AbstractGetBinDataClass):
         response = requests.get('https://myvale.valeofglamorgan.gov.uk/getdata.aspx', params=params,
                                 headers=headers).text
 
-        # Load the JSON and seek out the bin week text, then add it to the calendar URL and make a GET request.
+        # Load the JSON and seek out the bin week text, then add it to the calendar URL. Also take the weekly
+        # collection type and generate dates for it. Then make a GET request for the calendar
         bin_week = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Your_Refuse_round_is"]).replace(" ", "-")
         weekly_collection = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Recycling__type"]).capitalize()
         weekly_dates = dates_in_period(datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48)
@@ -68,11 +68,13 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get the calendar table and find the headers
         table = soup.find("table", {"class": "TableStyle_Activities"}).find("tbody")
         table_headers = table.find("tr").find_all("th")
+        # For all rows below the header, find all details in th next row
         for tr in soup.find_all('tr')[1:]:
             row = tr.find_all('td')
+            # This is how we get around having tables in tables
             if len(row) == 3:
+                # Parse month and year - month needs converting from text to number
                 month_and_year = row[0].text.split()
-
                 if month_and_year[0] in list(calendar.month_abbr):
                     collection_month = datetime.strptime(month_and_year[0], "%b").month
                 elif month_and_year[0] == "Sept":
@@ -81,6 +83,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     collection_month = datetime.strptime(month_and_year[0], "%B").month
                 collection_year = datetime.strptime(month_and_year[1], "%Y").year
 
+                # Get the first column, remove anything that's not a number or space and then convert to dates
                 for day in remove_alpha_characters(row[1].text.strip()).split():
                     try:
                         bin_date = datetime(collection_year, collection_month, int(day))
@@ -88,7 +91,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     except Exception as ex:
                         continue
 
-                # if row[4].text == "Ring & Request"
+                # Same for second column
                 for day in remove_alpha_characters(row[2].text.strip()).split():
                     try:
                         bin_date = datetime(collection_year, collection_month, int(day))
@@ -96,6 +99,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     except Exception as ex:
                         continue
 
+            # Like above, but mitigates having tables within tables
             elif len(row) == 5:
                 month_and_year = row[0].text.split()
                 if month_and_year[0] in list(calendar.month_abbr):
@@ -120,9 +124,12 @@ class CouncilClass(AbstractGetBinDataClass):
                         collections.append((table_headers[2].text.strip(), bin_date))
                     except Exception as ex:
                         continue
+
+        # Add in weekly dates to the tuple
         for date in weekly_dates:
             collections.append((weekly_collection, datetime.strptime(date, date_format)))
 
+        # Order all the data, only including future dates
         ordered_data = sorted(collections, key=lambda x: x[1])
         data = {"bins": []}
         for item in ordered_data:
@@ -133,14 +140,5 @@ class CouncilClass(AbstractGetBinDataClass):
                     "collectionDate": collection_date.strftime(date_format)
                 }
                 data["bins"].append(dict_data)
-
-
-        print("")
-        # for bins in soup.select('div[class*="service-item"]'):
-        #     bin_type = bins.div.h3.text.strip()
-        #     binCollection = bins.select("div > p")[1].get_text(strip=True)
-        #     # binImage = "https://myaccount.stockport.gov.uk"   bins.img['src']
-        #     if binCollection:
-        #         data[bin_type] = binCollection
 
         return data
