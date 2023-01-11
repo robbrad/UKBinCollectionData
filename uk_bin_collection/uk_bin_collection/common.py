@@ -120,7 +120,7 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         :param region: The UK nation to check. Defaults to UK.
         :return: Bool - true if a holiday, false if not
     """
-    uk_holidays = holidays.country_holidays("GB", subdiv=region.name)
+    uk_holidays = holidays.country_holidays("GB", subdiv=region.name.capitalize())
 
     if date_to_check in uk_holidays:
         return True
