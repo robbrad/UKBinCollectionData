@@ -118,3 +118,7 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         return True
     else:
         return False
+
+
+def remove_alpha_characters(input_string: str) -> str:
+    return ''.join(c for c in input_string if c.isdigit() or c == " ")
