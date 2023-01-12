@@ -83,6 +83,10 @@
     "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
     "TorridgeDistrictCouncil": "10091078762",
+    "ValeofGlamorganCouncil": {
+        "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
+        "uprn": "64029020"
+    },
     "WakefieldCityCouncil": "https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=63183644",
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
