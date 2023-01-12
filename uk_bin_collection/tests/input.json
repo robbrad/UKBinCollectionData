@@ -66,6 +66,11 @@
     "NewarkAndSherwoodDC": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
     "NorthLanarkshireCouncil": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
+    "NorthTynesideCouncil": {
+        "url": "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
+        "postcode": "NE26 2TG",
+        "uprn": "47097627"
+    },
     "SouthAyrshireCouncil": {
         "url": "https://www.south-ayrshire.gov.uk/",
         "postcode":"KA19 7BN",
