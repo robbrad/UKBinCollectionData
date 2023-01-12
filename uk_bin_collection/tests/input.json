@@ -87,6 +87,11 @@
     },
     "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
+    "TonbridgeAndMallingBC": {
+        "url": "https://www.tmbc.gov.uk/",
+        "postcode": "ME19 4JS",
+        "uprn": "10002914589"
+    },
     "TorridgeDistrictCouncil": "10091078762",
     "ValeofGlamorganCouncil": {
         "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
