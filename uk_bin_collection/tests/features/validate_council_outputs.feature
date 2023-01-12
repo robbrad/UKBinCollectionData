@@ -34,6 +34,7 @@ Feature: Test each council output matches expected results in /outputs
             | SouthTynesideCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
+            | TonbridgeAndMallingBC |
             | TorridgeDistrictCouncil |
             | WakefieldCityCouncil |
             | WarwickDistrictCouncil |
