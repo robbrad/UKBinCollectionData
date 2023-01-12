@@ -3,17 +3,20 @@ import re
 from datetime import datetime
 from enum import Enum
 
+import requests
+import json
 import holidays
 import pandas as pd
 
 date_format = "%d/%m/%Y"
-days_of_week = {"Monday": 0,
-                "Tuesday": 1,
+days_of_week = {"Monday":    0,
+                "Tuesday":   1,
                 "Wednesday": 2,
-                "Thursday": 3,
-                "Friday": 4,
-                "Saturday": 5,
-                "Sunday": 6}
+                "Thursday":  3,
+                "Friday":    4,
+                "Saturday":  5,
+                "Sunday":    6}
+
 
 class Region(Enum):
     UK = 1
@@ -28,15 +31,12 @@ def check_postcode(postcode: str):
     Checks a postcode exists and validates UK formatting against a RegEx string
         :param postcode: Postcode to parse
     """
-    postcode_re = "^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$"
-    try:
-        if postcode is None or not re.fullmatch(postcode_re, postcode):
-            raise ValueError("Invalid postcode")
-        return True
-    except Exception as ex:
-        print(f"Exception encountered: {ex}")
-        print("Please check the provided postcode")
-        exit(1)
+    postcode_api_url = "https://api.postcodes.io/postcodes/"
+    postcode_api_response = requests.get(f"{postcode_api_url}{postcode}")
+
+    if postcode_api_response.status_code != 200:
+        raise ValueError(f"{json.loads(postcode_api_response.text)}")
+    return True
 
 
 def check_paon(paon: str):
@@ -136,7 +136,7 @@ Returns a list of dates of a given weekday from a start date for the given amoun
     :param amount: Number of weeks to get dates. Defaults to 8 weeks.
     :return: List of dates where the specified weekday is in the period
     """
-    return pd.date_range(start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount)\
+    return pd.date_range(start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount) \
         .strftime('%d/%m/%Y').tolist()
 
 
