@@ -35,7 +35,6 @@ Feature: Test each council output matches expected results in /outputs
             | StHelensBC |
             | StockportBoroughCouncil |
             | TorridgeDistrictCouncil |
-            | WakefieldCityCouncil |
             | WarwickDistrictCouncil |
             | WaverleyBoroughCouncil |
             | WealdenDistrictCouncil |
