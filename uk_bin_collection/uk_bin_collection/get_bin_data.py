@@ -73,10 +73,11 @@ class AbstractGetBinDataClass(ABC):
         user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
                      "Chrome/108.0.0.0 Safari/537.36"
         headers = {"User-Agent": user_agent}
+        requests.packages.urllib3.disable_warnings()
 
         # Make the Request - change the URL - find out your property number
         try:
-            full_page = requests.get(url, headers)
+            full_page = requests.get(url, headers, verify=False)
             return full_page
         except requests.exceptions.HTTPError as errh:
             LOGGER.error(f"Http Error: {errh}")
