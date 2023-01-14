@@ -8,14 +8,13 @@ def test_check_postcode_valid():
     assert result is True
 
 
-def test_check_postcode_invalid(capfd):
+def test_check_postcode_invalid():
     invalid_postcode = "BADPOSTCODE"
-    with pytest.raises(SystemExit) as exc_info:
+    with pytest.raises(ValueError) as exc_info:
         result = check_postcode(invalid_postcode)
-    out, err = capfd.readouterr()
-    assert out.startswith("Exception encountered: Invalid postcode")
-    assert exc_info.type == SystemExit
-    assert exc_info.value.code == 1
+    assert exc_info._excinfo[1].args[0] == "Exception: Invalid postcode Status: 404"
+    assert exc_info.type == ValueError
+
 
 
 def test_check_paon():
