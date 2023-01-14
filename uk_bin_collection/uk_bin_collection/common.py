@@ -35,7 +35,8 @@ def check_postcode(postcode: str):
     postcode_api_response = requests.get(f"{postcode_api_url}{postcode}")
 
     if postcode_api_response.status_code != 200:
-        raise ValueError(f"{json.loads(postcode_api_response.text)}")
+        val_error = json.loads(postcode_api_response.text)
+        raise ValueError(f"Exception: {val_error['error']} Status: {val_error['status']}")
     return True
 
 
@@ -120,7 +121,7 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         :param region: The UK nation to check. Defaults to UK.
         :return: Bool - true if a holiday, false if not
     """
-    uk_holidays = holidays.country_holidays("GB", subdiv=region.name.capitalize())
+    uk_holidays = holidays.country_holidays("GB", subdiv=region.name)
 
     if date_to_check in uk_holidays:
         return True
