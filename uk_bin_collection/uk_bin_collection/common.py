@@ -128,7 +128,7 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         return False
 
 
-def dates_in_period(start: datetime, day_of_week: int, amount=8) -> list[datetime]:
+def dates_in_period(start: datetime, day_of_week: int, amount=8) -> list:
     """
 Returns a list of dates of a given weekday from a start date for the given amount of weeks.
     :param start: Start date
