@@ -66,6 +66,11 @@
     "NewarkAndSherwoodDC": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
     "NorthLanarkshireCouncil": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
+    "NorthTynesideCouncil": {
+        "url": "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
+        "postcode": "NE26 2TG",
+        "uprn": "47097627"
+    },
     "SouthAyrshireCouncil": {
         "url": "https://www.south-ayrshire.gov.uk/",
         "postcode":"KA19 7BN",
@@ -82,8 +87,17 @@
     },
     "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
+    "TonbridgeAndMallingBC": {
+        "url": "https://www.tmbc.gov.uk/",
+        "postcode": "ME19 4JS",
+        "uprn": "10002914589"
+    },
     "TorridgeDistrictCouncil": "10091078762",
     "WakefieldCityCouncil": "https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=63035490",
+    "ValeofGlamorganCouncil": {
+        "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
+        "uprn": "64029020"
+    },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "uprn": "100070263793"

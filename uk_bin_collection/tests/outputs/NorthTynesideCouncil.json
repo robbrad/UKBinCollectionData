@@ -1,0 +1,288 @@
+{
+    "bins": [
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "11/01/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "17/01/2023"
+        },
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "18/01/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "24/01/2023"
+        },
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "25/01/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "31/01/2023"
+        },
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "01/02/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "07/02/2023"
+        },
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "08/02/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "14/02/2023"
+        },
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "15/02/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "21/02/2023"
+        },
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "22/02/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "28/02/2023"
+        },
+        {
+            "type": "Special collection (bookable)",
+            "collectionDate": "01/03/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "07/03/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "14/03/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "21/03/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "28/03/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "04/04/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "11/04/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "18/04/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "25/04/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "02/05/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "09/05/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "16/05/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "23/05/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "30/05/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "06/06/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "13/06/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "20/06/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "27/06/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "04/07/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "11/07/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "18/07/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "25/07/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "01/08/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "08/08/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "15/08/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "22/08/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "29/08/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "05/09/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "12/09/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "19/09/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "26/09/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "03/10/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "10/10/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "17/10/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "24/10/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "31/10/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "07/11/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "14/11/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "21/11/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "28/11/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "05/12/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "12/12/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "19/12/2023"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "27/12/2023"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "02/01/2024"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "09/01/2024"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "16/01/2024"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "23/01/2024"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "30/01/2024"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "06/02/2024"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "13/02/2024"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "20/02/2024"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "27/02/2024"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "05/03/2024"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "12/03/2024"
+        },
+        {
+            "type": "Recycling bin (grey)",
+            "collectionDate": "19/03/2024"
+        },
+        {
+            "type": "Regular bin (green)",
+            "collectionDate": "26/03/2024"
+        }
+    ]
+}

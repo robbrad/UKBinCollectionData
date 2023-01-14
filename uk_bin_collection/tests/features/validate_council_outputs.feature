@@ -29,12 +29,15 @@ Feature: Test each council output matches expected results in /outputs
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
             | NorthLanarkshireCouncil |
+            | NorthTynesideCouncil |
             | SouthAyrshireCouncil |
             | SouthOxfordshireCouncil |
             | SouthTynesideCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
+            | TonbridgeAndMallingBC |
             | TorridgeDistrictCouncil |
+            | ValeofGlamorganCouncil |
             | WakefieldCityCouncil |
             | WarwickDistrictCouncil |
             | WaverleyBoroughCouncil |
