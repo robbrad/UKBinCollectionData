@@ -49,11 +49,18 @@ class AbstractGetBinDataClass(ABC):
         this_postcode = kwargs.get("postcode", None)
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
-        page = self.get_data(address_url)
-        bin_data_dict = self.parse_data(
+        skip_get_url = kwargs.get("skip_get_url", None)
+        if not skip_get_url or skip_get_url is False: #we will not use the generic way to get data - needs a get data in the council class itself
+            page = self.get_data(address_url)
+            bin_data_dict = self.parse_data(
             page, postcode=this_postcode, paon=this_paon, uprn=this_uprn
-        )
-        return self.output_json(bin_data_dict)
+            )
+            return self.output_json(bin_data_dict)
+        else:
+            self.parse_data(
+            '', postcode=this_postcode, paon=this_paon, uprn=this_uprn
+            )
+            return self.output_json(bin_data_dict)
 
     @classmethod
     def get_data(cls, url) -> str:
