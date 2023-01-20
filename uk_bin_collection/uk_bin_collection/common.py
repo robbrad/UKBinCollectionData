@@ -133,7 +133,7 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         return False
 
 
-def dates_in_period(start: datetime, day_of_week: int, amount=8) -> list:
+def get_weekday_dates_in_period(start: datetime, day_of_week: int, amount=8) -> list:
     """
 Returns a list of dates of a given weekday from a start date for the given amount of weeks.
     :param start: Start date
@@ -143,6 +143,7 @@ Returns a list of dates of a given weekday from a start date for the given amoun
     """
     return pd.date_range(start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount) \
         .strftime('%d/%m/%Y').tolist()
+
 
 
 def remove_alpha_characters(input_string: str) -> str:

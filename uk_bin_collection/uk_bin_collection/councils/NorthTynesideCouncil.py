@@ -158,9 +158,9 @@ class CouncilClass(AbstractGetBinDataClass):
         weeks_total = math.floor((datetime(2024, 4, 1) - datetime.now()).days / 7)
 
         # Convert day text to series of dates using previous calculation
-        regular_collections = dates_in_period(datetime.today(), days_of_week.get(regular_text.capitalize()),
-                                              amount=weeks_total)
-        special_collections = dates_in_period(datetime.today(), days_of_week.get(special_text.capitalize()))
+        regular_collections = get_weekday_dates_in_period(datetime.today(), days_of_week.get(regular_text.capitalize()),
+                                                          amount=weeks_total)
+        special_collections = get_weekday_dates_in_period(datetime.today(), days_of_week.get(special_text.capitalize()))
 
         # Differentiate between regular and recycling bins
         for item in regular_collections:
