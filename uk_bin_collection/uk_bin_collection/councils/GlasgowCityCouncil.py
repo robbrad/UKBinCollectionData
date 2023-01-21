@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -21,7 +22,8 @@ class CouncilClass(AbstractGetBinDataClass):
                      "../images/bins/cal_green.png":  "General waste",
                      "../images/bins/cal_grey.png":   "Food waste",
                      "../images/bins/cal_brown.png":  "Organic waste",
-                     "../images/bins/cal_purple.png": "Glass"}
+                     "../images/bins/cal_purple.png": "Glass",
+                     "../Images/Bins/cal_Ash.png": "Ash bin"}
 
         # Find the page body with all the calendars
         body = soup.find("div", {"id": "printArticle"})
