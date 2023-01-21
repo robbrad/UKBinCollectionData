@@ -42,6 +42,7 @@
                 "General waste",
                 "Mixed recycling",
                 "Food waste",
+                "Ash bin",
                 "Glass"
             ],
             "title": "Type"
