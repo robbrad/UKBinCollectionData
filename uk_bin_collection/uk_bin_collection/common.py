@@ -116,7 +116,7 @@ def parse_header(raw_header: str) -> dict:
 
 def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
     """
-    Checks if a given date is a public holiday.
+    Checks if a given date is a public holiday
         :param date_to_check: Date to check if holiday
         :param region: The UK nation to check. Defaults to UK.
         :return: Bool - true if a holiday, false if not
@@ -133,9 +133,9 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         return False
 
 
-def dates_in_period(start: datetime, day_of_week: int, amount=8) -> list:
+def get_weekday_dates_in_period(start: datetime, day_of_week: int, amount=8) -> list:
     """
-Returns a list of dates of a given weekday from a start date for the given amount of weeks.
+Returns a list of dates of a given weekday from a start date for the given amount of weeks
     :param start: Start date
     :param day_of_week: Day of week number. Recommended to use calendar.DAY (Monday=0, Sunday=6)
     :param amount: Number of weeks to get dates. Defaults to 8 weeks.
@@ -143,6 +143,19 @@ Returns a list of dates of a given weekday from a start date for the given amoun
     """
     return pd.date_range(start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount) \
         .strftime('%d/%m/%Y').tolist()
+
+
+def get_dates_every_x_days(start: datetime, x: int, amount: int = 8) -> list:
+    """
+Returns a list of dates for `X` days from start date. For example, calling `get_stepped_dates_in_period(s, 21, 4)` would
+return `4` dates every `21` days from the start date `s`
+    :param start: Date to start from
+    :param x: X amount of days
+    :param amount: Number of dates to find
+    :return: List of dates every X days from start date
+    :rtype: list
+    """
+    return pd.date_range(start=start, freq=f"{x}D", periods=amount).strftime('%d/%m/%Y').tolist()
 
 
 def remove_alpha_characters(input_string: str) -> str:

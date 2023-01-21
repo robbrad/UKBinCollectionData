@@ -53,7 +53,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # collection type and generate dates for it. Then make a GET request for the calendar
         bin_week = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Your_Refuse_round_is"]).replace(" ", "-")
         weekly_collection = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Recycling__type"]).capitalize()
-        weekly_dates = dates_in_period(datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48)
+        weekly_dates = get_weekday_dates_in_period(datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48)
         schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/{bin_week}.aspx"
         response = requests.get(schedule_url, verify=False)
 
