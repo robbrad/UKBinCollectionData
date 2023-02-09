@@ -36,6 +36,7 @@ Feature: Test each council output matches expected results in /outputs
             | SouthTynesideCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
+            | TamesideMBCouncil |
             | TonbridgeAndMallingBC |
             | TorridgeDistrictCouncil |
             | ValeofGlamorganCouncil |
