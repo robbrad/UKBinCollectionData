@@ -41,7 +41,7 @@
     "EastDevonDC": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
     "EastRidingCouncil": {
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
-        "postcode": "HU178LL"
+        "postcode": "HU17 8LG"
     },
     "FenlandDistrictCouncil":{
         "url": "https://www.fenland.gov.uk/article/13114/",
