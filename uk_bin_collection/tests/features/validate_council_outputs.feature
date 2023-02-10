@@ -30,6 +30,7 @@ Feature: Test each council output matches expected results in /outputs
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
             | NorthLanarkshireCouncil |
+            | NorthSomersetCouncil |
             | NorthTynesideCouncil |
             | SouthAyrshireCouncil |
             | SouthOxfordshireCouncil |
