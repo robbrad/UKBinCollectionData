@@ -54,6 +54,10 @@
         "postcode":"LS6 2SE",
         "house_number":"1"
     },
+    "MaldonDistrictCouncil": {
+        "url": "https://maldon.suez.co.uk/maldon/ServiceSummary",
+        "uprn": "100090557253"
+    },
     "ManchesterCityCouncil": {
         "url": "https://www.manchester.gov.uk/bincollections",
         "uprn": "000077048077"

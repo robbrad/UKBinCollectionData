@@ -25,6 +25,7 @@ Feature: Test each council output matches expected results in /outputs
             | GlasgowCityCouncil |
             | HuntingdonDistrictCouncil |
             | LeedsCityCouncil |
+            | MaldonDistrictCouncil |
             | ManchesterCityCouncil |
             | MidSussexDistrictCouncil |
             | NELincs |
