@@ -30,6 +30,11 @@
         "url": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1621149987573",
         "uprn": "100012791226"
     },
+    "CroydonCouncil": {
+        "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
+        "postcode": "SE25 5DW",
+        "uprn": ""
+    },
     "DoncasterCouncil": {
         "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
         "uprn": "100050768956"
