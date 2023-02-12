@@ -1,3 +1,4 @@
+import time
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -86,6 +87,9 @@ def get_csrf_token(s: requests.session, base_url: str) -> str:
         p = re.compile('var CSRF = (\'|")(.*?)(\'|");')
         m = p.search(script)
         csrf_token = m.groups()[1]
+    else:
+        raise ValueError("Code 1: Failed to get a CSRF token. Please ensure the council website is online first,"
+                         " then open an issue on GitHub.")
     return csrf_token
 
 
@@ -139,6 +143,11 @@ def get_address_id(s: requests.session, base_url: str, csrf_token: str, postcode
                 if address.get("dropdown_display_field").split()[0] == paon.strip():
                     address_id = address.get("id")
                     break
+        # Check match was found
+        if address_id == "0":
+            raise ValueError("Code 2: No matching address for house number/full address found.")
+    else:
+        raise ValueError("Code 3: No addresses found for provided postcode.")
     return address_id
 
 
@@ -150,6 +159,7 @@ def get_collection_data(s: requests.session, base_url: str, csrf_token: str, add
         :param base_url: Base URL to use
         :param csrf_token: CSRF token to use
         :param address_id: Address id to use
+        :param retries: Retries count
         :return: Collection data
     """
     collection_data = ""
@@ -160,9 +170,12 @@ def get_collection_data(s: requests.session, base_url: str, csrf_token: str, add
             "submitted_widget_group_id": "PWG0002644EECEC1",
             "submitted_widget_group_type": "modify",
             "submission_token": "63e9126bacd815.12997577",
-            "payload[PAG0000898EECEC1][PWG0002644EECEC1][PCL0005629EECEC1][formtable][C_63e9126bacfb3][PCF0020408EECEC1]": address_id,
-            "payload[PAG0000898EECEC1][PWG0002644EECEC1][PCL0005629EECEC1][formtable][C_63e9126bacfb3][PCF0021449EECEC1]": "1",
-            "payload[PAG0000898EECEC1][PWG0002644EECEC1][PCL0005629EECEC1][formtable][C_63e9126bacfb3][PCF0020072EECEC1]": "Next",
+            "payload[PAG0000898EECEC1][PWG0002644EECEC1][PCL0005629EECEC1][formtable]"
+            "[C_63e9126bacfb3][PCF0020408EECEC1]": address_id,
+            "payload[PAG0000898EECEC1][PWG0002644EECEC1][PCL0005629EECEC1][formtable]"
+            "[C_63e9126bacfb3][PCF0021449EECEC1]": "1",
+            "payload[PAG0000898EECEC1][PWG0002644EECEC1][PCL0005629EECEC1][formtable]"
+            "[C_63e9126bacfb3][PCF0020072EECEC1]": "Next",
             "submit_fragment_id": "PCF0020072EECEC1",
             "_session_storage": json.dumps({
                 "_global": get_session_storage_global()
@@ -194,6 +207,10 @@ def get_collection_data(s: requests.session, base_url: str, csrf_token: str, add
             if response.status_code == 200 and len(response.text) > 0:
                 json_response = json.loads(response.text)
                 collection_data = json_response["data"]
+            else:
+                raise ValueError("Code 4: Failed to get bin data.")
+        else:
+            raise ValueError("Code 5: Failed to get bin data. Too many requests. Please wait a few minutes before trying again.")
     return collection_data
 
 
@@ -229,9 +246,9 @@ class CouncilClass(AbstractGetBinDataClass):
             # Form a JSON wrapper
             data = {"bins": []}
 
-            for element in collection_record_elements:
-                collection_type = element.find_all("div", {"class": "fragment_presenter_template_show"})[0].text.strip()
-                collection_date = element.find("div", {"class": "bin-collection-next"}).attrs["data-current_value"].strip()
+            for e in collection_record_elements:
+                collection_type = e.find_all("div", {"class": "fragment_presenter_template_show"})[0].text.strip()
+                collection_date = e.find("div", {"class": "bin-collection-next"}).attrs["data-current_value"].strip()
                 dict_data = {
                     "type": collection_type,
                     "collectionDate": datetime.strptime(
@@ -239,5 +256,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
+
+            if len(data["bins"]) == 0:
+                raise ValueError("Code 5: No bin data found. Please ensure the council website is showing data first,"
+                                 " then open an issue on GitHub.")
 
             return data

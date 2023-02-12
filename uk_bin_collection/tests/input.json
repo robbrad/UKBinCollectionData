@@ -33,7 +33,7 @@
     "CroydonCouncil": {
         "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
         "postcode": "SE25 5DW",
-        "uprn": ""
+        "house_number": "13"
     },
     "DoncasterCouncil": {
         "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
