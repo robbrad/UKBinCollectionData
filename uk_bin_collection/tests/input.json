@@ -63,9 +63,9 @@
         "postcode":"RH16 1SS",
         "house_number":"OAKLANDS"
     },
-    "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NewarkAndSherwoodDC": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
+    "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
     "NorthLanarkshireCouncil": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
     "NorthSomersetCouncil": {
         "url": "https://forms.n-somerset.gov.uk/Waste/CollectionSchedule",
@@ -93,17 +93,21 @@
     },
     "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
     "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
+    "TamesideMBCouncil": {
+        "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
+        "uprn": "100012835362"
+    },
     "TonbridgeAndMallingBC": {
         "url": "https://www.tmbc.gov.uk/",
         "postcode": "ME19 4JS",
         "uprn": "10002914589"
     },
     "TorridgeDistrictCouncil": "10091078762",
-    "WakefieldCityCouncil": "https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=63035490",
     "ValeofGlamorganCouncil": {
         "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
         "uprn": "64029020"
     },
+    "WakefieldCityCouncil": "https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=63035490",
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "uprn": "100070263793"
@@ -126,10 +130,6 @@
         "url": "https://my.rbwm.gov.uk/special/find-your-collection-dates",
         "postcode": "TW19 5NF",
         "house_number": "11"
-    },
-    "TamesideMBCouncil": {
-        "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
-        "uprn": "100012835362"
     },
     "YorkCouncil": {
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
