@@ -25,6 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "SelectedUprn": uprn,
         }
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
+        requests.packages.urllib3.disable_warnings()
         response = requests.request("POST", api_url, headers=headers, data=values)
 
         soup = BeautifulSoup(response.text, features="html.parser")
