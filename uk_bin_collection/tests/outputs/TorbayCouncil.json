@@ -1,0 +1,60 @@
+{
+  "bins": [
+    {
+      "type": "Food Caddy",
+      "collectionDate": "22/02/2023"
+    },
+    {
+      "type": "Paper Bag",
+      "collectionDate": "22/02/2023"
+    },
+    {
+      "type": "Recycling Box",
+      "collectionDate": "22/02/2023"
+    },
+    {
+      "type": "Residual Bin",
+      "collectionDate": "22/02/2023"
+    },
+    {
+      "type": "Food Caddy",
+      "collectionDate": "01/03/2023"
+    },
+    {
+      "type": "Paper Bag",
+      "collectionDate": "01/03/2023"
+    },
+    {
+      "type": "Recycling Box",
+      "collectionDate": "01/03/2023"
+    },
+    {
+      "type": "Food Caddy",
+      "collectionDate": "08/03/2023"
+    },
+    {
+      "type": "Paper Bag",
+      "collectionDate": "08/03/2023"
+    },
+    {
+      "type": "Recycling Box",
+      "collectionDate": "08/03/2023"
+    },
+    {
+      "type": "Residual Bin",
+      "collectionDate": "08/03/2023"
+    },
+    {
+      "type": "Food Caddy",
+      "collectionDate": "15/03/2023"
+    },
+    {
+      "type": "Paper Bag",
+      "collectionDate": "15/03/2023"
+    },
+    {
+      "type": "Recycling Box",
+      "collectionDate": "15/03/2023"
+    }
+  ]
+}
