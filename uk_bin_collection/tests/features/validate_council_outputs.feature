@@ -42,6 +42,7 @@ Feature: Test each council output matches expected results in /outputs
             | StockportBoroughCouncil |
             | TamesideMBCouncil |
             | TonbridgeAndMallingBC |
+            | TorbayCouncil |
             | TorridgeDistrictCouncil |
             | ValeofGlamorganCouncil |
             | WarwickDistrictCouncil |
