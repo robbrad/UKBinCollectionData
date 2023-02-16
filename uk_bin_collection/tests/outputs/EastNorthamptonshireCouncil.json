@@ -1,0 +1,44 @@
+{
+  "bins": [
+    {
+      "type": "Recycling",
+      "nextCollectionDate": "20/02/2023"
+    },
+    {
+      "type": "General",
+      "nextCollectionDate": "27/02/2023"
+    },
+    {
+      "type": "Recycling",
+      "nextCollectionDate": "06/03/2023"
+    },
+    {
+      "type": "General",
+      "nextCollectionDate": "13/03/2023"
+    },
+    {
+      "type": "Recycling",
+      "nextCollectionDate": "20/03/2023"
+    },
+    {
+      "type": "General",
+      "nextCollectionDate": "27/03/2023"
+    },
+    {
+      "type": "Recycling",
+      "nextCollectionDate": "03/04/2023"
+    },
+    {
+      "type": "General",
+      "nextCollectionDate": "10/04/2023"
+    },
+    {
+      "type": "Recycling",
+      "nextCollectionDate": "17/04/2023"
+    },
+    {
+      "type": "General",
+      "nextCollectionDate": "24/04/2023"
+    }
+  ]
+}
