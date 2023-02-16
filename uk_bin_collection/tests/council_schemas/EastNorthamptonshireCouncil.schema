@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome10",
+    "definitions": {
+        "Welcome10": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "Welcome10"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/Type"
+                },
+                "nextCollectionDate": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "nextCollectionDate",
+                "type"
+            ],
+            "title": "Bin"
+        },
+        "Type": {
+            "type": "string",
+            "enum": [
+                "Recycling",
+                "General"
+            ],
+            "title": "Type"
+        }
+    }
+}

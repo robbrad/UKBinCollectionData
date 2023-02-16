@@ -32,6 +32,7 @@ Feature: Test each council output matches expected results in /outputs
             | NELincs |
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
+            | EastNorthamptonshireCouncil |
             | NorthLanarkshireCouncil |
             | NorthSomersetCouncil |
             | NorthTynesideCouncil |
