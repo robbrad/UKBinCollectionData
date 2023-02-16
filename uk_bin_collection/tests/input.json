@@ -111,6 +111,10 @@
         "postcode": "ME19 4JS",
         "uprn": "10002914589"
     },
+    "TorbayCouncil": {
+        "url": "https://www.torbay.gov.uk/recycling/bin-collections/",
+        "uprn": "100041053198"
+    },
     "TorridgeDistrictCouncil": "10091078762",
     "ValeofGlamorganCouncil": {
         "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
