@@ -26,12 +26,17 @@ def step_impl(context, council):
         house_number = context.metadata["house_number"]
     else:
         house_number = ""
+    if "SKIP_GET_URL" in context.metadata:
+        skip_url = context.metadata["SKIP_GET_URL"]
+    else:
+        skip_url = ""
     args = [
         council,
         context.metadata["url"],
         f"-u={uprn}",
         f"-p={postcode}",
         f"-n={house_number}",
+        f"-s={skip_url}",
     ]
     context.parse_result = collect_data.main(args)
     pass

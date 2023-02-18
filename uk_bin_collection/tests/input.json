@@ -35,6 +35,12 @@
         "postcode": "SE25 5DW",
         "house_number": "13"
     },
+    "Chilterns": {
+        "url": "https://chiltern.gov.uk/collection-dates",
+        "postcode": "HP14 4LA",
+        "house_number": "HUGHENDEN MANOR, MANOR ROAD, HUGHENDEN VALLEY, HIGH WYCOMBE",
+        "SKIP_GET_URL": "SKIP_GET_URL"
+    },
     "DoncasterCouncil": {
         "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
         "uprn": "100050768956"
