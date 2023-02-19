@@ -11,7 +11,9 @@
         "url": "https://mybins.blackburn.gov.uk/api/mybins/getbincollectiondays?uprn=100010733027&month=8&year=2022",
         "uprn": "100010733027"
     },
-    "BoltonCouncil": "https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=xxxxxxxxxx",
+    "BoltonCouncil": {
+        "url": "https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=xxxxxxxxxx"
+    },
     "BristolCityCouncil": {
         "url": "https://bristolcouncil.powerappsportals.com/completedynamicformunauth/?servicetypeid=7dce896c-b3ba-ea11-a812-000d3a7f1cdc",
         "uprn": "137547"
@@ -49,7 +51,9 @@
         "url": "https://www.durham.gov.uk/bincollections?uprn=",
         "uprn": "200003218818"
     },
-    "EastDevonDC": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
+    "EastDevonDC": {
+        "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX"
+    },
     "EastRidingCouncil": {
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
         "postcode": "HU17 8LG"
@@ -58,8 +62,18 @@
         "url": "https://www.fenland.gov.uk/article/13114/",
         "uprn": "200002981143"
     },
-    "GlasgowCityCouncil": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497",
-    "HuntingdonDistrictCouncil": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
+    "GlasgowCityCouncil": {
+        "url": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497"
+    },
+    "HighPeakCouncil": {
+        "url": "https://www.highpeak.gov.uk/findyourbinday",
+        "postcode": "SK13 8BX",
+        "house_number": "9 Ellison Street, Glossop",
+        "SKIP_GET_URL": "SKIP_GET_URL"
+    },
+    "HuntingdonDistrictCouncil": {
+        "url": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679"
+    },
     "LeedsCityCouncil": {
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
         "postcode":"LS6 2SE",
@@ -78,14 +92,22 @@
         "postcode":"RH16 1SS",
         "house_number":"OAKLANDS"
     },
-    "NewarkAndSherwoodDC": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
-    "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
+    "NewarkAndSherwoodDC": {
+        "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529"
+    },
+    "NewcastleCityCouncil": {
+        "url": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX"
+    },
     "EastNorthamptonshireCouncil": {
         "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/",
         "uprn": "100031021317"
     },
-    "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
-    "NorthLanarkshireCouncil": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
+    "NorthEastLincs": {
+        "url": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline"
+    },
+    "NorthLanarkshireCouncil": {
+        "url": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118"
+    },
     "NorthSomersetCouncil": {
         "url": "https://forms.n-somerset.gov.uk/Waste/CollectionSchedule",
         "postcode": "BS49 5AA",
@@ -110,8 +132,13 @@
         "postcode":"NE33 3JW",
         "house_number":"1"
     },
-    "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
-    "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
+    "StHelensBC": {
+        "url": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1"
+    },
+    "StockportBoroughCouncil": {
+        "url": "https://myaccount.stockport.gov.uk/bin-collections/show/100011434401",
+        "uprn": "100011434401"
+    },
     "TamesideMBCouncil": {
         "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
         "uprn": "100012835362"
