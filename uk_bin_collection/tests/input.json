@@ -58,8 +58,15 @@
         "url": "https://www.fenland.gov.uk/article/13114/",
         "uprn": "200002981143"
     },
-    "GlasgowCityCouncil": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497",
-    "HuntingdonDistrictCouncil": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
+    "GlasgowCityCouncil": {
+        "url": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497"
+    },
+    "HighPeakCouncil": {
+        "url": "https://www.highpeak.gov.uk/findyourbinday",
+        "postcode": "SK13 8BX",
+        "house_number": "9 Ellison Street, Glossop",
+        "SKIP_GET_URL": "SKIP_GET_URL"
+    },
     "LeedsCityCouncil": {
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
         "postcode":"LS6 2SE",
