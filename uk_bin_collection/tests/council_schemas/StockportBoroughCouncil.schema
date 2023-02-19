@@ -1,0 +1,31 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome5",
+    "definitions": {
+        "Welcome5": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "Brown bin": {
+                    "type": "string"
+                },
+                "Blue bin": {
+                    "type": "string"
+                },
+                "Green bin": {
+                    "type": "string"
+                },
+                "Black bin": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Black bin",
+                "Blue bin",
+                "Brown bin",
+                "Green bin"
+            ],
+            "title": "Welcome5"
+        }
+    }
+}

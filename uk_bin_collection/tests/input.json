@@ -11,7 +11,9 @@
         "url": "https://mybins.blackburn.gov.uk/api/mybins/getbincollectiondays?uprn=100010733027&month=8&year=2022",
         "uprn": "100010733027"
     },
-    "BoltonCouncil": "https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=xxxxxxxxxx",
+    "BoltonCouncil": {
+        "url": "https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=xxxxxxxxxx"
+    },
     "BristolCityCouncil": {
         "url": "https://bristolcouncil.powerappsportals.com/completedynamicformunauth/?servicetypeid=7dce896c-b3ba-ea11-a812-000d3a7f1cdc",
         "uprn": "137547"
@@ -35,6 +37,12 @@
         "postcode": "SE25 5DW",
         "house_number": "13"
     },
+    "Chilterns": {
+        "url": "https://chiltern.gov.uk/collection-dates",
+        "postcode": "HP14 4LA",
+        "house_number": "HUGHENDEN MANOR, MANOR ROAD, HUGHENDEN VALLEY, HIGH WYCOMBE",
+        "SKIP_GET_URL": "SKIP_GET_URL"
+    },
     "DoncasterCouncil": {
         "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
         "uprn": "100050768956"
@@ -43,7 +51,9 @@
         "url": "https://www.durham.gov.uk/bincollections?uprn=",
         "uprn": "200003218818"
     },
-    "EastDevonDC": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
+    "EastDevonDC": {
+        "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX"
+    },
     "EastRidingCouncil": {
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
         "postcode": "HU17 8LG"
@@ -52,8 +62,18 @@
         "url": "https://www.fenland.gov.uk/article/13114/",
         "uprn": "200002981143"
     },
-    "GlasgowCityCouncil": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497",
-    "HuntingdonDistrictCouncil": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
+    "GlasgowCityCouncil": {
+        "url": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497"
+    },
+    "HighPeakCouncil": {
+        "url": "https://www.highpeak.gov.uk/findyourbinday",
+        "postcode": "SK13 8BX",
+        "house_number": "9 Ellison Street, Glossop",
+        "SKIP_GET_URL": "SKIP_GET_URL"
+    },
+    "HuntingdonDistrictCouncil": {
+        "url": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679"
+    },
     "LeedsCityCouncil": {
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
         "postcode":"LS6 2SE",
@@ -95,6 +115,10 @@
         "postcode":"KA19 7BN",
         "uprn": "141003134"
     },
+    "SouthNorfolkCouncil": {
+        "url": "https://www.southnorfolkandbroadland.gov.uk/rubbish-recycling/south-norfolk-bin-collection-day-finder",
+        "uprn": "2630102526"
+    },
     "SouthOxfordshireCouncil": {
         "url": "https://www.southoxon.gov.uk/south-oxfordshire-district-council/recycling-rubbish-and-waste/when-is-your-collection-day/",
         "uprn": "10033002851"
@@ -104,8 +128,13 @@
         "postcode":"NE33 3JW",
         "house_number":"1"
     },
-    "StHelensBC": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1",
-    "StockportBoroughCouncil": "https://myaccount.stockport.gov.uk/bin-collections/show/xxxxxxxxxxxx",
+    "StHelensBC": {
+        "url": "https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1"
+    },
+    "StockportBoroughCouncil": {
+        "url": "https://myaccount.stockport.gov.uk/bin-collections/show/100011434401",
+        "uprn": "100011434401"
+    },
     "TamesideMBCouncil": {
         "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
         "uprn": "100012835362"
@@ -114,6 +143,10 @@
         "url": "https://www.tmbc.gov.uk/",
         "postcode": "ME19 4JS",
         "uprn": "10002914589"
+    },
+    "TorbayCouncil": {
+        "url": "https://www.torbay.gov.uk/recycling/bin-collections/",
+        "uprn": "100041053198"
     },
     "TorridgeDistrictCouncil": "10091078762",
     "ValeofGlamorganCouncil": {

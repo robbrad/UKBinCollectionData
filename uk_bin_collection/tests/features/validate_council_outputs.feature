@@ -16,6 +16,7 @@ Feature: Test each council output matches expected results in /outputs
             | CardiffCouncil |
             | CastlepointDistrictCouncil |
             | CheshireEastCouncil |
+            | Chilterns |
             | CrawleyBoroughCouncil |
             | CroydonCouncil |
             | DoncasterCouncil |
@@ -24,6 +25,7 @@ Feature: Test each council output matches expected results in /outputs
             | EastRidingCouncil |
             | FenlandDistrictCouncil |
             | GlasgowCityCouncil |
+            | HighPeakCouncil |
             | HuntingdonDistrictCouncil |
             | LeedsCityCouncil |
             | MaldonDistrictCouncil |
@@ -32,17 +34,20 @@ Feature: Test each council output matches expected results in /outputs
             | NELincs |
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
+            | EastNorthamptonshireCouncil |
             | NorthLanarkshireCouncil |
             | NorthLincolnshireCouncil |
             | NorthSomersetCouncil |
             | NorthTynesideCouncil |
             | SouthAyrshireCouncil |
+            | SouthNorfolkCouncil |
             | SouthOxfordshireCouncil |
             | SouthTynesideCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
             | TamesideMBCouncil |
             | TonbridgeAndMallingBC |
+            | TorbayCouncil |
             | TorridgeDistrictCouncil |
             | ValeofGlamorganCouncil |
             | WarwickDistrictCouncil |
