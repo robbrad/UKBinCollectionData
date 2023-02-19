@@ -92,21 +92,13 @@
         "postcode":"RH16 1SS",
         "house_number":"OAKLANDS"
     },
-    "NewarkAndSherwoodDC": {
-        "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529"
-    },
-    "NewcastleCityCouncil": {
-        "url": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX"
-    },
-    "EastNorthamptonshireCouncil": {
-        "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/",
-        "uprn": "100031021317"
-    },
-    "NorthEastLincs": {
-        "url": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline"
-    },
-    "NorthLanarkshireCouncil": {
-        "url": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118"
+    "NewarkAndSherwoodDC": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
+    "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
+    "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
+    "NorthLanarkshireCouncil": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
+    "NorthLincolnshireCouncil": {
+        "url": "https://www.northlincs.gov.uk/bins-waste-and-recycling/bin-and-box-collection-dates/",
+        "uprn": "100050194170"
     },
     "NorthSomersetCouncil": {
         "url": "https://forms.n-somerset.gov.uk/Waste/CollectionSchedule",
