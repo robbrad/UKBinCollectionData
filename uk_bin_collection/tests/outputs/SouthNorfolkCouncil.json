@@ -1,0 +1,12 @@
+{
+    "bins": [
+        {
+            "type": "RefuseBin",
+            "collectionDate": "23/02/2023"
+        },
+        {
+            "type": "RecycleBin",
+            "collectionDate": "02/03/2023"
+        }
+    ]
+}

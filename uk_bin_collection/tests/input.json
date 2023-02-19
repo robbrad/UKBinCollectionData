@@ -91,6 +91,10 @@
         "postcode":"KA19 7BN",
         "uprn": "141003134"
     },
+    "SouthNorfolkCouncil": {
+        "url": "https://www.southnorfolkandbroadland.gov.uk/rubbish-recycling/south-norfolk-bin-collection-day-finder",
+        "uprn": "2630102526"
+    },
     "SouthOxfordshireCouncil": {
         "url": "https://www.southoxon.gov.uk/south-oxfordshire-district-council/recycling-rubbish-and-waste/when-is-your-collection-day/",
         "uprn": "10033002851"
