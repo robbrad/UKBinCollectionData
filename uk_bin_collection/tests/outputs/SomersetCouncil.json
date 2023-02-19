@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "type": "Garden",
+            "collectionDate": "23/02/2023"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "24/02/2023"
+        },
+        {
+            "type": "Refuse",
+            "collectionDate": "03/03/2023"
+        }
+    ]
+}

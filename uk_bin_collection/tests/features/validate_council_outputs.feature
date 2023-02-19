@@ -38,6 +38,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthLanarkshireCouncil |
             | NorthSomersetCouncil |
             | NorthTynesideCouncil |
+            | SomersetCouncil |
             | SouthAyrshireCouncil |
             | SouthNorfolkCouncil |
             | SouthOxfordshireCouncil |

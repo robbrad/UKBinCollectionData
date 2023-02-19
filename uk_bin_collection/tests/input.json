@@ -118,6 +118,11 @@
         "postcode": "NE26 2TG",
         "uprn": "47097627"
     },
+    "SomersetCouncil": {
+        "url": "https://www.sedgemoor.gov.uk/",
+        "postcode":"TA6 4AA",
+        "uprn": "10090857775"
+    },
     "SouthAyrshireCouncil": {
         "url": "https://www.south-ayrshire.gov.uk/",
         "postcode":"KA19 7BN",
