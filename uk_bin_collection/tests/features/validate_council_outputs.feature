@@ -31,7 +31,7 @@ Feature: Test each council output matches expected results in /outputs
             | MaldonDistrictCouncil |
             | ManchesterCityCouncil |
             | MidSussexDistrictCouncil |
-            | NELincs |
+            | NorthEastLincs |
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
             | EastNorthamptonshireCouncil |
