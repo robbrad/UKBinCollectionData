@@ -75,7 +75,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 # The calendar doesn't include the year, so using this to try to mitigate year change (note: it's
                 # currently January, so no idea if it will work until the end of the year lol)
-                if last_date.date().isocalendar().week < 52:
+                if last_date.date().isocalendar()[1] < 52:
                     curr_bin_date = datetime(last_date.year, curr_bin_date.month, curr_bin_date.day)
                 else:
                     curr_bin_date = datetime(last_date.year + 1, curr_bin_date.month, curr_bin_date.day)
