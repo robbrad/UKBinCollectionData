@@ -9,7 +9,8 @@
     },
     "BlackburnCouncil": {
         "url": "https://mybins.blackburn.gov.uk/api/mybins/getbincollectiondays?uprn=100010733027&month=8&year=2022",
-        "uprn": "100010733027"
+        "uprn": "100010733027",
+        "SKIP_GET_URL": "SKIP_GET_URL"
     },
     "BoltonCouncil": {
         "url": "https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=100010944541"
