@@ -21,16 +21,16 @@ def step_impl(context, council):
     
     if "uprn" in context.metadata:
         uprn = context.metadata["uprn"]
-        args.append[f"-u={uprn}"]
+        args.append(f"-u={uprn}")
     if "postcode" in context.metadata:
         postcode = context.metadata["postcode"]
-        args.append[f"-p={postcode}"]
+        args.append(f"-p={postcode}")
     if "house_number" in context.metadata:
         house_number = context.metadata["house_number"]
-        args.append[f"-n={house_number}"]
+        args.append(f"-n={house_number}")
     if "SKIP_GET_URL" in context.metadata:
         skip_url = context.metadata["SKIP_GET_URL"]
-        args.append[f"-s={skip_url}"]
+        args.append(f"-s={skip_url}")
     context.parse_result = collect_data.main(args)
     pass
 
