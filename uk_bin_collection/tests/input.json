@@ -94,10 +94,14 @@
         "postcode":"RH16 1SS",
         "house_number":"OAKLANDS"
     },
-    "NewarkAndSherwoodDC": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
+    "NewarkAndSherwoodDC": {
+        "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529"
+    },
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
     "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
-    "NorthLanarkshireCouncil": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
+    "NorthLanarkshireCouncil": {
+        "url": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118"
+    },
     "NorthLincolnshireCouncil": {
         "url": "https://www.northlincs.gov.uk/bins-waste-and-recycling/bin-and-box-collection-dates/",
         "uprn": "100050194170"
@@ -155,12 +159,18 @@
         "url": "https://www.torbay.gov.uk/recycling/bin-collections/",
         "uprn": "100041053198"
     },
-    "TorridgeDistrictCouncil": "10091078762",
+    "TorridgeDistrictCouncil": {
+        "url" : "https://collections-torridge.azurewebsites.net/WebService2.asmx",
+        "uprn": "10091078762",
+        "SKIP_GET_URL": "SKIP_GET_URL"
+    },
     "ValeofGlamorganCouncil": {
         "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
         "uprn": "64029020"
     },
-    "WakefieldCityCouncil": "https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=63035490",
+    "WakefieldCityCouncil": {
+        "url": "https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=63035490"
+    },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "uprn": "100070263793"
