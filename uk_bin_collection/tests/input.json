@@ -12,7 +12,7 @@
         "uprn": "100010733027"
     },
     "BoltonCouncil": {
-        "url": "https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=xxxxxxxxxx"
+        "url": "https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=100010944541"
     },
     "BristolCityCouncil": {
         "url": "https://bristolcouncil.powerappsportals.com/completedynamicformunauth/?servicetypeid=7dce896c-b3ba-ea11-a812-000d3a7f1cdc",
