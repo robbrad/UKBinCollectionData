@@ -98,7 +98,10 @@
         "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529"
     },
     "NewcastleCityCouncil": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX",
-    "NorthEastLincs": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline",
+    "NorthEastLincs": {
+        "url": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=11062649&view=timeline",
+        "uprn": "11062649"
+    },
     "NorthLanarkshireCouncil": {
         "url": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118"
     },
