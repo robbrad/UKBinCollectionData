@@ -170,7 +170,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 item_as_date += timedelta(days=1)
             # Use the isoweek number to separate collections - at the time of writing 11th Jan is week 2, which
             # is for the grey bin
-            if (item_as_date.date().isocalendar().week % 2) == 0:
+            if (item_as_date.date().isocalendar()[1] % 2) == 0:
                 collections.append(("Recycling bin (grey)", item_as_date))
             else:
                 collections.append(("Regular bin (green)", item_as_date))
