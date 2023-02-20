@@ -25,7 +25,8 @@
     },
     "CastlepointDistrictCouncil":{
         "url": "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar",
-        "uprn": "4525"
+        "uprn": "4525",
+        "SKIP_GET_URL": "SKIP_GET_URL"
     },
     "ChelmsfordCityCouncil": "100022887131",
     "CheshireEastCouncil": {
