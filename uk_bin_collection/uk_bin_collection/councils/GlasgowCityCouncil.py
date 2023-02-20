@@ -23,7 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
                      "../images/bins/cal_grey.png":   "Food waste",
                      "../images/bins/cal_brown.png":  "Organic waste",
                      "../images/bins/cal_purple.png": "Glass",
-                     "../Images/Bins/cal_Ash.png": "Ash bin"}
+                     "../images/bins/cal_ash.png": "Ash bin"}
 
         # Find the page body with all the calendars
         body = soup.find("div", {"id": "printArticle"})
