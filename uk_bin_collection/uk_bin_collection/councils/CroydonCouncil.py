@@ -20,13 +20,13 @@ def get_headers(base_url: str, method: str) -> dict[str, str]:
         "Connection": "keep-alive",
         "Host": "service.croydon.gov.uk",
         "Origin": base_url,
-        "sec-ch-ua": "\"Not_A Brand\";v=\"99\", \"Google Chrome\";v=\"109\", \"Chromium\";v=\"109\"",
+        "sec-ch-ua": '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
         "sec-ch-ua-mobile": "?0",
         "sec-ch-ua-platform": "Windows",
         "Sec-Fetch-Dest": "document",
         "Sec-Fetch-User": "?1",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)"
-                      " Chrome/109.0.0.0 Safari/537.36"
+        " Chrome/109.0.0.0 Safari/537.36",
     }
     if method.lower() == "post":
         headers["Accept"] = "application/json, text/javascript, */*; q=0.01"
@@ -35,9 +35,11 @@ def get_headers(base_url: str, method: str) -> dict[str, str]:
         headers["Sec-Fetch-Mode"] = "same-origin"
         headers["X-Requested-With"] = "XMLHttpRequest"
     else:
-        headers["Accept"] = "text/html,application/xhtml+xml,application/xml;" \
-                            "q=0.9,image/avif,image/webp,image/apng,*/*;" \
-                            "q=0.8,application/signed-exchange;v=b3;q=0.9"
+        headers["Accept"] = (
+            "text/html,application/xhtml+xml,application/xml;"
+            "q=0.9,image/avif,image/webp,image/apng,*/*;"
+            "q=0.8,application/signed-exchange;v=b3;q=0.9"
+        )
         headers["Sec-Fetch-Mode"] = "navigate"
         headers["Sec-Fetch-Mode"] = "none"
     return headers
@@ -63,9 +65,9 @@ def get_session_storage_global() -> object:
             "w/webpage/bin-day-enter-address",
             "w/webpage/your-bin-collection-details?context_record_id=86083209"
             "&webpage_token=de50c265da927336f526d9d9a44947595c3aa38965aa8c495ac2fb73d272ece8",
-            "w/webpage/bin-day-enter-address"
+            "w/webpage/bin-day-enter-address",
         ],
-        "last_context_record_id": "86086077"
+        "last_context_record_id": "86086077",
     }
 
 
@@ -78,22 +80,29 @@ def get_csrf_token(s: requests.session, base_url: str) -> str:
         :return: CSRF token
     """
     csrf_token = ""
-    response = s.get(base_url + "/wasteservices/w/webpage/bin-day-enter-address", headers=get_headers(base_url, "GET"))
+    response = s.get(
+        base_url + "/wasteservices/w/webpage/bin-day-enter-address",
+        headers=get_headers(base_url, "GET"),
+    )
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
         app_body = soup.find("div", {"class": "app-body"})
         script = app_body.find("script", {"type": "text/javascript"}).string
-        p = re.compile('var CSRF = (\'|")(.*?)(\'|");')
+        p = re.compile("var CSRF = ('|\")(.*?)('|\");")
         m = p.search(script)
         csrf_token = m.groups()[1]
     else:
-        raise ValueError("Code 1: Failed to get a CSRF token. Please ensure the council website is online first,"
-                         " then open an issue on GitHub.")
+        raise ValueError(
+            "Code 1: Failed to get a CSRF token. Please ensure the council website is online first,"
+            " then open an issue on GitHub."
+        )
     return csrf_token
 
 
-def get_address_id(s: requests.session, base_url: str, csrf_token: str, postcode: str, paon: str) -> str:
+def get_address_id(
+    s: requests.session, base_url: str, csrf_token: str, postcode: str, paon: str
+) -> str:
     """
     Gets the address ID
         :rtype: str
@@ -108,25 +117,28 @@ def get_address_id(s: requests.session, base_url: str, csrf_token: str, postcode
     # Get the addresses for the postcode
     form_data = {
         "code_action": "search",
-        "code_params": "{\"search_item\":\"" + postcode + "\",\"is_ss\":true}",
+        "code_params": '{"search_item":"' + postcode + '","is_ss":true}',
         "fragment_action": "handle_event",
         "fragment_id": "PCF0020408EECEC1",
         "fragment_collection_class": "formtable",
-        "fragment_collection_editable_values": "{\"PCF0021449EECEC1\":\"1\"}",
-        "_session_storage": json.dumps({
-            "/wasteservices/w/webpage/bin-day-enter-address": {},
-            "_global": get_session_storage_global()
-        }),
+        "fragment_collection_editable_values": '{"PCF0021449EECEC1":"1"}',
+        "_session_storage": json.dumps(
+            {
+                "/wasteservices/w/webpage/bin-day-enter-address": {},
+                "_global": get_session_storage_global(),
+            }
+        ),
         "action_cell_id": "PCL0005629EECEC1",
         "action_page_id": "PAG0000898EECEC1",
-        "form_check_ajax": csrf_token
+        "form_check_ajax": csrf_token,
     }
     response = s.post(
-        base_url + "/wasteservices/w/webpage/bin-day-enter-address?webpage_subpage_id=PAG0000898EECEC1"
-                   "&webpage_token=faab02e1f62a58f7bad4c2ae5b8622e19846b97dde2a76f546c4bb1230cee044"
-                   "&widget_action=fragment_action",
+        base_url
+        + "/wasteservices/w/webpage/bin-day-enter-address?webpage_subpage_id=PAG0000898EECEC1"
+        "&webpage_token=faab02e1f62a58f7bad4c2ae5b8622e19846b97dde2a76f546c4bb1230cee044"
+        "&widget_action=fragment_action",
         headers=get_headers(base_url, "POST"),
-        data=form_data
+        data=form_data,
     )
     if response.status_code == 200:
         json_response = json.loads(response.text)
@@ -145,13 +157,17 @@ def get_address_id(s: requests.session, base_url: str, csrf_token: str, postcode
                     break
         # Check match was found
         if address_id == "0":
-            raise ValueError("Code 2: No matching address for house number/full address found.")
+            raise ValueError(
+                "Code 2: No matching address for house number/full address found."
+            )
     else:
         raise ValueError("Code 3: No addresses found for provided postcode.")
     return address_id
 
 
-def get_collection_data(s: requests.session, base_url: str, csrf_token: str, address_id: str) -> str:
+def get_collection_data(
+    s: requests.session, base_url: str, csrf_token: str, address_id: str
+) -> str:
     """
     Gets the collection data
         :rtype: str
@@ -177,32 +193,31 @@ def get_collection_data(s: requests.session, base_url: str, csrf_token: str, add
             "payload[PAG0000898EECEC1][PWG0002644EECEC1][PCL0005629EECEC1][formtable]"
             "[C_63e9126bacfb3][PCF0020072EECEC1]": "Next",
             "submit_fragment_id": "PCF0020072EECEC1",
-            "_session_storage": json.dumps({
-                "_global": get_session_storage_global()
-            }),
+            "_session_storage": json.dumps({"_global": get_session_storage_global()}),
             "_update_page_content_request": 1,
-            "form_check_ajax": csrf_token
+            "form_check_ajax": csrf_token,
         }
         response = s.post(
-            base_url + "/wasteservices/w/webpage/bin-day-enter-address?webpage_subpage_id=PAG0000898EECEC1"
-                       "&webpage_token=faab02e1f62a58f7bad4c2ae5b8622e19846b97dde2a76f546c4bb1230cee044",
+            base_url
+            + "/wasteservices/w/webpage/bin-day-enter-address?webpage_subpage_id=PAG0000898EECEC1"
+            "&webpage_token=faab02e1f62a58f7bad4c2ae5b8622e19846b97dde2a76f546c4bb1230cee044",
             headers=get_headers(base_url, "POST"),
-            data=form_data
+            data=form_data,
         )
         if response.status_code == 200 and len(response.text) > 0:
             json_response = json.loads(response.text)
             form_data = {
                 "_dummy": 1,
-                "_session_storage": json.dumps({
-                    "_global": get_session_storage_global()
-                }),
+                "_session_storage": json.dumps(
+                    {"_global": get_session_storage_global()}
+                ),
                 "_update_page_content_request": 1,
-                "form_check_ajax": csrf_token
+                "form_check_ajax": csrf_token,
             }
             response = s.post(
                 base_url + json_response["redirect_url"],
                 headers=get_headers(base_url, "POST"),
-                data=form_data
+                data=form_data,
             )
             if response.status_code == 200 and len(response.text) > 0:
                 json_response = json.loads(response.text)
@@ -210,7 +225,9 @@ def get_collection_data(s: requests.session, base_url: str, csrf_token: str, add
             else:
                 raise ValueError("Code 4: Failed to get bin data.")
         else:
-            raise ValueError("Code 5: Failed to get bin data. Too many requests. Please wait a few minutes before trying again.")
+            raise ValueError(
+                "Code 5: Failed to get bin data. Too many requests. Please wait a few minutes before trying again."
+            )
     return collection_data
 
 
@@ -241,14 +258,22 @@ class CouncilClass(AbstractGetBinDataClass):
             soup.prettify()
 
             # Find the list elements
-            collection_record_elements = soup.find_all("div", {"class": "listing_template_record"})
+            collection_record_elements = soup.find_all(
+                "div", {"class": "listing_template_record"}
+            )
 
             # Form a JSON wrapper
             data = {"bins": []}
 
             for e in collection_record_elements:
-                collection_type = e.find_all("div", {"class": "fragment_presenter_template_show"})[0].text.strip()
-                collection_date = e.find("div", {"class": "bin-collection-next"}).attrs["data-current_value"].strip()
+                collection_type = e.find_all(
+                    "div", {"class": "fragment_presenter_template_show"}
+                )[0].text.strip()
+                collection_date = (
+                    e.find("div", {"class": "bin-collection-next"})
+                    .attrs["data-current_value"]
+                    .strip()
+                )
                 dict_data = {
                     "type": collection_type,
                     "collectionDate": datetime.strptime(
@@ -258,7 +283,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 data["bins"].append(dict_data)
 
             if len(data["bins"]) == 0:
-                raise ValueError("Code 5: No bin data found. Please ensure the council website is showing data first,"
-                                 " then open an issue on GitHub.")
+                raise ValueError(
+                    "Code 5: No bin data found. Please ensure the council website is showing data first,"
+                    " then open an issue on GitHub."
+                )
 
             return data

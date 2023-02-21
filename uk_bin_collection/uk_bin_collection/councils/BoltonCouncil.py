@@ -26,18 +26,26 @@ class CouncilClass(AbstractGetBinDataClass):
             soup.prettify()
             bin_text = soup.text.split(" ")
             try:
-                bin_type = str.join(' ', bin_text[2:4]).strip().title()
-                bin_date = datetime.strptime(str.join(' ', bin_text[-4:]).strip(), "%A %d %B %Y").strftime(date_format)
+                bin_type = str.join(" ", bin_text[2:4]).strip().title()
+                bin_date = datetime.strptime(
+                    str.join(" ", bin_text[-4:]).strip(), "%A %d %B %Y"
+                ).strftime(date_format)
 
-                if datetime.strptime(str.join(' ', bin_text[-4:]).strip(), "%A %d %B %Y").date() > \
-                        datetime.now().date():
+                if (
+                    datetime.strptime(
+                        str.join(" ", bin_text[-4:]).strip(), "%A %d %B %Y"
+                    ).date()
+                    > datetime.now().date()
+                ):
                     dict_data = {
-                        "type":           bin_type,
+                        "type": bin_type,
                         "collectionDate": bin_date,
                     }
                     data["bins"].append(dict_data)
 
             except Exception:
-                raise ValueError("Bin text has been changed, parser needs updating. Please open issue on GitHub.")
+                raise ValueError(
+                    "Bin text has been changed, parser needs updating. Please open issue on GitHub."
+                )
 
         return data

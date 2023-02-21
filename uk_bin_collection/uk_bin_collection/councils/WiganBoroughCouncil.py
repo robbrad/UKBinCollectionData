@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -18,7 +19,9 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get and check UPRN
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
-        user_uprn = user_uprn.zfill(12) # Wigan is expecting 12 character UPRN or else it falls over, expects 0 padded UPRNS at the start for any that aren't 12 chars
+        user_uprn = user_uprn.zfill(
+            12
+        )  # Wigan is expecting 12 character UPRN or else it falls over, expects 0 padded UPRNS at the start for any that aren't 12 chars
 
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
@@ -27,27 +30,26 @@ class CouncilClass(AbstractGetBinDataClass):
         s = requests.session()
 
         # Get our initial session running
-        response = s.get(
-            'https://apps.wigan.gov.uk/MyNeighbourhood/'
-        )
+        response = s.get("https://apps.wigan.gov.uk/MyNeighbourhood/")
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
-        
+
         # Grab the ASP variables needed to continue
         payload = {
-            "__VIEWSTATE" : (soup.find("input", {"id": "__VIEWSTATE"}).get('value')),
-            "__VIEWSTATEGENERATOR" : (soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get('value')),
-            "__EVENTVALIDATION" : (soup.find("input", {"id": "__EVENTVALIDATION"}).get('value')),
+            "__VIEWSTATE": (soup.find("input", {"id": "__VIEWSTATE"}).get("value")),
+            "__VIEWSTATEGENERATOR": (
+                soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get("value")
+            ),
+            "__EVENTVALIDATION": (
+                soup.find("input", {"id": "__EVENTVALIDATION"}).get("value")
+            ),
             "ctl00$ContentPlaceHolder1$txtPostcode": (user_postcode),
-            "ctl00$ContentPlaceHolder1$btnPostcodeSearch": ("Search")
+            "ctl00$ContentPlaceHolder1$btnPostcodeSearch": ("Search"),
         }
 
         # Use the above to get to the next page with address selection
-        response = s.post(
-            'https://apps.wigan.gov.uk/MyNeighbourhood/',
-            payload
-        )
+        response = s.post("https://apps.wigan.gov.uk/MyNeighbourhood/", payload)
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -57,18 +59,19 @@ class CouncilClass(AbstractGetBinDataClass):
             "__EVENTTARGET": ("ctl00$ContentPlaceHolder1$lstAddresses"),
             "__EVENTARGUMENT": (""),
             "__LASTFOCUS": (""),
-            "__VIEWSTATE" : (soup.find("input", {"id": "__VIEWSTATE"}).get('value')),
-            "__VIEWSTATEGENERATOR" : (soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get('value')),
-            "__EVENTVALIDATION" : (soup.find("input", {"id": "__EVENTVALIDATION"}).get('value')),
+            "__VIEWSTATE": (soup.find("input", {"id": "__VIEWSTATE"}).get("value")),
+            "__VIEWSTATEGENERATOR": (
+                soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get("value")
+            ),
+            "__EVENTVALIDATION": (
+                soup.find("input", {"id": "__EVENTVALIDATION"}).get("value")
+            ),
             "ctl00$ContentPlaceHolder1$txtPostcode": (user_postcode),
-            "ctl00$ContentPlaceHolder1$lstAddresses": ("UPRN" + user_uprn)
+            "ctl00$ContentPlaceHolder1$lstAddresses": ("UPRN" + user_uprn),
         }
 
         # Get the final page with the actual dates
-        response = s.post(
-            'https://apps.wigan.gov.uk/MyNeighbourhood/',
-            payload
-        )
+        response = s.post("https://apps.wigan.gov.uk/MyNeighbourhood/", payload)
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -81,7 +84,9 @@ class CouncilClass(AbstractGetBinDataClass):
             binCollection = bins.find("div", {"class": "dateWrapper-next"}).get_text(
                 strip=True
             )
-            binData = datetime.strptime(re.sub(r'(\d)(st|nd|rd|th)', r'\1', binCollection), "%A%d%b%Y")
+            binData = datetime.strptime(
+                re.sub(r"(\d)(st|nd|rd|th)", r"\1", binCollection), "%A%d%b%Y"
+            )
             if binData:
                 data[bin_type] = binData.isoformat()
 

@@ -26,7 +26,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Loops the Rows
         for row in rows:
-
             # set the vars per bin and date for each row
             cells = row.find_all("td")
             bin_type = cells[1].get_text()

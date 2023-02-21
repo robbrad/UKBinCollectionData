@@ -27,6 +27,8 @@ class CouncilClass(AbstractGetBinDataClass):
         ):
             bin_type = bins.h2.text
             binDates = bins.find_all("p")
-            binCollection = binDates[1].get_text(strip=True).split(": ", 1)[-1].split(".", 1)[0]
+            binCollection = (
+                binDates[1].get_text(strip=True).split(": ", 1)[-1].split(".", 1)[0]
+            )
             data[bin_type] = binCollection
         return data

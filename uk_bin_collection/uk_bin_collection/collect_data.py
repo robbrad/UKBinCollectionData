@@ -46,7 +46,11 @@ def main(args):
     )
 
     parser.add_argument(
-        "-s", "--skip_get_url", type=bool, help="Skips the generic get_url - uses one in council class ", required=False
+        "-s",
+        "--skip_get_url",
+        type=bool,
+        help="Skips the generic get_url - uses one in council class ",
+        required=False,
     )
 
     parser.add_argument("-u", "--uprn", type=str, help="UPRN to parse", required=False)
@@ -66,7 +70,7 @@ def main(args):
         postcode=postcode,
         paon=paon,
         uprn=uprn,
-        skip_get_url = skip_get_url
+        skip_get_url=skip_get_url,
     )
 
     # parse arguments using optparse or argparse or what have you

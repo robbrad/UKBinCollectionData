@@ -19,13 +19,14 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         for bins in soup.findAll("ul", {"class": "refuse"}):
-
             binCollection = bins.find_all("li")
 
             if binCollection:
                 for bin in binCollection:
                     dict_data = {
-                        "CollectionDate": bin.find("strong", {"class": "date"}).contents[0],
+                        "CollectionDate": bin.find(
+                            "strong", {"class": "date"}
+                        ).contents[0],
                         "BinType": bin.find("a").contents[0],
                     }
 

@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -17,7 +18,10 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(uprn)
 
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(f"https://maldon.suez.co.uk/maldon/ServiceSummary?uprn={uprn}", headers={"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"})
+        response = requests.get(
+            f"https://maldon.suez.co.uk/maldon/ServiceSummary?uprn={uprn}",
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"},
+        )
         if response.status_code != 200:
             raise ValueError("No bin data found for provided UPRN.")
 
@@ -27,12 +31,18 @@ class CouncilClass(AbstractGetBinDataClass):
             binType = c.find("div", {"class": "panel-heading"}).get_text(strip=True)
             lastCollectionDate = ""
             nextCollectionDate = ""
-            rows = c.find("div", {"class": "panel-body"}).find_all("div", {"class": "row"})
+            rows = c.find("div", {"class": "panel-body"}).find_all(
+                "div", {"class": "row"}
+            )
             for row in rows:
                 if row.find("strong").get_text(strip=True).lower() == "last collection":
-                    lastCollectionDate = row.find("div", {"class": "col-sm-9"}).get_text(strip=True)
+                    lastCollectionDate = row.find(
+                        "div", {"class": "col-sm-9"}
+                    ).get_text(strip=True)
                 if row.find("strong").get_text(strip=True).lower() == "next collection":
-                    nextCollectionDate = row.find("div", {"class": "col-sm-9"}).get_text(strip=True)
+                    nextCollectionDate = row.find(
+                        "div", {"class": "col-sm-9"}
+                    ).get_text(strip=True)
 
             if nextCollectionDate != "":
                 collection_data = {
