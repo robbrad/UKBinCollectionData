@@ -14,13 +14,13 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(uprn)
 
         headers = {
-            "Accept": "*/*",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
             "Connection": "keep-alive",
-            "Host": "online.torbay.gov.uk",
-            "Origin": "https://www.torbay.gov.uk",
-            "Referer": "https://www.torbay.gov.uk/",
+            "Host": "m.northlincs.gov.uk",
+            "Origin": "https://www.northlincs.gov.uk",
+            "Referer": "https://www.northlincs.gov.uk/",
             "sec-ch-ua": '"Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -31,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         requests.packages.urllib3.disable_warnings()
         response = requests.get(
-            f"https://online.torbay.gov.uk/services.bartec/collections?uprn={uprn}",
+            f"https://m.northlincs.gov.uk/collection_dates/{uprn}/0/6?_=1546855781728&format=json",
             headers=headers,
         )
         if response.status_code != 200:
@@ -39,13 +39,18 @@ class CouncilClass(AbstractGetBinDataClass):
         json_data = json.loads(response.text)
 
         data = {"bins": []}
-        for c in json_data:
-            dict_data = {
-                "type": c["Service"].replace("Empty ", "").strip(),
-                "collectionDate": datetime.strptime(
-                    c["NextCollection"].strip(), "%d %B %Y"
-                ).strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+        for c in json_data["Collections"]:
+            bin_type = c["BinCodeDescription"].strip()
+            if bin_type.lower() != "textiles bag":
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": datetime.strptime(
+                        c["BinCollectionDate"].replace(" (*)", "").strip()
+                        + " "
+                        + datetime.now().strftime("%Y"),
+                        "%A %d %B %Y",
+                    ).strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
         return data

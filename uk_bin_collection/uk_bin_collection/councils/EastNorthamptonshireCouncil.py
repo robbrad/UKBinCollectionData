@@ -37,7 +37,7 @@ def ft() -> dict:
     t = datetime(2022, 4, 20)
     return {
         "weeks": math.floor(((e - t).total_seconds() * 10) / 1e3 / 86400 / 7 % 2),
-        "days": math.floor(((e - t).total_seconds() * 10) / 1e3 / 86400 % 7)
+        "days": math.floor(((e - t).total_seconds() * 10) / 1e3 / 86400 % 7),
     }
 
 
@@ -66,15 +66,27 @@ class CouncilClass(AbstractGetBinDataClass):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)",
             "origin": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com",
-            "referer": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/"
+            "referer": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/",
         }
         requests.packages.urllib3.disable_warnings()
         # Check council website workings haven't changed
-        response = requests.get(f"https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/static/js/main.cbc0dd8a.js", headers=headers)
-        if response.status_code != 200 or hashlib.sha256(response.text.encode('utf-8')).hexdigest() != "2f357c24b043c31c0157c234323c401238842c1d00f00f16c7ca3e569a0ab3cd":
-            raise ValueError("Council website has changed, parser needs updating. Please open issue on GitHub.")
+        response = requests.get(
+            f"https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/static/js/main.cbc0dd8a.js",
+            headers=headers,
+        )
+        if (
+            response.status_code != 200
+            or hashlib.sha256(response.text.encode("utf-8")).hexdigest()
+            != "2f357c24b043c31c0157c234323c401238842c1d00f00f16c7ca3e569a0ab3cd"
+        ):
+            raise ValueError(
+                "Council website has changed, parser needs updating. Please open issue on GitHub."
+            )
         # Get variables for workings
-        response = requests.get(f"https://api.northnorthants.gov.uk/test/wc-info/{uprn}?r={time.time() * 1000}", headers=headers)
+        response = requests.get(
+            f"https://api.northnorthants.gov.uk/test/wc-info/{uprn}?r={time.time() * 1000}",
+            headers=headers,
+        )
         if response.status_code != 200:
             raise ValueError("No bin data found for provided UPRN.")
 
@@ -96,7 +108,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     bin_type = "Recycling"
                 collection_data = {
                     "type": bin_type,
-                    "nextCollectionDate": st(ct(day), o + r, n["days"]).replace(",", "")
+                    "nextCollectionDate": st(ct(day), o + r, n["days"]).replace(
+                        ",", ""
+                    ),
                 }
                 data["bins"].append(collection_data)
 

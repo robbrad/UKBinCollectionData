@@ -5,30 +5,30 @@ from datetime import timedelta
 import requests
 import json
 
+
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
-
         api_url = "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection"
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
         params = {
-            'version': '3.1.4',
-            'uprn': uprn,
-            'token': '',
-            'notification': '1',
-            'operatingsystemid': '2',
-            'testmode': 'true'
+            "version": "3.1.4",
+            "uprn": uprn,
+            "token": "",
+            "notification": "1",
+            "operatingsystemid": "2",
+            "testmode": "true",
         }
 
-        headers = {'content-type' : 'text/plain'}
+        headers = {"content-type": "text/plain"}
 
-        response = requests.post(api_url , json=params , headers=headers)
+        response = requests.post(api_url, json=params, headers=headers)
 
         json_response = json.loads(response.content)["GetBinCollectionResult"]["Data"]
 
         today = datetime.today()
-        eight_weeks = (datetime.today() + timedelta(days=8 * 7))
+        eight_weeks = datetime.today() + timedelta(days=8 * 7)
         data = {"bins": []}
         collection_tuple = []
 
@@ -36,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "2": "Blue Bin",
             "6": "Green Bin",
             "5": "Black Bin",
-            "3": "Brown Bin"
+            "3": "Brown Bin",
         }
 
         for item in json_response:
@@ -45,8 +45,9 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             if today.date() <= collection_date.date() <= eight_weeks.date():
                 bin_type = bin_friendly_names.get(item.get("BinType"))
-                collection_tuple.append((bin_type, collection_date.strftime(date_format)))
-
+                collection_tuple.append(
+                    (bin_type, collection_date.strftime(date_format))
+                )
 
         ordered_data = sorted(collection_tuple, key=lambda x: x[1])
 
@@ -58,4 +59,3 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         return data
-

@@ -14,30 +14,23 @@ def step_impl(context, council_name):
 @when('we scrape the data from "{council}"')
 def step_impl(context, council):
     context.council = council
-    if "uprn" in context.metadata:
-        uprn = context.metadata["uprn"]
-    else:
-        uprn = ""
-    if "postcode" in context.metadata:
-        postcode = context.metadata["postcode"]
-    else:
-        postcode = ""
-    if "house_number" in context.metadata:
-        house_number = context.metadata["house_number"]
-    else:
-        house_number = ""
-    if "SKIP_GET_URL" in context.metadata:
-        skip_url = context.metadata["SKIP_GET_URL"]
-    else:
-        skip_url = ""
     args = [
         council,
-        context.metadata["url"],
-        f"-u={uprn}",
-        f"-p={postcode}",
-        f"-n={house_number}",
-        f"-s={skip_url}",
+        context.metadata["url"]
     ]
+    
+    if "uprn" in context.metadata:
+        uprn = context.metadata["uprn"]
+        args.append(f"-u={uprn}")
+    if "postcode" in context.metadata:
+        postcode = context.metadata["postcode"]
+        args.append(f"-p={postcode}")
+    if "house_number" in context.metadata:
+        house_number = context.metadata["house_number"]
+        args.append(f"-n={house_number}")
+    if "SKIP_GET_URL" in context.metadata:
+        skip_url = context.metadata["SKIP_GET_URL"]
+        args.append(f"-s={skip_url}")
     context.parse_result = collect_data.main(args)
     pass
 

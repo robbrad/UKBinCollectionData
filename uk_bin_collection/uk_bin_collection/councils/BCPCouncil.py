@@ -15,7 +15,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
@@ -37,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         for item in ordered_data:
             dict_data = {
-                "type":           item[0],
+                "type": item[0],
                 "collectionDate": item[1].strftime(date_format),
             }
             data["bins"].append(dict_data)

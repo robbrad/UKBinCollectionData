@@ -16,7 +16,6 @@ def test_check_postcode_invalid():
     assert exc_info.type == ValueError
 
 
-
 def test_check_paon():
     valid_house_num = "1"
     result = check_paon(valid_house_num)
