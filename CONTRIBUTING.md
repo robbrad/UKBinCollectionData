@@ -22,7 +22,7 @@ poetry shell
 ## Approach
 This repo uses a design pattern called the [Template Method](https://refactoring.guru/design-patterns/template-method) Basically allows for a structured class that can be extended. In our case the getting of the data from the council and the presentation of the JSON remains the same via the [abstract class](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/get_bin_data.py#L21) - however the scraping via [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) of each council is different and this allows us to have a class for each [council](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/uk_bin_collection/councils) - you can see this in action [here](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/CheshireEastCouncil.py#L5,L16)
 
-To simplify things somewhat we have provided a "[CouncilClassTemplate](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/councilclasstemplate.py)" you can copy for your council to get things started
+To simplify things somewhat we have provided a "[CouncilClassTemplate](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/council_class_template/councilclasstemplate.py)" you can copy for your council to get things started
 
 Its important to note the name of the council class file will be used on the CLI - eg if you take CheshireEastCouncil the result will be python collect_data.py **CheshireEastCouncil**
 
