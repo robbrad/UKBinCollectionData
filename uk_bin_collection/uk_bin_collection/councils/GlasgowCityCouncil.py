@@ -18,12 +18,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Declare an empty dict for data, and pair icon source URLs with their respective bin type
         data = {"bins": []}
-        bin_types = {"../images/bins/cal_blue.png":   "Mixed recycling",
-                     "../images/bins/cal_green.png":  "General waste",
-                     "../images/bins/cal_grey.png":   "Food waste",
-                     "../images/bins/cal_brown.png":  "Organic waste",
-                     "../images/bins/cal_purple.png": "Glass",
-                     "../images/bins/cal_ash.png": "Ash bin"}
+        bin_types = {
+            "../images/bins/cal_blue.png": "Mixed recycling",
+            "../images/bins/cal_green.png": "General waste",
+            "../images/bins/cal_grey.png": "Food waste",
+            "../images/bins/cal_brown.png": "Organic waste",
+            "../images/bins/cal_purple.png": "Glass",
+            "../images/bins/cal_ash.png": "Ash bin",
+        }
 
         # Find the page body with all the calendars
         body = soup.find("div", {"id": "printArticle"})
@@ -46,7 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 # datetime, then add to the list
                 if datetime.now() <= bin_date:
                     dict_data = {
-                        "type":           bin_types.get(icon['src'].lower()),
+                        "type": bin_types.get(icon["src"].lower()),
                         "collectionDate": bin_date.strftime(date_format),
                     }
                     data["bins"].append(dict_data)

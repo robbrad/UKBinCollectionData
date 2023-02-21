@@ -9,13 +9,15 @@ import holidays
 import pandas as pd
 
 date_format = "%d/%m/%Y"
-days_of_week = {"Monday":    0,
-                "Tuesday":   1,
-                "Wednesday": 2,
-                "Thursday":  3,
-                "Friday":    4,
-                "Saturday":  5,
-                "Sunday":    6}
+days_of_week = {
+    "Monday": 0,
+    "Tuesday": 1,
+    "Wednesday": 2,
+    "Thursday": 3,
+    "Friday": 4,
+    "Saturday": 5,
+    "Sunday": 6,
+}
 
 
 class Region(Enum):
@@ -36,7 +38,9 @@ def check_postcode(postcode: str):
 
     if postcode_api_response.status_code != 200:
         val_error = json.loads(postcode_api_response.text)
-        raise ValueError(f"Exception: {val_error['error']} Status: {val_error['status']}")
+        raise ValueError(
+            f"Exception: {val_error['error']} Status: {val_error['status']}"
+        )
     return True
 
 
@@ -102,7 +106,6 @@ def parse_header(raw_header: str) -> dict:
     """
     header = dict()
     for line in raw_header.split("|"):
-
         if line.startswith(":"):
             a, b = line[1:].split(":", 1)
             a = f":{a}"
@@ -121,7 +124,7 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         :param region: The UK nation to check. Defaults to UK.
         :return: Bool - true if a holiday, false if not
     """
-    if region.name != 'UK':
+    if region.name != "UK":
         subdiv = region.name.capitalize()
     else:
         subdiv = region.name
@@ -135,28 +138,37 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
 
 def get_weekday_dates_in_period(start: datetime, day_of_week: int, amount=8) -> list:
     """
-Returns a list of dates of a given weekday from a start date for the given amount of weeks
-    :param start: Start date
-    :param day_of_week: Day of week number. Recommended to use calendar.DAY (Monday=0, Sunday=6)
-    :param amount: Number of weeks to get dates. Defaults to 8 weeks.
-    :return: List of dates where the specified weekday is in the period
+    Returns a list of dates of a given weekday from a start date for the given amount of weeks
+        :param start: Start date
+        :param day_of_week: Day of week number. Recommended to use calendar.DAY (Monday=0, Sunday=6)
+        :param amount: Number of weeks to get dates. Defaults to 8 weeks.
+        :return: List of dates where the specified weekday is in the period
     """
-    return pd.date_range(start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount) \
-        .strftime('%d/%m/%Y').tolist()
+    return (
+        pd.date_range(
+            start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount
+        )
+        .strftime("%d/%m/%Y")
+        .tolist()
+    )
 
 
 def get_dates_every_x_days(start: datetime, x: int, amount: int = 8) -> list:
     """
-Returns a list of dates for `X` days from start date. For example, calling `get_stepped_dates_in_period(s, 21, 4)` would
-return `4` dates every `21` days from the start date `s`
-    :param start: Date to start from
-    :param x: X amount of days
-    :param amount: Number of dates to find
-    :return: List of dates every X days from start date
-    :rtype: list
+    Returns a list of dates for `X` days from start date. For example, calling `get_stepped_dates_in_period(s, 21, 4)` would
+    return `4` dates every `21` days from the start date `s`
+        :param start: Date to start from
+        :param x: X amount of days
+        :param amount: Number of dates to find
+        :return: List of dates every X days from start date
+        :rtype: list
     """
-    return pd.date_range(start=start, freq=f"{x}D", periods=amount).strftime('%d/%m/%Y').tolist()
+    return (
+        pd.date_range(start=start, freq=f"{x}D", periods=amount)
+        .strftime("%d/%m/%Y")
+        .tolist()
+    )
 
 
 def remove_alpha_characters(input_string: str) -> str:
-    return ''.join(c for c in input_string if c.isdigit() or c == " ")
+    return "".join(c for c in input_string if c.isdigit() or c == " ")

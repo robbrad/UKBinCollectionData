@@ -16,7 +16,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         root_url = "https://my.rbwm.gov.uk"
         href_url = ""
         api_url = "https://my.rbwm.gov.uk/block_refresh/block/47/node/136968?"

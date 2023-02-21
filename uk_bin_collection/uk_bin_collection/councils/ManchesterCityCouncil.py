@@ -15,7 +15,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         # Get and check UPRN
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
