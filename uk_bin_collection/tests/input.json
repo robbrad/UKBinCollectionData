@@ -54,6 +54,10 @@
     "EastDevonDC": {
         "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX"
     },
+    "EastNorthamptonshireCouncil": {
+        "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/",
+        "uprn": "100031021317"
+    },
     "EastRidingCouncil": {
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
         "postcode": "HU17 8LG"
@@ -98,10 +102,6 @@
     "NewcastleCityCouncil": {
         "url": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX"
     },
-    "EastNorthamptonshireCouncil": {
-        "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/",
-        "uprn": "100031021317"
-    },
     "NorthEastLincs": {
         "url": "https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline"
     },
@@ -122,6 +122,9 @@
         "url": "https://www.south-ayrshire.gov.uk/",
         "postcode":"KA19 7BN",
         "uprn": "141003134"
+    },
+    "SouthLanarkshireCouncil": {
+        "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow"
     },
     "SouthNorfolkCouncil": {
         "url": "https://www.southnorfolkandbroadland.gov.uk/rubbish-recycling/south-norfolk-bin-collection-day-finder",
