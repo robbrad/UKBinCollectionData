@@ -76,9 +76,8 @@
         "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX"
     },
     "EastNorthamptonshireCouncil": {
-        "SKIP_GET_URL": "SKIP_GET_URL",
-        "uprn": "",
-        "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/static/js/main.cbc0dd8a.js"
+        "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/",
+        "uprn": "100031021317"
     },
     "EastRidingCouncil": {
         "postcode": "HU17 8LG",
@@ -160,6 +159,9 @@
         "postcode": "KA19 7BN",
         "uprn": "141003134",
         "url": "https://www.south-ayrshire.gov.uk/"
+    },
+    "SouthLanarkshireCouncil": {
+        "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow"
     },
     "SouthNorfolkCouncil": {
         "uprn": "2630102526",
