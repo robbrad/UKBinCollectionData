@@ -1,0 +1,12 @@
+{
+    "bins": [
+        {
+            "type": "Rubbish and Small Electricals Collection",
+            "collectionDate": "23/02"
+        },
+        {
+            "type": "Recycling and Textiles Collection",
+            "collectionDate": "23/02"
+        }
+    ]
+}

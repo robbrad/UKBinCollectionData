@@ -2,47 +2,10 @@
 
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from dotenv import load_dotenv
 from datetime import datetime
+from common import *
 
 import requests
-import os
-import json
-
-
-def get_usrn(uprn: str) -> str:
-    """
-    Gets a USRN (street reference) using the Ordinance Survey's Linked Identifiers API. Requires an API key available
-    from OS Data Hub (free). Can either remove lines 5 and 21 and include your own, or place it in a .env file.
-        :param uprn: The property's UPRN reference
-        :return: USRN as string
-    """
-    load_dotenv()
-    api_key = os.getenv(
-        "OS_API_KEY"
-    )  # put yours here (and remove `from dotenv import load_dotenv` on line 5)
-    api_url = (
-        f"https://api.os.uk/search/links/v1/featureTypes/BLPU/{uprn}?key={api_key}"
-    )
-    json_response = json.loads(requests.get(api_url).content)
-    street_data = [
-        item.get("correlatedIdentifiers")
-        if item.get("correlatedFeatureType") == "Street"
-        else None
-        for item in json_response["correlations"]
-    ]
-    try:
-        street_usrn = [
-            line.get("identifier")
-            for item in street_data
-            if item is not None
-            for line in item
-        ][0]
-    except Exception as ex:
-        raise ValueError("USRN not found! Please check API key or UPRN.")
-        exit(1)
-    return street_usrn
-
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -52,8 +15,10 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
+
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
+        requests.packages.urllib3.disable_warnings()
         uprn = kwargs.get("uprn")
         try:
             if uprn is None or uprn == "":
