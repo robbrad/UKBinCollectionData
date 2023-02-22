@@ -50,7 +50,8 @@
         "url": "https://chiltern.gov.uk/collection-dates"
     },
     "CrawleyBoroughCouncil": {
-        "url": ""
+        "url": "https://my.crawley.gov.uk/en/service/check_my_bin_collection?accept=yes&consentMessageIds[]=60",
+        "uprn": "100061781643"
     },
     "CroydonCouncil": {
         "house_number": "13",
