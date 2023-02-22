@@ -17,43 +17,51 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         requests.packages.urllib3.disable_warnings()
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         headers = {
-            'Accept':             '*/*',
-            'Accept-Language':    'en-GB,en;q=0.6',
-            'Connection':         'keep-alive',
-            'Referer':            'https://www.valeofglamorgan.gov.uk/',
-            'Sec-Fetch-Dest':     'script',
-            'Sec-Fetch-Mode':     'no-cors',
-            'Sec-Fetch-Site':     'same-site',
-            'Sec-GPC':            '1',
-            'sec-ch-ua':          '"Not?A_Brand";v="8", "Chromium";v="108", "Brave";v="108"',
-            'sec-ch-ua-mobile':   '?0',
-            'sec-ch-ua-platform': '"Windows"',
+            "Accept": "*/*",
+            "Accept-Language": "en-GB,en;q=0.6",
+            "Connection": "keep-alive",
+            "Referer": "https://www.valeofglamorgan.gov.uk/",
+            "Sec-Fetch-Dest": "script",
+            "Sec-Fetch-Mode": "no-cors",
+            "Sec-Fetch-Site": "same-site",
+            "Sec-GPC": "1",
+            "sec-ch-ua": '"Not?A_Brand";v="8", "Chromium";v="108", "Brave";v="108"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
         }
         params = {
-            'RequestType': 'LocalInfo',
-            'ms':          'ValeOfGlamorgan/AllMaps',
-            'group':       'Community and Living|Refuse HIDE2',
-            'type':        'json',
-            'callback':    'AddressInfoCallback',
-            'uid':         user_uprn,
-            'import':      'jQuery35108514154283927682_1673022974838',
-            '_':           '1673022974840',
+            "RequestType": "LocalInfo",
+            "ms": "ValeOfGlamorgan/AllMaps",
+            "group": "Community and Living|Refuse HIDE2",
+            "type": "json",
+            "callback": "AddressInfoCallback",
+            "uid": user_uprn,
+            "import": "jQuery35108514154283927682_1673022974838",
+            "_": "1673022974840",
         }
 
         # Get a response from the council
-        response = requests.get('https://myvale.valeofglamorgan.gov.uk/getdata.aspx', params=params,
-                                headers=headers).text
+        response = requests.get(
+            "https://myvale.valeofglamorgan.gov.uk/getdata.aspx",
+            params=params,
+            headers=headers,
+        ).text
 
         # Load the JSON and seek out the bin week text, then add it to the calendar URL. Also take the weekly
         # collection type and generate dates for it. Then make a GET request for the calendar
-        bin_week = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Your_Refuse_round_is"]).replace(" ", "-")
-        weekly_collection = str(json.loads(response)["Results"]["Refuse_HIDE2"]["Recycling__type"]).capitalize()
-        weekly_dates = get_weekday_dates_in_period(datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48)
+        bin_week = str(
+            json.loads(response)["Results"]["Refuse_HIDE2"]["Your_Refuse_round_is"]
+        ).replace(" ", "-")
+        weekly_collection = str(
+            json.loads(response)["Results"]["Refuse_HIDE2"]["Recycling__type"]
+        ).capitalize()
+        weekly_dates = get_weekday_dates_in_period(
+            datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48
+        )
         schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/{bin_week}.aspx"
         response = requests.get(schedule_url, verify=False)
 
@@ -70,8 +78,8 @@ class CouncilClass(AbstractGetBinDataClass):
         table = soup.find("table", {"class": "TableStyle_Activities"}).find("tbody")
         table_headers = table.find("tr").find_all("th")
         # For all rows below the header, find all details in th next row
-        for tr in soup.find_all('tr')[1:]:
-            row = tr.find_all('td')
+        for tr in soup.find_all("tr")[1:]:
+            row = tr.find_all("td")
             # This is how we get around having tables in tables
             if len(row) == 3:
                 # Parse month and year - month needs converting from text to number
@@ -128,7 +136,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Add in weekly dates to the tuple
         for date in weekly_dates:
-            collections.append((weekly_collection, datetime.strptime(date, date_format)))
+            collections.append(
+                (weekly_collection, datetime.strptime(date, date_format))
+            )
 
         # Order all the data, only including future dates
         ordered_data = sorted(collections, key=lambda x: x[1])
@@ -137,8 +147,8 @@ class CouncilClass(AbstractGetBinDataClass):
             collection_date = item[1]
             if collection_date.date() >= datetime.now().date():
                 dict_data = {
-                    "type":           item[0],
-                    "collectionDate": collection_date.strftime(date_format)
+                    "type": item[0],
+                    "collectionDate": collection_date.strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 

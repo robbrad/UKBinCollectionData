@@ -13,20 +13,19 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
+        soup = BeautifulSoup(page, features="html.parser")
         soup.prettify()
 
+        # Form a JSON wrapper
         data = {"bins": []}
-        for bins in soup.select("div[class^=waste-type-container]"):
-            bin_type = bins.div.h3.text.strip()
-            collection_date = bins.select("div > p")[0].get_text(strip=True)
-            next_collection_date = bins.select("div > p")[1].get_text(strip=True)
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": collection_date,
-                "nextCollectionDate": next_collection_date,
-            }
-            if collection_date:
-                data["bins"].append(dict_data)
 
+        for bins in soup.findAll("div", {"class": "row collectionsrow"}):
+            # Find the collection dates
+            _, bin_type, date = bins.find_all("div")
+            bin_type = bin_type.text
+            date = datetime.strptime(date.text, "%a - %d %b %Y").date()
+
+            data["bins"].append(
+                {"BinType": bin_type, "collectionDate": date.isoformat()}
+            )
         return data

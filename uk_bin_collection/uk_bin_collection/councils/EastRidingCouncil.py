@@ -15,7 +15,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         api_url = "https://wasterecyclingapi.eastriding.gov.uk/api/RecyclingData/CollectionsData?"
         api_key = "APIKey=ekBWR8tSiv6qwMo31REEeTZ5FAiMNB"
         api_license = "&Licensee=BinCollectionWebTeam"

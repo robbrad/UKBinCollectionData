@@ -20,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Work out some date bounds
         today = datetime.today()
-        eight_weeks = (datetime.today() + timedelta(days=8 * 7))
+        eight_weeks = datetime.today() + timedelta(days=8 * 7)
         data = {"bins": []}
 
         # Each month calendar is a table, so get the object then find all rows in that object.
@@ -32,12 +32,19 @@ class CouncilClass(AbstractGetBinDataClass):
             # Each remaining item is a bin collection, so get the type and tidy up the date.
             for item in info:
                 bin_type = item.text.split(",")[0].strip()
-                bin_date = datetime.strptime(remove_ordinal_indicator_from_date_string(item.text.split(",")[1].strip()
-                                             + " " + month_year), "%A %d %B %Y")
+                bin_date = datetime.strptime(
+                    remove_ordinal_indicator_from_date_string(
+                        item.text.split(",")[1].strip() + " " + month_year
+                    ),
+                    "%A %d %B %Y",
+                )
                 # Only include dates on or after today, but also only within eight weeks
-                if today.date() <= bin_date.date() <= eight_weeks.date() and "cancelled" not in bin_type:
+                if (
+                    today.date() <= bin_date.date() <= eight_weeks.date()
+                    and "cancelled" not in bin_type
+                ):
                     dict_data = {
-                        "type":           bin_type,
+                        "type": bin_type,
                         "collectionDate": bin_date.strftime(date_format),
                     }
                     data["bins"].append(dict_data)

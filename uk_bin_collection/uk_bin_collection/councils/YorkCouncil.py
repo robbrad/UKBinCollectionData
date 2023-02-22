@@ -4,6 +4,7 @@ from datetime import datetime
 import requests
 import json
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -13,7 +14,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         api_url = (
             "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/"
         )

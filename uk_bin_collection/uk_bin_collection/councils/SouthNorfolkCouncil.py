@@ -27,29 +27,35 @@ class CouncilClass(AbstractGetBinDataClass):
             "Host": "collections-southnorfolk.azurewebsites.net",
             "Origin": "https://collections-southnorfolk.azurewebsites.net",
             "Referer": "https://collections-southnorfolk.azurewebsites.net/calendar.html",
-            "sec-ch-ua": "\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\", \"Google Chrome\";v=\"110\"",
+            "sec-ch-ua": '"Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"',
             "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-ch-ua-platform": '"Windows"',
             "Sec-Fetch-Dest": "empty",
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "same-origin",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
         }
         requests.packages.urllib3.disable_warnings()
         post_data = (
             '<?xml version="1.0" encoding="utf-8"?>'
             '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
             '<soap:Body><getRoundCalendarForUPRN xmlns="http://webaspx-collections.azurewebsites.net/">'
-            '<council>' + council + '</council><UPRN>' + uprn + '</UPRN>'
-            '<from>Chtml</from></getRoundCalendarForUPRN></soap:Body></soap:Envelope>'
+            "<council>" + council + "</council><UPRN>" + uprn + "</UPRN>"
+            "<from>Chtml</from></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
         )
-        response = requests.post("https://collections-southnorfolk.azurewebsites.net/WSCollExternal.asmx", headers=headers, data=post_data)
+        response = requests.post(
+            "https://collections-southnorfolk.azurewebsites.net/WSCollExternal.asmx",
+            headers=headers,
+            data=post_data,
+        )
         if response.status_code != 200:
             raise ValueError("No bin data found for provided UPRN.")
 
         # Get HTML from SOAP response
         xmltree = ElementTree.fromstring(response.text)
-        html = xmltree.find('.//{http://webaspx-collections.azurewebsites.net/}getRoundCalendarForUPRNResult').text
+        html = xmltree.find(
+            ".//{http://webaspx-collections.azurewebsites.net/}getRoundCalendarForUPRNResult"
+        ).text
         # Parse with BS4
         soup = BeautifulSoup(html, features="html.parser")
         soup.prettify()
@@ -62,7 +68,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_date = ""
                 results = re.search("([A-Za-z]+ \d\d? [A-Za-z]+) then", bin_info)
                 if results:
-                    date = datetime.strptime(results[1] + " " + datetime.now().strftime("%Y"), "%a %d %b %Y")
+                    date = datetime.strptime(
+                        results[1] + " " + datetime.now().strftime("%Y"), "%a %d %b %Y"
+                    )
                     if date:
                         collection_date = date.strftime(date_format)
                 else:

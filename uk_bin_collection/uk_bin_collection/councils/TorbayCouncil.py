@@ -21,16 +21,19 @@ class CouncilClass(AbstractGetBinDataClass):
             "Host": "online.torbay.gov.uk",
             "Origin": "https://www.torbay.gov.uk",
             "Referer": "https://www.torbay.gov.uk/",
-            "sec-ch-ua": "\"Chromium\";v=\"110\", \"Not A(Brand\";v=\"24\", \"Google Chrome\";v=\"110\"",
+            "sec-ch-ua": '"Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"',
             "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-ch-ua-platform": '"Windows"',
             "Sec-Fetch-Dest": "empty",
             "Sec-Fetch-Mode": "cors",
             "Sec-Fetch-Site": "same-site",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
         }
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(f"https://online.torbay.gov.uk/services.bartec/collections?uprn={uprn}", headers=headers)
+        response = requests.get(
+            f"https://online.torbay.gov.uk/services.bartec/collections?uprn={uprn}",
+            headers=headers,
+        )
         if response.status_code != 200:
             raise ValueError("No bin data found for provided UPRN.")
         json_data = json.loads(response.text)

@@ -50,15 +50,17 @@ class AbstractGetBinDataClass(ABC):
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
         skip_get_url = kwargs.get("skip_get_url", None)
-        if not skip_get_url or skip_get_url is False: #we will not use the generic way to get data - needs a get data in the council class itself
+        if (
+            not skip_get_url or skip_get_url is False
+        ):  # we will not use the generic way to get data - needs a get data in the council class itself
             page = self.get_data(address_url)
             bin_data_dict = self.parse_data(
-            page, postcode=this_postcode, paon=this_paon, uprn=this_uprn
+                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn
             )
             return self.output_json(bin_data_dict)
         else:
             bin_data_dict = self.parse_data(
-            '', postcode=this_postcode, paon=this_paon, uprn=this_uprn
+                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn
             )
             return self.output_json(bin_data_dict)
 
@@ -70,8 +72,10 @@ class AbstractGetBinDataClass(ABC):
         url -- the url to get the data from
         """
         # Set a user agent so we look like a browser ;-)
-        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) " \
-                     "Chrome/108.0.0.0 Safari/537.36"
+        user_agent = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/108.0.0.0 Safari/537.36"
+        )
         headers = {"User-Agent": user_agent}
         requests.packages.urllib3.disable_warnings()
 

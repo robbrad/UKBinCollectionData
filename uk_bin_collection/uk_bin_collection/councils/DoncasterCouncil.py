@@ -17,7 +17,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         # I need to point out that this one gave me a good head scratch. Mainly because I wrote lots
         # of code to parse the form and all that, then realised this url returns json data... oops.
         base_url = "https://www.doncaster.gov.uk/Compass/PremiseDetail/GetCollectionsForCalendar"
@@ -33,9 +32,9 @@ class CouncilClass(AbstractGetBinDataClass):
         # For some reason, the actual web form uses a property id that's completely different
         # from the uprn - luckily this one is easy to find!
         params = {
-            'UPRN':  user_uprn,
-            'Start': str(today),
-            'End':   str(four_weeks),
+            "UPRN": user_uprn,
+            "Start": str(today),
+            "End": str(four_weeks),
         }
 
         response = requests.get(base_url, params=params)
@@ -57,10 +56,12 @@ class CouncilClass(AbstractGetBinDataClass):
             # item["start"] actually returns a string, so we want to only take digits or +s.
             # OK, we don't actually want the +s... or anything on the end of them, that's why
             # we split the string then cast the remaining epoch to a float
-            epoch = (''.join([i for i in item["start"] if i.isdigit() or i == "+"]))
+            epoch = "".join([i for i in item["start"] if i.isdigit() or i == "+"])
             epoch = epoch.split("+")[0]
             epoch = float(epoch)
-            bin_date = datetime.strptime(str(datetime.fromtimestamp(epoch / 1000)), "%Y-%m-%d %H:%M:%S")
+            bin_date = datetime.strptime(
+                str(datetime.fromtimestamp(epoch / 1000)), "%Y-%m-%d %H:%M:%S"
+            )
             collections.append((bin_type, bin_date))
 
             # This orders the data we just parsed to date order
@@ -68,7 +69,7 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
             for bin in ordered_data:
                 dict_data = {
-                    "type":           bin[0],
+                    "type": bin[0],
                     "collectionDate": bin[1].strftime(date_format),
                 }
                 data["bins"].append(dict_data)
