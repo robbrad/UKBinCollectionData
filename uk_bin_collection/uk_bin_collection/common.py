@@ -1,7 +1,11 @@
 import calendar
+import os
 import re
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
+from dotenv import load_dotenv
+
 
 import requests
 import json
@@ -71,6 +75,45 @@ def check_uprn(uprn: str):
     except Exception as ex:
         print(f"Exception encountered: {ex}")
         print("Please check the provided UPRN.")
+
+def load_local_env():
+    """
+Loads a .env file placed in the project root
+    """
+    project_root = Path(__file__).parent.parent.parent
+    env_file = os.path.join(project_root, ".env")
+    load_dotenv(env_file)
+
+def get_usrn(uprn: str) -> str:
+    """
+    Gets a USRN (street reference) using the Ordinance Survey's Linked Identifiers API. Requires an API key available
+    from OS Data Hub (free).
+        :param uprn: The property's UPRN reference
+        :return: USRN as string
+    """
+    load_local_env()
+    api_key = os.getenv("OS_API_KEY")
+    if len(api_key) > 1:
+        api_url = f"https://api.os.uk/search/links/v1/featureTypes/BLPU/{uprn}?key={api_key}"
+    else:
+        raise ValueError("OS API key not found.")
+    json_response = json.loads(requests.get(api_url).content)
+    street_data = [
+        item.get("correlatedIdentifiers")
+        if item.get("correlatedFeatureType") == "Street"
+        else None
+        for item in json_response["correlations"]
+    ]
+    try:
+        street_usrn = [
+            line.get("identifier")
+            for item in street_data
+            if item is not None
+            for line in item
+        ][0]
+    except Exception as ex:
+        raise ValueError("USRN not found! Please check API key or UPRN.")
+    return street_usrn
 
 
 def get_date_with_ordinal(date_number: int) -> str:
