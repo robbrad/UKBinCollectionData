@@ -1,0 +1,36 @@
+{
+    "bins": [
+        {
+            "type": "Food and garden waste bin",
+            "collectionDate": "Thursday 23 February 2023"
+        },
+        {
+            "type": "Paper and cardboard bin",
+            "collectionDate": "Thursday 23 February 2023"
+        },
+        {
+            "type": "Food and garden waste bin",
+            "collectionDate": "Thursday 02 March 2023"
+        },
+        {
+            "type": "Cans and bottles bin",
+            "collectionDate": "Thursday 02 March 2023"
+        },
+        {
+            "type": "Food and garden waste bin",
+            "collectionDate": "Thursday 09 March 2023"
+        },
+        {
+            "type": "Rubbish bin",
+            "collectionDate": "Thursday 09 March 2023"
+        },
+        {
+            "type": "Food and garden waste bin",
+            "collectionDate": "Thursday 16 March 2023"
+        },
+        {
+            "type": "Paper and cardboard bin",
+            "collectionDate": "Thursday 16 March 2023"
+        }
+    ]
+}
