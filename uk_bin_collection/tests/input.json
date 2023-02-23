@@ -147,6 +147,11 @@
         "uprn": "47097627",
         "url": "https://my.northtyneside.gov.uk/category/81/bin-collection-dates"
     },
+    "RochdaleCouncil": {
+        "postcode": "OL11 5BE",
+        "uprn": "23049922",
+        "url": "https://webforms.rochdale.gov.uk/BinCalendar"
+    },
     "SheffieldCityCouncil": {
         "url": "https://wasteservices.sheffield.gov.uk/property/XXXXXXXXXXX"
     },
