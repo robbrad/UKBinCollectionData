@@ -49,17 +49,17 @@ class CouncilClass(AbstractGetBinDataClass):
                 # Get the date from the th element
                 date = row.find("th").get_text().strip()
 
-                # Get multiple bin types from the td element
-                bin_type = row.find_all("td")
+                # Get the bin types from the td elements and filter out the empty ones
+                bin_types = filter(lambda td: td.find("img"), row.find_all("td"))
 
-                # Check the bin type is not None
-                for bin in bin_type:
-                    if bin is not None and bin.find("img") is not None:
-                        # Fine the bin type using the image alt text
-                        bin_type = bin.find("img")["alt"]
+                # Convert the bin types to a list
+                bin_types_list = list(bin_types)
 
-                # Append data to the bins list
-                data["bins"].append({"type": bin_type, "collectionDate": date})
+                # Append the bin type and date to the data dict
+                for td in bin_types_list:
+                    img = td.find("img")
+                    bin_type_text = img["alt"]
+                    data["bins"].append({"type": bin_type_text, "collectionDate": date})
 
                 row_index += 1
 
