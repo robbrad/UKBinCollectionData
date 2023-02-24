@@ -104,6 +104,10 @@
         "postcode": "LS6 2SE",
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day"
     },
+    "LondonBoroughHounslow": {
+        "uprn": "100022887131",
+        "url": "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder"
+    },
     "MaldonDistrictCouncil": {
         "uprn": "100090557253",
         "url": "https://maldon.suez.co.uk/maldon/ServiceSummary"
