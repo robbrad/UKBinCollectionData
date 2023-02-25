@@ -33,6 +33,7 @@ Feature: Test each council output matches expected results in /outputs
             | GlasgowCityCouncil |
             | HighPeakCouncil |
             | HuntingdonDistrictCouncil |
+            | KingstonUponThamesCouncil |
             | LeedsCityCouncil |
             | LondonBoroughHounslow |
             | MaldonDistrictCouncil |
