@@ -25,6 +25,8 @@
 !.github/workflows/*.yml
 !uk_bin_collection
 !uk_bin_collection/**/*
+!wiki
+!wiki/**/*
 __pycache__
 !TO_BE_CONVERTED
 

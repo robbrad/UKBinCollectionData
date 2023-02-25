@@ -1,0 +1,30 @@
+name: Deploy Wiki
+
+on:
+  push:
+    # Trigger only when wiki directory changes
+    paths:
+      - "wiki/**"
+    branches: [ "master" ]
+  pull_request:
+    # Trigger only when wiki directory changes
+    paths:
+      - "wiki/**"
+    # The branches below must be a subset of the branches above
+    branches: [ "master" ]
+
+jobs:
+  deploy-wiki:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Deploy Wiki Changes
+      uses: Andrew-Chen-Wang/github-wiki-action@v3
+      env:
+        # Make sure WIKI_DIR ends with / as action uses rsync
+        WIKI_DIR: wiki/
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_MAIL: ${{ secrets.YOUR_EMAIL }}
+        GH_NAME: ${{ github.repository_owner }}
+        WIKI_PUSH_MESSAGE: "Update Wiki from repository"
