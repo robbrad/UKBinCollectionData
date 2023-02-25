@@ -27,4 +27,3 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_MAIL: ${{ secrets.YOUR_EMAIL }}
         GH_NAME: ${{ github.repository_owner }}
-        WIKI_PUSH_MESSAGE: "Update Wiki from repository"
