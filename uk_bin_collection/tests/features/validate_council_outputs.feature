@@ -34,6 +34,7 @@ Feature: Test each council output matches expected results in /outputs
             | HighPeakCouncil |
             | HuntingdonDistrictCouncil |
             | LeedsCityCouncil |
+            | LondonBoroughHounslow |
             | MaldonDistrictCouncil |
             | ManchesterCityCouncil |
             | MidSussexDistrictCouncil |
@@ -45,6 +46,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthLincolnshireCouncil |
             | NorthSomersetCouncil |
             | NorthTynesideCouncil |
+            | RochdaleCouncil |
             | SheffieldCityCouncil |
             | SomersetCouncil |
             | SouthAyrshireCouncil |
