@@ -29,6 +29,7 @@ Feature: Test each council output matches expected results in /outputs
             | EastDevonDC |
             | EastNorthamptonshireCouncil |
             | EastRidingCouncil |
+            | ErewashBoroughCouncil |
             | FenlandDistrictCouncil |
             | GlasgowCityCouncil |
             | HighPeakCouncil |

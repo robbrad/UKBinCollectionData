@@ -1,0 +1,16 @@
+{
+  "bins": [
+    {
+      "type": "Black Bin",
+      "collectionDate": "03/03/2023"
+    },
+    {
+      "type": "Kerbside Recycling",
+      "collectionDate": "10/03/2023"
+    },
+    {
+      "type": "Garden Waste",
+      "collectionDate": "10/03/2023"
+    }
+  ]
+}

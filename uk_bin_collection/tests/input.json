@@ -83,6 +83,10 @@
         "postcode": "HU17 8LG",
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/"
     },
+    "ErewashBoroughCouncil": {
+        "url": "https://map.erewash.gov.uk/isharelive.web/myerewash.aspx",
+        "uprn": "10003582028"
+    },
     "FenlandDistrictCouncil": {
         "uprn": "200002981143",
         "url": "https://www.fenland.gov.uk/article/13114/"
