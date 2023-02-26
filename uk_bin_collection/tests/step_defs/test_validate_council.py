@@ -1,6 +1,6 @@
 #from behave import *
 import pytest
-from pytest_bdd import scenarios, given, when, then, parsers
+from pytest_bdd import scenario, given, when, then, parsers
 
 from step_helpers import file_handler
 import logging
@@ -8,7 +8,10 @@ import traceback
 
 from uk_bin_collection.uk_bin_collection import collect_data
 
-scenarios('../features/validate_council_outputs.feature')
+@scenario('../features/validate_council_outputs.feature', "Validate Council Output")
+def test_scenario_outline():
+    pass
+
 
 @pytest.fixture
 def context():
@@ -18,15 +21,13 @@ def context():
     return Context()
 
 @given(parsers.parse('the council: {council_name}'))
-@given('the council: <council_name>')
-def step_impl(context, council_name):
+def get_council_step(context, council_name):
     council_input_data = file_handler.load_inputs_file("input.json")
     context.metadata = council_input_data[council_name]
     pass
 
 @when(parsers.parse('we scrape the data from {council}'))
-@when('we scrape the data from <council>')
-def step_impl(context, council):
+def scrape_step(context, council):
     context.council = council
     args = [
         council,
@@ -55,13 +56,13 @@ def step_impl(context, council):
 
 
 @then("the result is valid json")
-def step_impl(context):
+def validate_json_step(context):
     valid_json = file_handler.validate_json(context.parse_result)
     assert valid_json is True
 
 
 @then("the output should validate against the schema")
-def step_impl(context):
+def validate_output_step(context):
     council_schema = file_handler.load_schema_file(f"{context.council}.schema")
     schema_result = file_handler.validate_json_schema(
         context.parse_result, council_schema
