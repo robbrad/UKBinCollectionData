@@ -95,7 +95,7 @@ jobs:
           path: allure-history/tars
 
       - name: Untar Reports
-        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history ;done
+        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history/allure-history ;done
 
       - name: Display structure of downloaded files
         run: ls -R
