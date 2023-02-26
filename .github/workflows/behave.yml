@@ -74,6 +74,7 @@ jobs:
         keep_reports: 20
     
     - name: Tar Report
+      if: github.ref == 'refs/heads/master'
       run: tar -cvf allure_history_${{ matrix.python-version }}.tar allure-history
 
     - name: upload artifact
@@ -94,7 +95,7 @@ jobs:
           path: allure-history
 
       - name: UnTar Reports
-        run: tar xvf *.tar allure-history
+        run: tar xvf allure-history/*.tar allure-history
 
       - name: Display structure of downloaded files
         run: ls -R
