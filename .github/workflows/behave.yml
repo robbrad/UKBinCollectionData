@@ -36,19 +36,11 @@ jobs:
     - name: Install
       run: make install
 
-    - name: run integration tests
-      run: make matrix=${{ matrix.python-version }} integration-tests
+    - name: run tests
+      run: make matrix=${{ matrix.python-version }} tests
       continue-on-error: true
 
-    - name: Upload Integration Test Coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        gcov_ignore: uk_bin_collection/tests/**
-
-    - name: run unit tests
-      run: make unit-tests
-
-    - name: Upload Unit Test Coverage to Codecov
+    - name: Upload Test Coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         gcov_ignore: uk_bin_collection/tests/**

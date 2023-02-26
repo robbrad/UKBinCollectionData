@@ -1,19 +1,31 @@
-from behave import *
+#from behave import *
+import pytest
+from pytest_bdd import scenarios, given, when, then, parsers
+
 from step_helpers import file_handler
 import logging
 import traceback
 
 from uk_bin_collection.uk_bin_collection import collect_data
 
+scenarios('../features/validate_council_outputs.feature')
 
-@given('the council: "{council_name}"')
+@pytest.fixture
+def context():
+    class Context(object):
+        pass
+
+    return Context()
+
+@given(parsers.parse('the council: {council_name}'))
+@given('the council: <council_name>')
 def step_impl(context, council_name):
     council_input_data = file_handler.load_inputs_file("input.json")
     context.metadata = council_input_data[council_name]
     pass
 
-
-@when('we scrape the data from "{council}"')
+@when(parsers.parse('we scrape the data from {council}'))
+@when('we scrape the data from <council>')
 def step_impl(context, council):
     context.council = council
     args = [
