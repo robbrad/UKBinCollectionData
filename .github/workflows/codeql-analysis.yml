@@ -14,13 +14,13 @@ name: "CodeQL"
 on:
   push:
     # Trigger unless only the wiki directory changed
-    paths-ignore:
-      - "wiki/**"
+    paths:
+      - "**/**.py"
     branches: [ "master" ]
   pull_request:
     # Trigger unless only the wiki directory changed
-    paths-ignore:
-      - "wiki/**"
+    paths:
+      - "**/**.py"
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
   schedule:
