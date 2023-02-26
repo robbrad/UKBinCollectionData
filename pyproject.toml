@@ -9,6 +9,11 @@ packages = [
 ]
 include = ["uk_bin_collection"]
 
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "uk_bin_collection"
+]
+
 [tool.poetry.urls]
 issues = "https://github.com/robbrad/UKBinCollectionData/issues"
 
@@ -46,3 +51,6 @@ python = ">=3.8,<4"
 requests = "*"
 selenium = "^4.8.0"
 lxml = "^4.9.2"
+pytest-xdist = "^3.2.0"
+pytest-bdd = "^6.1.1"
+allure-pytest-bdd = "^2.12.0"
