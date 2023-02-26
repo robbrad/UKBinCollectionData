@@ -316,6 +316,7 @@ python collect_data.py WaverleyBoroughCouncil https://wav-wrp.whitespacews.com/ 
 Additional parameters:
 - `-p` - postcode
 - `-n` - this is actually not the house number - it is a unique identifier specific to the council for identifying the property (like a house number but I have no idea why its different). To find it, use the online form to enter your postcode/get your house number. At the end of the URL, there will be something like "&pIndex=1" - that's the number you need (and only the number)
+
 ---
 
 ### Wealden District Council
