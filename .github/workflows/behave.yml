@@ -85,6 +85,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           path: allure-history
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+      
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
