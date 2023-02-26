@@ -16,6 +16,7 @@ on:
 jobs:
   deploy-wiki:
     runs-on: ubuntu-latest
+    environment: wiki
     steps:
     - uses: actions/checkout@v3
 
