@@ -132,7 +132,7 @@ modified:
 - [ ] [Output JSON file](#output-json-file)
 - [ ] [Council Schema](#council-schema)
 - [ ] [Feature file](#feature-file)
-- [ ] [Run command](#run-command)
+- [ ] [Wiki entry](#wiki-entry)
 
 **Note:** from here on, anything containing`<council_name>` should be replaced with the scraper's name.
 
@@ -265,20 +265,28 @@ The council's name should be added to the feature file's example list. These nam
 `council` should always remain on line 10. The name should be wrapped in pipes.
 
 ### Run command
-| Type | File location            |
-|------|--------------------------|
-| Add  | Add to pull request body |
+| Type | File location      |
+|------|--------------------|
+| Modify | `wiki/Councils.md` |
 
-The project contains a [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) of all run commands for 
-each individual scraper to tell users how they can run the script on their CLI. For ease, please include your scraper's
-in your pull request, if it is available.
+The project contains a [Wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) of all run commands for 
+each individual scraper to tell users how they can run the script on their CLI. These are also alphabetically sorted.
+Instructions for your scraper should be added to Councils.md file.
 
 <details>
   <summary>Example</summary>
 
+````markdown
+---
+
+### Cheshire East Council
 ```commandline
 python collect_data.py CheshireEastCouncil "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1621149987573"
 ```
+Note:
+Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.
+Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`.
+````
 </details>
 
 
