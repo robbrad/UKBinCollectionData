@@ -92,10 +92,10 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: allure_history
-          path: allure-history
+          path: allure-history/tars
 
-      - name: UnTar Reports
-        run: tar xvf allure-history/*.tar allure-history
+      - name: Untar Reports
+        run: tar xvf allure-history/tars/*.tar allure-history
 
       - name: Display structure of downloaded files
         run: ls -R
