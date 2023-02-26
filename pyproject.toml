@@ -22,10 +22,6 @@ requires = ["poetry-core>=1.2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dev-dependencies]
-allure-behave = "^2.9.45"
-behave = "*"
-behavex = "*"
-behave-html-formatter = "^0.9.10"
 black = "*"
 coverage = "*"
 flake8 = "*"
@@ -33,6 +29,9 @@ jsonschema = "^4.7.2"
 pylint = "*"
 pytest = "*"
 setuptools = "*"
+pytest-xdist = "^3.2.0"
+pytest-bdd = "^6.1.1"
+allure-pytest-bdd = "^2.12.0"
 
 [tool.poetry.scripts]
 uk_bin_collection = "uk_bin_collection.uk_bin_collection:collect_data"
@@ -51,6 +50,3 @@ python = ">=3.8,<4"
 requests = "*"
 selenium = "^4.8.0"
 lxml = "^4.9.2"
-pytest-xdist = "^3.2.0"
-pytest-bdd = "^6.1.1"
-allure-pytest-bdd = "^2.12.0"
