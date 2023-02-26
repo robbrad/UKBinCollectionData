@@ -22,8 +22,9 @@ pycodestyle:
 	poetry run pycodestyle --statistics -qq uk_bin_collection
 
 ## @Testing runs unit tests
-tests: ## runs tests for the project
-	 poetry run coverage run --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
-	 poetry run coverage xml
-	 poetry run pytest uk_bin_collection/tests/step_defs/ -n logical --alluredir=build/$(matrix)/allure-results
+integration-tests: ## runs tests for the project
+	poetry run pytest uk_bin_collection/tests/step_defs/ -n logical --alluredir=build/$(matrix)/allure-results
 
+unit-tests:
+	poetry run coverage run --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
+	poetry run coverage xml
