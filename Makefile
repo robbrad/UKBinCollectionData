@@ -23,5 +23,5 @@ pycodestyle:
 
 ## @Testing runs unit tests
 tests: ## runs tests for the project
-	poetry run coverage run --omit "*/tests/*" -m pytest -n $(cpus) --alluredir=build/$(matrix)/allure-results
+	poetry run coverage run --omit "*/tests/*" -m pytest -n logical --alluredir=build/$(matrix)/allure-results
 	poetry run coverage xml
