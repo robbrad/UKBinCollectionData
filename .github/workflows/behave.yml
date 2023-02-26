@@ -75,8 +75,8 @@ jobs:
     - name: upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: public${{ matrix.build }}
-        path: public
+        name: allure-history
+        path: allure-history
 
   deploy:
     runs-on: ubuntu-latest
@@ -90,4 +90,4 @@ jobs:
         with:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: ./artifacts/allure-history
+          PUBLISH_DIR: ./artifacts
