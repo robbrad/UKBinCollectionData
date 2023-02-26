@@ -94,12 +94,12 @@ jobs:
           name: allure_history
           path: allure-history/tars
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - name: Untar Reports
         run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history ;done
-      
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
