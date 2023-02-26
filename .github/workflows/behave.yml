@@ -55,7 +55,7 @@ jobs:
 
     - name: Get Allure history
       uses: actions/checkout@v3
-      if: always()
+      if: github.ref == 'refs/heads/master'
       continue-on-error: true
       with:
         ref: gh-pages
@@ -63,7 +63,7 @@ jobs:
 
     - name: Allure Report action from marketplace
       uses: simple-elf/allure-report-action@master
-      if: always()
+      if: github.ref == 'refs/heads/master'
       #id: allure-report
       with:
         allure_results: build/${{ matrix.python-version }}/allure-results
@@ -74,6 +74,7 @@ jobs:
         keep_reports: 20
     - name: upload artifact
       uses: actions/upload-artifact@v3
+      if: github.ref == 'refs/heads/master'
       with:
         name: allure-history
         path: allure-history
