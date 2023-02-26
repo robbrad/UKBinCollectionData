@@ -98,7 +98,7 @@ jobs:
         run: ls -R
 
       - name: Untar Reports
-        run: ls allure-history/tars/*.tar |xargs -n1 tar xvf allure-history
+        run: for i in allure-history/tars/*.tar; do tar -zxvf "$i" allure-history ;done
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
