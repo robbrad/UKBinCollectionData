@@ -95,14 +95,17 @@ jobs:
           path: allure-history/tars
 
       - name: Untar Reports
-        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history/allure-history ;done
+        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history ;done
+
+      - name: Remove Tar Reports
+        run: rm -rf allure-history/tars
 
       - name: Display structure of downloaded files
         run: ls -R
-        
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history/allure-history
+          PUBLISH_DIR: allure-history
