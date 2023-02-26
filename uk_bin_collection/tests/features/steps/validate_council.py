@@ -1,5 +1,7 @@
 from behave import *
 from step_helpers import file_handler
+import logging
+import traceback
 
 from uk_bin_collection.uk_bin_collection import collect_data
 
@@ -31,7 +33,12 @@ def step_impl(context, council):
     if "SKIP_GET_URL" in context.metadata:
         skip_url = context.metadata["SKIP_GET_URL"]
         args.append(f"-s={skip_url}")
-    context.parse_result = collect_data.main(args)
+    
+    try:
+        context.parse_result = collect_data.main(args)
+    except Exception as err:
+        logging.error(traceback.format_exc())
+        logging.info(f"Schema: {err}")
     pass
 
 
