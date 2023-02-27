@@ -52,8 +52,8 @@ def scrape_step(context, council):
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Schema: {err}")
-    pass
-
+        raise(err)
+    
 
 @then("the result is valid json")
 def validate_json_step(context):
