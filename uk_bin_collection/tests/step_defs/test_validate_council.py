@@ -22,9 +22,13 @@ def context():
 
 @given(parsers.parse('the council: {council_name}'))
 def get_council_step(context, council_name):
-    council_input_data = file_handler.load_inputs_file("input.json")
-    context.metadata = council_input_data[council_name]
-    pass
+    try:
+        council_input_data = file_handler.load_inputs_file("input.json")
+        context.metadata = council_input_data[council_name]
+    except Exception as err:
+        logging.error(traceback.format_exc())
+        logging.info(f"Validate Output: {err}")
+        raise(err)
 
 @when(parsers.parse('we scrape the data from {council}'))
 def scrape_step(context, council):
@@ -53,18 +57,28 @@ def scrape_step(context, council):
         logging.error(traceback.format_exc())
         logging.info(f"Schema: {err}")
         raise(err)
-    
 
 @then("the result is valid json")
 def validate_json_step(context):
-    valid_json = file_handler.validate_json(context.parse_result)
-    assert valid_json is True
+    try:
+        valid_json = file_handler.validate_json(context.parse_result)
+        assert valid_json is True
+    except Exception as err:
+        logging.error(traceback.format_exc())
+        logging.info(f"Validate Output: {err}")
+        raise(err)
+
 
 
 @then("the output should validate against the schema")
 def validate_output_step(context):
-    council_schema = file_handler.load_schema_file(f"{context.council}.schema")
-    schema_result = file_handler.validate_json_schema(
-        context.parse_result, council_schema
-    )
-    assert schema_result is True
+    try:
+        council_schema = file_handler.load_schema_file(f"{context.council}.schema")
+        schema_result = file_handler.validate_json_schema(
+            context.parse_result, council_schema
+        )
+        assert schema_result is True
+    except Exception as err:
+        logging.error(traceback.format_exc())
+        logging.info(f"Validate Output: {err}")
+        raise(err)
