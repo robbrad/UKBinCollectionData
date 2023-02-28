@@ -38,6 +38,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Leeds City Council](#leeds-city-council)
 - [London Borough Hounslow](#london-borough-hounslow)
 - [Maldon District Council](#maldon-district-council)
+- [Malvern Hills District Council](#malvern-hills-district-council)
 - [Manchester City Council](#manchester-city-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
@@ -344,6 +345,15 @@ Additional parameters:
 ### Maldon District Council
 ```commandline
 python collect_data.py MaldonDistrictCouncil https://maldon.suez.co.uk/maldon/ServiceSummary -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+---
+
+### Malvern Hills District Council
+```commandline
+python collect_data.py MalvernHillsDC https://swict.malvernhills.gov.uk/mhdcroundlookup/HandleSearchScreen -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
