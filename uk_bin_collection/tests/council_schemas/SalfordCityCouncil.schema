@@ -23,17 +23,27 @@
             "additionalProperties": false,
             "properties": {
                 "type": {
-                    "type": "string"
+                    "$ref": "#/definitions/Type"
                 },
-                "collectionDate": {
+                "collectionTime": {
                     "type": "string"
                 }
             },
             "required": [
-                "collectionDate",
+                "collectionTime",
                 "type"
             ],
             "title": "Bin"
+        },
+        "Type": {
+            "type": "string",
+            "enum": [
+                "Food and garden waste",
+                "Brown recycling (bottles and cans)",
+                "Blue recycling (paper and card)",
+                "Domestic waste"
+            ],
+            "title": "Type"
         }
     }
 }

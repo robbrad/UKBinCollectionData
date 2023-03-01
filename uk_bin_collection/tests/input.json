@@ -20,8 +20,8 @@
         "url": "https://bristolcouncil.powerappsportals.com/completedynamicformunauth/?servicetypeid=7dce896c-b3ba-ea11-a812-000d3a7f1cdc"
     },
     "BromleyBoroughCouncil": {
-        "uprn": "100022887131",
-        "url": "https://recyclingservices.bromley.gov.uk/property/xxxxxxxxxx"
+        "uprn": "100020380703",
+        "url": "https://recyclingservices.bromley.gov.uk/property/100020380703"
     },
     "CardiffCouncil": {
         "uprn": "100100112419",
@@ -33,11 +33,11 @@
         "url": "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar"
     },
     "CharnwoodBoroughCouncil": {
-        "url": "https://my.charnwood.gov.uk/"
+        "url": "https://my.charnwood.gov.uk/location?put=cbc10070067259&rememberme=0&redirect=%2F"
     },
     "ChelmsfordCityCouncil": {
-        "uprn": "100022887131",
-        "url": "https://mychelmsford.secure.force.com/WasteServices/WM_WasteViewProperty?id=XXXXXXXXXXXXXXX"
+        "uprn": "100090389457",
+        "url": "https://mychelmsford.secure.force.com/WasteServices/WM_WasteViewProperty?id=100090389457"
     },
     "CheshireEastCouncil": {
         "uprn": "100012791226",
@@ -50,7 +50,7 @@
         "url": "https://chiltern.gov.uk/collection-dates"
     },
     "CrawleyBoroughCouncil": {
-        "url": ""
+        "url": "https://my.crawley.gov.uk/apibroker/?api=RunLookup&id=5b4f0ec5f13f4&repeat_against=&noRetry=true&getOnlyTokens=undefined&log_id=&app_name=AF-Renderer::Self&_=1677705687797&sid=fb93340a0277a7c8ade064be0c86ebbc"
     },
     "CroydonCouncil": {
         "house_number": "13",
@@ -64,9 +64,6 @@
     "DurhamCouncil": {
         "uprn": "200003218818",
         "url": "https://www.durham.gov.uk/bincollections?uprn="
-    },
-    "DurhamCountyCouncil": {
-        "url": "http://mydurham.durham.gov.uk/article/12690?uprn=XXXXXXXXXXXXXXXXXXX"
     },
     "EastCambridgeshireCouncil": {
         "uprn": "",
