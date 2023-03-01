@@ -1,0 +1,12 @@
+{
+    "bins": [
+        {
+            "type": "Non-recyclable waste",
+            "collectionDate": "03/03/2023"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "10/03/2023"
+        }
+    ]
+}
