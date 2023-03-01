@@ -24,7 +24,6 @@ Feature: Test each council output matches expected results in /outputs
             | CroydonCouncil |
             | DoncasterCouncil |
             | DurhamCouncil |
-            | DurhamCountyCouncil |
             | EastCambridgeshireCouncil |
             | EastDevonDC |
             | EastNorthamptonshireCouncil |
