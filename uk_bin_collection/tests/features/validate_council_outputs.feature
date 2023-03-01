@@ -50,6 +50,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthSomersetCouncil |
             | NorthTynesideCouncil |
             | RochdaleCouncil |
+            | SalfordCityCouncil |
             | SheffieldCityCouncil |
             | SomersetCouncil |
             | SouthAyrshireCouncil |
