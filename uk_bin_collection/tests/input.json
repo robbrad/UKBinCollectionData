@@ -167,6 +167,10 @@
         "uprn": "23049922",
         "url": "https://webforms.rochdale.gov.uk/BinCalendar"
     },
+    "SalfordCityCouncil": {
+        "uprn": "100011416709",
+        "url": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections"
+    },
     "SheffieldCityCouncil": {
         "url": "https://wasteservices.sheffield.gov.uk/property/XXXXXXXXXXX"
     },
