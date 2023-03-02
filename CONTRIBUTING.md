@@ -15,7 +15,6 @@
     + [Output JSON file](#output-json-file)
     + [Council schema](#council-schema)
     + [Feature file](#feature-file)
-    + [Run command](#run-command)
   * [Testing](#testing)
     + [Behave (Integration Testing)](#behave--integration-testing-)
       - [Running the Behave tests](#running-the-behave-tests)
@@ -89,8 +88,8 @@ UKBCD has two mandatory parameters when it runs - the name of the parser (sans .
 | Parameter    | Prompt               | Notes                                    | kwargs.get               |
 |--------------|----------------------|------------------------------------------|--------------------------|
 | UPRN         | `-u` or `--uprn`     |                                          | `kwargs.get('uprn')`     |
- | House number | `-n` or `--number`   | Sometimes call PAON                      | `kwargs.get('paon')`     |
- | Postcode     | `-p` or `--postcode` | Needs to be wrapped in quotes on the CLI | `kwargs.get('postcode')` |
+| House number | `-n` or `--number`   | Sometimes called PAON                    | `kwargs.get('paon')`     |
+| Postcode     | `-p` or `--postcode` | Needs to be wrapped in quotes on the CLI | `kwargs.get('postcode')` |
 
 These parameters are useful if you're using something like the requests module and need to take additional user information into the request, such as:
 ```commandline
@@ -132,7 +131,6 @@ modified:
 - [ ] [Output JSON file](#output-json-file)
 - [ ] [Council Schema](#council-schema)
 - [ ] [Feature file](#feature-file)
-- [ ] [Wiki entry](#wiki-entry)
 
 **Note:** from here on, anything containing`<council_name>` should be replaced with the scraper's name.
 
@@ -145,6 +143,17 @@ Each council should have a node that matches the scraper's name. The node should
 URL is mandatory, but any additional parameters like UPRN or postcode should also be provided. Councils should be
 listed in alphabetical order.
 
+A "wiki_name" argument with the council's full name should also be provided.
+
+A "wiki_note" argument should be used where non-standard instructions of just providing UPRN/Postcode/House Number
+parameters are needed.
+
+A "wiki_command_url_override" argument should be used where parts of the URL need to be replaced by the user to allow a
+valid URL to be left for the integration tests.
+
+A new [Wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) entry will be generated automatically from
+this file's details.
+
 **Note:** If you want the integration test to work you must supply real, working data (a business address is 
 recommended - the council's address is usually a good one).
 
@@ -153,9 +162,12 @@ recommended - the council's address is usually a good one).
 
 ```json
     "CheshireEastCouncil": {
+        "uprn": "100012791226",
         "url": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1621149987573",
-        "uprn": "100012791226"
-    }
+        "wiki_name": "Cheshire East Council",
+        "wiki_command_url_override": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1621149987573",
+        "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.\nUse the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`."
+    },
 ```
 </details>
 
@@ -263,31 +275,6 @@ If this is the case, you may need to add them to the bin_type `enum` manually (u
 
 The council's name should be added to the feature file's example list. These names are alphabetically sorted, although
 `council` should always remain on line 10. The name should be wrapped in pipes.
-
-### Run command
-| Type | File location      |
-|------|--------------------|
-| Modify | `wiki/Councils.md` |
-
-The project contains a [Wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) of all run commands for 
-each individual scraper to tell users how they can run the script on their CLI. These are also alphabetically sorted.
-Instructions for your scraper should be added to Councils.md file.
-
-<details>
-  <summary>Example</summary>
-
-````markdown
----
-
-### Cheshire East Council
-```commandline
-python collect_data.py CheshireEastCouncil "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1621149987573"
-```
-Note:
-Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.
-Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`.
-````
-</details>
 
 
 ## Testing

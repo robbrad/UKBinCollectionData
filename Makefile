@@ -1,4 +1,4 @@
-.PHONY: install pre-build build black pycodestyle
+.PHONY: install pre-build build black pycodestyle update-wiki
 
 ## @CI_actions Installs the checked out version of the code to your poetry managed venv
 install:
@@ -28,3 +28,6 @@ integration-tests: ## runs tests for the project
 unit-tests:
 	poetry run coverage run --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
 	poetry run coverage xml
+
+update-wiki:
+	poetry run python wiki/generate_wiki.py
