@@ -15,10 +15,34 @@ on:
 
 jobs:
   deploy-wiki:
+    # Only run on main branch push (e.g. after pull request merge).
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     environment: wiki
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Run image
+      uses: abatilo/actions-poetry@v2.3.0
+      with:
+        poetry-version: '1.2.1'
+
+    - name: Install
+      run: make install
+
+    - name: Update Councils.md from input.json
+      run: make update-wiki
+
+    - name: Commit and Push Wiki changes
+      run: |
+        git config --global user.name "Wiki GitHub Action"
+        git config --global user.email "action@github.com"
+        git add wiki
+        git commit -m "Update Councils.md from input.json"
+        git push
 
     - name: Deploy Wiki Changes
       uses: Andrew-Chen-Wang/github-wiki-action@v3
@@ -28,3 +52,4 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GH_MAIL: ${{ secrets.YOUR_EMAIL }}
         GH_NAME: ${{ github.repository_owner }}
+        EXCLUDED_FILES: "generate_wiki.py"
