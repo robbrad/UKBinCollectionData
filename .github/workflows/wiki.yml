@@ -5,11 +5,13 @@ on:
     # Trigger only when wiki directory changes
     paths:
       - "wiki/**"
+      - "uk_bin_collection/tests/input.json"
     branches: [ "master" ]
   pull_request:
     # Trigger only when wiki directory changes
     paths:
       - "wiki/**"
+      - "uk_bin_collection/tests/input.json"
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
 
