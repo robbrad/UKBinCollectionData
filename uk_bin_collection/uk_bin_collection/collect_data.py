@@ -48,8 +48,8 @@ def main(args):
     parser.add_argument(
         "-s",
         "--skip_get_url",
-        type=bool,
-        help="Skips the generic get_url - uses one in council class ",
+        action="store_true",
+        help="Skips the generic get_url - uses one in council class",
         required=False,
     )
 
