@@ -1,9 +1,11 @@
-This markdown document provides a list of commands and parameters for use with this script.
+<!-- THIS FILE IS AUTO-GENERATED ANY CHANGES WILL BE OVERWRITTEN -->
+<!-- Update `uk_bin_collection/tests/input.json` to make changes to this file -->
+
+This Markdown document provides a list of commands and parameters for use with this script.
 
 As a reminder, most scripts only need a module name and a URL to run, but others need more parameters depending on how the data is scraped.
 
-For scripts that need postcodes, these should be provided in double quotes and with a space, e.g.
-`"AA1 2BB"` rather than `AA12BB`.
+For scripts that need postcodes, these should be provided in double quotes and with a space, e.g. `"AA1 2BB"` rather than `AA12BB`.
 
 This document is still a work in progress, don't worry if your council isn't listed - it will be soon!
 
@@ -24,10 +26,9 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Croydon Council](#croydon-council)
 - [Doncaster Council](#doncaster-council)
 - [Durham Council](#durham-council)
-- [Durham County Council](#durham-county-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
 - [East Devon District Council](#east-devon-district-council)
-- [East Northampshire Council](#east-northampshire-council)
+- [East Northamptonshire Council](#east-northamptonshire-council)
 - [East Riding Council](#east-riding-council)
 - [Erewash Borough Council](#erewash-borough-council)
 - [Fenland District Council](#fenland-district-council)
@@ -50,6 +51,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North Somerset Council](#north-somerset-council)
 - [North Tyneside Council](#north-tyneside-council)
 - [Rochdale Council](#rochdale-council)
+- [Salford City Council](#salford-city-council)
 - [Sheffield City Council](#sheffield-city-council)
 - [Somerset Council](#somerset-council)
 - [South Ayrshire Council](#south-ayrshire-council)
@@ -85,20 +87,25 @@ Additional parameters:
 
 ### Bexley Council
 ```commandline
-python collect_data.py BexleyCouncil https://www.bexley.gov.uk/ -u "XXXXXXXX@XXXX.XX.XX"
+python collect_data.py BexleyCouncil https://www.bexley.gov.uk/ -u XXXXXXXX
 ```
-In order to use this parser, you will need to sign up to [Bexley's @Home app](https://www.bexley.gov.uk/services/rubbish-and-recycling/bexley-home-recycling-app/about-app) (available for [iOS](https://apps.apple.com/gb/app/home-collection-reminder/id1050703690) and [Android](https://play.google.com/store/apps/details?id=com.contender.athome.android)). Complete the setup by entering your email and setting your address with postcode and address line. Once you can see the calendar, you _should_ be good to run the parser. Just include the `-u` argument and include the email you used in quotes.
-
 Additional parameters:
-- `-u` - Email (let's pretend its a UPRN)
+- `-u` - UPRN
+
+Note: In order to use this parser, you will need to sign up to [Bexley's @Home app](https://www.bexley.gov.uk/services/rubbish-and-recycling/bexley-home-recycling-app/about-app) (available for [iOS](https://apps.apple.com/gb/app/home-collection-reminder/id1050703690) and [Android](https://play.google.com/store/apps/details?id=com.contender.athome.android)).
+Complete the setup by entering your email and setting your address with postcode and address line.
+Once you can see the calendar, you _should_ be good to run the parser.
+Just pass the email you used in quotes in the UPRN parameter.
+
 
 ---
 
 ### Blackburn Council
 ```commandline
-python collect_data.py BlackburnCouncil http://google.com -u XXXXXXXX
+python collect_data.py BlackburnCouncil https://www.blackburn.gov.uk -s true -u XXXXXXXX
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 
 ---
@@ -107,13 +114,14 @@ Additional parameters:
 ```commandline
 python collect_data.py BoltonCouncil https://maps.bolton.gov.uk/residents/getdata.aspx?requesttype=LocalInfo&ms=Bolton/MyHouse&group=My%20house%20data%7Cbin_collections_combined&format=json&uid=XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
 
 ### Bristol City Council
 ```commandline
-python collect_data.py BristolCityCouncil https://bristolcouncil.powerappsportals.com/completedynamicformunauth/?servicetypeid=7dce896c-b3ba-ea11-a812-000d3a7f1cdc -u XXXXXX
+python collect_data.py BristolCityCouncil https://bristolcouncil.powerappsportals.com/completedynamicformunauth/?servicetypeid=7dce896c-b3ba-ea11-a812-000d3a7f1cdc -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -122,8 +130,11 @@ Additional parameters:
 
 ### Bromley Borough Council
 ```commandline
-python collect_data.py BromleyBoroughCouncil https://recyclingservices.bromley.gov.uk/waste/XXXXXXX
+python collect_data.py BromleyBoroughCouncil https://recyclingservices.bromley.gov.uk/waste/XXXXXXX -u XXXXXXXX
 ```
+Additional parameters:
+- `-u` - UPRN
+
 Note: Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the "Your bin days" page then copy the URL and replace the URL in the command.
 
 ---
@@ -139,43 +150,52 @@ Additional parameters:
 
 ### Castlepoint District Council
 ```commandline
-python collect_data.py CastlepointDistrictCouncil "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar" -u XXXXXXXX -s true
+python collect_data.py CastlepointDistrictCouncil https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar -s true -u XXXXXXXX
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 
 ---
 
 ### Charnwood Borough Council
 ```commandline
-python collect_data.py CharnwoodBoroughCouncil https://my.charnwood.gov.uk/
+python collect_data.py CharnwoodBoroughCouncil https://my.charnwood.gov.uk/location?put=cbcXXXXXXXX&rememberme=0&redirect=%2F
 ```
+
+Note: Replace XXXXXXXX with UPRN keeping "cbc" before it.
 
 ---
 
 ### Chelmsford City Council
 ```commandline
-python collect_data.py CastlepointDistrictCouncil https://mychelmsford.secure.force.com/WasteServices/WM_WasteViewProperty?id=XXXXXXXX
+python collect_data.py ChelmsfordCityCouncil https://mychelmsford.secure.force.com/WasteServices/WM_WasteViewProperty?id=XXXXXXXX -u XXXXXXXX
 ```
+Additional parameters:
+- `-u` - UPRN
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
 
 ### Cheshire East Council
 ```commandline
-python collect_data.py CheshireEastCouncil "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1621149987573"
+python collect_data.py CheshireEastCouncil https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1621149987573 -u XXXXXXXX
 ```
-Note: 
-Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.
+Additional parameters:
+- `-u` - UPRN
+
+Note: Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.
 Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`.
 
 ---
 
 ### Chilterns
 ```commandline
-python collect_data.py Chilterns https://chiltern.gov.uk/collection-dates -p "XXX XXX" -n "XX XXXXX" -s true
+python collect_data.py Chilterns https://chiltern.gov.uk/collection-dates -s true -p "XXXX XXX" -n XX
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
 
@@ -185,21 +205,19 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ### Crawley Borough Council
 ```commandline
-python collect_data.py CrawleyBoroughCouncil https://my.crawley.gov.uk/ -u XXXXXXXX
+python collect_data.py CrawleyBoroughCouncil https://my.crawley.gov.uk/
 ```
-Note: Crawley needs both a UPRN and a USRN to work. You can either:
- - Register with [OS Data Hub](https://osdatahub.os.uk/dashboard) and get an API key to find the USRN for you. You would have to place the API key in your own .env file within the project root,
-or change the variable on line 21, and remove the dependency and reference to `dotenv` on lines 5 and 20.
- - Find the USRN on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map) and hardcode the value in, again removing the dependency and reference to `dotenv` on lines 5 and 20.
 
-Additional parameters:
-- `-u` - UPRN
+Note: Crawley needs both a UPRN and a USRN to work. You can either:
+- Register with [OS Data Hub](https://osdatahub.os.uk/dashboard) and get an API key to find the USRN for you. You would have to place the API key in your own .env file within the project root,
+  or change the variable on line 21, and remove the dependency and reference to `dotenv` on lines 5 and 20.
+- Find the USRN on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map) and hardcode the value in, again removing the dependency and reference to `dotenv` on lines 5 and 20.
 
 ---
 
 ### Croydon Council
 ```commandline
-python collect_data.py CroydonCouncil https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address -p "XXX XXX" -n XX
+python collect_data.py CroydonCouncil https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
@@ -225,21 +243,12 @@ Additional parameters:
 
 ---
 
-### Durham County Council
-```commandline
-python collect_data.py DurhamCountyCouncil http://mydurham.durham.gov.uk/article/12690?uprn=XXXXXXXXXXXXXXXXXXX -u XXXXXXXX
-```
-Additional parameters:
-- `-u` - UPRN
-
----
-
 ### East Cambridgeshire Council
 ```commandline
-python collect_data.py EastCambridgeshireCouncil https://eastcambs-self.achieveservice.com/appshost/firmstep/self/apps/custompage/bincollections?language=en&uprn= -u XXXXXXXX
+python collect_data.py EastCambridgeshireCouncil https://eastcambs-self.achieveservice.com/appshost/firmstep/self/apps/custompage/bincollections?language=en&uprn=XXXXXXXX
 ```
-Additional parameters:
-- `-u` - UPRN
+
+Note: Replace XXXXXXXX with UPRN.
 
 ---
 
@@ -247,11 +256,12 @@ Additional parameters:
 ```commandline
 python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX
 ```
-Note: make sure the URL includes `/future-collections-calendar/` for this script to work properly
+
+Note: Replace XXXXXXXX with UPRN.
 
 ---
 
-### East Northampshire Council
+### East Northamptonshire Council
 ```commandline
 python collect_data.py EastNorthamptonshireCouncil https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/ -u XXXXXXXX
 ```
@@ -262,7 +272,7 @@ Additional parameters:
 
 ### East Riding Council
 ```commandline
-python collect_data.py EastRidingCouncil https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/ -p "XXX XXX"
+python collect_data.py EastRidingCouncil https://wasterecyclingapi.eastriding.gov.uk -p "XXXX XXX"
 ```
 Additional parameters:
 - `-p` - postcode
@@ -291,15 +301,17 @@ Additional parameters:
 ```commandline
 python collect_data.py GlasgowCityCouncil https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
 
 ### High Peak Council
 ```commandline
-python collect_data.py HighPeakCouncil https://www.highpeak.gov.uk/findyourbinday -p "XXX XXX" -n "XX XXXXX" -s true
+python collect_data.py HighPeakCouncil https://www.highpeak.gov.uk/findyourbinday -s true -p "XXXX XXX" -n XX
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
 
@@ -311,7 +323,8 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 ```commandline
 python collect_data.py HuntingdonDistrictCouncil https://www.huntingdonshire.gov.uk/refuse-calendar/XXXXXXXX
 ```
-Note: Replace XXXXXXXX with the UPRN of the property
+
+Note: Replace XXXXXXXX with UPRN.
 
 ---
 
@@ -319,13 +332,14 @@ Note: Replace XXXXXXXX with the UPRN of the property
 ```commandline
 python collect_data.py KingstonUponThamesCouncil https://waste-services.kingston.gov.uk/waste/XXXXXXX
 ```
+
 Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the "Your bin days" page then copy the URL and replace the URL in the command.
 
 ---
 
 ### Leeds City Council
 ```commandline
-python collect_data.py LeedsCityCouncil https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day -p "XXX XXX" -n XX
+python collect_data.py LeedsCityCouncil https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
@@ -371,13 +385,13 @@ Additional parameters:
 
 ### Mid Sussex District Council
 ```commandline
-python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -p "XXXX XXX" -n "XX XXXXXXXX"
+python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 
-Note: pass the name of the street with the house number parameter, wrapped in double quotes (*I couldn't think of a better way of adding support for this easily, but its needed for form data*)
+Note: Pass the name of the street with the house number parameter, wrapped in double quotes
 
 ---
 
@@ -385,24 +399,28 @@ Note: pass the name of the street with the house number parameter, wrapped in do
 ```commandline
 python collect_data.py NewarkAndSherwoodDC http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
 
 ### Newcastle City Council
 ```commandline
-python collect_data.py NewcastleCityCouncil https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXXXXXX
+python collect_data.py NewcastleCityCouncil https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
 
 ### North East Lincolnshire Council
 ```commandline
-python collect_data.py NorthEastLincs https://www.nelincs.gov.uk/refuse-collection-schedule/?uprn=XXXXXXXX&view=timeline
+python collect_data.py NorthEastLincs https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=XXXXXXXX -u XXXXXXXX
 ```
-Note:
-Replace XXXXXXXX with UPRN. Also ensure `&view=timeline` is kept on the end.
+Additional parameters:
+- `-u` - UPRN
+
+Note: Replace XXXXXXXX with UPRN.
 
 ---
 
@@ -410,6 +428,7 @@ Replace XXXXXXXX with UPRN. Also ensure `&view=timeline` is kept on the end.
 ```commandline
 python collect_data.py NorthKestevenDistrictCouncil https://www.n-kesteven.org.uk/bins/display?uprn=XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
@@ -418,6 +437,7 @@ Note: Replace XXXXXXXX with UPRN.
 ```commandline
 python collect_data.py NorthLanarkshireCouncil https://www.northlanarkshire.gov.uk/bin-collection-dates/XXXXXXXXXXX/XXXXXXXXXXX
 ```
+
 Note: Follow the instructions [here](https://www.northlanarkshire.gov.uk/bin-collection-dates) until you get the "Next collections" page then copy the URL and replace the URL in the command.
 
 ---
@@ -433,7 +453,7 @@ Additional parameters:
 
 ### North Somerset Council
 ```commandline
-python collect_data.py NorthSomersetCouncil https://forms.n-somerset.gov.uk/Waste/CollectionSchedule -p "XXXX XXX" -u XXXXXXXX
+python collect_data.py NorthSomersetCouncil https://forms.n-somerset.gov.uk/Waste/CollectionSchedule -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -443,7 +463,7 @@ Additional parameters:
 
 ### North Tyneside Council
 ```commandline
-python collect_data.py NorthTynesideCouncil https://my.northtyneside.gov.uk/category/81/bin-collection-dates -p "XXXX XXX" -u XXXXXXXX
+python collect_data.py NorthTynesideCouncil https://my.northtyneside.gov.uk/category/81/bin-collection-dates -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -453,7 +473,7 @@ Additional parameters:
 
 ### Rochdale Council
 ```commandline
-python collect_data.py RochdaleCouncil https://webforms.rochdale.gov.uk/BinCalendar -p "XXXX XXX" -u XXXXXXXX
+python collect_data.py RochdaleCouncil https://webforms.rochdale.gov.uk/BinCalendar -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -461,10 +481,20 @@ Additional parameters:
 
 ---
 
+### Salford City Council
+```commandline
+python collect_data.py SalfordCityCouncil https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+---
+
 ### Sheffield City Council
 ```commandline
 python collect_data.py SheffieldCityCouncil https://wasteservices.sheffield.gov.uk/property/XXXXXXXXXXX
 ```
+
 Note: Follow the instructions [here](https://wasteservices.sheffield.gov.uk/) until you get the "Your bin collection dates and services" page then copy the URL and replace the URL in the command.
 
 ---
@@ -493,6 +523,7 @@ Additional parameters:
 ```commandline
 python collect_data.py SouthLanarkshireCouncil https://www.southlanarkshire.gov.uk/directory_record/XXXXX/XXXXX
 ```
+
 Note: Follow the instructions [here](https://www.southlanarkshire.gov.uk/info/200156/bins_and_recycling/1670/bin_collections_and_calendar) until you get the page that shows the weekly collections for your street then copy the URL and replace the URL in the command.
 
 ---
@@ -527,8 +558,9 @@ Additional parameters:
 
 ### St Helens Borough Council
 ```commandline
-python collect_data.py StHelensBC https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?refid=XXXXXXXX&source=1
+python collect_data.py StHelensBC https://secure.sthelens.net/website/CollectionDates.nsf/servlet.xsp/NextCollections?source=1&refid=XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
@@ -537,6 +569,7 @@ Note: Replace XXXXXXXX with UPRN.
 ```commandline
 python collect_data.py StockportBoroughCouncil https://myaccount.stockport.gov.uk/bin-collections/show/XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
@@ -552,7 +585,7 @@ Additional parameters:
 
 ### Tonbridge and Malling Borough Council
 ```commandline
-python collect_data.py TonbridgeAndMallingBC https://www.tmbc.gov.uk/ -u XXXXXXXXXX -p "XXXX XXX"
+python collect_data.py TonbridgeAndMallingBC https://www.tmbc.gov.uk/ -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -571,9 +604,10 @@ Additional parameters:
 
 ### Torridge District Council
 ```commandline
-python collect_data.py TorridgeDistrictCouncil https://www.torridge.gov.uk/collectiondates -u XXXXXXXX
+python collect_data.py TorridgeDistrictCouncil https://collections-torridge.azurewebsites.net/WebService2.asmx -s true -u XXXXXXXX
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 
 ---
@@ -587,13 +621,14 @@ Additional parameters:
 
 ---
 
-
-### Wakefield City Council 
+### Wakefield City Council
 ```commandline
 python collect_data.py WakefieldCityCouncil https://www.wakefield.gov.uk/site/Where-I-Live-Results?uprn=XXXXXXXX -u XXXXXXXX
 ```
 Additional parameters:
-- `-u` - UPRN (needed in both the URL and `-u` argument)
+- `-u` - UPRN
+
+Note: Replace XXXXXXXX with UPRN and also pass in -u parameter
 
 ---
 
@@ -601,17 +636,21 @@ Additional parameters:
 ```commandline
 python collect_data.py WarwickDistrictCouncil https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/XXXXXXXX
 ```
+
 Note: Replace XXXXXXXX with UPRN.
 
 ---
 
 ### Waverley Borough Council
 ```commandline
-python collect_data.py WaverleyBoroughCouncil https://wav-wrp.whitespacews.com/ -p "XXX XXX" -n XX
+python collect_data.py WaverleyBoroughCouncil https://wav-wrp.whitespacews.com/ -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
-- `-n` - this is actually not the house number - it is a unique identifier specific to the council for identifying the property (like a house number but I have no idea why its different). To find it, use the online form to enter your postcode/get your house number. At the end of the URL, there will be something like "&pIndex=1" - that's the number you need (and only the number)
+- `-n` - house number
+
+Note: Follow the instructions [here](https://wav-wrp.whitespacews.com/#!) until you get the page that shows your next scheduled collections.
+Then take the number from pIndex=NUMBER in the URL and pass it as the -n parameter along with your postcode in -p.
 
 ---
 
@@ -626,7 +665,7 @@ Additional parameters:
 
 ### Wigan Borough Council
 ```commandline
-python collect_data.py WiganBoroughCouncil https://apps.wigan.gov.uk/MyNeighbourhood/ -u XXXXXXXXXXXX -p XXXXXX 
+python collect_data.py WiganBoroughCouncil https://apps.wigan.gov.uk/MyNeighbourhood/ -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -636,7 +675,7 @@ Additional parameters:
 
 ### Windsor and Maidenhead Council
 ```commandline
-python collect_data.py WindsorAndMaidenheadCouncil https://my.rbwm.gov.uk/special/your-collection-dates -p "XXXX XXX" -n XX
+python collect_data.py WindsorAndMaidenheadCouncil https://my.rbwm.gov.uk/special/find-your-collection-dates -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
