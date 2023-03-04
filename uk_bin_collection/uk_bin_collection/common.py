@@ -1,3 +1,4 @@
+import os
 import calendar
 import re
 from datetime import datetime
@@ -170,3 +171,9 @@ def get_dates_every_x_days(start: datetime, x: int, amount: int = 8) -> list:
 
 def remove_alpha_characters(input_string: str) -> str:
     return "".join(c for c in input_string if c.isdigit() or c == " ")
+
+
+def write_output_json(council: str, content: str):
+    cwd = os.getcwd()
+    with open(os.path.join(cwd, "uk_bin_collection", "tests", "outputs", council + ".json"), "w") as f:
+        f.write(content)
