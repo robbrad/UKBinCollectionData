@@ -44,16 +44,21 @@ def main(args):
     parser.add_argument(
         "-n", "--number", type=str, help="House number to parse", required=False
     )
-
     parser.add_argument(
         "-s",
         "--skip_get_url",
-        type=bool,
-        help="Skips the generic get_url - uses one in council class ",
+        action="store_true",
+        help="Skips the generic get_url - uses one in council class",
         required=False,
     )
-
     parser.add_argument("-u", "--uprn", type=str, help="UPRN to parse", required=False)
+    parser.add_argument(
+        "-d",
+        "--dev_mode",
+        action="store_true",
+        help="Enables development mode - creates/updates outputs .json file for the council on each run",
+        required=False,
+    )
     parsed_args = parser.parse_args(args)
 
     council_module_str = parsed_args.module
@@ -63,6 +68,7 @@ def main(args):
     paon = parsed_args.number
     uprn = parsed_args.uprn
     skip_get_url = parsed_args.skip_get_url
+    dev_mode = parsed_args.dev_mode
 
     return client_code(
         council_module.CouncilClass(),
@@ -71,6 +77,8 @@ def main(args):
         paon=paon,
         uprn=uprn,
         skip_get_url=skip_get_url,
+        dev_mode=dev_mode,
+        council_module_str=council_module_str,
     )
 
     # parse arguments using optparse or argparse or what have you

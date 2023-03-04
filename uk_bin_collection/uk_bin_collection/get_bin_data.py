@@ -4,6 +4,7 @@ handle the data recieved from the provided council class.
 Keyword arguments: None
 """
 import json
+from common import write_output_json
 from abc import ABC, abstractmethod
 import logging
 from logging.config import dictConfig
@@ -50,6 +51,8 @@ class AbstractGetBinDataClass(ABC):
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
         skip_get_url = kwargs.get("skip_get_url", None)
+        dev_mode = kwargs.get("dev_mode", False)
+        council_module_str = kwargs.get("council_module_str", None)
         if (
             not skip_get_url or skip_get_url is False
         ):  # we will not use the generic way to get data - needs a get data in the council class itself
@@ -57,12 +60,18 @@ class AbstractGetBinDataClass(ABC):
             bin_data_dict = self.parse_data(
                 page, postcode=this_postcode, paon=this_paon, uprn=this_uprn
             )
-            return self.output_json(bin_data_dict)
+            json_output = self.output_json(bin_data_dict)
         else:
             bin_data_dict = self.parse_data(
                 "", postcode=this_postcode, paon=this_paon, uprn=this_uprn
             )
-            return self.output_json(bin_data_dict)
+            json_output = self.output_json(bin_data_dict)
+
+        # if dev mode create/update council's output JSON if bin_data_dict is not empty
+        if dev_mode is not None and dev_mode is True and bin_data_dict['bins']:
+            write_output_json(council_module_str, json_output)
+
+        return json_output
 
     @classmethod
     def get_data(cls, url) -> str:

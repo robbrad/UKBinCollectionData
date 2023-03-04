@@ -37,6 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "Chrome/103.0.5060.134 Safari/537.36 "
         )
         response_headers = parse_header(response_header_str)
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(url, headers=response_headers, verify=False)
 
         # Return JSON from response and loop through collections
