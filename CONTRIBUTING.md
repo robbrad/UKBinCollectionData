@@ -179,6 +179,8 @@ recommended - the council's address is usually a good one).
 A sample of what the scraper outputs should be provided in the [outputs](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/outputs/)
 folder. This can be taken from your development environment's console or a CLI. Please only include the "bins" data.
 
+Adding the `-d` or `--dev_mode` parameter to your CLI command enables development mode which creates/updates the Output JSON file for the council automatically for you on each run
+
 <details>
   <summary>Example</summary>
 
