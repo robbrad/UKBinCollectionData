@@ -102,7 +102,7 @@ Just pass the email you used in quotes in the UPRN parameter.
 
 ### Blackburn Council
 ```commandline
-python collect_data.py BlackburnCouncil https://www.blackburn.gov.uk -s true -u XXXXXXXX
+python collect_data.py BlackburnCouncil https://www.blackburn.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -150,7 +150,7 @@ Additional parameters:
 
 ### Castlepoint District Council
 ```commandline
-python collect_data.py CastlepointDistrictCouncil https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar -s true -u XXXXXXXX
+python collect_data.py CastlepointDistrictCouncil https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -192,7 +192,7 @@ Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find
 
 ### Chilterns
 ```commandline
-python collect_data.py Chilterns https://chiltern.gov.uk/collection-dates -s true -p "XXXX XXX" -n XX
+python collect_data.py Chilterns https://chiltern.gov.uk/collection-dates -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -308,7 +308,7 @@ Note: Replace XXXXXXXX with UPRN.
 
 ### High Peak Council
 ```commandline
-python collect_data.py HighPeakCouncil https://www.highpeak.gov.uk/findyourbinday -s true -p "XXXX XXX" -n XX
+python collect_data.py HighPeakCouncil https://www.highpeak.gov.uk/findyourbinday -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -604,7 +604,7 @@ Additional parameters:
 
 ### Torridge District Council
 ```commandline
-python collect_data.py TorridgeDistrictCouncil https://collections-torridge.azurewebsites.net/WebService2.asmx -s true -u XXXXXXXX
+python collect_data.py TorridgeDistrictCouncil https://collections-torridge.azurewebsites.net/WebService2.asmx -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL

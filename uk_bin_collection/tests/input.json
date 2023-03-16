@@ -187,6 +187,12 @@
         "wiki_name": "Mid Sussex District Council",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
+    "MiltonKeynesCityCouncil": {
+        "uprn": "Fullers Slade",
+        "url": "https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days",
+        "wiki_name": "Milton Keynes City Council",
+        "wiki_note": "Pass the name of the estate with the UPRN parameter, wrapped in double quotes"
+    },
     "NewarkAndSherwoodDC": {
         "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
         "wiki_name": "Newark and Sherwood District Council",
