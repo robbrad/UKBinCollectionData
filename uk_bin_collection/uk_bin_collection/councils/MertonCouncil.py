@@ -21,12 +21,20 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Search for the specific bin in the table using BS4
         rows = soup.find("table", class_=("collectiondays")).find_all(
-            "tr", class_=("food-caddy", "papercard-wheelie", "plastics-boxes", "rubbish-wheelie", "textiles", "batteries")
-            )
+            "tr",
+            class_=(
+                "food-caddy",
+                "papercard-wheelie",
+                "plastics-boxes",
+                "rubbish-wheelie",
+                "textiles",
+                "batteries",
+            ),
+        )
 
         # Loops the Rows
         for row in rows:
-			# Get all the cells
+            # Get all the cells
             cells = row.find_all("td")
             # First cell is the bin_type
             bin_type = cells[0].get_text().strip()
@@ -35,7 +43,9 @@ class CouncilClass(AbstractGetBinDataClass):
             # Make each Bin element in the JSON
             dict_data = {
                 "bin_type": bin_type,
-                "collectionDate": datetime.strptime(collectionDate, "%d %B %Y").strftime(date_format),
+                "collectionDate": datetime.strptime(
+                    collectionDate, "%d %B %Y"
+                ).strftime(date_format),
             }
             # # Add data to the main JSON Wrapper
             bin_data_dict["bins"].append(dict_data)
