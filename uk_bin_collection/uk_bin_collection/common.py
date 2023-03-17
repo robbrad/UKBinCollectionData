@@ -175,5 +175,5 @@ def remove_alpha_characters(input_string: str) -> str:
 
 def write_output_json(council: str, content: str):
     cwd = os.getcwd()
-    with open(os.path.join(cwd, "uk_bin_collection", "tests", "outputs", council + ".json"), "w") as f:
+    with open(os.path.join(cwd, "..", "tests", "outputs", council + ".json"), "w") as f:
         f.write(content)
