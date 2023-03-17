@@ -1,28 +1,28 @@
 {
-  "bins": [
-    {
-      "bin_type": "Food waste",
-      "collectionDate": "22/03/2023"
-    },
-    {
-      "bin_type": "Paper and card",
-      "collectionDate": "22/03/2023"
-    },
-    {
-      "bin_type": "Plastics, glass, cans and cartons",
-      "collectionDate": "29/03/2023"
-    },
-    {
-      "bin_type": "Rubbish",
-      "collectionDate": "22/03/2023"
-    },
-    {
-      "bin_type": "Textiles",
-      "collectionDate": "22/03/2023"
-    },
-    {
-      "bin_type": "Household batteries",
-      "collectionDate": "22/03/2023"
-    }
-  ]
+    "bins": [
+        {
+            "bin_type": "Food waste",
+            "collectionDate": "22/03/2023"
+        },
+        {
+            "bin_type": "Paper and card",
+            "collectionDate": "22/03/2023"
+        },
+        {
+            "bin_type": "Plastics, glass, cans and cartons",
+            "collectionDate": "29/03/2023"
+        },
+        {
+            "bin_type": "Rubbish",
+            "collectionDate": "22/03/2023"
+        },
+        {
+            "bin_type": "Textiles",
+            "collectionDate": "22/03/2023"
+        },
+        {
+            "bin_type": "Household batteries",
+            "collectionDate": "22/03/2023"
+        }
+    ]
 }
