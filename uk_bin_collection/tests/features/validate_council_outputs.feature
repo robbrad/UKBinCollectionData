@@ -70,6 +70,7 @@ Feature: Test each council output matches expected results in /outputs
             | WarwickDistrictCouncil |
             | WaverleyBoroughCouncil |
             | WealdenDistrictCouncil |
+            | WelhatCouncil |
             | WiganBoroughCouncil |
             | WindsorAndMaidenheadCouncil |
             | YorkCouncil |
