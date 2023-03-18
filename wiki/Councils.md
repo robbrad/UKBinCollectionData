@@ -41,7 +41,9 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Maldon District Council](#maldon-district-council)
 - [Malvern Hills District Council](#malvern-hills-district-council)
 - [Manchester City Council](#manchester-city-council)
+- [Merton Council](#merton-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
+- [Milton Keynes City Council](#milton-keynes-city-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
 - [North East Lincolnshire Council](#north-east-lincolnshire-council)
@@ -70,6 +72,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Warwick District Council](#warwick-district-council)
 - [Waverley Borough Council](#waverley-borough-council)
 - [Wealden District Council](#wealden-district-council)
+- [Welhat Council](#welhat-council)
 - [Wigan Borough Council](#wigan-borough-council)
 - [Windsor and Maidenhead Council](#windsor-and-maidenhead-council)
 - [York Council](#york-council)
@@ -383,6 +386,15 @@ Additional parameters:
 
 ---
 
+### Merton Council
+```commandline
+python collect_data.py MertonCouncil https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX
+```
+
+Note: Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the "Your recycling and rubbish collection days" page then copy the URL and replace the URL in the command (the Address parameter is optional).
+
+---
+
 ### Mid Sussex District Council
 ```commandline
 python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -p "XXXX XXX" -n XX
@@ -392,6 +404,17 @@ Additional parameters:
 - `-n` - house number
 
 Note: Pass the name of the street with the house number parameter, wrapped in double quotes
+
+---
+
+### Milton Keynes City Council
+```commandline
+python collect_data.py MiltonKeynesCityCouncil https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes
 
 ---
 
@@ -660,6 +683,16 @@ python collect_data.py WealdenDistrictCouncil https://www.wealden.gov.uk/recycli
 ```
 Additional parameters:
 - `-u` - UPRN
+
+---
+
+### Welhat Council
+```commandline
+python collect_data.py WelhatCouncil https://www.welhat.gov.uk/xfp/form/214 -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
