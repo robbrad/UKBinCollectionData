@@ -1,0 +1,32 @@
+{
+    "bins": [
+        {
+            "type": "Green bin or black sacks (general household waste)",
+            "collectionDate": "21/03/2023"
+        },
+        {
+            "type": "Orange and black bin (food waste)",
+            "collectionDate": "21/03/2023"
+        },
+        {
+            "type": "Small electricals (place in a carrier bag next to your bin)",
+            "collectionDate": "21/03/2023"
+        },
+        {
+            "type": "Brown bin (garden waste)",
+            "collectionDate": "22/03/2023"
+        },
+        {
+            "type": "Orange and black bin (food waste)",
+            "collectionDate": "28/03/2023"
+        },
+        {
+            "type": "Blue bin or clear sacks (recycling)",
+            "collectionDate": "28/03/2023"
+        },
+        {
+            "type": "Textiles (place in a carrier bag next to your bin)",
+            "collectionDate": "28/03/2023"
+        }
+    ]
+}
