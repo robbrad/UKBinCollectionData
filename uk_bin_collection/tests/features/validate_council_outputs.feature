@@ -39,7 +39,9 @@ Feature: Test each council output matches expected results in /outputs
             | MaldonDistrictCouncil |
             | MalvernHillsDC |
             | ManchesterCityCouncil |
+            | MertonCouncil |
             | MidSussexDistrictCouncil |
+            | MiltonKeynesCityCouncil |
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
             | NorthEastLincs |
@@ -69,6 +71,7 @@ Feature: Test each council output matches expected results in /outputs
             | WarwickDistrictCouncil |
             | WaverleyBoroughCouncil |
             | WealdenDistrictCouncil |
+            | WelhatCouncil |
             | WiganBoroughCouncil |
             | WindsorAndMaidenheadCouncil |
             | YorkCouncil |

@@ -1,0 +1,36 @@
+{
+    "bins": [
+        {
+            "type": "Weekly collection",
+            "collectionDate": "17/03/2023"
+        },
+        {
+            "type": "Weekly collection",
+            "collectionDate": "24/03/2023"
+        },
+        {
+            "type": "Weekly collection",
+            "collectionDate": "31/03/2023"
+        },
+        {
+            "type": "Weekly collection",
+            "collectionDate": "07/04/2023"
+        },
+        {
+            "type": "Weekly collection",
+            "collectionDate": "14/04/2023"
+        },
+        {
+            "type": "Weekly collection",
+            "collectionDate": "21/04/2023"
+        },
+        {
+            "type": "Weekly collection",
+            "collectionDate": "28/04/2023"
+        },
+        {
+            "type": "Weekly collection",
+            "collectionDate": "05/05/2023"
+        }
+    ]
+}
