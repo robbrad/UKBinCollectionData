@@ -294,7 +294,7 @@ this does an actual live run against the council's site and validates if the ret
 ```commandline
 cd UKBinCollectionData
 poetry shell
-behave -D runner.continue_after_failed_step=true uk_bin_collection/tests/features/
+poetry run pytest uk_bin_collection/tests/step_defs/ -n logical
 ```
 
 #### GitHub Actions Integration Tests
@@ -317,7 +317,7 @@ As well as integration testing the repo is setup to test some of the static meth
 ```commandline
 cd UKBinCollectionData
 poetry shell
-poetry run coverage run -m pytest
+poetry run coverage run --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
 poetry run coverage xml
 ```
 

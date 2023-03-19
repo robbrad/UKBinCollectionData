@@ -12,36 +12,36 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        data = {"bins": []}
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
+
         # Make a BS4 object
-        soup = BeautifulSoup(page, features="html.parser")
+        soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
-        # Form a JSON wrapper
-        data = {"bins": []}
+        # Get collection calendar
+        calendar_url = soup.find("a", text="view or download the collection calendar").get("href")
+        requests.packages.urllib3.disable_warnings()
+        response = requests.get(calendar_url, headers=headers)
 
-        # Search for the specific table using BS4
-        rows = soup.find(
-            "tbody", {"id": lambda L: L and L.startswith("Registration:")}
-        ).find_all("tr")
+        # Make a BS4 object
+        soup = BeautifulSoup(response.text, features="html.parser")
+        soup.prettify()
 
-        # Loops the Rows
-        for row in rows:
-            # set the vars per bin and date for each row
-            cells = row.find_all("td")
-            bin_type = cells[1].get_text()
-            lcDate = cells[2].get_text()
-            ncDate = cells[3].get_text()
-            fcDate = cells[4].get_text()
-
-            # Make each Bin element in the JSON
-            dict_data = {
-                "bin_type": bin_type,
-                "Last Collection Date": lcDate,
-                "Next Collection Date": ncDate,
-                "Following Collection Date": fcDate,
-            }
-
-            # Add data to the main JSON Wrapper
-            data["bins"].append(dict_data)
+        # Loop the months
+        for month in soup.findAll("div", {"class": "usercontent"}):
+            if month.find("h2"):
+                year = datetime.strptime(month.find("h2").get_text(strip=True), "%B %Y").strftime("%Y")
+                for row in month.findAll("li"):
+                    results = re.search("([A-Za-z]+ \d\d? [A-Za-z]+): (.+)", row.get_text(strip=True))
+                    if results:
+                        dict_data = {
+                            "type": results.groups()[1].capitalize(),
+                            "collectionDate": datetime.strptime(
+                                results.groups()[0] + " " + year,
+                                "%A %d %B %Y"
+                            ).strftime(date_format),
+                        }
+                        data["bins"].append(dict_data)
 
         return data

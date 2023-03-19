@@ -1,45 +1,56 @@
 {
-	"bins": [{
-			"BinType": "Black Bin",
-			"Following Collection Date": "Friday 14/02/2020",
-			"Last Collection Date": "Friday 17/01/2020",
-			"Next Collection Date": "Friday 31/01/2020"
-		},
-		{
-			"BinType": "Brown Bin",
-			"Following Collection Date": "Friday 07/02/2020",
-			"Last Collection Date": "Saturday 11/01/2020",
-			"Next Collection Date": "Friday 24/01/2020"
-		},
-		{
-			"BinType": "Card Sack",
-			"Following Collection Date": "Friday 14/02/2020",
-			"Last Collection Date": "Friday 17/01/2020",
-			"Next Collection Date": "Friday 31/01/2020"
-		},
-		{
-			"BinType": "Food Waste External Bin",
-			"Following Collection Date": "Friday 31/01/2020",
-			"Last Collection Date": "Friday 17/01/2020",
-			"Next Collection Date": "Friday 24/01/2020"
-		},
-		{
-			"BinType": "Green Box",
-			"Following Collection Date": "Friday 14/02/2020",
-			"Last Collection Date": "Friday 17/01/2020",
-			"Next Collection Date": "Friday 31/01/2020"
-		},
-		{
-			"BinType": "Paper Sack",
-			"Following Collection Date": "Friday 07/02/2020",
-			"Last Collection Date": "Saturday 11/01/2020",
-			"Next Collection Date": "Friday 24/01/2020"
-		},
-		{
-			"BinType": "Plastic Sacks",
-			"Following Collection Date": "Friday 07/02/2020",
-			"Last Collection Date": "Saturday 11/01/2020",
-			"Next Collection Date": "Friday 24/01/2020"
-		}
-	]
+    "bins": [
+        {
+            "type": "Food waste, black bin, green box, card sack",
+            "collectionDate": "02/03/2023"
+        },
+        {
+            "type": "Food waste, brown bin, paper sack, plastic and cartons bag",
+            "collectionDate": "09/03/2023"
+        },
+        {
+            "type": "Food waste, black bin, green box, card sack",
+            "collectionDate": "16/03/2023"
+        },
+        {
+            "type": "Food waste, brown bin, paper sack, plastic and cartons bag",
+            "collectionDate": "23/03/2023"
+        },
+        {
+            "type": "Food waste, black bin, green box, card sack",
+            "collectionDate": "30/03/2023"
+        },
+        {
+            "type": "Food waste, brown bin, paper sack, plastic and cartons bag",
+            "collectionDate": "06/04/2023"
+        },
+        {
+            "type": "Food waste, black bin, green box, card sack",
+            "collectionDate": "13/04/2023"
+        },
+        {
+            "type": "Food waste, brown bin, paper sack, plastic and cartons bag",
+            "collectionDate": "20/04/2023"
+        },
+        {
+            "type": "Food waste, black bin, green box, card sack",
+            "collectionDate": "27/04/2023"
+        },
+        {
+            "type": "Food waste, brown bin, paper sack, plastic and cartons bag",
+            "collectionDate": "04/05/2023"
+        },
+        {
+            "type": "Food waste, black bin, green box, card sack",
+            "collectionDate": "11/05/2023"
+        },
+        {
+            "type": "Food waste, brown bin, paper sack, plastic and cartons bag",
+            "collectionDate": "18/05/2023"
+        },
+        {
+            "type": "Food waste, black bin, green box, card sack",
+            "collectionDate": "25/05/2023"
+        }
+    ]
 }
