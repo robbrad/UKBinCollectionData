@@ -310,6 +310,12 @@
     "wiki_command_url_override": "https://myaccount.stockport.gov.uk/bin-collections/show/XXXXXXXX",
     "wiki_note": "Replace XXXXXXXX with UPRN."
   },
+  "SwaleBoroughCouncil": {
+    "url": "https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days",
+    "postcode": "ME12 2NQ",
+    "uprn": "100061081168",
+    "wiki_name": "Swale Borough Council"
+  },
   "TamesideMBCouncil": {
     "uprn": "100012835362",
     "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
