@@ -39,6 +39,7 @@ Feature: Test each council output matches expected results in /outputs
             | MaldonDistrictCouncil |
             | MalvernHillsDC |
             | ManchesterCityCouncil |
+            | MertonCouncil |
             | MidSussexDistrictCouncil |
             | MiltonKeynesCityCouncil |
             | NewarkAndSherwoodDC |
@@ -60,6 +61,7 @@ Feature: Test each council output matches expected results in /outputs
             | SouthTynesideCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
+            | SwaleBoroughCouncil |
             | TamesideMBCouncil |
             | TonbridgeAndMallingBC |
             | TorbayCouncil |
@@ -69,6 +71,7 @@ Feature: Test each council output matches expected results in /outputs
             | WarwickDistrictCouncil |
             | WaverleyBoroughCouncil |
             | WealdenDistrictCouncil |
+            | WelhatCouncil |
             | WiganBoroughCouncil |
             | WindsorAndMaidenheadCouncil |
             | YorkCouncil |

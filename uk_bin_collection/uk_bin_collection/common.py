@@ -177,3 +177,7 @@ def write_output_json(council: str, content: str):
     cwd = os.getcwd()
     with open(os.path.join(cwd, "..", "tests", "outputs", council + ".json"), "w") as f:
         f.write(content)
+
+def validate_dates(bin_dates: dict) -> dict:
+    raise NotImplementedError()
+    # If a date is in December and the next is in January, increase the year

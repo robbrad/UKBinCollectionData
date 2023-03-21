@@ -45,6 +45,7 @@ jobs:
         git add wiki
         git commit -m "Update Councils.md from input.json"
         git push
+      continue-on-error: true
 
     - name: Deploy Wiki Changes
       uses: Andrew-Chen-Wang/github-wiki-action@v3
