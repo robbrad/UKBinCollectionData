@@ -20,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # Make a BS4 object
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
-        # print(soup)
+
         bin_data_dict = {"bins": []}
 
         # Search for the specific bin in the table using BS4
