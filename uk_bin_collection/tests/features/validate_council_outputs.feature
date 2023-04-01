@@ -55,6 +55,7 @@ Feature: Test each council output matches expected results in /outputs
             | SheffieldCityCouncil |
             | SomersetCouncil |
             | SouthAyrshireCouncil |
+            | SouthCambridgeshireCouncil |
             | SouthLanarkshireCouncil |
             | SouthNorfolkCouncil |
             | SouthOxfordshireCouncil |
