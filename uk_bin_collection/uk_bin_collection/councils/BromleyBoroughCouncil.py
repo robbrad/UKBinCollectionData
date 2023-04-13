@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-
-# This script pulls (in one hit) the data from
-# Warick District Council Bins Data
+# This script pulls (in one hit) the data from Bromley Council Bins Data
 from bs4 import BeautifulSoup
 import dateutil.parser
 from uk_bin_collection.uk_bin_collection.common import *
@@ -34,17 +31,18 @@ class CouncilClass(AbstractGetBinDataClass):
         # Loops the Rows
         for row in rows:
             bin_type = row.get_text().strip()
-            # Date is on the second cell, second paragraph, wrapped in p
             collectionDate = row.find_all_next(
                     "dd", {"class": "govuk-summary-list__value"}
-                )[1].text.strip()
-            date = dateutil.parser.parse(collectionDate)
-            # Make each Bin element in the JSON
-            dict_data = {
-                "bin_type": bin_type,
-                "collectionDate": date.strftime(date_format),
-            }
-            # # Add data to the main JSON Wrapper
-            bin_data_dict["bins"].append(dict_data)
+                )
+            # Make each Bin element in the JSON, but only if we have a date available
+            if collectionDate:
+                print(collectionDate[1].text.strip())
+                date = dateutil.parser.parse(collectionDate[1].text.strip())
+                dict_data = {
+                    "bin_type": bin_type,
+                    "collectionDate": date.strftime(date_format),
+                }
+                # Add data to the main JSON Wrapper
+                bin_data_dict["bins"].append(dict_data)
 
         return bin_data_dict
