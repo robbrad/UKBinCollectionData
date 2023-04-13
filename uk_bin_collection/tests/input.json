@@ -246,6 +246,12 @@
     "url": "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
     "wiki_name": "North Tyneside Council"
   },
+  "NorthumberlandCouncil": {
+    "house_number": "22",
+    "postcode": "NE46 1UQ",
+    "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
+    "wiki_name": "Northumberland Council"
+  },
   "RochdaleCouncil": {
     "postcode": "OL11 5BE",
     "uprn": "23049922",
