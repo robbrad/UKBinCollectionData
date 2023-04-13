@@ -107,6 +107,11 @@
     "wiki_command_url_override": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
     "wiki_note": "Replace XXXXXXXX with UPRN."
   },
+  "EastleighBoroughCouncil": {
+    "uprn": "100060303535",
+    "url": "https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn=",
+    "wiki_name": "Eastleigh Borough Council"
+  },
   "EastNorthamptonshireCouncil": {
     "uprn": "100031021317",
     "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/",
