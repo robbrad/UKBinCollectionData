@@ -279,6 +279,12 @@
     "url": "https://www.south-ayrshire.gov.uk/",
     "wiki_name": "South Ayrshire Council"
   },
+"SouthCambridgeshireCouncil": {
+  "url": "https://www.scambs.gov.uk/recycling-and-bins/find-your-household-bin-collection-day/",
+  "wiki_name": "South Cambridgeshire Council",
+  "postcode": "CB23 6GZ",
+  "house_number": "53"
+},
   "SouthLanarkshireCouncil": {
     "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow",
     "wiki_name": "South Lanarkshire Council",
