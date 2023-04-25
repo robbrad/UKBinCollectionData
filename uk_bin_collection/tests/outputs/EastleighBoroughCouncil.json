@@ -1,0 +1,24 @@
+{
+    "bins": [
+        {
+            "type": "Household Waste Bin",
+            "collectionDate": "21/04/2023"
+        },
+        {
+            "type": "Recycling Bin",
+            "collectionDate": "15/04/2023"
+        },
+        {
+            "type": "Food Waste Bin",
+            "collectionDate": "15/04/2023"
+        },
+        {
+            "type": "Glass Box and Batteries",
+            "collectionDate": "15/04/2023"
+        },
+        {
+            "type": "Garden Waste Bin",
+            "collectionDate": "19/04/2023"
+        }
+    ]
+}

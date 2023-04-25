@@ -15,7 +15,7 @@
     + [Output JSON file](#output-json-file)
     + [Council schema](#council-schema)
     + [Feature file](#feature-file)
-  * [Testing](#testing)
+  * [Testing](#testing)V
     + [Behave (Integration Testing)](#behave--integration-testing-)
       - [Running the Behave tests](#running-the-behave-tests)
       - [GitHub Actions Integration Tests](#github-actions-integration-tests)
@@ -78,7 +78,7 @@ Once your environment is ready, create a new branch from your master/main branch
 python collect_data.py CheshireEastCouncil <web-url>
 ```
 
-To simplify things somewhat, a [template](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/councilclasstemplate.py) file has been created - open this file, copy the contents to your new .py file and start from there. You are pretty much free to approach the scraping however you would like, but please ensure that:
+To simplify things somewhat, a [template](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/council_class_template/councilclasstemplate.py) file has been created - open this file, copy the contents to your new .py file and start from there. You are pretty much free to approach the scraping however you would like, but please ensure that:
 - Your scraper returns a dictionary made up of the key "bins" and a value that is a list of bin types and collection dates (see [outputs folder](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/outputs) for examples).
 - Any dates or times are formatted to standard UK formats (see [below](#common-functions))
 
@@ -294,7 +294,7 @@ this does an actual live run against the council's site and validates if the ret
 ```commandline
 cd UKBinCollectionData
 poetry shell
-behave -D runner.continue_after_failed_step=true uk_bin_collection/tests/features/
+poetry run pytest uk_bin_collection/tests/step_defs/ -n logical
 ```
 
 #### GitHub Actions Integration Tests
@@ -317,7 +317,7 @@ As well as integration testing the repo is setup to test some of the static meth
 ```commandline
 cd UKBinCollectionData
 poetry shell
-poetry run coverage run -m pytest
+poetry run coverage run --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
 poetry run coverage xml
 ```
 

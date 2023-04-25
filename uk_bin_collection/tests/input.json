@@ -29,8 +29,7 @@
     "wiki_name": "Bristol City Council"
   },
   "BromleyBoroughCouncil": {
-    "uprn": "100020380703",
-    "url": "https://recyclingservices.bromley.gov.uk/property/100020380703",
+    "url": "https://recyclingservices.bromley.gov.uk/waste/6087017",
     "wiki_name": "Bromley Borough Council",
     "wiki_command_url_override": "https://recyclingservices.bromley.gov.uk/waste/XXXXXXX",
     "wiki_note": "Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command."
@@ -53,11 +52,10 @@
     "wiki_note": "Replace XXXXXXXX with UPRN keeping \"cbc\" before it."
   },
   "ChelmsfordCityCouncil": {
-    "uprn": "100090389457",
-    "url": "https://mychelmsford.secure.force.com/WasteServices/WM_WasteViewProperty?id=100090389457",
+    "url": "https://www.chelmsford.gov.uk/myhome/?entry[9bab4b33-6db4-491a-a3a3-e4365b6573ad]=150264",
     "wiki_name": "Chelmsford City Council",
-    "wiki_command_url_override": "https://mychelmsford.secure.force.com/WasteServices/WM_WasteViewProperty?id=XXXXXXXX",
-    "wiki_note": "Replace XXXXXXXX with UPRN."
+    "wiki_command_url_override": "https://www.chelmsford.gov.uk/myhome/XXXXXX",
+    "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your \"Address\", \"Ward\" etc then copy the URL and replace the URL in the command."
   },
   "CheshireEastCouncil": {
     "uprn": "100012791226",
@@ -107,6 +105,11 @@
     "wiki_name": "East Devon District Council",
     "wiki_command_url_override": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
     "wiki_note": "Replace XXXXXXXX with UPRN."
+  },
+  "EastleighBoroughCouncil": {
+    "uprn": "100060303535",
+    "url": "https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn=",
+    "wiki_name": "Eastleigh Borough Council"
   },
   "EastNorthamptonshireCouncil": {
     "uprn": "100031021317",
@@ -181,7 +184,7 @@
     "wiki_name": "Manchester City Council"
   },
   "MertonCouncil": {
-    "url": " https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=28186366",
+    "url": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=28186366",
     "wiki_name": "Merton Council",
     "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
     "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page then copy the URL and replace the URL in the command (the Address parameter is optional)."
@@ -247,6 +250,12 @@
     "url": "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
     "wiki_name": "North Tyneside Council"
   },
+  "NorthumberlandCouncil": {
+    "house_number": "22",
+    "postcode": "NE46 1UQ",
+    "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
+    "wiki_name": "Northumberland Council"
+  },
   "RochdaleCouncil": {
     "postcode": "OL11 5BE",
     "uprn": "23049922",
@@ -276,6 +285,12 @@
     "url": "https://www.south-ayrshire.gov.uk/",
     "wiki_name": "South Ayrshire Council"
   },
+"SouthCambridgeshireCouncil": {
+  "url": "https://www.scambs.gov.uk/recycling-and-bins/find-your-household-bin-collection-day/",
+  "wiki_name": "South Cambridgeshire Council",
+  "postcode": "CB23 6GZ",
+  "house_number": "53"
+},
   "SouthLanarkshireCouncil": {
     "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow",
     "wiki_name": "South Lanarkshire Council",
@@ -309,6 +324,12 @@
     "wiki_name": "Stockport Borough Council",
     "wiki_command_url_override": "https://myaccount.stockport.gov.uk/bin-collections/show/XXXXXXXX",
     "wiki_note": "Replace XXXXXXXX with UPRN."
+  },
+  "SwaleBoroughCouncil": {
+    "url": "https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days",
+    "postcode": "ME12 2NQ",
+    "uprn": "100061081168",
+    "wiki_name": "Swale Borough Council"
   },
   "TamesideMBCouncil": {
     "uprn": "100012835362",

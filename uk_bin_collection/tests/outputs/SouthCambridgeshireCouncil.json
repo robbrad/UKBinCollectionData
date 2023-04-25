@@ -1,0 +1,28 @@
+{
+    "bins": [
+        {
+            "binType": "Domestic",
+            "collectionDate": "06/04/2023"
+        },
+        {
+            "binType": "Organic",
+            "collectionDate": "15/04/2023"
+        },
+        {
+            "binType": "Recycle",
+            "collectionDate": "15/04/2023"
+        },
+        {
+            "binType": "Domestic",
+            "collectionDate": "21/04/2023"
+        },
+        {
+            "binType": "Organic",
+            "collectionDate": "27/04/2023"
+        },
+        {
+            "binType": "Recycle",
+            "collectionDate": "27/04/2023"
+        }
+    ]
+}

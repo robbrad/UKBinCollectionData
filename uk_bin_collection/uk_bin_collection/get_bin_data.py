@@ -4,7 +4,7 @@ handle the data recieved from the provided council class.
 Keyword arguments: None
 """
 import json
-from common import write_output_json
+from uk_bin_collection.uk_bin_collection.common import write_output_json
 from abc import ABC, abstractmethod
 import logging
 from logging.config import dictConfig

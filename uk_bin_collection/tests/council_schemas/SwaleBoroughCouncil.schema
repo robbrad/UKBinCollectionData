@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome2",
+    "$ref": "#/definitions/Welcome7",
     "definitions": {
-        "Welcome2": {
+        "Welcome7": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,14 +16,14 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome2"
+            "title": "Welcome7"
         },
         "Bin": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "type": {
-                    "$ref": "#/definitions/Type"
+                    "type": "string"
                 },
                 "collectionDate": {
                     "type": "string"
@@ -34,14 +34,6 @@
                 "type"
             ],
             "title": "Bin"
-        },
-        "Type": {
-            "type": "string",
-            "enum": [
-                "Food waste, black bin, green box, card sack",
-                "Food waste, brown bin, paper sack, plastic and cartons bag"
-            ],
-            "title": "Type"
         }
     }
 }
