@@ -36,6 +36,7 @@ Feature: Test each council output matches expected results in /outputs
             | HuntingdonDistrictCouncil |
             | KingstonUponThamesCouncil |
             | LeedsCityCouncil |
+            | LisburnCastlereaghCityCouncil |
             | LondonBoroughHounslow |
             | MaldonDistrictCouncil |
             | MalvernHillsDC |

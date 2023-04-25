@@ -163,6 +163,13 @@
     "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
     "wiki_name": "Leeds City Council"
   },
+  "LisburnCastlereaghCityCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "house_number": "97",
+    "postcode": "BT28 1JN",
+    "url": "https://lisburn.isl-fusion.com",
+    "wiki_name": "Lisburn and Castlereagh City Council"
+  },
   "LondonBoroughHounslow": {
     "uprn": "100021577765",
     "url": "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder",
