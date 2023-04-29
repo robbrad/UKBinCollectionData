@@ -38,6 +38,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Huntingdon District Council](#huntingdon-district-council)
 - [Kingston Upon Thames Council](#kingston-upon-thames-council)
 - [Leeds City Council](#leeds-city-council)
+- [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
 - [London Borough Hounslow](#london-borough-hounslow)
 - [Maldon District Council](#maldon-district-council)
 - [Malvern Hills District Council](#malvern-hills-district-council)
@@ -354,6 +355,17 @@ Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/wast
 python collect_data.py LeedsCityCouncil https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day -p "XXXX XXX" -n XX
 ```
 Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+---
+
+### Lisburn and Castlereagh City Council
+```commandline
+python collect_data.py LisburnCastlereaghCityCouncil https://lisburn.isl-fusion.com -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
 
