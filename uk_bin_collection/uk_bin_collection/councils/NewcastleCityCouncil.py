@@ -31,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     element.next_sibling.next_sibling.next_sibling.next_sibling
                 )
 
-            bin_type = str(element)[str(element).find("(") + 1 : str(element).find(")")]
+            bin_type = str(element)[str(element).find("(") + 1: str(element).find(")")]
             collectionDate = str(
                 datetime.strptime(
                     str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"

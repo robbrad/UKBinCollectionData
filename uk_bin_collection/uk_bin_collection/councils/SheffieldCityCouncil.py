@@ -33,7 +33,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     "td", {"class": lambda L: L and L.startswith("next-service")}
                 )[0].get_text(strip=True)
                 collectionDate = collectionDatesRawData[
-                    16 : len(collectionDatesRawData)
+                    16: len(collectionDatesRawData)
                 ].split(",")
                 bin_type = row.find_all(
                     "td", {"class": lambda L: L and L.startswith("service-name")}

@@ -60,7 +60,7 @@ class CouncilClass(AbstractGetBinDataClass):
         common = difflib.SequenceMatcher(
             a=addresses[0], b=addresses[1]
         ).find_longest_match()
-        extra_bit = addresses[0][common.a : common.a + common.size]
+        extra_bit = addresses[0][common.a: common.a + common.size]
 
         ids_by_paon = {
             a.replace(extra_bit, ""): a_id.replace("/view/", "").replace("/", "")
