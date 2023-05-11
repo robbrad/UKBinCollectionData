@@ -38,7 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 ).strftime("%Y")
                 for row in month.findAll("li"):
                     results = re.search(
-                        "([A-Za-z]+ \d\d? [A-Za-z]+): (.+)", row.get_text(strip=True)
+                        "([A-Za-z]+ \\d\\d? [A-Za-z]+): (.+)", row.get_text(strip=True)
                     )
                     if results:
                         dict_data = {

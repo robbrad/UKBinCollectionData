@@ -33,7 +33,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_text = bin_info.get_text(strip=True)
 
                 if collection_text:
-                    results = re.search("\d\d? [A-Za-z]+ \d{4}", collection_text)
+                    results = re.search("\\d\\d? [A-Za-z]+ \\d{4}", collection_text)
                     if results:
                         date = datetime.strptime(results[0], "%d %B %Y")
                         if date:

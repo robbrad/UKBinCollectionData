@@ -34,7 +34,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     strip=True
                 )
                 results = re.search(
-                    "([A-Za-z]+ \d+[A-Za-z]+ [A-Za-z]+ \d*)", collection_info
+                    "([A-Za-z]+ \\d+[A-Za-z]+ [A-Za-z]+ \\d*)", collection_info
                 )
                 if results:
                     collection_date = datetime.strptime(
