@@ -20,8 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         # Search for the specific table using BS4
-        rows = soup.find(
-            "table", {"class": re.compile("table")}).find_all("tr")
+        rows = soup.find("table", {"class": re.compile("table")}).find_all("tr")
 
         # Loops the Rows
         for row in rows:
@@ -31,15 +30,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
             if len(cells) > 0:
                 collectionDatesRawData = row.find_all(
-                    "td", {"class": lambda L: L and L.startswith(
-                        "next-service")}
+                    "td", {"class": lambda L: L and L.startswith("next-service")}
                 )[0].get_text(strip=True)
                 collectionDate = collectionDatesRawData[
-                    16: len(collectionDatesRawData)
+                    16 : len(collectionDatesRawData)
                 ].split(",")
                 bin_type = row.find_all(
-                    "td", {"class": lambda L: L and L.startswith(
-                        "service-name")}
+                    "td", {"class": lambda L: L and L.startswith("service-name")}
                 )[0].h4.get_text(strip=True)
 
                 for collectDate in collectionDate:

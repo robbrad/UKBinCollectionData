@@ -8,7 +8,7 @@ import traceback
 from uk_bin_collection.uk_bin_collection import collect_data
 
 
-@scenario('../features/validate_council_outputs.feature', "Validate Council Output")
+@scenario("../features/validate_council_outputs.feature", "Validate Council Output")
 def test_scenario_outline():
     pass
 
@@ -21,7 +21,7 @@ def context():
     return Context()
 
 
-@given(parsers.parse('the council: {council_name}'))
+@given(parsers.parse("the council: {council_name}"))
 def get_council_step(context, council_name):
     try:
         council_input_data = file_handler.load_inputs_file("input.json")
@@ -32,13 +32,10 @@ def get_council_step(context, council_name):
         raise (err)
 
 
-@when(parsers.parse('we scrape the data from {council}'))
+@when(parsers.parse("we scrape the data from {council}"))
 def scrape_step(context, council):
     context.council = council
-    args = [
-        council,
-        context.metadata["url"]
-    ]
+    args = [council, context.metadata["url"]]
 
     if "uprn" in context.metadata:
         uprn = context.metadata["uprn"]
@@ -75,8 +72,7 @@ def validate_json_step(context):
 @then("the output should validate against the schema")
 def validate_output_step(context):
     try:
-        council_schema = file_handler.load_schema_file(
-            f"{context.council}.schema")
+        council_schema = file_handler.load_schema_file(f"{context.council}.schema")
         schema_result = file_handler.validate_json_schema(
             context.parse_result, council_schema
         )

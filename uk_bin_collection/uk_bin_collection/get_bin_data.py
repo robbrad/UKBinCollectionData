@@ -12,8 +12,7 @@ from logging.config import dictConfig
 
 LOGGING_CONFIG = dict(
     version=1,
-    formatters={
-        "f": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"}},
+    formatters={"f": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"}},
     handlers={
         "h": {"class": "logging.StreamHandler", "formatter": "f", "level": logging.INFO}
     },
@@ -69,7 +68,7 @@ class AbstractGetBinDataClass(ABC):
             json_output = self.output_json(bin_data_dict)
 
         # if dev mode create/update council's output JSON if bin_data_dict is not empty
-        if dev_mode is not None and dev_mode is True and bin_data_dict['bins']:
+        if dev_mode is not None and dev_mode is True and bin_data_dict["bins"]:
             write_output_json(council_module_str, json_output)
 
         return json_output

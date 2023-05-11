@@ -96,14 +96,14 @@ def test_get_dates_every_x_days():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)
     result = get_dates_every_x_days(now, 5, 7)
     assert len(result) == 7
-    assert result[6] == '27/03/2023'
+    assert result[6] == "27/03/2023"
 
 
 def test_get_dates_every_x_days_bad():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)
     result = get_dates_every_x_days(now, 5, 7)
     assert len(result) != 8
-    assert result[6] != '27/03/2022'
+    assert result[6] != "27/03/2022"
 
 
 def test_remove_ordinal_indicator_from_date_string():
@@ -122,11 +122,11 @@ def test_get_weekday_dates_in_period():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)
     result = get_weekday_dates_in_period(now, 5, 7)
     assert len(result) == 7
-    assert result[6] == '08/04/2023'
+    assert result[6] == "08/04/2023"
 
 
 def test_get_weekday_dates_in_period_bad():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)
     result = get_weekday_dates_in_period(now, 5, 7)
     assert len(result) != 8
-    assert result[6] != '08/04/20232'
+    assert result[6] != "08/04/20232"

@@ -37,15 +37,21 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Get all bins with their corresponding dates using list comprehension
         # This creates a list of tuples, where each tuple contains the bin type and collection date
-        bins_with_dates = [(bin.get_text().strip(), h4.get_text().replace("This ", "").replace("Next ", ""))
-                           # This first for loop iterates over each h4 element
-                           for h4 in div_element.find_all("h4")
-
-                           # This nested for loop iterates over each li element within the corresponding ul element
-                           for bin in h4.find_next_sibling("ul").find_all("li")]
+        bins_with_dates = [
+            (
+                bin.get_text().strip(),
+                h4.get_text().replace("This ", "").replace("Next ", ""),
+            )
+            # This first for loop iterates over each h4 element
+            for h4 in div_element.find_all("h4")
+            # This nested for loop iterates over each li element within the corresponding ul element
+            for bin in h4.find_next_sibling("ul").find_all("li")
+        ]
 
         # Add the bins to the data dict
-        data["bins"] = [{"type": bin_type, "collectionDate": collection_date}
-                        for bin_type, collection_date in bins_with_dates]
+        data["bins"] = [
+            {"type": bin_type, "collectionDate": collection_date}
+            for bin_type, collection_date in bins_with_dates
+        ]
 
         return data

@@ -24,26 +24,39 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         soup = BeautifulSoup(response.text, features="html.parser")
-        collections = soup.find("div", {"aria-label": "Waste Collection"}).find_all("div", {"class": "atPanelContent"})
+        collections = soup.find("div", {"aria-label": "Waste Collection"}).find_all(
+            "div", {"class": "atPanelContent"}
+        )
         for c in collections:
             bin_type = c.find("h4").get_text(strip=True)
             if "my next" in bin_type.lower():
-                collection_info = c.find("div", {"class": "atPanelData"}).get_text(strip=True)
-                results = re.search("([A-Za-z]+ \d+[A-Za-z]+ [A-Za-z]+ \d*)", collection_info)
+                collection_info = c.find("div", {"class": "atPanelData"}).get_text(
+                    strip=True
+                )
+                results = re.search(
+                    "([A-Za-z]+ \d+[A-Za-z]+ [A-Za-z]+ \d*)", collection_info
+                )
                 if results:
                     collection_date = datetime.strptime(
-                        results[1].replace("th", "").replace("st", "").replace("nd", "").replace("rd", "").strip(),
-                        "%A %d %B %Y"
+                        results[1]
+                        .replace("th", "")
+                        .replace("st", "")
+                        .replace("nd", "")
+                        .replace("rd", "")
+                        .strip(),
+                        "%A %d %B %Y",
                     ).strftime(date_format)
                     dict_data = {
-                        "type": bin_type.replace("My Next ", "").replace(" Collection", ""),
-                        "collectionDate": collection_date
+                        "type": bin_type.replace("My Next ", "").replace(
+                            " Collection", ""
+                        ),
+                        "collectionDate": collection_date,
                     }
                     data["bins"].append(dict_data)
                     if "garden waste" in collection_info.lower():
                         dict_data = {
                             "type": "Garden Waste",
-                            "collectionDate": collection_date
+                            "collectionDate": collection_date,
                         }
                         data["bins"].append(dict_data)
 

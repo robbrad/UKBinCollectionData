@@ -39,7 +39,12 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
         requests.packages.urllib3.disable_warnings()
-        response = requests.request("POST", "https://www.welhat.gov.uk/xfp/form/214", headers=headers, data=values)
+        response = requests.request(
+            "POST",
+            "https://www.welhat.gov.uk/xfp/form/214",
+            headers=headers,
+            data=values,
+        )
 
         soup = BeautifulSoup(response.text, features="html.parser")
 

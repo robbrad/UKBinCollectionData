@@ -42,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         address_data = response.json()
 
-        address_list = address_data['html']
+        address_list = address_data["html"]
 
         soup = BeautifulSoup(address_list, features="html.parser")
 
@@ -58,20 +58,25 @@ class CouncilClass(AbstractGetBinDataClass):
         addresses = list(address_by_id.values())
 
         common = difflib.SequenceMatcher(
-            a=addresses[0], b=addresses[1]).find_longest_match()
-        extra_bit = addresses[0][common.a:common.a+common.size]
+            a=addresses[0], b=addresses[1]
+        ).find_longest_match()
+        extra_bit = addresses[0][common.a : common.a + common.size]
 
         ids_by_paon = {
-            a.replace(extra_bit, ""): a_id.replace("/view/", "").replace("/", "") for a_id, a in address_by_id.items()
+            a.replace(extra_bit, ""): a_id.replace("/view/", "").replace("/", "")
+            for a_id, a in address_by_id.items()
         }
 
         property_id = ids_by_paon.get(paon)
         if not property_id:
             raise ValueError(
-                f"Invalid house number, valid values are {', '.join(ids_by_paon.keys())}")
+                f"Invalid house number, valid values are {', '.join(ids_by_paon.keys())}"
+            )
 
         today = date.today()
-        calendar_url = f"{self.base_url}/calendar/{property_id}/{today.strftime('%Y-%m-%d')}"
+        calendar_url = (
+            f"{self.base_url}/calendar/{property_id}/{today.strftime('%Y-%m-%d')}"
+        )
         response = s.get(calendar_url)
         response.raise_for_status()
         calendar_data = response.json()
@@ -89,7 +94,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 data["bins"].append(
                     {
                         "type": bin,
-                        "collectionDate": collection_date.strftime(date_format)
+                        "collectionDate": collection_date.strftime(date_format),
                     }
                 )
         return data

@@ -16,8 +16,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Get postcode and UPRN from kwargs
-        user_postcode = kwargs.get('postcode')
-        user_uprn = kwargs.get('uprn')
+        user_postcode = kwargs.get("postcode")
+        user_uprn = kwargs.get("uprn")
         check_postcode(user_postcode)
         check_uprn(user_uprn)
 
@@ -36,17 +36,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Get the collection bullet points on the page and parse them
         form_area = soup.find("form", {"class": "integration bin-lookup"})
-        collections = [item.text.strip().split(",")
-                       for item in form_area.find_all("li")]
+        collections = [
+            item.text.strip().split(",") for item in form_area.find_all("li")
+        ]
         for c in collections:
             bin_type = c[0].strip()
             # temp_date = c[2].strip() + " " + str(datetime.now().year)
             bin_date = datetime.strptime(
-                c[2].strip() + " " + str(datetime.now().year), "%d %B %Y").strftime(date_format)
-            dict_data = {
-                "type":           bin_type,
-                "collectionDate": bin_date
-            }
+                c[2].strip() + " " + str(datetime.now().year), "%d %B %Y"
+            ).strftime(date_format)
+            dict_data = {"type": bin_type, "collectionDate": bin_date}
             data["bins"].append(dict_data)
 
         return data
