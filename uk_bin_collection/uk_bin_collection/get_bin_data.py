@@ -3,6 +3,7 @@ handle the data recieved from the provided council class.
 
 Keyword arguments: None
 """
+import requests
 import json
 from uk_bin_collection.uk_bin_collection.common import write_output_json
 from abc import ABC, abstractmethod
@@ -11,7 +12,8 @@ from logging.config import dictConfig
 
 LOGGING_CONFIG = dict(
     version=1,
-    formatters={"f": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"}},
+    formatters={
+        "f": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"}},
     handlers={
         "h": {"class": "logging.StreamHandler", "formatter": "f", "level": logging.INFO}
     },
@@ -31,7 +33,6 @@ def setup_logging(logging_config, logger_name):
 LOGGER = setup_logging(LOGGING_CONFIG, None)
 
 # import the wonderful Beautiful Soup and the URL grabber
-import requests
 
 
 class AbstractGetBinDataClass(ABC):
