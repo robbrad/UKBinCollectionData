@@ -31,16 +31,19 @@ class CouncilClass(AbstractGetBinDataClass):
                     element.next_sibling.next_sibling.next_sibling.next_sibling
                 )
 
-            bin_type = str(element)[str(element).find("(") + 1 : str(element).find(")")]
+            bin_type = str(element)[str(element).find(
+                "(") + 1: str(element).find(")")]
             collectionDate = str(
                 datetime.strptime(
-                    str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"
+                    str(collectionInfo).replace(
+                        "Next collection : ", ""), "%d-%b-%Y"
                 )
                 .date()
                 .strftime("%d/%m/%Y")
             )
 
-            dict_data = {"BinType": bin_type, "NextCollectionDate": collectionDate}
+            dict_data = {"BinType": bin_type,
+                         "NextCollectionDate": collectionDate}
 
             data["bins"].append(dict_data)
 

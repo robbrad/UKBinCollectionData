@@ -28,7 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
         response = requests.get(
             api_url, params=params
         )
-        
+
         # Make a BS4 object
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -44,7 +44,8 @@ class CouncilClass(AbstractGetBinDataClass):
         # Loop through each <ul> tag to extract the bin information
         for i, bin_list in enumerate(bin_lists):
             # Find the <p> tag containing the bin type string
-            bin_type = bin_list.find_previous_sibling("p").find("strong").text.strip()
+            bin_type = bin_list.find_previous_sibling(
+                "p").find("strong").text.strip()
 
             # Loop through each <li> tag in the <ul> tag to extract the collection date
             for li in bin_list.find_all("li"):
@@ -56,15 +57,14 @@ class CouncilClass(AbstractGetBinDataClass):
                     # remove the ":" from the end of the bin type
                     "type": bin_type[:-1],
                     "collectionTime": collection_time
-                })     
-        
+                })
+
         # Sort the bins by collection time
         data["bins"] = sorted(data["bins"], key=lambda x: x["collectionTime"])
 
         # Convert the datetime objects to strings in the desired format
         for bin in data["bins"]:
-            bin["collectionTime"] = bin["collectionTime"].strftime("%A %d %B %Y")
+            bin["collectionTime"] = bin["collectionTime"].strftime(
+                "%A %d %B %Y")
 
         return data
-
-

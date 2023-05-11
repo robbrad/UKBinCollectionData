@@ -14,7 +14,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        
+
         API_URLS = {
             "address_search": "https://servicelayer3c.azure-api.net/wastecalendar/address/search/",
             "collection": "https://servicelayer3c.azure-api.net/wastecalendar/collection/search/{}/",
@@ -44,7 +44,8 @@ class CouncilClass(AbstractGetBinDataClass):
             x["id"] for x in addresses if x["houseNumber"].capitalize() == user_paon
         ]
         if len(address_ids) == 0:
-            raise Exception(f"Could not match address {user_paon}, {user_postcode}")
+            raise Exception(
+                f"Could not match address {user_paon}, {user_postcode}")
 
         # Get the schedule
         r = s.get(
@@ -56,12 +57,13 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         for collection in schedule:
-            dt = datetime.strptime(collection["date"], "%Y-%m-%dT%H:%M:%SZ").strftime(date_format)
+            dt = datetime.strptime(
+                collection["date"], "%Y-%m-%dT%H:%M:%SZ").strftime(date_format)
             for round in collection["roundTypes"]:
                 dict_data = {
                     "binType": round.title(),
                     "collectionDate": dt
                 }
                 data["bins"].append(dict_data)
-        
+
         return data

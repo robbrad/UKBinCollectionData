@@ -5,6 +5,8 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 import requests
 
 # import the wonderful Beautiful Soup and the URL grabber
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -34,11 +36,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Get the collection bullet points on the page and parse them
         form_area = soup.find("form", {"class": "integration bin-lookup"})
-        collections = [item.text.strip().split(",") for item in form_area.find_all("li")]
+        collections = [item.text.strip().split(",")
+                       for item in form_area.find_all("li")]
         for c in collections:
             bin_type = c[0].strip()
             # temp_date = c[2].strip() + " " + str(datetime.now().year)
-            bin_date = datetime.strptime(c[2].strip() + " " + str(datetime.now().year), "%d %B %Y").strftime(date_format)
+            bin_date = datetime.strptime(
+                c[2].strip() + " " + str(datetime.now().year), "%d %B %Y").strftime(date_format)
             dict_data = {
                 "type":           bin_type,
                 "collectionDate": bin_date
