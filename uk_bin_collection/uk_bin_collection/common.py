@@ -187,6 +187,7 @@ def write_output_json(council: str, content: str):
         print("Please check you're running developer mode from either the UKBinCollectionData "
               "or uk_bin_collection/uk_bin_collection/ directories.")
 
+
 def validate_dates(bin_dates: dict) -> dict:
     raise NotImplementedError()
     # If a date is in December and the next is in January, increase the year

@@ -79,6 +79,7 @@ def test_is_not_holiday():
     result = is_holiday("2022, 12, 01")
     assert result is False
 
+
 def test_remove_alpha_characters():
     test_string = "12345abc12345"
     result = remove_alpha_characters(test_string)
@@ -90,11 +91,13 @@ def test_remove_alpha_characters_bad():
     result = remove_alpha_characters(test_string)
     assert result != "12345abc12345"
 
+
 def test_get_dates_every_x_days():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)
     result = get_dates_every_x_days(now, 5, 7)
     assert len(result) == 7
     assert result[6] == '27/03/2023'
+
 
 def test_get_dates_every_x_days_bad():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)
@@ -102,21 +105,25 @@ def test_get_dates_every_x_days_bad():
     assert len(result) != 8
     assert result[6] != '27/03/2022'
 
+
 def test_remove_ordinal_indicator_from_date_string():
     test_string = "June 12th 2022"
     result = remove_ordinal_indicator_from_date_string(test_string)
     assert result == "June 12 2022"
+
 
 def test_remove_ordinal_indicator_from_date_string_bad():
     test_string = "June 12th 2022"
     result = remove_ordinal_indicator_from_date_string(test_string)
     assert result != "June 12th 2022"
 
+
 def test_get_weekday_dates_in_period():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)
     result = get_weekday_dates_in_period(now, 5, 7)
     assert len(result) == 7
     assert result[6] == '08/04/2023'
+
 
 def test_get_weekday_dates_in_period_bad():
     now = datetime(2023, 2, 25, 7, 7, 17, 748661)

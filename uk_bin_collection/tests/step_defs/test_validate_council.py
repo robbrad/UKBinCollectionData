@@ -8,6 +8,7 @@ import traceback
 
 from uk_bin_collection.uk_bin_collection import collect_data
 
+
 @scenario('../features/validate_council_outputs.feature', "Validate Council Output")
 def test_scenario_outline():
     pass
@@ -20,6 +21,7 @@ def context():
 
     return Context()
 
+
 @given(parsers.parse('the council: {council_name}'))
 def get_council_step(context, council_name):
     try:
@@ -28,7 +30,8 @@ def get_council_step(context, council_name):
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Validate Output: {err}")
-        raise(err)
+        raise (err)
+
 
 @when(parsers.parse('we scrape the data from {council}'))
 def scrape_step(context, council):
@@ -37,7 +40,7 @@ def scrape_step(context, council):
         council,
         context.metadata["url"]
     ]
-    
+
     if "uprn" in context.metadata:
         uprn = context.metadata["uprn"]
         args.append(f"-u={uprn}")
@@ -50,13 +53,14 @@ def scrape_step(context, council):
     if "SKIP_GET_URL" in context.metadata:
         skip_url = context.metadata["SKIP_GET_URL"]
         args.append(f"-s={skip_url}")
-    
+
     try:
         context.parse_result = collect_data.main(args)
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Schema: {err}")
-        raise(err)
+        raise (err)
+
 
 @then("the result is valid json")
 def validate_json_step(context):
@@ -66,14 +70,14 @@ def validate_json_step(context):
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Validate Output: {err}")
-        raise(err)
-
+        raise (err)
 
 
 @then("the output should validate against the schema")
 def validate_output_step(context):
     try:
-        council_schema = file_handler.load_schema_file(f"{context.council}.schema")
+        council_schema = file_handler.load_schema_file(
+            f"{context.council}.schema")
         schema_result = file_handler.validate_json_schema(
             context.parse_result, council_schema
         )
@@ -81,4 +85,4 @@ def validate_output_step(context):
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Validate Output: {err}")
-        raise(err)
+        raise (err)

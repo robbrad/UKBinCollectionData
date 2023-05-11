@@ -28,8 +28,8 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode = kwargs.get("postcode")
         paon = kwargs.get("paon")
 
-        if not postcode: 
-            raise ValueError("Must provide a postcode") 
+        if not postcode:
+            raise ValueError("Must provide a postcode")
 
         if not paon:
             raise ValueError("Must provide a house number")
@@ -57,7 +57,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         addresses = list(address_by_id.values())
 
-        common = difflib.SequenceMatcher(a=addresses[0], b=addresses[1]).find_longest_match()
+        common = difflib.SequenceMatcher(
+            a=addresses[0], b=addresses[1]).find_longest_match()
         extra_bit = addresses[0][common.a:common.a+common.size]
 
         ids_by_paon = {
@@ -66,7 +67,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         property_id = ids_by_paon.get(paon)
         if not property_id:
-            raise ValueError(f"Invalid house number, valid values are {', '.join(ids_by_paon.keys())}")
+            raise ValueError(
+                f"Invalid house number, valid values are {', '.join(ids_by_paon.keys())}")
 
         today = date.today()
         calendar_url = f"{self.base_url}/calendar/{property_id}/{today.strftime('%Y-%m-%d')}"
