@@ -1,5 +1,6 @@
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):

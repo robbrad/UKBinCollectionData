@@ -1,9 +1,10 @@
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-import requests
 import json
 from datetime import datetime
+
+import requests
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 def get_address_uprn(postcode: str, paon: str, api_url: str) -> str:

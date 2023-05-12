@@ -1,13 +1,13 @@
-import os
 import calendar
+import json
+import os
 import re
 from datetime import datetime
 from enum import Enum
 
-import requests
-import json
 import holidays
 import pandas as pd
+import requests
 
 date_format = "%d/%m/%Y"
 days_of_week = {

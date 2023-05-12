@@ -3,12 +3,14 @@ handle the data recieved from the provided council class.
 
 Keyword arguments: None
 """
-import requests
 import json
-from uk_bin_collection.uk_bin_collection.common import write_output_json
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 from logging.config import dictConfig
+
+import requests
+
+from uk_bin_collection.uk_bin_collection.common import write_output_json
 
 LOGGING_CONFIG = dict(
     version=1,

@@ -1,9 +1,10 @@
-from bs4 import BeautifulSoup
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+import re
 from datetime import datetime
 
 import pandas as pd
-import re
+from bs4 import BeautifulSoup
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):

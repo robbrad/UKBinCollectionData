@@ -1,5 +1,5 @@
-from uk_bin_collection.common import *
 import pytest
+from uk_bin_collection.common import *
 
 
 def test_check_postcode_valid():
