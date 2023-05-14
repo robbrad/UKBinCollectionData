@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome2",
+    "$ref": "#/definitions/Welcome4",
     "definitions": {
-        "Welcome2": {
+        "Welcome4": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,7 +16,7 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome2"
+            "title": "Welcome4"
         },
         "Bin": {
             "type": "object",
