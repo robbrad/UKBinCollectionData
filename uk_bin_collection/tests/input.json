@@ -414,6 +414,13 @@
     "url": "https://my.rbwm.gov.uk/special/find-your-collection-dates",
     "wiki_name": "Windsor and Maidenhead Council"
   },
+  "WokingBoroughCouncil": {
+    "url": "https://asjwsw-wrpwokingmunicipal-live.whitespacews.com/",
+    "wiki_name": "Woking Borough Council/Joint Waste Solutions",
+    "wiki_note": "Works with all collection areas that use Joint Waste Solutions. Just use the correct URL.",
+    "house_number": "2",
+    "postcode": "GU214JY"
+  },
   "YorkCouncil": {
     "uprn": "100050535540",
     "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",

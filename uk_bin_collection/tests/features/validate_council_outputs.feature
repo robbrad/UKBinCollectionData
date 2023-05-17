@@ -79,4 +79,5 @@ Feature: Test each council output matches expected results in /outputs
             | WiganBoroughCouncil |
             | WiltshireCouncil |
             | WindsorAndMaidenheadCouncil |
+            | WokingBoroughCouncil |
             | YorkCouncil |
