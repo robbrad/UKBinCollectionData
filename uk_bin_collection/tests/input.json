@@ -269,6 +269,11 @@
     "url": "https://webforms.rochdale.gov.uk/BinCalendar",
     "wiki_name": "Rochdale Council"
   },
+  "RushmoorCouncil": {
+    "url": "https://www.rushmoor.gov.uk/recycling-rubbish-and-environment/bins-and-recycling/download-or-print-your-bin-collection-calendar/?uprn=XXXXXXXXXX&weeks=16",
+    "wiki_name": "Rushmoor Council",
+    "wiki_note": "Replace XXXXXXXXXX in URL with your own UPRN."
+  },
   "SalfordCityCouncil": {
     "uprn": "100011416709",
     "url": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections",
