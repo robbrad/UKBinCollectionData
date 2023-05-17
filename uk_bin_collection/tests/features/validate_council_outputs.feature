@@ -77,5 +77,6 @@ Feature: Test each council output matches expected results in /outputs
             | WealdenDistrictCouncil |
             | WelhatCouncil |
             | WiganBoroughCouncil |
+            | WiltshireCouncil |
             | WindsorAndMaidenheadCouncil |
             | YorkCouncil |
