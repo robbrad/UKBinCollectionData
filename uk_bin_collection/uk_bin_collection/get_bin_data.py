@@ -49,6 +49,7 @@ class AbstractGetBinDataClass(ABC):
         Keyword arguments:
         address_url -- the url to get the data from
         """
+        this_url = address_url
         this_postcode = kwargs.get("postcode", None)
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
@@ -60,7 +61,7 @@ class AbstractGetBinDataClass(ABC):
         ):  # we will not use the generic way to get data - needs a get data in the council class itself
             page = self.get_data(address_url)
             bin_data_dict = self.parse_data(
-                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn
+                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn, url=this_url
             )
             json_output = self.output_json(bin_data_dict)
         else:

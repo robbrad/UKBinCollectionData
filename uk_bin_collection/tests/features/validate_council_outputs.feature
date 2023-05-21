@@ -54,6 +54,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthTynesideCouncil |
             | NorthumberlandCouncil |
             | RochdaleCouncil |
+            | RushmoorCouncil |
             | SalfordCityCouncil |
             | SheffieldCityCouncil |
             | SomersetCouncil |
@@ -77,5 +78,7 @@ Feature: Test each council output matches expected results in /outputs
             | WealdenDistrictCouncil |
             | WelhatCouncil |
             | WiganBoroughCouncil |
+            | WiltshireCouncil |
             | WindsorAndMaidenheadCouncil |
+            | WokingBoroughCouncil |
             | YorkCouncil |

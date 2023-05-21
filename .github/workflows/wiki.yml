@@ -48,7 +48,7 @@ jobs:
       continue-on-error: true
 
     - name: Deploy Wiki Changes
-      uses: Andrew-Chen-Wang/github-wiki-action@v3
+      uses: Andrew-Chen-Wang/github-wiki-action@v4
       env:
         # Make sure WIKI_DIR ends with / as action uses rsync
         WIKI_DIR: wiki/

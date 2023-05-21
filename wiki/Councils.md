@@ -28,6 +28,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Durham Council](#durham-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
 - [East Devon District Council](#east-devon-district-council)
+- [Eastleigh Borough Council](#eastleigh-borough-council)
 - [East Northamptonshire Council](#east-northamptonshire-council)
 - [East Riding Council](#east-riding-council)
 - [Erewash Borough Council](#erewash-borough-council)
@@ -37,11 +38,14 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Huntingdon District Council](#huntingdon-district-council)
 - [Kingston Upon Thames Council](#kingston-upon-thames-council)
 - [Leeds City Council](#leeds-city-council)
+- [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
 - [London Borough Hounslow](#london-borough-hounslow)
 - [Maldon District Council](#maldon-district-council)
 - [Malvern Hills District Council](#malvern-hills-district-council)
 - [Manchester City Council](#manchester-city-council)
+- [Merton Council](#merton-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
+- [Milton Keynes City Council](#milton-keynes-city-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
 - [North East Lincolnshire Council](#north-east-lincolnshire-council)
@@ -50,17 +54,20 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North Lincolnshire Council](#north-lincolnshire-council)
 - [North Somerset Council](#north-somerset-council)
 - [North Tyneside Council](#north-tyneside-council)
+- [Northumberland Council](#northumberland-council)
 - [Rochdale Council](#rochdale-council)
 - [Salford City Council](#salford-city-council)
 - [Sheffield City Council](#sheffield-city-council)
 - [Somerset Council](#somerset-council)
 - [South Ayrshire Council](#south-ayrshire-council)
+- [South Cambridgeshire Council](#south-cambridgeshire-council)
 - [South Lanarkshire Council](#south-lanarkshire-council)
 - [South Norfolk Council](#south-norfolk-council)
 - [South Oxfordshire Council](#south-oxfordshire-council)
 - [South Tyneside Council](#south-tyneside-council)
 - [St Helens Borough Council](#st-helens-borough-council)
 - [Stockport Borough Council](#stockport-borough-council)
+- [Swale Borough Council](#swale-borough-council)
 - [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
 - [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
 - [Torbay Council](#torbay-council)
@@ -70,6 +77,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Warwick District Council](#warwick-district-council)
 - [Waverley Borough Council](#waverley-borough-council)
 - [Wealden District Council](#wealden-district-council)
+- [Welhat Council](#welhat-council)
 - [Wigan Borough Council](#wigan-borough-council)
 - [Windsor and Maidenhead Council](#windsor-and-maidenhead-council)
 - [York Council](#york-council)
@@ -130,10 +138,8 @@ Additional parameters:
 
 ### Bromley Borough Council
 ```commandline
-python collect_data.py BromleyBoroughCouncil https://recyclingservices.bromley.gov.uk/waste/XXXXXXX -u XXXXXXXX
+python collect_data.py BromleyBoroughCouncil https://recyclingservices.bromley.gov.uk/waste/XXXXXXX
 ```
-Additional parameters:
-- `-u` - UPRN
 
 Note: Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the "Your bin days" page then copy the URL and replace the URL in the command.
 
@@ -169,12 +175,10 @@ Note: Replace XXXXXXXX with UPRN keeping "cbc" before it.
 
 ### Chelmsford City Council
 ```commandline
-python collect_data.py ChelmsfordCityCouncil https://mychelmsford.secure.force.com/WasteServices/WM_WasteViewProperty?id=XXXXXXXX -u XXXXXXXX
+python collect_data.py ChelmsfordCityCouncil https://www.chelmsford.gov.uk/myhome/XXXXXX
 ```
-Additional parameters:
-- `-u` - UPRN
 
-Note: Replace XXXXXXXX with UPRN.
+Note: Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your "Address", "Ward" etc then copy the URL and replace the URL in the command.
 
 ---
 
@@ -258,6 +262,15 @@ python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-and-waste/
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Eastleigh Borough Council
+```commandline
+python collect_data.py EastleighBoroughCouncil https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn= -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
 
 ---
 
@@ -347,6 +360,17 @@ Additional parameters:
 
 ---
 
+### Lisburn and Castlereagh City Council
+```commandline
+python collect_data.py LisburnCastlereaghCityCouncil https://lisburn.isl-fusion.com -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+---
+
 ### London Borough Hounslow
 ```commandline
 python collect_data.py LondonBoroughHounslow https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder -u XXXXXXXX
@@ -383,6 +407,15 @@ Additional parameters:
 
 ---
 
+### Merton Council
+```commandline
+python collect_data.py MertonCouncil https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX
+```
+
+Note: Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the "Your recycling and rubbish collection days" page then copy the URL and replace the URL in the command (the Address parameter is optional).
+
+---
+
 ### Mid Sussex District Council
 ```commandline
 python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -p "XXXX XXX" -n XX
@@ -392,6 +425,17 @@ Additional parameters:
 - `-n` - house number
 
 Note: Pass the name of the street with the house number parameter, wrapped in double quotes
+
+---
+
+### Milton Keynes City Council
+```commandline
+python collect_data.py MiltonKeynesCityCouncil https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes
 
 ---
 
@@ -471,6 +515,16 @@ Additional parameters:
 
 ---
 
+### Northumberland Council
+```commandline
+python collect_data.py NorthumberlandCouncil https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+---
+
 ### Rochdale Council
 ```commandline
 python collect_data.py RochdaleCouncil https://webforms.rochdale.gov.uk/BinCalendar -u XXXXXXXX -p "XXXX XXX"
@@ -516,6 +570,16 @@ python collect_data.py SouthAyrshireCouncil https://www.south-ayrshire.gov.uk/ -
 Additional parameters:
 - `-u` - UPRN
 - `-p` - postcode
+
+---
+
+### South Cambridgeshire Council
+```commandline
+python collect_data.py SouthCambridgeshireCouncil https://www.scambs.gov.uk/recycling-and-bins/find-your-household-bin-collection-day/ -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
 
 ---
 
@@ -571,6 +635,16 @@ python collect_data.py StockportBoroughCouncil https://myaccount.stockport.gov.u
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Swale Borough Council
+```commandline
+python collect_data.py SwaleBoroughCouncil https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
@@ -660,6 +734,16 @@ python collect_data.py WealdenDistrictCouncil https://www.wealden.gov.uk/recycli
 ```
 Additional parameters:
 - `-u` - UPRN
+
+---
+
+### Welhat Council
+```commandline
+python collect_data.py WelhatCouncil https://www.welhat.gov.uk/xfp/form/214 -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
