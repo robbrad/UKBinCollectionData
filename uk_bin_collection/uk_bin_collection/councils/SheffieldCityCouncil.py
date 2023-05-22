@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -33,7 +34,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     "td", {"class": lambda L: L and L.startswith("next-service")}
                 )[0].get_text(strip=True)
                 collectionDate = collectionDatesRawData[
-                    16 : len(collectionDatesRawData)
+                    16: len(collectionDatesRawData)
                 ].split(",")
                 bin_type = row.find_all(
                     "td", {"class": lambda L: L and L.startswith("service-name")}

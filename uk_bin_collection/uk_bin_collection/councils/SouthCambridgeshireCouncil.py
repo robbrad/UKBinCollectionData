@@ -1,8 +1,8 @@
 import requests
-
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -14,7 +14,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        
         API_URLS = {
             "address_search": "https://servicelayer3c.azure-api.net/wastecalendar/address/search/",
             "collection": "https://servicelayer3c.azure-api.net/wastecalendar/collection/search/{}/",
@@ -37,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
         r = s.get(
             API_URLS["address_search"],
             headers=headers,
-            params={"postCode": user_postcode}
+            params={"postCode": user_postcode},
         )
         addresses = r.json()
         address_ids = [
@@ -56,12 +55,11 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         for collection in schedule:
-            dt = datetime.strptime(collection["date"], "%Y-%m-%dT%H:%M:%SZ").strftime(date_format)
+            dt = datetime.strptime(collection["date"], "%Y-%m-%dT%H:%M:%SZ").strftime(
+                date_format
+            )
             for round in collection["roundTypes"]:
-                dict_data = {
-                    "binType": round.title(),
-                    "collectionDate": dt
-                }
+                dict_data = {"binType": round.title(), "collectionDate": dt}
                 data["bins"].append(dict_data)
-        
+
         return data

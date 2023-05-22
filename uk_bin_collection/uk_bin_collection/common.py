@@ -1,13 +1,13 @@
-import os
 import calendar
+import json
+import os
 import re
 from datetime import datetime
 from enum import Enum
 
-import requests
-import json
 import holidays
 import pandas as pd
+import requests
 
 date_format = "%d/%m/%Y"
 days_of_week = {
@@ -177,15 +177,17 @@ def write_output_json(council: str, content: str):
     cwd = os.getcwd()
     outputs_path = os.path.join(cwd, "..", "tests", "outputs")
     if not os.path.exists(outputs_path) or not os.path.isdir(outputs_path):
-        outputs_path = os.path.join(
-            cwd, "uk_bin_collection", "tests", "outputs")
+        outputs_path = os.path.join(cwd, "uk_bin_collection", "tests", "outputs")
     if os.path.exists(outputs_path) and os.path.isdir(outputs_path):
         with open(os.path.join(outputs_path, council + ".json"), "w") as f:
             f.write(content)
     else:
         print("Exception encountered: Unable to save Output JSON file for the council.")
-        print("Please check you're running developer mode from either the UKBinCollectionData "
-              "or uk_bin_collection/uk_bin_collection/ directories.")
+        print(
+            "Please check you're running developer mode from either the UKBinCollectionData "
+            "or uk_bin_collection/uk_bin_collection/ directories."
+        )
+
 
 def validate_dates(bin_dates: dict) -> dict:
     raise NotImplementedError()

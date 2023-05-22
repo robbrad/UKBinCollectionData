@@ -1,8 +1,9 @@
-from bs4 import BeautifulSoup
 from xml.etree import ElementTree
 
+from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -66,7 +67,7 @@ class CouncilClass(AbstractGetBinDataClass):
             if bin_el:
                 bin_info = bin_el.next_sibling.split(": ")[1]
                 collection_date = ""
-                results = re.search("([A-Za-z]+ \d\d? [A-Za-z]+) then", bin_info)
+                results = re.search("([A-Za-z]+ \\d\\d? [A-Za-z]+) then", bin_info)
                 if results:
                     date = datetime.strptime(
                         results[1] + " " + datetime.now().strftime("%Y"), "%a %d %b %Y"

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-from bs4 import BeautifulSoup
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from dotenv import load_dotenv
+import json
+import os
 from datetime import datetime
 
 import requests
-import os
-import json
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 def get_usrn(uprn: str) -> str:

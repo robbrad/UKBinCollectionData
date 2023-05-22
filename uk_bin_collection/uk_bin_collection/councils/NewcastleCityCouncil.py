@@ -2,9 +2,11 @@
 
 # This script pulls (in one hit) the data from
 # Newcastle City Council Bins Data
-from bs4 import BeautifulSoup
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from datetime import datetime
+
+from bs4 import BeautifulSoup
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -31,7 +33,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     element.next_sibling.next_sibling.next_sibling.next_sibling
                 )
 
-            bin_type = str(element)[str(element).find("(") + 1 : str(element).find(")")]
+            bin_type = str(element)[str(element).find("(") + 1: str(element).find(")")]
             collectionDate = str(
                 datetime.strptime(
                     str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"

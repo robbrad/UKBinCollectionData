@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -30,13 +31,19 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         # Valid bin types
-        binTypes = ['Household Waste Bin', 'Recycling Bin', 'Food Waste Bin', 'Glass Box and Batteries', 'Garden Waste Bin']
+        binTypes = [
+            "Household Waste Bin",
+            "Recycling Bin",
+            "Food Waste Bin",
+            "Glass Box and Batteries",
+            "Garden Waste Bin",
+        ]
 
         # Value to create dict for DL values
         keys, values = [], []
-        
+
         # Loop though DT and DD for DL containing bins
-        dl = soup.find('dl',{"class": "dl-horizontal"})
+        dl = soup.find("dl", {"class": "dl-horizontal"})
         for dt in dl.findAll("dt"):
             keys.append(dt.text.strip())
         for dd in dl.findAll("dd"):

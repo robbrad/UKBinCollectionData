@@ -4,10 +4,13 @@ handle the data recieved from the provided council class.
 Keyword arguments: None
 """
 import json
-from uk_bin_collection.uk_bin_collection.common import write_output_json
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 from logging.config import dictConfig
+
+import requests
+
+from uk_bin_collection.uk_bin_collection.common import write_output_json
 
 LOGGING_CONFIG = dict(
     version=1,
@@ -31,7 +34,6 @@ def setup_logging(logging_config, logger_name):
 LOGGER = setup_logging(LOGGING_CONFIG, None)
 
 # import the wonderful Beautiful Soup and the URL grabber
-import requests
 
 
 class AbstractGetBinDataClass(ABC):
@@ -69,7 +71,7 @@ class AbstractGetBinDataClass(ABC):
             json_output = self.output_json(bin_data_dict)
 
         # if dev mode create/update council's output JSON if bin_data_dict is not empty
-        if dev_mode is not None and dev_mode is True and bin_data_dict['bins']:
+        if dev_mode is not None and dev_mode is True and bin_data_dict["bins"]:
             write_output_json(council_module_str, json_output)
 
         return json_output

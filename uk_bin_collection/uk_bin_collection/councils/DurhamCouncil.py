@@ -1,9 +1,11 @@
+import re
+from datetime import datetime
+
+import requests
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-import re
-import requests
-from datetime import datetime
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -33,7 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_text = bin_info.get_text(strip=True)
 
                 if collection_text:
-                    results = re.search("\d\d? [A-Za-z]+ \d{4}", collection_text)
+                    results = re.search("\\d\\d? [A-Za-z]+ \\d{4}", collection_text)
                     if results:
                         date = datetime.strptime(results[0], "%d %B %Y")
                         if date:

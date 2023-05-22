@@ -1,14 +1,11 @@
-from uk_bin_collection.get_bin_data import (
-    AbstractGetBinDataClass as agbdc,
-)
-
-from uk_bin_collection.get_bin_data import setup_logging
-
 import json
 from unittest import mock
-from requests.models import Response
+
 import pytest
 from requests import exceptions as req_exp
+from requests.models import Response
+from uk_bin_collection.get_bin_data import AbstractGetBinDataClass as agbdc
+from uk_bin_collection.get_bin_data import setup_logging
 
 
 def mocked_requests_get(*args, **kwargs):
