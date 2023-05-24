@@ -702,7 +702,7 @@ python collect_data.py WakefieldCityCouncil https://www.wakefield.gov.uk/site/Wh
 Additional parameters:
 - `-u` - UPRN
 
-Note: Replace XXXXXXXX with UPRN and also pass in -u parameter
+Note: Replace XXXXXXXX with UPRN and also pass in -u parameter.
 
 ---
 
