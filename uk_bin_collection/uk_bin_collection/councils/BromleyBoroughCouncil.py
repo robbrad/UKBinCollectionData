@@ -1,8 +1,9 @@
 # This script pulls (in one hit) the data from Bromley Council Bins Data
-from bs4 import BeautifulSoup
 import dateutil.parser
+from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -23,17 +24,15 @@ class CouncilClass(AbstractGetBinDataClass):
         # Search for the specific bin in the table using BS4
         rows = soup.find("div", class_=("waste__collections")).find_all(
             "h3",
-            class_=(
-                "waste-service-name",
-            ),
+            class_=("waste-service-name",),
         )
 
         # Loops the Rows
         for row in rows:
             bin_type = row.get_text().strip()
             collectionDate = row.find_all_next(
-                    "dd", {"class": "govuk-summary-list__value"}
-                )
+                "dd", {"class": "govuk-summary-list__value"}
+            )
             # Make each Bin element in the JSON, but only if we have a date available
             if collectionDate:
                 print(collectionDate[1].text.strip())

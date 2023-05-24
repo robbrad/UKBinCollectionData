@@ -2,15 +2,15 @@
 # Essentially, it uses Cardiff Council's waste collection API to return collections for a UPRN by pretending
 # to be Google Chrome
 
-import requests
-import json
 import datetime
-
-from requests import auth
+import json
 from datetime import datetime
 
+import requests
+from requests import auth
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # Taken from

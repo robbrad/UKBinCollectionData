@@ -1,10 +1,11 @@
 import hashlib
-from datetime import timedelta
-import time
 import math
+import time
+from datetime import timedelta
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 def ct(e: str) -> int:

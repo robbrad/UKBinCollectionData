@@ -1,0 +1,64 @@
+{
+    "bins": [
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "24/05/2023"
+        },
+        {
+            "type": "General waste/Garden",
+            "collectionDate": "31/05/2023"
+        },
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "07/06/2023"
+        },
+        {
+            "type": "General waste/Garden",
+            "collectionDate": "14/06/2023"
+        },
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "21/06/2023"
+        },
+        {
+            "type": "General waste/Garden",
+            "collectionDate": "28/06/2023"
+        },
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "05/07/2023"
+        },
+        {
+            "type": "General waste/Garden",
+            "collectionDate": "12/07/2023"
+        },
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "General waste/Garden",
+            "collectionDate": "26/07/2023"
+        },
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "02/08/2023"
+        },
+        {
+            "type": "General waste/Garden",
+            "collectionDate": "09/08/2023"
+        },
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "16/08/2023"
+        },
+        {
+            "type": "General waste/Garden",
+            "collectionDate": "23/08/2023"
+        },
+        {
+            "type": "Recycling/Glass",
+            "collectionDate": "30/08/2023"
+        }
+    ]
+}

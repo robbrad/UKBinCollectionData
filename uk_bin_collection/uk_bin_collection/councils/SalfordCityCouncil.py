@@ -1,7 +1,9 @@
-from bs4 import BeautifulSoup
 from datetime import datetime
+
+from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -25,10 +27,8 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Make a request to the API
-        response = requests.get(
-            api_url, params=params
-        )
-        
+        response = requests.get(api_url, params=params)
+
         # Make a BS4 object
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -52,12 +52,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_time = datetime.strptime(li.text, "%A %d %B %Y")
 
                 # Add the bin to the data dict
-                data["bins"].append({
-                    # remove the ":" from the end of the bin type
-                    "type": bin_type[:-1],
-                    "collectionTime": collection_time
-                })     
-        
+                data["bins"].append(
+                    {
+                        # remove the ":" from the end of the bin type
+                        "type": bin_type[:-1],
+                        "collectionTime": collection_time,
+                    }
+                )
+
         # Sort the bins by collection time
         data["bins"] = sorted(data["bins"], key=lambda x: x["collectionTime"])
 
@@ -66,5 +68,3 @@ class CouncilClass(AbstractGetBinDataClass):
             bin["collectionTime"] = bin["collectionTime"].strftime("%A %d %B %Y")
 
         return data
-
-

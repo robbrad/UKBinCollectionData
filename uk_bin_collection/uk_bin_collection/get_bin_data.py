@@ -4,10 +4,13 @@ handle the data recieved from the provided council class.
 Keyword arguments: None
 """
 import json
-from uk_bin_collection.uk_bin_collection.common import write_output_json
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 from logging.config import dictConfig
+
+import requests
+
+from uk_bin_collection.uk_bin_collection.common import write_output_json
 
 LOGGING_CONFIG = dict(
     version=1,
@@ -31,7 +34,6 @@ def setup_logging(logging_config, logger_name):
 LOGGER = setup_logging(LOGGING_CONFIG, None)
 
 # import the wonderful Beautiful Soup and the URL grabber
-import requests
 
 
 class AbstractGetBinDataClass(ABC):
@@ -47,6 +49,7 @@ class AbstractGetBinDataClass(ABC):
         Keyword arguments:
         address_url -- the url to get the data from
         """
+        this_url = address_url
         this_postcode = kwargs.get("postcode", None)
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
@@ -58,7 +61,7 @@ class AbstractGetBinDataClass(ABC):
         ):  # we will not use the generic way to get data - needs a get data in the council class itself
             page = self.get_data(address_url)
             bin_data_dict = self.parse_data(
-                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn
+                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn, url=this_url
             )
             json_output = self.output_json(bin_data_dict)
         else:
@@ -68,7 +71,7 @@ class AbstractGetBinDataClass(ABC):
             json_output = self.output_json(bin_data_dict)
 
         # if dev mode create/update council's output JSON if bin_data_dict is not empty
-        if dev_mode is not None and dev_mode is True and bin_data_dict['bins']:
+        if dev_mode is not None and dev_mode is True and bin_data_dict["bins"]:
             write_output_json(council_module_str, json_output)
 
         return json_output

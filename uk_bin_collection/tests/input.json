@@ -269,6 +269,11 @@
     "url": "https://webforms.rochdale.gov.uk/BinCalendar",
     "wiki_name": "Rochdale Council"
   },
+  "RushmoorCouncil": {
+    "url": "https://www.rushmoor.gov.uk/recycling-rubbish-and-environment/bins-and-recycling/download-or-print-your-bin-collection-calendar/?uprn=XXXXXXXXXX&weeks=16",
+    "wiki_name": "Rushmoor Council",
+    "wiki_note": "Replace XXXXXXXXXX in URL with your own UPRN."
+  },
   "SalfordCityCouncil": {
     "uprn": "100011416709",
     "url": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections",
@@ -402,11 +407,24 @@
     "url": "https://apps.wigan.gov.uk/MyNeighbourhood/",
     "wiki_name": "Wigan Borough Council"
   },
+  "WiltshireCouncil": {
+    "postcode": "SN83TE",
+    "urpn": "100120982570",
+    "url": "https://ilambassadorformsprod.azurewebsites.net/wastecollectiondays/index",
+    "wiki_name": "Wiltshire Council"
+  },
   "WindsorAndMaidenheadCouncil": {
     "house_number": "11",
     "postcode": "TW19 5NF",
     "url": "https://my.rbwm.gov.uk/special/find-your-collection-dates",
     "wiki_name": "Windsor and Maidenhead Council"
+  },
+  "WokingBoroughCouncil": {
+    "url": "https://asjwsw-wrpwokingmunicipal-live.whitespacews.com/",
+    "wiki_name": "Woking Borough Council/Joint Waste Solutions",
+    "wiki_note": "Works with all collection areas that use Joint Waste Solutions. Just use the correct URL.",
+    "house_number": "2",
+    "postcode": "GU214JY"
   },
   "YorkCouncil": {
     "uprn": "100050535540",
