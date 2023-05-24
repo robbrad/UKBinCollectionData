@@ -435,7 +435,7 @@ python collect_data.py MiltonKeynesCityCouncil https://www.milton-keynes.gov.uk/
 Additional parameters:
 - `-u` - UPRN
 
-Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes
+Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes.
 
 ---
 
