@@ -49,10 +49,7 @@ jobs:
 
     - name: Deploy Wiki Changes
       uses: Andrew-Chen-Wang/github-wiki-action@v4
-      env:
+      with:
         # Make sure WIKI_DIR ends with / as action uses rsync
-        WIKI_DIR: wiki/
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_MAIL: ${{ secrets.YOUR_EMAIL }}
-        GH_NAME: ${{ github.repository_owner }}
-        EXCLUDED_FILES: "generate_wiki.py"
+        path: wiki/
+        ignore: "generate_wiki.py"
