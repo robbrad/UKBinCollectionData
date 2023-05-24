@@ -1,8 +1,52 @@
 {
     "bins": [
         {
-            "type": "Grey Bin",
-            "collectionDate": "08/11/2022"
+            "type": "Beige bin",
+            "collectionDate": "16/05/2023"
+        },
+        {
+            "type": "Burgundy bin",
+            "collectionDate": "16/05/2023"
+        },
+        {
+            "type": "Green bin",
+            "collectionDate": "16/05/2023"
+        },
+        {
+            "type": "Grey bin",
+            "collectionDate": "23/05/2023"
+        },
+        {
+            "type": "Beige bin",
+            "collectionDate": "30/05/2023"
+        },
+        {
+            "type": "Burgundy bin",
+            "collectionDate": "30/05/2023"
+        },
+        {
+            "type": "Green bin",
+            "collectionDate": "30/05/2023"
+        },
+        {
+            "type": "Grey bin",
+            "collectionDate": "06/06/2023"
+        },
+        {
+            "type": "Beige bin",
+            "collectionDate": "13/06/2023"
+        },
+        {
+            "type": "Burgundy bin",
+            "collectionDate": "13/06/2023"
+        },
+        {
+            "type": "Green bin",
+            "collectionDate": "13/06/2023"
+        },
+        {
+            "type": "Grey bin",
+            "collectionDate": "20/06/2023"
         }
     ]
 }
