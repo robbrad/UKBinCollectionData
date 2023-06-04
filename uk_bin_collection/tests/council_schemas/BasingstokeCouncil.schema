@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/BinData",
+    "definitions": {
+        "BinData": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "BinData"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/Type"
+                },
+                "collectionDate": {
+                    "type": "string",
+                    "pattern": "\\d{2}/\\d{2}/\\d{4}"
+                }
+            },
+            "required": [
+                "collectionDate",
+                "type"
+            ],
+            "title": "Bin"
+        },
+        "Type": {
+            "type": "string",
+            "enum": [
+                "waste",
+                "recycling",
+                "glass"
+            ],
+            "title": "Type"
+        }
+    }
+}

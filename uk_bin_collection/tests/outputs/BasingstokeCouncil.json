@@ -1,0 +1,76 @@
+{
+    "bins": [
+        {
+            "type": "waste",
+            "collectionDate": "07/06/2023"
+        },
+        {
+            "type": "waste",
+            "collectionDate": "14/06/2023"
+        },
+        {
+            "type": "waste",
+            "collectionDate": "21/06/2023"
+        },
+        {
+            "type": "waste",
+            "collectionDate": "28/06/2023"
+        },
+        {
+            "type": "waste",
+            "collectionDate": "05/07/2023"
+        },
+        {
+            "type": "waste",
+            "collectionDate": "12/07/2023"
+        },
+        {
+            "type": "recycling",
+            "collectionDate": "07/06/2023"
+        },
+        {
+            "type": "recycling",
+            "collectionDate": "21/06/2023"
+        },
+        {
+            "type": "recycling",
+            "collectionDate": "05/07/2023"
+        },
+        {
+            "type": "recycling",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "recycling",
+            "collectionDate": "02/08/2023"
+        },
+        {
+            "type": "recycling",
+            "collectionDate": "16/08/2023"
+        },
+        {
+            "type": "glass",
+            "collectionDate": "07/06/2023"
+        },
+        {
+            "type": "glass",
+            "collectionDate": "21/06/2023"
+        },
+        {
+            "type": "glass",
+            "collectionDate": "05/07/2023"
+        },
+        {
+            "type": "glass",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "glass",
+            "collectionDate": "02/08/2023"
+        },
+        {
+            "type": "glass",
+            "collectionDate": "16/08/2023"
+        }
+    ]
+}
