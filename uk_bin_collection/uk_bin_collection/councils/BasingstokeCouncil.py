@@ -37,8 +37,6 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
 
-        print(response.text)
-
         bins = []
 
         for collection_type, collection_class in COLLECTION_KINDS.items():
