@@ -1,4 +1,9 @@
 {
+  "BasingstokeCouncil": {
+    "uprn": "100060220922",
+    "url": "https://www.basingstoke.gov.uk/bincollection",
+    "wiki_name": "Basingstoke Council"
+  },
   "BCPCouncil": {
     "uprn": "100040810214",
     "url": "https://online.bcpcouncil.gov.uk/bindaylookup/",
