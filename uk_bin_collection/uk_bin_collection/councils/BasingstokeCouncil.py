@@ -8,7 +8,9 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import \
 COLLECTION_KINDS = {
     "waste": "rteelem_ctl03_pnlCollections_Refuse",
     "recycling": "rteelem_ctl03_pnlCollections_Recycling",
-    "glass": "rteelem_ctl03_pnlCollections_Glass"
+    "glass": "rteelem_ctl03_pnlCollections_Glass",
+    # Garden waste data is only return is the property is subscribed to Garden Waste service
+    "garden": "rteelem_ctl03_pnlCollections_GardenWaste"
 }
 
 class CouncilClass(AbstractGetBinDataClass):
