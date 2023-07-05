@@ -9,7 +9,7 @@ COLLECTION_KINDS = {
     "waste": "rteelem_ctl03_pnlCollections_Refuse",
     "recycling": "rteelem_ctl03_pnlCollections_Recycling",
     "glass": "rteelem_ctl03_pnlCollections_Glass",
-    # Garden waste data is only return is the property is subscribed to Garden Waste service
+    # Garden waste data is only returned if the property is subscribed to the Garden Waste service
     "garden": "rteelem_ctl03_pnlCollections_GardenWaste"
 }
 
