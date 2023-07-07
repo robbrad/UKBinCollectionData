@@ -41,7 +41,8 @@
             "enum": [
                 "waste",
                 "recycling",
-                "glass"
+                "glass",
+                "garden"
             ],
             "title": "Type"
         }
