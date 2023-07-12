@@ -250,6 +250,14 @@
     "url": "https://www.northlincs.gov.uk/bins-waste-and-recycling/bin-and-box-collection-dates/",
     "wiki_name": "North Lincolnshire Council"
   },
+  "NorthNorfolkDistrictCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "house_number": "1 Morston Mews",
+    "postcode": "NR25 6BH",
+    "url": "https://www.north-norfolk.gov.uk/",
+    "wiki_name": "North Norfolk District Council",
+    "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
+  },
   "NorthSomersetCouncil": {
     "postcode": "BS49 5AA",
     "uprn": "24051674",
