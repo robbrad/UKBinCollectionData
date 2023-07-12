@@ -39,6 +39,13 @@
     "wiki_command_url_override": "https://recyclingservices.bromley.gov.uk/waste/XXXXXXX",
     "wiki_note": "Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command."
   },
+  "BroxtoweBoroughCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "NG16 2LY",
+    "uprn": "100031325997",
+    "url": "https://www.broxtowe.gov.uk/",
+    "wiki_name": "Broxtowe Borough Council"
+  },
   "CardiffCouncil": {
     "uprn": "100100112419",
     "url": "https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx",

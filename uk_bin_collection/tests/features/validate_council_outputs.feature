@@ -15,6 +15,7 @@ Feature: Test each council output matches expected results in /outputs
             | BoltonCouncil |
             | BristolCityCouncil |
             | BromleyBoroughCouncil |
+            | BroxtoweBoroughCouncil |
             | CardiffCouncil |
             | CastlepointDistrictCouncil |
             | CharnwoodBoroughCouncil |

@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "type": "GREEN 240L",
+            "collectionDate": "13/07/2023"
+        },
+        {
+            "type": "BLACK 240L",
+            "collectionDate": "20/07/2023"
+        },
+        {
+            "type": "GLASS BAG",
+            "collectionDate": "27/07/2023"
+        }
+    ]
+}
