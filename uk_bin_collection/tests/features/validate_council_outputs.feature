@@ -51,6 +51,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthKestevenDistrictCouncil |
             | NorthLanarkshireCouncil |
             | NorthLincolnshireCouncil |
+            | NorthNorfolkDistrictCouncil |
             | NorthSomersetCouncil |
             | NorthTynesideCouncil |
             | NorthumberlandCouncil |

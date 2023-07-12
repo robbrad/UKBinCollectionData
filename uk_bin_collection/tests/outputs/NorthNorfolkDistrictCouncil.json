@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "type": "Grey",
+            "collectionDate": "17/07/2023"
+        },
+        {
+            "type": "Brown",
+            "collectionDate": "18/07/2023"
+        },
+        {
+            "type": "Green",
+            "collectionDate": "24/07/2023"
+        }
+    ]
+}
