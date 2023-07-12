@@ -295,6 +295,13 @@
     "url": "https://webforms.rochdale.gov.uk/BinCalendar",
     "wiki_name": "Rochdale Council"
   },
+  "RushcliffeBoroughCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "NG13 8TZ",
+    "uprn": "3040040994",
+    "url": "https://www.rushcliffe.gov.uk/",
+    "wiki_name": "Rushcliffe Borough Council"
+  },
   "RushmoorCouncil": {
     "url": "https://www.rushmoor.gov.uk/recycling-rubbish-and-environment/bins-and-recycling/download-or-print-your-bin-collection-calendar/?uprn=XXXXXXXXXX&weeks=16",
     "wiki_name": "Rushmoor Council",

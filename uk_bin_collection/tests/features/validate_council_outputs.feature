@@ -58,6 +58,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthumberlandCouncil |
             | PrestonCityCouncil |
             | RochdaleCouncil |
+            | RushcliffeBoroughCouncil |
             | RushmoorCouncil |
             | SalfordCityCouncil |
             | SheffieldCityCouncil |
