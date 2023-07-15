@@ -15,7 +15,7 @@
     + [Output JSON file](#output-json-file)
     + [Council schema](#council-schema)
     + [Feature file](#feature-file)
-  * [Testing](#testing)V
+  * [Testing](#testing)
     + [Behave (Integration Testing)](#behave--integration-testing-)
       - [Running the Behave tests](#running-the-behave-tests)
       - [GitHub Actions Integration Tests](#github-actions-integration-tests)
