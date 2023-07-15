@@ -188,15 +188,15 @@ Adding the `-d` or `--dev_mode` parameter to your CLI command enables developmen
 {
     "bins": [
         {
-            "bin_type": "Empty Standard Mixed Recycling",
+            "type": "Empty Standard Mixed Recycling",
             "collectionDate": "29/07/2022"
         },
         {
-            "bin_type": "Empty Standard Garden Waste",
+            "type": "Empty Standard Garden Waste",
             "collectionDate": "29/07/2022"
         },
         {
-            "bin_type": "Empty Standard General Waste",
+            "type": "Empty Standard General Waste",
             "collectionDate": "05/08/2022"
         }
     ]
@@ -243,27 +243,27 @@ If this is the case, you may need to add them to the bin_type `enum` manually (u
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "bin_type": {
-                    "$ref": "#/definitions/BinType"
+                "type": {
+                    "$ref": "#/definitions/Type"
                 },
                 "collectionDate": {
                     "type": "string"
                 }
             },
             "required": [
-                "bin_type",
-                "collectionDate"
+                "collectionDate",
+                "type"
             ],
             "title": "Bin"
         },
-        "BinType": {
+        "Type": {
             "type": "string",
             "enum": [
-                "Empty Standard Mixed Recycling",
-                "Empty Standard Garden Waste",
-                "Empty Standard General Waste"
+              "Empty Standard Mixed Recycling",
+              "Empty Standard Garden Waste",
+              "Empty Standard General Waste"
             ],
-            "title": "BinType"
+            "title": "Type"
         }
     }
 }
