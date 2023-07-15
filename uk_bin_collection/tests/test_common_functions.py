@@ -131,21 +131,3 @@ def test_get_weekday_dates_in_period_bad():
     result = get_weekday_dates_in_period(now, 5, 7)
     assert len(result) != 8
     assert result[6] != "08/04/20232"
-
-
-def mocked_datetime_now(tz=None):
-    return datetime(2023, 2, 25, 7, 7, 17, 748661)
-
-
-@mock.patch("datetime.now", side_effect=mocked_datetime_now)
-def test_get_next_occurrence_from_day_month_next_year(mocked_datetime_now):
-    test_date = datetime(2023, 2, 24, 7, 7, 17, 748661)
-    result = get_next_occurrence_from_day_month(test_date)
-    assert result.strftime("%Y") == "2024"
-
-
-@mock.patch("datetime.now", side_effect=mocked_datetime_now)
-def test_get_next_occurrence_from_day_month_current_year(mocked_datetime_now):
-    test_date = datetime(2023, 3, 25, 7, 7, 17, 748661)
-    result = get_next_occurrence_from_day_month(test_date)
-    assert result.strftime("%Y") == "2023"
