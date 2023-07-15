@@ -8,7 +8,6 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import \
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-
     """
     Concrete classes have to implement all abstract operations of the
     baseclass. They can also override some
@@ -45,6 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
             + uprn
             + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
         )
+        requests.packages.urllib3.disable_warnings()
         full_page = requests.post(url, headers=headers, data=post_data)
 
         return full_page
@@ -79,6 +79,7 @@ class CouncilClass(AbstractGetBinDataClass):
             + uprn
             + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
         )
+        requests.packages.urllib3.disable_warnings()
         page = requests.post(url, headers=headers, data=post_data)
 
         # Remove the soap wrapper

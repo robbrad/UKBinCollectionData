@@ -25,6 +25,7 @@ def get_usrn(uprn: str) -> str:
     api_url = (
         f"https://api.os.uk/search/links/v1/featureTypes/BLPU/{uprn}?key={api_key}"
     )
+    requests.packages.urllib3.disable_warnings()
     json_response = json.loads(requests.get(api_url).content)
     street_data = [
         item.get("correlatedIdentifiers")

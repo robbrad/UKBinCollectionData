@@ -21,6 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
         url = f"https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn={uprn}"
 
         # Make Request
+        requests.packages.urllib3.disable_warnings()
         page = requests.get(url)
 
         # Make a BS4 object

@@ -53,6 +53,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        requests.packages.urllib3.disable_warnings()
         api_url = "https://www.southtyneside.gov.uk/apiserver/ajaxlibrary/"
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")

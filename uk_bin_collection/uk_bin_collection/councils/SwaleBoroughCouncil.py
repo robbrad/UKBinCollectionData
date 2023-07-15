@@ -4,6 +4,7 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 
 
@@ -25,6 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
         council_url = f"https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days?postcode={user_postcode.replace(' ', '+')}&addresses={user_uprn}&address-submit="
 
         # Parse URL and read if connection successful
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(council_url)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, features="html.parser")

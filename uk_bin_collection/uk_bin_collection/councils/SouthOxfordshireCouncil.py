@@ -41,6 +41,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "ebd": "0",
             # 'ebz':      '1_1668467255368',
         }
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(
             "https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb",
             params=params,

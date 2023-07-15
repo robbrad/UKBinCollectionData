@@ -41,6 +41,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "lng": "0.000000000001",
         }
 
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(
             "https://www.fenland.gov.uk/article/13114/", params=params, headers=headers
         )

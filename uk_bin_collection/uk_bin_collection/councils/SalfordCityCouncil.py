@@ -27,6 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Make a request to the API
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(api_url, params=params)
 
         # Make a BS4 object

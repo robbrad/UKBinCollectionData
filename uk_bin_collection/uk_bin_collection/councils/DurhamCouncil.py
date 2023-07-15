@@ -21,6 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
         url += uprn
+        requests.packages.urllib3.disable_warnings()
         page = requests.get(url)
 
         # Make a BS4 object

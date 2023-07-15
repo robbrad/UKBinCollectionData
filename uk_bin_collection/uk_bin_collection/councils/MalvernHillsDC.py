@@ -25,6 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # we can just provide uprn
 
         # Make a request to the API
+        requests.packages.urllib3.disable_warnings()
         response = requests.post(api_url, data=form_data)
 
         # Make a BS4 object

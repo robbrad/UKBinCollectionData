@@ -73,6 +73,7 @@ def get_jwt() -> str:
     options_headers = parse_header(options_headers_str)
     request_headers = parse_header(request_headers_str)
     try:
+        requests.packages.urllib3.disable_warnings()
         options = requests.options(auth_url, headers=options_headers)
         response = requests.post(auth_url, headers=request_headers, data=payload)
         if not options.ok or not response.ok:
@@ -135,6 +136,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # Copy the request headers for options and post headers (replacing post auth with token variable) and post
         # payload, then add here
         try:
+            requests.packages.urllib3.disable_warnings()
             options = requests.options(api_url, headers=options_header)
             response = requests.post(
                 api_url, headers=response_header, auth=BearerAuth(token), data=payload

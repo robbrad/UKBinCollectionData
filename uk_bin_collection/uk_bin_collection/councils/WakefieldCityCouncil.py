@@ -33,6 +33,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "uprn": user_uprn,
         }
 
+        requests.packages.urllib3.disable_warnings()
         s = requests.Session()  # gets cookies and keeps them
 
         wakefield_session = s.get("https://www.wakefield.gov.uk/", headers=headers)

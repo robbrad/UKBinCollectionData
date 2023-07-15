@@ -37,6 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         search_url = f"{self.base_url}/address/{postcode}"
 
+        requests.packages.urllib3.disable_warnings()
         s = requests.Session()
         response = s.get(search_url)
         response.raise_for_status()

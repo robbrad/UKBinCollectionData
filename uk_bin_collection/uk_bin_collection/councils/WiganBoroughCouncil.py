@@ -27,6 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
 
         # Start a new session to walk through the form
+        requests.packages.urllib3.disable_warnings()
         s = requests.session()
 
         # Get our initial session running

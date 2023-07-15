@@ -12,6 +12,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        requests.packages.urllib3.disable_warnings()
         # Get the house number and postcode from the commandline
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")

@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -43,6 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
             'uprn': user_uprn,
         }
 
+        requests.packages.urllib3.disable_warnings()
         response = requests.post('https://www.bolton.gov.uk/next-bin-collection', headers=headers, data=req_data)
 
         soup = BeautifulSoup(response.text, features="html.parser")

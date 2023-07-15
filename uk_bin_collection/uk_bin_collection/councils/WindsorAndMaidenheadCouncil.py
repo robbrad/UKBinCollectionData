@@ -23,6 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
 
+        requests.packages.urllib3.disable_warnings()
         s = requests.session()
         # Form start
         headers = {

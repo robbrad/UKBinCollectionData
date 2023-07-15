@@ -23,6 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode = kwargs.get("postcode")
 
         # Url is built from multiple parameters
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(f"{api_url}{api_key}{api_license}&Postcode={postcode}")
         json_response = json.loads(response.content)["dataReturned"]
         data = {"bins": []}
