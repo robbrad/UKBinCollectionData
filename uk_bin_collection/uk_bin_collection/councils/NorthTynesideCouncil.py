@@ -181,7 +181,7 @@ class CouncilClass(AbstractGetBinDataClass):
         for item in regular_collections:
             item_as_date = datetime.strptime(item, date_format)
             # Check if holiday (calendar only has one day that's a holiday, and it's moved to the next day)
-            if is_holiday(item_as_date, Region.ENGLAND):
+            if is_holiday(item_as_date, Region.England):
                 item_as_date += timedelta(days=1)
             # Use the isoweek number to separate collections - at the time of writing 11th Jan is week 2, which
             # is for the grey bin

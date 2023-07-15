@@ -23,10 +23,10 @@ days_of_week = {
 
 class Region(Enum):
     UK = 1
-    ENGLAND = 2
-    NORTHERN_IRELAND = 3
-    SCOTLAND = 4
-    WALES = 5
+    England = 2
+    Northern_Ireland = 3
+    Scotland = 4
+    Wales = 5
 
 
 def check_postcode(postcode: str):
@@ -125,7 +125,10 @@ def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
         :param region: The UK nation to check. Defaults to UK.
         :return: Bool - true if a holiday, false if not
     """
-    subdiv = region.name.upper()
+    if region.name != "UK":
+        subdiv = region.name.capitalize()
+    else:
+        subdiv = region.name
 
     uk_holidays = holidays.country_holidays("GB", subdiv=subdiv)
 

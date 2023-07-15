@@ -257,6 +257,7 @@
     "wiki_name": "North Somerset Council"
   },
   "NorthTynesideCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
     "postcode": "NE26 2TG",
     "uprn": "47097627",
     "url": "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
