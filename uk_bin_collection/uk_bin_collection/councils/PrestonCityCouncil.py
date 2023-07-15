@@ -12,6 +12,7 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 
 
@@ -60,7 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
         ).click()
 
         # Wait for the 'Select your property' dropdown to appear and select the first result
-        dropdown = WebDriverWait(driver,10).until(
+        dropdown = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "MainContent_ddlSearchResults"))
         )
         # Create a 'Select' for it, then select the first address in the list
@@ -80,7 +81,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "span",
             id="lblCollectionDates"
         )
-        
+
         collectionDivs = topLevelSpan.findChildren(recursive=False)
         for collectionDiv in collectionDivs:
             # Each date has two child divs - the date and the bin type
@@ -88,21 +89,14 @@ class CouncilClass(AbstractGetBinDataClass):
             # Index 1 - date string i.e. 'Monday 01/01/2023'
             # Index 3 - bin type i.e. 'General waste'
             typeAndDateDivs = collectionDiv.findChildren()
-            
+
             # Strip the day (i.e. Monday) out of the collection date string for parsing
             dateString = typeAndDateDivs[1].text.split(' ')[1]
-
-            # Bins are expected to be left out at 7AM, add that to date object for output
-            sevenAm = datetime.strptime("070000", "%H%M%S").time()
-            date_obj = datetime.strptime(dateString, "%d/%m/%Y")
-            combined_date = datetime.combine(date_obj, sevenAm).strftime(
-                "%d/%m/%Y %H:%M:%S"
-            )
 
             data["bins"].append(
                 {
                     "type": typeAndDateDivs[3].text,
-                    "collectionDate": combined_date
+                    "collectionDate": datetime.strptime(dateString, "%d/%m/%Y").strftime(date_format)
                 }
             )
 

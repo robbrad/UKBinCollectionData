@@ -20,15 +20,15 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
-        data = []
+        data = {"bins": []}
 
-        BinTypes = ["Domestic", "Recycle", "Organic"]
+        bin_types = ["Domestic", "Recycle", "Organic"]
 
         for i, date in enumerate(soup.find("ul", class_="d-print-none").find_all("li")):
-            data.append(
+            data["bins"].append(
                 {
-                    "BinType": BinTypes[i],
-                    "NextCollection": date.find("strong").get_text(strip=True),
+                    "type": bin_types[i],
+                    "collectionDate": date.find("strong").get_text(strip=True),
                 }
             )
             ++i

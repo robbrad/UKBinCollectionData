@@ -147,7 +147,7 @@ def get_weekday_dates_in_period(start: datetime, day_of_week: int, amount=8) -> 
         pd.date_range(
             start=start, freq=f"W-{calendar.day_abbr[day_of_week]}", periods=amount
         )
-        .strftime("%d/%m/%Y")
+        .strftime(date_format)
         .tolist()
     )
 
@@ -164,9 +164,17 @@ def get_dates_every_x_days(start: datetime, x: int, amount: int = 8) -> list:
     """
     return (
         pd.date_range(start=start, freq=f"{x}D", periods=amount)
-        .strftime("%d/%m/%Y")
+        .strftime(date_format)
         .tolist()
     )
+
+
+def get_next_occurrence_from_day_month(date: datetime) -> datetime:
+    day = datetime.now().date().strftime("%d")
+    month = datetime.now().date().strftime("%m")
+    if date.strftime("%m") < month or (date.strftime("%m") == month and date.strftime("%d") < day):
+        date = pd.to_datetime(date) + pd.DateOffset(years=1)
+    return date
 
 
 def remove_alpha_characters(input_string: str) -> str:

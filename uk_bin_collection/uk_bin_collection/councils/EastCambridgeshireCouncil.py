@@ -27,6 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
             date = datetime.strptime(date.text, "%a - %d %b %Y").date()
 
             data["bins"].append(
-                {"BinType": bin_type, "collectionDate": date.isoformat()}
+                {"type": bin_type, "collectionDate": date.strftime(date_format)}
             )
+
         return data

@@ -2,67 +2,75 @@
     "bins": [
         {
             "type": "Brown Bin",
-            "collectionDate": "02/12/2022"
+            "collectionDate": "01/09/2023"
         },
         {
             "type": "Black Bin",
-            "collectionDate": "02/12/2022"
+            "collectionDate": "01/09/2023"
         },
         {
             "type": "Green Bin",
-            "collectionDate": "06/01/2023"
+            "collectionDate": "01/09/2023"
         },
         {
             "type": "Brown Bin",
-            "collectionDate": "09/12/2022"
+            "collectionDate": "04/08/2023"
         },
         {
             "type": "Green Bin",
-            "collectionDate": "09/12/2022"
+            "collectionDate": "04/08/2023"
+        },
+        {
+            "type": "Brown Bin",
+            "collectionDate": "08/09/2023"
         },
         {
             "type": "Blue Bin",
-            "collectionDate": "09/12/2022"
+            "collectionDate": "08/09/2023"
         },
         {
             "type": "Brown Bin",
-            "collectionDate": "13/01/2023"
+            "collectionDate": "11/08/2023"
         },
         {
             "type": "Black Bin",
-            "collectionDate": "13/01/2023"
+            "collectionDate": "11/08/2023"
         },
         {
             "type": "Brown Bin",
-            "collectionDate": "16/12/2022"
-        },
-        {
-            "type": "Brown Bin",
-            "collectionDate": "20/01/2023"
+            "collectionDate": "18/08/2023"
         },
         {
             "type": "Green Bin",
-            "collectionDate": "20/01/2023"
+            "collectionDate": "18/08/2023"
         },
         {
             "type": "Blue Bin",
-            "collectionDate": "20/01/2023"
+            "collectionDate": "18/08/2023"
         },
         {
             "type": "Brown Bin",
-            "collectionDate": "23/12/2022"
+            "collectionDate": "21/07/2023"
         },
         {
             "type": "Black Bin",
-            "collectionDate": "23/12/2022"
+            "collectionDate": "21/07/2023"
         },
         {
             "type": "Green Bin",
-            "collectionDate": "23/12/2022"
+            "collectionDate": "21/07/2023"
+        },
+        {
+            "type": "Brown Bin",
+            "collectionDate": "25/08/2023"
+        },
+        {
+            "type": "Brown Bin",
+            "collectionDate": "28/07/2023"
         },
         {
             "type": "Blue Bin",
-            "collectionDate": "30/12/2022"
+            "collectionDate": "28/07/2023"
         }
     ]
 }

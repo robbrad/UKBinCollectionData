@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome2",
+    "$ref": "#/definitions/Welcome10",
     "definitions": {
-        "Welcome2": {
+        "Welcome10": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,26 +16,22 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome2"
+            "title": "Welcome10"
         },
         "Bin": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "BinType": {
+                "type": {
                     "type": "string"
                 },
                 "collectionDate": {
                     "type": "string"
-                },
-                "nextCollectionDate": {
-                    "type": "string"
                 }
             },
             "required": [
-                "BinType",
                 "collectionDate",
-                "nextCollectionDate"
+                "type"
             ],
             "title": "Bin"
         }

@@ -27,14 +27,10 @@
                 },
                 "collectionDate": {
                     "type": "string"
-                },
-                "nextCollectionDate": {
-                    "type": "string"
                 }
             },
             "required": [
                 "collectionDate",
-                "nextCollectionDate",
                 "type"
             ],
             "title": "Bin"

@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome9",
+    "$ref": "#/definitions/Welcome3",
     "definitions": {
-        "Welcome9": {
+        "Welcome3": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,7 +16,7 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome9"
+            "title": "Welcome3"
         },
         "Bin": {
             "type": "object",
@@ -38,9 +38,8 @@
         "Type": {
             "type": "string",
             "enum": [
-                "Black Bag",
                 "Separated recycling",
-                "Garden Waste"
+                "Black bag"
             ],
             "title": "Type"
         }

@@ -98,7 +98,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     "type": item["Type"],
                     "collectionDate": datetime.strptime(
                         item["DateString"], "%d %B %Y"
-                    ).strftime("%d/%m/%Y"),
+                    ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 

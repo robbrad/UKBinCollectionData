@@ -1,16 +1,12 @@
 {
     "bins": [
         {
-            "BinType": "Domestic Waste",
-            "NextCollectionDate": "05/05/2020"
+            "type": "Domestic Waste",
+            "collectionDate": "28/07/2023"
         },
         {
-            "BinType": "Recycling",
-            "NextCollectionDate": "28/04/2020"
-        },
-        {
-            "BinType": "Garden Waste",
-            "NextCollectionDate": "24/04/2020"
+            "type": "Recycling",
+            "collectionDate": "21/07/2023"
         }
     ]
 }

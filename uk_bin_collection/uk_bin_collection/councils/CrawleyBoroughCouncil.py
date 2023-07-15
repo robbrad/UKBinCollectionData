@@ -7,6 +7,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
 
@@ -91,9 +92,7 @@ class CouncilClass(AbstractGetBinDataClass):
         for tag in collection_tag:
             for item in tag.next_elements:
                 if str(item).startswith('<div class="date text-right text-grey">'):
-                    collection_date = datetime.strptime(item.text, "%A %d %B").strftime(
-                        "%d/%m"
-                    )
+                    collection_date = datetime.strptime(item.text, "%A %d %B").strftime(date_format)
                     dict_data = {
                         "type": titles[bin_index].strip(),
                         "collectionDate": collection_date,

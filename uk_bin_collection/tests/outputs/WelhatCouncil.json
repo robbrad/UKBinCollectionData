@@ -1,20 +1,20 @@
 {
     "bins": [
         {
-            "BinType": "Domestic Waste Collection Service",
-            "collectionDate": "Wednesday 22 March 2023"
+            "type": "Food Waste Collection Service",
+            "collectionDate": "19/07/2023"
         },
         {
-            "BinType": "Food Waste Collection Service",
-            "collectionDate": "Wednesday 22 March 2023"
+            "type": "Garden Waste Collection Service",
+            "collectionDate": "19/07/2023"
         },
         {
-            "BinType": "Garden Waste Collection Service",
-            "collectionDate": "Wednesday 29 March 2023"
+            "type": "Recycling Collection Service",
+            "collectionDate": "19/07/2023"
         },
         {
-            "BinType": "Recycling Collection Service",
-            "collectionDate": "Wednesday 29 March 2023"
+            "type": "Domestic Waste Collection Service",
+            "collectionDate": "26/07/2023"
         }
     ]
 }

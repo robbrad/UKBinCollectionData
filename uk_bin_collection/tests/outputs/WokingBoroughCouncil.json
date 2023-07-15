@@ -1,64 +1,60 @@
 {
     "bins": [
         {
-            "type": "Recycling",
-            "collectionDate": "17/05/2023"
+            "type": "Rubbish",
+            "collectionDate": "19/07/2023"
         },
         {
             "type": "Food waste",
-            "collectionDate": "17/05/2023"
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "Garden",
+            "collectionDate": "19/07/2023"
         },
         {
             "type": "Batteries/small electricals/textiles",
-            "collectionDate": "17/05/2023"
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "26/07/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "26/07/2023"
+        },
+        {
+            "type": "Batteries/small electricals/textiles",
+            "collectionDate": "26/07/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "24/05/2023"
+            "collectionDate": "02/08/2023"
         },
         {
             "type": "Food waste",
-            "collectionDate": "24/05/2023"
+            "collectionDate": "02/08/2023"
+        },
+        {
+            "type": "Garden",
+            "collectionDate": "02/08/2023"
         },
         {
             "type": "Batteries/small electricals/textiles",
-            "collectionDate": "24/05/2023"
+            "collectionDate": "02/08/2023"
         },
         {
             "type": "Recycling",
-            "collectionDate": "31/05/2023"
+            "collectionDate": "09/08/2023"
         },
         {
             "type": "Food waste",
-            "collectionDate": "31/05/2023"
+            "collectionDate": "09/08/2023"
         },
         {
             "type": "Batteries/small electricals/textiles",
-            "collectionDate": "31/05/2023"
-        },
-        {
-            "type": "Rubbish",
-            "collectionDate": "07/06/2023"
-        },
-        {
-            "type": "Food waste",
-            "collectionDate": "07/06/2023"
-        },
-        {
-            "type": "Batteries/small electricals/textiles",
-            "collectionDate": "07/06/2023"
-        },
-        {
-            "type": "Recycling",
-            "collectionDate": "14/06/2023"
-        },
-        {
-            "type": "Food waste",
-            "collectionDate": "14/06/2023"
-        },
-        {
-            "type": "Batteries/small electricals/textiles",
-            "collectionDate": "14/06/2023"
+            "collectionDate": "09/08/2023"
         }
     ]
 }

@@ -1,13 +1,39 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "type": "object",
-    "properties": {
-        "gardenwaste": { "type": "string", "format": "date" },
-        "recycling":   { "type": "string", "format": "date" },
-        "rubbish":     { "type": "string", "format": "date" }
-    },
-    "required": [
-        "recycling",
-        "rubbish"
-    ]
+    "$ref": "#/definitions/Welcome7",
+    "definitions": {
+        "Welcome7": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "Welcome7"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "collectionDate": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "collectionDate",
+                "type"
+            ],
+            "title": "Bin"
+        }
+    }
 }

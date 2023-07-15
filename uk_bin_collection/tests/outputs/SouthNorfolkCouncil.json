@@ -2,11 +2,11 @@
     "bins": [
         {
             "type": "RefuseBin",
-            "collectionDate": "23/02/2023"
+            "collectionDate": "27/07/2023"
         },
         {
             "type": "RecycleBin",
-            "collectionDate": "02/03/2023"
+            "collectionDate": "20/07/2023"
         }
     ]
 }

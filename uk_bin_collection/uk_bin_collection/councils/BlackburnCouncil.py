@@ -56,9 +56,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 # Work out the most recent collection date to display
                 if (
-                    datetime.today().date()
-                    <= current_collection_date.date()
-                    < next_collection_date.date()
+                        datetime.today().date()
+                        <= current_collection_date.date()
+                        < next_collection_date.date()
                 ):
                     collection_date = current_collection_date
                 else:
@@ -66,12 +66,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": collection_date.strftime("%d/%m/%Y"),
+                    "collectionDate": collection_date.strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 
                 data["bins"].sort(
-                    key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+                    key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
                 )
 
         return data

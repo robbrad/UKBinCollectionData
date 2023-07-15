@@ -1,12 +1,12 @@
 {
     "bins": [
         {
-            "type": "Food bin, green bin, textiles and garden waste bin",
-            "collectionDate": "Friday 18 November"
+            "type": "Grey bin, small electrical items and food bin",
+            "collectionDate": "21/07/2023"
         },
         {
-            "type": "Food bin, grey bin and small electrical items",
-            "collectionDate": "Friday 25 November"
+            "type": "Green bin, textiles, food bin and garden waste bin",
+            "collectionDate": "14/07/2024"
         }
     ]
 }

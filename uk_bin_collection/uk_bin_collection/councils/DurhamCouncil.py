@@ -27,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # Make a BS4 object
         soup = BeautifulSoup(page.text, features="html.parser")
 
-        data = {}
+        data = {"bins": []}
 
         for bin_type in ["rubbish", "recycling", "gardenwaste"]:
             bin_info = soup.find(class_=f"bins{bin_type}")
@@ -40,6 +40,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     if results:
                         date = datetime.strptime(results[0], "%d %B %Y")
                         if date:
-                            data[bin_type] = date.strftime("%Y-%m-%d")
+                            data["bins"].append({
+                                "type": bin_type,
+                                "collectionDate": date.strftime(date_format)
+                            })
 
         return data

@@ -1,20 +1,28 @@
 {
     "bins": [
         {
-            "type": "ResidualBin",
-            "collectionDate": "27/04/2023"
-        },
-        {
             "type": "RecycleBin",
-            "collectionDate": "04/05/2023"
+            "collectionDate": "15/07/2023"
         },
         {
             "type": "BrownBin",
-            "collectionDate": "04/05/2023"
+            "collectionDate": "15/07/2023"
         },
         {
             "type": "ResidualBin",
-            "collectionDate": "11/05/2023"
+            "collectionDate": "20/07/2023"
+        },
+        {
+            "type": "RecycleBin",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "BrownBin",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "ResidualBin",
+            "collectionDate": "03/08/2023"
         }
     ]
 }

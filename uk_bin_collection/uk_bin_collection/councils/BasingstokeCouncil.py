@@ -50,7 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         # Friday, 21 July 2023
                         date.get_text(strip=True),
                         '%A, %d %B %Y'
-                    ).strftime('%d/%m/%Y')
+                    ).strftime(date_format)
                 })
 
         return {

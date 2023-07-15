@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome5",
+    "$ref": "#/definitions/Welcome10",
     "definitions": {
-        "Welcome5": {
+        "Welcome10": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,33 +16,33 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome5"
+            "title": "Welcome10"
         },
         "Bin": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "binType": {
-                    "$ref": "#/definitions/BinType"
+                "type": {
+                    "$ref": "#/definitions/Type"
                 },
                 "collectionDate": {
                     "type": "string"
                 }
             },
             "required": [
-                "binType",
-                "collectionDate"
+                "collectionDate",
+                "type"
             ],
             "title": "Bin"
         },
-        "BinType": {
+        "Type": {
             "type": "string",
             "enum": [
-                "Domestic",
                 "Organic",
-                "Recycle"
+                "Recycle",
+                "Domestic"
             ],
-            "title": "BinType"
+            "title": "Type"
         }
     }
 }

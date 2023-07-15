@@ -1,0 +1,164 @@
+{
+    "bins": [
+        {
+            "type": "Paper",
+            "collectionDate": "17/07/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "24/07/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "28/07/2023"
+        },
+        {
+            "type": "Cans, Plastics and Glass",
+            "collectionDate": "31/07/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "07/08/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "11/08/2023"
+        },
+        {
+            "type": "Paper",
+            "collectionDate": "14/08/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "21/08/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "25/08/2023"
+        },
+        {
+            "type": "Cans, Plastics and Glass",
+            "collectionDate": "28/08/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "04/09/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "08/09/2023"
+        },
+        {
+            "type": "Paper",
+            "collectionDate": "11/09/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "18/09/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "22/09/2023"
+        },
+        {
+            "type": "Cans, Plastics and Glass",
+            "collectionDate": "25/09/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "02/10/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "06/10/2023"
+        },
+        {
+            "type": "Paper",
+            "collectionDate": "09/10/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "16/10/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "20/10/2023"
+        },
+        {
+            "type": "Cans, Plastics and Glass",
+            "collectionDate": "23/10/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "30/10/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "03/11/2023"
+        },
+        {
+            "type": "Paper",
+            "collectionDate": "06/11/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "13/11/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "17/11/2023"
+        },
+        {
+            "type": "Cans, Plastics and Glass",
+            "collectionDate": "20/11/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "27/11/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "01/12/2023"
+        },
+        {
+            "type": "Paper",
+            "collectionDate": "04/12/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "11/12/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "15/12/2023"
+        },
+        {
+            "type": "Cans, Plastics and Glass",
+            "collectionDate": "18/12/2023"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "25/12/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "29/12/2023"
+        },
+        {
+            "type": "Paper",
+            "collectionDate": "01/01/2024"
+        },
+        {
+            "type": "Household Waste",
+            "collectionDate": "08/01/2024"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "12/01/2024"
+        },
+        {
+            "type": "Cans, Plastics and Glass",
+            "collectionDate": "15/01/2024"
+        }
+    ]
+}

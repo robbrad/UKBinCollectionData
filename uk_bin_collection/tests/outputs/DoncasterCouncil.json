@@ -2,35 +2,35 @@
     "bins": [
         {
             "type": "Recycling",
-            "collectionDate": "10/11/2022"
+            "collectionDate": "20/07/2023"
         },
         {
             "type": "Green",
-            "collectionDate": "10/11/2022"
+            "collectionDate": "20/07/2023"
         },
         {
             "type": "Bulky",
-            "collectionDate": "15/11/2022"
+            "collectionDate": "25/07/2023"
         },
         {
             "type": "Re-Use",
-            "collectionDate": "15/11/2022"
+            "collectionDate": "25/07/2023"
         },
         {
             "type": "Black",
-            "collectionDate": "17/11/2022"
+            "collectionDate": "27/07/2023"
         },
         {
             "type": "Recycling",
-            "collectionDate": "24/11/2022"
+            "collectionDate": "03/08/2023"
         },
         {
             "type": "Green",
-            "collectionDate": "24/11/2022"
+            "collectionDate": "03/08/2023"
         },
         {
             "type": "Black",
-            "collectionDate": "01/12/2022"
+            "collectionDate": "10/08/2023"
         }
     ]
 }

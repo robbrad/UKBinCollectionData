@@ -2,47 +2,51 @@
     "bins": [
         {
             "type": "Green refuse",
-            "collectionDate": "11/11/2022"
+            "collectionDate": "21/07/2023"
         },
         {
             "type": "Brown garden recycling",
-            "collectionDate": "16/11/2022"
+            "collectionDate": "25/07/2023"
         },
         {
             "type": "Silver recycling",
-            "collectionDate": "18/11/2022"
+            "collectionDate": "28/07/2023"
         },
         {
             "type": "Green refuse",
-            "collectionDate": "25/11/2022"
+            "collectionDate": "04/08/2023"
         },
         {
             "type": "Brown garden recycling",
-            "collectionDate": "30/11/2022"
+            "collectionDate": "08/08/2023"
         },
         {
             "type": "Silver recycling",
-            "collectionDate": "02/12/2022"
+            "collectionDate": "11/08/2023"
         },
         {
             "type": "Green refuse",
-            "collectionDate": "09/12/2022"
+            "collectionDate": "18/08/2023"
         },
         {
             "type": "Brown garden recycling",
-            "collectionDate": "14/12/2022"
+            "collectionDate": "22/08/2023"
         },
         {
             "type": "Silver recycling",
-            "collectionDate": "16/12/2022"
+            "collectionDate": "25/08/2023"
         },
         {
             "type": "Green refuse",
-            "collectionDate": "23/12/2022"
+            "collectionDate": "01/09/2023"
+        },
+        {
+            "type": "Brown garden recycling",
+            "collectionDate": "05/09/2023"
         },
         {
             "type": "Silver recycling",
-            "collectionDate": "30/12/2022"
+            "collectionDate": "08/09/2023"
         }
     ]
 }

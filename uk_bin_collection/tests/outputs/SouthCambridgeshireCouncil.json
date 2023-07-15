@@ -1,28 +1,96 @@
 {
     "bins": [
         {
-            "binType": "Domestic",
-            "collectionDate": "06/04/2023"
+            "type": "Organic",
+            "collectionDate": "20/07/2023"
         },
         {
-            "binType": "Organic",
-            "collectionDate": "15/04/2023"
+            "type": "Recycle",
+            "collectionDate": "20/07/2023"
         },
         {
-            "binType": "Recycle",
-            "collectionDate": "15/04/2023"
+            "type": "Domestic",
+            "collectionDate": "27/07/2023"
         },
         {
-            "binType": "Domestic",
-            "collectionDate": "21/04/2023"
+            "type": "Organic",
+            "collectionDate": "03/08/2023"
         },
         {
-            "binType": "Organic",
-            "collectionDate": "27/04/2023"
+            "type": "Recycle",
+            "collectionDate": "03/08/2023"
         },
         {
-            "binType": "Recycle",
-            "collectionDate": "27/04/2023"
+            "type": "Domestic",
+            "collectionDate": "10/08/2023"
+        },
+        {
+            "type": "Organic",
+            "collectionDate": "17/08/2023"
+        },
+        {
+            "type": "Recycle",
+            "collectionDate": "17/08/2023"
+        },
+        {
+            "type": "Domestic",
+            "collectionDate": "24/08/2023"
+        },
+        {
+            "type": "Organic",
+            "collectionDate": "01/09/2023"
+        },
+        {
+            "type": "Recycle",
+            "collectionDate": "01/09/2023"
+        },
+        {
+            "type": "Domestic",
+            "collectionDate": "07/09/2023"
+        },
+        {
+            "type": "Organic",
+            "collectionDate": "14/09/2023"
+        },
+        {
+            "type": "Recycle",
+            "collectionDate": "14/09/2023"
+        },
+        {
+            "type": "Domestic",
+            "collectionDate": "21/09/2023"
+        },
+        {
+            "type": "Organic",
+            "collectionDate": "28/09/2023"
+        },
+        {
+            "type": "Recycle",
+            "collectionDate": "28/09/2023"
+        },
+        {
+            "type": "Domestic",
+            "collectionDate": "05/10/2023"
+        },
+        {
+            "type": "Organic",
+            "collectionDate": "12/10/2023"
+        },
+        {
+            "type": "Recycle",
+            "collectionDate": "12/10/2023"
+        },
+        {
+            "type": "Domestic",
+            "collectionDate": "19/10/2023"
+        },
+        {
+            "type": "Organic",
+            "collectionDate": "26/10/2023"
+        },
+        {
+            "type": "Recycle",
+            "collectionDate": "26/10/2023"
         }
     ]
 }

@@ -38,7 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 print(collectionDate[1].text.strip())
                 date = dateutil.parser.parse(collectionDate[1].text.strip())
                 dict_data = {
-                    "bin_type": bin_type,
+                    "type": bin_type,
                     "collectionDate": date.strftime(date_format),
                 }
                 # Add data to the main JSON Wrapper

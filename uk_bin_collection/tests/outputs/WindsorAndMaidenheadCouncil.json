@@ -2,15 +2,15 @@
     "bins": [
         {
             "type": "Recycling Collection Service",
-            "collectionDate": "23/08/2022"
-        },
-        {
-            "type": "Refuse Collection Service",
-            "collectionDate": "23/08/2022"
+            "collectionDate": "18/07/2023"
         },
         {
             "type": "Recycling Collection Service",
-            "collectionDate": "31/08/2022"
+            "collectionDate": "25/07/2023"
+        },
+        {
+            "type": "Refuse Collection Service",
+            "collectionDate": "25/07/2023"
         }
     ]
 }

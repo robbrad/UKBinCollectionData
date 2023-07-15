@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "type": "Green Bin (garden waste)",
+            "collectionDate": "28/07/2023"
+        },
+        {
+            "type": "Green Bin (garden waste)",
+            "collectionDate": "11/08/2023"
+        },
+        {
+            "type": "Green Bin (garden waste)",
+            "collectionDate": "25/08/2023"
+        }
+    ]
+}

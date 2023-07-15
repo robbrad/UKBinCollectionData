@@ -1,31 +1,39 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome5",
+    "$ref": "#/definitions/Welcome1",
     "definitions": {
-        "Welcome5": {
+        "Welcome1": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "Brown bin": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "Welcome1"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
                     "type": "string"
                 },
-                "Blue bin": {
-                    "type": "string"
-                },
-                "Green bin": {
-                    "type": "string"
-                },
-                "Black bin": {
+                "collectionDate": {
                     "type": "string"
                 }
             },
             "required": [
-                "Black bin",
-                "Blue bin",
-                "Brown bin",
-                "Green bin"
+                "collectionDate",
+                "type"
             ],
-            "title": "Welcome5"
+            "title": "Bin"
         }
     }
 }

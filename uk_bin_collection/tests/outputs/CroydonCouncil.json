@@ -1,20 +1,20 @@
 {
-  "bins": [
-    {
-      "type": "Glass, plastics, cans and cartons recycling",
-      "collectionDate": "16/02/2023"
-    },
-    {
-      "type": "General rubbish",
-      "collectionDate": "23/02/2023"
-    },
-    {
-      "type": "Paper and card recycling",
-      "collectionDate": "23/02/2023"
-    },
-    {
-      "type": "Food waste",
-      "collectionDate": "16/02/2023"
-    }
-  ]
+    "bins": [
+        {
+            "type": "Glass, plastics, cans and cartons recycling",
+            "collectionDate": "20/07/2023"
+        },
+        {
+            "type": "General rubbish",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "Paper and card recycling",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "20/07/2023"
+        }
+    ]
 }

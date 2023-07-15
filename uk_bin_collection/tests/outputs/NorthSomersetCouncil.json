@@ -1,24 +1,28 @@
 {
     "bins": [
         {
-            "BinType": "Rubbish",
-            "collectionDate": "Wednesday 15 February",
-            "nextCollectionDate": "Wednesday 1 March"
+            "type": "Rubbish",
+            "collectionDate": "19/07/2023"
         },
         {
-            "BinType": "Recycling",
-            "collectionDate": "Wednesday 15 February",
-            "nextCollectionDate": "Wednesday 22 February"
+            "type": "Recycling",
+            "collectionDate": "19/07/2023"
         },
         {
-            "BinType": "Garden waste",
-            "collectionDate": "Wednesday 15 February",
-            "nextCollectionDate": "Wednesday 1 March"
+            "type": "Food",
+            "collectionDate": "19/07/2023"
         },
         {
-            "BinType": "Food",
-            "collectionDate": "Wednesday 15 February",
-            "nextCollectionDate": "Wednesday 22 February"
+            "type": "Recycling",
+            "collectionDate": "26/07/2023"
+        },
+        {
+            "type": "Food",
+            "collectionDate": "26/07/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "02/08/2023"
         }
     ]
 }

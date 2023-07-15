@@ -1,0 +1,20 @@
+{
+    "bins": [
+        {
+            "type": "Domestic Mixed Dry Recycling Collection",
+            "collectionDate": "25/07/2023"
+        },
+        {
+            "type": "Domestic Refuse Collection",
+            "collectionDate": "18/07/2023"
+        },
+        {
+            "type": "Domestic Food Collection",
+            "collectionDate": "18/07/2023"
+        },
+        {
+            "type": "Domestic Paper/Card Collection",
+            "collectionDate": "25/07/2023"
+        }
+    ]
+}

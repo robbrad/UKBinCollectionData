@@ -1,24 +1,20 @@
 {
-  "bins": [
-    {
-      "type": "Refuse Collection",
-      "nextCollectionDate": "15/02/2023",
-      "lastCollectionDate": "01/02/2023"
-    },
-    {
-      "type": "Recycling",
-      "nextCollectionDate": "22/02/2023",
-      "lastCollectionDate": "08/02/2023"
-    },
-    {
-      "type": "Food",
-      "nextCollectionDate": "15/02/2023",
-      "lastCollectionDate": "08/02/2023"
-    },
-    {
-      "type": "Green",
-      "nextCollectionDate": "15/02/2023",
-      "lastCollectionDate": "01/02/2023"
-    }
-  ]
+    "bins": [
+        {
+            "type": "Refuse Collection",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "Food",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "Green",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "26/07/2023"
+        }
+    ]
 }

@@ -24,25 +24,19 @@ class CouncilClass(AbstractGetBinDataClass):
             for row in rows:
                 if row.find("dt").get_text().strip().lower() == "next collection":
                     collection_date = (
-                        row.find("dd")
-                        .get_text()
-                        .replace("th", "")
-                        .replace("st", "")
-                        .replace("nd", "")
-                        .replace("rd", "")
-                        .strip()
+                        remove_ordinal_indicator_from_date_string(row.find("dd").get_text()).strip()
                     )
                     dict_data = {
                         "type": c.get_text().strip().capitalize(),
-                        "collectionDate": datetime.strptime(
+                        "collectionDate": get_next_occurrence_from_day_month(datetime.strptime(
                             collection_date + " " + datetime.now().strftime("%Y"),
                             "%A, %d %B %Y",
-                        ).strftime(date_format),
+                        )).strftime(date_format),
                     }
                     data["bins"].append(dict_data)
 
         data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
 
         return data

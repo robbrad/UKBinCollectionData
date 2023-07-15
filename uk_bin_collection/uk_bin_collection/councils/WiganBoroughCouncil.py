@@ -77,10 +77,10 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
 
-        data = {}
+        data = {"bins": []}
 
-        # Get the dates and transform them into an ISO format for nicer consumption on the backend.
-        for bins in soup.findAll("div", {"class": "BinsRecycling"}):
+        # Get the dates.
+        for bins in soup.find_all("div", {"class": "BinsRecycling"}):
             bin_type = bins.find("h2").text
             binCollection = bins.find("div", {"class": "dateWrapper-next"}).get_text(
                 strip=True
@@ -89,6 +89,6 @@ class CouncilClass(AbstractGetBinDataClass):
                 re.sub(r"(\d)(st|nd|rd|th)", r"\1", binCollection), "%A%d%b%Y"
             )
             if binData:
-                data[bin_type] = binData.isoformat()
+                data[bin_type] = binData.strftime(date_format)
 
         return data

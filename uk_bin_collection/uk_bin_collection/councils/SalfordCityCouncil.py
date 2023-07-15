@@ -66,6 +66,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Convert the datetime objects to strings in the desired format
         for bin in data["bins"]:
-            bin["collectionTime"] = bin["collectionTime"].strftime("%A %d %B %Y")
+            bin["collectionTime"] = bin["collectionTime"].strftime(date_format)
 
         return data

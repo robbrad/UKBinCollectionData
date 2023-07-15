@@ -159,7 +159,7 @@ class CouncilClass(AbstractGetBinDataClass):
             collection_date = collection[1][1]
             collection_date = datetime.strptime(
                 collection_date, "%Y-%m-%dT%H:%M:%S"
-            ).strftime("%d/%m/%Y")
+            ).strftime(date_format)
 
             for bin in collection[3][1]:
                 bin_type = bin.get("type")

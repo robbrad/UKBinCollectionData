@@ -60,7 +60,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 date_format
             )
             for round in collection["roundTypes"]:
-                dict_data = {"binType": round.title(), "collectionDate": dt}
+                dict_data = {"type": round.title(), "collectionDate": dt}
                 data["bins"].append(dict_data)
 
         return data

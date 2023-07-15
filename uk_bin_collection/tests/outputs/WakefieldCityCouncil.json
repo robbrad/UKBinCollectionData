@@ -1,14 +1,12 @@
 {
     "bins": [
         {
-            "BinType": "Household waste",
-            "Last Collection Date": "10/4/2020",
-            "Next Collection Date": "24/4/2020"
+            "type": "Household waste",
+            "collectionDate": "10/4/2020"
         },
         {
-            "BinType": "Mixed recycling",
-            "Last Collection Date": "3/4/2020",
-            "Next Collection Date": "Today"
+            "type": "Mixed recycling",
+            "collectionDate": "3/4/2020"
         }
     ]
 }

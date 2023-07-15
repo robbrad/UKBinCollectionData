@@ -1,14 +1,16 @@
-[
-    {
-        "BinType": "Domestic",
-        "NextCollection": "Friday 24 December 2021"
-    },
-    {
-        "BinType": "Recycle",
-        "NextCollection": "Saturday 18 December 2021"
-    },
-    {
-        "BinType": "Organic",
-        "NextCollection": "Thursday 23 December 2021"
-    }
-]
+{
+    "bins": [
+        {
+            "type": "Domestic",
+            "collectionDate": "Monday 24 July 2023"
+        },
+        {
+            "type": "Recycle",
+            "collectionDate": "Monday 17 July 2023"
+        },
+        {
+            "type": "Organic",
+            "collectionDate": "Friday 21 July 2023"
+        }
+    ]
+}
