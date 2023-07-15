@@ -35,7 +35,6 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             # Make each Bin element in the JSON, but only if we have a date available
             if collectionDate:
-                print(collectionDate[1].text.strip())
                 date = dateutil.parser.parse(collectionDate[1].text.strip())
                 dict_data = {
                     "type": bin_type,

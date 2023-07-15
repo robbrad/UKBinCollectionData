@@ -21,33 +21,32 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
 
         # Get collection calendar
-        calendar_url = soup.find(
-            "a", text="view or download the collection calendar"
-        ).get("href")
-        requests.packages.urllib3.disable_warnings()
-        response = requests.get(calendar_url, headers=headers)
+        calendar_urls = soup.find_all("a", string=re.compile(r"view or download the collection calendar"))
+        if len(calendar_urls) > 0:
+            requests.packages.urllib3.disable_warnings()
+            response = requests.get(calendar_urls[0].get("href"), headers=headers)
 
-        # Make a BS4 object
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
+            # Make a BS4 object
+            soup = BeautifulSoup(response.text, features="html.parser")
+            soup.prettify()
 
-        # Loop the months
-        for month in soup.findAll("div", {"class": "usercontent"}):
-            if month.find("h2"):
-                year = datetime.strptime(
-                    month.find("h2").get_text(strip=True), "%B %Y"
-                ).strftime("%Y")
-                for row in month.findAll("li"):
-                    results = re.search(
-                        "([A-Za-z]+ \\d\\d? [A-Za-z]+): (.+)", row.get_text(strip=True)
-                    )
-                    if results:
-                        dict_data = {
-                            "type": results.groups()[1].capitalize(),
-                            "collectionDate": datetime.strptime(
-                                results.groups()[0] + " " + year, "%A %d %B %Y"
-                            ).strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
+            # Loop the months
+            for month in soup.find_all("div", {"class": "usercontent"}):
+                if month.find("h2"):
+                    year = datetime.strptime(
+                        month.find("h2").get_text(strip=True), "%B %Y"
+                    ).strftime("%Y")
+                    for row in month.find_all("li"):
+                        results = re.search(
+                            "([A-Za-z]+ \\d\\d? [A-Za-z]+): (.+)", row.get_text(strip=True)
+                        )
+                        if results:
+                            dict_data = {
+                                "type": results.groups()[1].capitalize(),
+                                "collectionDate": datetime.strptime(
+                                    results.groups()[0] + " " + year, "%A %d %B %Y"
+                                ).strftime(date_format),
+                            }
+                            data["bins"].append(dict_data)
 
         return data

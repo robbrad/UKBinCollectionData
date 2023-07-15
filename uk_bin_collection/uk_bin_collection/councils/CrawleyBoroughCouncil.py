@@ -86,7 +86,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         titles = [title.text for title in soup.select(".title")]
         collection_tag = soup.body.find_all(
-            "div", {"class": "col-md-6 col-sm-6 col-xs-6"}, text="Next collection"
+            "div", {"class": "col-md-6 col-sm-6 col-xs-6"}, string="Next collection"
         )
         bin_index = 0
         for tag in collection_tag:

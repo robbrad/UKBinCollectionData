@@ -45,9 +45,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Loop though DT and DD for DL containing bins
         dl = soup.find("dl", {"class": "dl-horizontal"})
-        for dt in dl.findAll("dt"):
+        for dt in dl.find_all("dt"):
             keys.append(dt.text.strip())
-        for dd in dl.findAll("dd"):
+        for dd in dl.find_all("dd"):
             values.append(dd.text.strip())
 
         # Create dict for bin name and string dates

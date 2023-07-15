@@ -30,24 +30,21 @@ class CouncilClass(AbstractGetBinDataClass):
             monthName = month.select('h3[class*="bin-collection__title"]')[
                 0
             ].text.strip()
-            print(monthName)
             for collectionDay in month.select('li[class*="bin-collection__item"]'):
                 bin_type = collectionDay.select('span[class*="bin-collection__type"]')[
                     0
                 ].text.strip()
-                print(bin_type)
                 binCollection = (
-                    collectionDay.select('span[class*="bin-collection__day"]')[
-                        0
-                    ].text.strip()
-                    + ", "
-                    + collectionDay.select('span[class*="bin-collection__number"]')[
-                        0
-                    ].text.strip()
-                    + " "
-                    + monthName
+                        collectionDay.select('span[class*="bin-collection__day"]')[
+                            0
+                        ].text.strip()
+                        + ", "
+                        + collectionDay.select('span[class*="bin-collection__number"]')[
+                            0
+                        ].text.strip()
+                        + " "
+                        + monthName
                 )
-                print(binCollection)
 
                 dict_data = {
                     "type": bin_type,

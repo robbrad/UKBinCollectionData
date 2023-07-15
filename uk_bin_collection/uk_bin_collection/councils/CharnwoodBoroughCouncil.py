@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        for bins in soup.findAll("ul", {"class": "refuse"}):
+        for bins in soup.find_all("ul", {"class": "refuse"}):
             binCollection = bins.find_all("li")
 
             if binCollection:

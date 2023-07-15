@@ -20,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # Form a JSON wrapper
         data = {"bins": []}
 
-        for bins in soup.findAll("div", {"class": "row collectionsrow"}):
+        for bins in soup.find_all("div", {"class": "row collectionsrow"}):
             # Find the collection dates
             _, bin_type, date = bins.find_all("div")
             bin_type = bin_type.text

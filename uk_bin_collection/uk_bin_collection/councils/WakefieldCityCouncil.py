@@ -37,7 +37,6 @@ class CouncilClass(AbstractGetBinDataClass):
         s = requests.Session()  # gets cookies and keeps them
 
         wakefield_session = s.get("https://www.wakefield.gov.uk/", headers=headers)
-        print(wakefield_session)
         # Make a GET for the data with correct params and cookies
         response = s.get(
             "https://www.wakefield.gov.uk/site/Where-I-Live-Results",
