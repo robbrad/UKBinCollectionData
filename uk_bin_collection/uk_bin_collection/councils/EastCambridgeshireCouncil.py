@@ -13,8 +13,20 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        uprn = kwargs.get("uprn")
+        # Check the UPRN is valid
+        check_uprn(uprn)
+
+        # Request URL
+        url = f"https://eastcambs-self.achieveservice.com/appshost/firmstep/self/apps/custompage/bincollections?language=en&uprn={uprn}"
+
+        # Make Request
+        requests.packages.urllib3.disable_warnings()
+        s = requests.session()
+        page = s.get(url)
+
         # Make a BS4 object
-        soup = BeautifulSoup(page, features="html.parser")
+        soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
         # Form a JSON wrapper

@@ -13,11 +13,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         requests.packages.urllib3.disable_warnings()
+        root_url = "https://asjwsw-wrpwokingmunicipal-live.whitespacews.com/"
         # Get the house number and postcode from the commandline
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
-        root_url = kwargs.get("url")
 
         # Start a new session for the form, and get the chosen URL from the commandline
         session = requests.Session()
@@ -80,8 +80,10 @@ class CouncilClass(AbstractGetBinDataClass):
         # essentially gets all items from each row, but ignores the whitespace that you get when splitting using \n.
         # This produces a big list of dates then bin types, so we split them up into a list of lists - each pair is
         # a date and the bin type.
-        items = [i for i in soup.find("u1", {"class": "displayinlineblock justifycontentleft alignitemscenter margin0 padding0"}).text.split("\n") if i != ""]
-        pairs = [items[i:i+2] for i in range(0, len(items), 2)]
+        items = [i for i in soup.find("u1", {
+            "class": "displayinlineblock justifycontentleft alignitemscenter margin0 padding0"}).text.split("\n") if
+                 i != ""]
+        pairs = [items[i:i + 2] for i in range(0, len(items), 2)]
 
         # Loop through the paired bin dates and types
         for pair in pairs:

@@ -58,7 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
         weekly_dates = get_weekday_dates_in_period(
             datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48
         )
-        schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/{bin_week}.aspx"
+        schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/Black-Bag-Collections/{bin_week}.aspx"
         response = requests.get(schedule_url, verify=False)
 
         # BS4 parses the calendar

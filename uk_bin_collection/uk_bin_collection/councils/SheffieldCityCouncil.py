@@ -14,7 +14,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
-        soup = BeautifulSoup(page, features="html.parser")
+        soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
         # Form a JSON wrapper

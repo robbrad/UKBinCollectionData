@@ -23,6 +23,8 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
 
+        data = {"bins": []}
+
         requests.packages.urllib3.disable_warnings()
         s = requests.session()
         # Form start
@@ -31,7 +33,6 @@ class CouncilClass(AbstractGetBinDataClass):
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "accept-language": "en-GB,en;q=0.8",
             "cache-control": "max-age=0",
-            # 'cookie': 'SSESSad62dc22c39cfc4acecc357ef7152617=1ffG4UZFeNVE0vKo7bRbPfVvXuuDLpdCnHrL00ZEl90',
             "referer": "https://my.rbwm.gov.uk/special/your-collection-dates?uprn=100080371082&subdate=2022-08-19&addr=11%20Douglas%20Lane%20Wraysbury%20Staines%20TW19%205NF",
             "sec-fetch-dest": "document",
             "sec-fetch-mode": "navigate",
@@ -41,9 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
         }
-        response = s.get(
-            "https://my.rbwm.gov.uk/special/find-your-collection-dates", headers=headers
-        )
+        s.get("https://my.rbwm.gov.uk/special/find-your-collection-dates", headers=headers)
 
         # Select address
         headers = {
@@ -61,7 +60,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
         }
-        data = {
+        request_data = {
             "atTxtStreet": user_postcode,
             "nodeid": "x",
             "formname": "x",
@@ -74,62 +73,61 @@ class CouncilClass(AbstractGetBinDataClass):
         response = s.post(
             "https://my.rbwm.gov.uk/special/address-selector-collection-dates",
             headers=headers,
-            data=data,
+            data=request_data
         )
 
         soup = BeautifulSoup(response.content, features="html.parser")
         soup.prettify()
 
         table = soup.find("table")
-        table_rows = table.find_all("tr")
-        for tr in table_rows:
-            td = tr.find_all("td")
-            # row = [i.text for i in td]
-            for item in td:
-                if user_paon in item.text and user_postcode in item.text:
-                    href_url = td[1].find("a").get("href")
-                    continue
+        if table:
+            table_rows = table.find_all("tr")
+            for tr in table_rows:
+                td = tr.find_all("td")
+                # row = [i.text for i in td]
+                for item in td:
+                    if user_paon in item.text and user_postcode in item.text:
+                        href_url = td[1].find("a").get("href")
+                        continue
 
-        # Getting to bin data
-        headers = {
-            "authority": "my.rbwm.gov.uk",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "accept-language": "en-GB,en;q=0.8",
-            "referer": "https://my.rbwm.gov.uk/special/address-selector-collection-dates",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "sec-gpc": "1",
-            "upgrade-insecure-requests": "1",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
-        }
-        params = {}
-        parsed_params = urlparse(href_url).query.split("&")
-        for item in parsed_params:
-            values = item.split("=")
-            params.update({values[0]: values[1]})
+            # Getting to bin data
+            headers = {
+                "authority": "my.rbwm.gov.uk",
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "accept-language": "en-GB,en;q=0.8",
+                "referer": "https://my.rbwm.gov.uk/special/address-selector-collection-dates",
+                "sec-fetch-dest": "document",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "sec-gpc": "1",
+                "upgrade-insecure-requests": "1",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+            }
+            params = {}
+            parsed_params = urlparse(href_url).query.split("&")
+            for item in parsed_params:
+                values = item.split("=")
+                params.update({values[0]: values[1]})
 
-        response = s.get(root_url + href_url, params=params, headers=headers)
-        response = s.get(
-            api_url + href_url.split("?")[1], params=params, headers=headers
-        )
+            s.get(root_url + href_url, params=params, headers=headers)
+            response = s.get(
+                api_url + href_url.split("?")[1], params=params, headers=headers
+            )
 
-        soup = BeautifulSoup(response.content, features="html.parser")
-        soup.prettify()
+            soup = BeautifulSoup(response.content, features="html.parser")
+            soup.prettify()
 
-        data = {"bins": []}
+            table_rows = soup.find_all("tr")
+            for tr in table_rows:
+                td = tr.find_all("td")
+                row = [i.text for i in td]
 
-        table_rows = soup.find_all("tr")
-        for tr in table_rows:
-            td = tr.find_all("td")
-            row = [i.text for i in td]
-
-            if len(row) > 0:
-                dict_data = {
-                    "type": row[0],
-                    "collectionDate": row[1],
-                }
-                data["bins"].append(dict_data)
+                if len(row) > 0:
+                    dict_data = {
+                        "type": row[0],
+                        "collectionDate": row[1],
+                    }
+                    data["bins"].append(dict_data)
 
         return data
