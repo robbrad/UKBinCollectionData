@@ -33,6 +33,7 @@ def setup_logging(logging_config, logger_name):
 
 LOGGER = setup_logging(LOGGING_CONFIG, None)
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 
 
@@ -53,20 +54,21 @@ class AbstractGetBinDataClass(ABC):
         this_postcode = kwargs.get("postcode", None)
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
+        this_usrn = kwargs.get("usrn", None)
         skip_get_url = kwargs.get("skip_get_url", None)
         dev_mode = kwargs.get("dev_mode", False)
         council_module_str = kwargs.get("council_module_str", None)
         if (
-            not skip_get_url or skip_get_url is False
+                not skip_get_url or skip_get_url is False
         ):  # we will not use the generic way to get data - needs a get data in the council class itself
             page = self.get_data(address_url)
             bin_data_dict = self.parse_data(
-                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn, url=this_url
+                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, url=this_url
             )
             json_output = self.output_json(bin_data_dict)
         else:
             bin_data_dict = self.parse_data(
-                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn
+                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn
             )
             json_output = self.output_json(bin_data_dict)
 

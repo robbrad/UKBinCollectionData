@@ -46,6 +46,19 @@ def test_get_data_check_uprn_exception(capfd):
     assert out.startswith("Exception encountered: ")
 
 
+def test_get_data_check_usrn():
+    usrn = "1"
+    result = check_usrn(usrn)
+    assert result is True
+
+
+def test_get_data_check_usrn_exception(capfd):
+    usrn = None
+    result = check_usrn(usrn)
+    out, err = capfd.readouterr()
+    assert out.startswith("Exception encountered: ")
+
+
 def test_get_date_with_ordinal():
     date_number = 1
     result = get_date_with_ordinal(date_number)

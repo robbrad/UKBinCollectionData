@@ -1,50 +1,7 @@
-#!/usr/bin/env python3
-
-import json
-import os
-from datetime import datetime
-
-import requests
 from bs4 import BeautifulSoup
-from dotenv import load_dotenv
-from uk_bin_collection.uk_bin_collection.common import date_format
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
-
-
-def get_usrn(uprn: str) -> str:
-    """
-    Gets a USRN (street reference) using the Ordinance Survey's Linked Identifiers API. Requires an API key available
-    from OS Data Hub (free). Can either remove lines 5 and 21 and include your own, or place it in a .env file.
-        :param uprn: The property's UPRN reference
-        :return: USRN as string
-    """
-    load_dotenv()
-    api_key = os.getenv(
-        "OS_API_KEY"
-    )  # put yours here (and remove `from dotenv import load_dotenv` on line 5)
-    api_url = (
-        f"https://api.os.uk/search/links/v1/featureTypes/BLPU/{uprn}?key={api_key}"
-    )
-    requests.packages.urllib3.disable_warnings()
-    json_response = json.loads(requests.get(api_url).content)
-    street_data = [
-        item.get("correlatedIdentifiers")
-        if item.get("correlatedFeatureType") == "Street"
-        else None
-        for item in json_response["correlations"]
-    ]
-    try:
-        street_usrn = [
-            line.get("identifier")
-            for item in street_data
-            if item is not None
-            for line in item
-        ][0]
-    except Exception as ex:
-        raise ValueError("USRN not found! Please check API key or UPRN.")
-        exit(1)
-    return street_usrn
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -58,17 +15,10 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
         uprn = kwargs.get("uprn")
-        try:
-            if uprn is None or uprn == "":
-                raise ValueError("Invalid UPRN")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided UPRN. If this error continues, please first trying setting the "
-                "UPRN manually on line 115 before raising an issue."
-            )
+        usrn = kwargs.get("usrn")
+        check_uprn(uprn)
+        check_usrn(usrn)
 
-        usrn = get_usrn(uprn)
         day = datetime.now().date().strftime("%d")
         month = datetime.now().date().strftime("%m")
         year = datetime.now().date().strftime("%Y")

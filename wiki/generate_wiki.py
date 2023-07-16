@@ -43,6 +43,9 @@ def main():
                 if "house_number" in council_details:
                     command += " -n XX"
                     additional_parameters += "- `-n` - house number\n"
+                if "usrn" in council_details:
+                    command += " -usrn XXXXXXXX"
+                    additional_parameters += "- `-us` - USRN\n"
 
                 # add to entries
                 entries += "\n---\n\n"
