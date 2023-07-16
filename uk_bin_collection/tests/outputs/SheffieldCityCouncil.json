@@ -1,40 +1,40 @@
 {
     "bins": [
         {
-            "BinType": "Black Bin",
-            "collectionDate": "14 Apr 2021"
+            "type": "Black Bin",
+            "collectionDate": "24/07/2023"
         },
         {
-            "BinType": "Black Bin",
-            "collectionDate": " 21 Apr 2021"
+            "type": "Black Bin",
+            "collectionDate": "07/08/2023"
         },
         {
-            "BinType": "Black Bin",
-            "collectionDate": " 28 Apr 2021"
+            "type": "Black Bin",
+            "collectionDate": "21/08/2023"
         },
         {
-            "BinType": "Green Bin",
-            "collectionDate": "21 Apr 2021"
+            "type": "Blue Bin",
+            "collectionDate": "17/07/2023"
         },
         {
-            "BinType": "Green Bin",
-            "collectionDate": " 5 May 2021"
+            "type": "Blue Bin",
+            "collectionDate": "14/08/2023"
         },
         {
-            "BinType": "Green Bin",
-            "collectionDate": " 19 May 2021"
+            "type": "Blue Bin",
+            "collectionDate": "11/09/2023"
         },
         {
-            "BinType": "Blue Bin",
-            "collectionDate": "14 Apr 2021"
+            "type": "Brown Bin",
+            "collectionDate": "31/07/2023"
         },
         {
-            "BinType": "Blue Bin",
-            "collectionDate": " 28 Apr 2021"
+            "type": "Brown Bin",
+            "collectionDate": "28/08/2023"
         },
         {
-            "BinType": "Blue Bin",
-            "collectionDate": " 12 May 2021"
+            "type": "Brown Bin",
+            "collectionDate": "25/09/2023"
         }
     ]
 }

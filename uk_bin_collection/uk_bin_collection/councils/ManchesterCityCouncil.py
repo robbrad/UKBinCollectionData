@@ -20,6 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
 
         # Start a new session to walk through the form
+        requests.packages.urllib3.disable_warnings()
         s = requests.session()
 
         # There's a cookie that makes the whole thing valid when you search for a postcode,
@@ -28,7 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode_request_header = {
             "authority": "www.manchester.gov.uk",
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
-            "image/webp,image/apng,*/*;q=0.8",
+                      "image/webp,image/apng,*/*;q=0.8",
             "accept-language": "en-GB,en;q=0.6",
             "cache-control": "max-age=0",
             # Requests sorts cookies= alphabetically
@@ -41,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "sec-gpc": "1",
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+                          "like Gecko) Chrome/104.0.5112.102 Safari/537.36",
         }
         postcode_request_data = {
             "mcc_bin_dates_search_term": "M2 5DB",

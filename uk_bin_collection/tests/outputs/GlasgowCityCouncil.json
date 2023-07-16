@@ -1,184 +1,44 @@
 {
     "bins": [
         {
-            "type": "Organic waste",
-            "collectionDate": "24/01/2023"
+            "type": "Food waste",
+            "collectionDate": "16/07/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "31/01/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "31/01/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "07/02/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "14/02/2023"
+            "collectionDate": "20/07/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "21/02/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "21/02/2023"
+            "collectionDate": "28/07/2023"
         },
         {
             "type": "Mixed recycling",
-            "collectionDate": "28/02/2023"
+            "collectionDate": "29/07/2023"
         },
         {
-            "type": "Glass",
-            "collectionDate": "02/03/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "07/03/2023"
-        },
-        {
-            "type": "General waste",
-            "collectionDate": "14/03/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "14/03/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "21/03/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "28/03/2023"
-        },
-        {
-            "type": "General waste",
-            "collectionDate": "04/04/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "04/04/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "11/04/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "18/04/2023"
-        },
-        {
-            "type": "General waste",
-            "collectionDate": "25/04/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "25/04/2023"
-        },
-        {
-            "type": "Glass",
-            "collectionDate": "27/04/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "02/05/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "09/05/2023"
-        },
-        {
-            "type": "General waste",
-            "collectionDate": "16/05/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "16/05/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "23/05/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "30/05/2023"
-        },
-        {
-            "type": "General waste",
-            "collectionDate": "06/06/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "06/06/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "13/06/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "20/06/2023"
-        },
-        {
-            "type": "Glass",
-            "collectionDate": "22/06/2023"
-        },
-        {
-            "type": "General waste",
-            "collectionDate": "27/06/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "27/06/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "04/07/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "11/07/2023"
-        },
-        {
-            "type": "General waste",
-            "collectionDate": "18/07/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "18/07/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "25/07/2023"
-        },
-        {
-            "type": "Mixed recycling",
+            "type": "Food waste",
             "collectionDate": "01/08/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "08/08/2023"
+            "collectionDate": "05/08/2023"
         },
         {
-            "type": "Organic waste",
-            "collectionDate": "08/08/2023"
+            "type": "General waste",
+            "collectionDate": "13/08/2023"
         },
         {
             "type": "Mixed recycling",
-            "collectionDate": "15/08/2023"
+            "collectionDate": "14/08/2023"
         },
         {
-            "type": "Glass",
+            "type": "Food waste",
             "collectionDate": "17/08/2023"
         },
         {
-            "type": "Organic waste",
-            "collectionDate": "22/08/2023"
+            "type": "General waste",
+            "collectionDate": "21/08/2023"
         },
         {
             "type": "General waste",
@@ -186,103 +46,127 @@
         },
         {
             "type": "Mixed recycling",
-            "collectionDate": "29/08/2023"
+            "collectionDate": "30/08/2023"
         },
         {
-            "type": "Organic waste",
-            "collectionDate": "05/09/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "12/09/2023"
+            "type": "Food waste",
+            "collectionDate": "02/09/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "19/09/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "19/09/2023"
-        },
-        {
-            "type": "Mixed recycling",
-            "collectionDate": "26/09/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "03/10/2023"
+            "collectionDate": "06/09/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "10/10/2023"
+            "collectionDate": "14/09/2023"
         },
         {
             "type": "Mixed recycling",
-            "collectionDate": "10/10/2023"
+            "collectionDate": "15/09/2023"
         },
         {
-            "type": "Glass",
-            "collectionDate": "12/10/2023"
+            "type": "Food waste",
+            "collectionDate": "18/09/2023"
         },
         {
-            "type": "Organic waste",
+            "type": "General waste",
+            "collectionDate": "22/09/2023"
+        },
+        {
+            "type": "General waste",
+            "collectionDate": "30/09/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "01/10/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "04/10/2023"
+        },
+        {
+            "type": "General waste",
+            "collectionDate": "08/10/2023"
+        },
+        {
+            "type": "General waste",
+            "collectionDate": "16/10/2023"
+        },
+        {
+            "type": "Mixed recycling",
             "collectionDate": "17/10/2023"
         },
         {
-            "type": "Mixed recycling",
+            "type": "Food waste",
+            "collectionDate": "20/10/2023"
+        },
+        {
+            "type": "General waste",
             "collectionDate": "24/10/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "31/10/2023"
-        },
-        {
-            "type": "Organic waste",
-            "collectionDate": "31/10/2023"
+            "collectionDate": "01/11/2023"
         },
         {
             "type": "Mixed recycling",
-            "collectionDate": "07/11/2023"
+            "collectionDate": "02/11/2023"
         },
         {
-            "type": "Organic waste",
-            "collectionDate": "14/11/2023"
+            "type": "Food waste",
+            "collectionDate": "05/11/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "21/11/2023"
+            "collectionDate": "09/11/2023"
+        },
+        {
+            "type": "General waste",
+            "collectionDate": "17/11/2023"
         },
         {
             "type": "Mixed recycling",
+            "collectionDate": "18/11/2023"
+        },
+        {
+            "type": "Food waste",
             "collectionDate": "21/11/2023"
         },
         {
-            "type": "Organic waste",
-            "collectionDate": "28/11/2023"
+            "type": "General waste",
+            "collectionDate": "25/11/2023"
+        },
+        {
+            "type": "General waste",
+            "collectionDate": "03/12/2023"
         },
         {
             "type": "Mixed recycling",
-            "collectionDate": "05/12/2023"
+            "collectionDate": "04/12/2023"
         },
         {
-            "type": "Glass",
+            "type": "Food waste",
             "collectionDate": "07/12/2023"
         },
         {
             "type": "General waste",
-            "collectionDate": "12/12/2023"
+            "collectionDate": "11/12/2023"
         },
         {
-            "type": "Organic waste",
-            "collectionDate": "12/12/2023"
-        },
-        {
-            "type": "Mixed recycling",
+            "type": "General waste",
             "collectionDate": "19/12/2023"
         },
         {
-            "type": "Organic waste",
-            "collectionDate": "26/12/2023"
+            "type": "Mixed recycling",
+            "collectionDate": "20/12/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "23/12/2023"
+        },
+        {
+            "type": "General waste",
+            "collectionDate": "27/12/2023"
         }
     ]
 }

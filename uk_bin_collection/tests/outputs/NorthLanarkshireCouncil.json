@@ -1,0 +1,36 @@
+{
+    "bins": [
+        {
+            "type": "Blue-lidded Recycling Bin",
+            "collectionDate": "20/07/2023"
+        },
+        {
+            "type": "General Waste",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "Food and Garden",
+            "collectionDate": "27/07/2023"
+        },
+        {
+            "type": "Glass, Metals, Plastics and Cartons",
+            "collectionDate": "03/08/2023"
+        },
+        {
+            "type": "Blue-lidded Recycling Bin",
+            "collectionDate": "10/08/2023"
+        },
+        {
+            "type": "Food and Garden",
+            "collectionDate": "10/08/2023"
+        },
+        {
+            "type": "General Waste",
+            "collectionDate": "17/08/2023"
+        },
+        {
+            "type": "Glass, Metals, Plastics and Cartons",
+            "collectionDate": "24/08/2023"
+        }
+    ]
+}

@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome6",
+    "$ref": "#/definitions/Welcome1",
     "definitions": {
-        "Welcome6": {
+        "Welcome1": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,7 +16,7 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome6"
+            "title": "Welcome1"
         },
         "Bin": {
             "type": "object",
@@ -38,8 +38,9 @@
         "Type": {
             "type": "string",
             "enum": [
-                "Household Waste",
                 "Paper",
+                "Household Waste",
+                "Garden Waste",
                 "Cans, Plastics and Glass"
             ],
             "title": "Type"

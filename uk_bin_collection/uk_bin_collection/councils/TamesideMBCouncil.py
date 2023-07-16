@@ -24,6 +24,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         headers = {"content-type": "text/plain"}
 
+        requests.packages.urllib3.disable_warnings()
         response = requests.post(api_url, json=params, headers=headers)
 
         json_response = json.loads(response.content)["GetBinCollectionResult"]["Data"]

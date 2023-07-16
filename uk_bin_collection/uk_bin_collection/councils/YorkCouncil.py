@@ -22,6 +22,7 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(f"{api_url}{uprn}")
         json_response = json.loads(response.content)["services"]
         data = {"bins": []}

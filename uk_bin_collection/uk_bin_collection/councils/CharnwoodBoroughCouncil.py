@@ -19,16 +19,18 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        for bins in soup.findAll("ul", {"class": "refuse"}):
+        for bins in soup.find_all("ul", {"class": "refuse"}):
             binCollection = bins.find_all("li")
 
             if binCollection:
                 for bin in binCollection:
                     dict_data = {
-                        "CollectionDate": bin.find(
-                            "strong", {"class": "date"}
-                        ).contents[0],
-                        "BinType": bin.find("a").contents[0],
+                        "type": bin.find("a").contents[0],
+                        "collectionDate": datetime.strptime(
+                            remove_ordinal_indicator_from_date_string(bin.find("strong", {"class": "date"}).contents[0])
+                            .strip(),
+                            "%a %d %b"
+                        ).strftime(date_format)
                     }
 
                     data["bins"].append(dict_data)

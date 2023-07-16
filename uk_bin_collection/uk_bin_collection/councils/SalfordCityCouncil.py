@@ -27,6 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Make a request to the API
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(api_url, params=params)
 
         # Make a BS4 object
@@ -65,6 +66,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Convert the datetime objects to strings in the desired format
         for bin in data["bins"]:
-            bin["collectionTime"] = bin["collectionTime"].strftime("%A %d %B %Y")
+            bin["collectionTime"] = bin["collectionTime"].strftime(date_format)
 
         return data

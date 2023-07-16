@@ -59,8 +59,8 @@ class CouncilClass(AbstractGetBinDataClass):
         # ("Finding property reference...")
         for row in addr.itertuples():
             if (
-                str(row.Postcode).replace(" ", "").lower()
-                == user_postcode.replace(" ", "").lower()
+                    str(row.Postcode).replace(" ", "").lower()
+                    == user_postcode.replace(" ", "").lower()
             ):
                 if row.PropertyNo == user_paon:
                     prop_id = row.PropertyId
@@ -74,20 +74,14 @@ class CouncilClass(AbstractGetBinDataClass):
         #      f"{result_row.Postcode}...")
         for row in coll.itertuples():
             if row.PropertyId == prop_id:
-                time = datetime.strptime("070000", "%H%M%S").time()
-                date_obj = datetime.strptime(row.CollectionDate, "%d/%m/%y")
-                combined_date = datetime.combine(date_obj, time).strftime(
-                    "%d/%m/%Y %H:%M:%S"
-                )
-
-                job_list.append([row.BinType, combined_date])
+                job_list.append([row.BinType, datetime.strptime(row.CollectionDate, "%d/%m/%y").strftime(date_format)])
 
         # If jobs exist, sort list by date order. Load list into dictionary to return
         # print("Processing collections...")
         if len(job_list) > 0:
-            job_list.sort(key=lambda x: datetime.strptime(x[1], "%d/%m/%Y %H:%M:%S"))
+            job_list.sort(key=lambda x: datetime.strptime(x[1], date_format))
             for i in range(len(job_list)):
-                job_date = datetime.strptime(job_list[i][1], "%d/%m/%Y %H:%M:%S")
+                job_date = datetime.strptime(job_list[i][1], date_format)
                 if datetime.now() < job_date:
                     dict_data = {
                         "type": job_list[i][0],

@@ -14,7 +14,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
-        soup = BeautifulSoup(page, features="html.parser")
+        soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
         # Form a JSON wrapper
@@ -34,8 +34,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     "td", {"class": lambda L: L and L.startswith("next-service")}
                 )[0].get_text(strip=True)
                 collectionDate = collectionDatesRawData[
-                    16: len(collectionDatesRawData)
-                ].split(",")
+                                 16: len(collectionDatesRawData)
+                                 ].split(",")
                 bin_type = row.find_all(
                     "td", {"class": lambda L: L and L.startswith("service-name")}
                 )[0].h4.get_text(strip=True)
@@ -43,8 +43,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 for collectDate in collectionDate:
                     # Make each Bin element in the JSON
                     dict_data = {
-                        "bin_type": bin_type,
-                        "collectionDate": collectDate,
+                        "type": bin_type,
+                        "collectionDate": datetime.strptime(collectDate.strip(), "%d %b %Y").strftime(date_format),
                     }
 
                     # Add data to the main JSON Wrapper

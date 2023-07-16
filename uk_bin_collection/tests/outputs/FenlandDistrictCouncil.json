@@ -1,36 +1,52 @@
 {
     "bins": [
         {
-            "type": "Recycling bin (blue)",
-            "collectionDate": "10/11/2022"
-        },
-        {
-            "type": "Household waste bin (green)",
-            "collectionDate": "17/11/2022"
+            "type": "Garden waste bin (brown)",
+            "collectionDate": "17/07/2023"
         },
         {
             "type": "Recycling bin (blue)",
-            "collectionDate": "24/11/2022"
+            "collectionDate": "17/07/2023"
         },
         {
             "type": "Household waste bin (green)",
-            "collectionDate": "01/12/2022"
+            "collectionDate": "24/07/2023"
+        },
+        {
+            "type": "Garden waste bin (brown)",
+            "collectionDate": "31/07/2023"
         },
         {
             "type": "Recycling bin (blue)",
-            "collectionDate": "08/12/2022"
+            "collectionDate": "31/07/2023"
         },
         {
             "type": "Household waste bin (green)",
-            "collectionDate": "15/12/2022"
+            "collectionDate": "07/08/2023"
+        },
+        {
+            "type": "Garden waste bin (brown)",
+            "collectionDate": "14/08/2023"
         },
         {
             "type": "Recycling bin (blue)",
-            "collectionDate": "22/12/2022"
+            "collectionDate": "14/08/2023"
         },
         {
             "type": "Household waste bin (green)",
-            "collectionDate": "31/12/2022"
+            "collectionDate": "21/08/2023"
+        },
+        {
+            "type": "Garden waste bin (brown)",
+            "collectionDate": "29/08/2023"
+        },
+        {
+            "type": "Recycling bin (blue)",
+            "collectionDate": "29/08/2023"
+        },
+        {
+            "type": "Household waste bin (green)",
+            "collectionDate": "04/09/2023"
         }
     ]
 }

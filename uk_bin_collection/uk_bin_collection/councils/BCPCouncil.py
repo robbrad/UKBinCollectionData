@@ -21,6 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         api_url = f"https://online.bcpcouncil.gov.uk/bcp-apis/?api=BinDayLookup&uprn={user_uprn}"
 
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(api_url)
         json_data = json.loads(response.text)
         data = {"bins": []}

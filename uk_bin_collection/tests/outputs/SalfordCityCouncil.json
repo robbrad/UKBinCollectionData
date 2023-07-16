@@ -1,100 +1,100 @@
 {
     "bins": [
         {
-            "type": "Food and garden waste",
-            "collectionTime": "Wednesday 01 March 2023"
-        },
-        {
-            "type": "Brown recycling (bottles and cans)",
-            "collectionTime": "Wednesday 01 March 2023"
-        },
-        {
-            "type": "Blue recycling (paper and card)",
-            "collectionTime": "Wednesday 08 March 2023"
+            "type": "Domestic waste",
+            "collectionTime": "19/07/2023"
         },
         {
             "type": "Food and garden waste",
-            "collectionTime": "Wednesday 08 March 2023"
+            "collectionTime": "19/07/2023"
         },
         {
-            "type": "Domestic waste",
-            "collectionTime": "Wednesday 15 March 2023"
+            "type": "Brown recycling (bottles and cans)",
+            "collectionTime": "19/07/2023"
+        },
+        {
+            "type": "Blue recycling (paper and card)",
+            "collectionTime": "26/07/2023"
         },
         {
             "type": "Food and garden waste",
-            "collectionTime": "Wednesday 15 March 2023"
-        },
-        {
-            "type": "Brown recycling (bottles and cans)",
-            "collectionTime": "Wednesday 15 March 2023"
-        },
-        {
-            "type": "Blue recycling (paper and card)",
-            "collectionTime": "Wednesday 22 March 2023"
+            "collectionTime": "26/07/2023"
         },
         {
             "type": "Food and garden waste",
-            "collectionTime": "Wednesday 22 March 2023"
+            "collectionTime": "02/08/2023"
+        },
+        {
+            "type": "Brown recycling (bottles and cans)",
+            "collectionTime": "02/08/2023"
+        },
+        {
+            "type": "Domestic waste",
+            "collectionTime": "09/08/2023"
+        },
+        {
+            "type": "Blue recycling (paper and card)",
+            "collectionTime": "09/08/2023"
         },
         {
             "type": "Food and garden waste",
-            "collectionTime": "Wednesday 29 March 2023"
-        },
-        {
-            "type": "Brown recycling (bottles and cans)",
-            "collectionTime": "Wednesday 29 March 2023"
-        },
-        {
-            "type": "Domestic waste",
-            "collectionTime": "Wednesday 05 April 2023"
-        },
-        {
-            "type": "Blue recycling (paper and card)",
-            "collectionTime": "Wednesday 05 April 2023"
+            "collectionTime": "09/08/2023"
         },
         {
             "type": "Food and garden waste",
-            "collectionTime": "Wednesday 05 April 2023"
+            "collectionTime": "16/08/2023"
         },
         {
             "type": "Brown recycling (bottles and cans)",
-            "collectionTime": "Wednesday 12 April 2023"
+            "collectionTime": "16/08/2023"
         },
         {
             "type": "Blue recycling (paper and card)",
-            "collectionTime": "Wednesday 19 April 2023"
+            "collectionTime": "23/08/2023"
+        },
+        {
+            "type": "Food and garden waste",
+            "collectionTime": "23/08/2023"
         },
         {
             "type": "Domestic waste",
-            "collectionTime": "Wednesday 26 April 2023"
+            "collectionTime": "30/08/2023"
         },
         {
             "type": "Brown recycling (bottles and cans)",
-            "collectionTime": "Wednesday 26 April 2023"
+            "collectionTime": "30/08/2023"
         },
         {
             "type": "Blue recycling (paper and card)",
-            "collectionTime": "Wednesday 03 May 2023"
+            "collectionTime": "06/09/2023"
         },
         {
             "type": "Brown recycling (bottles and cans)",
-            "collectionTime": "Wednesday 10 May 2023"
+            "collectionTime": "13/09/2023"
         },
         {
             "type": "Domestic waste",
-            "collectionTime": "Wednesday 17 May 2023"
+            "collectionTime": "20/09/2023"
         },
         {
             "type": "Blue recycling (paper and card)",
-            "collectionTime": "Wednesday 17 May 2023"
+            "collectionTime": "20/09/2023"
+        },
+        {
+            "type": "Brown recycling (bottles and cans)",
+            "collectionTime": "27/09/2023"
+        },
+        {
+            "type": "Blue recycling (paper and card)",
+            "collectionTime": "04/10/2023"
         },
         {
             "type": "Domestic waste",
-            "collectionTime": "Wednesday 07 June 2023"
+            "collectionTime": "11/10/2023"
         },
         {
             "type": "Domestic waste",
-            "collectionTime": "Wednesday 28 June 2023"
+            "collectionTime": "01/11/2023"
         }
     ]
 }

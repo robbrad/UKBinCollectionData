@@ -76,9 +76,9 @@ class CouncilClass(AbstractGetBinDataClass):
             headers=headers,
         )
         if (
-            response.status_code != 200
-            or hashlib.sha256(response.text.encode("utf-8")).hexdigest()
-            != "2f357c24b043c31c0157c234323c401238842c1d00f00f16c7ca3e569a0ab3cd"
+                response.status_code != 200
+                or hashlib.sha256(response.text.encode("utf-8")).hexdigest()
+                != "2f357c24b043c31c0157c234323c401238842c1d00f00f16c7ca3e569a0ab3cd"
         ):
             raise ValueError(
                 "Council website has changed, parser needs updating. Please open issue on GitHub."
@@ -109,7 +109,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     bin_type = "Recycling"
                 collection_data = {
                     "type": bin_type,
-                    "nextCollectionDate": st(ct(day), o + r, n["days"]).replace(
+                    "collectionDate": st(ct(day), o + r, n["days"]).replace(
                         ",", ""
                     ),
                 }

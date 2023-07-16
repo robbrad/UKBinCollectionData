@@ -1,28 +1,28 @@
 {
     "bins": [
         {
-            "type": "Recycling",
-            "collectionDate": "16/11/2022"
-        },
-        {
             "type": "Garden Waste",
-            "collectionDate": "22/11/2022"
+            "collectionDate": "17/07/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "23/11/2022"
+            "collectionDate": "18/07/2023"
         },
         {
             "type": "Recycling",
-            "collectionDate": "30/11/2022"
+            "collectionDate": "25/07/2023"
         },
         {
             "type": "Garden Waste",
-            "collectionDate": "06/12/2022"
+            "collectionDate": "31/07/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "07/12/2022"
+            "collectionDate": "01/08/2023"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "08/08/2023"
         }
     ]
 }

@@ -37,6 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "End": str(four_weeks),
         }
 
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(base_url, params=params)
 
         # 200 = ok. I got a 500 in testing, so assumed no data for that address

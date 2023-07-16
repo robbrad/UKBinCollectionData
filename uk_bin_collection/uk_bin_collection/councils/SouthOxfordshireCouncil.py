@@ -41,6 +41,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "ebd": "0",
             # 'ebz':      '1_1668467255368',
         }
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(
             "https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb",
             params=params,
@@ -59,7 +60,9 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_info = bin.text.split("-")
             try:
                 # No date validation since year isn't included on webpage
-                bin_date = bin_info[0].strip()
+                bin_date = get_next_occurrence_from_day_month(
+                    datetime.strptime(bin_info[0].strip() + " " + datetime.today().strftime("%Y"),
+                                      "%A %d %B %Y")).strftime(date_format)
                 bin_type = str.capitalize(bin_info[1].strip())
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
@@ -70,5 +73,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 "collectionDate": bin_date,
             }
             data["bins"].append(dict_data)
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
         return data

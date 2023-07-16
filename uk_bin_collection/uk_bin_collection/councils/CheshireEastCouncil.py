@@ -38,7 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Make each Bin element in the JSON
             dict_data = {
-                "bin_type": bin_type,
+                "type": bin_type,
                 "collectionDate": collectionDate,
             }
 

@@ -38,12 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
                 if results:
                     collection_date = datetime.strptime(
-                        results[1]
-                        .replace("th", "")
-                        .replace("st", "")
-                        .replace("nd", "")
-                        .replace("rd", "")
-                        .strip(),
+                        remove_ordinal_indicator_from_date_string(results[1]).strip(),
                         "%A %d %B %Y",
                     ).strftime(date_format)
                     dict_data = {
@@ -61,7 +56,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         data["bins"].append(dict_data)
 
         data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
 
         return data

@@ -41,6 +41,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "uprn": user_uprn,
         }
 
+        requests.packages.urllib3.disable_warnings()
         response = requests.post(
             "https://www.wealden.gov.uk/wp-admin/admin-ajax.php",
             headers=headers,

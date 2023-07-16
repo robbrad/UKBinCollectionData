@@ -2,23 +2,23 @@
     "bins": [
         {
             "type": "180L General Waste",
-            "collectionDate": "28/09/2022"
-        },
-        {
-            "type": "90L Blue Sack",
-            "collectionDate": "28/09/2022"
+            "collectionDate": "18/07/2023"
         },
         {
             "type": "55L Green Recycling Box",
-            "collectionDate": "28/09/2022"
+            "collectionDate": "18/07/2023"
         },
         {
-            "type": "23L Food Waste Bin",
-            "collectionDate": "28/09/2022"
+            "type": "90L Blue Sack",
+            "collectionDate": "18/07/2023"
         },
         {
             "type": "45L Black Recycling Box",
-            "collectionDate": "28/09/2022"
+            "collectionDate": "18/07/2023"
+        },
+        {
+            "type": "23L Food Waste Bin",
+            "collectionDate": "18/07/2023"
         }
     ]
 }

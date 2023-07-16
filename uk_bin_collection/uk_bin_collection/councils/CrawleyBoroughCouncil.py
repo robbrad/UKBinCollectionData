@@ -7,6 +7,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
 
@@ -25,6 +26,7 @@ def get_usrn(uprn: str) -> str:
     api_url = (
         f"https://api.os.uk/search/links/v1/featureTypes/BLPU/{uprn}?key={api_key}"
     )
+    requests.packages.urllib3.disable_warnings()
     json_response = json.loads(requests.get(api_url).content)
     street_data = [
         item.get("correlatedIdentifiers")
@@ -84,15 +86,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         titles = [title.text for title in soup.select(".title")]
         collection_tag = soup.body.find_all(
-            "div", {"class": "col-md-6 col-sm-6 col-xs-6"}, text="Next collection"
+            "div", {"class": "col-md-6 col-sm-6 col-xs-6"}, string="Next collection"
         )
         bin_index = 0
         for tag in collection_tag:
             for item in tag.next_elements:
                 if str(item).startswith('<div class="date text-right text-grey">'):
-                    collection_date = datetime.strptime(item.text, "%A %d %B").strftime(
-                        "%d/%m"
-                    )
+                    collection_date = datetime.strptime(item.text, "%A %d %B").strftime(date_format)
                     dict_data = {
                         "type": titles[bin_index].strip(),
                         "collectionDate": collection_date,

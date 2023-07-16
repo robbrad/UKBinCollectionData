@@ -23,6 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Sniffed from the app
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(
             "https://services.athomeapp.net/ServiceData/GetUserRoundJson",
             headers=headers,

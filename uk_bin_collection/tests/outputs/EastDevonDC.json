@@ -1,0 +1,100 @@
+{
+    "bins": [
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "03/07/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "03/07/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "10/07/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "17/07/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "24/07/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "24/07/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "31/07/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "07/08/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "14/08/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "14/08/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "21/08/2023"
+        },
+        {
+            "type": "Recycling and food waste (bank holiday replacement)",
+            "collectionDate": "29/08/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "04/09/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "04/09/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "11/09/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "18/09/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "25/09/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "25/09/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "02/10/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "09/10/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "16/10/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "16/10/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "23/10/2023"
+        },
+        {
+            "type": "Recycling and food waste",
+            "collectionDate": "30/10/2023"
+        }
+    ]
+}

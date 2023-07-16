@@ -2,14 +2,6 @@
     "bins": [
         {
             "type": "waste",
-            "collectionDate": "05/07/2023"
-        },
-        {
-            "type": "waste",
-            "collectionDate": "12/07/2023"
-        },
-        {
-            "type": "waste",
             "collectionDate": "19/07/2023"
         },
         {
@@ -25,8 +17,12 @@
             "collectionDate": "09/08/2023"
         },
         {
-            "type": "recycling",
-            "collectionDate": "05/07/2023"
+            "type": "waste",
+            "collectionDate": "16/08/2023"
+        },
+        {
+            "type": "waste",
+            "collectionDate": "23/08/2023"
         },
         {
             "type": "recycling",
@@ -49,8 +45,8 @@
             "collectionDate": "13/09/2023"
         },
         {
-            "type": "glass",
-            "collectionDate": "05/07/2023"
+            "type": "recycling",
+            "collectionDate": "27/09/2023"
         },
         {
             "type": "glass",
@@ -73,8 +69,8 @@
             "collectionDate": "13/09/2023"
         },
         {
-            "type": "garden",
-            "collectionDate": "12/07/2023"
+            "type": "glass",
+            "collectionDate": "27/09/2023"
         },
         {
             "type": "garden",
@@ -95,6 +91,10 @@
         {
             "type": "garden",
             "collectionDate": "20/09/2023"
+        },
+        {
+            "type": "garden",
+            "collectionDate": "04/10/2023"
         }
     ]
 }

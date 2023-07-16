@@ -2,11 +2,11 @@
     "bins": [
         {
             "type": "Recycling Bin",
-            "collectionDate": "07/11/2022"
+            "collectionDate": "17/07/2023"
         },
         {
             "type": "Rubbish Bin",
-            "collectionDate": "14/11/2022"
+            "collectionDate": "24/07/2023"
         }
     ]
 }

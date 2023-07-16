@@ -36,6 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "OS_ver": "31",
             "app_ver": "35",
         }
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(
             "http://www.sac-bins.co.uk/get_calendar.php", params=params, headers=headers
         )

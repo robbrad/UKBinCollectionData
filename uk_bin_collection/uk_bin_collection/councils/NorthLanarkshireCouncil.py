@@ -22,12 +22,22 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_type = bins.div.h3.text.strip()
             collection_date = bins.select("div > p")[0].get_text(strip=True)
             next_collection_date = bins.select("div > p")[1].get_text(strip=True)
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": collection_date,
-                "nextCollectionDate": next_collection_date,
-            }
             if collection_date:
+                # Add collection date
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": datetime.strptime(collection_date, "%d %B %Y").strftime(date_format)
+                }
                 data["bins"].append(dict_data)
+                # Add next collection date
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": datetime.strptime(next_collection_date, "%d %B %Y").strftime(date_format)
+                }
+                data["bins"].append(dict_data)
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
         return data

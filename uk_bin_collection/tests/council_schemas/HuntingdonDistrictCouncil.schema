@@ -1,26 +1,39 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "type": "array",
-    "items": {
-        "$ref": "#/definitions/Welcome2Element"
-    },
+    "$ref": "#/definitions/Welcome3",
     "definitions": {
-        "Welcome2Element": {
+        "Welcome3": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "BinType": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "Welcome3"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
                     "type": "string"
                 },
-                "NextCollection": {
+                "collectionDate": {
                     "type": "string"
                 }
             },
             "required": [
-                "BinType",
-                "NextCollection"
+                "collectionDate",
+                "type"
             ],
-            "title": "Welcome2Element"
+            "title": "Bin"
         }
     }
 }

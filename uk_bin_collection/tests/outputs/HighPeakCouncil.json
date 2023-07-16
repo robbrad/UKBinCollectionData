@@ -1,60 +1,68 @@
 {
     "bins": [
         {
-            "type": "Recycling with food and garden",
-            "collectionDate": "Thursday, 23 February 2023"
-        },
-        {
             "type": "Rubbish",
-            "collectionDate": "Thursday, 2 March 2023"
+            "collectionDate": "18/07/2023"
         },
         {
             "type": "Recycling with food and garden",
-            "collectionDate": "Thursday, 9 March 2023"
+            "collectionDate": "25/07/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "Thursday, 16 March 2023"
+            "collectionDate": "01/08/2023"
         },
         {
             "type": "Recycling with food and garden",
-            "collectionDate": "Thursday, 23 March 2023"
+            "collectionDate": "08/08/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "Thursday, 30 March 2023"
+            "collectionDate": "15/08/2023"
         },
         {
             "type": "Recycling with food and garden",
-            "collectionDate": "Thursday, 6 April 2023"
+            "collectionDate": "22/08/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "Thursday, 13 April 2023"
+            "collectionDate": "29/08/2023"
         },
         {
             "type": "Recycling with food and garden",
-            "collectionDate": "Thursday, 20 April 2023"
+            "collectionDate": "05/09/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "Thursday, 27 April 2023"
+            "collectionDate": "12/09/2023"
         },
         {
             "type": "Recycling with food and garden",
-            "collectionDate": "Thursday, 4 May 2023"
+            "collectionDate": "19/09/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "Thursday, 11 May 2023"
+            "collectionDate": "26/09/2023"
         },
         {
             "type": "Recycling with food and garden",
-            "collectionDate": "Thursday, 18 May 2023"
+            "collectionDate": "03/10/2023"
         },
         {
             "type": "Rubbish",
-            "collectionDate": "Thursday, 25 May 2023"
+            "collectionDate": "10/10/2023"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "17/10/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "24/10/2023"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "31/10/2023"
         }
     ]
 }

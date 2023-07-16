@@ -2,51 +2,51 @@
     "bins": [
         {
             "type": "General",
-            "collectionDate": "05/08/2022"
+            "collectionDate": "20/07/2023"
         },
         {
             "type": "Food",
-            "collectionDate": "05/08/2022"
+            "collectionDate": "20/07/2023"
         },
         {
             "type": "Recycling",
-            "collectionDate": "05/08/2022"
+            "collectionDate": "20/07/2023"
         },
         {
             "type": "Garden",
-            "collectionDate": "12/08/2022"
+            "collectionDate": "27/07/2023"
         },
         {
             "type": "Food",
-            "collectionDate": "12/08/2022"
+            "collectionDate": "27/07/2023"
         },
         {
             "type": "Recycling",
-            "collectionDate": "12/08/2022"
+            "collectionDate": "27/07/2023"
         },
         {
             "type": "General",
-            "collectionDate": "19/08/2022"
+            "collectionDate": "03/08/2023"
         },
         {
             "type": "Food",
-            "collectionDate": "19/08/2022"
+            "collectionDate": "03/08/2023"
         },
         {
             "type": "Recycling",
-            "collectionDate": "19/08/2022"
+            "collectionDate": "03/08/2023"
         },
         {
             "type": "Garden",
-            "collectionDate": "26/08/2022"
+            "collectionDate": "10/08/2023"
         },
         {
             "type": "Food",
-            "collectionDate": "26/08/2022"
+            "collectionDate": "10/08/2023"
         },
         {
             "type": "Recycling",
-            "collectionDate": "26/08/2022"
+            "collectionDate": "10/08/2023"
         }
     ]
 }

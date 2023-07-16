@@ -47,8 +47,7 @@ def scrape_step(context, council):
         house_number = context.metadata["house_number"]
         args.append(f"-n={house_number}")
     if "SKIP_GET_URL" in context.metadata:
-        skip_url = context.metadata["SKIP_GET_URL"]
-        args.append(f"-s={skip_url}")
+        args.append(f"-s")
 
     try:
         context.parse_result = collect_data.main(args)

@@ -1,7 +1,3 @@
-import calendar
-import json
-
-import requests
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
@@ -62,7 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
         weekly_dates = get_weekday_dates_in_period(
             datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48
         )
-        schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/{bin_week}.aspx"
+        schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/Black-Bag-Collections/{bin_week}.aspx"
         response = requests.get(schedule_url, verify=False)
 
         # BS4 parses the calendar
@@ -70,9 +66,7 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
 
         # Some scraper variables
-        data = {"bins": []}
         collections = []
-        day_list = []
 
         # Get the calendar table and find the headers
         table = soup.find("table", {"class": "TableStyle_Activities"}).find("tbody")
@@ -80,59 +74,23 @@ class CouncilClass(AbstractGetBinDataClass):
         # For all rows below the header, find all details in th next row
         for tr in soup.find_all("tr")[1:]:
             row = tr.find_all("td")
-            # This is how we get around having tables in tables
-            if len(row) == 3:
-                # Parse month and year - month needs converting from text to number
-                month_and_year = row[0].text.split()
-                if month_and_year[0] in list(calendar.month_abbr):
-                    collection_month = datetime.strptime(month_and_year[0], "%b").month
-                elif month_and_year[0] == "Sept":
-                    collection_month = int(9)
-                else:
-                    collection_month = datetime.strptime(month_and_year[0], "%B").month
-                collection_year = datetime.strptime(month_and_year[1], "%Y").year
+            # Parse month and year - month needs converting from text to number
+            month_and_year = row[0].text.split()
+            if month_and_year[0] in list(calendar.month_abbr):
+                collection_month = datetime.strptime(month_and_year[0], "%b").month
+            elif month_and_year[0] == "Sept":
+                collection_month = int(9)
+            else:
+                collection_month = datetime.strptime(month_and_year[0], "%B").month
+            collection_year = datetime.strptime(month_and_year[1], "%Y").year
 
-                # Get the first column, remove anything that's not a number or space and then convert to dates
-                for day in remove_alpha_characters(row[1].text.strip()).split():
-                    try:
-                        bin_date = datetime(collection_year, collection_month, int(day))
-                        collections.append((table_headers[1].text.strip(), bin_date))
-                    except Exception as ex:
-                        continue
-
-                # Same for second column
-                for day in remove_alpha_characters(row[2].text.strip()).split():
-                    try:
-                        bin_date = datetime(collection_year, collection_month, int(day))
-                        collections.append((table_headers[2].text.strip(), bin_date))
-                    except Exception as ex:
-                        continue
-
-            # Like above, but mitigates having tables within tables
-            elif len(row) == 5:
-                month_and_year = row[0].text.split()
-                if month_and_year[0] in list(calendar.month_abbr):
-                    collection_month = datetime.strptime(month_and_year[0], "%b").month
-                elif month_and_year[0] == "Sept":
-                    collection_month = int(9)
-                else:
-                    collection_month = datetime.strptime(month_and_year[0], "%B").month
-                collection_year = datetime.strptime(month_and_year[1], "%Y").year
-
-                for day in remove_alpha_characters(row[2].text.strip()).split():
-                    try:
-                        bin_date = datetime(collection_year, collection_month, int(day))
-                        collections.append((table_headers[1].text.strip(), bin_date))
-                    except Exception as ex:
-                        continue
-
-                # if row[4].text == "Ring & Request"
-                for day in remove_alpha_characters(row[4].text.strip()).split():
-                    try:
-                        bin_date = datetime(collection_year, collection_month, int(day))
-                        collections.append((table_headers[2].text.strip(), bin_date))
-                    except Exception as ex:
-                        continue
+            # Get the collection dates column, remove anything that's not a number or space and then convert to dates
+            for day in remove_alpha_characters(row[1].text.strip()).split():
+                try:
+                    bin_date = datetime(collection_year, collection_month, int(day))
+                    collections.append((table_headers[1].text.strip().replace(" collection date", ""), bin_date))
+                except Exception as ex:
+                    continue
 
         # Add in weekly dates to the tuple
         for date in weekly_dates:

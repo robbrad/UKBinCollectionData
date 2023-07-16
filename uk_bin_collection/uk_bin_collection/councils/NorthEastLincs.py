@@ -1,11 +1,11 @@
 import pandas as pd
 from bs4 import BeautifulSoup
+from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
-
     """
     Concrete classes have to implement all abstract operations of the
     baseclass. They can also override some
@@ -21,13 +21,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Get list items that can be seen on page
         for element in soup.find_all(
-            "li", {"class": "list-group-item p-0 p-3 bin-collection-item"}
+                "li", {"class": "list-group-item p-0 p-3 bin-collection-item"}
         ):
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]
 
             bin_type = element_text[1]
-            collection_date = pd.Timestamp(element_text[0]).strftime("%d/%m/%Y")
+            collection_date = pd.Timestamp(element_text[0]).strftime(date_format)
 
             dict_data = {
                 "type": bin_type,
@@ -37,13 +37,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Get hidden list items too
         for element in soup.find_all(
-            "li", {"class": "list-group-item p-0 p-3 bin-collection-item d-none"}
+                "li", {"class": "list-group-item p-0 p-3 bin-collection-item d-none"}
         ):
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]
 
             bin_type = element_text[1]
-            collection_date = pd.Timestamp(element_text[0]).strftime("%d/%m/%Y")
+            collection_date = pd.Timestamp(element_text[0]).strftime(date_format)
 
             dict_data = {
                 "type": bin_type,

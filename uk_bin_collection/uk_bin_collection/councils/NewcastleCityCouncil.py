@@ -5,6 +5,7 @@
 from datetime import datetime
 
 from bs4 import BeautifulSoup
+from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
 
@@ -25,25 +26,28 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         for element in soup.find_all("strong"):
-            # Domestic Waste is formatted differenty to other bins
+            collectionInfo = ""
+            # Domestic Waste is formatted differently to other bins
             if "Green Bin (Domestic Waste) details:" in str(element):
-                collectionInfo = element.next_sibling.find("br").next_element
-            else:
+                if element.next_sibling.find("br"):
+                    collectionInfo = element.next_sibling.find("br").next_element
+            elif "Next collection" in str(element.next_sibling.next_sibling.next_sibling.next_sibling):
                 collectionInfo = (
                     element.next_sibling.next_sibling.next_sibling.next_sibling
                 )
 
-            bin_type = str(element)[str(element).find("(") + 1: str(element).find(")")]
-            collectionDate = str(
-                datetime.strptime(
-                    str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"
+            if collectionInfo != "" and collectionInfo != "Next collection : n/a":
+                bin_type = str(element)[str(element).find("(") + 1: str(element).find(")")]
+                collectionDate = str(
+                    datetime.strptime(
+                        str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"
+                    )
+                    .date()
+                    .strftime(date_format)
                 )
-                .date()
-                .strftime("%d/%m/%Y")
-            )
 
-            dict_data = {"BinType": bin_type, "NextCollectionDate": collectionDate}
+                dict_data = {"type": bin_type, "collectionDate": collectionDate}
 
-            data["bins"].append(dict_data)
+                data["bins"].append(dict_data)
 
         return data

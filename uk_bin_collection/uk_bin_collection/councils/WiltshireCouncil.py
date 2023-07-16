@@ -12,6 +12,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        requests.packages.urllib3.disable_warnings()
         # Define some months to get from the calendar
         this_month = datetime.now().month
         this_year = datetime.now().year

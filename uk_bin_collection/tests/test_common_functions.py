@@ -1,3 +1,4 @@
+from unittest import mock
 import pytest
 from uk_bin_collection.common import *
 
@@ -57,7 +58,7 @@ def test_get_date_with_ordinal_exception():
         result = get_date_with_ordinal(date_number)
     assert exc_info.type == TypeError
     assert (
-        exc_info.value.args[0] == "not all arguments converted during string formatting"
+            exc_info.value.args[0] == "not all arguments converted during string formatting"
     )
 
 

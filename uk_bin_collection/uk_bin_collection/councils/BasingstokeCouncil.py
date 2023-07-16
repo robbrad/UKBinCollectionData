@@ -13,6 +13,7 @@ COLLECTION_KINDS = {
     "garden": "rteelem_ctl03_pnlCollections_GardenWaste"
 }
 
+
 class CouncilClass(AbstractGetBinDataClass):
 
     def get_data(self, address_url):
@@ -26,6 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         request_headers = {
             "cookie": f"WhenAreMyBinsCollected={user_uprn}"
         }
+        requests.packages.urllib3.disable_warnings()
         response = requests.get(
             "https://www.basingstoke.gov.uk/bincollections",
             headers=request_headers,
@@ -33,7 +35,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
         if response.status_code != 200:
             raise SystemError("Error retrieving data! Please try again or raise an issue on GitHub!")
-
 
         # Make a BS4 object
         soup = BeautifulSoup(response.text, features="html.parser")
@@ -49,7 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         # Friday, 21 July 2023
                         date.get_text(strip=True),
                         '%A, %d %B %Y'
-                    ).strftime('%d/%m/%Y')
+                    ).strftime(date_format)
                 })
 
         return {

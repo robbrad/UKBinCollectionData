@@ -2,35 +2,43 @@
     "bins": [
         {
             "type": "Food waste",
-            "collectionDate": "17/01/2023"
+            "collectionDate": "18/07/2023"
         },
         {
             "type": "Green recycling",
-            "collectionDate": "17/01/2023"
+            "collectionDate": "18/07/2023"
         },
         {
             "type": "Food waste",
-            "collectionDate": "24/01/2023"
+            "collectionDate": "25/07/2023"
         },
         {
             "type": "Black domestic waste",
-            "collectionDate": "24/01/2023"
+            "collectionDate": "25/07/2023"
         },
         {
             "type": "Food waste",
-            "collectionDate": "31/01/2023"
+            "collectionDate": "01/08/2023"
         },
         {
             "type": "Green recycling",
-            "collectionDate": "31/01/2023"
+            "collectionDate": "01/08/2023"
         },
         {
             "type": "Food waste",
-            "collectionDate": "07/02/2023"
+            "collectionDate": "08/08/2023"
         },
         {
             "type": "Black domestic waste",
-            "collectionDate": "07/02/2023"
+            "collectionDate": "08/08/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "15/08/2023"
+        },
+        {
+            "type": "Green recycling",
+            "collectionDate": "15/08/2023"
         }
     ]
 }

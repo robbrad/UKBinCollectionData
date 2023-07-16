@@ -1,1 +1,12 @@
-{"bins": [{"CollectionDate": "Tomorrow", "BinType": "Refuse"}, {"CollectionDate": "Wed 12th May", "BinType": "Garden Waste"}, {"CollectionDate": "Wed 12th May", "BinType": "Recycling"}]}
+{
+    "bins": [
+        {
+            "type": "Recycling",
+            "collectionDate": "18/07/1900"
+        },
+        {
+            "type": "Refuse",
+            "collectionDate": "25/07/1900"
+        }
+    ]
+}

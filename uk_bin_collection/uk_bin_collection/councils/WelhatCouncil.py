@@ -58,11 +58,11 @@ class CouncilClass(AbstractGetBinDataClass):
             cells = row.find_all("td")
             if cells:
                 binType = cells[0].get_text(strip=True)
-                collectionDate = cells[1].get_text(strip=True)
+                collectionDate = datetime.strptime(cells[1].get_text(strip=True), "%A %d %B  %Y").strftime(date_format)
 
                 # Make each Bin element in the JSON
                 dict_data = {
-                    "BinType": binType,
+                    "type": binType,
                     "collectionDate": collectionDate,
                 }
 

@@ -1,6 +1,20 @@
 {
-	"Black (Domestic)": "Next Collection: 4 days from now on Tuesday, 28 January 2020",
-	"Green (Recycling)": "Next Collection: 25 days from now on Tuesday, 18 February 2020",
-	"Purple (Paper/Card)": "Next Collection: 11 days from now on Tuesday, 4 February 2020",
-	"Brown (Garden Waste)": "Next Collection: 7 days from now on Friday, 31 January 2020"
+    "bins": [
+        {
+            "type": "Green (Recycling)",
+            "collectionDate": "17/07/2023"
+        },
+        {
+            "type": "Brown (Garden Waste)",
+            "collectionDate": "17/07/2023"
+        },
+        {
+            "type": "Black (Domestic)",
+            "collectionDate": "24/07/2023"
+        },
+        {
+            "type": "Purple (Paper/Card)",
+            "collectionDate": "31/07/2023"
+        }
+    ]
 }

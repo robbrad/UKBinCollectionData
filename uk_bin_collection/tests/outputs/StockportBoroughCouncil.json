@@ -1,1 +1,20 @@
-{"Black bin": "Wednesday, 14 October 2020", "Green bin": "Wednesday, 14 October 2020", "Blue bin": "Wednesday, 21 October 2020", "Brown bin": "Wednesday, 21 October 2020"}
+{
+    "bins": [
+        {
+            "type": "Black bin",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "Green bin",
+            "collectionDate": "19/07/2023"
+        },
+        {
+            "type": "Blue bin",
+            "collectionDate": "26/07/2023"
+        },
+        {
+            "type": "Brown bin",
+            "collectionDate": "09/08/2023"
+        }
+    ]
+}

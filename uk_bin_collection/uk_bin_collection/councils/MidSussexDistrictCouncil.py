@@ -46,6 +46,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Get a ufprt by posting here (I have no idea how ufprt works, so may as well grab one from the server)
+        requests.packages.urllib3.disable_warnings()
         init = requests.post(api_url, data=form_data)
         ufprt = get_token(init.text)
         form_data.update({"ufprt": ufprt})

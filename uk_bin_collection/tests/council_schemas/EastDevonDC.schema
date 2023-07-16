@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome10",
+    "$ref": "#/definitions/Welcome1",
     "definitions": {
-        "Welcome10": {
+        "Welcome1": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -16,7 +16,7 @@
             "required": [
                 "bins"
             ],
-            "title": "Welcome10"
+            "title": "Welcome1"
         },
         "Bin": {
             "type": "object",
@@ -25,12 +25,12 @@
                 "type": {
                     "$ref": "#/definitions/Type"
                 },
-                "nextCollectionDate": {
+                "collectionDate": {
                     "type": "string"
                 }
             },
             "required": [
-                "nextCollectionDate",
+                "collectionDate",
                 "type"
             ],
             "title": "Bin"
@@ -38,8 +38,9 @@
         "Type": {
             "type": "string",
             "enum": [
-                "Recycling",
-                "General"
+                "Recycling and food waste",
+                "Rubbish",
+                "Recycling and food waste (bank holiday replacement)"
             ],
             "title": "Type"
         }

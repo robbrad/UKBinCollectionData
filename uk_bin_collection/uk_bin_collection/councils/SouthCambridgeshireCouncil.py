@@ -26,6 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
 
         # Establish session
+        requests.packages.urllib3.disable_warnings()
         s = requests.Session()
         r = s.get(
             "https://www.scambs.gov.uk/recycling-and-bins/find-your-household-bin-collection-day/",
@@ -59,7 +60,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 date_format
             )
             for round in collection["roundTypes"]:
-                dict_data = {"binType": round.title(), "collectionDate": dt}
+                dict_data = {"type": round.title(), "collectionDate": dt}
                 data["bins"].append(dict_data)
 
         return data

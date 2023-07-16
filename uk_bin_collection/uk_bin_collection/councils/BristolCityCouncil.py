@@ -19,6 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
+        requests.packages.urllib3.disable_warnings()
         s = requests.session()
 
         service_type_headers = {
