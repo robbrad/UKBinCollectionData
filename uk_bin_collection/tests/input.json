@@ -102,6 +102,13 @@
     "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
     "wiki_name": "Croydon Council"
   },
+  "DerbyshireDalesDistrictCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "DE4 3AS",
+    "uprn": "10070102161",
+    "url": "https://www.derbyshiredales.gov.uk/",
+    "wiki_name": "Derbyshire Dales District Council"
+  },
   "DoncasterCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100050768956",
