@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "uk_bin_collection"
-version = "0.1.0"
+name = "ukbincollection"
+version = "0.2.0"
 description = ""
 readme = "README.md"
 authors = ["Robert Bradley <robbrad182@gmail.com>"]
