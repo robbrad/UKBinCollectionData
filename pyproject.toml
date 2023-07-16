@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "uk_bin_collection"
 version = "0.2.0"
-description = ""
+description = "Python Lib to collect UK Bin Data"
 readme = "README.md"
 authors = ["Robert Bradley <robbrad182@gmail.com>"]
 packages = [
