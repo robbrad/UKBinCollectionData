@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "uk_bin_collection"
+name = "ukbincollection"
 version = "0.1.0"
 description = ""
 readme = "README.md"
@@ -13,6 +13,9 @@ include = ["uk_bin_collection"]
 pythonpath = [
     ".", "uk_bin_collection"
 ]
+
+[tool.flit.metadata]
+module = "example_package"
 
 [tool.poetry.urls]
 issues = "https://github.com/robbrad/UKBinCollectionData/issues"
