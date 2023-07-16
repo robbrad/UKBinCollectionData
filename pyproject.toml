@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ukbincollection"
+name = "uk_bin_collection"
 version = "0.2.0"
 description = ""
 readme = "README.md"
