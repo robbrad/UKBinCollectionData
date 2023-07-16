@@ -90,10 +90,12 @@
     "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
   },
   "CrawleyBoroughCouncil": {
-    "url": "https://my.crawley.gov.uk/apibroker/?api=RunLookup&id=5b4f0ec5f13f4&repeat_against=&noRetry=true&getOnlyTokens=undefined&log_id=&app_name=AF-Renderer::Self&_=1677705687797&sid=fb93340a0277a7c8ade064be0c86ebbc",
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "uprn": "100061785321",
+    "usrn": "9701076",
+    "url": "https://my.crawley.gov.uk/",
     "wiki_name": "Crawley Borough Council",
-    "wiki_command_url_override": "https://my.crawley.gov.uk/",
-    "wiki_note": "Crawley needs both a UPRN and a USRN to work. You can either:\n- Register with [OS Data Hub](https://osdatahub.os.uk/dashboard) and get an API key to find the USRN for you. You would have to place the API key in your own .env file within the project root,\n  or change the variable on line 21, and remove the dependency and reference to `dotenv` on lines 5 and 20.\n- Find the USRN on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map) and hardcode the value in, again removing the dependency and reference to `dotenv` on lines 5 and 20."
+    "wiki_note": "Crawley needs to be passed both a UPRN and a USRN to work. Find these on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map)."
   },
   "CroydonCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",

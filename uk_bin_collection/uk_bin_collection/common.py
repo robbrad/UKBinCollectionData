@@ -74,6 +74,20 @@ def check_uprn(uprn: str):
         print("Please check the provided UPRN.")
 
 
+def check_usrn(usrn: str):
+    """
+    Checks that the USRN exists
+        :param uprn: USRN to check
+    """
+    try:
+        if usrn is None or usrn == "":
+            raise ValueError("Invalid USRN")
+        return True
+    except Exception as ex:
+        print(f"Exception encountered: {ex}")
+        print("Please check the provided USRN.")
+
+
 def get_date_with_ordinal(date_number: int) -> str:
     """
     Return ordinal text on day of date

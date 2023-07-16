@@ -1,0 +1,12 @@
+{
+    "bins": [
+        {
+            "type": "Rubbish and Small Electricals Collection",
+            "collectionDate": "17/07/1900"
+        },
+        {
+            "type": "Recycling and Textiles Collection",
+            "collectionDate": "24/07/1900"
+        }
+    ]
+}

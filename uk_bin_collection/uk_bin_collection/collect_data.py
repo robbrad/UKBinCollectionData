@@ -13,7 +13,7 @@ sys.path.append(module_path)
 
 
 def client_code(
-    get_bin_data_class: AbstractGetBinDataClass, address_url, **kwargs
+        get_bin_data_class: AbstractGetBinDataClass, address_url, **kwargs
 ) -> None:
     """
     The client code calls the template method to execute the algorithm. Client
@@ -39,7 +39,7 @@ def main(args):
         "--postcode",
         type=str,
         help="Postcode to parse - should include a space and be wrapped in "
-        "double-quotes",
+             "double-quotes",
         required=False,
     )
     parser.add_argument(
@@ -53,6 +53,7 @@ def main(args):
         required=False,
     )
     parser.add_argument("-u", "--uprn", type=str, help="UPRN to parse", required=False)
+    parser.add_argument("-us", "--usrn", type=str, help="USRN to parse", required=False)
     parser.add_argument(
         "-d",
         "--dev_mode",
@@ -68,6 +69,7 @@ def main(args):
     postcode = parsed_args.postcode
     paon = parsed_args.number
     uprn = parsed_args.uprn
+    usrn = parsed_args.usrn
     skip_get_url = parsed_args.skip_get_url
     dev_mode = parsed_args.dev_mode
 
@@ -77,6 +79,7 @@ def main(args):
         postcode=postcode,
         paon=paon,
         uprn=uprn,
+        usrn=usrn,
         skip_get_url=skip_get_url,
         dev_mode=dev_mode,
         council_module_str=council_module_str,
