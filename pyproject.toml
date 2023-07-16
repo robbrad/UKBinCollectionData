@@ -14,6 +14,9 @@ pythonpath = [
     ".", "uk_bin_collection"
 ]
 
+[tool.flit.metadata]
+module = "uk_bin_collection"
+
 [tool.poetry.urls]
 issues = "https://github.com/robbrad/UKBinCollectionData/issues"
 
