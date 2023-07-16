@@ -27,6 +27,7 @@
 !uk_bin_collection/**/*
 !wiki
 !wiki/**/*
+!custom_components
 __pycache__
 !TO_BE_CONVERTED
 
