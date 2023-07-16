@@ -3,7 +3,7 @@
     "name": "UK Bin Collection Sensor",
     "documentation": "https://github.com/your_username/your_repository",
     "requirements": [
-        "aiohttp", "uk-bin-collection"
+        "aiohttp", "uk_bin_collection"
     ],
     "codeowners": [],
     "config_flow": false,
