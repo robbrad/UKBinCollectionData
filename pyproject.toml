@@ -54,3 +54,4 @@ python = ">=3.8,<4"
 requests = "*"
 selenium = "^4.8.0"
 lxml = "^4.9.2"
+
