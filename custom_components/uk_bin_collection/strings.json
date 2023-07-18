@@ -1,0 +1,16 @@
+{
+    "config_flow": {
+        "step_user": {
+            "title": "UK Bin Collection Configuration",
+            "description": "Please provide the following information:",
+            "url": "URL to fetch bin collection data:",
+            "council": "Select the council:",
+            "uprn": "UPRN (Unique Property Reference Number):",
+            "postcode": "Postcode of the address:",
+            "house_number": "House number of the address:",
+            "usrn": "USRN (Unique Street Reference Number):",
+            "skip_get_url": "Skip getting the URL:",
+            "submit": "Submit"
+        }
+    }
+}
