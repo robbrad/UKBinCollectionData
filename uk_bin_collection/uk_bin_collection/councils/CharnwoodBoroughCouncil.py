@@ -24,13 +24,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
             if binCollection:
                 for bin in binCollection:
+                    collection_date = bin.find("strong", {"class": "date"}).contents[0].strip()
+                    if collection_date.lower() == "today":
+                        collection_date = datetime.now()
+                    else:
+                        collection_date = datetime.strptime(
+                            remove_ordinal_indicator_from_date_string(collection_date).strip(),
+                            "%a %d %b"
+                        )
                     dict_data = {
                         "type": bin.find("a").contents[0],
-                        "collectionDate": datetime.strptime(
-                            remove_ordinal_indicator_from_date_string(bin.find("strong", {"class": "date"}).contents[0])
-                            .strip(),
-                            "%a %d %b"
-                        ).strftime(date_format)
+                        "collectionDate": collection_date.strftime(date_format)
                     }
 
                     data["bins"].append(dict_data)
