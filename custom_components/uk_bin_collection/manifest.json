@@ -2,11 +2,9 @@
     "domain": "uk_bin_collection",
     "name": "UK Bin Collection Sensor",
     "documentation": "https://github.com/robbrad/UKBinCollectionData/wiki",
-    "requirements": [
-        "aiohttp",
-        "uk-bin-collection"
-    ],
-    "codeowners": [],
+    "issue_tracker": "https://github.com/robbrad/UKBinCollectionData/issues",
+    "requirements": ["uk-bin-collection"],
+    "codeowners": ["@robbrad"],
     "config_flow": true,
     "zeroconf": [],
     "homeassistant": "2021.1.0",
@@ -14,56 +12,6 @@
     "after_dependencies": [],
     "dependencies": [],
     "frontend": false,
-    "iot_class": "local_push",
-    "config": {
-        "url": {
-            "name": "URL",
-            "description": "The URL to fetch bin collection data.",
-            "example": "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/main/bin_collection.json",
-            "required": true,
-            "type": "string"
-        },
-        "council": {
-            "name": "Council",
-            "description": "The name of the council.",
-            "example": "Your Council",
-            "required": true,
-            "type": "string"
-        },
-        "uprn": {
-            "name": "UPRN",
-            "description": "The UPRN (Unique Property Reference Number) for the address.",
-            "example": "123456789",
-            "required": false,
-            "type": "string"
-        },
-        "postcode": {
-            "name": "Postcode",
-            "description": "The postcode of the address.",
-            "example": "AB12 3CD",
-            "required": false,
-            "type": "string"
-        },
-        "house_number": {
-            "name": "House Number",
-            "description": "The house number of the address.",
-            "example": "123",
-            "required": false,
-            "type": "string"
-        },
-        "usrn": {
-            "name": "USRN",
-            "description": "The USRN (Unique Street Reference Number) for the address.",
-            "example": "987654321",
-            "required": false,
-            "type": "string"
-        },
-        "SKIP_GET_URL": {
-            "name": "Skip Get URL",
-            "description": "A flag to skip getting the URL.",
-            "example": "True",
-            "required": false,
-            "type": "string"
-        }
-    }
+    "iot_class": "cloud_push",
+    "integration_type": "hub"
 }
