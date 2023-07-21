@@ -12,6 +12,7 @@ _LOGGER = logging.getLogger(__name__)
 # Define a prefix for log entries
 LOG_PREFIX = "[UKBinCollection] "
 
+
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def __init__(self):
         self.councils_data = None
@@ -37,7 +38,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if "postcode" in self.councils_data[council]:
             council_schema = council_schema.extend({vol.Required("postcode", default=""): cv.string})
         if "house_number" in self.councils_data[council]:
-            council_schema = council_schema.extend({vol.Required("house_number", default=""): cv.string})
+            council_schema = council_schema.extend({vol.Required("number", default=""): cv.string})
         if "usrn" in self.councils_data[council]:
             council_schema = council_schema.extend({vol.Required("usrn", default=""): cv.string})
         return council_schema
@@ -53,6 +54,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # Perform validation and setup here based on user_input
+            if user_input["name"] is None or user_input["name"] == "":
+                errors["base"] = "name"
             if user_input["council"] is None or user_input["council"] == "":
                 errors["base"] = "council"
 
@@ -69,8 +72,11 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.info(LOG_PREFIX + "Showing user form with options: %s", self.council_options)
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({vol.Required("council", default=""): vol.In(self.council_options)}),
-            errors=errors,
+            data_schema=vol.Schema({
+                vol.Required("name", default=""): cv.string,
+                vol.Required("council", default=""): vol.In(self.council_options)
+            }),
+            errors=errors
         )
 
     async def async_step_council(self, user_input=None):
@@ -80,15 +86,16 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             # Set additional options
             if "SKIP_GET_URL" in self.councils_data[self.data["council"]]:
-                user_input["skip_get_url"] = "skip_get_url"
+                user_input["skip_get_url"] = True
                 user_input["url"] = self.councils_data[self.data["council"]]["url"]
 
             # Save the selected council in the user input
+            user_input["name"] = self.data["name"]
             user_input["council"] = self.data["council"]
 
             # Create the config entry
             _LOGGER.info(LOG_PREFIX + "Creating config entry with data: %s", user_input)
-            return self.async_create_entry(title="UK Bin Collection", data=user_input)
+            return self.async_create_entry(title="UK Bin Collection Data", data=user_input)
 
         # Show the configuration form to the user with the specific councils necessary fields
         council_schema = await self.get_council_schema(self.data["council"])
@@ -96,7 +103,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="council",
             data_schema=council_schema,
-            errors=errors,
+            errors=errors
         )
 
     async def async_step_init(self, user_input=None):
@@ -127,5 +134,5 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
         _LOGGER.info(LOG_PREFIX + "Showing options form with schema: %s", council_schema)
         return self.async_show_form(
             step_id="council",
-            data_schema=council_schema,
+            data_schema=council_schema
         )

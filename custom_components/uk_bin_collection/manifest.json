@@ -1,6 +1,6 @@
 {
     "domain": "uk_bin_collection",
-    "name": "UK Bin Collection Sensor",
+    "name": "UK Bin Collection Data",
     "documentation": "https://github.com/robbrad/UKBinCollectionData/wiki",
     "issue_tracker": "https://github.com/robbrad/UKBinCollectionData/issues",
     "requirements": ["uk-bin-collection"],
@@ -11,7 +11,6 @@
     "version": "0.1.0",
     "after_dependencies": [],
     "dependencies": [],
-    "frontend": false,
     "iot_class": "cloud_push",
-    "integration_type": "hub"
+    "integration_type": "service"
 }

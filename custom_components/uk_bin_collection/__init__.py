@@ -14,24 +14,28 @@ DOMAIN = "uk_bin_collection"
 _LOGGER = logging.getLogger(__name__)
 LOG_PREFIX = "[UKBinCollection] "
 
+
 async def async_setup(hass, config):
-    """Set up the UK Bin Collection component."""
+    """Set up the UK Bin Collection Data component."""
     hass.data.setdefault(DOMAIN, {})
-    _LOGGER.info(LOG_PREFIX + "UK Bin Collection component initialized")
+    _LOGGER.info(LOG_PREFIX + "UK Bin Collection Data component initialized")
     return True
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up UK Bin Collection config entry."""
+    """Set up UK Bin Collection Data config entry."""
     data = entry.data
     _LOGGER.info(LOG_PREFIX + "Data Supplied: %s", data)
     council_name = data.get("council", "unknown council")
-    _LOGGER.info(LOG_PREFIX + "Setting up UK Bin Collection for council: %s", council_name)
+    _LOGGER.info(LOG_PREFIX + "Setting up UK Bin Collection Data for council: %s", council_name)
 
     args = [
         data.get("council", ""),
         data.get("url", ""),
-        *(f"-{key[0]}={value}" for key, value in data.items() if key not in {"council", "url"}),
+        *(f"--{key}={value}" for key, value in data.items() if key not in {"name", "council", "url", "skip_get_url"}),
     ]
+    if "skip_get_url" in data:
+        args.append("--skip_get_url")
 
     try:
         _LOGGER.debug(LOG_PREFIX + "Collecting data for council: %s", council_name)
@@ -52,5 +56,5 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.config_entries.async_forward_entry_setup(entry, SENSOR_DOMAIN)
     )
 
-    _LOGGER.info(LOG_PREFIX + "Successfully set up UK Bin Collection for council: %s", council_name)
+    _LOGGER.info(LOG_PREFIX + "Successfully set up UK Bin Collection Data for council: %s", council_name)
     return True
