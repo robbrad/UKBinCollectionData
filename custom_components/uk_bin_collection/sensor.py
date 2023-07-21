@@ -9,11 +9,12 @@ from homeassistant.core import HomeAssistant
 # Make sure the 'uk_bin_collection' library is installed for this import to work
 from uk_bin_collection.uk_bin_collection import collect_data
 
-DEFAULT_NAME = "UK Bin Collection Sensor"
+DEFAULT_NAME = "UK Bin Collection Data"
 DOMAIN = "uk_bin_collection"
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up UK Bin Collection config entry."""
+    """Set up UK Bin Collection Data config entry."""
     data = entry.data
     args = [
         data["council"],
@@ -41,7 +42,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 class UkBinCollectionSensor(SensorEntity):
-    """Representation of a UK Bin Collection Sensor."""
+    """Representation of a UK Bin Collection Data."""
 
     def __init__(self, entry_id: str, name: str):
         """Initialize the sensor."""
@@ -80,5 +81,6 @@ class UkBinCollectionSensor(SensorEntity):
                 next_collection_date = min(bins, key=lambda x: x["collectionDate"])["collectionDate"]
                 self._state = next_collection_date
 
+
 # Config Flow for UK Bin Collection
-config_entries.HANDLERS.register(DOMAIN, "UK Bin Collection", lambda _: True)
+config_entries.HANDLERS.register(DOMAIN, "UK Bin Collection Data", lambda _: True)

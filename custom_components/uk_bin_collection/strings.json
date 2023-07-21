@@ -1,27 +1,30 @@
 {
-    "config_flow": {
+    "title": "UK Bin Collection Data",
+    "config": {
         "step": {
             "user": {
-                "title": "UK Bin Collection Configuration",
-                "description": "Please provide the following information:",
+                "title": "Select the council",
                 "data": {
-                    "council": "Select the council:"
-                }
+                    "name": "Location name",
+                    "council": "Council"
+                },
+                "description": "Please see [here](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) if your council isn't listed"
             },
             "council": {
-                "title": "UK Bin Collection Configuration",
-                "description": "Please provide the following information:",
+                "title": "Provide council details",
                 "data": {
-                    "url": "URL to fetch bin collection data:",
-                    "uprn": "UPRN (Unique Property Reference Number):",
-                    "postcode": "Postcode of the address:",
-                    "house_number": "House number of the address:",
-                    "usrn": "USRN (Unique Street Reference Number):",
+                    "url": "URL to fetch bin collection data",
+                    "uprn": "UPRN (Unique Property Reference Number)",
+                    "postcode": "Postcode of the address",
+                    "number": "House number of the address",
+                    "usrn": "USRN (Unique Street Reference Number)",
                     "submit": "Submit"
-                }
+                },
+                "description": "Please refer to your councils [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) entry for details on what to enter"
             }
         },
         "error": {
+            "name": "Please enter a location name",
             "council": "Please select a council"
         }
     }

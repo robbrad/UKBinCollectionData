@@ -8,7 +8,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import CONF_NAME, TEMP_CELSIUS
 
-DEFAULT_NAME = "UK Bin Collection Sensor"
+DEFAULT_NAME = "UK Bin Collection Data"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -16,6 +16,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Required("url"): str,
     }
 )
+
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the sensor platform."""
@@ -27,6 +28,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         data = await response.json()
 
     async_add_entities([UkBinCollectionSensor(name, data)], True)
+
 
 class UkBinCollectionSensor(SensorEntity):
     """Representation of a Sensor."""
