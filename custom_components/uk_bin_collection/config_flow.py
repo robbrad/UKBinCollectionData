@@ -1,11 +1,16 @@
 import aiohttp
 import json
+import logging
 import voluptuous as vol
 from homeassistant import config_entries, core
 import homeassistant.helpers.config_validation as cv
 
 DOMAIN = "uk_bin_collection"
 
+_LOGGER = logging.getLogger(__name__)
+
+# Define a prefix for log entries
+LOG_PREFIX = "[UKBinCollection] "
 
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def __init__(self):
@@ -24,7 +29,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Returns a config flow form schema based on a specific council's fields."""
         if self.councils_data is None:
             self.councils_data = await self.get_councils_json()
-        council_schema = vol.Schema()
+        council_schema = vol.Schema({})
         if "SKIP_GET_URL" not in self.councils_data[council]:
             council_schema = council_schema.extend({vol.Required("url", default=""): cv.string})
         if "uprn" in self.councils_data[council]:
@@ -56,10 +61,12 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # Input is valid, set data
                 user_input["council"] = self.council_names[self.council_options.index(user_input["council"])]
                 self.data = user_input
+                _LOGGER.info(LOG_PREFIX + "User input: %s", user_input)
                 # Return the form of the next step
                 return await self.async_step_council()
 
         # Show the configuration form to the user with the dropdown for the "council" field
+        _LOGGER.info(LOG_PREFIX + "Showing user form with options: %s", self.council_options)
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema({vol.Required("council", default=""): vol.In(self.council_options)}),
@@ -75,21 +82,29 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if "SKIP_GET_URL" in self.councils_data[self.data["council"]]:
                 user_input["skip_get_url"] = "skip_get_url"
                 user_input["url"] = self.councils_data[self.data["council"]]["url"]
+
+            # Save the selected council in the user input
+            user_input["council"] = self.data["council"]
+
             # Create the config entry
+            _LOGGER.info(LOG_PREFIX + "Creating config entry with data: %s", user_input)
             return self.async_create_entry(title="UK Bin Collection", data=user_input)
 
         # Show the configuration form to the user with the specific councils necessary fields
+        council_schema = await self.get_council_schema(self.data["council"])
+        _LOGGER.info(LOG_PREFIX + "Showing council form with schema: %s", council_schema)
         return self.async_show_form(
             step_id="council",
-            data_schema=self.get_council_schema(self.data["council"]),
+            data_schema=council_schema,
             errors=errors,
         )
 
     async def async_step_init(self, user_input=None):
         """Handle a flow initiated by the user."""
+        _LOGGER.info(LOG_PREFIX + "Initiating flow with user input: %s", user_input)
         return await self.async_step_user(user_input)
 
-    async def async_get_options_flow(config_entry):
+    async def async_get_options_flow(self, config_entry):
         """Handle an options flow initiated by the user."""
         return OptionsFlowHandler(config_entry)
 
@@ -102,9 +117,15 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None) -> None:
         """Manage the options."""
         if user_input is not None:
+            _LOGGER.info(LOG_PREFIX + "Options flow user input: %s", user_input)
             return self.async_create_entry(title="", data=user_input)
 
+        # Access the data from the config_entry parameter
+        council_data = self.config_entry.data
+        council_schema = await UkBinCollectionConfigFlow().get_council_schema(council_data["council"])
+
+        _LOGGER.info(LOG_PREFIX + "Showing options form with schema: %s", council_schema)
         return self.async_show_form(
             step_id="council",
-            data_schema=UkBinCollectionConfigFlow.get_council_schema(self.data["council"]),
+            data_schema=council_schema,
         )
