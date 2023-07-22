@@ -43,6 +43,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity[UKBinCollectionDataUpdateCoord
         """Initialize a UK Bin Collection Data sensor."""
         super().__init__(coordinator)
         self.type = type
+        self._name = f"{coordinator.name} {self.type}"
         self._attr_name = f"{coordinator.name} {self.type}"
         self._attr_unique_id = f"{coordinator.name}_{self.type}"
         # Set state
@@ -56,6 +57,11 @@ class UKBinCollectionDataSensor(CoordinatorEntity[UKBinCollectionDataUpdateCoord
                     min(bins, key=lambda x: x["collectionDate"])["collectionDate"],
                     "%d/%m/%Y",
                 ).date()
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return self._name
 
     @property
     def state(self):
