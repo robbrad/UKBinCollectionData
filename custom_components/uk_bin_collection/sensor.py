@@ -23,7 +23,7 @@ async def async_setup_entry(
         UKBinCollectionDataSensor(coordinator, "Next Collection")
     ]
     # Add sensors for each collection type (e.g. next_collection_refuse)
-    # for collection_type in [collection["type"] for collection in coordinator.data]:
+    # for collection_type in (list(set([collection["type"] for collection in coordinator.data]))):
     #     sensors.append(UKBinCollectionDataSensor(coordinator, f"next_collection_{collection_type.capitalize()}"))
 
     async_add_entities(sensors, True)
