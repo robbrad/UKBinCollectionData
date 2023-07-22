@@ -1,16 +1,11 @@
-import aiohttp
 import json
-import logging
-import voluptuous as vol
-from homeassistant import config_entries, core
+
+import aiohttp
 import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
+from homeassistant import config_entries
 
-DOMAIN = "uk_bin_collection"
-
-_LOGGER = logging.getLogger(__name__)
-
-# Define a prefix for log entries
-LOG_PREFIX = "[UKBinCollection] "
+from .const import DOMAIN, _LOGGER, LOG_PREFIX
 
 
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

@@ -11,6 +11,6 @@
     "version": "0.1.0",
     "after_dependencies": [],
     "dependencies": [],
-    "iot_class": "cloud_push",
+    "iot_class": "cloud_polling",
     "integration_type": "service"
 }

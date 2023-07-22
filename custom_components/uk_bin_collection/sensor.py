@@ -1,54 +1,36 @@
-import asyncio
-import json
-from typing import Any, Dict
-
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN, SensorEntity
-from homeassistant.config_entries import ConfigEntry, ConfigEntryNotReady  # Add the missing import
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+)
 
-# Make sure the 'uk_bin_collection' library is installed for this import to work
-from uk_bin_collection.uk_bin_collection import collect_data
-
-DEFAULT_NAME = "UK Bin Collection Data"
-DOMAIN = "uk_bin_collection"
-
-
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up UK Bin Collection Data config entry."""
-    data = entry.data
-    args = [
-        data["council"],
-        data["url"],
-        *(f"-{key[0]}={value}" for key, value in data.items() if key not in {"council", "url"}),
-    ]
-
-    try:
-        # Get the JSON string from collect_data(args)
-        json_string = await collect_data(args)
-
-        # Parse the JSON string into a Python dictionary
-        council_data = json.loads(json_string)
-    except Exception as err:
-        raise ConfigEntryNotReady from err
-
-    hass.data[DOMAIN][entry.entry_id] = council_data
-
-    # Set up the sensor entity to display the next bin collection date
-    hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(entry, SENSOR_DOMAIN)
-    )
-
-    return True
+from .const import DOMAIN, _LOGGER, LOG_PREFIX
 
 
-class UkBinCollectionSensor(SensorEntity):
-    """Representation of a UK Bin Collection Data."""
+async def async_setup_entry(
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the entries."""
+    async_add_entities([UkBinCollectionSensor(hass.data[DOMAIN], entry)])
 
-    def __init__(self, entry_id: str, name: str):
+
+class UkBinCollectionSensor(CoordinatorEntity, SensorEntity):
+    """Implementation of the UK Bin Collection Data sensor."""
+
+    def __init__(self, coordinator: DataUpdateCoordinator, entry: SensorEntity):
         """Initialize the sensor."""
-        self._entry_id = entry_id
-        self._name = name
-        self._state = None
+        super().__init__(coordinator)
+        _LOGGER.info(LOG_PREFIX + "Setting up UK Bin Collection Data Sensor with coordinator: %s", coordinator)
+        _LOGGER.info(LOG_PREFIX + "Setting up UK Bin Collection Data Sensor with entry: %s", entry)
+        # self._id = self.coordinator.data["type"]
+        # self._councilname = entry.data["council"]
+        self._name = f"{self._councilname} bin"
+        self._attr_unique_id = f"{entry.entry_id}_next_collection"
 
     @property
     def name(self):
@@ -66,7 +48,7 @@ class UkBinCollectionSensor(SensorEntity):
         return {
             "identifiers": {(DOMAIN, self._entry_id)},
             "name": self._name,
-            "manufacturer": "Your Manufacturer",
+            "manufacturer": self._councilname,
         }
 
     async def async_update(self):
@@ -80,7 +62,3 @@ class UkBinCollectionSensor(SensorEntity):
             if bins:
                 next_collection_date = min(bins, key=lambda x: x["collectionDate"])["collectionDate"]
                 self._state = next_collection_date
-
-
-# Config Flow for UK Bin Collection
-config_entries.HANDLERS.register(DOMAIN, "UK Bin Collection Data", lambda _: True)
