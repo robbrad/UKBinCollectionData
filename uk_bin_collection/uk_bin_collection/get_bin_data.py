@@ -131,4 +131,5 @@ class AbstractGetBinDataClass(ABC):
         json_data = json.dumps(bin_data_dict, sort_keys=False, indent=4)
 
         # Output the data
+        print(json_data)
         return json_data
