@@ -53,7 +53,9 @@ def scrape_step(context, council):
         args.append(f"-s")
 
     try:
-        context.parse_result = collect_data.main(args)
+        CollectData = collect_data.UKBinCollectionApp()
+        CollectData.set_args(args)
+        context.parse_result = CollectData.run()
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Schema: {err}")
