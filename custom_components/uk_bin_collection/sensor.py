@@ -22,9 +22,8 @@ async def async_setup_entry(
     sensors = [
         UKBinCollectionDataSensor(coordinator, "Next Collection")
     ]
-    _LOGGER.info(LOG_PREFIX + "Coordinator data: %s", coordinator.data)
+    # Add sensors for each collection type (e.g. next_collection_refuse)
     # for collection_type in [collection["type"] for collection in coordinator.data]:
-    #     _LOGGER.info(LOG_PREFIX + "Collection type: %s", collection_type.capitalize())
     #     sensors.append(UKBinCollectionDataSensor(coordinator, f"next_collection_{collection_type.capitalize()}"))
 
     async_add_entities(sensors, True)
@@ -33,7 +32,7 @@ async def async_setup_entry(
 class UKBinCollectionDataSensor(CoordinatorEntity[UKBinCollectionDataUpdateCoordinator], SensorEntity):
     """Implementation of the UK Bin Collection Data sensor."""
 
-    _attr_device_class = SensorDeviceClass.DATE
+    # _attr_device_class = SensorDeviceClass.DATE
 
     def __init__(
             self,
