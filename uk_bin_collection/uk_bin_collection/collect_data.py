@@ -21,7 +21,7 @@ class UKBinCollectionApp:
             "--postcode",
             type=str,
             help="Postcode to parse - should include a space and be wrapped in "
-            "double-quotes",
+                 "double-quotes",
             required=False,
         )
         self.parser.add_argument(
@@ -68,7 +68,7 @@ class UKBinCollectionApp:
         skip_get_url = self.parsed_args.skip_get_url
         dev_mode = self.parsed_args.dev_mode
 
-        self.client_code(
+        return self.client_code(
             council_module.CouncilClass(),
             address_url,
             postcode=postcode,
