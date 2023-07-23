@@ -47,15 +47,15 @@ class UKBinCollectionDataUpdateCoordinator(DataUpdateCoordinator[object | None])
     def __init__(self, hass, data):
         """Initialize global UK Bin Collection Data updater."""
         self._hass = hass
-        self.data = data
+        self._data = data
         self.name = data["name"]
         self.args = [
-            self.data.get("council", ""),
-            self.data.get("url", ""),
-            *(f"--{key}={value}" for key, value in self.data.items() if
+            self._data.get("council", ""),
+            self._data.get("url", ""),
+            *(f"--{key}={value}" for key, value in self._data.items() if
               key not in {"name", "council", "url", "skip_get_url"}),
         ]
-        if "skip_get_url" in self.data:
+        if "skip_get_url" in self._data:
             self.args.append("--skip_get_url")
         self.ukbcd = UKBinCollectionApp()
         self.ukbcd.set_args(self.args)
@@ -67,30 +67,22 @@ class UKBinCollectionDataUpdateCoordinator(DataUpdateCoordinator[object | None])
             update_interval=SCAN_INTERVAL
         )
 
-    def get_data(self) -> object:
-        # Run UKBCD and get the JSON string
-        json_string = self.ukbcd.run()
-
-        # Parse the JSON string into a Python dictionary
-        council_data = json.loads(json_string)
-
-        # Sort data by collection date
-        council_data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-        )
-
-        return council_data
-
     async def _async_update_data(self) -> object | None:
         """Fetch council data."""
         try:
-            _LOGGER.info(LOG_PREFIX + "Args: %s", self.args)
+            _LOGGER.info(LOG_PREFIX + "Collecting data for council: %s", self._data["council"])
+            # Run UKBCD and get the JSON string
+            json_string = await self._hass.async_add_executor_job(self.ukbcd.run)
 
-            # Get council data
-            council_data = await self._hass.async_add_executor_job(self.get_data)
+            # Parse the JSON string into a Python dictionary
+            council_data = json.loads(json_string)
+
+            # Sort data by collection date
+            council_data["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            )
+            _LOGGER.info(LOG_PREFIX + "Council Data: %s", council_data)
+            return council_data
         except Exception as err:
-            _LOGGER.error(LOG_PREFIX + "Failed to collect data for council: %s", self.data["council"], exc_info=True)
+            _LOGGER.error(LOG_PREFIX + "Failed to collect data for council: %s", self._data["council"], exc_info=True)
             return None
-
-        _LOGGER.info(LOG_PREFIX + "Council Data: %s", council_data)
-        return council_data
