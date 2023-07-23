@@ -46,6 +46,7 @@ class UKBinCollectionDataUpdateCoordinator(DataUpdateCoordinator[object | None])
 
     def __init__(self, hass, data):
         """Initialize global UK Bin Collection Data updater."""
+        self._hass = hass
         self.data = data
         self.name = data["name"]
         self.args = [
@@ -56,6 +57,8 @@ class UKBinCollectionDataUpdateCoordinator(DataUpdateCoordinator[object | None])
         ]
         if "skip_get_url" in self.data:
             self.args.append("--skip_get_url")
+        self.ukbcd = UKBinCollectionApp()
+        self.ukbcd.set_args(self.args)
 
         super().__init__(
             hass,
@@ -64,23 +67,27 @@ class UKBinCollectionDataUpdateCoordinator(DataUpdateCoordinator[object | None])
             update_interval=SCAN_INTERVAL
         )
 
+    def get_data(self) -> object:
+        # Run UKBCD and get the JSON string
+        json_string = self.ukbcd.run()
+
+        # Parse the JSON string into a Python dictionary
+        council_data = json.loads(json_string)
+
+        # Sort data by collection date
+        council_data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+        )
+
+        return council_data
+
     async def _async_update_data(self) -> object | None:
         """Fetch council data."""
         try:
             _LOGGER.info(LOG_PREFIX + "Args: %s", self.args)
 
-            # Run UKBCD and get the JSON string
-            self.ukbcd = UKBinCollectionApp()
-            self.ukbcd.set_args(self.args)
-            json_string = await self.ukbcd.run()
-
-            # Parse the JSON string into a Python dictionary
-            council_data = json.loads(json_string)
-
-            # Sort data by collection date
-            council_data["bins"].sort(
-                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-            )
+            # Get council data
+            council_data = await self._hass.async_add_executor_job(self.get_data)
         except Exception as err:
             _LOGGER.error(LOG_PREFIX + "Failed to collect data for council: %s", self.data["council"], exc_info=True)
             return None
