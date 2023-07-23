@@ -85,4 +85,5 @@ if __name__ == "__main__":
 
     app = UKBinCollectionApp()
     app.set_args(sys.argv[1:])
-    app.run()
+    data = app.run()
+    print(data)
