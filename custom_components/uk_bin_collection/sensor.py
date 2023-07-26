@@ -92,7 +92,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         hass,
         _LOGGER,
         name="Bin Collection Manchester Council",
-        update_interval=timedelta(hours=6),
+        update_interval=timedelta(hours=24),
     )
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init")
     self.ukbcd = ukbcd
@@ -100,6 +100,10 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
   async def _async_update_data(self):
     async with async_timeout.timeout(10):
       _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Updating")
+      
+      #data = await self.hass.async_add_executor_job(
+      #    self.ukbcd.run()
+      #)
       data = {
             "bins": [
                 {
