@@ -10,7 +10,7 @@ from homeassistant.core import callback
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator
 import homeassistant.util.dt as dt_util
-from .const import LOG_PREFIX, STATE_ATTR_DAYS, STATE_ATTR_NEXT_COLLECTION, DEVICE_CLASS
+from .const import LOG_PREFIX, STATE_ATTR_DAYS, STATE_ATTR_NEXT_COLLECTION, DEVICE_CLASS, STATE_ATTR_COLOUR
 """The UK Bin Collection Data integration."""
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.start import async_at_started
@@ -92,7 +92,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         hass,
         _LOGGER,
         name="Bin Collection Manchester Council",
-        update_interval=timedelta(hours=24),
+        update_interval=timedelta(seconds=10),
     )
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init")
     self.ukbcd = ukbcd
@@ -107,20 +107,44 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
       data = {
             "bins": [
                 {
-                    "type": "Mixed Recycling (Cans, Plastics & Glass)",
-                    "collectionDate": "21/07/2023"
+                    "type": "Empty Standard Mixed Recycling",
+                    "collectionDate": "29/07/2023"
                 },
                 {
-                    "type": "Non-Recyclable Refuse",
-                    "collectionDate": "28/07/2023"
+                    "type": "Empty Standard Garden Waste",
+                    "collectionDate": "29/07/2023"
                 },
                 {
-                    "type": "Paper & Cardboard",
-                    "collectionDate": "28/07/2023"
+                    "type": "Empty Standard General Waste",
+                    "collectionDate": "05/08/2023"
                 },
                 {
-                    "type": "Food Waste",
-                    "collectionDate": "21/07/2023"
+                    "type": "Empty Standard Garden Waste",
+                    "collectionDate": "12/08/2023"
+                },
+                {
+                    "type": "Empty Standard Mixed Recycling",
+                    "collectionDate": "12/08/2023"
+                },
+                {
+                    "type": "Empty Standard General Waste",
+                    "collectionDate": "19/08/2023"
+                },
+                {
+                    "type": "Empty Standard Mixed Recycling",
+                    "collectionDate": "26/08/2023"
+                },
+                {
+                    "type": "Empty Standard Garden Waste",
+                    "collectionDate": "26/08/2023"
+                },
+                {
+                    "type": "Empty Standard General Waste",
+                    "collectionDate": "02/09/2023"
+                },
+                {
+                    "type": "Empty Standard Mixed Recycling",
+                    "collectionDate": "09/09/2023"
                 }
             ]
         }
@@ -155,7 +179,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     def extra_state_attributes(self):
         """Return the state attributes of the bins."""
         return {
-            #STATE_ATTR_COLOUR: self._colour,
+            STATE_ATTR_COLOUR: self._colour,
             STATE_ATTR_NEXT_COLLECTION: self._next_collection,
             STATE_ATTR_DAYS: self._days,
         }
@@ -168,6 +192,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         self._next_collection = parser.parse(bin_info["collectionDate"]).date()
         self._hidden = False
         self._icon = "mdi:trash-can"
+        self._colour = "red"
         self._state = "unknown"
 
         _LOGGER.info(f"{LOG_PREFIX} Data Stored in self.next_collection: {self._next_collection}")
@@ -184,15 +209,15 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         _LOGGER.info(f"{LOG_PREFIX} _days: {self._days}")
 
         if next_collection == now.date():
-            self._state = "today"
+            self._state = "Today"
         elif next_collection == (now + timedelta(days=1)).date():
-            self._state = "tomorrow"
+            self._state = "Tomorrow"
         elif next_collection >= this_week_start and next_collection <= this_week_end:
-            self._state = "this_week"
+            self._state = "This Week"
         elif next_collection >= next_week_start and next_collection <= next_week_end:
-            self._state = "next_week"
+            self._state = "Next Week"
         elif next_collection > next_week_end:
-            self._state = "future"
+            self._state = "Future"
         else:
             self._state = "unknown"
 
@@ -223,15 +248,15 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         """Return the next collection of the bin."""
         return self._next_collection
 
-    #@property
-    #def colour(self):
-    #    """Return the colour of the bin."""
-    #    return self._colour
-
     @property
     def icon(self):
         """Return the entity icon."""
         return self._icon
+
+    @property
+    def colour(self):
+        """Return the entity icon."""
+        return self._colour
 
     @property
     def unique_id(self):
