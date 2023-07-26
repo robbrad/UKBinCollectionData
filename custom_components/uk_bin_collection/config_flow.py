@@ -3,9 +3,13 @@ import json
 import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
+
 from homeassistant import config_entries
 
-from .const import DOMAIN, _LOGGER, LOG_PREFIX
+import logging
+_LOGGER = logging.getLogger(__name__)
+
+from .const import DOMAIN, LOG_PREFIX
 
 
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
