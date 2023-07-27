@@ -3,7 +3,7 @@ import json
 import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
+from homeassistant.core import callback
 from homeassistant import config_entries
 
 import logging
@@ -131,8 +131,13 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.info(LOG_PREFIX + "Initiating flow with user input: %s", user_input)
         return await self.async_step_user(user_input)
 
-    async def async_get_options_flow(self, config_entry):
-        """Handle an options flow initiated by the user."""
+    @staticmethod
+    @callback
+    def async_get_options_flow(
+        config_entry,
+    ) -> config_entries.OptionsFlow:
+        _LOGGER.info(LOG_PREFIX + "Options flow config_entry: %s", config_entry)
+        """Get the options flow for this handler."""
         return OptionsFlowHandler(config_entry)
 
 
@@ -140,6 +145,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
         self.config_entry = config_entry
+        self.options = dict(config_entry.options)
 
     async def async_step_init(self, user_input=None) -> None:
         """Manage the options."""
