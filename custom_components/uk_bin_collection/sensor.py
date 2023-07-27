@@ -123,7 +123,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name="Bin Collection Manchester Council",
-            update_interval=timedelta(seconds=10),
+            update_interval=timedelta(hours=12),
         )
         _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init")
         self.ukbcd = ukbcd
