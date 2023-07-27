@@ -2,6 +2,7 @@
 from datetime import timedelta, datetime
 from dateutil import parser
 import async_timeout
+import json
 
 
 from homeassistant.components.sensor import SensorEntity
@@ -78,7 +79,7 @@ def get_latest_collection_info(data) -> list:
 
     # Create a list to store the next collection date for each type
     next_collection_dates = []
-
+    _LOGGER.info(f"{LOG_PREFIX} Data Supplied: {data} and type of data is {type(data)}")
     # Iterate through each bin in the data
     for bin_data in data["bins"]:
         bin_type = bin_data["type"]
@@ -131,56 +132,11 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         async with async_timeout.timeout(10):
             _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Updating")
 
-            # data = await self.hass.async_add_executor_job(
-            #    self.ukbcd.run()
-            # )
-            data = {
-                "bins": [
-                    {
-                        "type": "Empty Standard Mixed Recycling",
-                        "collectionDate": "29/07/2023",
-                    },
-                    {
-                        "type": "Empty Standard Garden Waste",
-                        "collectionDate": "29/07/2023",
-                    },
-                    {
-                        "type": "Empty Standard General Waste",
-                        "collectionDate": "06/08/2023",
-                    },
-                    {
-                        "type": "Empty Standard Garden Waste",
-                        "collectionDate": "12/08/2023",
-                    },
-                    {
-                        "type": "Empty Standard Mixed Recycling",
-                        "collectionDate": "12/08/2023",
-                    },
-                    {
-                        "type": "Empty Standard General Waste",
-                        "collectionDate": "19/08/2023",
-                    },
-                    {
-                        "type": "Empty Standard Mixed Recycling",
-                        "collectionDate": "26/08/2023",
-                    },
-                    {
-                        "type": "Empty Standard Garden Waste",
-                        "collectionDate": "26/08/2023",
-                    },
-                    {
-                        "type": "Empty Standard General Waste",
-                        "collectionDate": "02/09/2023",
-                    },
-                    {
-                        "type": "Empty Standard Mixed Recycling",
-                        "collectionDate": "09/09/2023",
-                    },
-                ]
-            }
-            _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp: {data}")
+            data = await self.hass.async_add_executor_job(self.ukbcd.run)
 
-        return get_latest_collection_info(data)
+            _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp: {data}")
+            
+        return get_latest_collection_info(json.loads(data))
 
 
 class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
