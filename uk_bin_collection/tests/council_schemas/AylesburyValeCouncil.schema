@@ -1,0 +1,148 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome2",
+    "definitions": {
+        "Welcome2": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "Envelope": {
+                    "$ref": "#/definitions/Envelope"
+                }
+            },
+            "required": [
+                "Envelope"
+            ],
+            "title": "Welcome2"
+        },
+        "Envelope": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "Body": {
+                    "$ref": "#/definitions/Body"
+                },
+                "_xmlns:soap": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http"
+                    ]
+                },
+                "_xmlns:xsi": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http"
+                    ]
+                },
+                "_xmlns:xsd": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http"
+                    ]
+                },
+                "__prefix": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "Body",
+                "__prefix",
+                "_xmlns:soap",
+                "_xmlns:xsd",
+                "_xmlns:xsi"
+            ],
+            "title": "Envelope"
+        },
+        "Body": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "GetCollectionsResponse": {
+                    "$ref": "#/definitions/GetCollectionsResponse"
+                },
+                "__prefix": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "GetCollectionsResponse",
+                "__prefix"
+            ],
+            "title": "Body"
+        },
+        "GetCollectionsResponse": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "GetCollectionsResult": {
+                    "$ref": "#/definitions/GetCollectionsResult"
+                },
+                "_xmlns": {
+                    "type": "string",
+                    "format": "uri",
+                    "qt-uri-protocols": [
+                        "http"
+                    ]
+                }
+            },
+            "required": [
+                "GetCollectionsResult",
+                "_xmlns"
+            ],
+            "title": "GetCollectionsResponse"
+        },
+        "GetCollectionsResult": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "BinCollection": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BinCollection"
+                    }
+                }
+            },
+            "required": [
+                "BinCollection"
+            ],
+            "title": "GetCollectionsResult"
+        },
+        "BinCollection": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "Date": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "Refuse": {
+                    "type": "string",
+                    "format": "boolean"
+                },
+                "Garden": {
+                    "type": "string",
+                    "format": "boolean"
+                },
+                "Recycling": {
+                    "type": "string",
+                    "format": "boolean"
+                },
+                "Food": {
+                    "type": "string",
+                    "format": "boolean"
+                }
+            },
+            "required": [
+                "Date",
+                "Food",
+                "Garden",
+                "Recycling",
+                "Refuse"
+            ],
+            "title": "BinCollection"
+        }
+    }
+}
