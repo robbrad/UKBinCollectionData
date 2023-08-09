@@ -8,6 +8,7 @@ Feature: Test each council output matches expected results in /outputs
 
         Examples: Testing : <council>
             | council |
+            | AylesburyValeCouncil |
             | BasingstokeCouncil |
             | BCPCouncil |
             | BexleyCouncil |
