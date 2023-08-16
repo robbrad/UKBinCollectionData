@@ -1,0 +1,24 @@
+{
+    "bins": [
+        {
+            "type": "Food",
+            "collectionDate": "21/08/2023",
+            "previousCollectionDate": "14/08/2023"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "21/08/2023",
+            "previousCollectionDate": "07/08/2023"
+        },
+        {
+            "type": "Refuse",
+            "collectionDate": "28/08/2023",
+            "previousCollectionDate": "14/08/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "28/08/2023",
+            "previousCollectionDate": "14/08/2023"
+        }
+    ]
+}
