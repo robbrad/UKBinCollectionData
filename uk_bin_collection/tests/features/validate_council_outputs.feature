@@ -40,6 +40,7 @@ Feature: Test each council output matches expected results in /outputs
             | HighPeakCouncil |
             | HuntingdonDistrictCouncil |
             | KingstonUponThamesCouncil |
+            | LancasterCityCouncil |
             | LeedsCityCouncil |
             | LisburnCastlereaghCityCouncil |
             | LondonBoroughHounslow |
