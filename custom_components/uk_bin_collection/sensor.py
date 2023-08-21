@@ -89,7 +89,7 @@ def get_latest_collection_info(data) -> list:
         collection_date = datetime.strptime(collection_date_str, "%d/%m/%Y")
 
         # Only consider collection dates that are greater than or equal to the current date
-        if collection_date >= current_date:
+        if collection_date.date() >= current_date.date():
             # Find the index of the bin type in the list
             index = next(
                 (
@@ -171,7 +171,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         bin_info = self.coordinator.data[self.idx]
         self._id = bin_info["type"]
         self._name = bin_info["type"]
-        self._next_collection = parser.parse(bin_info["collectionDate"]).date()
+        self._next_collection = parser.parse(bin_info["collectionDate"], dayfirst=True).date()
         self._hidden = False
         self._icon = "mdi:trash-can"
         self._colour = "red"
