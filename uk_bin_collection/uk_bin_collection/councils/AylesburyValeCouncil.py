@@ -48,39 +48,11 @@ class CouncilClass(AbstractGetBinDataClass):
         for i in range(len(all_collections)):
 
             collection_date = datetime.strptime(all_collections[i].Date.get_text(), "%Y-%m-%dT%H:%M:%S")
-            # Often the first BinCollection is the previous one
-            # The DateTime is set at 7AM so only compare the date element to make sure it captures today's collection at any time of day.
-            if collection_date.date() < datetime.today().date():
-                continue
+            children = all_collections[i].find_all(["Refuse", "Recycling", "Garden", "Food"], string='true')
 
-            if all_collections[i].Refuse.get_text() == "true":
-                bin_type = "Refuse"
+            for collection in children:
                 dict_data = {
-                    "type": bin_type,
-                    "collectionDate": collection_date.strftime(date_format)
-                }
-                data["bins"].append(dict_data)
-
-            if all_collections[i].Recycling.get_text() == "true":
-                bin_type = "Recycling"
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": collection_date.strftime(date_format)
-                }
-                data["bins"].append(dict_data)
-
-            if all_collections[i].Garden.get_text() == "true":
-                bin_type = "Garden"
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": collection_date.strftime(date_format)
-                }
-                data["bins"].append(dict_data)
-
-            if all_collections[i].Food.get_text() == "true":
-                bin_type = "Food"
-                dict_data = {
-                    "type": bin_type,
+                    "type": collection.name,
                     "collectionDate": collection_date.strftime(date_format)
                 }
                 data["bins"].append(dict_data)
