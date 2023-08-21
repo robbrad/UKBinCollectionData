@@ -38,10 +38,10 @@
         "Type": {
             "type": "string",
             "enum": [
-                "Recycling",
-                "Garden",
+                "Refuse",
                 "Food",
-                "Refuse"
+                "Garden",
+                "Recycling"
             ],
             "title": "Type"
         }
