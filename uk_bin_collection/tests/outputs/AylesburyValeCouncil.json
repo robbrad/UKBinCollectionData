@@ -1,11 +1,19 @@
 {
     "bins": [
         {
-            "type": "Recycling",
-            "collectionDate": "14/08/2023"
+            "type": "Refuse",
+            "collectionDate": "07/08/2023"
+        },
+        {
+            "type": "Food",
+            "collectionDate": "07/08/2023"
         },
         {
             "type": "Garden",
+            "collectionDate": "14/08/2023"
+        },
+        {
+            "type": "Recycling",
             "collectionDate": "14/08/2023"
         },
         {
@@ -21,11 +29,11 @@
             "collectionDate": "21/08/2023"
         },
         {
-            "type": "Recycling",
+            "type": "Garden",
             "collectionDate": "29/08/2023"
         },
         {
-            "type": "Garden",
+            "type": "Recycling",
             "collectionDate": "29/08/2023"
         },
         {
@@ -41,11 +49,11 @@
             "collectionDate": "04/09/2023"
         },
         {
-            "type": "Recycling",
+            "type": "Garden",
             "collectionDate": "11/09/2023"
         },
         {
-            "type": "Garden",
+            "type": "Recycling",
             "collectionDate": "11/09/2023"
         },
         {
@@ -61,11 +69,11 @@
             "collectionDate": "18/09/2023"
         },
         {
-            "type": "Recycling",
+            "type": "Garden",
             "collectionDate": "25/09/2023"
         },
         {
-            "type": "Garden",
+            "type": "Recycling",
             "collectionDate": "25/09/2023"
         },
         {
@@ -81,11 +89,11 @@
             "collectionDate": "02/10/2023"
         },
         {
-            "type": "Recycling",
+            "type": "Garden",
             "collectionDate": "09/10/2023"
         },
         {
-            "type": "Garden",
+            "type": "Recycling",
             "collectionDate": "09/10/2023"
         },
         {
@@ -101,11 +109,11 @@
             "collectionDate": "16/10/2023"
         },
         {
-            "type": "Recycling",
+            "type": "Garden",
             "collectionDate": "23/10/2023"
         },
         {
-            "type": "Garden",
+            "type": "Recycling",
             "collectionDate": "23/10/2023"
         },
         {
