@@ -37,6 +37,7 @@ Feature: Test each council output matches expected results in /outputs
             | FenlandDistrictCouncil |
             | GlasgowCityCouncil |
             | GuildfordCouncil |
+            | HarrogateBoroughCouncil |
             | HighPeakCouncil |
             | HuntingdonDistrictCouncil |
             | KingstonUponThamesCouncil |
