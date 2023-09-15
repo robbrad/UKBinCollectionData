@@ -122,7 +122,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            name="Bin Collection Manchester Council",
+            name="UK Bin Collection Data",
             update_interval=timedelta(hours=12),
         )
         _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init")
@@ -142,7 +142,6 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
 class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     """Implementation of the UK Bin Collection Data sensor."""
 
-    # _attr_device_class = SensorDeviceClass.DATE
     device_class = DEVICE_CLASS
 
     def __init__(self, coordinator, idx) -> None:
