@@ -22,7 +22,19 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 
 ---
 
-## Usage
+## Home Assistant Usage
+
+### Install
+
+1. Open the folder for your Home Assistant configuration (where you find `configuration.yaml`).
+1. If you do not have a `custom_components` folder there, you need to create it.
+1. [Download](https://github.com/robbrad/UKBinCollectionData/archive/refs/heads/master.zip) this repository then copy the folder `custom_components/uk_bin_collection` into the `custom_components` folder you found/created in the previous step.
+1. Restart your Home Assistant.
+1. In the Home Assistant UI go to "Configuration" -> "Integrations" click "+" and search for "UK Bin Collection Data".
+
+---
+
+## Standalone Usage
 ```commandline
 PS G:\Projects\Python\UKBinCollectionData\uk_bin_collection\collect_data.py
 usage: collect_data.py [-h] [-p POSTCODE] [-n NUMBER] [-u UPRN] module URL
@@ -39,7 +51,6 @@ options:
   -n NUMBER, --number NUMBER            House number to parse                   (optional)
   -u UPRN, --uprn UPRN                  UPRN to parse                           (optional)
 ```
-
 
 ### Quickstart
 The basic command to execute a script is:
@@ -68,9 +79,12 @@ Some scripts rely on external packages to function. A list of required scripts f
 Install can be done via 
 `poetry install` from within the root of the repo.
 
+---
 
-### UPRN Finder
+## UPRN Finder
 Some councils make use of the UPRN (Unique property reference number) to identify your property. You can find yours [here](https://www.findmyaddress.co.uk/search) or [here](https://uprn.uk/).
+
+---
 
 ## Requesting your council
 To make a request for your council, first check the [Issues](https://github.com/robbrad/UKBinCollectionData/issues) page to make sure it has not already been requested. If not, please fill in a new [Council Request](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) form, including as much information as possible, including:
