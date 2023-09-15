@@ -1,4 +1,4 @@
-[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+[![Made with Python](https://img.shields.io/badge/Made%20With%20Python-red?style=for-the-badge&logo=python&logoColor=white&labelColor=red)](https://www.python.org)
 
 ![GitHub](https://img.shields.io/github/license/robbrad/UKBinCollectionData?style=for-the-badge) ![GitHub issues](https://img.shields.io/github/issues-raw/robbrad/UKBinCollectionData?style=for-the-badge) ![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/robbrad/UKBinCollectionData?style=for-the-badge)
 ![GitHub contributors](https://img.shields.io/github/contributors/robbrad/UKBinCollectionData?style=for-the-badge)
@@ -24,13 +24,22 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 
 ## Home Assistant Usage
 
-### Install
+### Install with HACS (recommended)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/robbrad/UKBinCollectionData)
+
+1. Ensure you have [HACS](https://hacs.xyz/) installed
+1. In the Home Assistant UI go to `HACS` > `Integrations` > `⋮` > `Custom repositories`.
+1. Enter `https://github.com/robbrad/UKBinCollectionData` in the `Repository` field.
+1. Select `Integration` as the category then click `ADD`.
+1. Click `+ Add Integration` and search for and select `UK Bin Collection Data` then click `Download`.
+
+### Install manually
 
 1. Open the folder for your Home Assistant configuration (where you find `configuration.yaml`).
 1. If you do not have a `custom_components` folder there, you need to create it.
 1. [Download](https://github.com/robbrad/UKBinCollectionData/archive/refs/heads/master.zip) this repository then copy the folder `custom_components/uk_bin_collection` into the `custom_components` folder you found/created in the previous step.
 1. Restart your Home Assistant.
-1. In the Home Assistant UI go to "Settings" -> "Devices & Services" click "+ Add Integration" and search for "UK Bin Collection Data".
+1. In the Home Assistant UI go to `Settings` > `Devices & Services` click `+ Add Integration` and search for `UK Bin Collection Data`.
 
 ---
 
