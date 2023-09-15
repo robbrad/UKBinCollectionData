@@ -1,0 +1,16 @@
+{
+    "domain": "uk_bin_collection",
+    "name": "UK Bin Collection Data",
+    "documentation": "https://github.com/robbrad/UKBinCollectionData/wiki",
+    "issue_tracker": "https://github.com/robbrad/UKBinCollectionData/issues",
+    "requirements": ["uk-bin-collection"],
+    "codeowners": ["@robbrad"],
+    "config_flow": true,
+    "zeroconf": [],
+    "homeassistant": "2021.1.0",
+    "version": "0.1.0",
+    "after_dependencies": [],
+    "dependencies": [],
+    "iot_class": "cloud_polling",
+    "integration_type": "service"
+}
