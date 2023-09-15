@@ -23,10 +23,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         LOG_PREFIX + "Setting up UK Bin Collection Data for council: %s", council_name
     )
 
-    # coordinator = UKBinCollectionDataUpdateCoordinator(hass, entry.data)
-
     hass.data.setdefault(DOMAIN, {})
-    # hass.data[DOMAIN][entry.entry_id] = coordinator
 
     if entry.unique_id is None:
         name = entry.data["name"]
