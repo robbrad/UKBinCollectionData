@@ -30,7 +30,7 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 1. If you do not have a `custom_components` folder there, you need to create it.
 1. [Download](https://github.com/robbrad/UKBinCollectionData/archive/refs/heads/master.zip) this repository then copy the folder `custom_components/uk_bin_collection` into the `custom_components` folder you found/created in the previous step.
 1. Restart your Home Assistant.
-1. In the Home Assistant UI go to "Configuration" -> "Integrations" click "+" and search for "UK Bin Collection Data".
+1. In the Home Assistant UI go to "Settings" -> "Devices & Services" click "+ Add Integration" and search for "UK Bin Collection Data".
 
 ---
 
