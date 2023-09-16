@@ -41,6 +41,7 @@ jobs:
         with:
           commit-message: Update pyproject.toml version
           title: Update pyproject.toml version
+          base: master
         continue-on-error: true
 
       - name: Build and publish package
