@@ -32,6 +32,8 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 1. Enter `https://github.com/robbrad/UKBinCollectionData` in the `Repository` field.
 1. Select `Integration` as the category then click `ADD`.
 1. Click `+ Add Integration` and search for and select `UK Bin Collection Data` then click `Download`.
+1. Restart your Home Assistant.
+1. In the Home Assistant UI go to `Settings` > `Devices & Services` click `+ Add Integration` and search for `UK Bin Collection Data`.
 
 ### Install manually
 
