@@ -32,9 +32,16 @@ jobs:
         id: tag
         run: echo ::set-output name=TAG_NAME::$(echo $GITHUB_REF | cut -d / -f 3)
 
-      - name: Update version in pyproject.toml
+      - name: Update pyproject.toml version
         run: |
-          sed -i "s/version = "0.1.0"/version = "${{ steps.tag.outputs.TAG_NAME }}"/g" pyproject.toml
+          sed -i -E 's/version = \"([0-9.]+)\"/version = "${{ steps.tag.outputs.TAG_NAME }}"/g' pyproject.toml
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Update pyproject.toml version
+          title: Update pyproject.toml version
+        continue-on-error: true
 
       - name: Build and publish package
         run: |
