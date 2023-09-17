@@ -26,7 +26,7 @@ You might want to use this in a Home Automation - for example say you had an LED
 Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulsoup4/) to scrape data, although others use different approaches, such as emulating web browser behaviour, or reading data from CSV files.
 
 [![](https://img.shields.io/badge/-41BDF5?style=for-the-badge&logo=homeassistant&logoColor=white&label=HomeAssistant+Thread)](https://community.home-assistant.io/t/bin-waste-collection/55451)
-[![](https://img.shields.io/badge/-white?style=for-the-badge&logo=github&logoColor=white&label=Request+a+council)](https://github.com/robbrad/UKBinCollectionData/issues/new/choose)
+[![](https://img.shields.io/badge/Request%20a%20council-gray?style=for-the-badge&logo=github&logoColor=white)](https://github.com/robbrad/UKBinCollectionData/issues/new/choose)
 
 ---
 
