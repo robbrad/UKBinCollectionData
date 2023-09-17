@@ -1,16 +1,24 @@
-name: Build and publish package to PyPi
+name: Publish Release
 
 on:
   push:
-    tags:
-      - '*'
+    # Trigger only when uk_bin_collection/uk_bin_collection directory changes
+    paths:
+      - "uk_bin_collection/uk_bin_collection/**"
+    branches: [ "master" ]
 
 jobs:
-  deploy:
+  release:
     runs-on: ubuntu-latest
     environment: release
+    concurrency: release
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -28,23 +36,36 @@ jobs:
       - name: Install
         run: make install
 
-      - name: Extract tag name
-        id: tag
-        run: echo ::set-output name=TAG_NAME::$(echo $GITHUB_REF | cut -d / -f 3)
-
-      - name: Update pyproject.toml version
-        run: |
-          sed -i -E 's/version = \"([0-9.]+)\"/version = "${{ steps.tag.outputs.TAG_NAME }}"/g' pyproject.toml
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+      - name: Python Semantic Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v8
         with:
-          commit-message: Update pyproject.toml version
-          title: Update pyproject.toml version
-          base: master
-        continue-on-error: true
+          github_token: ${{ secrets.GITHUB_TOKEN }} # May need to replace with a Personal Access Token if it fails
+
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.release.outputs.tag }}
+          allowUpdates: true
+          generateReleaseNotes: true
+
+      - name: Update manifest.json version
+        if: steps.release.outputs.released == 'true'
+        uses: jossef/action-set-json-field@v2.1
+        with:
+          file: custom_components/uk_bin_collection/manifest.json
+          field: version
+          value: ${{ steps.release.outputs.tag }}
+
+      - name: Update manifest.json requirements
+        if: steps.release.outputs.released == 'true'
+        uses: jossef/action-set-json-field@v2.1
+        with:
+          file: custom_components/uk_bin_collection/manifest.json
+          field: requirements[0]
+          value: uk-bin-collection>=${{ steps.release.outputs.tag }}
 
       - name: Build and publish package
+        if: steps.release.outputs.released == 'true'
         run: |
           poetry config pypi-token.pypi "${{ secrets.PYPI_API_KEY }}"
           poetry publish --build
