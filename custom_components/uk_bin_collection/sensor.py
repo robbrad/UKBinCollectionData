@@ -43,6 +43,7 @@ async def async_setup_entry(
     _LOGGER.info(LOG_PREFIX + "Setting up UK Bin Collection Data platform.")
     _LOGGER.info(LOG_PREFIX + "Data Supplied: %s", config.data)
 
+    name = config.data.get("name", "")
     args = [
         config.data.get("council", ""),
         config.data.get("url", ""),
@@ -61,7 +62,7 @@ async def async_setup_entry(
     ukbcd.set_args(args)
     _LOGGER.info(f"{LOG_PREFIX} Args set")
 
-    coordinator = HouseholdBinCoordinator(hass, ukbcd)
+    coordinator = HouseholdBinCoordinator(hass, ukbcd, name)
 
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init Refresh")
     await coordinator.async_config_entry_first_refresh()
@@ -117,7 +118,7 @@ def get_latest_collection_info(data) -> list:
 class HouseholdBinCoordinator(DataUpdateCoordinator):
     """Household Bin Coordinator"""
 
-    def __init__(self, hass, ukbcd):
+    def __init__(self, hass, ukbcd, name):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -127,6 +128,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         )
         _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init")
         self.ukbcd = ukbcd
+        self.name = name
 
     async def _async_update_data(self):
         async with async_timeout.timeout(10):
@@ -168,8 +170,11 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     def apply_values(self):
         _LOGGER.info(f"{LOG_PREFIX} Applying values for sensor {self.idx}")
         bin_info = self.coordinator.data[self.idx]
-        self._id = bin_info["type"]
-        self._name = bin_info["type"]
+        bin_type = bin_info["type"]
+        if self.coordinator.name != "":
+            bin_type = "{} {}".format(self.coordinator.name, bin_type)
+        self._id = bin_type
+        self._name = bin_type
         self._next_collection = parser.parse(bin_info["collectionDate"], dayfirst=True).date()
         self._hidden = False
         self._icon = "mdi:trash-can"
