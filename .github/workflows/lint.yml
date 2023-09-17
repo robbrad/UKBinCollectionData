@@ -1,0 +1,22 @@
+name: Lint Commit Message
+
+on:
+  push:
+    # The branches below must be a subset of the branches above
+    branches: [ "master" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "master" ]
+
+jobs:
+  # Make sure commit messages follow the conventional commits convention:
+  # https://www.conventionalcommits.org
+  commitlint:
+    name: Lint Commit Messages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: "echo \"module.exports = {extends: ['@commitlint/config-conventional'], rules: { 'subject-case': [0], 'body-max-line-length': [0], 'footer-max-line-length': [0] }}\" > commitlint.config.js"
+      - uses: wagoid/commitlint-github-action@v5
