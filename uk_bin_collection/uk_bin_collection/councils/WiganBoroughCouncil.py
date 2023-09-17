@@ -89,6 +89,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 re.sub(r"(\d)(st|nd|rd|th)", r"\1", binCollection), "%A%d%b%Y"
             )
             if binData:
-                data[bin_type] = binData.strftime(date_format)
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": binData.strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
         return data
