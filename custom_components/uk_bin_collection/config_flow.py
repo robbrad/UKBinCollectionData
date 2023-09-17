@@ -108,13 +108,13 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input["url"] = self.councils_data[self.data["council"]]["url"]
 
             # Save the selected council in the user input
-            user_input["name"] = self.data["name"]
+            user_input["name"] = "{}".format(self.data["name"])
             user_input["council"] = self.data["council"]
 
             # Create the config entry
             _LOGGER.info(LOG_PREFIX + "Creating config entry with data: %s", user_input)
             return self.async_create_entry(
-                title="UK Bin Collection Data", data=user_input
+                title=user_input["name"], data=user_input
             )
 
         # Show the configuration form to the user with the specific councils necessary fields
