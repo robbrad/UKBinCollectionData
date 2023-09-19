@@ -1,12 +1,88 @@
 {
     "bins": [
         {
+            "type": "Mixed recycling",
+            "collectionDate": "20/09/2023"
+        },
+        {
             "type": "Household waste",
-            "collectionDate": "10/4/2020"
+            "collectionDate": "27/09/2023"
+        },
+        {
+            "type": "Garden waste recycling",
+            "collectionDate": "27/09/2023"
         },
         {
             "type": "Mixed recycling",
-            "collectionDate": "3/4/2020"
+            "collectionDate": "04/10/2023"
+        },
+        {
+            "type": "Household waste",
+            "collectionDate": "11/10/2023"
+        },
+        {
+            "type": "Garden waste recycling",
+            "collectionDate": "11/10/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "18/10/2023"
+        },
+        {
+            "type": "Household waste",
+            "collectionDate": "25/10/2023"
+        },
+        {
+            "type": "Garden waste recycling",
+            "collectionDate": "25/10/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "01/11/2023"
+        },
+        {
+            "type": "Household waste",
+            "collectionDate": "08/11/2023"
+        },
+        {
+            "type": "Garden waste recycling",
+            "collectionDate": "08/11/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "15/11/2023"
+        },
+        {
+            "type": "Household waste",
+            "collectionDate": "22/11/2023"
+        },
+        {
+            "type": "Garden waste recycling",
+            "collectionDate": "22/11/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "29/11/2023"
+        },
+        {
+            "type": "Household waste",
+            "collectionDate": "06/12/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "13/12/2023"
+        },
+        {
+            "type": "Household waste",
+            "collectionDate": "20/12/2023"
+        },
+        {
+            "type": "Household waste",
+            "collectionDate": "03/01/2024"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "10/01/2024"
         }
     ]
 }

@@ -68,7 +68,7 @@ class AbstractGetBinDataClass(ABC):
             json_output = self.output_json(bin_data_dict)
         else:
             bin_data_dict = self.parse_data(
-                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn
+                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, url=this_url
             )
             json_output = self.output_json(bin_data_dict)
 

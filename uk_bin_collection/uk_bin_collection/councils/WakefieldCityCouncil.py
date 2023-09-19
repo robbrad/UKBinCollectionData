@@ -1,7 +1,5 @@
-# This script pulls (in one hit) the data
-# from Warick District Council Bins Data
-import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
@@ -16,89 +14,61 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # UPRN passed in as an argument
-        user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
+        # Set up Selenium to run 'headless'
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_experimental_option("excludeSwitches", ["enable-logging"])
 
-        # cookies = {
-        #    'visid_incap_2049675':    'xZCc/tFgSzaFmZD7XkN3koJGuGMAAAAAQUIPAAAAAAB7QGC8d+Jmlk0i3y06Zer6',
-        #    'WSS_FullScreenMode':     'false',
-        #    'incap_ses_1184_2049675': 'a2ZQQ9lCM3wa4+23mWpuEHnAuGMAAAAAfl4ebLXAvItl6dCfbMEWoQ==',
-        # }
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
-        }
+        # Create Selenium webdriver
+        driver = webdriver.Chrome(options=options)
+        driver.get(kwargs.get("url"))
 
-        params = {
-            "uprn": user_uprn,
-        }
-
-        requests.packages.urllib3.disable_warnings()
-        s = requests.Session()  # gets cookies and keeps them
-
-        wakefield_session = s.get("https://www.wakefield.gov.uk/", headers=headers)
-        # Make a GET for the data with correct params and cookies
-        response = s.get(
-            "https://www.wakefield.gov.uk/site/Where-I-Live-Results",
-            params=params,
-            headers=headers,
-            verify=False,
-        )
-
-        # Have BS4 process the page
-        soup = BeautifulSoup(response.text, features="html.parser")
+        # Make a BS4 object
+        soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
+
         data = {"bins": []}
+        sections = soup.find_all("div", {"class": "wil_c-content-section_heading"})
+        for s in sections:
+            if s.get_text(strip=True).lower() == "bin collections":
+                rows = s.find_next_sibling("div", {"class": "c-content-section_body"}).find_all(
+                    "div", {"class": "u-mb-8"}
+                )
+                for row in rows:
+                    title = row.find("div", {"class": "u-mb-4"})
+                    collections = row.find_all("div", {"class": "u-mb-2"})
+                    if title and collections:
+                        for c in collections:
+                            if c.get_text(strip=True).lower().startswith('next collection'):
+                                # add next collection
+                                next_collection_date = datetime.strptime(
+                                    c.get_text(strip=True).replace('Next collection - ', ''),
+                                    "%A, %d %B %Y",
+                                ).strftime(date_format)
+                                dict_data = {
+                                    "type": title.get_text(strip=True).capitalize(),
+                                    "collectionDate": next_collection_date,
+                                }
+                                data["bins"].append(dict_data)
+                                # add future collections without duplicating next collection
+                                future_collections = row.find("ul", {"class": "u-mt-4"}).find_all("li")
+                                for c in future_collections:
+                                    future_collection_date = datetime.strptime(
+                                        c.get_text(strip=True),
+                                        "%A, %d %B %Y",
+                                    ).strftime(date_format)
+                                    if future_collection_date != next_collection_date:
+                                        dict_data = {
+                                            "type": title.get_text(strip=True).capitalize(),
+                                            "collectionDate": future_collection_date,
+                                        }
+                                        data["bins"].append(dict_data)
 
-        # Start a tuple for collections with (TYPE:DATE). Add the first for the bin types since they're separate
-        # elements on the page. All dates are parsed from text to datetime
-        collections = [
-            (
-                "Household waste",
-                datetime.strptime(
-                    soup.select(
-                        "#ctl00_PlaceHolderMain_Waste_output > div:nth-child(4) > "
-                        "div:nth-child(3) > div:nth-child(2)"
-                    )[0].text,
-                    "%d/%m/%Y",
-                ),
-            ),
-            (
-                "Mixed recycling",
-                datetime.strptime(
-                    soup.select(
-                        "#ctl00_PlaceHolderMain_Waste_output > div:nth-child(6) > "
-                        "div:nth-child(3) > div:nth-child(2)"
-                    )[0].text,
-                    "%d/%m/%Y",
-                ),
-            ),
-        ]
-
-        # Process the hidden future collection dates by adding them to the tuple
-        household_future_table = soup.find(
-            "table", {"class": "mb10 wilWasteContent RESIDUAL (D)FutureData"}
-        ).find_all("td")
-        for x in household_future_table:
-            collections.append(
-                ("Household waste", datetime.strptime(x.text, "%d/%m/%Y"))
-            )
-        recycling_future_table = soup.find(
-            "table", {"class": "mb10 wilWasteContent RECYCLING (D)FutureData"}
-        ).find_all("td")
-        for x in recycling_future_table:
-            collections.append(
-                ("Mixed recycling", datetime.strptime(x.text, "%d/%m/%Y"))
-            )
-
-        # Order the data by datetime, then add to and return it as a dictionary
-        ordered_data = sorted(collections, key=lambda x: x[1])
-        data = {"bins": []}
-        for item in ordered_data:
-            dict_data = {
-                "type": item[0],
-                "collectionDate": item[1].strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
         return data
