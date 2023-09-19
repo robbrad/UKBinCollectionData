@@ -10,6 +10,7 @@ Feature: Test each council output matches expected results in /outputs
             | council |
             | AylesburyValeCouncil |
             | BasingstokeCouncil |
+            | BathAndNorthEastSomersetCouncil |
             | BCPCouncil |
             | BexleyCouncil |
             | BlackburnCouncil |
