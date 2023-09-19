@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "type": "Black Rubbish Bin",
+            "collectionDate": "22/09/2023"
+        },
+        {
+            "type": "Recycling Containers",
+            "collectionDate": "22/09/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "29/09/2023"
+        }
+    ]
+}

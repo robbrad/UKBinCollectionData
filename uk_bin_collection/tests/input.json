@@ -12,6 +12,12 @@
     "url": "https://www.basingstoke.gov.uk/bincollection",
     "wiki_name": "Basingstoke Council"
   },
+  "BathAndNorthEastSomersetCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "uprn": "100120000855",
+    "url": "https://www.bathnes.gov.uk/webforms/waste/collectionday/",
+    "wiki_name": "Bath and North East Somerset Council"
+  },
   "BCPCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100040810214",
