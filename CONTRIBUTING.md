@@ -49,6 +49,12 @@ cd UKBinCollectionData
 poetry install
 poetry shell
 ```
+
+### Make sure commit messages follow the conventional commits convention:
+https://www.conventionalcommits.org
+
+Example: `feat: Add support for Cheshire East Council`
+
 ## Project Aims
 - To provide a real-world environment to learn Python and/or web scraping
 - To provide UK bin data in a standardised format for use (albeit not exclusively) with [HomeAssistant](https://www.home-assistant.io/)
