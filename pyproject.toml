@@ -64,6 +64,7 @@ major_on_zero = true
 
 [tool.semantic_release.commit_parser_options]
 allowed_tags = [
+    "chore",
     "ci",
     "docs",
     "feat",
