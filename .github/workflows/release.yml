@@ -2,23 +2,18 @@ name: Publish Release
 
 on:
   push:
-    # Trigger only when uk_bin_collection/uk_bin_collection directory changes
-    paths:
-      - "uk_bin_collection/uk_bin_collection/**"
-    branches: [ "master" ]
+    tags:
+      - '*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
     environment: release
-    concurrency: release
     permissions:
       id-token: write
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -36,36 +31,17 @@ jobs:
       - name: Install
         run: make install
 
-      - name: Python Semantic Release
-        id: release
-        uses: python-semantic-release/python-semantic-release@v8.1.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # May need to replace with a Personal Access Token if it fails
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - uses: ncipollo/release-action@v1
+      - name: Create release
+        uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.release.outputs.tag }}
-          allowUpdates: true
+          tag: ${{ env.RELEASE_VERSION }}
           generateReleaseNotes: true
-
-      - name: Update manifest.json version
-        if: steps.release.outputs.released == 'true'
-        uses: jossef/action-set-json-field@v2.1
-        with:
-          file: custom_components/uk_bin_collection/manifest.json
-          field: version
-          value: ${{ steps.release.outputs.tag }}
-
-      - name: Update manifest.json requirements
-        if: steps.release.outputs.released == 'true'
-        uses: jossef/action-set-json-field@v2.1
-        with:
-          file: custom_components/uk_bin_collection/manifest.json
-          field: requirements[0]
-          value: uk-bin-collection>=${{ steps.release.outputs.tag }}
+          prerelease: true
 
       - name: Build and publish package
-        if: steps.release.outputs.released == 'true'
         run: |
           poetry config pypi-token.pypi "${{ secrets.PYPI_API_KEY }}"
           poetry publish --build

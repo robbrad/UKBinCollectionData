@@ -1,0 +1,33 @@
+name: Bump Version
+
+on:
+  push:
+    # Trigger unless only the wiki directory changed
+    paths-ignore:
+      - "wiki/**"
+      - "**/**.md"
+    branches: [ "master" ]
+
+jobs:
+  bump:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    runs-on: ubuntu-latest
+    environment: bump
+    concurrency: bump
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Bump version
+        id: cz
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
