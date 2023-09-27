@@ -6,3 +6,6 @@ updates:
     schedule:
       interval: daily
       time: "06:00"
+    commit-message:
+      # Prefix all commit messages with "chore: "
+      prefix: "chore"
