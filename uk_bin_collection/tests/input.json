@@ -358,6 +358,13 @@
     "url": "https://selfservice.preston.gov.uk/service/Forms/FindMyNearest.aspx?Service=bins",
     "wiki_name": "Preston City Council"
   },
+  "ReigateAndBansteadBoroughCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "uprn": "68134867",
+    "url": "https://www.reigate-banstead.gov.uk/",
+    "wiki_name": "Reigate and Banstead Borough Council",
+    "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+  },
   "RochdaleCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "postcode": "OL11 5BE",
