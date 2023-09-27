@@ -55,21 +55,12 @@ requests = "*"
 selenium = "*"
 lxml = "*"
 
-[tool.semantic_release]
-version_toml = ["pyproject.toml:tool.poetry.version"]
-branch = "master"
-commit_message = "Release version {version}"
-prerelease = true
-major_on_zero = true
-
-[tool.semantic_release.commit_parser_options]
-allowed_tags = [
-    "ci",
-    "docs",
-    "feat",
-    "fix",
-    "refactor"
+[tool.commitizen]
+major_version_zero = true
+version_provider = "poetry"
+version_scheme = "semver"
+version_files = [
+    "custom_components/uk_bin_collection/manifest.json:version",
+    "custom_components/uk_bin_collection/manifest.json:requirements"
 ]
-minor_tags = ["feat"]
-patch_tags = ["fix"]
 
