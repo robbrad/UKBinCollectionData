@@ -486,7 +486,6 @@
     "wiki_name": "Vale of Glamorgan Council"
   },
   "WakefieldCityCouncil": {
-    "SKIP_GET_URL": "SKIP_GET_URL",
     "url": "https://www.wakefield.gov.uk/where-i-live/?uprn=63035490&a=115%20Elizabeth%20Drive%20Castleford%20WF10%203RR&usrn=41801243&e=445418&n=426091&p=WF10%203RR",
     "wiki_name": "Wakefield City Council",
     "wiki_command_url_override": "https://www.wakefield.gov.uk/where-i-live/?uprn=XXXXXXXXXXX&a=XXXXXXXXXXX&usrn=XXXXXXXXXXX&e=XXXXXXXXXXX&n=XXXXXXXXXXX&p=XXXXXXXXXXX",
