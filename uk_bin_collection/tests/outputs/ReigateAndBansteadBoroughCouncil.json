@@ -1,0 +1,52 @@
+{
+    "bins": [
+        {
+            "type": "Food waste",
+            "collectionDate": "03/10/2023"
+        },
+        {
+            "type": "Paper and cardboard",
+            "collectionDate": "03/10/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "10/10/2023"
+        },
+        {
+            "type": "Paper and cardboard",
+            "collectionDate": "10/10/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "10/10/2023"
+        },
+        {
+            "type": "Refuse",
+            "collectionDate": "10/10/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "17/10/2023"
+        },
+        {
+            "type": "Paper and cardboard",
+            "collectionDate": "17/10/2023"
+        },
+        {
+            "type": "Food waste",
+            "collectionDate": "24/10/2023"
+        },
+        {
+            "type": "Paper and cardboard",
+            "collectionDate": "24/10/2023"
+        },
+        {
+            "type": "Mixed recycling",
+            "collectionDate": "24/10/2023"
+        },
+        {
+            "type": "Refuse",
+            "collectionDate": "24/10/2023"
+        }
+    ]
+}

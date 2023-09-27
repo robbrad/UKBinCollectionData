@@ -63,6 +63,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthTynesideCouncil |
             | NorthumberlandCouncil |
             | PrestonCityCouncil |
+            | ReigateAndBansteadBoroughCouncil |
             | RochdaleCouncil |
             | RushcliffeBoroughCouncil |
             | RushmoorCouncil |
