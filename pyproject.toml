@@ -62,5 +62,6 @@ version_scheme = "semver"
 version_files = [
     "custom_components/uk_bin_collection/manifest.json:version",
     "custom_components/uk_bin_collection/manifest.json:requirements"
+    "custom_components/uk_bin_collection/config_flow.py:githubusercontent"
 ]
 
