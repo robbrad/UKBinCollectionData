@@ -1,12 +1,11 @@
 import json
+import logging
 
 import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-from homeassistant.core import callback
 from homeassistant import config_entries
-
-import logging
+from homeassistant.core import callback
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -31,7 +30,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if self.councils_data is None:
             self.councils_data = await self.get_councils_json()
         council_schema = vol.Schema({})
-        if "SKIP_GET_URL" not in self.councils_data[council]:
+        if ("SKIP_GET_URL" not in self.councils_data[council] or
+                "custom_component_show_url_field" in self.councils_data[council]):
             council_schema = council_schema.extend(
                 {vol.Required("url", default=""): cv.string}
             )
@@ -134,7 +134,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry,
+            config_entry,
     ) -> config_entries.OptionsFlow:
         _LOGGER.info(LOG_PREFIX + "Options flow config_entry: %s", config_entry)
         """Get the options flow for this handler."""
