@@ -43,7 +43,7 @@ jobs:
         git config --global user.name "Wiki GitHub Action"
         git config --global user.email "action@github.com"
         git add wiki
-        git commit -m "Update Councils.md from input.json"
+        git commit -m "docs: Update Councils.md from input.json"
         git push
       continue-on-error: true
 
