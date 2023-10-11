@@ -66,6 +66,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Northumberland Council](#northumberland-council)
 - [Preston City Council](#preston-city-council)
 - [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
+- [Rhondda Cynon Taff Council](#rhondda-cynon-taff-council)
 - [Rochdale Council](#rochdale-council)
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
 - [Rushmoor Council](#rushmoor-council)
@@ -683,6 +684,18 @@ Additional parameters:
 ### Reigate and Banstead Borough Council
 ```commandline
 python collect_data.py ReigateAndBansteadBoroughCouncil https://www.reigate-banstead.gov.uk/ -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)
+
+---
+
+### Rhondda Cynon Taff Council
+```commandline
+python collect_data.py RhonddaCynonTaffCouncil https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWaste/RecyclingandWasteCollectionDays.aspx -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
