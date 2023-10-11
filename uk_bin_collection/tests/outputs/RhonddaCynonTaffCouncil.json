@@ -1,0 +1,20 @@
+{
+    "bins": [
+        {
+            "type": "Recycling",
+            "collectionDate": "17/10/2023"
+        },
+        {
+            "type": "Garden Waste",
+            "collectionDate": "17/10/2023"
+        },
+        {
+            "type": "Food Waste",
+            "collectionDate": "17/10/2023"
+        },
+        {
+            "type": "Black Bags",
+            "collectionDate": "24/10/2023"
+        }
+    ]
+}
