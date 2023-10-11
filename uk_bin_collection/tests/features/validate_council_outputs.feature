@@ -64,6 +64,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthumberlandCouncil |
             | PrestonCityCouncil |
             | ReigateAndBansteadBoroughCouncil |
+            | RhonddaCynonTaffCouncil |
             | RochdaleCouncil |
             | RushcliffeBoroughCouncil |
             | RushmoorCouncil |

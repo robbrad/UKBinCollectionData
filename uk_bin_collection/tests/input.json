@@ -365,6 +365,13 @@
     "wiki_name": "Reigate and Banstead Borough Council",
     "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
   },
+  "RhonddaCynonTaffCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "uprn": "100100778320",
+    "url": "https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWaste/RecyclingandWasteCollectionDays.aspx",
+    "wiki_name": "Rhondda Cynon Taff Council",
+    "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+  },
   "RochdaleCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "postcode": "OL11 5BE",
