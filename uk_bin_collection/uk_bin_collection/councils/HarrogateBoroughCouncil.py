@@ -17,9 +17,6 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
-
         data = {"bins": []}
 
         headers = {
