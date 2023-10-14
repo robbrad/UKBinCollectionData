@@ -1,4 +1,6 @@
 from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
@@ -15,7 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
         uprn = kwargs.get("uprn")
-        usrn = kwargs.get("usrn")
+        usrn = kwargs.get("paon")
         check_uprn(uprn)
         check_usrn(usrn)
 
@@ -41,11 +43,15 @@ class CouncilClass(AbstractGetBinDataClass):
         bin_index = 0
         for tag in collection_tag:
             for item in tag.next_elements:
-                if str(item).startswith('<div class="date text-right text-grey">'):
-                    collection_date = datetime.strptime(item.text, "%A %d %B").strftime(date_format)
+                if str(item).startswith('<div class="date text-right text-grey">') and str(item) != "":
+                    collection_date = datetime.strptime(item.text, "%A %d %B")
+                    next_collection = collection_date.replace(year=datetime.now().year)
+                    if datetime.now().month == 12 and next_collection.month == 1:
+                        next_collection = next_collection + relativedelta(years=1)
+
                     dict_data = {
                         "type": titles[bin_index].strip(),
-                        "collectionDate": collection_date,
+                        "collectionDate": next_collection.strftime(date_format),
                     }
                     data["bins"].append(dict_data)
                     bin_index += 1
