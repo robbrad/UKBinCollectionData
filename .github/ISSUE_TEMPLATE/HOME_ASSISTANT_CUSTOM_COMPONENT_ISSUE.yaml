@@ -1,0 +1,19 @@
+name: Home Assistant Custom Component Issue
+description: Issue with the Home Assistant custom component
+labels: ["bug", "home assistant custom component"]
+
+body:
+    - type: input
+      id: council
+      attributes:
+          label: Name of Council (if relevant)
+          description: What council you were trying to use
+          placeholder: e.g. Huntingdon District Council
+      validations:
+          required: false
+    - type: textarea
+      id: extra
+      attributes:
+          label: Issue Information
+          description: What is the issue you're experiencing? How can we re-produce it?
+          placeholder: Detailed explanation of the issue along with replication steps
