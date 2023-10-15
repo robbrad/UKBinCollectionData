@@ -27,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Parse URL and read if connection successful
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(council_url)
+        response = requests.get(council_url, verify=False)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, features="html.parser")
             soup.prettify()

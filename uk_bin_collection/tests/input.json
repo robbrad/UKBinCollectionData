@@ -105,7 +105,7 @@
   "CrawleyBoroughCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100061785321",
-    "usrn": "9701076",
+    "house_number": "9701076",
     "url": "https://my.crawley.gov.uk/",
     "wiki_name": "Crawley Borough Council",
     "wiki_note": "Crawley needs to be passed both a UPRN and a USRN to work. Find these on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map)."
