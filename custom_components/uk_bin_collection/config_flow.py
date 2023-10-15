@@ -5,7 +5,6 @@ import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.core import callback
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -130,36 +129,3 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initiated by the user."""
         _LOGGER.info(LOG_PREFIX + "Initiating flow with user input: %s", user_input)
         return await self.async_step_user(user_input)
-
-    @staticmethod
-    @callback
-    def async_get_options_flow(
-            config_entry,
-    ) -> config_entries.OptionsFlow:
-        _LOGGER.info(LOG_PREFIX + "Options flow config_entry: %s", config_entry)
-        """Get the options flow for this handler."""
-        return OptionsFlowHandler(config_entry)
-
-
-class OptionsFlowHandler(config_entries.OptionsFlow):
-    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.config_entry = config_entry
-        self.options = dict(config_entry.options)
-
-    async def async_step_init(self, user_input=None) -> None:
-        """Manage the options."""
-        if user_input is not None:
-            _LOGGER.info(LOG_PREFIX + "Options flow user input: %s", user_input)
-            return self.async_create_entry(title="", data=user_input)
-
-        # Access the data from the config_entry parameter
-        council_data = self.config_entry.data
-        council_schema = await UkBinCollectionConfigFlow().get_council_schema(
-            council_data["council"]
-        )
-
-        _LOGGER.info(
-            LOG_PREFIX + "Showing options form with schema: %s", council_schema
-        )
-        return self.async_show_form(step_id="council", data_schema=council_schema)
