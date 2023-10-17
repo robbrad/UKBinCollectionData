@@ -1,0 +1,54 @@
+name: Home Assistant Custom Component Issue
+description: Issue with the Home Assistant custom component
+labels: ["bug", "home assistant custom component"]
+
+body:
+  - type: markdown
+    attributes:
+      value: If you were trying to add a specific council, please check it is listed as working [here](https://robbrad.github.io/UKBinCollectionData/3.11/) and open a [Council Issue](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) instead if it's failing
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant Version
+      description: What version of Home Assistant you're running
+      placeholder: e.g. 2023.10.3
+    validations:
+      required: true
+  - type: dropdown
+    id: install_method
+    attributes:
+      label: Installation Method
+      description: How did you install the custom component?
+      options:
+        - Using HACS
+        - Manually
+    validations:
+      required: true
+  - type: input
+    id: council
+    attributes:
+      label: Name of Council (if relevant)
+      description: Which council were you trying to use?
+      placeholder: e.g. Huntingdon District Council
+  - type: textarea
+    id: extra
+    attributes:
+      label: Issue Information
+      description: What issue are you experiencing? How can we re-produce it?
+      placeholder: Detailed explanation of the issue along with replication steps
+    validations:
+      required: true
+  - type: checkboxes
+    id: verification
+    attributes:
+      label: Verification
+      description: 'Please verify that you''ve followed these steps:'
+      options:
+        - label: I searched for similar issues at https://github.com/robbrad/UKBinCollectionData/issues?q=is:issue and found no duplicates
+          required: true
+        - label: If trying to add a specific council, I've checked it is listed as working at https://robbrad.github.io/UKBinCollectionData/3.11/
+          required: true
+        - label: I have provided a detailed explanation of the issue as well as steps to replicate the issue
+          required: true
+        - label: I understand that this project is run by volunteer contributors therefore completion of this issue cannot be guaranteed
+          required: true

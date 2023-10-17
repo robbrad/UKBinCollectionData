@@ -1,0 +1,33 @@
+name: Council Issue
+description: Issue with an existing council
+labels: ["bug"]
+
+body:
+    - type: input
+      id: council
+      attributes:
+          label: Name of Council
+          description: What council you were trying to use
+          placeholder: e.g. Huntingdon District Council
+      validations:
+          required: true
+    - type: textarea
+      id: extra
+      attributes:
+        label: Issue Information
+        description: What is the issue you're experiencing? How can we re-produce it?
+        placeholder: Detailed explanation of the issue along with replication steps
+    - type: checkboxes
+      id: verification
+      attributes:
+        label: Verification
+        description: 'Please verify that you''ve followed these steps:'
+        options:
+          - label: I searched for similar issues at https://github.com/robbrad/UKBinCollectionData/issues?q=is:issue and found no duplicates
+            required: true
+          - label: I have checked my address/postcode/UPRN works on the council's website
+            required: true
+          - label: I have provided a detailed explanation of the issue as well as steps to replicate the issue
+            required: true
+          - label: I understand that this project is run by volunteer contributors therefore completion of this issue cannot be guaranteed
+            required: true

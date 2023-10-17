@@ -1,6 +1,6 @@
 name: Council Request
 description: Request for a council to be added to the repository
-labels: ['Class: enhancement']
+labels: ["council request"]
 
 body:
     - type: input
@@ -14,8 +14,8 @@ body:
     - type: input
       id: postcode
       attributes:
-          label: Example Postcode
-          description: Please provide and example postcode for the area
+          label: Example Address/Postcode
+          description: Please provide a tested working example address/postcode for the council's area
           placeholder: e.g. PE7 3YQ
       validations:
           required: true
@@ -25,3 +25,15 @@ body:
           label: Additional Information
           description: Add any other information here
           placeholder: Links to the councils site, information you have already gathered
+    - type: checkboxes
+      id: verification
+      attributes:
+        label: Verification
+        description: 'Please verify that you''ve followed these steps:'
+        options:
+          - label: I searched for similar issues at https://github.com/robbrad/UKBinCollectionData/issues?q=is:issue and found no duplicates
+            required: true
+          - label: I have provided a tested working address/postcode/UPRN with bin collections available
+            required: true
+          - label: I understand that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get a script
+            required: true
