@@ -94,12 +94,12 @@
     "wiki_command_url_override": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1689413260149",
     "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.\nUse the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`."
   },
-  "Chilterns": {
+  "BuckinghamshireCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "house_number": "HUGHENDEN MANOR, MANOR ROAD, HUGHENDEN VALLEY, HIGH WYCOMBE",
     "postcode": "HP14 4LA",
     "url": "https://chiltern.gov.uk/collection-dates",
-    "wiki_name": "Chilterns",
+    "wiki_name": "Buckinghamshire Council (Chiltern, South Bucks, Wycombe)",
     "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
   },
   "CrawleyBoroughCouncil": {
