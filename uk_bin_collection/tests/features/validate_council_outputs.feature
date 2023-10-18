@@ -52,6 +52,7 @@ Feature: Test each council output matches expected results in /outputs
             | MertonCouncil |
             | MidSussexDistrictCouncil |
             | MiltonKeynesCityCouncil |
+            | NeathPortTalbotCouncil |
             | NewarkAndSherwoodDC |
             | NewcastleCityCouncil |
             | NorthEastLincs |
