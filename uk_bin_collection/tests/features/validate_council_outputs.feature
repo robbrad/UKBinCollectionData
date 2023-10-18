@@ -79,6 +79,7 @@ Feature: Test each council output matches expected results in /outputs
             | SouthTynesideCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
+            | StratfordUponAvonCouncil |
             | SwaleBoroughCouncil |
             | TamesideMBCouncil |
             | TonbridgeAndMallingBC |

@@ -461,6 +461,12 @@
     "wiki_command_url_override": "https://myaccount.stockport.gov.uk/bin-collections/show/XXXXXXXX",
     "wiki_note": "Replace XXXXXXXX with UPRN."
   },
+  "StratfordUponAvonCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "url": "https://www.stratford.gov.uk/waste-recycling/when-we-collect.cfm/part/calendar",
+    "uprn": "100070212698",
+    "wiki_name": "Stratford Upon Avon Council"
+  },
   "SwaleBoroughCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "url": "https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days",
