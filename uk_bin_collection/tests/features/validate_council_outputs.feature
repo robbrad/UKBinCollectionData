@@ -18,12 +18,12 @@ Feature: Test each council output matches expected results in /outputs
             | BristolCityCouncil |
             | BromleyBoroughCouncil |
             | BroxtoweBoroughCouncil |
+            | BuckinghamshireCouncil |
             | CardiffCouncil |
             | CastlepointDistrictCouncil |
             | CharnwoodBoroughCouncil |
             | ChelmsfordCityCouncil |
             | CheshireEastCouncil |
-            | Chilterns |
             | CrawleyBoroughCouncil |
             | CroydonCouncil |
             | DerbyshireDalesDistrictCouncil |
