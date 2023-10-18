@@ -284,6 +284,13 @@
     "wiki_name": "Milton Keynes City Council",
     "wiki_note": "Pass the name of the estate with the UPRN parameter, wrapped in double quotes"
   },
+  "NeathPortTalbotCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "SA13 3BA",
+    "uprn": "10023947752",
+    "url": "https://www.npt.gov.uk",
+    "wiki_name": "Neath Port Talbot Council"
+  },
   "NewarkAndSherwoodDC": {
     "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
     "wiki_name": "Newark and Sherwood District Council",

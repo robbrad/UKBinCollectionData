@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Welcome3",
+    "definitions": {
+        "Welcome3": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bins": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Bin"
+                    }
+                }
+            },
+            "required": [
+                "bins"
+            ],
+            "title": "Welcome3"
+        },
+        "Bin": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "collectionDate": {
+                    "$ref": "#/definitions/CollectionDate"
+                }
+            },
+            "required": [
+                "collectionDate",
+                "type"
+            ],
+            "title": "Bin"
+        },
+        "CollectionDate": {
+            "type": "string",
+            "enum": [
+                "23/10/2023",
+                "30/10/2023"
+            ],
+            "title": "CollectionDate"
+        }
+    }
+}
