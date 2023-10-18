@@ -103,12 +103,12 @@
     "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
   },
   "BuryCouncil": {
-  "SKIP_GET_URL": "SKIP_GET_URL",
-  "house_number": "3",
-  "postcode": "M26 3XY",
-  "url": "https://www.bury.gov.uk/waste-and-recycling/bin-collection-days-and-alerts",
-  "wiki_name": "Bury Council",
-  "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "house_number": "3",
+    "postcode": "M26 3XY",
+    "url": "https://www.bury.gov.uk/waste-and-recycling/bin-collection-days-and-alerts",
+    "wiki_name": "Bury Council",
+    "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
   },
   "CrawleyBoroughCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
