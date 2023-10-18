@@ -25,7 +25,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Charnwood Borough Council](#charnwood-borough-council)
 - [Chelmsford City Council](#chelmsford-city-council)
 - [Cheshire East Council](#cheshire-east-council)
-- [Chilterns](#chilterns)
+- [Buckinghamshire Council (Chiltern, South Bucks, Wycombe)](#buckinghamshire-council-(chiltern,-south-bucks,-wycombe))
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
 - [Derbyshire Dales District Council](#derbyshire-dales-district-council)
@@ -81,6 +81,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Tyneside Council](#south-tyneside-council)
 - [St Helens Borough Council](#st-helens-borough-council)
 - [Stockport Borough Council](#stockport-borough-council)
+- [Stratford Upon Avon Council](#stratford-upon-avon-council)
 - [Swale Borough Council](#swale-borough-council)
 - [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
 - [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
@@ -258,9 +259,9 @@ Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find
 
 ---
 
-### Chilterns
+### Buckinghamshire Council (Chiltern, South Bucks, Wycombe)
 ```commandline
-python collect_data.py Chilterns https://chiltern.gov.uk/collection-dates -s -p "XXXX XXX" -n XX
+python collect_data.py BuckinghamshireCouncil https://chiltern.gov.uk/collection-dates -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -273,12 +274,12 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ### Crawley Borough Council
 ```commandline
-python collect_data.py CrawleyBoroughCouncil https://my.crawley.gov.uk/ -s -u XXXXXXXX -usrn XXXXXXXX
+python collect_data.py CrawleyBoroughCouncil https://my.crawley.gov.uk/ -s -u XXXXXXXX -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-us` - USRN
+- `-n` - house number
 
 Note: Crawley needs to be passed both a UPRN and a USRN to work. Find these on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map).
 
@@ -844,6 +845,16 @@ python collect_data.py StockportBoroughCouncil https://myaccount.stockport.gov.u
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Stratford Upon Avon Council
+```commandline
+python collect_data.py StratfordUponAvonCouncil https://www.stratford.gov.uk/waste-recycling/when-we-collect.cfm/part/calendar -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
 
 ---
 
