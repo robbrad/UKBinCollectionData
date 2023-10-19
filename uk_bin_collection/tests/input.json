@@ -177,7 +177,7 @@
   "EastSuffolkCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "10093544720",
-    "postcode": "IP11 9FJ"
+    "postcode": "IP11 9FJ",
     "url": "https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder",
     "wiki_name": "East Suffolk Council",
     "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
