@@ -26,6 +26,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Chelmsford City Council](#chelmsford-city-council)
 - [Cheshire East Council](#cheshire-east-council)
 - [Buckinghamshire Council (Chiltern, South Bucks, Wycombe)](#buckinghamshire-council-(chiltern,-south-bucks,-wycombe))
+- [Bury Council](#bury-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
 - [Derbyshire Dales District Council](#derbyshire-dales-district-council)
@@ -54,6 +55,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Merton Council](#merton-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
+- [Neath Port Talbot Council](#neath-port-talbot-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
 - [North East Lincolnshire Council](#north-east-lincolnshire-council)
@@ -269,6 +271,19 @@ Additional parameters:
 - `-n` - house number
 
 Note: Pass the name of the street with the house number parameter, wrapped in double quotes
+
+---
+
+### Bury Council
+```commandline
+python collect_data.py BuryCouncil https://www.bury.gov.uk/waste-and-recycling/bin-collection-days-and-alerts -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the postcode and house number in their respective arguments, both wrapped in quotes.
 
 ---
 
@@ -564,6 +579,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes
+
+---
+
+### Neath Port Talbot Council
+```commandline
+python collect_data.py NeathPortTalbotCouncil https://www.npt.gov.uk -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
