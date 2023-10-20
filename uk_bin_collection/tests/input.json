@@ -110,6 +110,14 @@
     "wiki_name": "Bury Council",
     "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
   },
+  "CannockChaseDistrictCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "WS15 1JA",
+    "uprn": "200003095389",
+    "url": "https://www.cannockchasedc.gov.uk/",
+    "wiki_name": "Cannock Chase District Council",
+    "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+  },
   "CrawleyBoroughCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100061785321",

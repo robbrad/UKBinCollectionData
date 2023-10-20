@@ -20,6 +20,7 @@ Feature: Test each council output matches expected results in /outputs
             | BroxtoweBoroughCouncil |
             | BuckinghamshireCouncil |
             | BuryCouncil |
+            | CannockChaseDistrictCouncil |
             | CardiffCouncil |
             | CastlepointDistrictCouncil |
             | CharnwoodBoroughCouncil |
