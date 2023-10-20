@@ -170,6 +170,14 @@
     "url": "https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn=",
     "wiki_name": "Eastleigh Borough Council"
   },
+  "EastLindseyDistrictCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "LN4 4SY",
+    "house_number": "Raf Coningsby",
+    "url": "https://www.e-lindsey.gov.uk/",
+    "wiki_name": "East Lindsey District Council",
+    "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
+  },
   "EastNorthamptonshireCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100031021317",
