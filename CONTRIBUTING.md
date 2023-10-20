@@ -1,12 +1,13 @@
+
 # Contents
-- [Contents](#contents)
 - [Contributor guidelines](#contributor-guidelines)
   * [Getting Started](#getting-started)
     + [Environment Setup](#environment-setup)
   * [Project Aims](#project-aims)
     + [What can I contribute to?](#what-can-i-contribute-to-)
+  * [Claiming an issue](#claiming-an-issue)
+  * [Pushing your changes](#pushing-your-changes)
 - [Adding a scraper](#adding-a-scraper)
-  * [Approach](#approach)
   * [Developing](#developing)
     + [Kwargs](#kwargs)
     + [Common Functions](#common-functions)
@@ -27,6 +28,7 @@
 - [Contact info](#contact-info)
 
 
+
 # Contributor guidelines
 This document contains guidelines on contributing to the UKBCD project including how the project works, how to set up
 the environment, how we use our issue tracker, and how you can develop more scrapers.
@@ -45,15 +47,10 @@ pip install poetry
 git clone https://github.com/robbrad/UKBinCollectionData
 cd UKBinCollectionData
 
-#Install Dependencies 
+# Install Dependencies 
 poetry install
 poetry shell
 ```
-
-### Make sure commit messages follow the conventional commits convention:
-https://www.conventionalcommits.org
-
-Example: `feat: Add support for Cheshire East Council`
 
 ## Project Aims
 - To provide a real-world environment to learn Python and/or web scraping
@@ -64,11 +61,26 @@ Example: `feat: Add support for Cheshire East Council`
 - Tasks that require [additional input](https://github.com/robbrad/UKBinCollectionData/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) have the `help wanted` label - these can be trickier requests or may have many smaller tasks.
 - [Easier tasks](https://github.com/robbrad/UKBinCollectionData/labels/good%20first%20issue), that would be a good fit for people new to the project or the world of web scraping are labelled with the `good first issue` label
 
+## Claiming an issue
+If there is an existing issue you wish to work on, please do the following things:
+- Assign the issue to yourself (or ask someone to assign you) - that way,  others know you're working on it
+- Create a new branch - its recommended to use the 'create a branch' option on the issue page, create it in your forked repo and then checkout the branch locally (or in your IDE).
+
+**NB:** Exploratory work doesn't require claiming an issue - you only need to claim if you plan on developing the full scraper and associated files. If you just want to explore an issue, feel free to do so - and also feel free to post anything helpful in the issue comments.
+
+## Pushing your changes
+There are guides below on how to add a scraper to the project, along with what files are needed and what tests should be run.
+When the time comes to push your changes, please be aware that we use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) to provide a clear summary of what a change does. This means that commit messages should start with one of the following:
+- `feat:` for a new feature (including a new scraper)
+- `fix:` for when a bug is fixed or an issue is resolved
+- `docs:` for when changes to documentations are made
+
+Don't worry if you forget - commit messages are automatically checked when you open a merge request by a lint checker, and can easily be rectified by recommitting or pushing again with the correct prefix.
+
 
 
 # Adding a scraper
-## Approach
-This repo uses a design pattern called the [Template Method](https://refactoring.guru/design-patterns/template-method) which basically allows for a structured class that can be extended. In our case, the getting of the data from the council and the presentation of the JSON remains the same via the [abstract class](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/get_bin_data.py#L21) - however the scraping of each council is different and this allows us to have a class for each [council](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/uk_bin_collection/councils) - you can see this in action [here](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/CheshireEastCouncil.py#L5,L16).
+This project uses a design pattern called the [Template Method](https://refactoring.guru/design-patterns/template-method) which basically allows for a structured class that can be extended. In our case, the getting of the data from the council and the presentation of the JSON remains the same via the [abstract class](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/get_bin_data.py#L21) - however the scraping of each council is different and this allows us to have a class for each [council](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/uk_bin_collection/councils) - you can see this in action [here](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/CheshireEastCouncil.py#L5,L16).
 
 There are a few different options for scraping, and you are free to choose whichever best suits the council:
 - Using [Beautiful Soup 4](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/CheshireEastCouncil.py)
@@ -111,8 +123,7 @@ Each parameter also has its own validation method that should be called after th
 - `check_paon()`
 - `check_postcode()`
 
-The first two are simple validators - if the parameter is used but no value is given, they will throw an exception. `check_postcode()` works differently - 
-instead making a call to the [postcodes.io](https://postcodes.io/) API to check if it exists or not. An exception will only be thrown here if the response code is not `HTTP 200`.
+The first two are simple validators - if the parameter is used but no value is given, they will throw an exception. `check_postcode()` works differently -  instead making a call to the [postcodes.io](https://postcodes.io/) API to check if it exists or not. An exception will only be thrown here if the response code is not `HTTP 200`.
 
 ### Common Functions
 The project has a small but growing library of functions (and the occasional variable) that are useful when scraping websites or calendars - aptly named [common.py](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/common.py).
