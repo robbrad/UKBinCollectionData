@@ -81,6 +81,7 @@ Feature: Test each council output matches expected results in /outputs
             | SouthNorfolkCouncil |
             | SouthOxfordshireCouncil |
             | SouthTynesideCouncil |
+            | StaffordshireMoorlandsDistrictCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
             | StratfordUponAvonCouncil |

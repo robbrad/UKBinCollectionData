@@ -480,6 +480,14 @@
     "url": "https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates",
     "wiki_name": "South Tyneside Council"
   },
+  "StaffordshireMoorlandsDistrictCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "ST8 6HN",
+    "uprn": "100031863037",
+    "url": "https://www.staffsmoorlands.gov.uk/",
+    "wiki_name": "Staffordshire Moorlands District Council",
+    "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+  },
   "StHelensBC": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "39081672",

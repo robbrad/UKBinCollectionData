@@ -1,0 +1,64 @@
+{
+    "bins": [
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "24/10/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "31/10/2023"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "07/11/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "14/11/2023"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "21/11/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "28/11/2023"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "05/12/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "12/12/2023"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "19/12/2023"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "28/12/2023"
+        },
+        {
+            "type": "Recycling",
+            "collectionDate": "02/01/2024"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "09/01/2024"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "16/01/2024"
+        },
+        {
+            "type": "Rubbish",
+            "collectionDate": "23/01/2024"
+        },
+        {
+            "type": "Recycling with food and garden",
+            "collectionDate": "30/01/2024"
+        }
+    ]
+}
