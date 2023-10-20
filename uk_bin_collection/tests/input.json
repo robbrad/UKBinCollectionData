@@ -202,6 +202,14 @@
     "url": "https://www.fenland.gov.uk/article/13114/",
     "wiki_name": "Fenland District Council"
   },
+  "GatesheadCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "NE16 5LQ",
+    "house_number": "Bracken Cottage",
+    "url": "https://www.gateshead.gov.uk/",
+    "wiki_name": "Gateshead Council",
+    "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
+  },
   "GlasgowCityCouncil": {
     "url": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497",
     "wiki_name": "Glasgow City Council",
