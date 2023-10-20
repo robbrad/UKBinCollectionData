@@ -595,6 +595,14 @@
     "url": "https://www.welhat.gov.uk/xfp/form/214",
     "wiki_name": "Welhat Council"
   },
+  "WestLothianCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "EH52 5JE",
+    "house_number": "1 GOSCHEN PLACE",
+    "url": "https://www.westlothian.gov.uk/",
+    "wiki_name": "West Lothian Council",
+    "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
+  },
   "WiganBoroughCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "postcode": "WN24UQ",

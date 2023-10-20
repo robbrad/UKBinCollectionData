@@ -98,6 +98,7 @@ Feature: Test each council output matches expected results in /outputs
             | WaverleyBoroughCouncil |
             | WealdenDistrictCouncil |
             | WelhatCouncil |
+            | WestLothianCouncil |
             | WiganBoroughCouncil |
             | WiltshireCouncil |
             | WindsorAndMaidenheadCouncil |
