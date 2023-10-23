@@ -34,11 +34,13 @@ Feature: Test each council output matches expected results in /outputs
             | EastCambridgeshireCouncil |
             | EastDevonDC |
             | EastleighBoroughCouncil |
+            | EastLindseyDistrictCouncil |
             | EastNorthamptonshireCouncil |
             | EastRidingCouncil |
             | EastSuffolkCouncil |
             | ErewashBoroughCouncil |
             | FenlandDistrictCouncil |
+            | GatesheadCouncil |
             | GlasgowCityCouncil |
             | GuildfordCouncil |
             | HarrogateBoroughCouncil |
@@ -81,6 +83,7 @@ Feature: Test each council output matches expected results in /outputs
             | SouthNorfolkCouncil |
             | SouthOxfordshireCouncil |
             | SouthTynesideCouncil |
+            | StaffordshireMoorlandsDistrictCouncil |
             | StHelensBC |
             | StockportBoroughCouncil |
             | StratfordUponAvonCouncil |
@@ -95,6 +98,7 @@ Feature: Test each council output matches expected results in /outputs
             | WaverleyBoroughCouncil |
             | WealdenDistrictCouncil |
             | WelhatCouncil |
+            | WestLothianCouncil |
             | WiganBoroughCouncil |
             | WiltshireCouncil |
             | WindsorAndMaidenheadCouncil |

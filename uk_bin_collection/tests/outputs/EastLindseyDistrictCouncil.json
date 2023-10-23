@@ -1,0 +1,16 @@
+{
+    "bins": [
+        {
+            "type": "Paper (Purple-Lidded Bin)",
+            "collectionDate": "27/10/2023"
+        },
+        {
+            "type": "Domestic Waste (Black Bin)",
+            "collectionDate": "03/11/2023"
+        },
+        {
+            "type": "Recycling (Grey Bin)",
+            "collectionDate": "10/11/2023"
+        }
+    ]
+}
