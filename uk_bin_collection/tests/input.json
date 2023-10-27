@@ -64,6 +64,30 @@
     "url": "https://www.broxtowe.gov.uk/",
     "wiki_name": "Broxtowe Borough Council"
   },
+  "BuckinghamshireCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "house_number": "HUGHENDEN MANOR, MANOR ROAD, HUGHENDEN VALLEY, HIGH WYCOMBE",
+    "postcode": "HP14 4LA",
+    "url": "https://chiltern.gov.uk/collection-dates",
+    "wiki_name": "Buckinghamshire Council (Chiltern, South Bucks, Wycombe)",
+    "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
+  },
+  "BuryCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "house_number": "3",
+    "postcode": "M26 3XY",
+    "url": "https://www.bury.gov.uk/waste-and-recycling/bin-collection-days-and-alerts",
+    "wiki_name": "Bury Council",
+    "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
+  },
+  "CannockChaseDistrictCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "WS15 1JA",
+    "uprn": "200003095389",
+    "url": "https://www.cannockchasedc.gov.uk/",
+    "wiki_name": "Cannock Chase District Council",
+    "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+  },
   "CardiffCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100100112419",
@@ -93,30 +117,6 @@
     "wiki_name": "Cheshire East Council",
     "wiki_command_url_override": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1689413260149",
     "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.\nUse the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`."
-  },
-  "BuckinghamshireCouncil": {
-    "SKIP_GET_URL": "SKIP_GET_URL",
-    "house_number": "HUGHENDEN MANOR, MANOR ROAD, HUGHENDEN VALLEY, HIGH WYCOMBE",
-    "postcode": "HP14 4LA",
-    "url": "https://chiltern.gov.uk/collection-dates",
-    "wiki_name": "Buckinghamshire Council (Chiltern, South Bucks, Wycombe)",
-    "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
-  },
-  "BuryCouncil": {
-    "SKIP_GET_URL": "SKIP_GET_URL",
-    "house_number": "3",
-    "postcode": "M26 3XY",
-    "url": "https://www.bury.gov.uk/waste-and-recycling/bin-collection-days-and-alerts",
-    "wiki_name": "Bury Council",
-    "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
-  },
-  "CannockChaseDistrictCouncil": {
-    "SKIP_GET_URL": "SKIP_GET_URL",
-    "postcode": "WS15 1JA",
-    "uprn": "200003095389",
-    "url": "https://www.cannockchasedc.gov.uk/",
-    "wiki_name": "Cannock Chase District Council",
-    "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
   },
   "CrawleyBoroughCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
