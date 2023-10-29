@@ -64,6 +64,13 @@
     "url": "https://www.broxtowe.gov.uk/",
     "wiki_name": "Broxtowe Borough Council"
   },
+  "CalderdaleCouncil": {
+    "SKIP_GET_URL": "SKIP_GET_URL",
+    "postcode": "OL14 7EX",
+    "uprn": "010035034598",
+    "url": "https://www.calderdale.gov.uk/",
+    "wiki_name": "Calderdale Council"
+  },
   "CardiffCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100100112419",
