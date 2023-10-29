@@ -1,13 +1,15 @@
 import calendar
+import holidays
 import json
 import os
+import pandas as pd
 import re
+import requests
 from datetime import datetime
 from enum import Enum
-
-import holidays
-import pandas as pd
-import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 date_format = "%d/%m/%Y"
 days_of_week = {
@@ -217,3 +219,19 @@ def write_output_json(council: str, content: str):
 def validate_dates(bin_dates: dict) -> dict:
     raise NotImplementedError()
     # If a date is in December and the next is in January, increase the year
+
+
+def create_webdriver() -> webdriver.Chrome:
+    """
+    Create and return a headless Selenium webdriver
+    :rtype: webdriver.Chrome
+    """
+    # Set up Selenium to run 'headless'
+    options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    # Return a Selenium webdriver
+    return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)

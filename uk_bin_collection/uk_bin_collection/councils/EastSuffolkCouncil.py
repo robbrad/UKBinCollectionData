@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait, Select
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
@@ -17,21 +17,13 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Set up Selenium to run 'headless'
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = webdriver.Chrome(options=options)
+        driver = create_webdriver()
         driver.get("https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder")
 
         # Wait for iframe to load and switch to it
@@ -42,7 +34,7 @@ class CouncilClass(AbstractGetBinDataClass):
             EC.presence_of_element_located((By.ID, "alt_postcode_search"))
         )
         # Enter postcode
-        postcode.send_keys(user_postcode)
+        postcode.send_keys(user_postcode.replace(" ", ""))
 
         # Wait for address selection dropdown to appear
         address = Select(
@@ -74,8 +66,6 @@ class CouncilClass(AbstractGetBinDataClass):
             )
         )
 
-
-        
         # Make a BS4 object
         soup = BeautifulSoup(data_table.get_attribute("innerHTML"), features="html.parser")
 
