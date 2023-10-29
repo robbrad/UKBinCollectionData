@@ -1,6 +1,5 @@
 import time
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -26,16 +25,8 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
-        # Set up Selenium to run 'headless'
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
         # Create Selenium webdriver
-        driver = webdriver.Chrome(options=options)
+        driver = create_webdriver()
         driver.get("https://www.npt.gov.uk/2195")
 
         # Accept cookies banner

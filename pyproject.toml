@@ -55,6 +55,7 @@ requests = "*"
 selenium = "*"
 lxml = "*"
 urllib3 = "*"
+webdriver-manager = "^4.0.1"
 
 [tool.commitizen]
 major_version_zero = true

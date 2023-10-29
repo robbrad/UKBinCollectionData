@@ -1,13 +1,10 @@
-from datetime import datetime
-
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from datetime import datetime
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
@@ -33,16 +30,8 @@ class CouncilClass(AbstractGetBinDataClass):
         check_paon(user_paon)
         check_postcode(user_postcode)
 
-        # Set up Selenium to run 'headless'
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
         # Create Selenium webdriver
-        driver = webdriver.Chrome(options=options)
+        driver = create_webdriver()
         driver.get(page)
 
         # If you bang in the house number (or property name) and postcode in the box it should find your property
