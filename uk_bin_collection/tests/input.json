@@ -107,7 +107,7 @@
     "wiki_note": "Replace XXXXXXXX with UPRN keeping \"cbc\" before it."
   },
   "ChelmsfordCityCouncil": {
-    "url": "https://www.chelmsford.gov.uk/myhome/?entry[655e95fb-5f84-4d1b-ab65-878a2f3e3ce4]=5527623",
+    "url": "https://www.chelmsford.gov.uk/myhome/?entry[655e95fb-5f84-4d1b-ab65-878a2f3e3ce4]=14368859",
     "wiki_name": "Chelmsford City Council",
     "wiki_command_url_override": "https://www.chelmsford.gov.uk/myhome/XXXXXX",
     "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your \"Address\", \"Ward\" etc then copy the URL and replace the URL in the command."

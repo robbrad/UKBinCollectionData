@@ -23,7 +23,7 @@
             "additionalProperties": false,
             "properties": {
                 "type": {
-                    "$ref": "#/definitions/Type"
+                    "type": "string"
                 },
                 "collectionDate": {
                     "type": "string"
@@ -34,14 +34,6 @@
                 "type"
             ],
             "title": "Bin"
-        },
-        "Type": {
-            "type": "string",
-            "enum": [
-                "Food waste, black bin, green box, card sack",
-                "Food waste, brown bin, paper sack, plastic and cartons bag"
-            ],
-            "title": "Type"
         }
     }
 }

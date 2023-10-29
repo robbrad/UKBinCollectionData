@@ -1,4 +1,7 @@
+import re
+import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
@@ -32,10 +35,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Loop the months
             for month in soup.find_all("div", {"class": "usercontent"}):
-                if month.find("h2"):
-                    year = datetime.strptime(
-                        month.find("h2").get_text(strip=True), "%B %Y"
-                    ).strftime("%Y")
+                year = ""
+                if month.find("h2") and 'calendar' not in month.find("h2").get_text(strip=True):
+                    year = datetime.strptime(month.find("h2").get_text(strip=True), "%B %Y").strftime("%Y")
+                elif month.find("h3"):
+                    year = datetime.strptime(month.find("h3").get_text(strip=True), "%B %Y").strftime("%Y")
+                if year != "":
                     for row in month.find_all("li"):
                         results = re.search(
                             "([A-Za-z]+ \\d\\d? [A-Za-z]+): (.+)", row.get_text(strip=True)
@@ -48,5 +53,10 @@ class CouncilClass(AbstractGetBinDataClass):
                                 ).strftime(date_format),
                             }
                             data["bins"].append(dict_data)
+
+            # Sort collections
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            )
 
         return data
