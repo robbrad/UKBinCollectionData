@@ -27,6 +27,7 @@ Feature: Test each council output matches expected results in /outputs
             | CharnwoodBoroughCouncil |
             | ChelmsfordCityCouncil |
             | CheshireEastCouncil |
+            | ConwyCountyBorough |
             | CrawleyBoroughCouncil |
             | CroydonCouncil |
             | DerbyshireDalesDistrictCouncil |
