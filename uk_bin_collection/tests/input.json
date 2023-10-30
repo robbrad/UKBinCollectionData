@@ -125,6 +125,13 @@
     "wiki_name": "Cheshire East Council",
     "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.\nUse the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`."
   },
+  "ConwyCountyBorough": {
+    "postcode": "LL30 2DF",
+    "uprn": "100100429249",
+    "url": "https://www.conwy.gov.uk/Contensis-Forms/erf/collection-result-soap-xmas.asp?ilangid=1&uprn=100100429249",
+    "wiki_name": "Conwy County Borough Council",
+    "wiki_note": "Conwy County Borough Council is a straight up uprn in the url eg &uprn=XXXXXXXXXXXXX ."
+  },  
   "CrawleyBoroughCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "house_number": "9701076",
