@@ -25,10 +25,10 @@ days_of_week = {
 
 class Region(Enum):
     UK = 1
-    England = 2
-    Northern_Ireland = 3
-    Scotland = 4
-    Wales = 5
+    ENG = 2
+    NIR = 3
+    SCT = 4
+    WLS = 5
 
 
 def check_postcode(postcode: str):

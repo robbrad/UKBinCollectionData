@@ -98,7 +98,7 @@ def test_is_holiday():
 
 def test_is_holiday_region():
     date = "20"
-    result = is_holiday("2022, 12, 25", Region.Wales)
+    result = is_holiday("2022, 12, 25", Region.WLS)
     assert result is True
 
 
