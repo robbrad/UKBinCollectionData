@@ -1,9 +1,8 @@
-import time
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
@@ -18,28 +17,22 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Set up Selenium to run 'headless'
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         # Pad UPRN with 0's at the start for any that aren't 12 chars
         user_uprn = user_uprn.zfill(12)
 
         # Create Selenium webdriver
-        driver = webdriver.Chrome(options=options)
-        driver.get(f"https://my.reigate-banstead.gov.uk/en/service/Bins_and_recycling___collections_calendar?uprn={user_uprn}")
+        driver = create_webdriver()
+        driver.get(
+            f"https://my.reigate-banstead.gov.uk/en/service/Bins_and_recycling___collections_calendar?uprn={user_uprn}")
 
         # Wait for iframe to load and switch to it
         WebDriverWait(driver, 30).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'fillform-frame-1')))
 
         # Wait for form
-        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'span[data-name="html2"] > div')))
+        WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'span[data-name="html2"] > div')))
 
         # Make a BS4 object
         soup = BeautifulSoup(driver.page_source, features="html.parser")
