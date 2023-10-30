@@ -1,6 +1,10 @@
 from unittest import mock
 import pytest
 from uk_bin_collection.common import *
+from io import StringIO
+from contextlib import redirect_stdout
+from unittest.mock import patch, MagicMock
+from selenium import webdriver
 
 
 def test_check_postcode_valid():
@@ -87,11 +91,15 @@ def test_is_holiday():
     result = is_holiday("2022, 12, 25")
     assert result is True
 
-
-def test_is_not_holiday():
+def test_is_holiday():
     date = "20"
-    result = is_holiday("2022, 12, 01")
-    assert result is False
+    result = is_holiday("2022, 12, 25")
+    assert result is True
+
+def test_is_holiday_region():
+    date = "20"
+    result = is_holiday("2022, 12, 25", Region.Wales)
+    assert result is True
 
 
 def test_remove_alpha_characters():
@@ -144,3 +152,46 @@ def test_get_weekday_dates_in_period_bad():
     result = get_weekday_dates_in_period(now, 5, 7)
     assert len(result) != 8
     assert result[6] != "08/04/20232"
+
+def test_get_next_occurrence_from_day_month_false():
+    result = get_next_occurrence_from_day_month(datetime(2023,12,1))
+    assert result == datetime(2023, 12, 1, 0, 0)
+
+def test_get_next_occurrence_from_day_month_true():
+    result = get_next_occurrence_from_day_month(datetime(2023,9,1))
+    assert result == pd.Timestamp('2024-09-01 00:00:00')
+
+def test_write_output_json():
+    council = "test_council"
+    content = '{"example": "data"}'
+    write_output_json(council, content)
+    cwd = os.getcwd()
+    outputs_path = os.path.join(cwd, "uk_bin_collection", "tests", "outputs", council + ".json")
+    result1 = os.path.exists(outputs_path)        
+
+    with open(outputs_path, "r") as f:
+        read_content = f.read()
+
+    if os.path.exists(outputs_path):
+        os.remove(outputs_path)
+
+    assert result1 == True
+    assert read_content == content
+
+def test_write_output_json_fail(capsys, monkeypatch):
+    def mock_os_path_exists(path):
+        return False  # Simulate the path not existing
+
+    monkeypatch.setattr(os.path, 'exists', mock_os_path_exists)
+
+    council = "test_council"
+    content = '{"example": "data"}'
+    write_output_json(council, content)
+
+    captured = capsys.readouterr()
+    assert "Exception encountered: Unable to save Output JSON file for the council." in captured.out
+    assert "Please check you're running developer mode" in captured.out
+
+def test_create_webdriver():
+    result = create_webdriver()
+    assert result.name == 'chrome'
