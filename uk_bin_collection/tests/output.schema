@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome4",
+    "$ref": "#/definitions/BinData",
     "definitions": {
-        "Welcome4": {
+        "BinData": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -10,13 +10,14 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/Bin"
-                    }
+                    },
+                    "minItems": 1
                 }
             },
             "required": [
                 "bins"
             ],
-            "title": "Welcome4"
+            "title": "BinData"
         },
         "Bin": {
             "type": "object",
@@ -26,7 +27,8 @@
                     "type": "string"
                 },
                 "collectionDate": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "\\d{2}/\\d{2}/\\d{4}"
                 }
             },
             "required": [

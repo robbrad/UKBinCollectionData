@@ -1,10 +1,9 @@
+import logging
 import pytest
+import traceback
 from pytest_bdd import scenario, given, when, then, parsers
 
 from step_helpers import file_handler
-import logging
-import traceback
-
 from uk_bin_collection.uk_bin_collection import collect_data
 
 
@@ -76,7 +75,7 @@ def validate_json_step(context):
 @then("the output should validate against the schema")
 def validate_output_step(context):
     try:
-        council_schema = file_handler.load_schema_file(f"{context.council}.schema")
+        council_schema = file_handler.load_schema_file(f"output.schema")
         schema_result = file_handler.validate_json_schema(
             context.parse_result, council_schema
         )
