@@ -14,7 +14,6 @@
   * [Additional files](#additional-files)
     + [Input JSON file](#input-json-file)
     + [Output JSON file](#output-json-file)
-    + [Council schema](#council-schema)
     + [Feature file](#feature-file)
   * [Testing](#testing)
     + [Behave (Integration Testing)](#behave--integration-testing-)
@@ -146,7 +145,6 @@ In order for your scraper to work with the project's testing suite, some additio
 modified:
 - [ ] [Input JSON file](#input-json-file)
 - [ ] [Output JSON file](#output-json-file)
-- [ ] [Council Schema](#council-schema)
 - [ ] [Feature file](#feature-file)
 
 **Note:** from here on, anything containing`<council_name>` should be replaced with the scraper's name.
@@ -221,72 +219,6 @@ Adding the `-d` or `--dev_mode` parameter to your CLI command enables developmen
 ```
 </details>
 
-### Council schema
-| Type | File location                                                                       |
-|------|-------------------------------------------------------------------------------------|
-| Add  | `UKBinCollectionData/uk_bin_collection/tests/council_schemas/<council_name>.schema` |
-
-Using the above [output](#output-json-file), you will need to generate a JSON schema that the integration test can run
-against. Luckily, this is pretty easy and can be done using an [online tool](https://jsonformatter.org/json-to-jsonschema).
-
-**Note:** due to seasonal collections (entirely dependent on council, of course), the schema may not include all bin types.
-If this is the case, you may need to add them to the bin_type `enum` manually (usually around the end of the file).
-
-<details>
-  <summary>Example</summary>
-
-```json
-{
-    "$schema": "http://json-schema.org/draft-06/schema#",
-    "$ref": "#/definitions/Welcome10",
-    "definitions": {
-        "Welcome10": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "bins": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Bin"
-                    }
-                }
-            },
-            "required": [
-                "bins"
-            ],
-            "title": "Welcome10"
-        },
-        "Bin": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "type": {
-                    "$ref": "#/definitions/Type"
-                },
-                "collectionDate": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "collectionDate",
-                "type"
-            ],
-            "title": "Bin"
-        },
-        "Type": {
-            "type": "string",
-            "enum": [
-              "Empty Standard Mixed Recycling",
-              "Empty Standard Garden Waste",
-              "Empty Standard General Waste"
-            ],
-            "title": "Type"
-        }
-    }
-}
-```
-</details>
-
 ### Feature file
 | Type   | File location                                                                           |
 |--------|-----------------------------------------------------------------------------------------|
@@ -304,7 +236,7 @@ of "what works and what needs work" - we have created a set of Integration tests
 file. 
 
 Based on the [input.json](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/input.json),
-this does an actual live run against the council's site and validates if the returned data is JSON and conforms to a [JSON Schema](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/council_schemas) for that council.
+this does an actual live run against the council's site and validates if the returned data is JSON and conforms to the common format [JSON Schema](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/output.schema).
 
 
 #### Running the Behave tests

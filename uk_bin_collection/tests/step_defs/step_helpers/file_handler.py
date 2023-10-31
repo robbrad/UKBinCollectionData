@@ -1,8 +1,7 @@
 import json
+import logging
 import os
 from jsonschema import validate, ValidationError
-
-import logging
 
 
 def load_inputs_file(file_name):
@@ -15,9 +14,7 @@ def load_inputs_file(file_name):
 
 def load_schema_file(file_name):
     cwd = os.getcwd()
-    with open(
-        os.path.join(cwd, "uk_bin_collection", "tests", "council_schemas", file_name)
-    ) as f:
+    with open(os.path.join(cwd, "uk_bin_collection", "tests", file_name)) as f:
         data = json.load(f)
         logging.info(f"{file_name} Schema file loaded")
     return data
