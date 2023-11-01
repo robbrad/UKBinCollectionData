@@ -24,11 +24,10 @@ days_of_week = {
 
 
 class Region(Enum):
-    UK = 1
-    ENG = 2
-    NIR = 3
-    SCT = 4
-    WLS = 5
+    ENG = 1
+    NIR = 2
+    SCT = 3
+    WLS = 4
 
 
 def check_postcode(postcode: str):
@@ -134,19 +133,14 @@ def parse_header(raw_header: str) -> dict:
     return header
 
 
-def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
+def is_holiday(date_to_check: datetime, region: Region = Region.ENG) -> bool:
     """
     Checks if a given date is a public holiday
         :param date_to_check: Date to check if holiday
-        :param region: The UK nation to check. Defaults to UK.
+        :param region: The UK nation to check. Defaults to ENG.
         :return: Bool - true if a holiday, false if not
     """
-    if region.name != "UK":
-        subdiv = region.name.capitalize()
-    else:
-        subdiv = region.name
-
-    uk_holidays = holidays.country_holidays("GB", subdiv=subdiv)
+    uk_holidays = holidays.country_holidays("GB", subdiv=region.name)
 
     if date_to_check in uk_holidays:
         return True
