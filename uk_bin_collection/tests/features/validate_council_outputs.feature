@@ -37,7 +37,6 @@ Feature: Test each council output matches expected results in /outputs
             | EastDevonDC |
             | EastleighBoroughCouncil |
             | EastLindseyDistrictCouncil |
-            | EastNorthamptonshireCouncil |
             | EastRidingCouncil |
             | EastSuffolkCouncil |
             | ErewashBoroughCouncil |
@@ -67,6 +66,7 @@ Feature: Test each council output matches expected results in /outputs
             | NorthLanarkshireCouncil |
             | NorthLincolnshireCouncil |
             | NorthNorfolkDistrictCouncil |
+            | NorthNorthamptonshireCouncil |
             | NorthSomersetCouncil |
             | NorthTynesideCouncil |
             | NorthumberlandCouncil |

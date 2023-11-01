@@ -186,11 +186,11 @@
     "wiki_name": "East Lindsey District Council",
     "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
   },
-  "EastNorthamptonshireCouncil": {
+  "NorthNorthamptonshireCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
     "uprn": "100031021317",
-    "url": "https://kbccollectiveapi-coll-api.e4ff.pro-eu-west-1.openshiftapps.com/wc-info/",
-    "wiki_name": "East Northamptonshire Council"
+    "url": "https://cms.northnorthants.gov.uk/bin-collection-search/calendarevents/100031021318/2023-10-17/2023-10-01",
+    "wiki_name": "North Northamptonshire Council"
   },
   "EastRidingCouncil": {
     "SKIP_GET_URL": "SKIP_GET_URL",
