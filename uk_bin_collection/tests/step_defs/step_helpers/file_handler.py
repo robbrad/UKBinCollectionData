@@ -3,6 +3,7 @@ import logging
 import os
 from jsonschema import validate, ValidationError
 
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
 def load_inputs_file(file_name):
     cwd = os.getcwd()
