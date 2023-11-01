@@ -35,6 +35,7 @@ setuptools = "*"
 pytest-bdd = "*"
 allure-pytest-bdd = "*"
 pytest-xdist = {extras = ["psutil"], version = "*"}
+pyhamcrest = "*"
 
 
 [tool.poetry.scripts]

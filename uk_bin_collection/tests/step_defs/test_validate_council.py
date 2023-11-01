@@ -2,10 +2,12 @@ import logging
 import pytest
 import traceback
 from pytest_bdd import scenario, given, when, then, parsers
+from hamcrest import assert_that, equal_to
 
 from step_helpers import file_handler
 from uk_bin_collection.uk_bin_collection import collect_data
 
+logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
 @scenario("../features/validate_council_outputs.feature", "Validate Council Output")
 def test_scenario_outline():
@@ -65,10 +67,11 @@ def scrape_step(context, council):
 def validate_json_step(context):
     try:
         valid_json = file_handler.validate_json(context.parse_result)
-        assert valid_json is True
+        assert_that(valid_json, True)
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Validate Output: {err}")
+        logging.info(f"JSON Output: {context.parse_result}")
         raise (err)
 
 
@@ -79,8 +82,9 @@ def validate_output_step(context):
         schema_result = file_handler.validate_json_schema(
             context.parse_result, council_schema
         )
-        assert schema_result is True
+        assert_that(schema_result, True)
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Validate Output: {err}")
+        logging.info(f"JSON Output: {context.parse_result}")
         raise (err)
