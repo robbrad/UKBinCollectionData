@@ -50,7 +50,7 @@ def scrape_step(context, council):
     if "usrn" in context.metadata:
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
-    if "SKIP_GET_URL" in context.metadata:
+    if "skip_get_url" in context.metadata:
         args.append(f"-s")
 
     try:

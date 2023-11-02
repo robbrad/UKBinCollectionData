@@ -200,16 +200,47 @@ def remove_alpha_characters(input_string: str) -> str:
     return "".join(c for c in input_string if c.isdigit() or c == " ")
 
 
+def update_input_json(council: str, url: str, **kwargs):
+    """
+    Create/update council's entry in the input.json
+        :param council: Council
+        :param kwargs: Run arguments
+    """
+    postcode = kwargs.get("postcode", None)
+    paon = kwargs.get("paon", None)
+    uprn = kwargs.get("uprn", None)
+    usrn = kwargs.get("usrn", None)
 def write_output_json(council: str, content: str):
+    skip_get_url = kwargs.get("skip_get_url", None)
     cwd = os.getcwd()
+    input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
+    if os.path.exists(input_file_path):
+        with open(input_file_path, 'r') as f:
+            data = json.load(f)
+            if council not in data:
+                data[council] = {"wiki_name": council}
+            if "url" != "":
+                data[council]["url"] = url
+            if postcode is not None:
+                data[council]["postcode"] = postcode
+            if paon is not None:
+                data[council]["paon"] = paon
+            if uprn is not None:
+                data[council]["uprn"] = uprn
+            if usrn is not None:
+                data[council]["usrn"] = usrn
     outputs_path = os.path.join(cwd, "..", "tests", "outputs")
     if not os.path.exists(outputs_path) or not os.path.isdir(outputs_path):
         outputs_path = os.path.join(cwd, "uk_bin_collection", "tests", "outputs")
     if os.path.exists(outputs_path) and os.path.isdir(outputs_path):
         with open(os.path.join(outputs_path, council + ".json"), "w") as f:
             f.write(content)
+            if skip_get_url is not None:
+                data[council]["skip_get_url"] = skip_get_url
+        with open(input_file_path, 'w') as f:
+            f.write(json.dumps(data, sort_keys=True, indent=4))
     else:
-        print("Exception encountered: Unable to save Output JSON file for the council.")
+        print("Exception encountered: Unable to update input.json file for the council.")
         print(
             "Please check you're running developer mode from either the UKBinCollectionData "
             "or uk_bin_collection/uk_bin_collection/ directories."
