@@ -195,6 +195,10 @@ def test_update_input_json_fail(capsys, monkeypatch):
     assert "Exception encountered: Unable to update input.json file for the council." in captured.out
     assert "Please check you're running developer mode" in captured.out
 
-def test_create_webdriver():
-    result = create_webdriver()
+def test_create_webdriver_local():
+    result = create_webdriver(None)
+    assert result.name == 'chrome'
+
+def test_create_webdriver_remote():
+    result = create_webdriver("http://selenium:4444")
     assert result.name == 'chrome'
