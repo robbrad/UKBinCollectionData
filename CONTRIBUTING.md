@@ -130,11 +130,7 @@ UKBCD has two mandatory parameters when it runs - the name of the parser (sans .
 | House number                            | `-n` or `--number`       | Sometimes called PAON                                       | `kwargs.get('paon')`         |
 | Postcode                                | `-p` or `--postcode`     | Needs to be wrapped in quotes on the CLI                    | `kwargs.get('postcode')`     |
 | Skip Get URL                            | `-s` or `--skip_get_url` |                                                             | `kwargs.get('skip_get_url')` |
-| Parameter    | Prompt               | Notes                                    | kwargs.get               |
-|--------------|----------------------|------------------------------------------|--------------------------|
-| UPRN         | `-u` or `--uprn`     |                                          | `kwargs.get('uprn')`     |
-| House number | `-n` or `--number`   | Sometimes called PAON                    | `kwargs.get('paon')`     |
-| Postcode     | `-p` or `--postcode` | Needs to be wrapped in quotes on the CLI | `kwargs.get('postcode')` |
+| URL for remote Selenium web driver      | `-w` or `--web_driver`   | Needs to be wrapped in quotes on the CLI                    | `kwargs.get('web_driver')`   |
 | Development Mode                        | `-d` or `--dev_mode`     | Create/update council's entry in the input.json on each run | `kwargs.get('dev_mode')`     |
 
 These parameters are useful if you're using something like the requests module and need to take additional user information into the request, such as:
