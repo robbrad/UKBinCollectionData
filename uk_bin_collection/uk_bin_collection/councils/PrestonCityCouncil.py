@@ -67,6 +67,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         topLevelSpan = soup.find(
             "span",
             id="lblCollectionDates"

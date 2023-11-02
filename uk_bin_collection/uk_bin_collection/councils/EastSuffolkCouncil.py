@@ -67,6 +67,9 @@ class CouncilClass(AbstractGetBinDataClass):
             )
         )
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         # Make a BS4 object
         soup = BeautifulSoup(data_table.get_attribute("innerHTML"), features="html.parser")
 

@@ -64,6 +64,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         # Work out which bins can be collected for this address. Glass bins are only on some houses due to pilot programme.
         bins_collected = list(
             map(

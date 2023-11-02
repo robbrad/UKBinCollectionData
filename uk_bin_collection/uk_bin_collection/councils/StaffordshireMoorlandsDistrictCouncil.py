@@ -68,6 +68,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         # Get months
         for month_wrapper in soup.find_all("div", {"class": "bin-collection__month"}):
             if month_wrapper:

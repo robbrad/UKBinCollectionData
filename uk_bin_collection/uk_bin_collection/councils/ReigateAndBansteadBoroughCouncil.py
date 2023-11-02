@@ -39,6 +39,9 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         data = {"bins": []}
         section = soup.find("span", {"data-name": "html2"})
         dates = section.find_all("div")

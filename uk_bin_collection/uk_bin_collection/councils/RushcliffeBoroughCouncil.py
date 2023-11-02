@@ -61,6 +61,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         bins_text = soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
 
         if bins_text:

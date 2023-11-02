@@ -62,6 +62,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
+            # Quit Selenium webdriver to release session
+            driver.quit()
+
             bins_text = soup.find("div", id="Search_result_details_cps_hd")
 
             if bins_text:

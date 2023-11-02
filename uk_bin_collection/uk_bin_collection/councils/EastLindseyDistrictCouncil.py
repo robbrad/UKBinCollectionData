@@ -60,6 +60,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         # Get collections
         for collection in soup.find_all("div", {"class": "waste-result"}):
             ptags = collection.find_all("p")

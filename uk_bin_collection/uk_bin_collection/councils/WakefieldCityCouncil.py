@@ -22,6 +22,9 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
 
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
         data = {"bins": []}
         sections = soup.find_all("div", {"class": "wil_c-content-section_heading"})
         for s in sections:
