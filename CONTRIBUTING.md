@@ -13,7 +13,6 @@
     + [Common Functions](#common-functions)
   * [Additional files](#additional-files)
     + [Input JSON file](#input-json-file)
-    + [Output JSON file](#output-json-file)
     + [Feature file](#feature-file)
   * [Testing](#testing)
     + [Behave (Integration Testing)](#behave--integration-testing-)
@@ -90,23 +89,53 @@ There are a few different options for scraping, and you are free to choose which
 ## Developing
 To get started, first you will need to fork this repository and setup your own working environment before you can start developing.
 
-Once your environment is ready, create a new branch from your master/main branch and then create a new .py file within the `uk_bin_collection\councils` directory. The new .py file will be used in the CLI to call the parser, so be sure to pick a sensible name - e.g. CheshireEastCouncil.py is called with:
+Once your environment is ready, create a new branch from your master/main branch and then create a new .py file within the `uk_bin_collection\councils` directory then use the development mode to generate the input.json entry. The new .py file will be used in the CLI to call the parser, so be sure to pick a sensible name - e.g. CheshireEastCouncil.py is called with:
 ```
 python collect_data.py CheshireEastCouncil <web-url>
 ```
 
 To simplify things somewhat, a [template](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/council_class_template/councilclasstemplate.py) file has been created - open this file, copy the contents to your new .py file and start from there. You are pretty much free to approach the scraping however you would like, but please ensure that:
-- Your scraper returns a dictionary made up of the key "bins" and a value that is a list of bin types and collection dates (see [outputs folder](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/outputs) for examples).
+- Your scraper returns a dictionary made up of the key "bins" and a value that is a list of bin types and collection dates. An example of this can be seen below.
 - Any dates or times are formatted to standard UK formats (see [below](#common-functions))
+<details>
+  <summary>Output Example</summary>
+
+```json
+{
+    "bins": [
+        {
+            "type": "Empty Standard Mixed Recycling",
+            "collectionDate": "29/07/2022"
+        },
+        {
+            "type": "Empty Standard Garden Waste",
+            "collectionDate": "29/07/2022"
+        },
+        {
+            "type": "Empty Standard General Waste",
+            "collectionDate": "05/08/2022"
+        }
+    ]
+}
+```
+</details>
 
 ### Kwargs
 UKBCD has two mandatory parameters when it runs - the name of the parser (sans .py) and the URL from which to scrape. However, developers can also get the following data using `kwargs`:
 
+| Parameter                               | Prompt                   | Notes                                                       | kwargs.get                   |
+|-----------------------------------------|--------------------------|-------------------------------------------------------------|------------------------------|
+| UPRN (Unique Property Reference Number) | `-u` or `--uprn`         |                                                             | `kwargs.get('uprn')`         |
+| USRN (Unique Street Reference Number)   | `-us` or `--usrn`        |                                                             | `kwargs.get('usrn')`         |
+| House number                            | `-n` or `--number`       | Sometimes called PAON                                       | `kwargs.get('paon')`         |
+| Postcode                                | `-p` or `--postcode`     | Needs to be wrapped in quotes on the CLI                    | `kwargs.get('postcode')`     |
+| Skip Get URL                            | `-s` or `--skip_get_url` |                                                             | `kwargs.get('skip_get_url')` |
 | Parameter    | Prompt               | Notes                                    | kwargs.get               |
 |--------------|----------------------|------------------------------------------|--------------------------|
 | UPRN         | `-u` or `--uprn`     |                                          | `kwargs.get('uprn')`     |
 | House number | `-n` or `--number`   | Sometimes called PAON                    | `kwargs.get('paon')`     |
 | Postcode     | `-p` or `--postcode` | Needs to be wrapped in quotes on the CLI | `kwargs.get('postcode')` |
+| Development Mode                        | `-d` or `--dev_mode`     | Create/update council's entry in the input.json on each run | `kwargs.get('dev_mode')`     |
 
 These parameters are useful if you're using something like the requests module and need to take additional user information into the request, such as:
 ```commandline
@@ -144,7 +173,6 @@ Please feel free to contribute to this library as you see fit - added functions 
 In order for your scraper to work with the project's testing suite, some additional files need to be provided or
 modified:
 - [ ] [Input JSON file](#input-json-file)
-- [ ] [Output JSON file](#output-json-file)
 - [ ] [Feature file](#feature-file)
 
 **Note:** from here on, anything containing`<council_name>` should be replaced with the scraper's name.
@@ -183,39 +211,6 @@ recommended - the council's address is usually a good one).
         "wiki_command_url_override": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=XXXXXXXX&onelineaddress=XXXXXXXX&_=1621149987573",
         "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.\nUse the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`."
     },
-```
-</details>
-
-### Output JSON file
-| Type | File location                                                             |
-|------|---------------------------------------------------------------------------|
-| Add  | `UKBinCollectionData/uk_bin_collection/tests/outputs/<council_name>.json` |
-
-A sample of what the scraper outputs should be provided in the [outputs](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/outputs/)
-folder. This can be taken from your development environment's console or a CLI. Please only include the "bins" data.
-
-Adding the `-d` or `--dev_mode` parameter to your CLI command enables development mode which creates/updates the Output JSON file for the council automatically for you on each run
-
-<details>
-  <summary>Example</summary>
-
-```json
-{
-    "bins": [
-        {
-            "type": "Empty Standard Mixed Recycling",
-            "collectionDate": "29/07/2022"
-        },
-        {
-            "type": "Empty Standard Garden Waste",
-            "collectionDate": "29/07/2022"
-        },
-        {
-            "type": "Empty Standard General Waste",
-            "collectionDate": "05/08/2022"
-        }
-    ]
-}
 ```
 </details>
 
