@@ -20,11 +20,12 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
         check_paon(user_paon)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get("https://www.e-lindsey.gov.uk/article/6714/Your-Waste-Collection-Days")
 
         # Wait for the postcode field to appear then populate it

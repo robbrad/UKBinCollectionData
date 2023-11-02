@@ -161,35 +161,38 @@ def test_get_next_occurrence_from_day_month_true():
     result = get_next_occurrence_from_day_month(datetime(2023,9,1))
     assert result == pd.Timestamp('2024-09-01 00:00:00')
 
-def test_write_output_json():
+def test_update_input_json():
     council = "test_council"
-    content = '{"example": "data"}'
-    write_output_json(council, content)
+    url = "TEST_URL"
+    postcode="TEST_POSTCODE"
+    uprn="TEST_UPRN"
+    web_driver="TEST_WEBDRIVER"
+    skip_get_url = True
+    update_input_json(council, url, postcode=postcode, uprn=uprn, web_driver=web_driver, skip_get_url=skip_get_url)
     cwd = os.getcwd()
-    outputs_path = os.path.join(cwd, "uk_bin_collection", "tests", "outputs", council + ".json")
-    result1 = os.path.exists(outputs_path)        
-
-    with open(outputs_path, "r") as f:
-        read_content = f.read()
-
-    if os.path.exists(outputs_path):
-        os.remove(outputs_path)
-
+    input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
+    result1 = os.path.exists(input_file_path)     
+    with open(input_file_path, 'r') as f:
+        data = json.load(f)   
     assert result1 == True
-    assert read_content == content
+    assert data[council] == {"postcode": postcode, "skip_get_url": skip_get_url, "uprn": uprn, "url": url, "web_driver": web_driver, "wiki_name": council}
 
-def test_write_output_json_fail(capsys, monkeypatch):
+def test_update_input_json_fail(capsys, monkeypatch):
     def mock_os_path_exists(path):
         return False  # Simulate the path not existing
 
     monkeypatch.setattr(os.path, 'exists', mock_os_path_exists)
 
     council = "test_council"
-    content = '{"example": "data"}'
-    write_output_json(council, content)
+    url = "TEST_URL"
+    postcode="TEST_POSTCODE"
+    uprn="TEST_UPRN"
+    web_driver="TEST_WEBDRIVER"
+    skip_get_url = True
+    update_input_json(council, url, postcode=postcode, uprn=uprn, web_driver=web_driver, skip_get_url=skip_get_url)
 
     captured = capsys.readouterr()
-    assert "Exception encountered: Unable to save Output JSON file for the council." in captured.out
+    assert "Exception encountered: Unable to update input.json file for the council." in captured.out
     assert "Please check you're running developer mode" in captured.out
 
 def test_create_webdriver():

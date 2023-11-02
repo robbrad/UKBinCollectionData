@@ -17,6 +17,11 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+services:
+      selenium:
+        image: selenium/standalone-chrome:latest
+        options: --shm-size=2gb
+
 jobs:
   build:
     runs-on: ubuntu-latest

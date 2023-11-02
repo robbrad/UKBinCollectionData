@@ -59,9 +59,10 @@ class CouncilClass(AbstractGetBinDataClass):
         # Assign user info
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
+        web_driver = kwargs.get("web_driver")
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get(page)
 
         # Hide Cookies

@@ -18,6 +18,7 @@
                     "postcode": "Postcode of the address",
                     "number": "House number of the address",
                     "usrn": "USRN (Unique Street Reference Number)",
+                    "web_driver": "URL of the remote Selenium web driver to use",
                     "submit": "Submit"
                 },
                 "description": "Please refer to your councils [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) entry for details on what to enter"
