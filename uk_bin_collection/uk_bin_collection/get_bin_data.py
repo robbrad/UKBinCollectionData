@@ -10,7 +10,7 @@ from logging.config import dictConfig
 
 import requests
 
-from uk_bin_collection.uk_bin_collection.common import write_output_json
+from uk_bin_collection.uk_bin_collection.common import update_input_json
 
 LOGGING_CONFIG = dict(
     version=1,
@@ -72,9 +72,9 @@ class AbstractGetBinDataClass(ABC):
             )
             json_output = self.output_json(bin_data_dict)
 
-        # if dev mode create/update council's output JSON if bin_data_dict is not empty
-        if dev_mode is not None and dev_mode is True and bin_data_dict["bins"]:
-            write_output_json(council_module_str, json_output)
+        # if dev mode create/update council's entry in the input.json
+        if dev_mode is not None and dev_mode is True:
+            update_input_json(council_module_str, this_url, postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, skip_get_url=skip_get_url)
 
         return json_output
 

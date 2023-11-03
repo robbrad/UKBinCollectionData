@@ -1,4 +1,4 @@
-Feature: Test each council output matches expected results in /outputs
+Feature: Test each council output matches expected results
 
     Scenario Outline: Validate Council Output
         Given the council: <council>
