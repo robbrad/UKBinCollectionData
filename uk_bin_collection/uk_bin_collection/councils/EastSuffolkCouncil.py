@@ -1,3 +1,4 @@
+from time import sleep
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -49,6 +50,9 @@ class CouncilClass(AbstractGetBinDataClass):
             EC.invisibility_of_element_located((By.CLASS_NAME, "spinner-outer"))
         )
 
+        # Sometimes the options aren't fully there despite the spinner being gone, wait another 2 seconds.
+        sleep(2)
+
         # Select address by UPRN
         address.select_by_value(user_uprn)
 
@@ -56,6 +60,8 @@ class CouncilClass(AbstractGetBinDataClass):
         WebDriverWait(driver, 10).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, "spinner-outer"))
         )
+
+        sleep(2)
 
         # Find data table
         data_table = WebDriverWait(driver, 10).until(
