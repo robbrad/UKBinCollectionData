@@ -79,7 +79,7 @@ class CouncilClass(AbstractGetBinDataClass):
         rows = soup.find("table").find("tbody").find_all("tr")
         for row in rows:
             cols = row.find_all("td")
-            bin_type = cols[2].find_all("span")[1].text
+            bin_type = cols[2].find_all("span")[1].text.title()
             collection_date = cols[3].find_all("span")[1].text
             collection_date = datetime.strptime(collection_date, "%d/%m/%Y").strftime(
                 date_format
