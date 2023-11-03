@@ -45,7 +45,7 @@ class UKBinCollectionApp:
             "-d",
             "--dev_mode",
             action="store_true",
-            help="Enables development mode - creates/updates outputs .json file for the council on each run",
+            help="Enables development mode - creates/updates entries in the input.json file for the council on each run",
             required=False,
         )
         self.parsed_args = None
