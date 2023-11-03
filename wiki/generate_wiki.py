@@ -31,7 +31,7 @@ def main():
                 # get additional arguments
                 command = council_details.get("wiki_command_url_override", council_details.get("url", ""))
                 additional_parameters = ""
-                if "SKIP_GET_URL" in council_details:
+                if "skip_get_url" in council_details:
                     command += " -s"
                     additional_parameters += "- `-s` - skip get URL\n"
                 if "uprn" in council_details:

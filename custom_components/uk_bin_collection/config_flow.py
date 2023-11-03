@@ -18,7 +18,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def get_councils_json(self) -> object:
         """Returns an object of supported council's and their required fields."""
         # Fetch the JSON data from the provided URL
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.24.2/uk_bin_collection/tests/input.json"
+        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.25.0/uk_bin_collection/tests/input.json"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 data_text = await response.text()
@@ -29,7 +29,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if self.councils_data is None:
             self.councils_data = await self.get_councils_json()
         council_schema = vol.Schema({})
-        if ("SKIP_GET_URL" not in self.councils_data[council] or
+        if ("skip_get_url" not in self.councils_data[council] or
                 "custom_component_show_url_field" in self.councils_data[council]):
             council_schema = council_schema.extend(
                 {vol.Required("url", default=""): cv.string}
@@ -106,7 +106,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             # Set additional options
-            if "SKIP_GET_URL" in self.councils_data[self.data["council"]]:
+            if "skip_get_url" in self.councils_data[self.data["council"]]:
                 user_input["skip_get_url"] = True
                 user_input["url"] = self.councils_data[self.data["council"]]["url"]
 
