@@ -24,11 +24,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
         check_paon(user_paon)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get(page)
 
         # Populate postcode field
@@ -60,6 +61,9 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+            # Quit Selenium webdriver to release session
+            driver.quit()
 
             bins_text = soup.find("div", id="Search_result_details_cps_hd")
 

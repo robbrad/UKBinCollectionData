@@ -50,6 +50,10 @@ def scrape_step(context, council):
     if "usrn" in context.metadata:
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
+    # TODO we should somehow run this test with and without this argument passed
+    if "web_driver" in context.metadata:
+        web_driver = context.metadata["web_driver"]
+        args.append(f"-w={web_driver}")
     if "skip_get_url" in context.metadata:
         args.append(f"-s")
 

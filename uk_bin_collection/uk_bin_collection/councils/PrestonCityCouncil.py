@@ -27,11 +27,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
         check_paon(user_paon)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get(page)
 
         # If you bang in the house number (or property name) and postcode in the box it should find your property
@@ -65,6 +66,9 @@ class CouncilClass(AbstractGetBinDataClass):
         viewMoreLink.click()
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         topLevelSpan = soup.find(
             "span",

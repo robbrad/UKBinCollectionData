@@ -15,12 +15,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(kwargs.get("web_driver"))
         driver.get(kwargs.get("url"))
 
         # Make a BS4 object
         soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         data = {"bins": []}
         sections = soup.find_all("div", {"class": "wil_c-content-section_heading"})

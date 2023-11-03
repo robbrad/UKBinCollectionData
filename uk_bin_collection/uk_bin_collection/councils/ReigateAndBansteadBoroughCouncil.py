@@ -18,12 +18,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
+        web_driver = kwargs.get("web_driver")
         check_uprn(user_uprn)
         # Pad UPRN with 0's at the start for any that aren't 12 chars
         user_uprn = user_uprn.zfill(12)
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get(
             f"https://my.reigate-banstead.gov.uk/en/service/Bins_and_recycling___collections_calendar?uprn={user_uprn}")
 
@@ -37,6 +38,9 @@ class CouncilClass(AbstractGetBinDataClass):
         # Make a BS4 object
         soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         data = {"bins": []}
         section = soup.find("span", {"data-name": "html2"})

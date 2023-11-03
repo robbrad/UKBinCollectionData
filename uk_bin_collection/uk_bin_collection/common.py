@@ -204,7 +204,7 @@ def update_input_json(council: str, url: str, **kwargs):
     paon = kwargs.get("paon", None)
     uprn = kwargs.get("uprn", None)
     usrn = kwargs.get("usrn", None)
-def write_output_json(council: str, content: str):
+    web_driver = kwargs.get("web_driver", None)
     skip_get_url = kwargs.get("skip_get_url", None)
     cwd = os.getcwd()
     input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
@@ -223,12 +223,8 @@ def write_output_json(council: str, content: str):
                 data[council]["uprn"] = uprn
             if usrn is not None:
                 data[council]["usrn"] = usrn
-    outputs_path = os.path.join(cwd, "..", "tests", "outputs")
-    if not os.path.exists(outputs_path) or not os.path.isdir(outputs_path):
-        outputs_path = os.path.join(cwd, "uk_bin_collection", "tests", "outputs")
-    if os.path.exists(outputs_path) and os.path.isdir(outputs_path):
-        with open(os.path.join(outputs_path, council + ".json"), "w") as f:
-            f.write(content)
+            if web_driver is not None:
+                data[council]["web_driver"] = web_driver
             if skip_get_url is not None:
                 data[council]["skip_get_url"] = skip_get_url
         with open(input_file_path, 'w') as f:
@@ -246,7 +242,7 @@ def validate_dates(bin_dates: dict) -> dict:
     # If a date is in December and the next is in January, increase the year
 
 
-def create_webdriver() -> webdriver.Chrome:
+def create_webdriver(web_driver) -> webdriver.Chrome:
     """
     Create and return a headless Selenium webdriver
     :rtype: webdriver.Chrome
@@ -258,5 +254,8 @@ def create_webdriver() -> webdriver.Chrome:
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-dev-shm-usage")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    # Return a Selenium webdriver
+    # Return a remote Selenium webdriver
+    if web_driver is not None:
+        return webdriver.Remote(command_executor=web_driver, options=options)
+    # Return a local Selenium webdriver
     return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)

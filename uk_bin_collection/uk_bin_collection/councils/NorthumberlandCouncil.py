@@ -32,11 +32,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
         check_paon(user_paon)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get(page)
 
         time.sleep(1)
@@ -62,6 +63,9 @@ class CouncilClass(AbstractGetBinDataClass):
         ).click()
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         # Work out which bins can be collected for this address. Glass bins are only on some houses due to pilot programme.
         bins_collected = list(

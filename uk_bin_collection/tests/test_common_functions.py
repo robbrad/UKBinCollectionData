@@ -166,15 +166,16 @@ def test_update_input_json():
     url = "TEST_URL"
     postcode="TEST_POSTCODE"
     uprn="TEST_UPRN"
+    web_driver="TEST_WEBDRIVER"
     skip_get_url = True
-    update_input_json(council, url, postcode=postcode, uprn=uprn, skip_get_url=skip_get_url)
+    update_input_json(council, url, postcode=postcode, uprn=uprn, web_driver=web_driver, skip_get_url=skip_get_url)
     cwd = os.getcwd()
     input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
     result1 = os.path.exists(input_file_path)     
     with open(input_file_path, 'r') as f:
         data = json.load(f)   
     assert result1 == True
-    assert data[council] == {'postcode': 'TEST_POSTCODE', 'skip_get_url': True, 'uprn': 'TEST_UPRN', 'url': 'TEST_URL', 'wiki_name': 'test_council'}
+    assert data[council] == {"postcode": postcode, "skip_get_url": skip_get_url, "uprn": uprn, "url": url, "web_driver": web_driver, "wiki_name": council}
 
 def test_update_input_json_fail(capsys, monkeypatch):
     def mock_os_path_exists(path):
@@ -186,13 +187,18 @@ def test_update_input_json_fail(capsys, monkeypatch):
     url = "TEST_URL"
     postcode="TEST_POSTCODE"
     uprn="TEST_UPRN"
+    web_driver="TEST_WEBDRIVER"
     skip_get_url = True
-    update_input_json(council, url, postcode=postcode, uprn=uprn, skip_get_url=skip_get_url)
+    update_input_json(council, url, postcode=postcode, uprn=uprn, web_driver=web_driver, skip_get_url=skip_get_url)
 
     captured = capsys.readouterr()
     assert "Exception encountered: Unable to update input.json file for the council." in captured.out
     assert "Please check you're running developer mode" in captured.out
 
-def test_create_webdriver():
-    result = create_webdriver()
+def test_create_webdriver_local():
+    result = create_webdriver(None)
+    assert result.name == 'chrome'
+
+def test_create_webdriver_remote():
+    result = create_webdriver("http://selenium:4444")
     assert result.name == 'chrome'

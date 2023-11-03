@@ -21,11 +21,12 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get("https://www.staffsmoorlands.gov.uk/findyourbinday")
 
         # Close cookies banner
@@ -66,6 +67,9 @@ class CouncilClass(AbstractGetBinDataClass):
         submit.click()
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         # Get months
         for month_wrapper in soup.find_all("div", {"class": "bin-collection__month"}):

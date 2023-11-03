@@ -62,6 +62,7 @@
         "skip_get_url": true,
         "uprn": "100031325997",
         "url": "https://www.broxtowe.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Broxtowe Borough Council"
     },
     "BuckinghamshireCouncil": {
@@ -69,6 +70,7 @@
         "postcode": "HP14 4LA",
         "skip_get_url": true,
         "url": "https://chiltern.gov.uk/collection-dates",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Buckinghamshire Council (Chiltern, South Bucks, Wycombe)",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
@@ -152,6 +154,7 @@
         "skip_get_url": true,
         "uprn": "10070102161",
         "url": "https://www.derbyshiredales.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Derbyshire Dales District Council"
     },
     "DoncasterCouncil": {
@@ -183,6 +186,7 @@
         "postcode": "LN4 4SY",
         "skip_get_url": true,
         "url": "https://www.e-lindsey.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "East Lindsey District Council",
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },
@@ -197,6 +201,7 @@
         "skip_get_url": true,
         "uprn": "10093544720",
         "url": "https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "East Suffolk Council",
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
     },
@@ -223,6 +228,7 @@
         "postcode": "NE16 5LQ",
         "skip_get_url": true,
         "url": "https://www.gateshead.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Gateshead Council",
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },
@@ -251,6 +257,7 @@
         "postcode": "SK13 8BX",
         "skip_get_url": true,
         "url": "https://www.highpeak.gov.uk/findyourbinday",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "High Peak Council",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
@@ -337,6 +344,7 @@
         "skip_get_url": true,
         "uprn": "10023947752",
         "url": "https://www.npt.gov.uk",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Neath Port Talbot Council"
     },
     "NewarkAndSherwoodDC": {
@@ -382,6 +390,7 @@
         "postcode": "NR25 6BH",
         "skip_get_url": true,
         "url": "https://www.north-norfolk.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "North Norfolk District Council",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
@@ -410,6 +419,7 @@
         "postcode": "NE46 1UQ",
         "skip_get_url": true,
         "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland Council"
     },
     "PrestonCityCouncil": {
@@ -417,12 +427,14 @@
         "postcode": "PR1 2RL",
         "skip_get_url": true,
         "url": "https://selfservice.preston.gov.uk/service/Forms/FindMyNearest.aspx?Service=bins",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Preston City Council"
     },
     "ReigateAndBansteadBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "68134867",
         "url": "https://www.reigate-banstead.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Reigate and Banstead Borough Council",
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
     },
@@ -445,6 +457,7 @@
         "skip_get_url": true,
         "uprn": "3040040994",
         "url": "https://www.rushcliffe.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Rushcliffe Borough Council"
     },
     "RushmoorCouncil": {
@@ -521,6 +534,7 @@
         "skip_get_url": true,
         "uprn": "100031863037",
         "url": "https://www.staffsmoorlands.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Staffordshire Moorlands District Council",
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
     },
@@ -578,6 +592,7 @@
         "custom_component_show_url_field": true,
         "skip_get_url": true,
         "url": "https://www.wakefield.gov.uk/where-i-live/?uprn=63035490&a=115%20Elizabeth%20Drive%20Castleford%20WF10%203RR&usrn=41801243&e=445418&n=426091&p=WF10%203RR",
+        "web_driver": "http://selenium:4444",
         "wiki_command_url_override": "https://www.wakefield.gov.uk/where-i-live/?uprn=XXXXXXXXXXX&a=XXXXXXXXXXX&usrn=XXXXXXXXXXX&e=XXXXXXXXXXX&n=XXXXXXXXXXX&p=XXXXXXXXXXX",
         "wiki_name": "Wakefield City Council",
         "wiki_note": "Follow the instructions [here](https://www.wakefield.gov.uk/where-i-live/) until you get the page that includes a \"Bin Collections\" section then copy the URL and replace the URL in the command."
@@ -614,6 +629,7 @@
         "postcode": "EH52 5JE",
         "skip_get_url": true,
         "url": "https://www.westlothian.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "West Lothian Council",
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },

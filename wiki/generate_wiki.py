@@ -46,6 +46,9 @@ def main():
                 if "usrn" in council_details:
                     command += " -usrn XXXXXXXX"
                     additional_parameters += "- `-us` - USRN\n"
+                if "web_driver" in council_details:
+                    command += " -w http://HOST:PORT/"
+                    additional_parameters += "- `-w` - remote Selenium web driver URL (required for Home Assistant)\n"
 
                 # add to entries
                 entries += "\n---\n\n"

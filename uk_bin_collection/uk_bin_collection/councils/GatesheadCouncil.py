@@ -20,11 +20,12 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
         check_paon(user_paon)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get("https://www.gateshead.gov.uk/article/3150/Bin-collection-day-checker")
 
         # Wait for the postcode field to appear then populate it
@@ -51,6 +52,9 @@ class CouncilClass(AbstractGetBinDataClass):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".bincollections__table")))
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         # Get collections table
         table = soup.find("table", {"class": "bincollections__table"})

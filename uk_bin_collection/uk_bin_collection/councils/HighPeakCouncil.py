@@ -59,9 +59,10 @@ class CouncilClass(AbstractGetBinDataClass):
         # Assign user info
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
+        web_driver = kwargs.get("web_driver")
 
         # Create Selenium webdriver
-        driver = create_webdriver()
+        driver = create_webdriver(web_driver)
         driver.get(page)
 
         # Hide Cookies
@@ -111,6 +112,9 @@ class CouncilClass(AbstractGetBinDataClass):
         table = driver.find_element(
             By.ID, "FINDBINDAYSHIGHPEAK_CALENDAR_MAINCALENDAR"
         ).get_attribute("outerHTML")
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         # Parse data into dict
         data = self.get_data(table)

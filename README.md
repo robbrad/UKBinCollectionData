@@ -41,6 +41,7 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 1. Click `+ Add Integration` and search for and select `UK Bin Collection Data` then click `Download`.
 1. Restart your Home Assistant.
 1. In the Home Assistant UI go to `Settings` > `Devices & Services` click `+ Add Integration` and search for `UK Bin Collection Data`.
+1. If your see a "URL of the remote Selenium web driver to use" field when setting up your council, you'll need to provide the URL to a web driver you've set up seperately such as [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome).
 
 ### Install manually
 
