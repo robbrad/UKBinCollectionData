@@ -1,3 +1,4 @@
+from time import sleep
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -49,6 +50,9 @@ class CouncilClass(AbstractGetBinDataClass):
             EC.invisibility_of_element_located((By.CLASS_NAME, "spinner-outer"))
         )
 
+        # Sometimes the options aren't fully there despite the spinner being gone, wait another 2 seconds.
+        sleep(2)
+
         # Select address by UPRN
         address.select_by_value(user_uprn)
 
@@ -56,6 +60,8 @@ class CouncilClass(AbstractGetBinDataClass):
         WebDriverWait(driver, 10).until(
             EC.invisibility_of_element_located((By.CLASS_NAME, "spinner-outer"))
         )
+
+        sleep(2)
 
         # Find data table
         data_table = WebDriverWait(driver, 10).until(
@@ -67,18 +73,19 @@ class CouncilClass(AbstractGetBinDataClass):
             )
         )
 
-        # Quit Selenium webdriver to release session
-        driver.quit()
-
+        
         # Make a BS4 object
         soup = BeautifulSoup(data_table.get_attribute("innerHTML"), features="html.parser")
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         data = {"bins": []}
 
         rows = soup.find("table").find("tbody").find_all("tr")
         for row in rows:
             cols = row.find_all("td")
-            bin_type = cols[2].find_all("span")[1].text
+            bin_type = cols[2].find_all("span")[1].text.title()
             collection_date = cols[3].find_all("span")[1].text
             collection_date = datetime.strptime(collection_date, "%d/%m/%Y").strftime(
                 date_format
