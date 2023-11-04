@@ -32,10 +32,13 @@ def get_council_step(context, council_name):
         logging.info(f"Validate Output: {err}")
         raise (err)
 
-
-@when(parsers.parse("we scrape the data from {council}"))
-def scrape_step(context, council):
+# When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set.
+@when(parsers.parse("we scrape the data from {council} using {selenium_mode} and the {selenium_url} is set"))
+def scrape_step(context, council, selenium_mode, selenium_url):
     context.council = council
+    context.selenium_mode = selenium_mode
+    context.selenium_url = selenium_url
+
     args = [council, context.metadata["url"]]
 
     if "uprn" in context.metadata:
@@ -51,9 +54,14 @@ def scrape_step(context, council):
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
     # TODO we should somehow run this test with and without this argument passed
-    if "web_driver" in context.metadata:
-        web_driver = context.metadata["web_driver"]
-        args.append(f"-w={web_driver}")
+    # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
+
+    # At the moment the feature file is set to local execution of the selenium so no url will be set
+    # And it the behave test will execute locally
+    if selenium_mode != 'None' and selenium_url != 'None':
+        if selenium_mode != 'local': 
+            web_driver = context.metadata["web_driver"]
+            args.append(f"-w={web_driver}")
     if "skip_get_url" in context.metadata:
         args.append(f"-s")
 
