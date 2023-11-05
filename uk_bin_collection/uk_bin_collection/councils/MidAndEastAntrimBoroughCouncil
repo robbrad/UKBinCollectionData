@@ -1,0 +1,74 @@
+import pandas as pd
+import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
+
+
+class CouncilClass(AbstractGetBinDataClass):
+    """
+    Concrete classes have to implement all abstract operations of the
+    base class. They can also override some operations with a default
+    implementation.
+    """
+
+    def get_data(self, df) -> dict:
+        # Create dictionary of data to be returned
+        data = {"bins": []}
+
+        # Output collection data into dictionary
+        for i, row in df.iterrows():
+            dict_data = {
+                "type": row["Collection Name"],
+                "collectionDate": row["Next Collection Due"],
+            }
+
+            data["bins"].append(dict_data)
+
+        return data
+
+    def parse_data(self, page: str, **kwargs) -> dict:
+        page = "https://www.midandeastantrim.gov.uk/resident/waste-recycling/collection-dates/"
+
+        # Assign user info
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        web_driver = kwargs.get("web_driver")
+
+        # Create Selenium webdriver
+        driver = create_webdriver(web_driver)
+        driver.get(page)
+
+        # Enter postcode in text box and wait
+        inputElement_pc = driver.find_element(
+            By.ID, "txtAjaxSearch"
+        )
+        inputElement_pc.send_keys(user_postcode)
+
+        time.sleep(4)
+
+        # Submit address information and wait - selecting the top one only
+        inputElement_bn = driver.find_element(
+            By.ID, "show-button-0"
+        ).click()
+
+        time.sleep(4)
+
+        # Read next collection information into Pandas
+        table = driver.find_element(
+            By.ID, "divCalendarGraphics"
+        ).get_attribute("outerHTML")
+        df = pd.read_html(table, header=[1])
+        df = df[0]
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
+
+        # Parse data into dict
+        data = self.get_data(df)
+
+        return data
