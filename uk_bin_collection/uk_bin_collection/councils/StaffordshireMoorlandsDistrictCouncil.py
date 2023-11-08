@@ -1,4 +1,3 @@
-import time
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -28,50 +27,42 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Create Selenium webdriver
         driver = create_webdriver(web_driver)
-        driver.get("https://www.npt.gov.uk/2195")
+        driver.get("https://www.staffsmoorlands.gov.uk/findyourbinday")
 
-        # Accept cookies banner
+        # Close cookies banner
         cookieAccept = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.ID, "ccc-notify-accept"))
+                (By.CSS_SELECTOR, ".cookiemessage__link--close"))
         )
         cookieAccept.click()
 
-        # Populate postcode field
-        inputElement_postcode = driver.find_element(
-            By.ID,
-            "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_txtTmpPostcode",
+        # Wait for the postcode field to appear then populate it
+        inputElement_postcode = WebDriverWait(driver, 30).until(
+            EC.presence_of_element_located(
+                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_POSTCODE"))
         )
         inputElement_postcode.send_keys(user_postcode)
 
         # Click search button
         findAddress = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_btnFindAddress"))
+                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_PAGE1NEXT_NEXT"))
         )
         findAddress.click()
 
-        time.sleep(1)
-
         # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-        dropdown = WebDriverWait(driver, 10).until(
+        dropdown = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
-                (By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_ddlAddressLookup"))
+                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESS"))
         )
         # Create a 'Select' for it, then select the matching URPN option
         dropdownSelect = Select(dropdown)
         dropdownSelect.select_by_value(user_uprn)
 
-        # Remove back to top button if exists
-        driver.execute_script("""
-        if (document.contains(document.querySelector(".backtotop"))) {
-            document.querySelector(".backtotop").remove();
-        }
-        """)
-
         # Wait for the submit button to appear, then click it to get the collection dates
         submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_btnDisplay"))
+            EC.presence_of_element_located(
+                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT"))
         )
         submit.click()
 
@@ -80,26 +71,17 @@ class CouncilClass(AbstractGetBinDataClass):
         # Quit Selenium webdriver to release session
         driver.quit()
 
-        # Get the property details
-        property_details = soup.find(
-            "div",
-            {"id": "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_divPropertyDetails"}
-        )
-
-        # Get the dates
-        for date in property_details.find_all("h2"):
-            if date.get_text(strip=True) != "Bank Holidays":
-                bin_date = datetime.strptime(
-                    date.get_text(strip=True).replace('&nbsp', ' ') + " " + datetime.now().strftime("%Y"),
-                    "%A, %d %B %Y"
-                )
-                bin_types_wrapper = date.find_next_sibling("div")
-                for bin_type_wrapper in bin_types_wrapper.find_all("div", {"class": "card"}):
-                    if bin_date and bin_type_wrapper:
-                        bin_type = bin_type_wrapper.find("a").get_text(strip=True)
-                        bin_type += " (" + bin_type_wrapper.find("span").get_text(strip=True) + ")"
+        # Get months
+        for month_wrapper in soup.find_all("div", {"class": "bin-collection__month"}):
+            if month_wrapper:
+                month_year = month_wrapper.find("h3", {"class": "bin-collection__title"}).get_text(strip=True)
+                # Get collections
+                for collection in month_wrapper.find_all("li", {"class": "bin-collection__item"}):
+                    day = collection.find("span", {"class": "bin-collection__number"}).get_text(strip=True)
+                    if month_year and day:
+                        bin_date = datetime.strptime(day + " " + month_year, "%d %B %Y")
                         dict_data = {
-                            "type": bin_type,
+                            "type": collection.find("span", {"class": "bin-collection__type"}).get_text(strip=True),
                             "collectionDate": bin_date.strftime(date_format)
                         }
                         data["bins"].append(dict_data)

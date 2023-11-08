@@ -31,7 +31,7 @@ def main():
                 # get additional arguments
                 command = council_details.get("wiki_command_url_override", council_details.get("url", ""))
                 additional_parameters = ""
-                if "SKIP_GET_URL" in council_details:
+                if "skip_get_url" in council_details:
                     command += " -s"
                     additional_parameters += "- `-s` - skip get URL\n"
                 if "uprn" in council_details:
@@ -46,6 +46,9 @@ def main():
                 if "usrn" in council_details:
                     command += " -usrn XXXXXXXX"
                     additional_parameters += "- `-us` - USRN\n"
+                if "web_driver" in council_details:
+                    command += " -w http://HOST:PORT/"
+                    additional_parameters += "- `-w` - remote Selenium web driver URL (required for Home Assistant)\n"
 
                 # add to entries
                 entries += "\n---\n\n"

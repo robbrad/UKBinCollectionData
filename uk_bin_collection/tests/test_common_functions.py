@@ -1,6 +1,10 @@
 from unittest import mock
 import pytest
 from uk_bin_collection.common import *
+from io import StringIO
+from contextlib import redirect_stdout
+from unittest.mock import patch, MagicMock
+from selenium import webdriver
 
 
 def test_check_postcode_valid():
@@ -87,11 +91,15 @@ def test_is_holiday():
     result = is_holiday("2022, 12, 25")
     assert result is True
 
-
-def test_is_not_holiday():
+def test_is_holiday():
     date = "20"
-    result = is_holiday("2022, 12, 01")
-    assert result is False
+    result = is_holiday("2022, 12, 25")
+    assert result is True
+
+def test_is_holiday_region():
+    date = "20"
+    result = is_holiday("2022, 12, 25", Region.WLS)
+    assert result is True
 
 
 def test_remove_alpha_characters():
@@ -144,3 +152,53 @@ def test_get_weekday_dates_in_period_bad():
     result = get_weekday_dates_in_period(now, 5, 7)
     assert len(result) != 8
     assert result[6] != "08/04/20232"
+
+def test_get_next_occurrence_from_day_month_false():
+    result = get_next_occurrence_from_day_month(datetime(2023,12,1))
+    assert result == datetime(2023, 12, 1, 0, 0)
+
+def test_get_next_occurrence_from_day_month_true():
+    result = get_next_occurrence_from_day_month(datetime(2023,9,1))
+    assert result == pd.Timestamp('2024-09-01 00:00:00')
+
+def test_update_input_json():
+    council = "test_council"
+    url = "TEST_URL"
+    postcode="TEST_POSTCODE"
+    uprn="TEST_UPRN"
+    web_driver="TEST_WEBDRIVER"
+    skip_get_url = True
+    update_input_json(council, url, postcode=postcode, uprn=uprn, web_driver=web_driver, skip_get_url=skip_get_url)
+    cwd = os.getcwd()
+    input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
+    result1 = os.path.exists(input_file_path)     
+    with open(input_file_path, 'r') as f:
+        data = json.load(f)   
+    assert result1 == True
+    assert data[council] == {"postcode": postcode, "skip_get_url": skip_get_url, "uprn": uprn, "url": url, "web_driver": web_driver, "wiki_name": council}
+
+def test_update_input_json_fail(capsys, monkeypatch):
+    def mock_os_path_exists(path):
+        return False  # Simulate the path not existing
+
+    monkeypatch.setattr(os.path, 'exists', mock_os_path_exists)
+
+    council = "test_council"
+    url = "TEST_URL"
+    postcode="TEST_POSTCODE"
+    uprn="TEST_UPRN"
+    web_driver="TEST_WEBDRIVER"
+    skip_get_url = True
+    update_input_json(council, url, postcode=postcode, uprn=uprn, web_driver=web_driver, skip_get_url=skip_get_url)
+
+    captured = capsys.readouterr()
+    assert "Exception encountered: Unable to update input.json file for the council." in captured.out
+    assert "Please check you're running developer mode" in captured.out
+
+def test_create_webdriver_local():
+    result = create_webdriver(None)
+    assert result.name == 'chrome'
+
+def test_create_webdriver_remote():
+    result = create_webdriver("http://selenium:4444")
+    assert result.name == 'chrome'

@@ -36,10 +36,16 @@ class UKBinCollectionApp:
         )
         self.parser.add_argument("-u", "--uprn", type=str, help="UPRN to parse", required=False)
         self.parser.add_argument(
+            "-w",
+            "--web_driver",
+            help="URL for remote Selenium web driver - should be wrapped in double quotes",
+            required=False,
+        )
+        self.parser.add_argument(
             "-d",
             "--dev_mode",
             action="store_true",
-            help="Enables development mode - creates/updates outputs .json file for the council on each run",
+            help="Enables development mode - creates/updates entries in the input.json file for the council on each run",
             required=False,
         )
         self.parsed_args = None
@@ -66,6 +72,7 @@ class UKBinCollectionApp:
         paon = self.parsed_args.number
         uprn = self.parsed_args.uprn
         skip_get_url = self.parsed_args.skip_get_url
+        web_driver = self.parsed_args.web_driver
         dev_mode = self.parsed_args.dev_mode
 
         return self.client_code(
@@ -75,6 +82,7 @@ class UKBinCollectionApp:
             paon=paon,
             uprn=uprn,
             skip_get_url=skip_get_url,
+            web_driver=web_driver,
             dev_mode=dev_mode,
             council_module_str=council_module_str,
         )

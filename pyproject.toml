@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "uk_bin_collection"
-version = "0.17.0"
+version = "0.27.2"
 description = "Python Lib to collect UK Bin Data"
 readme = "README.md"
 authors = ["Robert Bradley <robbrad182@gmail.com>"]
@@ -35,6 +35,7 @@ setuptools = "*"
 pytest-bdd = "*"
 allure-pytest-bdd = "*"
 pytest-xdist = {extras = ["psutil"], version = "*"}
+pyhamcrest = "*"
 
 
 [tool.poetry.scripts]
@@ -55,6 +56,7 @@ requests = "*"
 selenium = "*"
 lxml = "*"
 urllib3 = "*"
+webdriver-manager = "^4.0.1"
 
 [tool.commitizen]
 major_version_zero = true

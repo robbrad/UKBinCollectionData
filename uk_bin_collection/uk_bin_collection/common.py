@@ -1,13 +1,15 @@
 import calendar
+import holidays
 import json
 import os
+import pandas as pd
 import re
+import requests
 from datetime import datetime
 from enum import Enum
-
-import holidays
-import pandas as pd
-import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
 
 date_format = "%d/%m/%Y"
 days_of_week = {
@@ -22,11 +24,10 @@ days_of_week = {
 
 
 class Region(Enum):
-    UK = 1
-    England = 2
-    Northern_Ireland = 3
-    Scotland = 4
-    Wales = 5
+    ENG = 1
+    NIR = 2
+    SCT = 3
+    WLS = 4
 
 
 def check_postcode(postcode: str):
@@ -132,19 +133,14 @@ def parse_header(raw_header: str) -> dict:
     return header
 
 
-def is_holiday(date_to_check: datetime, region: Region = Region.UK) -> bool:
+def is_holiday(date_to_check: datetime, region: Region = Region.ENG) -> bool:
     """
     Checks if a given date is a public holiday
         :param date_to_check: Date to check if holiday
-        :param region: The UK nation to check. Defaults to UK.
+        :param region: The UK nation to check. Defaults to ENG.
         :return: Bool - true if a holiday, false if not
     """
-    if region.name != "UK":
-        subdiv = region.name.capitalize()
-    else:
-        subdiv = region.name
-
-    uk_holidays = holidays.country_holidays("GB", subdiv=subdiv)
+    uk_holidays = holidays.country_holidays("GB", subdiv=region.name)
 
     if date_to_check in uk_holidays:
         return True
@@ -198,16 +194,43 @@ def remove_alpha_characters(input_string: str) -> str:
     return "".join(c for c in input_string if c.isdigit() or c == " ")
 
 
-def write_output_json(council: str, content: str):
+def update_input_json(council: str, url: str, **kwargs):
+    """
+    Create/update council's entry in the input.json
+        :param council: Council
+        :param kwargs: Run arguments
+    """
+    postcode = kwargs.get("postcode", None)
+    paon = kwargs.get("paon", None)
+    uprn = kwargs.get("uprn", None)
+    usrn = kwargs.get("usrn", None)
+    web_driver = kwargs.get("web_driver", None)
+    skip_get_url = kwargs.get("skip_get_url", None)
     cwd = os.getcwd()
-    outputs_path = os.path.join(cwd, "..", "tests", "outputs")
-    if not os.path.exists(outputs_path) or not os.path.isdir(outputs_path):
-        outputs_path = os.path.join(cwd, "uk_bin_collection", "tests", "outputs")
-    if os.path.exists(outputs_path) and os.path.isdir(outputs_path):
-        with open(os.path.join(outputs_path, council + ".json"), "w") as f:
-            f.write(content)
+    input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
+    if os.path.exists(input_file_path):
+        with open(input_file_path, 'r') as f:
+            data = json.load(f)
+            if council not in data:
+                data[council] = {"wiki_name": council}
+            if "url" != "":
+                data[council]["url"] = url
+            if postcode is not None:
+                data[council]["postcode"] = postcode
+            if paon is not None:
+                data[council]["paon"] = paon
+            if uprn is not None:
+                data[council]["uprn"] = uprn
+            if usrn is not None:
+                data[council]["usrn"] = usrn
+            if web_driver is not None:
+                data[council]["web_driver"] = web_driver
+            if skip_get_url is not None:
+                data[council]["skip_get_url"] = skip_get_url
+        with open(input_file_path, 'w') as f:
+            f.write(json.dumps(data, sort_keys=True, indent=4))
     else:
-        print("Exception encountered: Unable to save Output JSON file for the council.")
+        print("Exception encountered: Unable to update input.json file for the council.")
         print(
             "Please check you're running developer mode from either the UKBinCollectionData "
             "or uk_bin_collection/uk_bin_collection/ directories."
@@ -217,3 +240,22 @@ def write_output_json(council: str, content: str):
 def validate_dates(bin_dates: dict) -> dict:
     raise NotImplementedError()
     # If a date is in December and the next is in January, increase the year
+
+
+def create_webdriver(web_driver) -> webdriver.Chrome:
+    """
+    Create and return a headless Selenium webdriver
+    :rtype: webdriver.Chrome
+    """
+    # Set up Selenium to run 'headless'
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    # Return a remote Selenium webdriver
+    if web_driver is not None:
+        return webdriver.Remote(command_executor=web_driver, options=options)
+    # Return a local Selenium webdriver
+    return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)

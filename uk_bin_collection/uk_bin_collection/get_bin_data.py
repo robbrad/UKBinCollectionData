@@ -10,7 +10,7 @@ from logging.config import dictConfig
 
 import requests
 
-from uk_bin_collection.uk_bin_collection.common import write_output_json
+from uk_bin_collection.uk_bin_collection.common import update_input_json
 
 LOGGING_CONFIG = dict(
     version=1,
@@ -55,6 +55,7 @@ class AbstractGetBinDataClass(ABC):
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
         this_usrn = kwargs.get("usrn", None)
+        this_web_driver = kwargs.get("web_driver", None)
         skip_get_url = kwargs.get("skip_get_url", None)
         dev_mode = kwargs.get("dev_mode", False)
         council_module_str = kwargs.get("council_module_str", None)
@@ -63,18 +64,18 @@ class AbstractGetBinDataClass(ABC):
         ):  # we will not use the generic way to get data - needs a get data in the council class itself
             page = self.get_data(address_url)
             bin_data_dict = self.parse_data(
-                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, url=this_url
+                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, web_driver=this_web_driver, url=this_url
             )
             json_output = self.output_json(bin_data_dict)
         else:
             bin_data_dict = self.parse_data(
-                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, url=this_url
+                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, web_driver=this_web_driver, url=this_url
             )
             json_output = self.output_json(bin_data_dict)
 
-        # if dev mode create/update council's output JSON if bin_data_dict is not empty
-        if dev_mode is not None and dev_mode is True and bin_data_dict["bins"]:
-            write_output_json(council_module_str, json_output)
+        # if dev mode create/update council's entry in the input.json
+        if dev_mode is not None and dev_mode is True:
+            update_input_json(council_module_str, this_url, postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, web_driver=this_web_driver, skip_get_url=skip_get_url)
 
         return json_output
 

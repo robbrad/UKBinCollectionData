@@ -1,9 +1,9 @@
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
@@ -24,19 +24,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
-        # Set up Selenium to run 'headless'
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
         # Create Selenium webdriver
-        driver = webdriver.Chrome(options=options)
+        driver = create_webdriver(web_driver)
         driver.get(page)
 
         # Populate postcode field
@@ -67,6 +60,9 @@ class CouncilClass(AbstractGetBinDataClass):
         submit.click()
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+        # Quit Selenium webdriver to release session
+        driver.quit()
 
         bin_rows = soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation") \
             .find("div", {"class": "row"}).find_all("div", {"class": "row"})

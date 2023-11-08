@@ -50,22 +50,22 @@ class CouncilClass(AbstractGetBinDataClass):
             # Loop through each <li> tag in the <ul> tag to extract the collection date
             for li in bin_list.find_all("li"):
                 # Convert the collection time to a datetime object
-                collection_time = datetime.strptime(li.text, "%A %d %B %Y")
+                collection_date = datetime.strptime(li.text, "%A %d %B %Y")
 
                 # Add the bin to the data dict
                 data["bins"].append(
                     {
                         # remove the ":" from the end of the bin type
                         "type": bin_type[:-1],
-                        "collectionTime": collection_time,
+                        "collectionDate": collection_date,
                     }
                 )
 
         # Sort the bins by collection time
-        data["bins"] = sorted(data["bins"], key=lambda x: x["collectionTime"])
+        data["bins"] = sorted(data["bins"], key=lambda x: x["collectionDate"])
 
         # Convert the datetime objects to strings in the desired format
         for bin in data["bins"]:
-            bin["collectionTime"] = bin["collectionTime"].strftime(date_format)
+            bin["collectionDate"] = bin["collectionDate"].strftime(date_format)
 
         return data
