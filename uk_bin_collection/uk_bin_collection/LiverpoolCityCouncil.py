@@ -14,17 +14,24 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        # Add in some variables we need
         data = {"bins": []}
+        collections = []
+        curr_date = datetime.today()
+
+        # Parse the page
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
-        collections = []
-        curr_date = datetime.today()
+        # Get all table rows on the page - enumerate gives us an index, which is handy for to keep a row count.
+        # In this case, the first (0th) row is headings, so we can skip it, then parse the other data.
         for idx, row in enumerate(soup.find_all("tr")):
             if idx == 0:
                 continue
             row_type = row.find("th").text.strip()
             row_data = row.find_all("td")
+            # When we get the row data, we can loop through it all and parse it to datetime. Because there are no
+            # years, we must add it in, then check if we need to overflow it to the following year.
             for item in row_data:
                 if item.text.strip() == "Today":
                     collections.append((row_type, curr_date))
