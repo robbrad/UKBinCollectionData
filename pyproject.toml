@@ -49,7 +49,7 @@ to = {format = "poetry", path = "pyproject.toml"}
 
 [tool.poetry.dependencies]
 bs4 = "*"
-dateutil = "*"
+python-dateutil = "*"
 holidays = "*"
 pandas = "*"
 python = ">=3.10"
