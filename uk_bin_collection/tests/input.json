@@ -294,6 +294,12 @@
         "url": "https://lisburn.isl-fusion.com",
         "wiki_name": "Lisburn and Castlereagh City Council"
     },
+    "LiverpoolCityCouncil": {
+        "url": "https://liverpool.gov.uk/Bins/BinDatesTable?UPRN=38164600",
+        "wiki_command_url_override": "https://liverpool.gov.uk/Bins/BinDatesTable?UPRN=XXXXXXXX",
+        "wiki_name": "Liverpool City Council",
+        "wiki_note": "Replace XXXXXXXX with your property's UPRN."
+    },
     "LondonBoroughHounslow": {
         "skip_get_url": true,
         "uprn": "100021577765",
