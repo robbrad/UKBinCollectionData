@@ -1,4 +1,4 @@
-import pandas as pd
+from bs4 import BeautifulSoup
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -15,21 +15,6 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
-
-    def get_data(self, df) -> dict:
-        # Create dictionary of data to be returned
-        data = {"bins": []}
-
-        # Output collection data into dictionary
-        for i, row in df.iterrows():
-            dict_data = {
-                "type": row["Collection Name"],
-                "collectionDate": row["Next Collection Due"],
-            }
-
-            data["bins"].append(dict_data)
-
-        return data
 
     def parse_data(self, page: str, **kwargs) -> dict:
         page = "https://www.midandeastantrim.gov.uk/resident/waste-recycling/collection-dates/"
@@ -58,17 +43,58 @@ class CouncilClass(AbstractGetBinDataClass):
 
         time.sleep(4)
 
-        # Read next collection information into Pandas
-        table = driver.find_element(
+        # Read next collection information
+        page = driver.find_element(
             By.ID, "divCalendarGraphics"
         ).get_attribute("outerHTML")
-        df = pd.read_html(table, header=[1])
-        df = df[0]
+
+        # Make a BS4 object - remove bold tags
+        soup = BeautifulSoup(page.text.strip().replace("<b>", "").replace("</b>", ""), features="html.parser")
+        soup.prettify()
+
+        # Data to return
+        data = {"bins": []}
+
+        # Valid bin types
+        binTypes = [
+            "Refuse",
+            "Garden",
+        ]
+
+        # Value to create dict for bin values
+        keys, values = [], []
+
+        # Loop though html for text containing bins
+        # example of html (bold tags removed above)
+        # <div id="divCalendarGraphics">
+        # <br>  <b>Refuse</b>: Tue 14 Nov then every alternate  Tue<br><b>Recycling</b>: No Recycling waste collection for this address<br><b>Garden</b>: Tue 21 Nov then every alternate  Tue<br><img src="img/Gif-Spacer.gif" alt="spacer" height="1" width="30">
+        # split by br tag and take first 4 splits
+        lines = soup.text.split('<br>',4)
+        for line in lines:
+            keys.append(line.text.split(':')[0].strip())
+            # strip out the day and month from the text
+            values.append(line.text.split(':')[1].strip().split(' ')[1:2]
+
+        # Create dict for bin name and string dates
+        binDict = dict(zip(keys, values))
+
+        # Process dict for valid bin types
+        for bin in list(binDict):
+            if bin in binTypes:
+                # Convert date - no year value so take it from todays date
+                date = datetime.strptime(binDict[bin], "%d %b").replace(year=datetime.today().year)
+                # if the date is in the past then it means the collection is next year so add a year
+                if date < today():
+                    date = date + relativedelta(years=1)
+
+                # Set bin data
+                dict_data = {
+                    "type": bin,
+                    "collectionDate": date.strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
         # Quit Selenium webdriver to release session
         driver.quit()
-
-        # Parse data into dict
-        data = self.get_data(df)
 
         return data
