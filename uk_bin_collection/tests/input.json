@@ -324,6 +324,14 @@
         "wiki_name": "Merton Council",
         "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page then copy the URL and replace the URL in the command (the Address parameter is optional)."
     },
+    "MidAndEastAntrimBoroughCouncil": {
+        "postcode": "100 Galgorm Road",
+        "skip_get_url": true,
+        "url": "https://www.midandeastantrim.gov.uk/resident/waste-recycling/collection-dates/",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Mid and East Antrim Borough Council",
+        "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.)."
+    },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS",
         "postcode": "RH16 1SS",
