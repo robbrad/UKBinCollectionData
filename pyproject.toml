@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "uk_bin_collection"
-version = "0.27.1"
+version = "0.28.0"
 description = "Python Lib to collect UK Bin Data"
 readme = "README.md"
 authors = ["Robert Bradley <robbrad182@gmail.com>"]
@@ -49,6 +49,7 @@ to = {format = "poetry", path = "pyproject.toml"}
 
 [tool.poetry.dependencies]
 bs4 = "*"
+python-dateutil = "*"
 holidays = "*"
 pandas = "*"
 python = ">=3.10"

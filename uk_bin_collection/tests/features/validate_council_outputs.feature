@@ -51,6 +51,7 @@ Feature: Test each council output matches expected results
             | LancasterCityCouncil | None | None |
             | LeedsCityCouncil | None | None |
             | LisburnCastlereaghCityCouncil | None | None |
+            | LiverpoolCityCouncil | None | None |
             | LondonBoroughHounslow | None | None |
             | MaldonDistrictCouncil | None | None |
             | MalvernHillsDC | None | None |
