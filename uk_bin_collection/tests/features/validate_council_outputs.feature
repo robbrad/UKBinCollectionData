@@ -57,6 +57,7 @@ Feature: Test each council output matches expected results
             | MalvernHillsDC | None | None |
             | ManchesterCityCouncil | None | None |
             | MertonCouncil | None | None |
+            | MidAndEastAntrimBoroughCouncil | http://selenium:4444 | local |
             | MidSussexDistrictCouncil | None | None |
             | MiltonKeynesCityCouncil | None | None |
             | NeathPortTalbotCouncil | http://selenium:4444 | local |
