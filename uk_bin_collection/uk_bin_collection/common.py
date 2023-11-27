@@ -165,18 +165,18 @@ def get_weekday_dates_in_period(start: datetime, day_of_week: int, amount=8) -> 
     )
 
 
-def get_dates_every_x_days(start: datetime, x: int, amount: int = 8) -> list:
+def get_dates_every_x_days(start: datetime, step: int, amount: int = 8) -> list:
     """
     Returns a list of dates for `X` days from start date. For example, calling `get_stepped_dates_in_period(s, 21, 4)` would
     return `4` dates every `21` days from the start date `s`
         :param start: Date to start from
-        :param x: X amount of days
+        :param step: X amount of days
         :param amount: Number of dates to find
         :return: List of dates every X days from start date
         :rtype: list
     """
     return (
-        pd.date_range(start=start, freq=f"{x}D", periods=amount)
+        pd.date_range(start=start, freq=f"{step}D", periods=amount)
         .strftime(date_format)
         .tolist()
     )
