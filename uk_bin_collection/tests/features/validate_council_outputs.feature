@@ -90,6 +90,7 @@ Feature: Test each council output matches expected results
             | StaffordshireMoorlandsDistrictCouncil | http://selenium:4444 | local |
             | StHelensBC | None | None |
             | StockportBoroughCouncil | None | None |
+            | StokeOnTrentCityCouncil | None | None |
             | StratfordUponAvonCouncil | None | None |
             | SwaleBoroughCouncil | None | None |
             | TamesideMBCouncil | None | None |
