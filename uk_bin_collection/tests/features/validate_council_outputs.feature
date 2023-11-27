@@ -39,6 +39,7 @@ Feature: Test each council output matches expected results
             | EastLindseyDistrictCouncil | http://selenium:4444 | local |
             | EastRidingCouncil | None | None |
             | EastSuffolkCouncil | http://selenium:4444 | local |
+            | EnvironmentFirst | None | None |
             | ErewashBoroughCouncil | None | None |
             | FenlandDistrictCouncil | None | None |
             | GatesheadCouncil | http://selenium:4444 | local |
