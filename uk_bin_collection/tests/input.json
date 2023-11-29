@@ -40,10 +40,11 @@
     },
     "BoltonCouncil": {
         "skip_get_url": true,
-        "uprn": "100010886949|21 HEATON AVENUE, BOLTON, BL1 5PQ",
-        "url": "https://www.bolton.gov.uk/next-bin-collection",
+        "postcode": "BL1 5PQ",
+        "uprn": "100010886949",
+        "url": "https://carehomes.bolton.gov.uk/bins.aspx",
         "wiki_name": "Bolton Council",
-        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN, and the Bolton Council [website](https://www.bolton.gov.uk/next-bin-collection) to find the full address. See [here](https://github.com/robbrad/UKBinCollectionData/issues/272) for more information."
+        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields."
     },
     "BristolCityCouncil": {
         "skip_get_url": true,
