@@ -15,7 +15,14 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
+        user_postcode = kwargs.get("postcode")
+        check_postcode(user_postcode)
+
         data = {"bins": []}
+
+        # Start a new session
+        requests.packages.urllib3.disable_warnings()
+        s = requests.session()
 
         headers = {
             'authority': 'www.bolton.gov.uk',
@@ -36,13 +43,51 @@ class CouncilClass(AbstractGetBinDataClass):
             'upgrade-insecure-requests': '1',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.147 Safari/537.36',
         }
+        
+        # Get our initial session running
+        response = s.get("https://carehomes.bolton.gov.uk/bins.aspx", headers=headers)
 
-        req_data = {
-            'uprn': user_uprn,
+        soup = BeautifulSoup(response.text, features="html.parser")
+        soup.prettify()
+
+        # Grab the variables needed to continue
+        payload = {
+            "__VIEWSTATE": (
+                soup.find("input", {"id": "__VIEWSTATE"}).get("value")
+            ),
+            "__VIEWSTATEGENERATOR": (
+                soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get("value")
+            ),
+            "__EVENTVALIDATION": (
+                soup.find("input", {"id": "__EVENTVALIDATION"}).get("value")
+            ),
+            "txtPostcode": (user_postcode),
+            "btnSubmit": "Submit"
         }
 
-        requests.packages.urllib3.disable_warnings()
-        response = requests.post('https://www.bolton.gov.uk/next-bin-collection', headers=headers, data=req_data)
+        # Get the address selection page
+        response = s.post("https://carehomes.bolton.gov.uk/bins.aspx", data=payload, headers=headers)
+
+        soup = BeautifulSoup(response.text, features="html.parser")
+        soup.prettify()
+
+        # Grab the variables needed to continue
+        payload = {
+            "__VIEWSTATE": (
+                soup.find("input", {"id": "__VIEWSTATE"}).get("value")
+            ),
+            "__VIEWSTATEGENERATOR": (
+                soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get("value")
+            ),
+            "__EVENTVALIDATION": (
+                soup.find("input", {"id": "__EVENTVALIDATION"}).get("value")
+            ),
+            "txtPostcode": (user_postcode),
+            "ddlAddresses": (user_uprn)
+        }
+
+        # Get the final page with the actual bin data
+        response = s.post("https://carehomes.bolton.gov.uk/bins.aspx", data=payload, headers=headers)
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -50,13 +95,13 @@ class CouncilClass(AbstractGetBinDataClass):
         collections = []
 
         # Find section with bins in
-        sections = soup.find_all("div", {"class": "media-body"})
+        sections = soup.find_all("div", {"class": "bin-info"})
 
         # For each bin section, get the text and the list elements
         for item in sections:
-            words = item.find_next("p", {"class": "media-heading"}).text.split()[2:4]
+            words = item.find_next("strong").text.split()[2:4]
             bin_type = ' '.join(words).capitalize()
-            date_list = item.find_all("li")
+            date_list = item.find_all("p")
             for d in date_list:
                 next_collection = datetime.strptime(d.text.strip(), "%A %d %B %Y")
                 collections.append((bin_type, next_collection))
@@ -73,3 +118,4 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         return data
+
