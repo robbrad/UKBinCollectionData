@@ -159,6 +159,8 @@ Useful functions include:
 
 `common.py` also contains a [standardised date format](https://github.com/robbrad/UKBinCollectionData/blob/e49da2f43143ac7c65fbeaf35b5e86b3ea19e31b/uk_bin_collection/uk_bin_collection/common.py#L11) variable called `date_format`, which is useful to call when formatting datetimes.
 
+Some useful tips and tricks are also provided by [the wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Development:-Useful-code), such as ordering collections that parse out of order, or adding dates to data correctly
+
 Please feel free to contribute to this library as you see fit - added functions should include the following:
 - clear, lowercase and underscored name
 - parameter types
