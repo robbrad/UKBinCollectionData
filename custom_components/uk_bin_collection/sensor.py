@@ -131,12 +131,15 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         self.name = name
 
     async def _async_update_data(self):
-        async with async_timeout.timeout(10):
+        async with async_timeout.timeout(30) as cm:
             _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Updating")
 
             data = await self.hass.async_add_executor_job(self.ukbcd.run)
 
             _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp: {data}")
+
+        if cm.expired:
+            _LOGGER.warning(f"{LOG_PREFIX} UKBinCollectionApp timeout expired during run")
             
         return get_latest_collection_info(json.loads(data))
 
