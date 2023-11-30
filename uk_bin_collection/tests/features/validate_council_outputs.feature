@@ -103,6 +103,7 @@ Feature: Test each council output matches expected results
             | WealdenDistrictCouncil | None | None |
             | WelhatCouncil | None | None |
             | WestLothianCouncil | http://selenium:4444 | local |
+            | WestSuffolkCouncil | http://selenium:4444 | local |
             | WiganBoroughCouncil | None | None |
             | WiltshireCouncil | None | None |
             | WindsorAndMaidenheadCouncil | None | None |
