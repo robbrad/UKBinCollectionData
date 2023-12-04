@@ -164,6 +164,12 @@
         "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
         "wiki_name": "Doncaster Council"
     },
+    "DorsetCouncil": {
+        "url": "https://gi.dorsetcouncil.gov.uk/mapping/mylocal/viewresults/100040711049",
+        "wiki_command_url_override": "https://gi.dorsetcouncil.gov.uk/mapping/mylocal/viewresults/XXXXXXXX",
+        "wiki_name": "Dorset Council",
+        "wiki_note": "Replace XXXXXXXX with UPRN."
+    },
     "DurhamCouncil": {
         "skip_get_url": true,
         "uprn": "200003218818",
