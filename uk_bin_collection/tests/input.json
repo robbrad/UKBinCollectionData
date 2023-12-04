@@ -473,6 +473,13 @@
         "url": "https://webforms.rochdale.gov.uk/BinCalendar",
         "wiki_name": "Rochdale Council"
     },
+    "RugbyBoroughCouncil": {
+        "postcode": "CV22 6LA",
+        "skip_get_url": true,
+        "uprn": "100070182634",
+        "url": "https://www.rugby.gov.uk/check-your-next-bin-day",
+        "wiki_name": "Rugby Borough Council"
+    },
     "RushcliffeBoroughCouncil": {
         "postcode": "NG13 8TZ",
         "skip_get_url": true,
