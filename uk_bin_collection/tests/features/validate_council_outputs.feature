@@ -77,6 +77,7 @@ Feature: Test each council output matches expected results
             | ReigateAndBansteadBoroughCouncil | http://selenium:4444 | local |
             | RhonddaCynonTaffCouncil | None | None |
             | RochdaleCouncil | None | None |
+            | RugbyBoroughCouncil | None | None |
             | RushcliffeBoroughCouncil | http://selenium:4444 | local |
             | RushmoorCouncil | None | None |
             | SalfordCityCouncil | None | None |
