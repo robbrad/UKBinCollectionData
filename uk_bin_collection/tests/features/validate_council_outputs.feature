@@ -32,6 +32,7 @@ Feature: Test each council output matches expected results
             | CroydonCouncil | None | None |
             | DerbyshireDalesDistrictCouncil | http://selenium:4444 | local |
             | DoncasterCouncil | None | None |
+            | DorsetCouncil | None | None |
             | DurhamCouncil | None | None |
             | EastCambridgeshireCouncil | None | None |
             | EastDevonDC | None | None |
