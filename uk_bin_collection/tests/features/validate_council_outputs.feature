@@ -9,6 +9,7 @@ Feature: Test each council output matches expected results
         Examples: Testing : <council>
             | council | selenium_url | selenium_mode |
             | AylesburyValeCouncil | None | None |
+            | BarnsleyMBCouncil | None | None |
             | BasingstokeCouncil | None | None |
             | BathAndNorthEastSomersetCouncil | None | None |
             | BCPCouncil | None | None |
