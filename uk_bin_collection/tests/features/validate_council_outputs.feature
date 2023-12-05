@@ -83,6 +83,7 @@ Feature: Test each council output matches expected results
             | RushcliffeBoroughCouncil | http://selenium:4444 | local |
             | RushmoorCouncil | None | None |
             | SalfordCityCouncil | None | None |
+            | SevenoaksDistrictCouncil | http://selenium:4444 | local |
             | SheffieldCityCouncil | None | None |
             | SomersetCouncil | None | None |
             | SouthAyrshireCouncil | None | None |

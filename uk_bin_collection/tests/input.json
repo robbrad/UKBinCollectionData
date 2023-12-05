@@ -513,6 +513,15 @@
         "url": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections",
         "wiki_name": "Salford City Council"
     },
+    "SevenoaksDistrictCouncil": {
+        "house_number": "60 Hever Road",
+        "postcode": "TN15 6EB",
+        "skip_get_url": true,
+        "url": "https://sevenoaks-dc-host01.oncreate.app/w/webpage/waste-collection-day",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Sevenoaks District Council",
+        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes and the postcode in the postcode parameter"
+    },
     "SheffieldCityCouncil": {
         "url": "https://wasteservices.sheffield.gov.uk/property/100050931898",
         "wiki_command_url_override": "https://wasteservices.sheffield.gov.uk/property/XXXXXXXXXXX",
