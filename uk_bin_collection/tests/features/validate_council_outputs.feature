@@ -75,6 +75,7 @@ Feature: Test each council output matches expected results
             | NorthSomersetCouncil | None | None |
             | NorthTynesideCouncil | None | None |
             | NorthumberlandCouncil | http://selenium:4444 | local |
+            | NorthWestLeicestershire | http://selenium:4444 | local |
             | PrestonCityCouncil | http://selenium:4444 | local |
             | ReigateAndBansteadBoroughCouncil | http://selenium:4444 | local |
             | RhonddaCynonTaffCouncil | None | None |
