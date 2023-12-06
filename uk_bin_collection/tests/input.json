@@ -420,6 +420,14 @@
         "url": "https://www.northlincs.gov.uk/bins-waste-and-recycling/bin-and-box-collection-dates/",
         "wiki_name": "North Lincolnshire Council"
     },
+    "NorthWestLeicestershire": {
+        "skip_get_url": true,
+        "uprn": "100030572613",
+        "postcode": "DE74 2FZ",
+        "url": "https://nwleics-self.achieveservice.com/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-bde93819-fa47-4bba-b094-bef375dbef0c/AF-Stage-b4ac5d55-7fb7-4c40-809f-4d1856399bed/definition.json&redirectlink=/en&cancelRedirectLink=/en&noLoginPrompt=1",
+        "wiki_name": "NorthWest Leicestershire Council",
+        "web_driver": "http://selenium:4444"
+    },
     "NorthNorfolkDistrictCouncil": {
         "house_number": "1 Morston Mews",
         "postcode": "NR25 6BH",
