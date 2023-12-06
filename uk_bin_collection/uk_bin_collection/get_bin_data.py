@@ -12,6 +12,8 @@ import requests
 
 from uk_bin_collection.uk_bin_collection.common import update_input_json
 
+_LOGGER = logging.getLogger(__name__)
+
 LOGGING_CONFIG = dict(
     version=1,
     formatters={"f": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"}},
@@ -29,10 +31,6 @@ def setup_logging(logging_config, logger_name):
         return logger
     except Exception as exp:
         raise exp
-
-
-LOGGER = setup_logging(LOGGING_CONFIG, None)
-
 
 # import the wonderful Beautiful Soup and the URL grabber
 
@@ -99,16 +97,16 @@ class AbstractGetBinDataClass(ABC):
             full_page = requests.get(url, headers, verify=False)
             return full_page
         except requests.exceptions.HTTPError as errh:
-            LOGGER.error(f"Http Error: {errh}")
+            _LOGGER.error(f"Http Error: {errh}")
             raise
         except requests.exceptions.ConnectionError as errc:
-            LOGGER.error(f"Error Connecting: {errc}")
+            _LOGGER.error(f"Error Connecting: {errc}")
             raise
         except requests.exceptions.Timeout as errt:
-            LOGGER.error(f"Timeout Error: {errt}")
+            _LOGGER.error(f"Timeout Error: {errt}")
             raise
         except requests.exceptions.RequestException as err:
-            LOGGER.error(f"Oops: Something Else {err}")
+            _LOGGER.error(f"Oops: Something Else {err}")
             raise
 
     @abstractmethod

@@ -2,6 +2,10 @@ import argparse
 import importlib
 import os
 import sys
+import logging
+from .get_bin_data import setup_logging, LOGGING_CONFIG
+
+_LOGGER = logging.getLogger(__name__)
 
 # We use this method to dynamically import the council processor
 SRC_PATH = os.path.join("councils")
@@ -90,6 +94,8 @@ class UKBinCollectionApp:
 
 if __name__ == "__main__":
     import sys
+
+    _LOGGER = setup_logging(LOGGING_CONFIG, None)
 
     app = UKBinCollectionApp()
     app.set_args(sys.argv[1:])
