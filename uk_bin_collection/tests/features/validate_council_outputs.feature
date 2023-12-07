@@ -66,6 +66,7 @@ Feature: Test each council output matches expected results
             | NeathPortTalbotCouncil | http://selenium:4444 | local |
             | NewarkAndSherwoodDC | None | None |
             | NewcastleCityCouncil | None | None |
+            | NorthEastDerbyshireDistrictCouncil | http://selenium:4444 | local |
             | NorthEastLincs | None | None |
             | NorthKestevenDistrictCouncil | None | None |
             | NorthLanarkshireCouncil | None | None |

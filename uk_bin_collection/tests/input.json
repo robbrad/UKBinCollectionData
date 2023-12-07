@@ -393,6 +393,14 @@
         "wiki_command_url_override": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX",
         "wiki_name": "Newcastle City Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
+    },    
+    "NorthEastDerbyshireDistrictCouncil": {
+        "skip_get_url": true,
+        "uprn": "010034492221",
+        "postcode": "S42 5RB",
+        "url": "https://myselfservice.ne-derbyshire.gov.uk/service/Check_your_Bin_Day",
+        "wiki_name": "North East Derbyshire District Council",
+        "web_driver": "http://selenium:4444"
     },
     "NorthEastLincs": {
         "skip_get_url": true,
@@ -425,7 +433,7 @@
         "uprn": "100030572613",
         "postcode": "DE74 2FZ",
         "url": "https://nwleics-self.achieveservice.com/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-bde93819-fa47-4bba-b094-bef375dbef0c/AF-Stage-b4ac5d55-7fb7-4c40-809f-4d1856399bed/definition.json&redirectlink=/en&cancelRedirectLink=/en&noLoginPrompt=1",
-        "wiki_name": "NorthWest Leicestershire Council",
+        "wiki_name": "North West Leicestershire Council",
         "web_driver": "http://selenium:4444"
     },
     "NorthNorfolkDistrictCouncil": {
