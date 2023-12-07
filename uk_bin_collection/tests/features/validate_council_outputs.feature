@@ -13,6 +13,7 @@ Feature: Test each council output matches expected results
             | BasingstokeCouncil | None | None |
             | BathAndNorthEastSomersetCouncil | None | None |
             | BCPCouncil | None | None |
+            | BedfordshireCouncil | None | None |
             | BexleyCouncil | None | None |
             | BlackburnCouncil | None | None |
             | BoltonCouncil | None | None |
