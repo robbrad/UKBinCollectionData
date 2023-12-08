@@ -36,7 +36,9 @@
         "skip_get_url": true,
         "url": "https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day",
         "wiki_name": "Bedfordshire Council",
-        "wiki_note": "In order to use this parser, you must provide a valid postcode and a uprn retrieved from the councils website for your specific address"
+        "wiki_note": "In order to use this parser, you must provide a valid postcode and a uprn retrieved from the councils website for your specific address",
+        "postcode": "SG19 2UP",
+        "uprn": "10000802040"
     },
     "BexleyCouncil": {
         "skip_get_url": true,
