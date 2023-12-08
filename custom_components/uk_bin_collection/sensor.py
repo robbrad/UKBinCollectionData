@@ -69,17 +69,16 @@ async def async_setup_entry(
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init Refresh complete")
 
     async_add_entities(
-        UKBinCollectionDataSensor(coordinator, idx)
-        for idx, ent in enumerate(coordinator.data)
+        UKBinCollectionDataSensor(coordinator, bin_type)
+        for bin_type in coordinator.data.keys()
     )
 
-
-def get_latest_collection_info(data) -> list:
+def get_latest_collection_info(data) -> dict:
     # Get the current date
     current_date = datetime.now()
 
-    # Create a list to store the next collection date for each type
-    next_collection_dates = []
+    # Create a dict to store the next collection date for each type
+    next_collection_dates = {}
     _LOGGER.info(f"{LOG_PREFIX} Data Supplied: {data} and type of data is {type(data)}")
     # Iterate through each bin in the data
     for bin_data in data["bins"]:
@@ -91,29 +90,15 @@ def get_latest_collection_info(data) -> list:
 
         # Only consider collection dates that are greater than or equal to the current date
         if collection_date.date() >= current_date.date():
-            # Find the index of the bin type in the list
-            index = next(
-                (
-                    i
-                    for i, bin_info in enumerate(next_collection_dates)
-                    if bin_info["type"] == bin_type
-                ),
-                None,
-            )
-
-            # If the bin type is not in the list, add it; otherwise, update its collection date if needed
-            if index is None:
-                next_collection_dates.append(
-                    {"type": bin_type, "collectionDate": collection_date_str}
-                )
+            # If the bin type is in the dict, update its collection date if needed; otherwise, add it
+            if bin_type in next_collection_dates:
+                if collection_date < datetime.strptime(next_collection_dates[bin_type], "%d/%m/%Y"):
+                    next_collection_dates[bin_type] = collection_date_str
             else:
-                if collection_date < datetime.strptime(
-                    next_collection_dates[index]["collectionDate"], "%d/%m/%Y"
-                ):
-                    next_collection_dates[index]["collectionDate"] = collection_date_str
+                next_collection_dates[bin_type] = collection_date_str
+                
     _LOGGER.info(f"{LOG_PREFIX} Next Collection Dates: {next_collection_dates}")
     return next_collection_dates
-
 
 class HouseholdBinCoordinator(DataUpdateCoordinator):
     """Household Bin Coordinator"""
@@ -131,12 +116,15 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         self.name = name
 
     async def _async_update_data(self):
-        async with async_timeout.timeout(10):
+        async with async_timeout.timeout(30) as cm:
             _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Updating")
 
             data = await self.hass.async_add_executor_job(self.ukbcd.run)
 
             _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp: {data}")
+
+        if cm.expired:
+            _LOGGER.warning(f"{LOG_PREFIX} UKBinCollectionApp timeout expired during run")
             
         return get_latest_collection_info(json.loads(data))
 
@@ -146,10 +134,10 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
 
     device_class = DEVICE_CLASS
 
-    def __init__(self, coordinator, idx) -> None:
+    def __init__(self, coordinator, bin_type) -> None:
         """Initialize a UK Bin Collection Data sensor."""
         super().__init__(coordinator)
-        self.idx = idx
+        self._bin_type = bin_type
         self.apply_values()
 
     @callback
@@ -168,14 +156,13 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         }
 
     def apply_values(self):
-        _LOGGER.info(f"{LOG_PREFIX} Applying values for sensor {self.idx}")
-        bin_info = self.coordinator.data[self.idx]
-        bin_type = bin_info["type"]
+        _LOGGER.info(f"{LOG_PREFIX} Applying values for sensor {self._bin_type}")
+        name = self._bin_type
         if self.coordinator.name != "":
-            bin_type = "{} {}".format(self.coordinator.name, bin_type)
-        self._id = bin_type
-        self._name = bin_type
-        self._next_collection = parser.parse(bin_info["collectionDate"], dayfirst=True).date()
+            name = "{} {}".format(self.coordinator.name, self._bin_type)
+        self._id = name
+        self._name = name
+        self._next_collection = parser.parse(self.coordinator.data[self._bin_type], dayfirst=True).date()
         self._hidden = False
         self._icon = "mdi:trash-can"
         self._colour = "red"
@@ -184,34 +171,34 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         _LOGGER.info(
             f"{LOG_PREFIX} Data Stored in self.next_collection: {self._next_collection}"
         )
-        _LOGGER.info(f"{LOG_PREFIX} Data Stored in self.type: {self._name}")
+        _LOGGER.info(f"{LOG_PREFIX} Data Stored in self.name: {self._name}")
 
         now = dt_util.now()
-        next_collection = parser.parse(bin_info["collectionDate"], dayfirst=True).date()
         this_week_start = now.date() - timedelta(days=now.weekday())
         this_week_end = this_week_start + timedelta(days=6)
         next_week_start = this_week_end + timedelta(days=1)
         next_week_end = next_week_start + timedelta(days=6)
 
-        self._days = (next_collection - now.date()).days
+        self._days = (self._next_collection- now.date()).days
         _LOGGER.info(f"{LOG_PREFIX} _days: {self._days}")
 
-        if next_collection == now.date():
+        if self._next_collection == now.date():
             self._state = "Today"
-        elif next_collection == (now + timedelta(days=1)).date():
+        elif self._next_collection == (now + timedelta(days=1)).date():
             self._state = "Tomorrow"
-        elif next_collection >= this_week_start and next_collection <= this_week_end:
-            self._state = f"This Week: {next_collection.strftime('%A')}"
-        elif next_collection >= next_week_start and next_collection <= next_week_end:
-            self._state = f"Next Week: {next_collection.strftime('%A')}"
-        elif next_collection > next_week_end:
-            self._state = f"Future: {next_collection}"
-        elif next_collection < now.date():
+        elif self._next_collection >= this_week_start and self._next_collection <= this_week_end:
+            self._state = f"This Week: {self._next_collection.strftime('%A')}"
+        elif self._next_collection >= next_week_start and self._next_collection <= next_week_end:
+            self._state = f"Next Week: {self._next_collection.strftime('%A')}"
+        elif self._next_collection > next_week_end:
+            self._state = f"Future: {self._next_collection}"
+        elif self._next_collection < now.date():
             self._state = "Past"
         else:
             self._state = "Unknown"
 
         _LOGGER.info(f"{LOG_PREFIX} State of the sensor: {self._state}")
+
 
     @property
     def name(self):
@@ -252,3 +239,8 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     def unique_id(self):
         """Return a unique ID to use for this sensor."""
         return self._id
+    
+    @property
+    def bin_type(self):
+        """Return the bin type."""
+        return self._bin_type
