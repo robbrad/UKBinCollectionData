@@ -489,6 +489,12 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Preston City Council"
     },
+    "ReadingBoroughCouncil": {
+        "url": "https://api.reading.gov.uk/api/collections/310056735",
+        "wiki_command_url_override": "https://api.reading.gov.uk/api/collections/XXXXXXXX",
+        "wiki_name": "Reading Borough Council",
+        "wiki_note": "Replace XXXXXXXX with your property's UPRN."
+    },
     "ReigateAndBansteadBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "68134867",
@@ -765,4 +771,3 @@
         "wiki_name": "York Council"
     }
 }
-
