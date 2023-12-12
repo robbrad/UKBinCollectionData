@@ -88,6 +88,7 @@ Feature: Test each council output matches expected results
             | SalfordCityCouncil | None | None |
             | SevenoaksDistrictCouncil | http://selenium:4444 | local |
             | SheffieldCityCouncil | None | None |
+            | ShropshireCouncil | None | None |
             | SomersetCouncil | None | None |
             | SouthAyrshireCouncil | None | None |
             | SouthCambridgeshireCouncil | None | None |
