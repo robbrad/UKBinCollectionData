@@ -258,6 +258,7 @@
         "postcode": "GL15 6JT",
         "url": "https://community.fdean.gov.uk/s/waste-collection-enquiry",
         "wiki_name": "Forest of Dean District Council",
+        "wiki_note": "Pass the full address in the house number and postcode in",
         "web_driver": "http://selenium:4444"
     },
     "GatesheadCouncil": {
