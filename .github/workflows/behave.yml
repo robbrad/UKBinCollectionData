@@ -79,7 +79,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: tar -cvf allure_history_${{ matrix.python-version }}.tar allure-history/${{ matrix.python-version }}
     - name: upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: github.ref == 'refs/heads/master'
       with:
         name: allure_history
