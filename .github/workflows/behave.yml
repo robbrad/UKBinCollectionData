@@ -90,7 +90,7 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: allure_history
           path: allure-history/tars
