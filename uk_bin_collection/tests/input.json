@@ -251,6 +251,15 @@
         "uprn": "200002981143",
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland District Council"
+    },    
+    "ForestOfDeanDistrictCouncil": {
+        "skip_get_url": true,
+        "house_number": "ELMOGAL, PARKEND ROAD, BREAM, LYDNEY",
+        "postcode": "GL15 6JT",
+        "url": "https://community.fdean.gov.uk/s/waste-collection-enquiry",
+        "wiki_name": "Forest of Dean District Council",
+        "wiki_note": "Pass the full address in the house number and postcode in",
+        "web_driver": "http://selenium:4444"
     },
     "GatesheadCouncil": {
         "house_number": "Bracken Cottage",

@@ -45,6 +45,7 @@ Feature: Test each council output matches expected results
             | EnvironmentFirst | None | None |
             | ErewashBoroughCouncil | None | None |
             | FenlandDistrictCouncil | None | None |
+            | ForestOfDeanDistrictCouncil | http://selenium:4444 | local |
             | GatesheadCouncil | http://selenium:4444 | local |
             | GlasgowCityCouncil | None | None |
             | GuildfordCouncil | None | None |
