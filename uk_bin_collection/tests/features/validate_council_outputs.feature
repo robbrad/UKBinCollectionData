@@ -49,6 +49,7 @@ Feature: Test each council output matches expected results
             | GatesheadCouncil | http://selenium:4444 | local |
             | GlasgowCityCouncil | None | None |
             | GuildfordCouncil | None | None |
+            | HaltonBoroughCouncil | http://selenium:4444 | local |
             | HarrogateBoroughCouncil | None | None |
             | HighPeakCouncil | http://selenium:4444 | local |
             | HuntingdonDistrictCouncil | None | None |
