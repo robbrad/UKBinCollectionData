@@ -15,7 +15,7 @@ Feature: Test each council output matches expected results
             | BCPCouncil | None | None |
             | BedfordshireCouncil | None | None |
             | BexleyCouncil | None | None |
-            | BlackburnCouncil | None | None |
+            | BlackburnCouncil | http://selenium:4444 | local |
             | BoltonCouncil | None | None |
             | BristolCityCouncil | None | None |
             | BromleyBoroughCouncil | None | None |
