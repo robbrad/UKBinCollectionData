@@ -284,6 +284,15 @@
         "wiki_name": "Guildford Council",
         "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7AM, else the date will be in 'previousCollectionDate'. To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "HaltonBoroughCouncil": {
+        "skip_get_url": true,
+        "house_number": "12",
+        "postcode": "WA7 4HA",
+        "url": "https://webapp.halton.gov.uk/PublicWebForms/WasteServiceSearchv1.aspx#collections",
+        "wiki_name": "Halton Borough Council",
+        "wiki_note": "Pass the House number and post code",
+        "web_driver": "http://selenium:4444"
+    },
     "HarrogateBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "100050414307",
@@ -321,6 +330,7 @@
     },
     "LeedsCityCouncil": {
         "house_number": "1",
+        "uprn": "72506983",
         "postcode": "LS6 2SE",
         "skip_get_url": true,
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
@@ -450,7 +460,7 @@
         "skip_get_url": true,
         "uprn": "100030572613",
         "postcode": "DE74 2FZ",
-        "url": "https://nwleics-self.achieveservice.com/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-bde93819-fa47-4bba-b094-bef375dbef0c/AF-Stage-b4ac5d55-7fb7-4c40-809f-4d1856399bed/definition.json&redirectlink=/en&cancelRedirectLink=/en&noLoginPrompt=1",
+        "url": "https://www.nwleics.gov.uk/pages/collection_information",
         "wiki_name": "North West Leicestershire Council",
         "web_driver": "http://selenium:4444"
     },
@@ -490,6 +500,19 @@
         "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland Council"
+    },    
+    "OldhamCouncil": {
+        "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
+        "wiki_name": "Oldham Council",
+        "wiki_note": "Replace UPRN in URL with your own UPRN."
+    },
+    "PortsmouthCityCouncil": {
+        "skip_get_url": true,
+        "uprn": "1775027504",
+        "postcode": "PO4 0LE",
+        "url": "https://my.portsmouth.gov.uk/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-26e27e70-f771-47b1-a34d-af276075cede/AF-Stage-cd7cc291-2e59-42cc-8c3f-1f93e132a2c9/definition.json&redirectlink=%2F&cancelRedirectLink=%2F",
+        "wiki_name": "Portsmouth City Council",
+        "web_driver": "http://selenium:4444"
     },
     "PrestonCityCouncil": {
         "house_number": "Town Hall",
@@ -543,9 +566,9 @@
         "wiki_name": "Rushcliffe Borough Council"
     },
     "RushmoorCouncil": {
-        "url": "https://www.rushmoor.gov.uk/recycling-rubbish-and-environment/bins-and-recycling/download-or-print-your-bin-collection-calendar/?uprn=XXXXXXXXXX&weeks=16",
+        "url": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=100060545034",
         "wiki_name": "Rushmoor Council",
-        "wiki_note": "Replace XXXXXXXXXX in URL with your own UPRN."
+        "wiki_note": "Replace selectedAddress number in URL with your own UPRN."
     },
     "SalfordCityCouncil": {
         "skip_get_url": true,

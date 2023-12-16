@@ -49,12 +49,13 @@ Feature: Test each council output matches expected results
             | GatesheadCouncil | http://selenium:4444 | local |
             | GlasgowCityCouncil | None | None |
             | GuildfordCouncil | None | None |
+            | HaltonBoroughCouncil | http://selenium:4444 | local |
             | HarrogateBoroughCouncil | None | None |
             | HighPeakCouncil | http://selenium:4444 | local |
             | HuntingdonDistrictCouncil | None | None |
             | KingstonUponThamesCouncil | None | None |
             | LancasterCityCouncil | None | None |
-            | LeedsCityCouncil | None | None |
+            | LeedsCityCouncil | http://selenium:4444 | local |
             | LisburnCastlereaghCityCouncil | None | None |
             | LiverpoolCityCouncil | None | None |
             | LondonBoroughHounslow | None | None |
@@ -79,6 +80,8 @@ Feature: Test each council output matches expected results
             | NorthTynesideCouncil | None | None |
             | NorthumberlandCouncil | http://selenium:4444 | local |
             | NorthWestLeicestershire | http://selenium:4444 | local |
+            | OldhamCouncil | None | None |
+            | PortsmouthCityCouncil | http://selenium:4444 | local |
             | PrestonCityCouncil | http://selenium:4444 | local |
             | ReadingBoroughCouncil | None | None |
             | ReigateAndBansteadBoroughCouncil | http://selenium:4444 | local |
