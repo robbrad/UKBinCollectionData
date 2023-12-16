@@ -79,6 +79,7 @@ Feature: Test each council output matches expected results
             | NorthTynesideCouncil | None | None |
             | NorthumberlandCouncil | http://selenium:4444 | local |
             | NorthWestLeicestershire | http://selenium:4444 | local |
+            | PortsmouthCityCouncil | http://selenium:4444 | local |
             | PrestonCityCouncil | http://selenium:4444 | local |
             | ReadingBoroughCouncil | None | None |
             | ReigateAndBansteadBoroughCouncil | http://selenium:4444 | local |

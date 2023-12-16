@@ -491,6 +491,14 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland Council"
     },
+    "PortsmouthCityCouncil": {
+        "skip_get_url": true,
+        "uprn": "1775027504",
+        "postcode": "PO4 0LE",
+        "url": "https://my.portsmouth.gov.uk/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-26e27e70-f771-47b1-a34d-af276075cede/AF-Stage-cd7cc291-2e59-42cc-8c3f-1f93e132a2c9/definition.json&redirectlink=%2F&cancelRedirectLink=%2F",
+        "wiki_name": "Portsmouth City Council",
+        "web_driver": "http://selenium:4444"
+    },
     "PrestonCityCouncil": {
         "house_number": "Town Hall",
         "postcode": "PR1 2RL",
