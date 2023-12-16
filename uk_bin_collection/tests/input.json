@@ -450,7 +450,7 @@
         "skip_get_url": true,
         "uprn": "100030572613",
         "postcode": "DE74 2FZ",
-        "url": "https://nwleics-self.achieveservice.com/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-bde93819-fa47-4bba-b094-bef375dbef0c/AF-Stage-b4ac5d55-7fb7-4c40-809f-4d1856399bed/definition.json&redirectlink=/en&cancelRedirectLink=/en&noLoginPrompt=1",
+        "url": "https://www.nwleics.gov.uk/pages/collection_information",
         "wiki_name": "North West Leicestershire Council",
         "web_driver": "http://selenium:4444"
     },

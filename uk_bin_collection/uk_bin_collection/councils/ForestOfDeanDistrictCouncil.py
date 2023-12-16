@@ -71,7 +71,7 @@ class CouncilClass(AbstractGetBinDataClass):
             columns = row.find_all('td')
             if columns:
                 container_type = row.find('th').text.strip()
-                collection_day = columns[0].text.strip()
+                collection_day = re.sub(r'[^a-zA-Z0-9,\s]', '', columns[0].get_text()).strip()
 
                 # Parse the date from the string
                 parsed_date = datetime.strptime(collection_day, '%a, %d %B')

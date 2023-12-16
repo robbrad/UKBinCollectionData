@@ -20,7 +20,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        page = "https://nwleics-self.achieveservice.com/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-bde93819-fa47-4bba-b094-bef375dbef0c/AF-Stage-b4ac5d55-7fb7-4c40-809f-4d1856399bed/definition.json&redirectlink=/en&cancelRedirectLink=/en&noLoginPrompt=1"
 
         data = {"bins": []}
 
@@ -30,62 +29,55 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         check_postcode(user_postcode)
         # Create Selenium webdriver
+        page = f"https://my.nwleics.gov.uk/my-property-finder?address={user_postcode}&go=1"
+
         driver = create_webdriver(web_driver)
         driver.get(page)
 
         # If you bang in the house number (or property name) and postcode in the box it should find your property
 
-        iframe_presense = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.ID, "fillform-frame-1"))
-        )
+        #iframe_presense = WebDriverWait(driver, 30).until(
+        #    EC.presence_of_element_located((By.ID, "fillform-frame-1"))
+        #)
 
-        driver.switch_to.frame(iframe_presense)
+        #driver.switch_to.frame(iframe_presense)
         wait = WebDriverWait(driver, 60)
-        inputElement_postcodesearch = wait.until(
-            EC.element_to_be_clickable((By.NAME, "postcode_search"))
+
+        address_link = wait.until(
+            EC.element_to_be_clickable((By.XPATH, f'//a[contains(@href, "{user_uprn}")]'))
         )
 
-        inputElement_postcodesearch.send_keys(user_postcode)
-        inputElement_postcodesearch.send_keys(" ")
-
-        # Wait for the 'Select your property' dropdown to appear and select the first result
-        dropdown = wait.until(EC.element_to_be_clickable((By.NAME, "ChooseAddress")))
-
-        dropdown_options = wait.until(
-            EC.presence_of_element_located((By.CLASS_NAME, "lookup-option"))
-        )
-
-        # Create a 'Select' for it, then select the first address in the list
-        # (Index 0 is "Make a selection from the list")
-        dropdownSelect = Select(dropdown)
-        dropdownSelect.select_by_value(str(user_uprn))
-
-        # Wait for the 'View more' link to appear, then click it to get the full set of dates
-        next_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "nextText")))
-
-        next_btn.click()
-
-        dropdown_options = wait.until(
-            EC.presence_of_element_located((By.ID, "WasteCollections"))
+        address_link.click()
+    
+        refuse_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, f'//h3[contains(text(), "Refuse Collection Dates")]'))
         )
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-        wasteTable = soup.find("tbody", id="WasteCollections").find_all("tr")
+        # Find the unordered list containing refuse collection details
+        refuse_list = soup.find('ul', class_='refuse')
 
-        for row in wasteTable:
-            rowdata = row.find_all("td")
-            if len(rowdata) == 3:
-                # Strip the day (i.e. Monday) out of the collection date string for parsing
-                dateString = " ".join(rowdata[2].text.strip().split(" ")[1:])
+        current_year = datetime.now().year
 
+        if refuse_list:
+            # Iterate through list items within the unordered list
+            for li in refuse_list.find_all('li'):
+                date = li.find('strong', class_='date').text.strip()  # Extract the date
+                waste_type = li.find('a').text.strip()  # Extract the waste type
+                
+                                # Parse the date from the string
+                parsed_date = datetime.strptime(date, "%a %dth %b")
+                if parsed_date < datetime(parsed_date.year, parsed_date.month, parsed_date.day):
+                    parsed_date = parsed_date.replace(year=current_year + 1)
+                else:
+                    parsed_date = parsed_date.replace(year=current_year)
+
+                # Append data to your 'bins' list (this replicates your existing logic)
                 data["bins"].append(
                     {
-                        "type": rowdata[1].text.strip(),
-                        "collectionDate": datetime.strptime(
-                            dateString, "%d %B %Y"
-                        ).strftime(date_format),
+                        "type": waste_type,
+                        "collectionDate": parsed_date.strftime('%d/%m/%Y')
                     }
                 )
-
         return data

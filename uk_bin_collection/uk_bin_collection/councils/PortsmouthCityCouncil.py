@@ -94,7 +94,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             data["bins"].append(
                                 {
                                     "type": h4_text.split(' - ')[0],
-                                    "collectionDate": datetime.strptime(date.replace("*","").strip(), "%A %d %B %Y").strftime("%d/%m/%Y")
+                                    "collectionDate": datetime.strptime(re.sub(r'[^a-zA-Z0-9,\s]', '', date).strip(), "%A %d %B %Y").strftime("%d/%m/%Y")
                                 }
                             )
 
