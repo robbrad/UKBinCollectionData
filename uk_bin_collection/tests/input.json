@@ -499,6 +499,11 @@
         "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland Council"
+    },    
+    "OldhamCouncil": {
+        "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
+        "wiki_name": "Oldham Council",
+        "wiki_note": "Replace UPRN in URL with your own UPRN."
     },
     "PortsmouthCityCouncil": {
         "skip_get_url": true,
