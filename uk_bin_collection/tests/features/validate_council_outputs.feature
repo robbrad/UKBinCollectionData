@@ -55,7 +55,7 @@ Feature: Test each council output matches expected results
             | HuntingdonDistrictCouncil | None | None |
             | KingstonUponThamesCouncil | None | None |
             | LancasterCityCouncil | None | None |
-            | LeedsCityCouncil | None | None |
+            | LeedsCityCouncil | http://selenium:4444 | local |
             | LisburnCastlereaghCityCouncil | None | None |
             | LiverpoolCityCouncil | None | None |
             | LondonBoroughHounslow | None | None |

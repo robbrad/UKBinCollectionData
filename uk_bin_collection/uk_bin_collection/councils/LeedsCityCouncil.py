@@ -2,6 +2,13 @@ from datetime import datetime
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+from bs4 import BeautifulSoup
+from datetime import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+
 import pandas as pd
 import urllib.request
 
@@ -17,78 +24,77 @@ class CouncilClass(AbstractGetBinDataClass):
         """
         Parse council provided CSVs to get the latest bin collections for address
         """
-        # URLs to data sources
-        address_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_premises.csv"
-        collections_csv_url = "https://opendata.leeds.gov.uk/downloads/bins/dm_jobs.csv"
 
+        user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
-
+        web_driver = kwargs.get("web_driver")
+        check_uprn(user_uprn)
         check_postcode(user_postcode)
-        check_paon(user_paon)
+        # Create Selenium webdriver
+        page = f"https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day"
+
+        driver = create_webdriver(web_driver)
+        driver.get(page)
+
+        # If you bang in the house number (or property name) and postcode in the box it should find your property
+
+        #iframe_presense = WebDriverWait(driver, 30).until(
+        #    EC.presence_of_element_located((By.ID, "fillform-frame-1"))
+        #)
+
+        #driver.switch_to.frame(iframe_presense)
+        wait = WebDriverWait(driver, 60)
+
+        postcode_box = wait.until(
+            EC.element_to_be_clickable((By.ID, 'ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_txtPostCode'))
+        )
+        postcode_box.send_keys(user_postcode)
+
+        postcode_btn = wait.until(
+            EC.element_to_be_clickable((By.ID, 'ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_btnSearchAddress'))
+        )
+
+        postcode_btn.click()
+        address_dropdown = wait.until(
+            EC.element_to_be_clickable((By.ID, 'ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_ddlAddressList'))
+        )
+        dropdownSelect = Select(address_dropdown)
+        dropdownSelect.select_by_value(str(user_uprn))
+        results = wait.until(
+            EC.presence_of_element_located((By.ID, "ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_BinResultsDetails"))
+        )
+
 
         data = {"bins": []}  # dictionary for data
-        prop_id = 0  # LCC use city wide URPNs in this dataset
-        result_row = None  # store the property as a row
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
 
-        # Get address csv and give it headers (pandas bypasses downloading the file)
-        # print("Getting address data...")
-        with urllib.request.urlopen(address_csv_url) as response:
-            addr = pd.read_csv(
-                response,
-                names=[
-                    "PropertyId",
-                    "PropertyName",
-                    "PropertyNo",
-                    "Street",
-                    "Town",
-                    "City",
-                    "Postcode",
-                ],
-                sep=",",
-            )
 
-        # Get collections csv and give it headers
-        # print("Getting collection data...")
-        with urllib.request.urlopen(collections_csv_url) as response:
-            coll = pd.read_csv(
-                response, names=["PropertyId", "BinType", "CollectionDate"], sep=","
-            )
+        bin_types = soup.find_all('ul', class_='binCollectionTimesList')
 
-        # Find the property id from the address data
-        # ("Finding property reference...")
-        for row in addr.itertuples():
-            if (
-                    str(row.Postcode).replace(" ", "").lower()
-                    == user_postcode.replace(" ", "").lower()
-            ):
-                if row.PropertyNo == user_paon:
-                    prop_id = row.PropertyId
-                    # print(f"Reference: {str(prop_id)}")
-                    continue
+        for bin_collection_dates in bin_types:
+            bin_collection_list = bin_collection_dates.find_all('li', class_='')
 
-        # For every match on the property id in the collections data, add the bin type and date to list
-        # Note: time is 7am as that's when LCC ask bins to be out by
-        job_list = []
-        # print(f"Finding collections for property reference: {user_paon} {result_row.Street} "
-        #      f"{result_row.Postcode}...")
-        for row in coll.itertuples():
-            if row.PropertyId == prop_id:
-                job_list.append([row.BinType, datetime.strptime(row.CollectionDate, "%d/%m/%y").strftime(date_format)])
+            if bin_collection_list:
+                collection_dates = [
+                    date.text.strip()
+                    for date in bin_collection_list
+                ]
 
-        # If jobs exist, sort list by date order. Load list into dictionary to return
-        # print("Processing collections...")
-        if len(job_list) > 0:
-            job_list.sort(key=lambda x: datetime.strptime(x[1], date_format))
-            for i in range(len(job_list)):
-                job_date = datetime.strptime(job_list[i][1], date_format)
-                if datetime.now() < job_date:
+                # Convert the collection dates to the desired format
+                formatted_dates = [
+                    datetime.strptime(date, "%A %d %b %Y").strftime(date_format)
+                    for date in collection_dates
+                ]
+
+                # Extract the type of bin from the header
+                bin_type = bin_collection_dates.find_previous('h3').text.split()[0]
+
+                # Adding data to the 'bins' dictionary for each date
+                for date in formatted_dates:
                     dict_data = {
-                        "type": job_list[i][0],
-                        "collectionDate": job_list[i][1],
+                        "type": bin_type,
+                        "collectionDate": date
                     }
                     data["bins"].append(dict_data)
-        else:
-            print("No bin collections found for property!")
 
         return data

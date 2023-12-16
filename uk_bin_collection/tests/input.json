@@ -330,6 +330,7 @@
     },
     "LeedsCityCouncil": {
         "house_number": "1",
+        "uprn": "72506983",
         "postcode": "LS6 2SE",
         "skip_get_url": true,
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
@@ -565,9 +566,9 @@
         "wiki_name": "Rushcliffe Borough Council"
     },
     "RushmoorCouncil": {
-        "url": "https://www.rushmoor.gov.uk/recycling-rubbish-and-environment/bins-and-recycling/download-or-print-your-bin-collection-calendar/?uprn=XXXXXXXXXX&weeks=16",
+        "url": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=100060545034",
         "wiki_name": "Rushmoor Council",
-        "wiki_note": "Replace XXXXXXXXXX in URL with your own UPRN."
+        "wiki_note": "Replace selectedAddress number in URL with your own UPRN."
     },
     "SalfordCityCouncil": {
         "skip_get_url": true,
