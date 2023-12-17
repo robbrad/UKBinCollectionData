@@ -337,7 +337,8 @@
         "postcode": "LS6 2SE",
         "skip_get_url": true,
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
-        "wiki_name": "Leeds City Council"
+        "wiki_name": "Leeds City Council",
+        "web_driver": "http://selenium:4444"
     },
     "LisburnCastlereaghCityCouncil": {
         "house_number": "97",
