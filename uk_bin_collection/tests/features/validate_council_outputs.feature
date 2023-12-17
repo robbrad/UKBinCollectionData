@@ -40,7 +40,7 @@ Feature: Test each council output matches expected results
             | EastDevonDC | None | None |
             | EastleighBoroughCouncil | None | None |
             | EastLindseyDistrictCouncil | http://selenium:4444 | local |
-            | EastRidingCouncil | None | None |
+            | EastRidingCouncil | http://selenium:4444 | local |
             | EastSuffolkCouncil | http://selenium:4444 | local |
             | EnvironmentFirst | None | None |
             | ErewashBoroughCouncil | None | None |
