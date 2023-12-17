@@ -82,7 +82,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: github.ref == 'refs/heads/master'
       with:
-        name: allure_history
+        name: allure_history_${{ matrix.python-version }}
         path: allure_history_${{ matrix.python-version }}.tar
 
   deploy:
@@ -90,11 +90,19 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
+    
       - uses: actions/download-artifact@v4
+        name: Download 3.10 Artifacts
         with:
-          name: allure_history
+          name: allure_history_3.10
           path: allure-history/tars
-
+          
+      - uses: actions/download-artifact@v4
+        name: Download 3.11 Artifacts
+        with:
+          name: allure_history_3.11
+          path: allure-history/tars
+  
       - name: Untar Reports
         run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history ;done
 
