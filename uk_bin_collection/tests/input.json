@@ -567,8 +567,9 @@
     },
     "RushmoorCouncil": {
         "url": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=100060545034",
+        "wiki_command_url_override": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=XXXXXXXX",
         "wiki_name": "Rushmoor Council",
-        "wiki_note": "Replace selectedAddress number in URL with your own UPRN."
+        "wiki_note": "Replace XXXXXXXXXX with your UPRN, which you can find using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SalfordCityCouncil": {
         "skip_get_url": true,
