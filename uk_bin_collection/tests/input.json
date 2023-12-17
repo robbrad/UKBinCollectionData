@@ -216,9 +216,12 @@
     },
     "EastRidingCouncil": {
         "postcode": "HU17 8LG",
+        "house_number":"14 THE LEASES BEVERLEY HU17 8LG",
         "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
         "url": "https://wasterecyclingapi.eastriding.gov.uk",
-        "wiki_name": "East Riding Council"
+        "wiki_name": "East Riding Council",
+        "wiki_note": "Put the full address as it displays on the council website dropdown when you do the check manually"
     },
     "EastSuffolkCouncil": {
         "postcode": "IP11 9FJ",
