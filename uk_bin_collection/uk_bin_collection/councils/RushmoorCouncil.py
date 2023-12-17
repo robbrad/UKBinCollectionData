@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from lxml import etree
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -13,36 +14,57 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
+        soup = BeautifulSoup(page.text, features="lxml")
         soup.prettify()
-
         data = {"bins": []}
-
         collections = []
-        for month in soup.find_all("div", {"class": "calendar__print"}):
-            current_month_name = month.find_next("h2").text
-            general_bins = month.find_all("li", {"class": "active-refuse day"})
-            recycling_bins = month.find_all("li", {"class": "active-recycling day"})
-            bin_list = general_bins + recycling_bins
-            for bin in bin_list:
-                if bin.attrs.get("class")[0] == "active-recycling":
-                    bin_type = "Recycling/Glass"
-                elif bin.attrs.get("class")[0] == "active-refuse":
-                    bin_type = "General waste/Garden"
-                bin_date = datetime.strptime(bin.text.strip().capitalize() + " " + current_month_name + " " +
-                                             str(datetime.now().year), '%A %d %B %Y')
-                collections.append((bin_type, bin_date))
 
-            # It'd be really hard to deal with next year, so just get December then end
-            if current_month_name == "December":
-                break
+        # Convert the XML to JSON and load the next collection data
+        result = soup.find("p").contents[0].text.replace("\\", "")[1:-1]
+        json_data = json.loads(result)['NextCollection']
 
+        # Get general waste data
+        if json_data.get('RefuseCollectionBinDate') is not None:
+            bin_type = 'Green general waste bin'
+            if json_data.get('RefuseBinExceptionMessage') != "":
+                bin_type += f" ({json_data.get('RefuseBinExceptionMessage')})".rstrip()
+            bin_date = datetime.strptime(json_data.get('RefuseCollectionBinDate'), "%Y-%m-%dT%H:%M:%S")
+            collections.append((bin_type, bin_date))
+
+        # Get recycling waste data
+        if json_data.get('RecyclingCollectionDate') is not None:
+            bin_type = 'Blue recycling bin'
+            if json_data.get('RecyclingExceptionMessage') != "":
+                bin_type += f" ({json_data.get('RecyclingExceptionMessage')})".rstrip()
+            bin_date = datetime.strptime(json_data.get('RecyclingCollectionDate'), "%Y-%m-%dT%H:%M:%S")
+            collections.append((bin_type, bin_date))
+
+        # Get garden waste data
+        if json_data.get('GardenWasteCollectionDate') is not None:
+            bin_type = 'Brown garden waste bin'
+            if json_data.get('GardenWasteExceptionMessage') != "":
+                bin_type += f" ({json_data.get('GardenWasteExceptionMessage')})".rstrip()
+            bin_date = datetime.strptime(json_data.get('GardenWasteCollectionDate'), "%Y-%m-%dT%H:%M:%S")
+            collections.append((bin_type, bin_date))
+
+        # Get food waste data
+        if json_data.get('FoodWasteCollectionDate') is not None:
+            bin_type = 'Black food waste bin'
+            if json_data.get('FoodWasteExceptionMessage') != "":
+                bin_type += f" ({json_data.get('FoodWasteExceptionMessage')})".rstrip()
+            bin_date = datetime.strptime(json_data.get('FoodWasteCollectionDate'), "%Y-%m-%dT%H:%M:%S")
+            collections.append((bin_type, bin_date))
+
+        # If there's no collections, raise an error
+        if len(collections) < 1:
+            raise ValueError("No collections found")
+
+        # Order the collection by date, then return them
         ordered_data = sorted(collections, key=lambda x: x[1])
-        data = {"bins": []}
-        for item in ordered_data:
+        for bin in ordered_data:
             dict_data = {
-                "type": item[0],
-                "collectionDate": item[1].strftime(date_format),
+                "type": bin[0],
+                "collectionDate": bin[1].strftime(date_format),
             }
             data["bins"].append(dict_data)
 
