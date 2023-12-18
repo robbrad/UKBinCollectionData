@@ -8,6 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
+from selenium.webdriver.common.keys import Keys
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -48,7 +49,7 @@ class CouncilClass(AbstractGetBinDataClass):
         driver.find_element(
             By.ID,
             "btnSearch",
-        ).click()
+        ).send_keys(Keys.ENTER)
 
         # Wait for the 'Select your property' dropdown to appear and select the first result
         dropdown = WebDriverWait(driver, 10).until(
@@ -59,38 +60,27 @@ class CouncilClass(AbstractGetBinDataClass):
         dropdownSelect = Select(dropdown)
         dropdownSelect.select_by_index(1)
 
-        # Wait for the 'View more' link to appear, then click it to get the full set of dates
-        viewMoreLink = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.LINK_TEXT, "View more collection dates"))
-        )
-        viewMoreLink.click()
-
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
         # Quit Selenium webdriver to release session
         driver.quit()
 
-        topLevelSpan = soup.find(
-            "span",
-            id="lblCollectionDates"
-        )
+        topLevelSpan = soup.find("span", id="MainContent_lblMoreCollectionDates")
 
-        collectionDivs = topLevelSpan.findChildren(recursive=False)
+        collectionDivs = topLevelSpan.find_all("div", {"id": "container"})
+
         for collectionDiv in collectionDivs:
-            # Each date has two child divs - the date and the bin type
-            # However both strings are in <b> tags so there are 4 children, the text is at:
-            # Index 1 - date string i.e. 'Monday 01/01/2023'
-            # Index 3 - bin type i.e. 'General waste'
-            typeAndDateDivs = collectionDiv.findChildren()
+            type_and_date_divs = collectionDiv.find_all("b")
+            bin_type = type_and_date_divs[0].text
 
-            # Strip the day (i.e. Monday) out of the collection date string for parsing
-            dateString = typeAndDateDivs[1].text.split(' ')[1]
+            date_elements = collectionDiv.find_all("li")
+            for date_element in date_elements:
+                date_string = date_element.find("span").text.split(' ')[1]
+                collection_date = datetime.strptime(date_string, "%d/%m/%Y").strftime(date_format)
 
-            data["bins"].append(
-                {
-                    "type": typeAndDateDivs[3].text,
-                    "collectionDate": datetime.strptime(dateString, "%d/%m/%Y").strftime(date_format)
-                }
-            )
+                data["bins"].append({
+                    "type": re.sub(r'[^a-zA-Z0-9,\s]', '', bin_type).strip(),
+                    "collectionDate": collection_date
+                })
 
         return data
