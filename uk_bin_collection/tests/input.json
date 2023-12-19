@@ -761,7 +761,7 @@
         "skip_get_url": true,
         "url": "https://www.west-lindsey.gov.uk/",
         "wiki_name": "West Lindsey District Council",
-        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes. If a named house or flat, enter this too. If multiple results return, we'll pick the first. You can test it [here](https://www.west-lindsey.gov.uk/bins-waste-recycling/find-your-bin-collection-day)"
+        "wiki_note": "Pass the house name/number in the house number parameter, and postcode in the postcode parameter, both wrapped in double quotes. If a named house or flat, enter this in the number field. If multiple results return, we'll pick the first. You can test it [here](https://www.west-lindsey.gov.uk/bins-waste-recycling/find-your-bin-collection-day)"
     },
     "WestLothianCouncil": {
         "house_number": "1 GOSCHEN PLACE",
