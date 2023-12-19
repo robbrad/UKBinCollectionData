@@ -117,6 +117,7 @@ Feature: Test each council output matches expected results
             | WaverleyBoroughCouncil | None | None |
             | WealdenDistrictCouncil | None | None |
             | WelhatCouncil | None | None |
+            | WestLindseyDistrictCouncil | None | None |
             | WestLothianCouncil | http://selenium:4444 | local |
             | WestSuffolkCouncil | http://selenium:4444 | local |
             | WiganBoroughCouncil | None | None |
