@@ -14,7 +14,7 @@ Feature: Test each council output matches expected results
             | BathAndNorthEastSomersetCouncil | None | None |
             | BCPCouncil | None | None |
             | BedfordshireCouncil | None | None |
-            | BexleyCouncil | None | None |
+            | BexleyCouncil | http://selenium:4444 | local |
             | BlackburnCouncil | http://selenium:4444 | local |
             | BoltonCouncil | None | None |
             | BristolCityCouncil | None | None |

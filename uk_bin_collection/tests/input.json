@@ -42,8 +42,11 @@
     },
     "BexleyCouncil": {
         "skip_get_url": true,
-        "uprn": "spamstorage@live.co.uk",
-        "url": "https://www.bexley.gov.uk/",
+        "url": "https://mybexley.bexley.gov.uk/service/When_is_my_collection_day",
+        "web_driver": "http://selenium:4444",
+        "postcode": "DA5 3AH",
+        "uprn": "100020196143",
+        "house_number":"1 Dorchester Avenue, Bexley",
         "wiki_name": "Bexley Council",
         "wiki_note": "In order to use this parser, you will need to sign up to [Bexley's @Home app](https://www.bexley.gov.uk/services/rubbish-and-recycling/bexley-home-recycling-app/about-app) (available for [iOS](https://apps.apple.com/gb/app/home-collection-reminder/id1050703690) and [Android](https://play.google.com/store/apps/details?id=com.contender.athome.android)).\nComplete the setup by entering your email and setting your address with postcode and address line.\nOnce you can see the calendar, you _should_ be good to run the parser.\nJust pass the email you used in quotes in the UPRN parameter.\n"
     },
@@ -58,10 +61,11 @@
     "BoltonCouncil": {
         "skip_get_url": true,
         "postcode": "BL1 5PQ",
-        "uprn": "100010886949",
+        "uprn": "100010886936",
         "url": "https://carehomes.bolton.gov.uk/bins.aspx",
         "wiki_name": "Bolton Council",
-        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields."
+        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields.",
+        "web_driver": "http://selenium:4444"
     },
     "BristolCityCouncil": {
         "skip_get_url": true,
