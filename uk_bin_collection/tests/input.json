@@ -77,7 +77,8 @@
         "url": "https://recyclingservices.bromley.gov.uk/waste/6087017",
         "wiki_command_url_override": "https://recyclingservices.bromley.gov.uk/waste/XXXXXXX",
         "wiki_name": "Bromley Borough Council",
-        "wiki_note": "Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command."
+        "wiki_note": "Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command.",
+        "web_driver": "http://selenium:4444"
     },
     "BroxtoweBoroughCouncil": {
         "postcode": "NG16 2LY",

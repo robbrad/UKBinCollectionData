@@ -16,9 +16,9 @@ Feature: Test each council output matches expected results
             | BedfordshireCouncil | None | None |
             | BexleyCouncil | http://selenium:4444 | local |
             | BlackburnCouncil | http://selenium:4444 | local |
-            | BoltonCouncil | None | None |
+            | BoltonCouncil | http://selenium:4444 | local |
             | BristolCityCouncil | None | None |
-            | BromleyBoroughCouncil | None | None |
+            | BromleyBoroughCouncil | http://selenium:4444 | local |
             | BroxtoweBoroughCouncil | http://selenium:4444 | local |
             | BuckinghamshireCouncil | http://selenium:4444 | local |
             | BuryCouncil | None | None |
