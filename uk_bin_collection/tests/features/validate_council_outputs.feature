@@ -22,7 +22,7 @@ Feature: Test each council output matches expected results
             | BroxtoweBoroughCouncil | http://selenium:4444 | local |
             | BuckinghamshireCouncil | http://selenium:4444 | local |
             | BuryCouncil | None | None |
-            | CalderdaleCouncil | None | None |
+            | CalderdaleCouncil | http://selenium:4444 | local |
             | CannockChaseDistrictCouncil | None | None |
             | CardiffCouncil | None | None |
             | CastlepointDistrictCouncil | None | None |

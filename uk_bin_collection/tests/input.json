@@ -109,8 +109,9 @@
         "postcode": "OL14 7EX",
         "skip_get_url": true,
         "uprn": "010035034598",
-        "url": "https://www.calderdale.gov.uk/",
-        "wiki_name": "Calderdale Council"
+        "url": "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp",
+        "wiki_name": "Calderdale Council",
+        "web_driver": "http://selenium:4444"
     },
     "CannockChaseDistrictCouncil": {
         "postcode": "WS15 1JA",
