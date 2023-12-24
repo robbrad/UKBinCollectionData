@@ -25,7 +25,7 @@ Feature: Test each council output matches expected results
             | CalderdaleCouncil | http://selenium:4444 | local |
             | CannockChaseDistrictCouncil | None | None |
             | CardiffCouncil | None | None |
-            | CastlepointDistrictCouncil | None | None |
+            | CastlepointDistrictCouncil | http://selenium:4444 | local |
             | CharnwoodBoroughCouncil | None | None |
             | ChelmsfordCityCouncil | None | None |
             | CheshireEastCouncil | None | None |
