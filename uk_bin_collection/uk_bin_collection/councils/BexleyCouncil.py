@@ -51,7 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
         start_btn.click()
 
         inputElement_postcodesearch = wait.until(
-            EC.element_to_be_clickable((By.NAME, "postcode_search"))
+            EC.element_to_be_clickable((By.ID, "postcode_search"))
         )
         inputElement_postcodesearch.send_keys(user_postcode)
 
