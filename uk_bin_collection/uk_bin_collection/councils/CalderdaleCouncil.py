@@ -5,6 +5,16 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
 
+# This script pulls (in one hit) the data from Bromley Council Bins Data
+import datetime
+from bs4 import BeautifulSoup
+from datetime import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+import time
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -20,38 +30,44 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
-        # Create the form data
-        form_data = {
-            "postcode": user_postcode,
-            "email-address": "",
-            "uprn": user_uprn,
-            "gdprTerms": "Yes",
-            "privacynoticeid": "323",
-            "find": "Show me my collection days",
-        }
+        bin_data_dict = {"bins": []}
+        collections = []
+        web_driver = kwargs.get("web_driver")
 
-        # Make a request to the API
-        requests.packages.urllib3.disable_warnings()
-        s = requests.Session()
-        s.get(
-            "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp",
-            headers={
-                "Referer": "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
-            }
-        )
-        response = s.post(
-            "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp",
-            data=form_data,
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Referer": "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
-            }
+        data = {"bins": []}
+
+        # Get our initial session running
+        driver = create_webdriver(web_driver)
+        driver.get(kwargs.get("url"))
+
+        wait = WebDriverWait(driver, 30)
+        postcode = wait.until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="pPostcode"]'))
         )
 
+        postcode.send_keys(user_postcode)
+        postcode_search_btn = wait.until(
+            EC.element_to_be_clickable((By.CLASS_NAME, 'searchbox_submit'))
+        )     
+        postcode_search_btn.send_keys(Keys.ENTER)
+        # Wait for the 'Select your property' dropdown to appear and select the first result
+        dropdown = wait.until(EC.element_to_be_clickable((By.ID, "uprn")))
+
+        # Create a 'Select' for it, then select the first address in the list
+        # (Index 0 is "Make a selection from the list")
+        dropdownSelect = Select(dropdown)
+        dropdownSelect.select_by_value(str(user_uprn))
+        checkbox = wait.until(EC.presence_of_element_located((By.ID, 'gdprTerms')))
+        checkbox.send_keys(Keys.SPACE)
+        get_bin_data_btn = wait.until(
+            EC.element_to_be_clickable((By.CLASS_NAME, 'searchbox_submit'))
+        )     
+        get_bin_data_btn.send_keys(Keys.ENTER)
         # Make a BS4 object
-        soup = BeautifulSoup(response.text, features="html.parser")
+        results = wait.until(
+            EC.presence_of_element_located((By.ID, 'collection'))
+        )
+        soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
 
         data = {"bins": []}

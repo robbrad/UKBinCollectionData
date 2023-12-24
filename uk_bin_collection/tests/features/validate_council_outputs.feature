@@ -14,18 +14,18 @@ Feature: Test each council output matches expected results
             | BathAndNorthEastSomersetCouncil | None | None |
             | BCPCouncil | None | None |
             | BedfordshireCouncil | None | None |
-            | BexleyCouncil | None | None |
+            | BexleyCouncil | http://selenium:4444 | local |
             | BlackburnCouncil | http://selenium:4444 | local |
-            | BoltonCouncil | None | None |
+            | BoltonCouncil | http://selenium:4444 | local |
             | BristolCityCouncil | None | None |
-            | BromleyBoroughCouncil | None | None |
+            | BromleyBoroughCouncil | http://selenium:4444 | local |
             | BroxtoweBoroughCouncil | http://selenium:4444 | local |
             | BuckinghamshireCouncil | http://selenium:4444 | local |
             | BuryCouncil | None | None |
-            | CalderdaleCouncil | None | None |
+            | CalderdaleCouncil | http://selenium:4444 | local |
             | CannockChaseDistrictCouncil | None | None |
             | CardiffCouncil | None | None |
-            | CastlepointDistrictCouncil | None | None |
+            | CastlepointDistrictCouncil | http://selenium:4444 | local |
             | CharnwoodBoroughCouncil | None | None |
             | ChelmsfordCityCouncil | None | None |
             | CheshireEastCouncil | None | None |

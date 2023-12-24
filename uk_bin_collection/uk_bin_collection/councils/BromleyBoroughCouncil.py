@@ -1,5 +1,14 @@
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
+from bs4 import BeautifulSoup
+from datetime import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+import time
+
 from dateutil.relativedelta import relativedelta
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
@@ -17,42 +26,71 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
 
         bin_data_dict = {"bins": []}
         collections = []
+        web_driver = kwargs.get("web_driver")
 
+        data = {"bins": []}
 
-        # Search for the specific bins in the table using BS4
-        bin_types = soup.find_all("h3", class_="govuk-heading-m waste-service-name")
-        collection_info = soup.find_all("dl", {"class": "govuk-summary-list"})
+        # Get our initial session running
+        driver = create_webdriver(web_driver)
+        driver.get(kwargs.get("url"))
 
-        # Raise error if data is not loaded at time of scrape (30% chance it is)
-        if len(bin_types) == 0:
-            raise ConnectionError("Error fetching council data: data absent when page was scraped.")
+        wait = WebDriverWait(driver, 30)
+        results = wait.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "waste-service-image"))
+        )
+        # Search for the specific bins in the table using BS
+        # Parse the HTML content
+        # Find all elements with the class 'container-name' to extract bin types
+        # Parse the HTML content
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        soup.prettify
 
-        # Parse the data
-        for idx, value in enumerate(collection_info):
-            bin_type = bin_types[idx].text.strip()
-            collection_date = value.contents[3].contents[3].text.strip()
-            next_collection = datetime.strptime(remove_ordinal_indicator_from_date_string(collection_date.replace(',', '')), "%A %d %B")
-            curr_date = datetime.now().date()
-            next_collection = next_collection.replace(year=curr_date.year)
-            if curr_date.month == 12 and next_collection.month == 1:
-                next_collection = next_collection + relativedelta(years=1)
-            collections.append((bin_type, next_collection))
+        # Find all elements with class 'govuk-summary-list'
+        bin_info = []
+        waste_services = soup.find_all('h3', class_='govuk-heading-m waste-service-name')
 
-        # Sort the text and list elements by date
-        ordered_data = sorted(collections, key=lambda x: x[1])
+        for service in waste_services:
+            service_title = service.get_text(strip=True)
+            next_collection = service.find_next_sibling().find('dt', text='Next collection')
+            
+            if next_collection:
+                next_collection_date = next_collection.find_next_sibling().get_text(strip=True)
+                # Extract date part and remove the suffix
+                next_collection_date_parse = next_collection_date.split(',')[1].strip()
+                day = next_collection_date_parse.split()[0]
+                month = next_collection_date_parse.split()[1]
+                
+                # Remove the suffix (e.g., 'th', 'nd', 'rd', 'st') from the day
+                if day.endswith(('th', 'nd', 'rd', 'st')):
+                    day = day[:-2]  # Remove the last two characters
+                
+                # Reconstruct the date string without the suffix
+                date_without_suffix = f"{day} {month}"
+                
+                # Parse the date string to a datetime object
+                date_object = datetime.strptime(date_without_suffix, '%d %B')
 
-        # Put the elements into the dictionary
-        for item in ordered_data:
-            dict_data = {
-                "type": item[0],
-                "collectionDate": item[1].strftime(date_format),
-            }
-            bin_data_dict["bins"].append(dict_data)
+                # Get the current year
+                current_year = datetime.now().year
 
+                # Check if the parsed date is in the past compared to the current date
+                if date_object < datetime.now():
+                    # If the parsed date is in the past, assume it's for the next year
+                    current_year += 1
+                # Append the year to the date
+                date_with_year = date_object.replace(year=current_year)
 
-        return bin_data_dict
+                # Format the date with the year
+                date_with_year_formatted = date_with_year.strftime('%d/%m/%Y')            # Format the date as '%d/%m/%Y'
+
+                
+                # Create the dictionary with the formatted data
+                dict_data = {
+                    "type": service_title,
+                    "collectionDate": date_with_year_formatted,
+                }
+                data["bins"].append(dict_data)
+        return data

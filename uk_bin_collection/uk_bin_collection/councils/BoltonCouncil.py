@@ -1,7 +1,14 @@
 from bs4 import BeautifulSoup
+from datetime import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+
+import time
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -17,79 +24,47 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
+        web_driver = kwargs.get("web_driver")
 
         data = {"bins": []}
 
-        # Start a new session
-        requests.packages.urllib3.disable_warnings()
-        s = requests.session()
-
-        headers = {
-            'authority': 'www.bolton.gov.uk',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'accept-language': 'en-GB,en;q=0.9',
-            'cache-control': 'no-cache',
-            'content-type': 'application/x-www-form-urlencoded',
-            'origin': 'https://www.bolton.gov.uk',
-            'pragma': 'no-cache',
-            'referer': 'https://www.bolton.gov.uk/next-bin-collection',
-            'sec-ch-ua': '"Not?A_Brand";v="99", "Opera GX";v="97", "Chromium";v="111"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'same-origin',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.147 Safari/537.36',
-        }
-        
         # Get our initial session running
-        response = s.get("https://carehomes.bolton.gov.uk/bins.aspx", headers=headers)
+        page = "https://carehomes.bolton.gov.uk/bins.aspx"
 
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
+        driver = create_webdriver(web_driver)
+        driver.get(page)
 
-        # Grab the variables needed to continue
-        payload = {
-            "__VIEWSTATE": (
-                soup.find("input", {"id": "__VIEWSTATE"}).get("value")
-            ),
-            "__VIEWSTATEGENERATOR": (
-                soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get("value")
-            ),
-            "__EVENTVALIDATION": (
-                soup.find("input", {"id": "__EVENTVALIDATION"}).get("value")
-            ),
-            "txtPostcode": (user_postcode),
-            "btnSubmit": "Submit"
-        }
+        # If you bang in the house number (or property name) and postcode in the box it should find your property
+        wait = WebDriverWait(driver, 30)
 
-        # Get the address selection page
-        response = s.post("https://carehomes.bolton.gov.uk/bins.aspx", data=payload, headers=headers)
+        pc_search_box = wait.until(
+            EC.presence_of_element_located((By.ID, "txtPostcode"))
+        )
 
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
+        pc_search_box.send_keys(user_postcode)
 
-        # Grab the variables needed to continue
-        payload = {
-            "__VIEWSTATE": (
-                soup.find("input", {"id": "__VIEWSTATE"}).get("value")
-            ),
-            "__VIEWSTATEGENERATOR": (
-                soup.find("input", {"id": "__VIEWSTATEGENERATOR"}).get("value")
-            ),
-            "__EVENTVALIDATION": (
-                soup.find("input", {"id": "__EVENTVALIDATION"}).get("value")
-            ),
-            "txtPostcode": (user_postcode),
-            "ddlAddresses": (user_uprn)
-        }
+        pcsearch_btn = wait.until(
+            EC.element_to_be_clickable((By.ID, "btnSubmit"))
+        )
 
-        # Get the final page with the actual bin data
-        response = s.post("https://carehomes.bolton.gov.uk/bins.aspx", data=payload, headers=headers)
+        pcsearch_btn.click()
 
-        soup = BeautifulSoup(response.text, features="html.parser")
+        # Wait for the 'Select your property' dropdown to appear and select the first result
+        dropdown = wait.until(EC.element_to_be_clickable((By.ID, "ddlAddresses")))
+
+        dropdown_options = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//select/option[1]"))
+        )
+        time.sleep(1)
+        # Create a 'Select' for it, then select the first address in the list
+        # (Index 0 is "Make a selection from the list")
+        dropdownSelect = Select(dropdown)
+        dropdownSelect.select_by_value(str(user_uprn))
+        dropdown_options = wait.until(
+            EC.presence_of_element_located((By.ID, "pnlStep3"))
+        )
+
+        soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
 
         collections = []
