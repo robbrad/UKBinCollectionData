@@ -37,7 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         collection_date = datetime.strptime(remove_ordinal_indicator_from_date_string(collection_date)
                                                             .strip(),"%a %d %b").replace(year=curr_date.year)
                         if curr_date.month == 12 and collection_date.month == 1:
-                            bin_date = bin_date + relativedelta(years=1)
+                            collection_date = collection_date + relativedelta(years=1)
                     dict_data = {
                         "type": bin.find("a").contents[0],
                         "collectionDate": collection_date.strftime(date_format)
