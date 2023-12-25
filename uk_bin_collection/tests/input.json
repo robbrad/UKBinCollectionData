@@ -433,6 +433,13 @@
         "wiki_name": "Newcastle City Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
     },
+    "NewportCityCouncil": {
+        "postcode": "NP20 4HE",
+        "skip_get_url": true,
+        "uprn": "100100688837",
+        "url": "https://www.newport.gov.uk/",
+        "wiki_name": "Newport City Council"
+    },
     "NorthEastDerbyshireDistrictCouncil": {
         "skip_get_url": true,
         "uprn": "010034492221",
