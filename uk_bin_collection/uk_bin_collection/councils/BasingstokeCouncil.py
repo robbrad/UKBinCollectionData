@@ -53,14 +53,18 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for collection_type, collection_class in COLLECTION_KINDS.items():
             for date in soup.select(f"div#{collection_class} li"):
-                bins.append({
-                    "type": collection_type,
-                    "collectionDate": datetime.strptime(
-                        # Friday, 21 July 2023
-                        date.get_text(strip=True),
-                        '%A, %d %B %Y'
-                    ).strftime(date_format)
-                })
+
+                date_pattern = r'\d{1,2}\s\w+\s\d{4}'  # Regex pattern to extract date
+                match = re.search(date_pattern, date.get_text(strip=True))
+
+                if match:
+                    extracted_date = match.group()
+                    formatted_date = datetime.strptime(extracted_date, '%d %B %Y').strftime(date_format)
+
+                    bins.append({
+                        "type": collection_type,
+                        "collectionDate": formatted_date
+                    })
 
         return {
             "bins": bins

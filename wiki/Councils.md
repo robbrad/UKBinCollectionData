@@ -69,6 +69,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Neath Port Talbot Council](#neath-port-talbot-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
+- [Newport City Council](#newport-city-council)
 - [North East Derbyshire District Council](#north-east-derbyshire-district-council)
 - [North East Lincolnshire Council](#north-east-lincolnshire-council)
 - [North Kesteven District Council](#north-kesteven-district-council)
@@ -769,6 +770,17 @@ python collect_data.py NewcastleCityCouncil https://community.newcastle.gov.uk/m
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Newport City Council
+```commandline
+python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
