@@ -47,6 +47,7 @@ Feature: Test each council output matches expected results
             | FenlandDistrictCouncil | None | None |
             | ForestOfDeanDistrictCouncil | http://selenium:4444 | local |
             | GatesheadCouncil | http://selenium:4444 | local |
+            | GedlingBoroughCouncil | None | None |
             | GlasgowCityCouncil | None | None |
             | GuildfordCouncil | None | None |
             | HaltonBoroughCouncil | http://selenium:4444 | local |

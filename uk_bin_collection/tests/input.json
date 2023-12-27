@@ -223,7 +223,7 @@
     },
     "EastRidingCouncil": {
         "postcode": "HU17 8LG",
-        "house_number":"14 THE LEASES BEVERLEY HU17 8LG",
+        "house_number": "14 THE LEASES BEVERLEY HU17 8LG",
         "skip_get_url": true,
         "web_driver": "http://selenium:4444",
         "url": "https://wasterecyclingapi.eastriding.gov.uk",
@@ -280,6 +280,13 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Gateshead Council",
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
+    },
+    "GedlingBoroughCouncil": {
+        "house_number": "Valeside Gardens",
+        "skip_get_url": true,
+        "url": "https://www.gedling.gov.uk/",
+        "wiki_name": "Gedling Borough Council",
+        "wiki_note": "Pass the street name into the -n parameter. Use [this](https://apps.gedling.gov.uk/refuse/search.aspx) to help work out a street search that is unique. Known issues: 1) If multiple streets returned, it will pick the first and these may have different bin schedules. 2) This data is hand entered as council only provide non-parseable non-accessible PDFs - Please double check for any issues. 2b) Data is only included until end of Nov 2024 (refuse) and March 2024 (Garden). Data will need to be updated by hand after these dates."
     },
     "GlasgowCityCouncil": {
         "url": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497",
