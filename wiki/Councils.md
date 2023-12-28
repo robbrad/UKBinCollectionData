@@ -50,6 +50,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Gateshead Council](#gateshead-council)
 - [Glasgow City Council](#glasgow-city-council)
 - [Guildford Council](#guildford-council)
+- [Haringey Council](#haringey-council)
 - [Harrogate Borough Council](#harrogate-borough-council)
 - [High Peak Council](#high-peak-council)
 - [Huntingdon District Council](#huntingdon-district-council)
@@ -567,6 +568,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: If the bin day is 'today' then the collectionDate will only show today's date if before 7AM, else the date will be in 'previousCollectionDate'. To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Haringey Council
+```commandline
+python collect_data.py HaringeyCouncil  https://wastecollections.haringey.gov.uk/property -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN which can be found at https://wastecollections.haringey.gov.uk/property/{uprn}.
 
 ---
 

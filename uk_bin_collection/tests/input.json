@@ -46,7 +46,7 @@
         "web_driver": "http://selenium:4444",
         "postcode": "DA5 3AH",
         "uprn": "100020196143",
-        "house_number":"1 Dorchester Avenue, Bexley",
+        "house_number": "1 Dorchester Avenue, Bexley",
         "wiki_name": "Bexley Council",
         "wiki_note": "In order to use this parser, you will need to sign up to [Bexley's @Home app](https://www.bexley.gov.uk/services/rubbish-and-recycling/bexley-home-recycling-app/about-app) (available for [iOS](https://apps.apple.com/gb/app/home-collection-reminder/id1050703690) and [Android](https://play.google.com/store/apps/details?id=com.contender.athome.android)).\nComplete the setup by entering your email and setting your address with postcode and address line.\nOnce you can see the calendar, you _should_ be good to run the parser.\nJust pass the email you used in quotes in the UPRN parameter.\n"
     },
@@ -309,6 +309,13 @@
         "wiki_name": "Halton Borough Council",
         "wiki_note": "Pass the House number and post code",
         "web_driver": "http://selenium:4444"
+    },
+    "HaringeyCouncil": {
+        "skip_get_url": true,
+        "uprn": "100021203052",
+        "url": " https://wastecollections.haringey.gov.uk/property",
+        "wiki_name": "Haringey Council",
+        "wiki_note": "Pass the UPRN which can be found at https://wastecollections.haringey.gov.uk/property/{uprn}."
     },
     "HarrogateBoroughCouncil": {
         "skip_get_url": true,
