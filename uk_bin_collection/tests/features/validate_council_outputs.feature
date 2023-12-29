@@ -27,7 +27,7 @@ Feature: Test each council output matches expected results
             | CardiffCouncil | None | None |
             | CastlepointDistrictCouncil | http://selenium:4444 | local |
             | CharnwoodBoroughCouncil | None | None |
-            | ChelmsfordCityCouncil | None | None |
+            | ChelmsfordCityCouncil | http://selenium:4444 | local |
             | CheshireEastCouncil | None | None |
             | ConwyCountyBorough | None | None |
             | CrawleyBoroughCouncil | None | None |

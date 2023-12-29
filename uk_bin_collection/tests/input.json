@@ -141,10 +141,12 @@
         "wiki_note": "Replace XXXXXXXX with UPRN keeping \"cbc\" before it."
     },
     "ChelmsfordCityCouncil": {
-        "url": "https://www.chelmsford.gov.uk/myhome/?entry[655e95fb-5f84-4d1b-ab65-878a2f3e3ce4]=14368859",
-        "wiki_command_url_override": "https://www.chelmsford.gov.uk/myhome/XXXXXX",
+        "url": "https://www.chelmsford.gov.uk/myhome/",
         "wiki_name": "Chelmsford City Council",
-        "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your \"Address\", \"Ward\" etc then copy the URL and replace the URL in the command."
+        "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your \"Address\" then copy the entire address text and use that in the house number field.",
+        "web_driver": "http://selenium:4444",
+        "postcode": "CM3 7AE",
+        "house_number": "1 Celeborn Street, South Woodham Ferrers, Chelmsford, CM3 7AE"
     },
     "CheshireEastCouncil": {
         "url": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1689413260149",
