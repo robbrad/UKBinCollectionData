@@ -381,6 +381,14 @@
         "uprn": "100021577765",
         "url": "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder",
         "wiki_name": "London Borough Hounslow"
+    },    
+    "LondonBoroughRedbridge": {
+        "url": "https://my.redbridge.gov.uk/RecycleRefuse",
+        "wiki_name": "London Borough Redbridge",
+        "wiki_note": "Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your \"Address\" then copy the entire address text and use that in the house number field.",
+        "web_driver": "http://selenium:4444",
+        "postcode": "IG2 6LQ",
+        "uprn": "10023770353"
     },
     "MaldonDistrictCouncil": {
         "skip_get_url": true,
