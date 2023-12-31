@@ -100,6 +100,7 @@ Feature: Test each council output matches expected results
             | SomersetCouncil | None | None |
             | SouthAyrshireCouncil | None | None |
             | SouthCambridgeshireCouncil | None | None |
+            | SouthGloucestershireCouncil | None | None |
             | SouthLanarkshireCouncil | None | None |
             | SouthNorfolkCouncil | None | None |
             | SouthOxfordshireCouncil | None | None |

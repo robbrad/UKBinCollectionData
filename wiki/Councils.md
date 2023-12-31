@@ -96,6 +96,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Ayrshire Council](#south-ayrshire-council)
 - [South Cambridgeshire Council](#south-cambridgeshire-council)
 - [South Lanarkshire Council](#south-lanarkshire-council)
+- [South Gloucestershire Council](#south-gloucestershire-council)
 - [South Norfolk Council](#south-norfolk-council)
 - [South Oxfordshire Council](#south-oxfordshire-council)
 - [South Tyneside Council](#south-tyneside-council)
@@ -1071,6 +1072,16 @@ python collect_data.py SouthLanarkshireCouncil https://www.southlanarkshire.gov.
 ```
 
 Note: Follow the instructions [here](https://www.southlanarkshire.gov.uk/info/200156/bins_and_recycling/1670/bin_collections_and_calendar) until you get the page that shows the weekly collections for your street then copy the URL and replace the URL in the command.
+
+---
+
+### South Gloucestershire Council
+```commandline
+python collect_data.py SouthGloucestershireCouncil https://beta.southglos.gov.uk/waste-and-recycling-collection-date -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
 
 ---
 

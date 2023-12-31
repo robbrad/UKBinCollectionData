@@ -651,6 +651,12 @@
         "url": "https://www.scambs.gov.uk/recycling-and-bins/find-your-household-bin-collection-day/",
         "wiki_name": "South Cambridgeshire Council"
     },
+    "SouthGloucestershireCouncil": {
+        "skip_get_url": true,
+        "uprn": "566419",
+        "url": "https://beta.southglos.gov.uk/waste-and-recycling-collection-date",
+        "wiki_name": "South Gloucestershire Council"
+    },
     "SouthLanarkshireCouncil": {
         "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow",
         "wiki_command_url_override": "https://www.southlanarkshire.gov.uk/directory_record/XXXXX/XXXXX",
