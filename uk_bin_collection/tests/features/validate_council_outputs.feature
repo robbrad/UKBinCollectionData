@@ -17,6 +17,7 @@ Feature: Test each council output matches expected results
             | BexleyCouncil | http://selenium:4444 | local |
             | BlackburnCouncil | http://selenium:4444 | local |
             | BoltonCouncil | http://selenium:4444 | local |
+            | BrightonandHoveCityCouncil | http://selenium:4444 | local |
             | BristolCityCouncil | None | None |
             | BromleyBoroughCouncil | http://selenium:4444 | local |
             | BroxtoweBoroughCouncil | http://selenium:4444 | local |
@@ -27,7 +28,7 @@ Feature: Test each council output matches expected results
             | CardiffCouncil | None | None |
             | CastlepointDistrictCouncil | http://selenium:4444 | local |
             | CharnwoodBoroughCouncil | None | None |
-            | ChelmsfordCityCouncil | None | None |
+            | ChelmsfordCityCouncil | http://selenium:4444 | local |
             | CheshireEastCouncil | None | None |
             | ConwyCountyBorough | None | None |
             | CrawleyBoroughCouncil | None | None |
@@ -61,6 +62,7 @@ Feature: Test each council output matches expected results
             | LisburnCastlereaghCityCouncil | None | None |
             | LiverpoolCityCouncil | None | None |
             | LondonBoroughHounslow | None | None |
+            | LondonBoroughRedbridge | http://selenium:4444 | local | 
             | MaldonDistrictCouncil | None | None |
             | MalvernHillsDC | None | None |
             | ManchesterCityCouncil | None | None |
