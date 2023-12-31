@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -43,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "ORG 240 STD": "Brown bin",
             "PAID ORGANIC": "Brown bin",
             "RES 1100": "Grey trade container",
-            "REC GL 770": "Blue trade container"
+            "REC GL 770": "Blue trade container",
         }
         # If the API errors, throw the exception
         if soup.find("Error") is not None:
@@ -52,13 +51,19 @@ class CouncilClass(AbstractGetBinDataClass):
         # Parse the XML and add to a list of collections
         for item in soup.find_all("BinRound"):
             try:
-                bin_type = bin_types.get(item.find_next("Bin").text.replace("EMPTY BINS", "").strip())
-                bin_date = datetime.strptime(item.find_next("DateTime").text, "%d/%m/%Y %H:%M:%S")
+                bin_type = bin_types.get(
+                    item.find_next("Bin").text.replace("EMPTY BINS", "").strip()
+                )
+                bin_date = datetime.strptime(
+                    item.find_next("DateTime").text, "%d/%m/%Y %H:%M:%S"
+                )
                 if bin_date >= datetime.now():
                     collections.append((bin_type, bin_date))
             except:
-                raise SystemError("Error has been encountered parsing API. Please try again later and if the issue "
-                                  "persists, open a GitHub ticket!")
+                raise SystemError(
+                    "Error has been encountered parsing API. Please try again later and if the issue "
+                    "persists, open a GitHub ticket!"
+                )
 
         # Sort the collections list by date
         ordered_data = sorted(collections, key=lambda x: x[1])

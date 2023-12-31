@@ -4,8 +4,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -26,14 +25,20 @@ class CouncilClass(AbstractGetBinDataClass):
         # Create Selenium webdriver
         driver = create_webdriver(web_driver)
         driver.get(
-            f"https://my.reigate-banstead.gov.uk/en/service/Bins_and_recycling___collections_calendar?uprn={user_uprn}")
+            f"https://my.reigate-banstead.gov.uk/en/service/Bins_and_recycling___collections_calendar?uprn={user_uprn}"
+        )
 
         # Wait for iframe to load and switch to it
-        WebDriverWait(driver, 30).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'fillform-frame-1')))
+        WebDriverWait(driver, 30).until(
+            EC.frame_to_be_available_and_switch_to_it((By.ID, "fillform-frame-1"))
+        )
 
         # Wait for form
         WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, 'span[data-name="html2"] > div')))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'span[data-name="html2"] > div')
+            )
+        )
 
         # Make a BS4 object
         soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -49,7 +54,9 @@ class CouncilClass(AbstractGetBinDataClass):
             date = d.find("h3")
             collections = d.find_all("li")
             if date and collections:
-                collection_date = datetime.strptime(date.get_text(strip=True), "%A %d %B %Y").strftime(date_format)
+                collection_date = datetime.strptime(
+                    date.get_text(strip=True), "%A %d %B %Y"
+                ).strftime(date_format)
                 for c in collections:
                     collection_type = c.get_text(strip=True)
                     if c.get_text(strip=True):

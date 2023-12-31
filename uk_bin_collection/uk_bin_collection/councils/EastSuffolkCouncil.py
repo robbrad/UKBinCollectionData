@@ -5,8 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait, Select
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -29,7 +28,9 @@ class CouncilClass(AbstractGetBinDataClass):
         driver.get("https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder")
 
         # Wait for iframe to load and switch to it
-        WebDriverWait(driver, 30).until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'fillform-frame-1')))
+        WebDriverWait(driver, 30).until(
+            EC.frame_to_be_available_and_switch_to_it((By.ID, "fillform-frame-1"))
+        )
 
         # Wait for postcode entry box
         postcode = WebDriverWait(driver, 10).until(
@@ -73,9 +74,10 @@ class CouncilClass(AbstractGetBinDataClass):
             )
         )
 
-        
         # Make a BS4 object
-        soup = BeautifulSoup(data_table.get_attribute("innerHTML"), features="html.parser")
+        soup = BeautifulSoup(
+            data_table.get_attribute("innerHTML"), features="html.parser"
+        )
 
         # Quit Selenium webdriver to release session
         driver.quit()

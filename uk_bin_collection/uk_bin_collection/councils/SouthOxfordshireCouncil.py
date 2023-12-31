@@ -1,8 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -61,8 +60,11 @@ class CouncilClass(AbstractGetBinDataClass):
             try:
                 # No date validation since year isn't included on webpage
                 bin_date = get_next_occurrence_from_day_month(
-                    datetime.strptime(bin_info[0].strip() + " " + datetime.today().strftime("%Y"),
-                                      "%A %d %B %Y")).strftime(date_format)
+                    datetime.strptime(
+                        bin_info[0].strip() + " " + datetime.today().strftime("%Y"),
+                        "%A %d %B %Y",
+                    )
+                ).strftime(date_format)
                 bin_type = str.capitalize(bin_info[1].strip())
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")

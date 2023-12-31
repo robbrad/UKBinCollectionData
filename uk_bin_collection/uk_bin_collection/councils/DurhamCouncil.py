@@ -4,8 +4,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -40,9 +39,11 @@ class CouncilClass(AbstractGetBinDataClass):
                     if results:
                         date = datetime.strptime(results[0], "%d %B %Y")
                         if date:
-                            data["bins"].append({
-                                "type": bin_type,
-                                "collectionDate": date.strftime(date_format)
-                            })
+                            data["bins"].append(
+                                {
+                                    "type": bin_type,
+                                    "collectionDate": date.strftime(date_format),
+                                }
+                            )
 
         return data

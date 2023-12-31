@@ -4,8 +4,7 @@ from urllib.parse import urlparse
 import requests
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -42,7 +41,9 @@ class CouncilClass(AbstractGetBinDataClass):
             "upgrade-insecure-requests": "1",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
         }
-        s.get("https://my.rbwm.gov.uk/special/find-your-collection-dates", headers=headers)
+        s.get(
+            "https://my.rbwm.gov.uk/special/find-your-collection-dates", headers=headers
+        )
 
         # Select address
         headers = {
@@ -73,7 +74,7 @@ class CouncilClass(AbstractGetBinDataClass):
         response = s.post(
             "https://my.rbwm.gov.uk/special/address-selector-collection-dates",
             headers=headers,
-            data=request_data
+            data=request_data,
         )
 
         soup = BeautifulSoup(response.content, features="html.parser")

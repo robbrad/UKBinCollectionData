@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -41,15 +40,19 @@ class CouncilClass(AbstractGetBinDataClass):
             cells = row.find_all("td")
             if cells:
                 binType = cells[0].get_text(strip=True)
-                collectionDate = cells[1].get_text(strip=True) + " " + datetime.now().strftime("%Y")
-                nextCollectionDate = cells[2].get_text(strip=True) + " " + datetime.now().strftime("%Y")
+                collectionDate = (
+                    cells[1].get_text(strip=True) + " " + datetime.now().strftime("%Y")
+                )
+                nextCollectionDate = (
+                    cells[2].get_text(strip=True) + " " + datetime.now().strftime("%Y")
+                )
 
                 # Make each Bin element in the JSON
                 dict_data = {
                     "type": binType,
                     "collectionDate": get_next_occurrence_from_day_month(
                         datetime.strptime(collectionDate, "%A %d %B %Y")
-                    ).strftime(date_format)
+                    ).strftime(date_format),
                 }
 
                 # Add data to the main JSON Wrapper

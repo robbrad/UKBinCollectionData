@@ -5,8 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -32,28 +31,35 @@ class CouncilClass(AbstractGetBinDataClass):
         # Close cookies banner
         cookieAccept = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.CSS_SELECTOR, ".cookiemessage__link--close"))
+                (By.CSS_SELECTOR, ".cookiemessage__link--close")
+            )
         )
         cookieAccept.click()
 
         # Wait for the postcode field to appear then populate it
         inputElement_postcode = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
-                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_POSTCODE"))
+                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_POSTCODE")
+            )
         )
         inputElement_postcode.send_keys(user_postcode)
 
         # Click search button
         findAddress = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_PAGE1NEXT_NEXT"))
+                (
+                    By.ID,
+                    "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_PAGE1NEXT_NEXT",
+                )
+            )
         )
         findAddress.click()
 
         # Wait for the 'Select address' dropdown to appear and select option matching UPRN
         dropdown = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
-                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESS"))
+                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESS")
+            )
         )
         # Create a 'Select' for it, then select the matching URPN option
         dropdownSelect = Select(dropdown)
@@ -62,7 +68,11 @@ class CouncilClass(AbstractGetBinDataClass):
         # Wait for the submit button to appear, then click it to get the collection dates
         submit = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT"))
+                (
+                    By.ID,
+                    "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT",
+                )
+            )
         )
         submit.click()
 
@@ -74,15 +84,23 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get months
         for month_wrapper in soup.find_all("div", {"class": "bin-collection__month"}):
             if month_wrapper:
-                month_year = month_wrapper.find("h3", {"class": "bin-collection__title"}).get_text(strip=True)
+                month_year = month_wrapper.find(
+                    "h3", {"class": "bin-collection__title"}
+                ).get_text(strip=True)
                 # Get collections
-                for collection in month_wrapper.find_all("li", {"class": "bin-collection__item"}):
-                    day = collection.find("span", {"class": "bin-collection__number"}).get_text(strip=True)
+                for collection in month_wrapper.find_all(
+                    "li", {"class": "bin-collection__item"}
+                ):
+                    day = collection.find(
+                        "span", {"class": "bin-collection__number"}
+                    ).get_text(strip=True)
                     if month_year and day:
                         bin_date = datetime.strptime(day + " " + month_year, "%d %B %Y")
                         dict_data = {
-                            "type": collection.find("span", {"class": "bin-collection__type"}).get_text(strip=True),
-                            "collectionDate": bin_date.strftime(date_format)
+                            "type": collection.find(
+                                "span", {"class": "bin-collection__type"}
+                            ).get_text(strip=True),
+                            "collectionDate": bin_date.strftime(date_format),
                         }
                         data["bins"].append(dict_data)
 

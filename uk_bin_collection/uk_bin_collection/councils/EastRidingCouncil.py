@@ -22,7 +22,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
@@ -35,59 +34,75 @@ class CouncilClass(AbstractGetBinDataClass):
 
         wait = WebDriverWait(driver, 60)
 
-        try: 
+        try:
             accept_cookies = wait.until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="er-cookie-placeholder-settings"]/div/a[1]'))
+                EC.element_to_be_clickable(
+                    (By.XPATH, '//*[@id="er-cookie-placeholder-settings"]/div/a[1]')
+                )
             )
 
             accept_cookies.click()
-        except: 
-            print("Cookies acceptance element not found or clickable within the specified time.")
+        except:
+            print(
+                "Cookies acceptance element not found or clickable within the specified time."
+            )
             pass
 
         expand_postcode_box = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//a[@href='#when-and-where-should-i-put-my-bin-out']"))
+            EC.element_to_be_clickable(
+                (By.XPATH, "//a[@href='#when-and-where-should-i-put-my-bin-out']")
+            )
         )
 
         expand_postcode_box.click()
 
         postcode_box = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Enter your postcode']"))
+            EC.element_to_be_clickable(
+                (By.XPATH, "//input[@placeholder='Enter your postcode']")
+            )
         )
         postcode_box.send_keys(user_postcode)
-        
+
         postcode_search_btn = wait.until(
             EC.element_to_be_clickable((By.XPATH, "//button[text()='Search']"))
         )
         postcode_search_btn.send_keys(Keys.ENTER)
 
         dropdown = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='er-select-wrapper']/select[@class='dropdown']"))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='er-select-wrapper']/select[@class='dropdown']",
+                )
+            )
         )
-        
+
         options_present = wait.until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'select.dropdown option'))
+            EC.presence_of_all_elements_located(
+                (By.CSS_SELECTOR, "select.dropdown option")
+            )
         )
-        drop=Select(dropdown)
+        drop = Select(dropdown)
         drop.select_by_visible_text(str(user_paon))
 
         results_present = wait.until(
             EC.presence_of_element_located(
                 (
                     By.CLASS_NAME,
-                    'results',
+                    "results",
                 )
             )
         )
 
-
         data = {"bins": []}  # dictionary for data
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        soup = BeautifulSoup(driver.page_source, "html.parser")
 
         bin_types = {}  # Dictionary to store bin types
 
         # Extract bin types from header elements
-        header_elements = soup.find_all("li", class_=lambda x: x and x.startswith("header"))
+        header_elements = soup.find_all(
+            "li", class_=lambda x: x and x.startswith("header")
+        )
         for header_element in header_elements:
             bin_type = header_element.get_text(strip=True)
             bin_class = [cls for cls in header_element.get("class") if cls != "header"]
@@ -102,9 +117,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_type = bin_types.get(bin_class[0])
                 span_text = date_element.find("span").get_text(strip=True)
                 collection_date = datetime.strptime(span_text, "%a, %d %b %Y")
-                data["bins"].append({
-                    "type": bin_type,
-                    "collectionDate": collection_date.strftime(date_format)
-                })
+                data["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
+                )
 
         return data

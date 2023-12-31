@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -88,7 +87,14 @@ class CouncilClass(AbstractGetBinDataClass):
             for day in remove_alpha_characters(row[1].text.strip()).split():
                 try:
                     bin_date = datetime(collection_year, collection_month, int(day))
-                    collections.append((table_headers[1].text.strip().replace(" collection date", ""), bin_date))
+                    collections.append(
+                        (
+                            table_headers[1]
+                            .text.strip()
+                            .replace(" collection date", ""),
+                            bin_date,
+                        )
+                    )
                 except Exception as ex:
                     continue
 

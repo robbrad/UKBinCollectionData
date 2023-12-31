@@ -5,8 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -47,7 +46,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Wait for the 'Select address' dropdown to appear and select option matching UPRN
         dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ctl00_ContentPlaceHolder1_FF3518DDL"))
+            EC.presence_of_element_located(
+                (By.ID, "ctl00_ContentPlaceHolder1_FF3518DDL")
+            )
         )
         # Create a 'Select' for it, then select the matching URPN option
         dropdownSelect = Select(dropdown)
@@ -55,7 +56,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Wait for the submit button to appear, then click it to get the collection dates
         submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ctl00_ContentPlaceHolder1_btnSubmit"))
+            EC.presence_of_element_located(
+                (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+            )
         )
         submit.click()
 
@@ -67,8 +70,10 @@ class CouncilClass(AbstractGetBinDataClass):
         bins_text = soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
 
         if bins_text:
-            results = re.findall("Your (.*?) bin will next be collected on (\d\d?\/\d\d?\/\d{4})",
-                                 bins_text.find("div", {"class": "ss_confPanel"}).get_text())
+            results = re.findall(
+                "Your (.*?) bin will next be collected on (\d\d?\/\d\d?\/\d{4})",
+                bins_text.find("div", {"class": "ss_confPanel"}).get_text(),
+            )
             if results:
                 for result in results:
                     collection_date = datetime.strptime(result[1], "%d/%m/%Y")
@@ -79,7 +84,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     data["bins"].append(dict_data)
 
                     data["bins"].sort(
-                        key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+                        key=lambda x: datetime.strptime(
+                            x.get("collectionDate"), "%d/%m/%Y"
+                        )
                     )
 
         return data

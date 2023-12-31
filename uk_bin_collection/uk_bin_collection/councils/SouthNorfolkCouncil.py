@@ -2,8 +2,7 @@ from xml.etree import ElementTree
 
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -38,11 +37,11 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         requests.packages.urllib3.disable_warnings()
         post_data = (
-                '<?xml version="1.0" encoding="utf-8"?>'
-                '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
-                '<soap:Body><getRoundCalendarForUPRN xmlns="http://webaspx-collections.azurewebsites.net/">'
-                "<council>" + council + "</council><UPRN>" + uprn + "</UPRN>"
-                                                                    "<from>Chtml</from></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
+            '<?xml version="1.0" encoding="utf-8"?>'
+            '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
+            '<soap:Body><getRoundCalendarForUPRN xmlns="http://webaspx-collections.azurewebsites.net/">'
+            "<council>" + council + "</council><UPRN>" + uprn + "</UPRN>"
+            "<from>Chtml</from></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
         )
         response = requests.post(
             "https://collections-southnorfolk.azurewebsites.net/WSCollExternal.asmx",
@@ -69,9 +68,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_date = ""
                 results = re.search("([A-Za-z]+ \\d\\d? [A-Za-z]+) then", bin_info)
                 if results:
-                    date = get_next_occurrence_from_day_month(datetime.strptime(
-                        results[1] + " " + datetime.now().strftime("%Y"), "%a %d %b %Y"
-                    ))
+                    date = get_next_occurrence_from_day_month(
+                        datetime.strptime(
+                            results[1] + " " + datetime.now().strftime("%Y"),
+                            "%a %d %b %Y",
+                        )
+                    )
                     if date:
                         collection_date = date.strftime(date_format)
                 else:

@@ -3,8 +3,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -26,17 +25,17 @@ class CouncilClass(AbstractGetBinDataClass):
         s = requests.session()
 
         headers = {
-            'Origin': 'https://www.centralbedfordshire.gov.uk',
-            'Referer': 'https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day',
+            "Origin": "https://www.centralbedfordshire.gov.uk",
+            "Referer": "https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day",
         }
 
         files = {
-            'postcode': (None, user_postcode),
-            'address': (None, user_uprn),
+            "postcode": (None, user_postcode),
+            "address": (None, user_uprn),
         }
 
         response = requests.post(
-            'https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day#my_bin_collections',
+            "https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day#my_bin_collections",
             headers=headers,
             files=files,
         )

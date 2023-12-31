@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from dateutil.relativedelta import relativedelta
 
 
@@ -36,8 +35,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 if item.text.strip() == "Today":
                     collections.append((row_type, curr_date))
                 else:
-                    bin_date = datetime.strptime(remove_ordinal_indicator_from_date_string(item.text.strip()),
-                                                 "%A, %d %B").replace(year=curr_date.year)
+                    bin_date = datetime.strptime(
+                        remove_ordinal_indicator_from_date_string(item.text.strip()),
+                        "%A, %d %B",
+                    ).replace(year=curr_date.year)
                     if curr_date.month == 12 and bin_date.month == 1:
                         bin_date = bin_date + relativedelta(years=1)
                     collections.append((row_type, bin_date))

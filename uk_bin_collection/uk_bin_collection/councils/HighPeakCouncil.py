@@ -6,8 +6,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -33,20 +32,22 @@ class CouncilClass(AbstractGetBinDataClass):
                     0
                 ].text.strip()
                 binCollection = (
-                        collectionDay.select('span[class*="bin-collection__day"]')[
-                            0
-                        ].text.strip()
-                        + ", "
-                        + collectionDay.select('span[class*="bin-collection__number"]')[
-                            0
-                        ].text.strip()
-                        + " "
-                        + monthName
+                    collectionDay.select('span[class*="bin-collection__day"]')[
+                        0
+                    ].text.strip()
+                    + ", "
+                    + collectionDay.select('span[class*="bin-collection__number"]')[
+                        0
+                    ].text.strip()
+                    + " "
+                    + monthName
                 )
 
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(binCollection, "%A, %d %B %Y").strftime(date_format),
+                    "collectionDate": datetime.strptime(
+                        binCollection, "%A, %d %B %Y"
+                    ).strftime(date_format),
                 }
 
                 data["bins"].append(dict_data)

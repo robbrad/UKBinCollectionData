@@ -3,8 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
@@ -26,7 +25,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         uprn = kwargs.get("uprn")
         postcode = kwargs.get("postcode")
         full_address = kwargs.get("paon")
@@ -40,28 +38,40 @@ class CouncilClass(AbstractGetBinDataClass):
 
         wait = WebDriverWait(driver, 120)
         post_code_search = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//input[contains(@class, 'slds-input')]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[contains(@class, 'slds-input')]")
+            )
         )
 
         post_code_search.send_keys(postcode)
 
         post_code_submit_btn = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(@class,'slds-button')]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class,'slds-button')]")
+            )
         )
         post_code_submit_btn.send_keys(Keys.ENTER)
 
         # Locate the element containing the specified address text
         address_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, f"//lightning-base-formatted-text[contains(text(), '{full_address}')]"))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    f"//lightning-base-formatted-text[contains(text(), '{full_address}')]",
+                )
+            )
         )
 
         # Find the associated radio button in the same row (preceding sibling)
-        radio_button = address_element.find_element(By.XPATH, "../../../../preceding-sibling::td//input[@type='radio']")
-
+        radio_button = address_element.find_element(
+            By.XPATH, "../../../../preceding-sibling::td//input[@type='radio']"
+        )
 
         radio_button.send_keys(Keys.SPACE)
         address_submit_btn = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(@name,'NEXT')]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@name,'NEXT')]")
+            )
         )
         address_submit_btn.send_keys(Keys.ENTER)
 
@@ -70,25 +80,39 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         results2 = wait.until(
-            EC.presence_of_element_located((By.XPATH, f'//div[contains(@title,"Bin Job")]'))
+            EC.presence_of_element_located(
+                (By.XPATH, f'//div[contains(@title,"Bin Job")]')
+            )
         )
         soup = BeautifulSoup(driver.page_source, features="html.parser")
         # Find all table rows containing bin information
-        rows = soup.find_all('tr', class_='slds-hint-parent')
+        rows = soup.find_all("tr", class_="slds-hint-parent")
 
         data = {"bins": []}
 
         # Extract bin type and next collection date for each row
         for row in rows:
-            bin_type = row.find('td', {'data-label': 'Bin Job'}).find('strong').text.strip() if row.find('td', {'data-label': 'Bin Job'}) else None
+            bin_type = (
+                row.find("td", {"data-label": "Bin Job"}).find("strong").text.strip()
+                if row.find("td", {"data-label": "Bin Job"})
+                else None
+            )
 
-            next_collection_date = row.find('td', {'data-label': 'Next Collection'}).text.strip() if row.find('td', {'data-label': 'Next Collection'}) else None
+            next_collection_date = (
+                row.find("td", {"data-label": "Next Collection"}).text.strip()
+                if row.find("td", {"data-label": "Next Collection"})
+                else None
+            )
 
             if bin_type and next_collection_date:
                 # Convert date string to datetime object
-                date_format = '%A, %d %B'  # Adjust the format according to your date string
+                date_format = (
+                    "%A, %d %B"  # Adjust the format according to your date string
+                )
                 try:
-                    next_collection_date = datetime.strptime(next_collection_date, date_format)
+                    next_collection_date = datetime.strptime(
+                        next_collection_date, date_format
+                    )
 
                     # Logic to determine year
                     current_date = datetime.now()
@@ -98,13 +122,12 @@ class CouncilClass(AbstractGetBinDataClass):
                         year = current_date.year
 
                     # Format the date
-                    next_collection_date = next_collection_date.replace(year=year).strftime('%d/%m/%Y')
+                    next_collection_date = next_collection_date.replace(
+                        year=year
+                    ).strftime("%d/%m/%Y")
                 except ValueError:
                     pass
 
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": next_collection_date
-                }
+                dict_data = {"type": bin_type, "collectionDate": next_collection_date}
                 data["bins"].append(dict_data)
         return data

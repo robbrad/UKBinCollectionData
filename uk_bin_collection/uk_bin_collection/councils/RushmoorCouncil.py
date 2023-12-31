@@ -21,38 +21,48 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Convert the XML to JSON and load the next collection data
         result = soup.find("p").contents[0].text.replace("\\", "")[1:-1]
-        json_data = json.loads(result)['NextCollection']
+        json_data = json.loads(result)["NextCollection"]
 
         # Get general waste data
-        if json_data.get('RefuseCollectionBinDate') is not None:
-            bin_type = 'Green general waste bin'
-            if json_data.get('RefuseBinExceptionMessage') != "":
+        if json_data.get("RefuseCollectionBinDate") is not None:
+            bin_type = "Green general waste bin"
+            if json_data.get("RefuseBinExceptionMessage") != "":
                 bin_type += f" ({json_data.get('RefuseBinExceptionMessage')})".rstrip()
-            bin_date = datetime.strptime(json_data.get('RefuseCollectionBinDate'), "%Y-%m-%dT%H:%M:%S")
+            bin_date = datetime.strptime(
+                json_data.get("RefuseCollectionBinDate"), "%Y-%m-%dT%H:%M:%S"
+            )
             collections.append((bin_type, bin_date))
 
         # Get recycling waste data
-        if json_data.get('RecyclingCollectionDate') is not None:
-            bin_type = 'Blue recycling bin'
-            if json_data.get('RecyclingExceptionMessage') != "":
+        if json_data.get("RecyclingCollectionDate") is not None:
+            bin_type = "Blue recycling bin"
+            if json_data.get("RecyclingExceptionMessage") != "":
                 bin_type += f" ({json_data.get('RecyclingExceptionMessage')})".rstrip()
-            bin_date = datetime.strptime(json_data.get('RecyclingCollectionDate'), "%Y-%m-%dT%H:%M:%S")
+            bin_date = datetime.strptime(
+                json_data.get("RecyclingCollectionDate"), "%Y-%m-%dT%H:%M:%S"
+            )
             collections.append((bin_type, bin_date))
 
         # Get garden waste data
-        if json_data.get('GardenWasteCollectionDate') is not None:
-            bin_type = 'Brown garden waste bin'
-            if json_data.get('GardenWasteExceptionMessage') != "":
-                bin_type += f" ({json_data.get('GardenWasteExceptionMessage')})".rstrip()
-            bin_date = datetime.strptime(json_data.get('GardenWasteCollectionDate'), "%Y-%m-%dT%H:%M:%S")
+        if json_data.get("GardenWasteCollectionDate") is not None:
+            bin_type = "Brown garden waste bin"
+            if json_data.get("GardenWasteExceptionMessage") != "":
+                bin_type += (
+                    f" ({json_data.get('GardenWasteExceptionMessage')})".rstrip()
+                )
+            bin_date = datetime.strptime(
+                json_data.get("GardenWasteCollectionDate"), "%Y-%m-%dT%H:%M:%S"
+            )
             collections.append((bin_type, bin_date))
 
         # Get food waste data
-        if json_data.get('FoodWasteCollectionDate') is not None:
-            bin_type = 'Black food waste bin'
-            if json_data.get('FoodWasteExceptionMessage') != "":
+        if json_data.get("FoodWasteCollectionDate") is not None:
+            bin_type = "Black food waste bin"
+            if json_data.get("FoodWasteExceptionMessage") != "":
                 bin_type += f" ({json_data.get('FoodWasteExceptionMessage')})".rstrip()
-            bin_date = datetime.strptime(json_data.get('FoodWasteCollectionDate'), "%Y-%m-%dT%H:%M:%S")
+            bin_date = datetime.strptime(
+                json_data.get("FoodWasteCollectionDate"), "%Y-%m-%dT%H:%M:%S"
+            )
             collections.append((bin_type, bin_date))
 
         # If there's no collections, raise an error

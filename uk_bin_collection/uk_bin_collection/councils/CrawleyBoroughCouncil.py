@@ -2,8 +2,7 @@ from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -43,7 +42,10 @@ class CouncilClass(AbstractGetBinDataClass):
         bin_index = 0
         for tag in collection_tag:
             for item in tag.next_elements:
-                if str(item).startswith('<div class="date text-right text-grey">') and str(item) != "":
+                if (
+                    str(item).startswith('<div class="date text-right text-grey">')
+                    and str(item) != ""
+                ):
                     collection_date = datetime.strptime(item.text, "%A %d %B")
                     next_collection = collection_date.replace(year=datetime.now().year)
                     if datetime.now().month == 12 and next_collection.month == 1:

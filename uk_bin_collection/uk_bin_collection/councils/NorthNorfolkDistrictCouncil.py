@@ -5,8 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -47,17 +46,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Wait for the 'Select address' dropdown to appear
         dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//select[@id='F_Address_subform:Id']"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//select[@id='F_Address_subform:Id']")
+            )
         )
         # Create a 'Select' for it, then select the matching house number/name option
         dropdownSelect = Select(dropdown)
-        matchingOptions = [o for o in dropdownSelect.options if user_paon.lower() in o.text.lower()]
+        matchingOptions = [
+            o for o in dropdownSelect.options if user_paon.lower() in o.text.lower()
+        ]
         if matchingOptions:
             matchingOptions[0].click()
 
             # Wait for the results to appear
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'fieldmergedcolumn')]/ul"))
+                EC.presence_of_element_located(
+                    (By.XPATH, "//div[contains(@class, 'fieldmergedcolumn')]/ul")
+                )
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -68,12 +73,16 @@ class CouncilClass(AbstractGetBinDataClass):
             bins_text = soup.find("div", id="Search_result_details_cps_hd")
 
             if bins_text:
-                results = re.findall("Your next (.*?) Bin collection is ([A-Za-z]+ \\d\\d? [A-Za-z]+)",
-                                     bins_text.get_text())
+                results = re.findall(
+                    "Your next (.*?) Bin collection is ([A-Za-z]+ \\d\\d? [A-Za-z]+)",
+                    bins_text.get_text(),
+                )
                 if results:
                     for result in results:
-                        collection_date = datetime.strptime(result[1] + " " + datetime.now().strftime("%Y"),
-                                                            "%A %d %B %Y")
+                        collection_date = datetime.strptime(
+                            result[1] + " " + datetime.now().strftime("%Y"),
+                            "%A %d %B %Y",
+                        )
                         dict_data = {
                             "type": result[0],
                             "collectionDate": collection_date.strftime(date_format),
@@ -81,7 +90,9 @@ class CouncilClass(AbstractGetBinDataClass):
                         data["bins"].append(dict_data)
 
                         data["bins"].sort(
-                            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+                            key=lambda x: datetime.strptime(
+                                x.get("collectionDate"), date_format
+                            )
                         )
         else:
             raise ValueError("No matching address for house number/name found.")

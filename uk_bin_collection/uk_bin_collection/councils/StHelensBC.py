@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -26,11 +25,16 @@ class CouncilClass(AbstractGetBinDataClass):
         page = s.get(url)
 
         # Make a BS4 object
-        soup = BeautifulSoup(re.sub("<div([^>]+)>", "", page.text).replace("</div>", ""), features="html.parser")
+        soup = BeautifulSoup(
+            re.sub("<div([^>]+)>", "", page.text).replace("</div>", ""),
+            features="html.parser",
+        )
         soup.prettify()
 
         data = {"bins": []}
-        collection_rows = soup.find("table", {"class": "multitable"}).find("tbody").find_all("tr")
+        collection_rows = (
+            soup.find("table", {"class": "multitable"}).find("tbody").find_all("tr")
+        )
 
         for collection_row in collection_rows:
             # Get bin collection type
@@ -40,10 +44,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 # Get bin collection dates
                 for bin_date in collection_row.find_all("td"):
                     if bin_date.get_text(strip=True) != "Dates not allocated":
-                        collection_date = datetime.strptime(bin_date.get_text(strip=True), "%a %d %b %Y")
+                        collection_date = datetime.strptime(
+                            bin_date.get_text(strip=True), "%a %d %b %Y"
+                        )
                         dict_data = {
                             "type": bin_type,
-                            "collectionDate": collection_date.strftime(date_format)
+                            "collectionDate": collection_date.strftime(date_format),
                         }
                         data["bins"].append(dict_data)
 

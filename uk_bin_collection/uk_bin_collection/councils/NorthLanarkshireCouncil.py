@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -26,13 +25,17 @@ class CouncilClass(AbstractGetBinDataClass):
                 # Add collection date
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(collection_date, "%d %B %Y").strftime(date_format)
+                    "collectionDate": datetime.strptime(
+                        collection_date, "%d %B %Y"
+                    ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
                 # Add next collection date
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(next_collection_date, "%d %B %Y").strftime(date_format)
+                    "collectionDate": datetime.strptime(
+                        next_collection_date, "%d %B %Y"
+                    ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 

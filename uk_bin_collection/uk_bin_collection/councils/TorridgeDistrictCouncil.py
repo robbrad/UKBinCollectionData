@@ -2,8 +2,7 @@ from xml.etree import ElementTree
 
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -40,9 +39,9 @@ class CouncilClass(AbstractGetBinDataClass):
         url = "https://collections-torridge.azurewebsites.net/WebService2.asmx"
         # Post data
         post_data = (
-                '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getRoundCalendarForUPRN xmlns="http://tempuri2.org/"><council>TOR</council><UPRN>'
-                + uprn
-                + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
+            '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getRoundCalendarForUPRN xmlns="http://tempuri2.org/"><council>TOR</council><UPRN>'
+            + uprn
+            + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
         )
         requests.packages.urllib3.disable_warnings()
         full_page = requests.post(url, headers=headers, data=post_data)
@@ -75,9 +74,9 @@ class CouncilClass(AbstractGetBinDataClass):
         url = "https://collections-torridge.azurewebsites.net/WebService2.asmx"
         # Post data
         post_data = (
-                '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getRoundCalendarForUPRN xmlns="http://tempuri2.org/"><council>TOR</council><UPRN>'
-                + uprn
-                + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
+            '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getRoundCalendarForUPRN xmlns="http://tempuri2.org/"><council>TOR</council><UPRN>'
+            + uprn
+            + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
         )
         requests.packages.urllib3.disable_warnings()
         page = requests.post(url, headers=headers, data=post_data)
@@ -102,36 +101,51 @@ class CouncilClass(AbstractGetBinDataClass):
 
         b_el = soup.find("b", string="GardenBin")
         if b_el:
-            results = re.search("([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1])
+            results = re.search(
+                "([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1]
+            )
             if results and results.groups()[0]:
                 date = results.groups()[0] + " " + datetime.today().strftime("%Y")
-                data["bins"].append({
-                    "type": "GardenBin",
-                    "collectionDate": get_next_occurrence_from_day_month(datetime.strptime(date, "%a %d %b %Y"))
-                    .strftime(date_format)
-                })
+                data["bins"].append(
+                    {
+                        "type": "GardenBin",
+                        "collectionDate": get_next_occurrence_from_day_month(
+                            datetime.strptime(date, "%a %d %b %Y")
+                        ).strftime(date_format),
+                    }
+                )
 
         b_el = soup.find("b", string="Refuse")
         if b_el:
-            results = re.search("([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1])
+            results = re.search(
+                "([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1]
+            )
             if results and results.groups()[0]:
                 date = results.groups()[0] + " " + datetime.today().strftime("%Y")
-                data["bins"].append({
-                    "type": "Refuse",
-                    "collectionDate": get_next_occurrence_from_day_month(datetime.strptime(date, "%a %d %b %Y"))
-                    .strftime(date_format)
-                })
+                data["bins"].append(
+                    {
+                        "type": "Refuse",
+                        "collectionDate": get_next_occurrence_from_day_month(
+                            datetime.strptime(date, "%a %d %b %Y")
+                        ).strftime(date_format),
+                    }
+                )
 
         b_el = soup.find("b", string="Recycling")
         if b_el:
-            results = re.search("([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1])
+            results = re.search(
+                "([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1]
+            )
             if results and results.groups()[0]:
                 date = results.groups()[0] + " " + datetime.today().strftime("%Y")
-                data["bins"].append({
-                    "type": "Recycling",
-                    "collectionDate": get_next_occurrence_from_day_month(datetime.strptime(date, "%a %d %b %Y"))
-                    .strftime(date_format)
-                })
+                data["bins"].append(
+                    {
+                        "type": "Recycling",
+                        "collectionDate": get_next_occurrence_from_day_month(
+                            datetime.strptime(date, "%a %d %b %Y")
+                        ).strftime(date_format),
+                    }
+                )
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)

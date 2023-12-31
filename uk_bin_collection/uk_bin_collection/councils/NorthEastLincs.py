@@ -1,8 +1,7 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import date_format
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -21,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Get list items that can be seen on page
         for element in soup.find_all(
-                "li", {"class": "list-group-item p-0 p-3 bin-collection-item"}
+            "li", {"class": "list-group-item p-0 p-3 bin-collection-item"}
         ):
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]
@@ -37,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Get hidden list items too
         for element in soup.find_all(
-                "li", {"class": "list-group-item p-0 p-3 bin-collection-item d-none"}
+            "li", {"class": "list-group-item p-0 p-3 bin-collection-item d-none"}
         ):
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]

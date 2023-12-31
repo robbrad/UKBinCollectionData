@@ -6,8 +6,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from selenium.webdriver.common.keys import Keys
 
 
@@ -75,12 +74,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
             date_elements = collectionDiv.find_all("li")
             for date_element in date_elements:
-                date_string = date_element.find("span").text.split(' ')[1]
-                collection_date = datetime.strptime(date_string, "%d/%m/%Y").strftime(date_format)
+                date_string = date_element.find("span").text.split(" ")[1]
+                collection_date = datetime.strptime(date_string, "%d/%m/%Y").strftime(
+                    date_format
+                )
 
-                data["bins"].append({
-                    "type": re.sub(r'[^a-zA-Z0-9,\s]', '', bin_type).strip(),
-                    "collectionDate": collection_date
-                })
+                data["bins"].append(
+                    {
+                        "type": re.sub(r"[^a-zA-Z0-9,\s]", "", bin_type).strip(),
+                        "collectionDate": collection_date,
+                    }
+                )
 
         return data

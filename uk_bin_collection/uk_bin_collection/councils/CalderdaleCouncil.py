@@ -2,8 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
@@ -15,6 +14,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import time
+
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -47,8 +47,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         postcode.send_keys(user_postcode)
         postcode_search_btn = wait.until(
-            EC.element_to_be_clickable((By.CLASS_NAME, 'searchbox_submit'))
-        )     
+            EC.element_to_be_clickable((By.CLASS_NAME, "searchbox_submit"))
+        )
         postcode_search_btn.send_keys(Keys.ENTER)
         # Wait for the 'Select your property' dropdown to appear and select the first result
         dropdown = wait.until(EC.element_to_be_clickable((By.ID, "uprn")))
@@ -57,16 +57,14 @@ class CouncilClass(AbstractGetBinDataClass):
         # (Index 0 is "Make a selection from the list")
         dropdownSelect = Select(dropdown)
         dropdownSelect.select_by_value(str(user_uprn))
-        checkbox = wait.until(EC.presence_of_element_located((By.ID, 'gdprTerms')))
+        checkbox = wait.until(EC.presence_of_element_located((By.ID, "gdprTerms")))
         checkbox.send_keys(Keys.SPACE)
         get_bin_data_btn = wait.until(
-            EC.element_to_be_clickable((By.CLASS_NAME, 'searchbox_submit'))
-        )     
+            EC.element_to_be_clickable((By.CLASS_NAME, "searchbox_submit"))
+        )
         get_bin_data_btn.send_keys(Keys.ENTER)
         # Make a BS4 object
-        results = wait.until(
-            EC.presence_of_element_located((By.ID, 'collection'))
-        )
+        results = wait.until(EC.presence_of_element_located((By.ID, "collection")))
         soup = BeautifulSoup(driver.page_source, features="html.parser")
         soup.prettify()
 
@@ -89,15 +87,19 @@ class CouncilClass(AbstractGetBinDataClass):
                 for p in bin_info[2].find_all("p"):
                     if "your next collection" in p.get_text(strip=True):
                         collection_date = datetime.strptime(
-                            " ".join(p.get_text(strip=True).replace("will be your next collection.", "").split()),
-                            "%A %d %B %Y"
+                            " ".join(
+                                p.get_text(strip=True)
+                                .replace("will be your next collection.", "")
+                                .split()
+                            ),
+                            "%A %d %B %Y",
                         )
 
                 if collection_date != "":
                     # Append the bin type and date to the data dict
                     dict_data = {
                         "type": bin_type,
-                        "collectionDate": collection_date.strftime(date_format)
+                        "collectionDate": collection_date.strftime(date_format),
                     }
                     data["bins"].append(dict_data)
 
