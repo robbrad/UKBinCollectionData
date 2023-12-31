@@ -10,6 +10,7 @@ import time
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -18,7 +19,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
@@ -43,9 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         pc_search_box.send_keys(user_postcode)
 
-        pcsearch_btn = wait.until(
-            EC.element_to_be_clickable((By.ID, "btnSubmit"))
-        )
+        pcsearch_btn = wait.until(EC.element_to_be_clickable((By.ID, "btnSubmit")))
 
         pcsearch_btn.click()
 
@@ -75,7 +73,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # For each bin section, get the text and the list elements
         for item in sections:
             words = item.find_next("strong").text.split()[2:4]
-            bin_type = ' '.join(words).capitalize()
+            bin_type = " ".join(words).capitalize()
             date_list = item.find_all("p")
             for d in date_list:
                 next_collection = datetime.strptime(d.text.strip(), "%A %d %B %Y")
@@ -93,4 +91,3 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         return data
-

@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -22,20 +21,26 @@ class CouncilClass(AbstractGetBinDataClass):
         # Make SOAP Request
         response = requests.post(
             "https://ccdc.opendata.onl/DynamicCall.dll",
-            data="Method=CollectionDates&Postcode=" + user_postcode + "&UPRN=" + user_uprn,
+            data="Method=CollectionDates&Postcode="
+            + user_postcode
+            + "&UPRN="
+            + user_uprn,
             headers={
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Referer": "https://ccdc.opendata.onl/CCDC_WasteCollection",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36"
-            }
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+            },
         )
 
         # Make a BS4 object
         soup = BeautifulSoup(response.text, "xml")
         soup.prettify()
 
-        if soup.find("ErrorDescription") and soup.find("ErrorDescription").get_text(
-                strip=True) == "No results returned":
+        if (
+            soup.find("ErrorDescription")
+            and soup.find("ErrorDescription").get_text(strip=True)
+            == "No results returned"
+        ):
             raise ValueError("No collection data found for provided Postcode & UPRN.")
 
         data = {"bins": []}
@@ -44,11 +49,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for i in range(len(collections)):
             dict_data = {
-                "type": collections[i].Service.get_text().replace("Collection Service", "").strip(),
+                "type": collections[i]
+                .Service.get_text()
+                .replace("Collection Service", "")
+                .strip(),
                 "collectionDate": datetime.strptime(
-                    collections[i].Date.get_text(),
-                    "%d/%m/%Y %H:%M:%S"
-                ).strftime(date_format)
+                    collections[i].Date.get_text(), "%d/%m/%Y %H:%M:%S"
+                ).strftime(date_format),
             }
             data["bins"].append(dict_data)
 

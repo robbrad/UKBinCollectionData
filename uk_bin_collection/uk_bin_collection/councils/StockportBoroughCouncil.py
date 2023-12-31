@@ -2,8 +2,7 @@
 # data from Warick District Council Bins Data
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -23,7 +22,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for bins in soup.select('div[class*="service-item"]'):
             bin_type = bins.div.h3.text.strip()
-            binCollection = datetime.strptime(bins.select("div > p")[1].get_text(strip=True), "%A, %d %B %Y")
+            binCollection = datetime.strptime(
+                bins.select("div > p")[1].get_text(strip=True), "%A, %d %B %Y"
+            )
             # binImage = "https://myaccount.stockport.gov.uk" + bins.img['src']
 
             # batteries don't have a service date or other
@@ -31,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
             if binCollection:
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": binCollection.strftime(date_format)
+                    "collectionDate": binCollection.strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 

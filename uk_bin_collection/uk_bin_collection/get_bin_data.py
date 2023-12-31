@@ -32,6 +32,7 @@ def setup_logging(logging_config, logger_name):
     except Exception as exp:
         raise exp
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 
 
@@ -58,22 +59,43 @@ class AbstractGetBinDataClass(ABC):
         dev_mode = kwargs.get("dev_mode", False)
         council_module_str = kwargs.get("council_module_str", None)
         if (
-                not skip_get_url or skip_get_url is False
+            not skip_get_url or skip_get_url is False
         ):  # we will not use the generic way to get data - needs a get data in the council class itself
             page = self.get_data(address_url)
             bin_data_dict = self.parse_data(
-                page, postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, web_driver=this_web_driver, url=this_url
+                page,
+                postcode=this_postcode,
+                paon=this_paon,
+                uprn=this_uprn,
+                usrn=this_usrn,
+                web_driver=this_web_driver,
+                url=this_url,
             )
             json_output = self.output_json(bin_data_dict)
         else:
             bin_data_dict = self.parse_data(
-                "", postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, web_driver=this_web_driver, url=this_url
+                "",
+                postcode=this_postcode,
+                paon=this_paon,
+                uprn=this_uprn,
+                usrn=this_usrn,
+                web_driver=this_web_driver,
+                url=this_url,
             )
             json_output = self.output_json(bin_data_dict)
 
         # if dev mode create/update council's entry in the input.json
         if dev_mode is not None and dev_mode is True:
-            update_input_json(council_module_str, this_url, postcode=this_postcode, paon=this_paon, uprn=this_uprn, usrn=this_usrn, web_driver=this_web_driver, skip_get_url=skip_get_url)
+            update_input_json(
+                council_module_str,
+                this_url,
+                postcode=this_postcode,
+                paon=this_paon,
+                uprn=this_uprn,
+                usrn=this_usrn,
+                web_driver=this_web_driver,
+                skip_get_url=skip_get_url,
+            )
 
         return json_output
 

@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -49,7 +48,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
             else:
                 # Get the date from the th element
-                date = datetime.strptime(row.find("th").get_text().strip(), "%A %d %B %Y").strftime(date_format)
+                date = datetime.strptime(
+                    row.find("th").get_text().strip(), "%A %d %B %Y"
+                ).strftime(date_format)
 
                 # Get the bin types from the td elements and filter out the empty ones
                 bin_types = filter(lambda td: td.find("img"), row.find_all("td"))

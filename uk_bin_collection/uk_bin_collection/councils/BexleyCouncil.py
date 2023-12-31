@@ -27,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         user_uprn = kwargs.get("uprn")
-        user_paon = kwargs.get("paon") 
+        user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
 
@@ -41,11 +41,12 @@ class CouncilClass(AbstractGetBinDataClass):
             EC.presence_of_element_located((By.ID, "fillform-frame-1"))
         )
 
-
         driver.switch_to.frame(iframe_presense)
         wait = WebDriverWait(driver, 60)
         start_btn = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button/span[contains(text(), 'Next')]"))
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button/span[contains(text(), 'Next')]")
+            )
         )
 
         start_btn.click()
@@ -67,8 +68,10 @@ class CouncilClass(AbstractGetBinDataClass):
         dropdown_options.click()
         time.sleep(1)
         dropdown_input = wait.until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="s2id_autogen1_search"]'))
-        )        
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="s2id_autogen1_search"]')
+            )
+        )
         time.sleep(1)
         dropdown_input.send_keys(user_paon)
         dropdown_input.send_keys(Keys.ENTER)
@@ -77,33 +80,41 @@ class CouncilClass(AbstractGetBinDataClass):
             EC.presence_of_element_located((By.CLASS_NAME, "found-content"))
         )
         finish_btn = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button/span[contains(text(), 'Next')]"))
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button/span[contains(text(), 'Next')]")
+            )
         )
         finish_btn.click()
         final_page = wait.until(
             EC.presence_of_element_located((By.CLASS_NAME, "waste-header-container"))
         )
 
-        
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
         bin_fields = soup.find_all("div", class_="waste-panel-container")
         # Define your XPath
 
         for bin in bin_fields:
-
             # Extract h3 text from the current element
-            h3_text = bin.find('h3', class_='container-name').get_text(strip=True) if bin.find('h3', class_='container-name') else None
+            h3_text = (
+                bin.find("h3", class_="container-name").get_text(strip=True)
+                if bin.find("h3", class_="container-name")
+                else None
+            )
 
-            date_text = bin.find('p', class_='container-status').get_text(strip=True) if bin.find('p', class_='container-status') else None
+            date_text = (
+                bin.find("p", class_="container-status").get_text(strip=True)
+                if bin.find("p", class_="container-status")
+                else None
+            )
 
             if h3_text and date_text:
                 # Parse the date using the appropriate format
                 parsed_date = datetime.strptime(date_text, "%A %d %B")
-                
+
                 # Assuming the current year is used for the collection date
                 current_year = datetime.now().year
-                
+
                 # If the parsed date is in the past, assume it's for the next year
                 if parsed_date < datetime.now():
                     current_year += 1
@@ -111,7 +122,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 data["bins"].append(
                     {
                         "type": h3_text,
-                        "collectionDate": parsed_date.replace(year=current_year).strftime("%d/%m/%Y")
+                        "collectionDate": parsed_date.replace(
+                            year=current_year
+                        ).strftime("%d/%m/%Y"),
                     }
                 )
 

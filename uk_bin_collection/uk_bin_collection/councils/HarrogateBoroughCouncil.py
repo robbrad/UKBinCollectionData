@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -13,22 +12,21 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
         data = {"bins": []}
 
         headers = {
-            'accept-language': 'en-GB,en;q=0.9',
-            'cache-control': 'no-cache',
-            }
-
-        req_data = {
-            'uprn': user_uprn,
+            "accept-language": "en-GB,en;q=0.9",
+            "cache-control": "no-cache",
         }
 
-        url = f'https://secure.harrogate.gov.uk/inmyarea/Property/?uprn={user_uprn}'
+        req_data = {
+            "uprn": user_uprn,
+        }
+
+        url = f"https://secure.harrogate.gov.uk/inmyarea/Property/?uprn={user_uprn}"
 
         requests.packages.urllib3.disable_warnings()
         response = requests.post(url, headers=headers)
@@ -42,10 +40,10 @@ class CouncilClass(AbstractGetBinDataClass):
         table = soup.find_all("table", {"class": "hbcRounds"})[1]
 
         # For each bin section, get the text and the list elements
-        for row in table.find_all('tr'):
-            bin_type = row.find('th').text
-            td = row.find('td')
-            for span in td.find_all('span'):
+        for row in table.find_all("tr"):
+            bin_type = row.find("th").text
+            td = row.find("td")
+            for span in td.find_all("span"):
                 span.extract()
             collectionDate = td.text.strip()
             next_collection = datetime.strptime(collectionDate, "%a %d %b %Y")

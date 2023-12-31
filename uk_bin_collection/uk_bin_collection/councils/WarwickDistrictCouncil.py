@@ -2,8 +2,7 @@
 # from Warick District Council Bins Data
 
 from bs4 import BeautifulSoup
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber

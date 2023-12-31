@@ -28,7 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         house_number = kwargs.get("paon")
         postcode = kwargs.get("postcode")
-        full_address = f"{house_number}, {postcode}" 
+        full_address = f"{house_number}, {postcode}"
         web_driver = kwargs.get("web_driver")
 
         # Create Selenium webdriver
@@ -48,7 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
         )
         address_entry_field.click()
         address_entry_field.send_keys(Keys.BACKSPACE)
-        address_entry_field.send_keys(str(full_address[len(full_address)-1]))
+        address_entry_field.send_keys(str(full_address[len(full_address) - 1]))
 
         first_found_address = wait.until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="dropdown-element-19"]/ul'))
@@ -56,38 +56,43 @@ class CouncilClass(AbstractGetBinDataClass):
 
         first_found_address.click()
         # Wait for the 'Select your property' dropdown to appear and select the first result
-        next_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//lightning-button/button")))
+        next_btn = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//lightning-button/button"))
+        )
         next_btn.click()
         bin_data = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Container')]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[contains(text(), 'Container')]")
+            )
         )
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-        rows = soup.find_all('tr', class_='slds-hint-parent')
+        rows = soup.find_all("tr", class_="slds-hint-parent")
         current_year = datetime.now().year
 
         for row in rows:
-            columns = row.find_all('td')
+            columns = row.find_all("td")
             if columns:
-                container_type = row.find('th').text.strip()
-                collection_day = re.sub(r'[^a-zA-Z0-9,\s]', '', columns[0].get_text()).strip()
+                container_type = row.find("th").text.strip()
+                collection_day = re.sub(
+                    r"[^a-zA-Z0-9,\s]", "", columns[0].get_text()
+                ).strip()
 
                 # Parse the date from the string
-                parsed_date = datetime.strptime(collection_day, '%a, %d %B')
-                if parsed_date < datetime(parsed_date.year, parsed_date.month, parsed_date.day):
+                parsed_date = datetime.strptime(collection_day, "%a, %d %B")
+                if parsed_date < datetime(
+                    parsed_date.year, parsed_date.month, parsed_date.day
+                ):
                     parsed_date = parsed_date.replace(year=current_year + 1)
                 else:
                     parsed_date = parsed_date.replace(year=current_year)
                 # Format the date as %d/%m/%Y
-                formatted_date = parsed_date.strftime('%d/%m/%Y')
-                
+                formatted_date = parsed_date.strftime("%d/%m/%Y")
+
                 # Add the bin type and collection date to the 'data' dictionary
                 data["bins"].append(
-                    {
-                        "type": container_type,
-                        "collectionDate": formatted_date
-                    }
+                    {"type": container_type, "collectionDate": formatted_date}
                 )
 
         return data

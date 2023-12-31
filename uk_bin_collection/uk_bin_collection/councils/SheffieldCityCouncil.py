@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -34,8 +33,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     "td", {"class": lambda L: L and L.startswith("next-service")}
                 )[0].get_text(strip=True)
                 collectionDate = collectionDatesRawData[
-                                 16: len(collectionDatesRawData)
-                                 ].split(",")
+                    16 : len(collectionDatesRawData)
+                ].split(",")
                 bin_type = row.find_all(
                     "td", {"class": lambda L: L and L.startswith("service-name")}
                 )[0].h4.get_text(strip=True)
@@ -44,7 +43,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     # Make each Bin element in the JSON
                     dict_data = {
                         "type": bin_type,
-                        "collectionDate": datetime.strptime(collectDate.strip(), "%d %b %Y").strftime(date_format),
+                        "collectionDate": datetime.strptime(
+                            collectDate.strip(), "%d %b %Y"
+                        ).strftime(date_format),
                     }
 
                     # Add data to the main JSON Wrapper

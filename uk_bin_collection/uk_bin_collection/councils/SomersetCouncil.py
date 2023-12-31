@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -20,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) "
-                          "Chrome/87.0.4280.141 Safari/537.36"
+            "Chrome/87.0.4280.141 Safari/537.36"
         }
 
         requests.packages.urllib3.disable_warnings()

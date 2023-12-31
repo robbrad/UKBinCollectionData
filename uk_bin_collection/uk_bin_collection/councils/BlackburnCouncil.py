@@ -4,14 +4,14 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 import ssl
 import urllib3
 import logging
 
-class CustomHttpAdapter (requests.adapters.HTTPAdapter):
-    '''Transport adapter" that allows us to use custom ssl_context.'''
+
+class CustomHttpAdapter(requests.adapters.HTTPAdapter):
+    """Transport adapter" that allows us to use custom ssl_context."""
 
     def __init__(self, ssl_context=None, **kwargs):
         self.ssl_context = ssl_context
@@ -19,8 +19,11 @@ class CustomHttpAdapter (requests.adapters.HTTPAdapter):
 
     def init_poolmanager(self, connections, maxsize, block=False):
         self.poolmanager = urllib3.poolmanager.PoolManager(
-            num_pools=connections, maxsize=maxsize,
-            block=block, ssl_context=self.ssl_context)
+            num_pools=connections,
+            maxsize=maxsize,
+            block=block,
+            ssl_context=self.ssl_context,
+        )
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -45,14 +48,13 @@ class CouncilClass(AbstractGetBinDataClass):
         driver = create_webdriver(web_driver)
         driver.get(url)
 
-        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        soup = BeautifulSoup(driver.page_source, "html.parser")
 
         # Find the <pre> tag that contains the JSON data
-        pre_tag = soup.find('pre')
+        pre_tag = soup.find("pre")
 
         if pre_tag:
             # Extract the text content within the <pre> tag
-
 
             # Return JSON from response and loop through collections
             json_result = json.loads(pre_tag.contents[0])
@@ -69,9 +71,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     # Work out the most recent collection date to display
                     if (
-                            datetime.today().date()
-                            <= current_collection_date.date()
-                            < next_collection_date.date()
+                        datetime.today().date()
+                        <= current_collection_date.date()
+                        < next_collection_date.date()
                     ):
                         collection_date = current_collection_date
                     else:
@@ -84,7 +86,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     data["bins"].append(dict_data)
 
                     data["bins"].sort(
-                        key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+                        key=lambda x: datetime.strptime(
+                            x.get("collectionDate"), date_format
+                        )
                     )
 
             return data

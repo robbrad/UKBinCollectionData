@@ -5,8 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -47,7 +46,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Wait for the 'Select address' dropdown to appear and select option matching UPRN
         dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ctl00_ContentPlaceHolder1_FF2924DDL"))
+            EC.presence_of_element_located(
+                (By.ID, "ctl00_ContentPlaceHolder1_FF2924DDL")
+            )
         )
         # Create a 'Select' for it, then select the matching URPN option
         dropdownSelect = Select(dropdown)
@@ -55,7 +56,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Wait for the submit button to appear, then click it to get the collection dates
         submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ctl00_ContentPlaceHolder1_btnSubmit"))
+            EC.presence_of_element_located(
+                (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+            )
         )
         submit.click()
 
@@ -64,13 +67,18 @@ class CouncilClass(AbstractGetBinDataClass):
         # Quit Selenium webdriver to release session
         driver.quit()
 
-        bin_rows = soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation") \
-            .find("div", {"class": "row"}).find_all("div", {"class": "row"})
+        bin_rows = (
+            soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
+            .find("div", {"class": "row"})
+            .find_all("div", {"class": "row"})
+        )
         if bin_rows:
             for bin_row in bin_rows:
                 bin_data = bin_row.find_all("div")
                 if bin_data and bin_data[0] and bin_data[1]:
-                    collection_date = datetime.strptime(bin_data[0].get_text(strip=True), "%A%d %B, %Y")
+                    collection_date = datetime.strptime(
+                        bin_data[0].get_text(strip=True), "%A%d %B, %Y"
+                    )
                     dict_data = {
                         "type": bin_data[1].get_text(strip=True),
                         "collectionDate": collection_date.strftime(date_format),

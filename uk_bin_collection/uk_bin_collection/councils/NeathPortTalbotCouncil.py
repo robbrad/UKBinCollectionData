@@ -6,8 +6,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -32,8 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Accept cookies banner
         cookieAccept = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "ccc-notify-accept"))
+            EC.presence_of_element_located((By.ID, "ccc-notify-accept"))
         )
         cookieAccept.click()
 
@@ -47,7 +45,11 @@ class CouncilClass(AbstractGetBinDataClass):
         # Click search button
         findAddress = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_btnFindAddress"))
+                (
+                    By.ID,
+                    "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_btnFindAddress",
+                )
+            )
         )
         findAddress.click()
 
@@ -56,22 +58,30 @@ class CouncilClass(AbstractGetBinDataClass):
         # Wait for the 'Select address' dropdown to appear and select option matching UPRN
         dropdown = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located(
-                (By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_ddlAddressLookup"))
+                (
+                    By.ID,
+                    "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_ddlAddressLookup",
+                )
+            )
         )
         # Create a 'Select' for it, then select the matching URPN option
         dropdownSelect = Select(dropdown)
         dropdownSelect.select_by_value(user_uprn)
 
         # Remove back to top button if exists
-        driver.execute_script("""
+        driver.execute_script(
+            """
         if (document.contains(document.querySelector(".backtotop"))) {
             document.querySelector(".backtotop").remove();
         }
-        """)
+        """
+        )
 
         # Wait for the submit button to appear, then click it to get the collection dates
         submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_btnDisplay"))
+            EC.presence_of_element_located(
+                (By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_btnDisplay")
+            )
         )
         submit.click()
 
@@ -83,24 +93,32 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get the property details
         property_details = soup.find(
             "div",
-            {"id": "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_divPropertyDetails"}
+            {"id": "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_divPropertyDetails"},
         )
 
         # Get the dates
         for date in property_details.find_all("h2"):
             if date.get_text(strip=True) != "Bank Holidays":
                 bin_date = datetime.strptime(
-                    date.get_text(strip=True).replace('&nbsp', ' ') + " " + datetime.now().strftime("%Y"),
-                    "%A, %d %B %Y"
+                    date.get_text(strip=True).replace("&nbsp", " ")
+                    + " "
+                    + datetime.now().strftime("%Y"),
+                    "%A, %d %B %Y",
                 )
                 bin_types_wrapper = date.find_next_sibling("div")
-                for bin_type_wrapper in bin_types_wrapper.find_all("div", {"class": "card"}):
+                for bin_type_wrapper in bin_types_wrapper.find_all(
+                    "div", {"class": "card"}
+                ):
                     if bin_date and bin_type_wrapper:
                         bin_type = bin_type_wrapper.find("a").get_text(strip=True)
-                        bin_type += " (" + bin_type_wrapper.find("span").get_text(strip=True) + ")"
+                        bin_type += (
+                            " ("
+                            + bin_type_wrapper.find("span").get_text(strip=True)
+                            + ")"
+                        )
                         dict_data = {
                             "type": bin_type,
-                            "collectionDate": bin_date.strftime(date_format)
+                            "collectionDate": bin_date.strftime(date_format),
                         }
                         data["bins"].append(dict_data)
 

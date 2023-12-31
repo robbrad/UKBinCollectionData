@@ -1,6 +1,5 @@
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -37,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
         )
         if response.status_code != 200:
             raise ValueError("No bin data found for provided UPRN.")
-        json_data = json.loads(response.text.encode().decode('utf-8-sig'))
+        json_data = json.loads(response.text.encode().decode("utf-8-sig"))
 
         data = {"bins": []}
         for c in json_data["Collections"]:
@@ -45,12 +44,14 @@ class CouncilClass(AbstractGetBinDataClass):
             if bin_type.lower() != "textiles bag":
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": get_next_occurrence_from_day_month(datetime.strptime(
-                        c["BinCollectionDate"].replace(" (*)", "").strip()
-                        + " "
-                        + datetime.now().strftime("%Y"),
-                        "%A %d %B %Y",
-                    )).strftime(date_format),
+                    "collectionDate": get_next_occurrence_from_day_month(
+                        datetime.strptime(
+                            c["BinCollectionDate"].replace(" (*)", "").strip()
+                            + " "
+                            + datetime.now().strftime("%Y"),
+                            "%A %d %B %Y",
+                        )
+                    ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 

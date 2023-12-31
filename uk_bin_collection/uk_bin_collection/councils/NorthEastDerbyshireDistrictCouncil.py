@@ -58,38 +58,44 @@ class CouncilClass(AbstractGetBinDataClass):
         # (Index 0 is "Make a selection from the list")
         drop_down_values = Select(dropdown)
         option_element = wait.until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, f'option.lookup-option[value="{str(user_uprn)}"]'))
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, f'option.lookup-option[value="{str(user_uprn)}"]')
+            )
         )
 
         drop_down_values.select_by_value(str(user_uprn))
 
         # Wait for the 'View more' link to appear, then click it to get the full set of dates
         h3_element = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//th[contains(text(), 'Waste Collection')]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//th[contains(text(), 'Waste Collection')]")
+            )
         )
 
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-        target_h3 = soup.find('h3', string='Collection Details')
-        tables_after_h3 = target_h3.parent.parent.find_next('table')
-    
+        target_h3 = soup.find("h3", string="Collection Details")
+        tables_after_h3 = target_h3.parent.parent.find_next("table")
+
         table_rows = tables_after_h3.find_all("tr")
         for row in table_rows:
             rowdata = row.find_all("td")
             if len(rowdata) == 3:
-                labels = rowdata[0].find_all('label')
+                labels = rowdata[0].find_all("label")
                 # Strip the day (i.e., Monday) out of the collection date string for parsing
                 if len(labels) >= 2:
                     date_label = labels[1]
                     datestring = date_label.text.strip()
-                
+
                 # Add the bin type and collection date to the 'data' dictionary
                 data["bins"].append(
                     {
                         "type": rowdata[2].text.strip(),
                         "collectionDate": datetime.strptime(
                             datestring, "%d/%m/%Y"
-                        ).strftime(date_format),  # Format the date as needed
+                        ).strftime(
+                            date_format
+                        ),  # Format the date as needed
                     }
                 )
 

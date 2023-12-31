@@ -3,7 +3,10 @@ import importlib
 import os
 import sys
 import logging
-from uk_bin_collection.uk_bin_collection.get_bin_data import setup_logging, LOGGING_CONFIG
+from uk_bin_collection.uk_bin_collection.get_bin_data import (
+    setup_logging,
+    LOGGING_CONFIG,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -16,7 +19,9 @@ sys.path.append(module_path)
 class UKBinCollectionApp:
     def __init__(self):
         self.parser = argparse.ArgumentParser(description="")
-        self.parser.add_argument("module", type=str, help="Name of council module to use")
+        self.parser.add_argument(
+            "module", type=str, help="Name of council module to use"
+        )
         self.parser.add_argument(
             "URL", type=str, help="URL to parse - should be wrapped in double quotes"
         )
@@ -25,7 +30,7 @@ class UKBinCollectionApp:
             "--postcode",
             type=str,
             help="Postcode to parse - should include a space and be wrapped in "
-                 "double-quotes",
+            "double-quotes",
             required=False,
         )
         self.parser.add_argument(
@@ -38,7 +43,9 @@ class UKBinCollectionApp:
             help="Skips the generic get_url - uses one in council class",
             required=False,
         )
-        self.parser.add_argument("-u", "--uprn", type=str, help="UPRN to parse", required=False)
+        self.parser.add_argument(
+            "-u", "--uprn", type=str, help="UPRN to parse", required=False
+        )
         self.parser.add_argument(
             "-w",
             "--web_driver",

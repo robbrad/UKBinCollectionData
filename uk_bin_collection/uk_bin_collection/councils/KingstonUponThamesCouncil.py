@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -23,15 +22,17 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             for row in rows:
                 if row.find("dt").get_text().strip().lower() == "next collection":
-                    collection_date = (
-                        remove_ordinal_indicator_from_date_string(row.find("dd").get_text()).strip()
-                    )
+                    collection_date = remove_ordinal_indicator_from_date_string(
+                        row.find("dd").get_text()
+                    ).strip()
                     dict_data = {
                         "type": c.get_text().strip().capitalize(),
-                        "collectionDate": get_next_occurrence_from_day_month(datetime.strptime(
-                            collection_date + " " + datetime.now().strftime("%Y"),
-                            "%A, %d %B %Y",
-                        )).strftime(date_format),
+                        "collectionDate": get_next_occurrence_from_day_month(
+                            datetime.strptime(
+                                collection_date + " " + datetime.now().strftime("%Y"),
+                                "%A, %d %B %Y",
+                            )
+                        ).strftime(date_format),
                     }
                     data["bins"].append(dict_data)
 

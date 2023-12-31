@@ -309,7 +309,10 @@
     "GuildfordCouncil": {
         "skip_get_url": true,
         "uprn": "100061372691",
-        "url": "https://my.guildford.gov.uk/customers/s/sfsites/aura?r=15&other.BinScheduleDisplayCmp.GetBinSchedules=1",
+        "url": "https://my.guildford.gov.uk/customers/s/view-bin-collections",
+        "postcode": "GU3 1AH",
+        "web_driver": "http://selenium:4444",
+        "house_number": "THE LODGE, PUTTENHAM HILL HOUSE, PUTTENHAM HILL, PUTTENHAM, GUILDFORD, GU3 1AH",
         "wiki_name": "Guildford Council",
         "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7AM, else the date will be in 'previousCollectionDate'. To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },

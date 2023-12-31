@@ -3,8 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
@@ -16,6 +15,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import time
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -24,15 +24,13 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-
-
     def parse_data(self, page: str, **kwargs) -> dict:
         data = {"bins": []}
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
 
         uprn = kwargs.get("uprn")
         postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")         
+        user_paon = kwargs.get("paon")
         web_driver = kwargs.get("web_driver")
         driver = create_webdriver(web_driver)
         driver.get(kwargs.get("url"))
@@ -45,16 +43,18 @@ class CouncilClass(AbstractGetBinDataClass):
         post_code_search.send_keys(postcode)
 
         submit_btn = wait.until(
-            EC.presence_of_element_located((By.CLASS_NAME, '__submitButton'))
+            EC.presence_of_element_located((By.CLASS_NAME, "__submitButton"))
         )
 
         submit_btn.send_keys(Keys.ENTER)
 
         address_results = wait.until(
-            EC.presence_of_element_located((By.CLASS_NAME, 'directories-table'))
+            EC.presence_of_element_located((By.CLASS_NAME, "directories-table"))
         )
         address_link = wait.until(
-            EC.presence_of_element_located((By.XPATH, f"//a[contains(text(), '{user_paon}')]"))
+            EC.presence_of_element_located(
+                (By.XPATH, f"//a[contains(text(), '{user_paon}')]")
+            )
         )
 
         address_link.send_keys(Keys.ENTER)
@@ -67,7 +67,9 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
 
         # Get collection calendar
-        calendar_urls = soup.find_all("a", string=re.compile(r"view or download the collection calendar"))
+        calendar_urls = soup.find_all(
+            "a", string=re.compile(r"view or download the collection calendar")
+        )
         if len(calendar_urls) > 0:
             requests.packages.urllib3.disable_warnings()
             response = requests.get(calendar_urls[0].get("href"), headers=headers)
@@ -79,14 +81,21 @@ class CouncilClass(AbstractGetBinDataClass):
             # Loop the months
             for month in soup.find_all("div", {"class": "usercontent"}):
                 year = ""
-                if month.find("h2") and 'calendar' not in month.find("h2").get_text(strip=True):
-                    year = datetime.strptime(month.find("h2").get_text(strip=True), "%B %Y").strftime("%Y")
+                if month.find("h2") and "calendar" not in month.find("h2").get_text(
+                    strip=True
+                ):
+                    year = datetime.strptime(
+                        month.find("h2").get_text(strip=True), "%B %Y"
+                    ).strftime("%Y")
                 elif month.find("h3"):
-                    year = datetime.strptime(month.find("h3").get_text(strip=True), "%B %Y").strftime("%Y")
+                    year = datetime.strptime(
+                        month.find("h3").get_text(strip=True), "%B %Y"
+                    ).strftime("%Y")
                 if year != "":
                     for row in month.find_all("li"):
                         results = re.search(
-                            "([A-Za-z]+ \\d\\d? [A-Za-z]+): (.+)", row.get_text(strip=True)
+                            "([A-Za-z]+ \\d\\d? [A-Za-z]+): (.+)",
+                            row.get_text(strip=True),
                         )
                         if results:
                             dict_data = {

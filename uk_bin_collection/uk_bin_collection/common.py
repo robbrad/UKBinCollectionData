@@ -185,7 +185,9 @@ def get_dates_every_x_days(start: datetime, step: int, amount: int = 8) -> list:
 def get_next_occurrence_from_day_month(date: datetime) -> datetime:
     day = datetime.now().date().strftime("%d")
     month = datetime.now().date().strftime("%m")
-    if date.strftime("%m") < month or (date.strftime("%m") == month and date.strftime("%d") < day):
+    if date.strftime("%m") < month or (
+        date.strftime("%m") == month and date.strftime("%d") < day
+    ):
         date = pd.to_datetime(date) + pd.DateOffset(years=1)
     return date
 
@@ -209,7 +211,7 @@ def update_input_json(council: str, url: str, **kwargs):
     cwd = os.getcwd()
     input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
     if os.path.exists(input_file_path):
-        with open(input_file_path, 'r') as f:
+        with open(input_file_path, "r") as f:
             data = json.load(f)
             if council not in data:
                 data[council] = {"wiki_name": council}
@@ -227,10 +229,12 @@ def update_input_json(council: str, url: str, **kwargs):
                 data[council]["web_driver"] = web_driver
             if skip_get_url is not None:
                 data[council]["skip_get_url"] = skip_get_url
-        with open(input_file_path, 'w') as f:
+        with open(input_file_path, "w") as f:
             f.write(json.dumps(data, sort_keys=True, indent=4))
     else:
-        print("Exception encountered: Unable to update input.json file for the council.")
+        print(
+            "Exception encountered: Unable to update input.json file for the council."
+        )
         print(
             "Please check you're running developer mode from either the UKBinCollectionData "
             "or uk_bin_collection/uk_bin_collection/ directories."
@@ -259,4 +263,6 @@ def create_webdriver(web_driver) -> webdriver.Chrome:
     if web_driver is not None:
         return webdriver.Remote(command_executor=web_driver, options=options)
     # Return a local Selenium webdriver
-    return webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    return webdriver.Chrome(
+        service=ChromeService(ChromeDriverManager().install()), options=options
+    )

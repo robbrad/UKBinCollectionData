@@ -5,8 +5,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -47,7 +46,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Wait for the 'Select address' dropdown to appear and select option matching UPRN
         dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL"))
+            EC.presence_of_element_located(
+                (By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL")
+            )
         )
         # Create a 'Select' for it, then select the matching URPN option
         dropdownSelect = Select(dropdown)
@@ -55,7 +56,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Wait for the submit button to appear, then click it to get the collection dates
         submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "ctl00_ContentPlaceHolder1_btnSubmit"))
+            EC.presence_of_element_located(
+                (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+            )
         )
         submit.click()
 
@@ -75,7 +78,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     bin_type = cells[0].get_text(strip=True)
                     # Skip header row
                     if bin_type and cells[3] and bin_type != "Bin Type":
-                        collection_date = datetime.strptime(cells[3].get_text(strip=True), "%A, %d %B %Y")
+                        collection_date = datetime.strptime(
+                            cells[3].get_text(strip=True), "%A, %d %B %Y"
+                        )
                         dict_data = {
                             "type": bin_type,
                             "collectionDate": collection_date.strftime(date_format),
@@ -83,7 +88,9 @@ class CouncilClass(AbstractGetBinDataClass):
                         data["bins"].append(dict_data)
 
                         data["bins"].sort(
-                            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+                            key=lambda x: datetime.strptime(
+                                x.get("collectionDate"), "%d/%m/%Y"
+                            )
                         )
 
         return data

@@ -6,8 +6,7 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import date_format
-from uk_bin_collection.uk_bin_collection.get_bin_data import \
-    AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -31,16 +30,21 @@ class CouncilClass(AbstractGetBinDataClass):
             if "Green Bin (Domestic Waste) details:" in str(element):
                 if element.next_sibling.find("br"):
                     collectionInfo = element.next_sibling.find("br").next_element
-            elif "Next collection" in str(element.next_sibling.next_sibling.next_sibling.next_sibling):
+            elif "Next collection" in str(
+                element.next_sibling.next_sibling.next_sibling.next_sibling
+            ):
                 collectionInfo = (
                     element.next_sibling.next_sibling.next_sibling.next_sibling
                 )
 
             if collectionInfo != "" and collectionInfo != "Next collection : n/a":
-                bin_type = str(element)[str(element).find("(") + 1: str(element).find(")")]
+                bin_type = str(element)[
+                    str(element).find("(") + 1 : str(element).find(")")
+                ]
                 collectionDate = str(
                     datetime.strptime(
-                        str(collectionInfo).replace("Next collection : ", ""), "%d-%b-%Y"
+                        str(collectionInfo).replace("Next collection : ", ""),
+                        "%d-%b-%Y",
                     )
                     .date()
                     .strftime(date_format)
