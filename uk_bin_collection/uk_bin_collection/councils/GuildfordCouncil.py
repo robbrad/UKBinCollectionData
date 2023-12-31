@@ -1,8 +1,20 @@
+import re
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import \
     AbstractGetBinDataClass
+
+# This script pulls (in one hit) the data from Bromley Council Bins Data
+import datetime
+from datetime import datetime
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+import time
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -16,55 +28,83 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         uprn = kwargs.get("uprn")
-        check_uprn(uprn)
+        postcode = kwargs.get("postcode")
+        full_address = kwargs.get("paon")
 
-        url = "https://my.guildford.gov.uk/customers/s/sfsites/aura?r=15&other.BinScheduleDisplayCmp.GetBinSchedules=1"
+        url = "https://my.guildford.gov.uk/customers/s/view-bin-collections"
 
-        payload = 'message=%7B%22actions%22%3A%5B%7B%22id%22%3A%22250%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F' \
-                  '%2FBinScheduleDisplayCmpController%2FACTION%24GetBinSchedules%22%2C%22callingDescriptor%22%3A' \
-                  '%22markup%3A%2F%2Fc%3ABinScheduleDisplay%22%2C%22params%22%3A%7B%22database%22%3A%22domestic%22%2C' \
-                  '%22UPRN%22%3A%22' + uprn + '%22%7D%2C%22version%22%3Anull%7D%5D%7D&aura.pageURI=%2Fcustomers%2Fs' \
-                  '%2Fview-bin-collections&aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A' \
-                  '%22MlRqRU5YT3pjWFRNenJranFOMWFjQXlMaWFpdmxPSTZWeEo0bWtiN0hsaXcyNDQuMjAuNC0yLjQxLjQ%22%2C%22app%22' \
-                  '%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce' \
-                  '%3AcommunityApp%22%3A%22AHt2_xNq0mJPYC9ylIE4Ew%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation' \
-                  '%3Ao11ySecondaryLoader%22%3A%22WAlywPtXLxVWA9DxV-jd3A%22%2C%22COMPONENT%40markup%3A%2F' \
-                  '%2Fflowruntime%3AflowRuntimeForFlexiPage%22%3A%22yd5ERlPoICEJEMf8W3eIXQ%22%7D%2C%22dn%22%3A%5B%5D' \
-                  '%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D&aura.token=null'
+        web_driver = kwargs.get("web_driver")
 
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Cookie': 'CookieConsentPolicy=0:1; LSKey-c$CookieConsentPolicy=0:1;'
-        }
+        driver = create_webdriver(web_driver)
+        driver.get(kwargs.get("url"))
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        wait = WebDriverWait(driver, 120)
+        post_code_search = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//input[contains(@class, 'slds-input')]"))
+        )
 
-        if response.status_code != 200:
-            raise SystemError("Error retrieving data! Please try again or raise an issue on GitHub!")
+        post_code_search.send_keys(postcode)
 
-        results = json.loads(response.text)
+        post_code_submit_btn = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@class,'slds-button')]"))
+        )
+        post_code_submit_btn.send_keys(Keys.ENTER)
 
-        if results["actions"][0]["state"] == "ERROR":
-            raise ValueError("No collection data found for provided UPRN.")
+        # Locate the element containing the specified address text
+        address_element = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, f"//lightning-base-formatted-text[contains(text(), '{full_address}')]"))
+        )
+
+        # Find the associated radio button in the same row (preceding sibling)
+        radio_button = address_element.find_element(By.XPATH, "../../../../preceding-sibling::td//input[@type='radio']")
+
+
+        radio_button.send_keys(Keys.SPACE)
+        address_submit_btn = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@name,'NEXT')]"))
+        )
+        address_submit_btn.send_keys(Keys.ENTER)
+
+        results = wait.until(
+            EC.presence_of_element_located((By.CLASS_NAME, "cBinScheduleDisplay"))
+        )
+
+        results2 = wait.until(
+            EC.presence_of_element_located((By.XPATH, f'//div[contains(@title,"Bin Job")]'))
+        )
+        soup = BeautifulSoup(driver.page_source, features="html.parser")
+        # Find all table rows containing bin information
+        rows = soup.find_all('tr', class_='slds-hint-parent')
 
         data = {"bins": []}
 
-        schedules = results["actions"][0]["returnValue"]["FeatureSchedules"]
+        # Extract bin type and next collection date for each row
+        for row in rows:
+            bin_type = row.find('td', {'data-label': 'Bin Job'}).find('strong').text.strip() if row.find('td', {'data-label': 'Bin Job'}) else None
 
-        for collection in schedules:
-            bin_type = collection["FeatureName"]
-            bin_collection = datetime.strptime(collection["NextDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
-            bin_previous_collection = datetime.strptime(collection["PreviousDate"], "%Y-%m-%dT%H:%M:%S.%fZ")
-            if bin_collection:
+            next_collection_date = row.find('td', {'data-label': 'Next Collection'}).text.strip() if row.find('td', {'data-label': 'Next Collection'}) else None
+
+            if bin_type and next_collection_date:
+                # Convert date string to datetime object
+                date_format = '%A, %d %B'  # Adjust the format according to your date string
+                try:
+                    next_collection_date = datetime.strptime(next_collection_date, date_format)
+
+                    # Logic to determine year
+                    current_date = datetime.now()
+                    if next_collection_date.month < current_date.month:
+                        year = current_date.year + 1
+                    else:
+                        year = current_date.year
+
+                    # Format the date
+                    next_collection_date = next_collection_date.replace(year=year).strftime('%d/%m/%Y')
+                except ValueError:
+                    pass
+
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": bin_collection.strftime(date_format),
-                    "previousCollectionDate": bin_previous_collection.strftime(date_format)
+                    "collectionDate": next_collection_date
                 }
                 data["bins"].append(dict_data)
-
-        data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
-        )
-
         return data
