@@ -17,6 +17,7 @@ Feature: Test each council output matches expected results
             | BexleyCouncil | http://selenium:4444 | local |
             | BlackburnCouncil | http://selenium:4444 | local |
             | BoltonCouncil | http://selenium:4444 | local |
+            | BrightonandHoveCityCouncil | http://selenium:4444 | local |
             | BristolCityCouncil | None | None |
             | BromleyBoroughCouncil | http://selenium:4444 | local |
             | BroxtoweBoroughCouncil | http://selenium:4444 | local |

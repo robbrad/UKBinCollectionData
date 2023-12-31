@@ -67,6 +67,15 @@
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields.",
         "web_driver": "http://selenium:4444"
     },
+    "BrightonandHoveCityCouncil": {
+        "skip_get_url": true,
+        "uprn": "22060199",
+        "url": "https://cityclean.brighton-hove.gov.uk/link/collections",
+        "wiki_name": "Brighton and Hove City Council",
+        "wiki_note": "Use the full address as it appears on the drop down on the site when you search by postcode",
+        "postcode": "BN1 8NE",
+        "house_number": "44 Carden Avenue, Brighton, BN1 8NE"
+    },
     "BristolCityCouncil": {
         "skip_get_url": true,
         "uprn": "137547",
