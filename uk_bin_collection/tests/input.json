@@ -776,6 +776,11 @@
         "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
         "wiki_name": "Vale of Glamorgan Council"
     },
+    "ValeofWhiteHorseCouncil": {
+        "uprn": "100121391443",
+        "url": "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb",
+        "wiki_name": "Vale of White Horse Council"
+    },
     "WakefieldCityCouncil": {
         "custom_component_show_url_field": true,
         "skip_get_url": true,
