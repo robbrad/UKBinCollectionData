@@ -25,6 +25,8 @@
 !.github/workflows/*.yml
 !uk_bin_collection
 !uk_bin_collection/**/*
+!uk_bin_collection_api_server
+!uk_bin_collection_api_server/**/*
 !wiki
 !wiki/**/*
 !custom_components

@@ -122,6 +122,87 @@ Please be aware that this project is run by volunteer contributors and completio
 - [3.11](https://robbrad.github.io/UKBinCollectionData/3.11/)
 
 ---
+## Docker API Server
+We have created an API for this located under [uk_bin_collection_api_server](https://github.com/robbrad/UKBinCollectionData/uk_bin_collection_api_server)
+
+### Prerequisites
+
+- Docker installed on your machine
+- Python (if you plan to run the API locally without Docker)
+
+### Running the API with Docker
+
+1. Clone this repository.
+2. Navigate to the uk_bin_collection_api_server directory of the project.
+
+#### Build the Docker Container
+
+```bash
+docker build -t ukbc_api_server .
+```
+
+```
+docker run -p 8080:8080 ukbc_api_server
+```
+
+#### Accessing the API
+
+Once the Docker container is running, you can access the API endpoints:
+
+    API Base URL: http://localhost:8080/api
+    Swagger UI: http://localhost:8080/api/ui/
+
+#### API Documentation
+
+The API documentation can be accessed via the Swagger UI. Use the Swagger UI to explore available endpoints, test different requests, and understand the API functionalities.
+
+#### API Endpoints
+`GET /bin_collection/{council}`
+
+Description: Retrieves information about bin collection for the specified council.
+
+Parameters:
+
+    council (required): Name of the council.
+    Other optional parameters: [Specify optional parameters if any]
+
+Example Request:
+
+```bash
+curl -X GET "http://localhost:8080/api/bin_collection/{council}" -H "accept: application/json"
+```
+
+## Docker Compose
+This includes the Selenium standalone-chrome for Selenium based councils
+
+```
+version: '3'
+
+services:
+  ukbc_api_server:
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    ports:
+      - "8080:8080"  # Adjust the ports as needed
+    depends_on:
+      - selenium
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+
+```
+### Run with
+```bash
+sudo apt-get update
+sudo apt-get install docker-compose
+
+docker-compose up
+```
+
+---
 
 ## FAQ
 #### I've got an issue/support question - what do I do?

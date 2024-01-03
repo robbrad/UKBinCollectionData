@@ -1,0 +1,5 @@
+connexion
+uvicorn
+connexion[flask]
+connexion[swagger-ui]
+uk-bin-collection
