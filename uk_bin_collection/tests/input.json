@@ -777,6 +777,7 @@
         "wiki_name": "Vale of Glamorgan Council"
     },
     "ValeofWhiteHorseCouncil": {
+        "custom_component_show_url_field": false,
         "uprn": "100121391443",
         "url": "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb",
         "wiki_name": "Vale of White Horse Council"
