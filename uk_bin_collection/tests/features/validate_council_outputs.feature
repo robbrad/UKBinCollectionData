@@ -118,6 +118,7 @@ Feature: Test each council output matches expected results
             | TorbayCouncil | None | None |
             | TorridgeDistrictCouncil | None | None |
             | ValeofGlamorganCouncil | None | None |
+            | ValeofWhiteHorseCouncil | None | None |
             | WakefieldCityCouncil | http://selenium:4444 | local |
             | WarwickDistrictCouncil | None | None |
             | WaverleyBoroughCouncil | None | None |

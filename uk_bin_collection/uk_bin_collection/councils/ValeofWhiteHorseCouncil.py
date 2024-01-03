@@ -18,15 +18,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # UPRN is passed in via a cookie. Set cookies/params and GET the page
         cookies = {
-            # 'JSESSIONID': '96F2A15C14569B2ED2BBEB140FE86532',
-            "SVBINZONE": f"SOUTH%3AUPRN%40{user_uprn}",
+            "SVBINZONE": f"VALE%3AUPRN%40{user_uprn}",
         }
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "Accept-Language": "en-GB,en;q=0.7",
             "Cache-Control": "max-age=0",
             "Connection": "keep-alive",
-            "Referer": "https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb?SOVA_TAG=SOUTH&ebd=0&ebz=1_1668467255368",
+            "Referer": "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb?SOVA_TAG=VALE&ebd=0&ebz=1_1704201201813",
             "Sec-Fetch-Dest": "document",
             "Sec-Fetch-Mode": "navigate",
             "Sec-Fetch-Site": "same-origin",
@@ -36,13 +35,12 @@ class CouncilClass(AbstractGetBinDataClass):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
         }
         params = {
-            "SOVA_TAG": "SOUTH",
+            "SOVA_TAG": "VALE",
             "ebd": "0",
-            # 'ebz':      '1_1668467255368',
         }
         requests.packages.urllib3.disable_warnings()
         response = requests.get(
-            "https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb",
+            "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb",
             params=params,
             headers=headers,
             cookies=cookies,
