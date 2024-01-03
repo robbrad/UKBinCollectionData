@@ -6,6 +6,7 @@ import pandas as pd
 import re
 import requests
 from datetime import datetime
+from dateutil.parser import parse
 from enum import Enum
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -244,6 +245,20 @@ def update_input_json(council: str, url: str, **kwargs):
 def validate_dates(bin_dates: dict) -> dict:
     raise NotImplementedError()
     # If a date is in December and the next is in January, increase the year
+
+def contains_date(string, fuzzy=False) -> bool:
+    """
+    Return whether the string can be interpreted as a date.
+
+    :param string: str, string to check for date
+    :param fuzzy: bool, ignore unknown tokens in string if True
+    """
+    try: 
+        parse(string, fuzzy=fuzzy)
+        return True
+
+    except ValueError:
+        return False
 
 
 def create_webdriver(web_driver) -> webdriver.Chrome:

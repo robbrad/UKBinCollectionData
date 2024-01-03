@@ -54,16 +54,26 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Page has slider info side by side, which are two instances of this class
         for bin in soup.find_all("div", {"class": "binextra"}):
-            bin_info = bin.text.split("-")
+            bin_info = list(bin.stripped_strings)
             try:
-                # No date validation since year isn't included on webpage
-                bin_date = get_next_occurrence_from_day_month(
-                    datetime.strptime(
-                        bin_info[0].strip() + " " + datetime.today().strftime("%Y"),
-                        "%A %d %B %Y",
-                    )
-                ).strftime(date_format)
-                bin_type = str.capitalize(bin_info[1].strip())
+                # On standard collection schedule, date will be contained in the first stripped string
+                if contains_date(bin_info[0]):
+                    bin_date = get_next_occurrence_from_day_month(
+                        datetime.strptime(
+                            bin_info[0] + " " + datetime.today().strftime("%Y"),
+                            "%A %d %B - %Y",
+                        )
+                    ).strftime(date_format)
+                    bin_type = str.capitalize(bin_info[1])
+                # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
+                else:
+                    bin_date = get_next_occurrence_from_day_month(
+                        datetime.strptime(
+                            bin_info[1] + " " + datetime.today().strftime("%Y"),
+                            "%A %d %B - %Y",
+                        )
+                    ).strftime(date_format)
+                    bin_type = str.capitalize(bin_info[2])
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
 

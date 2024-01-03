@@ -156,6 +156,7 @@ Useful functions include:
 - a function to check [if a date is a holiday](https://github.com/robbrad/UKBinCollectionData/blob/e49da2f43143ac7c65fbeaf35b5e86b3ea19e31b/uk_bin_collection/uk_bin_collection/common.py#L117) in a given part of the UK
 - a function that returns the [dates of a given weekday](https://github.com/robbrad/UKBinCollectionData/blob/e49da2f43143ac7c65fbeaf35b5e86b3ea19e31b/uk_bin_collection/uk_bin_collection/common.py#L136) in N amounts of weeks
 - a function that returns a [list of dates every N days](https://github.com/robbrad/UKBinCollectionData/blob/e49da2f43143ac7c65fbeaf35b5e86b3ea19e31b/uk_bin_collection/uk_bin_collection/common.py#L148) from a given start date
+- a function to check [if a string contains a date](./uk_bin_collection/uk_bin_collection/common.py#L249) (leverages [dateutil's parser](https://dateutil.readthedocs.io/en/stable/parser.html))
 
 `common.py` also contains a [standardised date format](https://github.com/robbrad/UKBinCollectionData/blob/e49da2f43143ac7c65fbeaf35b5e86b3ea19e31b/uk_bin_collection/uk_bin_collection/common.py#L11) variable called `date_format`, which is useful to call when formatting datetimes.
 
