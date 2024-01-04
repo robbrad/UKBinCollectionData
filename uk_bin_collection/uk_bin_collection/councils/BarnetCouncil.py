@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 import re
 import time
+from datetime import datetime
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -75,15 +76,28 @@ class CouncilClass(AbstractGetBinDataClass):
                 "div", {"style": re.compile("background-color:.*; padding-left: 4px;")}
             ):
                 bin_type = bin_div.find("strong").text.strip()
-                collection_date = (
+                collection_date_string = (
                     re.search(r"Next collection date:\s+(.*)", bin_div.text)
                     .group(1)
                     .strip()
                 )
-                contains_date(collection_date)
-                bin_info = {"type": bin_type, "collectionDate": collection_date}
+                current_date = datetime.now()
+                parsed_date = datetime.strptime(
+                    collection_date_string + f" {current_date.year}", "%A, %d %B %Y"
+                )
+                # Check if the parsed date is in the past and not today
+                if parsed_date.date() < current_date.date():
+                    # If so, set the year to the next year
+                    parsed_date = parsed_date.replace(year=current_date.year + 1)
+                else:
+                    # If not, set the year to the current year
+                    parsed_date = parsed_date.replace(year=current_date.year)
+                formatted_date = parsed_date.strftime("%d/%m/%Y")
+
+                contains_date(formatted_date)
+                bin_info = {"type": bin_type, "collectionDate": formatted_date}
                 bin_data["bins"].append(bin_info)
         else:
-            print("Div not found.")
+            raise ValueError("Collection data not found.")
 
         return bin_data
