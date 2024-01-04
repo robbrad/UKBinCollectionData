@@ -20,6 +20,13 @@
         "url": "https://online.bcpcouncil.gov.uk/bindaylookup/",
         "wiki_name": "BCP Council"
     },
+    "BarnetCouncil": {
+        "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
+        "postcode": "HA8 7NA",
+        "house_number": "HA8 7NA, 2, MANOR PARK GARDENS, EDGWARE, BARNET",
+        "wiki_name": "Barnet Council"
+    },
     "BasingstokeCouncil": {
         "skip_get_url": true,
         "uprn": "100060220926",
