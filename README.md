@@ -156,6 +156,8 @@ Once the Docker container is running, you can access the API endpoints:
 
 The API documentation can be accessed via the Swagger UI. Use the Swagger UI to explore available endpoints, test different requests, and understand the API functionalities.
 
+![Swagger UI](SwaggerUI.png)
+
 #### API Endpoints
 `GET /bin_collection/{council}`
 
