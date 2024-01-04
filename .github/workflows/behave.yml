@@ -45,8 +45,13 @@ jobs:
     - name: Identify Changed Councils
       id: find-councils
       run: |
-        CHANGED_FILES=$(git diff --name-only HEAD HEAD~1 | grep 'uk_bin_collection/uk_bin_collection/councils/' | sed 's#.*/##' | sed 's/\.py//')
+        if [ $(git rev-list --count HEAD) -gt 1 ]; then
+          CHANGED_FILES=$(git diff --name-only HEAD HEAD~1 | grep 'uk_bin_collection/uk_bin_collection/councils/' | sed 's#.*/##' | sed 's/\.py//')
+        else
+          CHANGED_FILES=$(git ls-tree --name-only -r HEAD | grep 'uk_bin_collection/uk_bin_collection/councils/' | sed 's#.*/##' | sed 's/\.py//')
+        fi
         echo "CHANGED_COUNCILS=${CHANGED_FILES}" >> $GITHUB_ENV
+
     
     - name: run integration-tests
       run: make matrix=${{ matrix.python-version }} councils=${{ env.CHANGED_COUNCILS }} integration-tests 
