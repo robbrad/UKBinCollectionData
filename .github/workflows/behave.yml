@@ -42,8 +42,14 @@ jobs:
     - name: Install
       run: make install
 
+    - name: Identify Changed Councils
+      id: find-councils
+      run: |
+        CHANGED_FILES=$(git diff --name-only HEAD HEAD~1 | grep 'uk_bin_collection/uk_bin_collection/councils/' | sed 's#.*/##' | sed 's/\.py//')
+        echo "CHANGED_COUNCILS=${CHANGED_FILES}" >> $GITHUB_ENV
+    
     - name: run integration-tests
-      run: make matrix=${{ matrix.python-version }} integration-tests
+      run: make matrix=${{ matrix.python-version }} councils=${{ env.CHANGED_COUNCILS }} integration-tests 
       continue-on-error: true
 
     - name: run unit-tests
