@@ -7,9 +7,51 @@ from bs4 import BeautifulSoup
 import re
 import time
 from datetime import datetime
+import json
+import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+
+def get_seasonal_overrides():
+    url = "https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day"
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        body_div = soup.find("div", class_="field--name-body")
+        ul_element = body_div.find("ul")
+        if ul_element:
+            li_elements = ul_element.find_all("li")
+            overrides_dict = {}
+            for li_element in li_elements:
+                li_text = li_element.text.strip()
+                li_text = re.sub(r"\([^)]*\)", "", li_text).strip()
+                if "Collections for" in li_text and "will be revised to" in li_text:
+                    parts = li_text.split("will be revised to")
+                    original_date = (
+                        parts[0]
+                        .replace("Collections for", "")
+                        .replace("\xa0", " ")
+                        .strip()
+                    )
+                    revised_date = parts[1].strip()
+
+                    # Extract day and month
+                    date_parts = original_date.split()[1:]
+                    if len(date_parts) == 2:
+                        day, month = date_parts
+                        # Ensure original_date has leading zeros for single-digit days
+                        day = day.zfill(2)
+                        original_date = f"{original_date.split()[0]} {day} {month}"
+
+                    # Store the information in the dictionary
+                    overrides_dict[original_date] = revised_date
+            return overrides_dict
+        else:
+            print("UL element not found within the specified div.")
+    else:
+        print(f"Failed to retrieve the page. Status code: {response.status_code}")
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -68,6 +110,8 @@ class CouncilClass(AbstractGetBinDataClass):
         # Find the div with the specified id
         target_div = soup.find("div", {"id": target_div_id})
 
+        overrides_dict = get_seasonal_overrides()
+
         # Check if the div is found
         if target_div:
             bin_data = {"bins": []}
@@ -80,10 +124,15 @@ class CouncilClass(AbstractGetBinDataClass):
                     re.search(r"Next collection date:\s+(.*)", bin_div.text)
                     .group(1)
                     .strip()
+                    .replace(",", "")
                 )
+                if collection_date_string in overrides_dict:
+                    # Replace with the revised date from overrides_dict
+                    collection_date_string = overrides_dict[collection_date_string]
+
                 current_date = datetime.now()
                 parsed_date = datetime.strptime(
-                    collection_date_string + f" {current_date.year}", "%A, %d %B %Y"
+                    collection_date_string + f" {current_date.year}", "%A %d %B %Y"
                 )
                 # Check if the parsed date is in the past and not today
                 if parsed_date.date() < current_date.date():
