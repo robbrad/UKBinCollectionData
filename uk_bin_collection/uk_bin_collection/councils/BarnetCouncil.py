@@ -28,7 +28,8 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
         check_paon(user_paon)
 
-        driver = webdriver.Chrome()
+        web_driver = kwargs.get("web_driver")
+        driver = create_webdriver(web_driver)
         page = "https://account.barnet.gov.uk/Forms/Home/Redirector/Index/?id=6a2ac067-3322-46e5-96e4-16c0c214454a&mod=OA&casetype=BAR&formname=BNTCOLDATE"
         driver.get(page)
 
