@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  ukbc_api_server:
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    ports:
+      - "8080:8080"  # Adjust the ports as needed
+    depends_on:
+      - selenium
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"

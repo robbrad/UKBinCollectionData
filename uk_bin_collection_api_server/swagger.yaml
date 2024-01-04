@@ -1,0 +1,104 @@
+swagger: "2.0"
+info:
+  description: This is the Swagger file that accompanies our server code
+  version: "1.0.0"
+  title: Swagger REST Article
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+definitions:
+  Bin:
+    type: object
+    required:
+      - type
+      - collectionDate
+    properties:
+      type:
+        type: string
+        description: Bin type
+      collectionDate:
+        type: string
+        description: "Collection date of the bin (format: dd/mm/yyyy)"
+        pattern: "\\d{2}/\\d{2}/\\d{4}"
+  BinData:
+    type: object
+    required:
+      - bins
+    properties:
+      bins:
+        type: array
+        items:
+          $ref: "#/definitions/Bin"
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        description: "The HTTP status code (range: 400-599)"
+        minimum: 400
+        maximum: 599
+      message:
+        type: string
+        description: Description of the error
+basePath: "/api"
+
+paths:
+  /bin_collection/{council}:
+    get:
+      operationId: "server.council_data"
+      tags:
+        - "Council"
+      summary: "Bin Collection supported by the server"
+      description: "List of Bin Collections"
+      parameters:
+        - name: council
+          in: path
+          description: Name of the council
+          required: true
+          type: string
+        - name: url
+          in: query
+          description: URL for the council
+          required: true
+          type: string
+        - name: postcode
+          in: query
+          description: Postcode (optional)
+          required: false
+          type: string
+        - name: uprn
+          in: query
+          description: UPRN (optional)
+          required: false
+          type: string
+        - name: house_number
+          in: query
+          description: House number (optional)
+          required: false
+          type: string
+        - name: usrn
+          in: query
+          description: USRN (optional)
+          required: false
+          type: string
+        - name: skip_get_url
+          in: query
+          description: Skip get URL (optional)
+          required: false
+          type: boolean
+        - name: web_driver
+          in: query
+          description: Web driver (optional)
+          required: false
+          type: string
+          default: http://localhost:4444
+      responses:
+        200:
+          description: "Successful read of the list"
+          schema:
+            $ref: "#/definitions/BinData"
+        500:
+          description: "Unexpected error"
+          schema:
+            $ref: '#/definitions/Error'
