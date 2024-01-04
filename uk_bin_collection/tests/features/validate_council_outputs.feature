@@ -85,6 +85,7 @@ Feature: Test each council output matches expected results
             | NorthTynesideCouncil | None | None |
             | NorthumberlandCouncil | http://selenium:4444 | local |
             | NorthWestLeicestershire | http://selenium:4444 | local |
+            | NottinghamCityCouncil | None | None |
             | OldhamCouncil | None | None |
             | PortsmouthCityCouncil | http://selenium:4444 | local |
             | PrestonCityCouncil | http://selenium:4444 | local |
