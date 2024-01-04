@@ -5,6 +5,7 @@ on:
     # Trigger unless only the wiki directory changed
     paths:
       - "uk_bin_collection_api_server/**"
+      - ".github/workflows/docker-image.yml"
     branches: [ "master" ]
   pull_request:
     # Trigger unless only the wiki directory changed
@@ -25,3 +26,4 @@ jobs:
         name: robbrad182/uk-bin-collection
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_API_KEY }}
+        workdir: uk_bin_collection_api_server
