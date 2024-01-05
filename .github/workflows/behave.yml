@@ -64,11 +64,11 @@ jobs:
             COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
           fi
         done
-        echo "Council tests to run: $COUNCIL_TESTS"
+        echo "COUNCIL_TESTS=${COUNCIL_TESTS}" >> $GITHUB_ENV
 
 
     - name: run integration-tests
-      run: make matrix=${{ matrix.python-version }} councils=${{ env.CHANGED_COUNCILS }} integration-tests 
+      run: make matrix=${{ matrix.python-version }} councils=${{ env.COUNCIL_TESTS }} integration-tests 
       continue-on-error: true
 
     - name: run unit-tests
