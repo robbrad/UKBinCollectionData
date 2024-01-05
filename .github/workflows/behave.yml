@@ -7,12 +7,16 @@ on:
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
+      - "**.md"
+      - "uk_bin_collection_api_server/**"
     branches: [ "master" ]
   pull_request:
     # Trigger unless only the wiki directory changed
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
+      - "**.md"
+      - "uk_bin_collection_api_server/**"
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
   schedule:
