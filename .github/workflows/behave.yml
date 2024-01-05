@@ -1,6 +1,7 @@
 name: Test Councils
 
 on:
+  workflow_dispatch:
   push:
     # Trigger unless only the wiki directory changed
     paths-ignore:
