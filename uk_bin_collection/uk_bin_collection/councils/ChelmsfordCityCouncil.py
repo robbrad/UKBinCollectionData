@@ -35,7 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
         url = kwargs.get("url")
         driver = create_webdriver(web_driver)
 
-        driver.executeScript(f"window.location.href='{url}'")
+        driver.execute_script(f"window.location.href='{url}'")
         
         wait = WebDriverWait(driver, 120)
         post_code_search = wait.until(
