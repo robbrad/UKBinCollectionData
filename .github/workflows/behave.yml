@@ -1,17 +1,22 @@
 name: Test Councils
 
 on:
+  workflow_dispatch:
   push:
     # Trigger unless only the wiki directory changed
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
+      - "**.md"
+      - "uk_bin_collection_api_server/**"
     branches: [ "master" ]
   pull_request:
     # Trigger unless only the wiki directory changed
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
+      - "**.md"
+      - "uk_bin_collection_api_server/**"
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
   schedule:
@@ -42,8 +47,32 @@ jobs:
     - name: Install
       run: make install
 
+    - name: Get all councils files that have changed
+      id: changed-council-files
+      uses: tj-actions/changed-files@v41
+      with:
+        files: |
+          uk_bin_collection/uk_bin_collection/councils/**.py
+
+    - name: Get all councils
+      env:
+        ALL_CHANGED_FILES: ${{ steps.changed-council-files.outputs.all_changed_files }}
+      run: |
+        IFS=' ' read -ra FILES <<< "$ALL_CHANGED_FILES"
+        COUNCIL_TESTS=""
+        for file in "${FILES[@]}"; do
+          FILENAME=$(basename "$file" .py)
+          if [ -z "$COUNCIL_TESTS" ]; then
+            COUNCIL_TESTS="$FILENAME"
+          else
+            COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
+          fi
+        done
+        echo "COUNCIL_TESTS=${COUNCIL_TESTS}" >> $GITHUB_ENV
+
+
     - name: run integration-tests
-      run: make matrix=${{ matrix.python-version }} integration-tests
+      run: make matrix=${{ matrix.python-version }} councils="${{ env.COUNCIL_TESTS }}" integration-tests 
       continue-on-error: true
 
     - name: run unit-tests
