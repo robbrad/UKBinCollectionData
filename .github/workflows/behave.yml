@@ -24,6 +24,7 @@ on:
 
 jobs:
   build:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -115,6 +116,7 @@ jobs:
         path: allure_history_${{ matrix.python-version }}.tar
 
   deploy:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/master'
