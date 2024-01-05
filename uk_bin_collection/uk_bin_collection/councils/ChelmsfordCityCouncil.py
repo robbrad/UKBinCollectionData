@@ -32,9 +32,11 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
         web_driver = kwargs.get("web_driver")
+        url = kwargs.get("url")
         driver = create_webdriver(web_driver)
-        driver.get(kwargs.get("url"))
 
+        driver.execute_script(f"window.location.href='{url}'")
+        
         wait = WebDriverWait(driver, 120)
         post_code_search = wait.until(
             EC.presence_of_element_located((By.XPATH, '//input[@name="keyword"]'))
