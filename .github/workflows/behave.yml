@@ -38,6 +38,7 @@ jobs:
     - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'poetry'
 
     - name: Run image
       uses: abatilo/actions-poetry@v2.4.0
@@ -45,7 +46,16 @@ jobs:
         poetry-version: ${{ matrix.poetry-version }}
 
     - name: Install
-      run: make install
+      run: |
+        poetry config virtualenvs.create true --local
+        poetry config virtualenvs.in-project true --local
+        make install
+
+    - uses: actions/cache@v3
+      name: Define a cache for the virtual environment based on the dependencies lock file
+      with:
+        path: ./.venv
+        key: venv-${{ hashFiles('poetry.lock') }}
 
     - name: Get all councils files that have changed
       id: changed-council-files
