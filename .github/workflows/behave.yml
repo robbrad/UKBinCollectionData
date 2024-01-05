@@ -42,17 +42,31 @@ jobs:
     - name: Install
       run: make install
 
-    - name: Identify Changed Councils
-      id: find-councils
-      run: |
-        if [ $(git rev-list --count HEAD) -gt 1 ]; then
-          CHANGED_FILES=$(git diff --name-only HEAD HEAD~1 | grep 'uk_bin_collection/uk_bin_collection/councils/' | sed 's#.*/##' | sed 's/\.py//')
-        else
-          CHANGED_FILES=$(git ls-tree --name-only -r HEAD | grep 'uk_bin_collection/uk_bin_collection/councils/' | sed 's#.*/##' | sed 's/\.py//')
-        fi
-        echo "CHANGED_COUNCILS=${CHANGED_FILES}" >> $GITHUB_ENV
+    - name: Get all councils files that have changed
+      id: changed-council-files
+      uses: tj-actions/changed-files@v41
+      with:
+        files_yaml: |
+          councils:
+            - uk_bin_collection/uk_bin_collection/councils/**.py
 
-    
+    - name: Get all councils
+      env:
+        ALL_CHANGED_FILES: ${{ steps.changed-council-files.outputs.all_changed_files }}
+      run: |
+        IFS=' ' read -ra FILES <<< "$ALL_CHANGED_FILES"
+        COUNCIL_TESTS=""
+        for file in "${FILES[@]}"; do
+          FILENAME=$(basename "$file" .py)
+          if [ -z "$COUNCIL_TESTS" ]; then
+            COUNCIL_TESTS="$FILENAME"
+          else
+            COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
+          fi
+        done
+        echo "Council tests to run: $COUNCIL_TESTS"
+
+
     - name: run integration-tests
       run: make matrix=${{ matrix.python-version }} councils=${{ env.CHANGED_COUNCILS }} integration-tests 
       continue-on-error: true
