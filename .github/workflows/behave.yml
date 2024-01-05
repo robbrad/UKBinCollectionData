@@ -67,7 +67,7 @@ jobs:
 
 
     - name: run integration-tests
-      run: make matrix=${{ matrix.python-version }} councils=${{ env.COUNCIL_TESTS }} integration-tests 
+      run: make matrix=${{ matrix.python-version }} councils="${{ env.COUNCIL_TESTS }}" integration-tests 
       continue-on-error: true
 
     - name: run unit-tests
