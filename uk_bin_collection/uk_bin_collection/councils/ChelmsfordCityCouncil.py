@@ -32,9 +32,10 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
         web_driver = kwargs.get("web_driver")
+        url = kwargs.get("url")
         driver = create_webdriver(web_driver)
 
-        driver.executeScript(f"window.location.href='{kwargs.get("url")}'")
+        driver.executeScript(f"window.location.href='{url}'")
         
         wait = WebDriverWait(driver, 120)
         post_code_search = wait.until(
