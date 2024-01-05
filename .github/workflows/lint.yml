@@ -12,6 +12,7 @@ jobs:
   # Make sure commit messages follow the conventional commits convention:
   # https://www.conventionalcommits.org
   commitlint:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     name: Lint Commit Messages
     runs-on: ubuntu-latest
     steps:
