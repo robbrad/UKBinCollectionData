@@ -57,7 +57,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {vol.Required("web_driver", default=""): cv.string}
             )
             council_schema = council_schema.extend(
-                {vol.Required("headless", default=True): cv.boolean}
+                {vol.Optional("headless", default=True): cv.boolean}
             )
         return council_schema
 
