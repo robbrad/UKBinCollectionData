@@ -20,12 +20,12 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
-        headless= kwargs.get("headless")
+        headless = kwargs.get("headless")
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver(web_driver,headless)
+        driver = create_webdriver(web_driver, headless)
         driver.get("https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder")
 
         # Wait for iframe to load and switch to it

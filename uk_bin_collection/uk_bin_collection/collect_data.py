@@ -10,6 +10,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import (
 
 _LOGGER = logging.getLogger(__name__)
 
+
 # Dynamically importing the council processor
 def import_council_module(module_name, src_path="councils"):
     module_path = os.path.realpath(os.path.join(os.path.dirname(__file__), src_path))
@@ -24,7 +25,9 @@ class UKBinCollectionApp:
         self.parsed_args = None
 
     def setup_arg_parser(self):
-        self.parser = argparse.ArgumentParser(description="UK Bin Collection Data Parser")
+        self.parser = argparse.ArgumentParser(
+            description="UK Bin Collection Data Parser"
+        )
         self.parser.add_argument(
             "module", type=str, help="Name of council module to use"
         )
@@ -60,7 +63,7 @@ class UKBinCollectionApp:
         )
         self.parser.add_argument(
             "--headless",
-            action="store_true",
+            action="store_false",
             help="Should Selenium be headless. Defaults to true. Can be set to false to debug council",
             required=False,
         )
@@ -109,6 +112,7 @@ class UKBinCollectionApp:
         as long as it works with objects through the interface of their base class.
         """
         return get_bin_data_class.template_method(address_url, **kwargs)
+
 
 if __name__ == "__main__":
     _LOGGER = setup_logging(LOGGING_CONFIG, None)

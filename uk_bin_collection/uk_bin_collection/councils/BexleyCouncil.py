@@ -30,7 +30,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
-        headless= kwargs.get("headless")
+        headless = kwargs.get("headless")
 
         # Create Selenium webdriver
         driver = create_webdriver(web_driver, headless)

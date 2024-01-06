@@ -29,8 +29,10 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if self.councils_data is None:
             self.councils_data = await self.get_councils_json()
         council_schema = vol.Schema({})
-        if ("skip_get_url" not in self.councils_data[council] or
-                "custom_component_show_url_field" in self.councils_data[council]):
+        if (
+            "skip_get_url" not in self.councils_data[council]
+            or "custom_component_show_url_field" in self.councils_data[council]
+        ):
             council_schema = council_schema.extend(
                 {vol.Required("url", default=""): cv.string}
             )
@@ -53,6 +55,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if "web_driver" in self.councils_data[council]:
             council_schema = council_schema.extend(
                 {vol.Required("web_driver", default=""): cv.string}
+            )
+            council_schema = council_schema.extend(
+                {vol.Required("headless", default=True): cv.boolean}
             )
         return council_schema
 
@@ -116,9 +121,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             # Create the config entry
             _LOGGER.info(LOG_PREFIX + "Creating config entry with data: %s", user_input)
-            return self.async_create_entry(
-                title=user_input["name"], data=user_input
-            )
+            return self.async_create_entry(title=user_input["name"], data=user_input)
 
         # Show the configuration form to the user with the specific councils necessary fields
         council_schema = await self.get_council_schema(self.data["council"])

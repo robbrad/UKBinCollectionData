@@ -28,12 +28,12 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
-        headless= kwargs.get("headless")
+        headless = kwargs.get("headless")
         check_paon(user_paon)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver(web_driver,headless)
+        driver = create_webdriver(web_driver, headless)
         driver.get(page)
 
         # If you bang in the house number (or property name) and postcode in the box it should find your property

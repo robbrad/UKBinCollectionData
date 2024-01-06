@@ -39,14 +39,14 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         uprn = kwargs.get("uprn")
         web_driver = kwargs.get("web_driver")
-        headless= kwargs.get("headless")
+        headless = kwargs.get("headless")
         current_month = datetime.today().strftime("%m")
         current_year = datetime.today().strftime("%Y")
         url = (
             f"https://mybins.blackburn.gov.uk/api/mybins/getbincollectiondays?uprn={uprn}&month={current_month}"
             f"&year={current_year}"
         )
-        driver = create_webdriver(web_driver,headless)
+        driver = create_webdriver(web_driver, headless)
         driver.get(url)
 
         soup = BeautifulSoup(driver.page_source, "html.parser")

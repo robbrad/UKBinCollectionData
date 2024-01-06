@@ -20,12 +20,12 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
-        headless= kwargs.get("headless")
+        headless = kwargs.get("headless")
         check_paon(user_paon)
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver(web_driver,headless)
+        driver = create_webdriver(web_driver, headless)
         driver.get(
             "https://www.gateshead.gov.uk/article/3150/Bin-collection-day-checker"
         )

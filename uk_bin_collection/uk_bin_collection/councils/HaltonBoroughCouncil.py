@@ -25,11 +25,11 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
-        headless= kwargs.get("headless")
+        headless = kwargs.get("headless")
         # Create Selenium webdriver
         page = f"https://webapp.halton.gov.uk/PublicWebForms/WasteServiceSearchv1.aspx"
 
-        driver = create_webdriver(web_driver,headless)
+        driver = create_webdriver(web_driver, headless)
         driver.get(page)
 
         # If you bang in the house number (or property name) and postcode in the box it should find your property

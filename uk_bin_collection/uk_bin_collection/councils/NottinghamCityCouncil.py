@@ -26,9 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
         for collection in next_collections:
             bin_type = collection["collectionType"]
 
-            next_collection_date = datetime.fromisoformat(
-                collection["collectionDate"]
-            )
+            next_collection_date = datetime.fromisoformat(collection["collectionDate"])
             dict_data = {
                 "type": bin_type,
                 "collectionDate": next_collection_date.strftime(date_format),
