@@ -32,8 +32,9 @@ class CouncilClass(AbstractGetBinDataClass):
         url = "https://my.guildford.gov.uk/customers/s/view-bin-collections"
 
         web_driver = kwargs.get("web_driver")
+        headless= kwargs.get("headless")
 
-        driver = create_webdriver(web_driver)
+        driver = create_webdriver(web_driver,headless)
         driver.get(kwargs.get("url"))
 
         wait = WebDriverWait(driver, 120)

@@ -25,13 +25,14 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
         web_driver = kwargs.get("web_driver")
+        headless= kwargs.get("headless")
 
         data = {"bins": []}
 
         # Get our initial session running
         page = "https://carehomes.bolton.gov.uk/bins.aspx"
 
-        driver = create_webdriver(web_driver)
+        driver = create_webdriver(web_driver,headless)
         driver.get(page)
 
         # If you bang in the house number (or property name) and postcode in the box it should find your property

@@ -261,14 +261,15 @@ def contains_date(string, fuzzy=False) -> bool:
         return False
 
 
-def create_webdriver(web_driver) -> webdriver.Chrome:
+def create_webdriver(web_driver: str, headless: bool) -> webdriver.Chrome:
     """
     Create and return a headless Selenium webdriver
     :rtype: webdriver.Chrome
     """
     # Set up Selenium to run 'headless'
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    if headless is None:
+        options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-gpu")
     options.add_argument("--start-maximized")

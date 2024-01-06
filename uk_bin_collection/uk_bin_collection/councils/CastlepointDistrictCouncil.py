@@ -31,7 +31,8 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
         web_driver = kwargs.get("web_driver")
-        driver = create_webdriver(web_driver)
+        headless= kwargs.get("headless")
+        driver = create_webdriver(web_driver,headless)
         driver.get(kwargs.get("url"))
 
         wait = WebDriverWait(driver, 30)

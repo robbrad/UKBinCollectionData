@@ -55,6 +55,7 @@ class AbstractGetBinDataClass(ABC):
         this_uprn = kwargs.get("uprn", None)
         this_usrn = kwargs.get("usrn", None)
         this_web_driver = kwargs.get("web_driver", None)
+        this_headless = kwargs.get("headless", None)
         skip_get_url = kwargs.get("skip_get_url", None)
         dev_mode = kwargs.get("dev_mode", False)
         council_module_str = kwargs.get("council_module_str", None)
@@ -69,6 +70,7 @@ class AbstractGetBinDataClass(ABC):
                 uprn=this_uprn,
                 usrn=this_usrn,
                 web_driver=this_web_driver,
+                headless=this_headless,
                 url=this_url,
             )
             json_output = self.output_json(bin_data_dict)
@@ -80,6 +82,7 @@ class AbstractGetBinDataClass(ABC):
                 uprn=this_uprn,
                 usrn=this_usrn,
                 web_driver=this_web_driver,
+                headless=this_headless,
                 url=this_url,
             )
             json_output = self.output_json(bin_data_dict)
