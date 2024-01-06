@@ -1,17 +1,22 @@
 name: Test Councils
 
 on:
+  workflow_dispatch:
   push:
     # Trigger unless only the wiki directory changed
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
+      - "**.md"
+      - "uk_bin_collection_api_server/**"
     branches: [ "master" ]
   pull_request:
     # Trigger unless only the wiki directory changed
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
+      - "**.md"
+      - "uk_bin_collection_api_server/**"
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
   schedule:
@@ -19,6 +24,7 @@ on:
 
 jobs:
   build:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,20 +36,44 @@ jobs:
         options: --shm-size=2gb
     steps:
     - uses: actions/checkout@v4
+
+    - name: Install poetry
+      run: pipx install poetry==${{ matrix.poetry-version }}
+
     - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Run image
-      uses: abatilo/actions-poetry@v2.4.0
-      with:
-        poetry-version: ${{ matrix.poetry-version }}
+        cache: 'poetry'
 
     - name: Install
       run: make install
 
+    - name: Get all councils files that have changed
+      id: changed-council-files
+      uses: tj-actions/changed-files@v41
+      with:
+        files: |
+          uk_bin_collection/uk_bin_collection/councils/**.py
+
+    - name: Get all councils
+      env:
+        ALL_CHANGED_FILES: ${{ steps.changed-council-files.outputs.all_changed_files }}
+      run: |
+        IFS=' ' read -ra FILES <<< "$ALL_CHANGED_FILES"
+        COUNCIL_TESTS=""
+        for file in "${FILES[@]}"; do
+          FILENAME=$(basename "$file" .py)
+          if [ -z "$COUNCIL_TESTS" ]; then
+            COUNCIL_TESTS="$FILENAME"
+          else
+            COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
+          fi
+        done
+        echo "COUNCIL_TESTS=${COUNCIL_TESTS}" >> $GITHUB_ENV
+
+
     - name: run integration-tests
-      run: make matrix=${{ matrix.python-version }} integration-tests
+      run: make matrix=${{ matrix.python-version }} councils="${{ env.COUNCIL_TESTS }}" integration-tests 
       continue-on-error: true
 
     - name: run unit-tests
@@ -86,6 +116,7 @@ jobs:
         path: allure_history_${{ matrix.python-version }}.tar
 
   deploy:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/master'

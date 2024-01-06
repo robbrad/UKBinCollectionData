@@ -15,7 +15,7 @@ RUN apk add --no-cache gcc musl-dev libffi-dev openssl-dev \
 # Copy the application code into the container
 COPY . .
 
-# Expose the port your application runs on
+# Expose the port for the ukbc server to run on
 EXPOSE 8080
 
 # Command to run your application using Uvicorn

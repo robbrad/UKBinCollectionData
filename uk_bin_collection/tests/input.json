@@ -20,6 +20,14 @@
         "url": "https://online.bcpcouncil.gov.uk/bindaylookup/",
         "wiki_name": "BCP Council"
     },
+    "BarnetCouncil": {
+        "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
+        "postcode": "HA8 7NA",
+        "house_number": "HA8 7NA, 2, MANOR PARK GARDENS, EDGWARE, BARNET",
+        "wiki_name": "Barnet Council",
+        "url": "https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day"
+    },
     "BasingstokeCouncil": {
         "skip_get_url": true,
         "uprn": "100060220926",
@@ -556,6 +564,12 @@
         "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland Council"
+    },    
+    "NottinghamCityCouncil": {
+        "skip_get_url": true,
+        "uprn": "100031540180",
+        "url": "https://geoserver.nottinghamcity.gov.uk/myproperty/handler/proxy.ashx?https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/100031540180",
+        "wiki_name": "Nottingham City Council"
     },
     "OldhamCouncil": {
         "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
@@ -778,6 +792,7 @@
         "wiki_name": "Vale of Glamorgan Council"
     },
     "ValeofWhiteHorseCouncil": {
+        "custom_component_show_url_field": false,
         "uprn": "100121391443",
         "url": "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb",
         "wiki_name": "Vale of White Horse Council"

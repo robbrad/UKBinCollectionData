@@ -216,8 +216,30 @@ recommended - the council's address is usually a good one).
 |--------|-----------------------------------------------------------------------------------------|
 | Modify | `UKBinCollectionData/uk_bin_collection/tests/features/validate_council_outputs.feature` |
 
-The council's name should be added to the feature file's example list. These names are alphabetically sorted, although
-`council` should always remain on line 10. The name should be wrapped in pipes.
+The council's name should be added to the feature file's example list. These names are alphabetically sorted.
+
+For example:
+
+```
+Feature: Test each council output matches expected results
+
+    Scenario Outline: Validate Council Output
+        Given the council: <council>
+        When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set
+        Then the result is valid json
+        And the output should validate against the schema
+
+
+        @AylesburyValeCouncil
+              		Examples: AylesburyValeCouncil
+              		| council | selenium_url | selenium_mode |
+              		| AylesburyValeCouncil | None  | None  |
+
+        @BarnetCouncil
+                Examples: BarnetCouncil
+                | council | selenium_url | selenium_mode |
+                | BarnetCouncil | http://selenium:4444  | local  |
+```
 
 
 ## Testing
@@ -231,11 +253,18 @@ Based on the [input.json](https://github.com/robbrad/UKBinCollectionData/blob/ma
 this does an actual live run against the council's site and validates if the returned data is JSON and conforms to the common format [JSON Schema](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/output.schema).
 
 
-#### Running the Behave tests
+#### Running the Behave tests for all councils
 ```commandline
 cd UKBinCollectionData
 poetry shell
 poetry run pytest uk_bin_collection/tests/step_defs/ -n logical
+```
+
+#### Running the Behave tests for a specific council
+```commandline
+cd UKBinCollectionData
+poetry shell
+poetry run pytest uk_bin_collection/tests/step_defs/ -n logical -k "BarnetCouncil"
 ```
 
 #### GitHub Actions Integration Tests

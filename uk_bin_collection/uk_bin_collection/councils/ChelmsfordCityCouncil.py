@@ -36,6 +36,8 @@ class CouncilClass(AbstractGetBinDataClass):
         driver = create_webdriver(web_driver,headless)
         driver.get(kwargs.get("url"))
 
+        driver.execute_script(f"window.location.href='{url}'")
+        
         wait = WebDriverWait(driver, 120)
         post_code_search = wait.until(
             EC.presence_of_element_located((By.XPATH, '//input[@name="keyword"]'))

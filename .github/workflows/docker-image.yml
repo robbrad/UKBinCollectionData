@@ -1,0 +1,29 @@
+name: Docker Image CI
+
+on:
+  push:
+    # Trigger unless only the wiki directory changed
+    paths:
+      - "uk_bin_collection_api_server/**"
+      - ".github/workflows/docker-image.yml"
+    branches: [ "master" ]
+  pull_request:
+    # Trigger unless only the wiki directory changed
+    paths:
+      - "uk_bin_collection_api_server/**"
+    # The branches below must be a subset of the branches above
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@v5
+      with:
+        name: robbrad182/uk-bin-collection
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_API_KEY }}
+        workdir: uk_bin_collection_api_server

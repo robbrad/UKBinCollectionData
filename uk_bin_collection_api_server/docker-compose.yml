@@ -2,9 +2,7 @@ version: '3'
 
 services:
   ukbc_api_server:
-    build:
-      context: .
-      dockerfile: Dockerfile 
+    image: robbrad182/uk-bin-collection:latest
     ports:
       - "8080:8080"  # Adjust the ports as needed
     depends_on:
