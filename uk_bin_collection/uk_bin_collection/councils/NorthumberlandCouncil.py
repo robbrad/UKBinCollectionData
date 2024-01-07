@@ -103,7 +103,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     day_styles = self.extract_styles(day["style"])
                     if "background-color" in day_styles:
                         colour = day_styles["background-color"].upper()
-                        date = time.strptime(f"{day.string} {month_and_year}", "%d %B %Y")
+                        date = time.strptime(
+                            f"{day.string} {month_and_year}", "%d %B %Y"
+                        )
 
                         # Add it to the data
                         data["bins"].append(

@@ -79,13 +79,17 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(page)
 
             postcode_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, '[aria-label="Postcode"]'))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, '[aria-label="Postcode"]')
+                )
             )
 
             postcode_input.send_keys(user_postcode)
 
             find_address_button = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, '[value="Find address"]'))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, '[value="Find address"]')
+                )
             )
             find_address_button.click()
 
@@ -118,7 +122,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_data = {"bins": []}
 
                 for bin_div in target_div.find_all(
-                    "div", {"style": re.compile("background-color:.*; padding-left: 4px;")}
+                    "div",
+                    {"style": re.compile("background-color:.*; padding-left: 4px;")},
                 ):
                     bin_type = bin_div.find("strong").text.strip()
                     collection_date_string = (
@@ -158,5 +163,5 @@ class CouncilClass(AbstractGetBinDataClass):
         finally:
             # This block ensures that the driver is closed regardless of an exception
             if driver:
-                driver.quit()            
+                driver.quit()
         return bin_data

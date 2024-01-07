@@ -19,7 +19,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        
         driver = None
         try:
             user_uprn = kwargs.get("uprn")

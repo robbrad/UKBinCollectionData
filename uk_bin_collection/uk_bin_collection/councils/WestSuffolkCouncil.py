@@ -22,7 +22,7 @@ class CouncilClass(AbstractGetBinDataClass):
             raise
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver= None
+        driver = None
         try:
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")

@@ -66,7 +66,9 @@ class CouncilClass(AbstractGetBinDataClass):
                         strip=True
                     )
                     # Extract date part and remove the suffix
-                    next_collection_date_parse = next_collection_date.split(",")[1].strip()
+                    next_collection_date_parse = next_collection_date.split(",")[
+                        1
+                    ].strip()
                     day = next_collection_date_parse.split()[0]
                     month = next_collection_date_parse.split()[1]
 
@@ -109,5 +111,5 @@ class CouncilClass(AbstractGetBinDataClass):
         finally:
             # This block ensures that the driver is closed regardless of an exception
             if driver:
-                driver.quit()                    
+                driver.quit()
         return data

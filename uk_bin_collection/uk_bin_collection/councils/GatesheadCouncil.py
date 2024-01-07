@@ -62,7 +62,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for the collections table to appear
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".bincollections__table"))
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, ".bincollections__table")
+                )
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -85,7 +87,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 elif month_year != "":
                     collection = row.find_all("td")
                     bin_date = datetime.strptime(
-                        collection[0].get_text(strip=True) + " " + month_year, "%d %B %Y"
+                        collection[0].get_text(strip=True) + " " + month_year,
+                        "%d %B %Y",
                     )
                     dict_data = {
                         "type": collection[2]

@@ -20,8 +20,8 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
-    def parse_data(self, page: str, **kwargs) -> dict:
 
+    def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
             page = "https://mybexley.bexley.gov.uk/service/When_is_my_collection_day"
@@ -65,7 +65,9 @@ class CouncilClass(AbstractGetBinDataClass):
             find_address_btn.click()
 
             dropdown_options = wait.until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="select2-chosen-1"]'))
+                EC.presence_of_element_located(
+                    (By.XPATH, '//*[@id="select2-chosen-1"]')
+                )
             )
             time.sleep(2)
             dropdown_options.click()
@@ -89,7 +91,9 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             finish_btn.click()
             final_page = wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "waste-header-container"))
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "waste-header-container")
+                )
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -131,7 +135,6 @@ class CouncilClass(AbstractGetBinDataClass):
                         }
                     )
 
-        
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

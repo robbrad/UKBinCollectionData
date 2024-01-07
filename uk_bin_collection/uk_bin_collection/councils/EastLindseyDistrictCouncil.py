@@ -16,7 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver= None
+        driver = None
         try:
             data = {"bins": []}
             user_paon = kwargs.get("paon")

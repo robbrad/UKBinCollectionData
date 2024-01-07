@@ -55,7 +55,7 @@ class CouncilClass(AbstractGetBinDataClass):
         return data
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver= None
+        driver = None
         try:
             page = "https://www.highpeak.gov.uk/findyourbinday"
 
@@ -97,7 +97,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "FINDBINDAYSHIGHPEAK_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT")
+                    (
+                        By.ID,
+                        "FINDBINDAYSHIGHPEAK_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT",
+                    )
                 )
             )
 

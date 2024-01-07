@@ -94,16 +94,22 @@ class CouncilClass(AbstractGetBinDataClass):
                         collection_month = month_element.get_text(strip=True)
 
                         # Combine month, date, and year into a string
-                        date_string = f"{collection_date} {collection_month} {current_year}"
+                        date_string = (
+                            f"{collection_date} {collection_month} {current_year}"
+                        )
 
                         try:
                             # Convert the date string to a datetime object
-                            collection_date_obj = datetime.strptime(date_string, "%d %B %Y")
+                            collection_date_obj = datetime.strptime(
+                                date_string, "%d %B %Y"
+                            )
 
                             # Check if the month is ahead of the current month
                             if collection_date_obj.month >= current_month:
                                 # If the month is ahead, use the current year
-                                formatted_date = collection_date_obj.strftime(date_format)
+                                formatted_date = collection_date_obj.strftime(
+                                    date_format
+                                )
                             else:
                                 # If the month is before the current month, use the next year
                                 formatted_date = collection_date_obj.replace(
@@ -124,19 +130,22 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Extract Recycling collection data
             extract_collection_data(
-                soup.find(class_="container-fluid RegularCollectionDay").find_next_sibling(
-                    "div"
-                ),
+                soup.find(
+                    class_="container-fluid RegularCollectionDay"
+                ).find_next_sibling("div"),
                 "Recycling",
             )
 
             # Extract Refuse collection data
-            for refuse_div in soup.find_all(class_="container-fluid RegularCollectionDay"):
+            for refuse_div in soup.find_all(
+                class_="container-fluid RegularCollectionDay"
+            ):
                 extract_collection_data(refuse_div, "Refuse")
 
             # Extract Garden Waste collection data
             extract_collection_data(
-                soup.find(class_="container-fluid gardenwasteCollectionDay"), "Garden Waste"
+                soup.find(class_="container-fluid gardenwasteCollectionDay"),
+                "Garden Waste",
             )
 
             # Print the extracted data

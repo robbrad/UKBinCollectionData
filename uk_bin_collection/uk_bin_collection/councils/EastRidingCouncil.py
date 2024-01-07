@@ -22,7 +22,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver=None
+        driver = None
         try:
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
@@ -108,12 +108,16 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             for header_element in header_elements:
                 bin_type = header_element.get_text(strip=True)
-                bin_class = [cls for cls in header_element.get("class") if cls != "header"]
+                bin_class = [
+                    cls for cls in header_element.get("class") if cls != "header"
+                ]
                 if bin_class:
                     bin_types[bin_class[0]] = bin_type
 
             # Extract collection dates and associate them with respective bin types
-            date_elements = soup.find_all("li", class_=lambda x: x and x.startswith("date"))
+            date_elements = soup.find_all(
+                "li", class_=lambda x: x and x.startswith("date")
+            )
             for date_element in date_elements:
                 bin_class = [cls for cls in date_element.get("class") if cls != "date"]
                 if bin_class:

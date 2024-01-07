@@ -32,9 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             check_postcode(user_postcode)
             # Create Selenium webdriver
-            page = (
-                f"https://my.nwleics.gov.uk/my-property-finder?address={user_postcode}&go=1"
-            )
+            page = f"https://my.nwleics.gov.uk/my-property-finder?address={user_postcode}&go=1"
 
             driver = create_webdriver(web_driver, headless)
             driver.get(page)
@@ -72,11 +70,13 @@ class CouncilClass(AbstractGetBinDataClass):
             if refuse_list:
                 # Iterate through list items within the unordered list
                 for li in refuse_list.find_all("li"):
-                    date = li.find("strong", class_="date").text.strip()  # Extract the date
+                    date = li.find(
+                        "strong", class_="date"
+                    ).text.strip()  # Extract the date
                     waste_type = li.find("a").text.strip()  # Extract the waste type
 
                     # Parse the date from the string
-                    date = re.sub(r'(st|nd|rd|th)', '', date)
+                    date = re.sub(r"(st|nd|rd|th)", "", date)
                     parsed_date = datetime.strptime(date, "%a %d %b")
                     if parsed_date < datetime(
                         parsed_date.year, parsed_date.month, parsed_date.day

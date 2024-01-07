@@ -30,7 +30,9 @@ class CouncilClass(AbstractGetBinDataClass):
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
             # Create Selenium webdriver
-            page = f"https://webapp.halton.gov.uk/PublicWebForms/WasteServiceSearchv1.aspx"
+            page = (
+                f"https://webapp.halton.gov.uk/PublicWebForms/WasteServiceSearchv1.aspx"
+            )
 
             driver = create_webdriver(web_driver, headless)
             driver.get(page)

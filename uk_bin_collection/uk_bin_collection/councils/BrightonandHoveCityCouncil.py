@@ -115,7 +115,9 @@ class CouncilClass(AbstractGetBinDataClass):
                             if bin_date:
                                 # Set the year based on the logic provided
                                 if bin_date.month < current_date.month:
-                                    bin_date = bin_date.replace(year=current_date.year + 1)
+                                    bin_date = bin_date.replace(
+                                        year=current_date.year + 1
+                                    )
                                 else:
                                     bin_date = bin_date.replace(year=current_date.year)
                                 # Format the date to the desired format

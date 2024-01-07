@@ -21,7 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver= None
+        driver = None
         try:
             page = "https://my.portsmouth.gov.uk/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-26e27e70-f771-47b1-a34d-af276075cede/AF-Stage-cd7cc291-2e59-42cc-8c3f-1f93e132a2c9/definition.json&redirectlink=%2F&cancelRedirectLink=%2F"
 
@@ -57,7 +57,9 @@ class CouncilClass(AbstractGetBinDataClass):
             lookupAddress_btn.click()
 
             # Wait for the 'Select your property' dropdown to appear and select the first result
-            dropdown = wait.until(EC.element_to_be_clickable((By.NAME, "Choose_Address")))
+            dropdown = wait.until(
+                EC.element_to_be_clickable((By.NAME, "Choose_Address"))
+            )
 
             dropdown_options = wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "lookup-option"))
@@ -110,7 +112,9 @@ class CouncilClass(AbstractGetBinDataClass):
                                     {
                                         "type": h4_text.split(" - ")[0],
                                         "collectionDate": datetime.strptime(
-                                            re.sub(r"[^a-zA-Z0-9,\s]", "", date).strip(),
+                                            re.sub(
+                                                r"[^a-zA-Z0-9,\s]", "", date
+                                            ).strip(),
                                             "%A %d %B %Y",
                                         ).strftime("%d/%m/%Y"),
                                     }

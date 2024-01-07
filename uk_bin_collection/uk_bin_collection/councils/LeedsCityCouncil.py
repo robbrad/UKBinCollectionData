@@ -35,9 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             check_postcode(user_postcode)
             # Create Selenium webdriver
-            page = (
-                f"https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day"
-            )
+            page = f"https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day"
 
             driver = create_webdriver(web_driver, headless)
             driver.get(page)
@@ -110,7 +108,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_collection_list = bin_collection_dates.find_all("li", class_="")
 
                 if bin_collection_list:
-                    collection_dates = [date.text.strip() for date in bin_collection_list]
+                    collection_dates = [
+                        date.text.strip() for date in bin_collection_list
+                    ]
 
                     # Convert the collection dates to the desired format
                     formatted_dates = [

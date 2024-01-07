@@ -78,9 +78,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 date_elements = collectionDiv.find_all("li")
                 for date_element in date_elements:
                     date_string = date_element.find("span").text.split(" ")[1]
-                    collection_date = datetime.strptime(date_string, "%d/%m/%Y").strftime(
-                        date_format
-                    )
+                    collection_date = datetime.strptime(
+                        date_string, "%d/%m/%Y"
+                    ).strftime(date_format)
 
                     data["bins"].append(
                         {

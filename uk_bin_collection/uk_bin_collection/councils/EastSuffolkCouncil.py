@@ -28,7 +28,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless)
-            driver.get("https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder")
+            driver.get(
+                "https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder"
+            )
 
             # Wait for iframe to load and switch to it
             WebDriverWait(driver, 30).until(
@@ -92,9 +94,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 cols = row.find_all("td")
                 bin_type = cols[2].find_all("span")[1].text.title()
                 collection_date = cols[3].find_all("span")[1].text
-                collection_date = datetime.strptime(collection_date, "%d/%m/%Y").strftime(
-                    date_format
-                )
+                collection_date = datetime.strptime(
+                    collection_date, "%d/%m/%Y"
+                ).strftime(date_format)
                 dict_data = {"type": bin_type, "collectionDate": collection_date}
                 data["bins"].append(dict_data)
 

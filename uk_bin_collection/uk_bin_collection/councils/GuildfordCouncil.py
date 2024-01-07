@@ -96,7 +96,9 @@ class CouncilClass(AbstractGetBinDataClass):
             # Extract bin type and next collection date for each row
             for row in rows:
                 bin_type = (
-                    row.find("td", {"data-label": "Bin Job"}).find("strong").text.strip()
+                    row.find("td", {"data-label": "Bin Job"})
+                    .find("strong")
+                    .text.strip()
                     if row.find("td", {"data-label": "Bin Job"})
                     else None
                 )
@@ -131,7 +133,10 @@ class CouncilClass(AbstractGetBinDataClass):
                     except ValueError:
                         pass
 
-                    dict_data = {"type": bin_type, "collectionDate": next_collection_date}
+                    dict_data = {
+                        "type": bin_type,
+                        "collectionDate": next_collection_date,
+                    }
                     data["bins"].append(dict_data)
         except Exception as e:
             # Here you can log the exception if needed

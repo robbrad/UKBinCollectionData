@@ -47,7 +47,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Enter postcode in text box and wait
             inputElement_pc = driver.find_element(
-                By.ID, "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONPOSTCODE"
+                By.ID,
+                "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONPOSTCODE",
             )
             inputElement_pc.send_keys(user_postcode)
             inputElement_pc.send_keys(Keys.ENTER)

@@ -39,9 +39,13 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode_css_selector = "#address_search_postcode"
             self.wait_for_element_conditions(
                 driver,
-                EC.presence_of_element_located((By.CSS_SELECTOR, postcode_css_selector)),
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, postcode_css_selector)
+                ),
             )
-            postcode_input_box = driver.find_element(By.CSS_SELECTOR, postcode_css_selector)
+            postcode_input_box = driver.find_element(
+                By.CSS_SELECTOR, postcode_css_selector
+            )
             postcode_input_box.send_keys(user_postcode)
             postcode_input_box.send_keys(Keys.ENTER)
 
@@ -63,7 +67,8 @@ class CouncilClass(AbstractGetBinDataClass):
             # Grab the response blocks
             response_xpath_selector = "//div[@data-class_name]//h4/../../../.."
             self.wait_for_element_conditions(
-                driver, EC.presence_of_element_located((By.XPATH, response_xpath_selector))
+                driver,
+                EC.presence_of_element_located((By.XPATH, response_xpath_selector)),
             )
             elements = driver.find_elements(By.XPATH, response_xpath_selector)
 

@@ -61,7 +61,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Make a BS4 object - remove bold tags and add @ so we can split the lines later
             soup = BeautifulSoup(
-                page.strip().replace("<b>", "").replace("</b>", "").replace("<br>", "@"),
+                page.strip()
+                .replace("<b>", "")
+                .replace("</b>", "")
+                .replace("<br>", "@"),
                 features="html.parser",
             )
             soup.prettify()

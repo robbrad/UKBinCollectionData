@@ -65,7 +65,10 @@ class CouncilClass(AbstractGetBinDataClass):
                                             c.get_text(strip=True),
                                             "%A, %d %B %Y",
                                         ).strftime(date_format)
-                                        if future_collection_date != next_collection_date:
+                                        if (
+                                            future_collection_date
+                                            != next_collection_date
+                                        ):
                                             dict_data = {
                                                 "type": title.get_text(
                                                     strip=True

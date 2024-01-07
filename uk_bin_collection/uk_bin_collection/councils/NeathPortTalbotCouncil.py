@@ -96,7 +96,9 @@ class CouncilClass(AbstractGetBinDataClass):
             # Get the property details
             property_details = soup.find(
                 "div",
-                {"id": "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_divPropertyDetails"},
+                {
+                    "id": "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_divPropertyDetails"
+                },
             )
 
             # Get the dates
