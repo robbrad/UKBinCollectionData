@@ -56,9 +56,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             council_schema = council_schema.extend(
                 {vol.Required("web_driver", default=""): cv.string}
             )
-            council_schema = council_schema.extend(
-                {vol.Optional("headless", default=True): cv.boolean}
-            )
+
         return council_schema
 
     async def async_step_user(self, user_input=None):
