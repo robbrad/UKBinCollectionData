@@ -25,6 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     collection_date = remove_ordinal_indicator_from_date_string(
                         row.find("dd").get_text()
                     ).strip()
+                    collection_date = collection_date.split("\")[0]
                     dict_data = {
                         "type": c.get_text().strip().capitalize(),
                         "collectionDate": get_next_occurrence_from_day_month(
