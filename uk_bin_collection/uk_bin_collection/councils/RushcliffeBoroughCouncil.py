@@ -17,77 +17,88 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        page = "https://selfservice.rushcliffe.gov.uk/renderform.aspx?t=1242&k=86BDCD8DE8D868B9E23D10842A7A4FE0F1023CCA"
+        driver = None
+        try:
+            
+            page = "https://selfservice.rushcliffe.gov.uk/renderform.aspx?t=1242&k=86BDCD8DE8D868B9E23D10842A7A4FE0F1023CCA"
 
-        data = {"bins": []}
+            data = {"bins": []}
 
-        user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_uprn(user_uprn)
-        check_postcode(user_postcode)
+            user_uprn = kwargs.get("uprn")
+            user_postcode = kwargs.get("postcode")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            check_uprn(user_uprn)
+            check_postcode(user_postcode)
 
-        # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless)
-        driver.get(page)
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless)
+            driver.get(page)
 
-        # Populate postcode field
-        inputElement_postcode = driver.find_element(
-            By.ID,
-            "ctl00_ContentPlaceHolder1_FF3518TB",
-        )
-        inputElement_postcode.send_keys(user_postcode)
-
-        # Click search button
-        driver.find_element(
-            By.ID,
-            "ctl00_ContentPlaceHolder1_FF3518BTN",
-        ).click()
-
-        # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-        dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "ctl00_ContentPlaceHolder1_FF3518DDL")
+            # Populate postcode field
+            inputElement_postcode = driver.find_element(
+                By.ID,
+                "ctl00_ContentPlaceHolder1_FF3518TB",
             )
-        )
-        # Create a 'Select' for it, then select the matching URPN option
-        dropdownSelect = Select(dropdown)
-        dropdownSelect.select_by_value("U" + user_uprn)
+            inputElement_postcode.send_keys(user_postcode)
 
-        # Wait for the submit button to appear, then click it to get the collection dates
-        submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+            # Click search button
+            driver.find_element(
+                By.ID,
+                "ctl00_ContentPlaceHolder1_FF3518BTN",
+            ).click()
+
+            # Wait for the 'Select address' dropdown to appear and select option matching UPRN
+            dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF3518DDL")
+                )
             )
-        )
-        submit.click()
+            # Create a 'Select' for it, then select the matching URPN option
+            dropdownSelect = Select(dropdown)
+            dropdownSelect.select_by_value("U" + user_uprn)
 
-        soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-        # Quit Selenium webdriver to release session
-        driver.quit()
-
-        bins_text = soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
-
-        if bins_text:
-            results = re.findall(
-                "Your (.*?) bin will next be collected on (\d\d?\/\d\d?\/\d{4})",
-                bins_text.find("div", {"class": "ss_confPanel"}).get_text(),
+            # Wait for the submit button to appear, then click it to get the collection dates
+            submit = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+                )
             )
-            if results:
-                for result in results:
-                    collection_date = datetime.strptime(result[1], "%d/%m/%Y")
-                    dict_data = {
-                        "type": result[0],
-                        "collectionDate": collection_date.strftime(date_format),
-                    }
-                    data["bins"].append(dict_data)
+            submit.click()
 
-                    data["bins"].sort(
-                        key=lambda x: datetime.strptime(
-                            x.get("collectionDate"), "%d/%m/%Y"
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+            # Quit Selenium webdriver to release session
+            driver.quit()
+
+            bins_text = soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
+
+            if bins_text:
+                results = re.findall(
+                    "Your (.*?) bin will next be collected on (\d\d?\/\d\d?\/\d{4})",
+                    bins_text.find("div", {"class": "ss_confPanel"}).get_text(),
+                )
+                if results:
+                    for result in results:
+                        collection_date = datetime.strptime(result[1], "%d/%m/%Y")
+                        dict_data = {
+                            "type": result[0],
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                        data["bins"].append(dict_data)
+
+                        data["bins"].sort(
+                            key=lambda x: datetime.strptime(
+                                x.get("collectionDate"), "%d/%m/%Y"
+                            )
                         )
-                    )
-
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return data

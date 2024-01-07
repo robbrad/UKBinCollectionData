@@ -31,57 +31,67 @@ class CouncilClass(AbstractGetBinDataClass):
         return data
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        page = "https://chiltern.gov.uk/collection-dates"
+        driver = None
+        try:
+            page = "https://chiltern.gov.uk/collection-dates"
 
-        # Assign user info
-        user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
+            # Assign user info
+            user_postcode = kwargs.get("postcode")
+            user_paon = kwargs.get("paon")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
 
-        # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless)
-        driver.get(page)
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless)
+            driver.get(page)
 
-        # Enter postcode in text box and wait
-        inputElement_pc = driver.find_element(
-            By.ID, "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONPOSTCODE"
-        )
-        inputElement_pc.send_keys(user_postcode)
-        inputElement_pc.send_keys(Keys.ENTER)
-
-        time.sleep(4)
-
-        # Select address from dropdown and wait
-        inputElement_ad = Select(
-            driver.find_element(
-                By.ID,
-                "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONADDRESS",
+            # Enter postcode in text box and wait
+            inputElement_pc = driver.find_element(
+                By.ID, "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONPOSTCODE"
             )
-        )
+            inputElement_pc.send_keys(user_postcode)
+            inputElement_pc.send_keys(Keys.ENTER)
 
-        inputElement_ad.select_by_visible_text(user_paon)
+            time.sleep(4)
 
-        time.sleep(4)
+            # Select address from dropdown and wait
+            inputElement_ad = Select(
+                driver.find_element(
+                    By.ID,
+                    "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONADDRESS",
+                )
+            )
 
-        # Submit address information and wait
-        inputElement_bn = driver.find_element(
-            By.ID, "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_NAV1_NEXT"
-        ).click()
+            inputElement_ad.select_by_visible_text(user_paon)
 
-        time.sleep(4)
+            time.sleep(4)
 
-        # Read next collection information into Pandas
-        table = driver.find_element(
-            By.ID, "COPYOFECHOCOLLECTIONDATES_PAGE1_DATES2"
-        ).get_attribute("outerHTML")
-        df = pd.read_html(table, header=[1])
-        df = df[0]
+            # Submit address information and wait
+            inputElement_bn = driver.find_element(
+                By.ID, "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_NAV1_NEXT"
+            ).click()
 
-        # Quit Selenium webdriver to release session
-        driver.quit()
+            time.sleep(4)
 
-        # Parse data into dict
-        data = self.get_data(df)
+            # Read next collection information into Pandas
+            table = driver.find_element(
+                By.ID, "COPYOFECHOCOLLECTIONDATES_PAGE1_DATES2"
+            ).get_attribute("outerHTML")
+            df = pd.read_html(table, header=[1])
+            df = df[0]
 
+            # Quit Selenium webdriver to release session
+            driver.quit()
+
+            # Parse data into dict
+            data = self.get_data(df)
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return data

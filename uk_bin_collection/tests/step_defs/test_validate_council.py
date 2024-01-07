@@ -79,8 +79,7 @@ def scrape_step(context, council, selenium_mode, selenium_url):
     # And it the behave test will execute locally
     if selenium_mode != "None" and selenium_url != "None":
         if selenium_mode != "local":
-            web_driver = context.metadata["web_driver"]
-            args.append(f"-w={web_driver}")
+            args.append(f"-w={selenium_url}")
     if "skip_get_url" in context.metadata:
         args.append(f"-s")
 
