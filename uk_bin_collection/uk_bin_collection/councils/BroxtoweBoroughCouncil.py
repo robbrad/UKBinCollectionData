@@ -17,81 +17,91 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        page = "https://selfservice.broxtowe.gov.uk/renderform.aspx?t=217&k=9D2EF214E144EE796430597FB475C3892C43C528"
+        driver = None
+        try:
+            page = "https://selfservice.broxtowe.gov.uk/renderform.aspx?t=217&k=9D2EF214E144EE796430597FB475C3892C43C528"
 
-        data = {"bins": []}
+            data = {"bins": []}
 
-        user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_uprn(user_uprn)
-        check_postcode(user_postcode)
+            user_uprn = kwargs.get("uprn")
+            user_postcode = kwargs.get("postcode")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            check_uprn(user_uprn)
+            check_postcode(user_postcode)
 
-        # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless)
-        driver.get(page)
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless)
+            driver.get(page)
 
-        # Populate postcode field
-        inputElement_postcode = driver.find_element(
-            By.ID,
-            "ctl00_ContentPlaceHolder1_FF5683TB",
-        )
-        inputElement_postcode.send_keys(user_postcode)
-
-        # Click search button
-        driver.find_element(
-            By.ID,
-            "ctl00_ContentPlaceHolder1_FF5683BTN",
-        ).click()
-
-        # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-        dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL")
+            # Populate postcode field
+            inputElement_postcode = driver.find_element(
+                By.ID,
+                "ctl00_ContentPlaceHolder1_FF5683TB",
             )
-        )
-        # Create a 'Select' for it, then select the matching URPN option
-        dropdownSelect = Select(dropdown)
-        dropdownSelect.select_by_value("U" + user_uprn)
+            inputElement_postcode.send_keys(user_postcode)
 
-        # Wait for the submit button to appear, then click it to get the collection dates
-        submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+            # Click search button
+            driver.find_element(
+                By.ID,
+                "ctl00_ContentPlaceHolder1_FF5683BTN",
+            ).click()
+
+            # Wait for the 'Select address' dropdown to appear and select option matching UPRN
+            dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL")
+                )
             )
-        )
-        submit.click()
+            # Create a 'Select' for it, then select the matching URPN option
+            dropdownSelect = Select(dropdown)
+            dropdownSelect.select_by_value("U" + user_uprn)
 
-        soup = BeautifulSoup(driver.page_source, features="html.parser")
+            # Wait for the submit button to appear, then click it to get the collection dates
+            submit = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+                )
+            )
+            submit.click()
 
-        # Quit Selenium webdriver to release session
-        driver.quit()
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-        bins_div = soup.find("div", id="ctl00_ContentPlaceHolder1_FF5686FormGroup")
-        if bins_div:
-            bins_table = bins_div.find("table")
-            if bins_table:
-                # Get table rows
-                for row in bins_table.find_all("tr"):
-                    # Get the rows cells
-                    cells = row.find_all("td")
-                    bin_type = cells[0].get_text(strip=True)
-                    # Skip header row
-                    if bin_type and cells[3] and bin_type != "Bin Type":
-                        collection_date = datetime.strptime(
-                            cells[3].get_text(strip=True), "%A, %d %B %Y"
-                        )
-                        dict_data = {
-                            "type": bin_type,
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
+            # Quit Selenium webdriver to release session
+            driver.quit()
 
-                        data["bins"].sort(
-                            key=lambda x: datetime.strptime(
-                                x.get("collectionDate"), "%d/%m/%Y"
+            bins_div = soup.find("div", id="ctl00_ContentPlaceHolder1_FF5686FormGroup")
+            if bins_div:
+                bins_table = bins_div.find("table")
+                if bins_table:
+                    # Get table rows
+                    for row in bins_table.find_all("tr"):
+                        # Get the rows cells
+                        cells = row.find_all("td")
+                        bin_type = cells[0].get_text(strip=True)
+                        # Skip header row
+                        if bin_type and cells[3] and bin_type != "Bin Type":
+                            collection_date = datetime.strptime(
+                                cells[3].get_text(strip=True), "%A, %d %B %Y"
                             )
-                        )
+                            dict_data = {
+                                "type": bin_type,
+                                "collectionDate": collection_date.strftime(date_format),
+                            }
+                            data["bins"].append(dict_data)
 
+                            data["bins"].sort(
+                                key=lambda x: datetime.strptime(
+                                    x.get("collectionDate"), "%d/%m/%Y"
+                                )
+                            )
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return data

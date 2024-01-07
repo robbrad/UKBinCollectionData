@@ -16,81 +16,91 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        data = {"bins": []}
-        user_paon = kwargs.get("paon")
-        user_postcode = kwargs.get("postcode")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_paon(user_paon)
-        check_postcode(user_postcode)
+        driver = None
+        try:
+            data = {"bins": []}
+            user_paon = kwargs.get("paon")
+            user_postcode = kwargs.get("postcode")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            check_paon(user_paon)
+            check_postcode(user_postcode)
 
-        # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless)
-        driver.get(
-            "https://www.westlothian.gov.uk/article/31528/Bin-Collection-Calendar-Dates"
-        )
-
-        # Close feedback banner
-        feedbackBanner = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".feedback__link--no"))
-        )
-        feedbackBanner.click()
-
-        # Wait for the postcode field to appear then populate it
-        inputElement_postcode = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (By.ID, "WLBINCOLLECTION_PAGE1_ADDRESSLOOKUPPOSTCODE")
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless)
+            driver.get(
+                "https://www.westlothian.gov.uk/article/31528/Bin-Collection-Calendar-Dates"
             )
-        )
-        inputElement_postcode.send_keys(user_postcode)
 
-        # Click search button
-        findAddress = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "WLBINCOLLECTION_PAGE1_ADDRESSLOOKUPSEARCH")
+            # Close feedback banner
+            feedbackBanner = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".feedback__link--no"))
             )
-        )
-        findAddress.click()
+            feedbackBanner.click()
 
-        # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//select[@id='WLBINCOLLECTION_PAGE1_ADDRESSLOOKUPADDRESS']//option[contains(., '"
-                    + user_paon
-                    + "')]",
+            # Wait for the postcode field to appear then populate it
+            inputElement_postcode = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.ID, "WLBINCOLLECTION_PAGE1_ADDRESSLOOKUPPOSTCODE")
                 )
             )
-        ).click()
+            inputElement_postcode.send_keys(user_postcode)
 
-        # Wait for the collections table to appear
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, ".bin-collections"))
-        )
+            # Click search button
+            findAddress = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "WLBINCOLLECTION_PAGE1_ADDRESSLOOKUPSEARCH")
+                )
+            )
+            findAddress.click()
 
-        soup = BeautifulSoup(driver.page_source, features="html.parser")
+            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        "//select[@id='WLBINCOLLECTION_PAGE1_ADDRESSLOOKUPADDRESS']//option[contains(., '"
+                        + user_paon
+                        + "')]",
+                    )
+                )
+            ).click()
 
-        # Quit Selenium webdriver to release session
-        driver.quit()
+            # Wait for the collections table to appear
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".bin-collections"))
+            )
 
-        # Get collections
-        for collection in soup.find_all("div", {"class": "bin-collect"}):
-            dict_data = {
-                "type": collection.find("h3").get_text(strip=True),
-                "collectionDate": datetime.strptime(
-                    remove_ordinal_indicator_from_date_string(
-                        collection.find(
-                            "span", {"class": "bin-collect__date"}
-                        ).get_text(strip=True)
-                    ),
-                    "%A, %B %d %Y",
-                ).strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-        data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-        )
+            # Quit Selenium webdriver to release session
+            driver.quit()
 
+            # Get collections
+            for collection in soup.find_all("div", {"class": "bin-collect"}):
+                dict_data = {
+                    "type": collection.find("h3").get_text(strip=True),
+                    "collectionDate": datetime.strptime(
+                        remove_ordinal_indicator_from_date_string(
+                            collection.find(
+                                "span", {"class": "bin-collect__date"}
+                            ).get_text(strip=True)
+                        ),
+                        "%A, %B %d %Y",
+                    ).strftime(date_format),
+                }
+                data["bins"].append(dict_data)
+
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            )
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return data

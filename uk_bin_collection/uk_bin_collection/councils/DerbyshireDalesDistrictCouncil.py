@@ -17,77 +17,87 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        page = "https://selfserve.derbyshiredales.gov.uk/renderform.aspx?t=103&k=9644C066D2168A4C21BCDA351DA2642526359DFF"
+        driver = None
+        try:
+            page = "https://selfserve.derbyshiredales.gov.uk/renderform.aspx?t=103&k=9644C066D2168A4C21BCDA351DA2642526359DFF"
 
-        data = {"bins": []}
+            data = {"bins": []}
 
-        user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_uprn(user_uprn)
-        check_postcode(user_postcode)
+            user_uprn = kwargs.get("uprn")
+            user_postcode = kwargs.get("postcode")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            check_uprn(user_uprn)
+            check_postcode(user_postcode)
 
-        # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless)
-        driver.get(page)
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless)
+            driver.get(page)
 
-        # Populate postcode field
-        inputElement_postcode = driver.find_element(
-            By.ID,
-            "ctl00_ContentPlaceHolder1_FF2924TB",
-        )
-        inputElement_postcode.send_keys(user_postcode)
-
-        # Click search button
-        driver.find_element(
-            By.ID,
-            "ctl00_ContentPlaceHolder1_FF2924BTN",
-        ).click()
-
-        # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-        dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "ctl00_ContentPlaceHolder1_FF2924DDL")
+            # Populate postcode field
+            inputElement_postcode = driver.find_element(
+                By.ID,
+                "ctl00_ContentPlaceHolder1_FF2924TB",
             )
-        )
-        # Create a 'Select' for it, then select the matching URPN option
-        dropdownSelect = Select(dropdown)
-        dropdownSelect.select_by_value("U" + user_uprn)
+            inputElement_postcode.send_keys(user_postcode)
 
-        # Wait for the submit button to appear, then click it to get the collection dates
-        submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+            # Click search button
+            driver.find_element(
+                By.ID,
+                "ctl00_ContentPlaceHolder1_FF2924BTN",
+            ).click()
+
+            # Wait for the 'Select address' dropdown to appear and select option matching UPRN
+            dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF2924DDL")
+                )
             )
-        )
-        submit.click()
+            # Create a 'Select' for it, then select the matching URPN option
+            dropdownSelect = Select(dropdown)
+            dropdownSelect.select_by_value("U" + user_uprn)
 
-        soup = BeautifulSoup(driver.page_source, features="html.parser")
+            # Wait for the submit button to appear, then click it to get the collection dates
+            submit = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+                )
+            )
+            submit.click()
 
-        # Quit Selenium webdriver to release session
-        driver.quit()
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-        bin_rows = (
-            soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
-            .find("div", {"class": "row"})
-            .find_all("div", {"class": "row"})
-        )
-        if bin_rows:
-            for bin_row in bin_rows:
-                bin_data = bin_row.find_all("div")
-                if bin_data and bin_data[0] and bin_data[1]:
-                    collection_date = datetime.strptime(
-                        bin_data[0].get_text(strip=True), "%A%d %B, %Y"
-                    )
-                    dict_data = {
-                        "type": bin_data[1].get_text(strip=True),
-                        "collectionDate": collection_date.strftime(date_format),
-                    }
-                    data["bins"].append(dict_data)
+            # Quit Selenium webdriver to release session
+            driver.quit()
 
-        data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
-        )
+            bin_rows = (
+                soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
+                .find("div", {"class": "row"})
+                .find_all("div", {"class": "row"})
+            )
+            if bin_rows:
+                for bin_row in bin_rows:
+                    bin_data = bin_row.find_all("div")
+                    if bin_data and bin_data[0] and bin_data[1]:
+                        collection_date = datetime.strptime(
+                            bin_data[0].get_text(strip=True), "%A%d %B, %Y"
+                        )
+                        dict_data = {
+                            "type": bin_data[1].get_text(strip=True),
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                        data["bins"].append(dict_data)
 
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+            )
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return data

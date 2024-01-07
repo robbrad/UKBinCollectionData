@@ -17,85 +17,95 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        page = "https://forms.north-norfolk.gov.uk/outreach/BinCollectionDays.ofml"
+        driver = None
+        try:
+            page = "https://forms.north-norfolk.gov.uk/outreach/BinCollectionDays.ofml"
 
-        data = {"bins": []}
+            data = {"bins": []}
 
-        user_paon = kwargs.get("paon")
-        user_postcode = kwargs.get("postcode")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_paon(user_paon)
-        check_postcode(user_postcode)
+            user_paon = kwargs.get("paon")
+            user_postcode = kwargs.get("postcode")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            check_paon(user_paon)
+            check_postcode(user_postcode)
 
-        # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless)
-        driver.get(page)
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless)
+            driver.get(page)
 
-        # Populate postcode field
-        inputElement_postcode = driver.find_element(
-            By.ID,
-            "F_Address_subform:Postcode",
-        )
-        inputElement_postcode.send_keys(user_postcode)
-
-        # Click search button
-        driver.find_element(
-            By.ID,
-            "BA_Address_subform:Search_button",
-        ).click()
-
-        # Wait for the 'Select address' dropdown to appear
-        dropdown = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//select[@id='F_Address_subform:Id']")
+            # Populate postcode field
+            inputElement_postcode = driver.find_element(
+                By.ID,
+                "F_Address_subform:Postcode",
             )
-        )
-        # Create a 'Select' for it, then select the matching house number/name option
-        dropdownSelect = Select(dropdown)
-        matchingOptions = [
-            o for o in dropdownSelect.options if user_paon.lower() in o.text.lower()
-        ]
-        if matchingOptions:
-            matchingOptions[0].click()
+            inputElement_postcode.send_keys(user_postcode)
 
-            # Wait for the results to appear
-            WebDriverWait(driver, 10).until(
+            # Click search button
+            driver.find_element(
+                By.ID,
+                "BA_Address_subform:Search_button",
+            ).click()
+
+            # Wait for the 'Select address' dropdown to appear
+            dropdown = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//div[contains(@class, 'fieldmergedcolumn')]/ul")
+                    (By.XPATH, "//select[@id='F_Address_subform:Id']")
                 )
             )
+            # Create a 'Select' for it, then select the matching house number/name option
+            dropdownSelect = Select(dropdown)
+            matchingOptions = [
+                o for o in dropdownSelect.options if user_paon.lower() in o.text.lower()
+            ]
+            if matchingOptions:
+                matchingOptions[0].click()
 
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Quit Selenium webdriver to release session
-            driver.quit()
-
-            bins_text = soup.find("div", id="Search_result_details_cps_hd")
-
-            if bins_text:
-                results = re.findall(
-                    "Your next (.*?) Bin collection is ([A-Za-z]+ \\d\\d? [A-Za-z]+)",
-                    bins_text.get_text(),
+                # Wait for the results to appear
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//div[contains(@class, 'fieldmergedcolumn')]/ul")
+                    )
                 )
-                if results:
-                    for result in results:
-                        collection_date = datetime.strptime(
-                            result[1] + " " + datetime.now().strftime("%Y"),
-                            "%A %d %B %Y",
-                        )
-                        dict_data = {
-                            "type": result[0],
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
 
-                        data["bins"].sort(
-                            key=lambda x: datetime.strptime(
-                                x.get("collectionDate"), date_format
+                soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+                # Quit Selenium webdriver to release session
+                driver.quit()
+
+                bins_text = soup.find("div", id="Search_result_details_cps_hd")
+
+                if bins_text:
+                    results = re.findall(
+                        "Your next (.*?) Bin collection is ([A-Za-z]+ \\d\\d? [A-Za-z]+)",
+                        bins_text.get_text(),
+                    )
+                    if results:
+                        for result in results:
+                            collection_date = datetime.strptime(
+                                result[1] + " " + datetime.now().strftime("%Y"),
+                                "%A %d %B %Y",
                             )
-                        )
-        else:
-            raise ValueError("No matching address for house number/name found.")
+                            dict_data = {
+                                "type": result[0],
+                                "collectionDate": collection_date.strftime(date_format),
+                            }
+                            data["bins"].append(dict_data)
 
+                            data["bins"].sort(
+                                key=lambda x: datetime.strptime(
+                                    x.get("collectionDate"), date_format
+                                )
+                            )
+            else:
+                raise ValueError("No matching address for house number/name found.")
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return data
