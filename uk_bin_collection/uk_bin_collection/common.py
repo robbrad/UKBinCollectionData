@@ -270,7 +270,7 @@ def create_webdriver(web_driver: str, headless: bool) -> webdriver.Chrome:
     # Set up Selenium to run 'headless'
     options = webdriver.ChromeOptions()
     if headless is True:
-        options.add_argument("--headless=new")
+        options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-gpu")
     options.add_argument("--start-maximized")
