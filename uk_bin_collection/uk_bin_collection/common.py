@@ -246,6 +246,7 @@ def validate_dates(bin_dates: dict) -> dict:
     raise NotImplementedError()
     # If a date is in December and the next is in January, increase the year
 
+
 def contains_date(string, fuzzy=False) -> bool:
     """
     Return whether the string can be interpreted as a date.
@@ -253,7 +254,7 @@ def contains_date(string, fuzzy=False) -> bool:
     :param string: str, string to check for date
     :param fuzzy: bool, ignore unknown tokens in string if True
     """
-    try: 
+    try:
         parse(string, fuzzy=fuzzy)
         return True
 
@@ -261,14 +262,15 @@ def contains_date(string, fuzzy=False) -> bool:
         return False
 
 
-def create_webdriver(web_driver) -> webdriver.Chrome:
+def create_webdriver(web_driver: str, headless: bool) -> webdriver.Chrome:
     """
     Create and return a headless Selenium webdriver
     :rtype: webdriver.Chrome
     """
     # Set up Selenium to run 'headless'
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    if headless is True:
+        options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-gpu")
     options.add_argument("--start-maximized")

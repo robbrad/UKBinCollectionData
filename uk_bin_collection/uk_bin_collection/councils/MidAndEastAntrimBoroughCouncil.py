@@ -24,11 +24,12 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         # not used: user_paon = kwargs.get("paon")
         web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
 
         # Create Selenium webdriver
         options = webdriver.ChromeOptions()
         options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        driver = create_webdriver(web_driver)
+        driver = create_webdriver(web_driver, headless)
 
         driver.get(page)
 

@@ -23,6 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
         page = "https://westsuffolk-self.achieveservice.com/service/WSS_EX_Inf_Bin_Collection_Postcode_Lookup"
 
         # Assign user info
@@ -30,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
 
         # Create Selenium webdriver
-        driver = create_webdriver(web_driver)
+        driver = create_webdriver(web_driver, headless)
         driver.get(page)
 
         # Click the cookie button

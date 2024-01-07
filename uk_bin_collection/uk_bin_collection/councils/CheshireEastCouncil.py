@@ -13,16 +13,20 @@ class CouncilClass(AbstractGetBinDataClass):
             rows = table.find_all("tr", {"class": "data-row"})
 
             for row in rows:
-                cells = row.find_all("td", {"class": lambda L: L and L.startswith("visible-cell")})
+                cells = row.find_all(
+                    "td", {"class": lambda L: L and L.startswith("visible-cell")}
+                )
                 labels = cells[0].find_all("label") if cells else []
 
                 if len(labels) >= 3:
                     bin_type = labels[2].get_text(strip=True)
                     collection_date = labels[1].get_text(strip=True)
 
-                    bin_data_dict["bins"].append({
-                        "type": bin_type,
-                        "collectionDate": collection_date,
-                    })
+                    bin_data_dict["bins"].append(
+                        {
+                            "type": bin_type,
+                            "collectionDate": collection_date,
+                        }
+                    )
 
         return bin_data_dict

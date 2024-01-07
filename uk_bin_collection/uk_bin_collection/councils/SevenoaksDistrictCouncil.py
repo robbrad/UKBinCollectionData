@@ -22,6 +22,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
         page = "https://sevenoaks-dc-host01.oncreate.app/w/webpage/waste-collection-day"
 
         # Assign user info
@@ -29,7 +30,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
 
         # Create Selenium webdriver
-        driver = create_webdriver(web_driver)
+        driver = create_webdriver(web_driver, headless)
         driver.get(page)
 
         # Enter postcode

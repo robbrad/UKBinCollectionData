@@ -10,15 +10,24 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import (
 
 _LOGGER = logging.getLogger(__name__)
 
-# We use this method to dynamically import the council processor
-SRC_PATH = os.path.join("councils")
-module_path = os.path.realpath(os.path.join(os.path.dirname(__file__), SRC_PATH))
-sys.path.append(module_path)
+
+# Dynamically importing the council processor
+def import_council_module(module_name, src_path="councils"):
+    module_path = os.path.realpath(os.path.join(os.path.dirname(__file__), src_path))
+    if module_path not in sys.path:
+        sys.path.append(module_path)
+    return importlib.import_module(module_name)
 
 
 class UKBinCollectionApp:
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description="")
+        self.setup_arg_parser()
+        self.parsed_args = None
+
+    def setup_arg_parser(self):
+        self.parser = argparse.ArgumentParser(
+            description="UK Bin Collection Data Parser"
+        )
         self.parser.add_argument(
             "module", type=str, help="Name of council module to use"
         )
@@ -53,6 +62,13 @@ class UKBinCollectionApp:
             required=False,
         )
         self.parser.add_argument(
+            "--headless",
+            action="store_false",
+            help="Should Selenium be headless. Defaults to true. Can be set to false to debug council",
+            required=False,
+        )
+
+        self.parser.add_argument(
             "-d",
             "--dev_mode",
             action="store_true",
@@ -64,26 +80,16 @@ class UKBinCollectionApp:
     def set_args(self, args):
         self.parsed_args = self.parser.parse_args(args)
 
-    def get_council_module(self, council_module_str):
-        return importlib.import_module(council_module_str)
-
-    def client_code(self, get_bin_data_class, address_url, **kwargs) -> None:
-        """
-        The client code calls the template method to execute the algorithm. Client
-        code does not have to know the concrete class of an object it works with,
-        as long as it works with objects through the interface of their base class.
-        """
-        return get_bin_data_class.template_method(address_url, **kwargs)
-
     def run(self):
         council_module_str = self.parsed_args.module
+        council_module = import_council_module(council_module_str)
         address_url = self.parsed_args.URL
-        council_module = self.get_council_module(council_module_str)
         postcode = self.parsed_args.postcode
         paon = self.parsed_args.number
         uprn = self.parsed_args.uprn
         skip_get_url = self.parsed_args.skip_get_url
         web_driver = self.parsed_args.web_driver
+        headless = self.parsed_args.headless
         dev_mode = self.parsed_args.dev_mode
 
         return self.client_code(
@@ -94,17 +100,22 @@ class UKBinCollectionApp:
             uprn=uprn,
             skip_get_url=skip_get_url,
             web_driver=web_driver,
+            headless=headless,
             dev_mode=dev_mode,
             council_module_str=council_module_str,
         )
 
+    def client_code(self, get_bin_data_class, address_url, **kwargs) -> None:
+        """
+        The client code calls the template method to execute the algorithm. Client
+        code does not have to know the concrete class of an object it works with,
+        as long as it works with objects through the interface of their base class.
+        """
+        return get_bin_data_class.template_method(address_url, **kwargs)
+
 
 if __name__ == "__main__":
-    import sys
-
     _LOGGER = setup_logging(LOGGING_CONFIG, None)
-
     app = UKBinCollectionApp()
     app.set_args(sys.argv[1:])
-    data = app.run()
-    print(data)
+    print(app.run())

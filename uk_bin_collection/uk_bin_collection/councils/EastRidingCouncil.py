@@ -25,11 +25,12 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
 
         # Create Selenium webdriver
         page = f"https://www.eastriding.gov.uk/environment/bins-rubbish-recycling/bins-and-collections/bin-collection-dates/"
 
-        driver = create_webdriver(web_driver)
+        driver = create_webdriver(web_driver, headless)
         driver.get(page)
 
         wait = WebDriverWait(driver, 60)

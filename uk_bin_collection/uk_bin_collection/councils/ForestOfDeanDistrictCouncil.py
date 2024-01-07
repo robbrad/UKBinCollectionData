@@ -30,9 +30,10 @@ class CouncilClass(AbstractGetBinDataClass):
         postcode = kwargs.get("postcode")
         full_address = f"{house_number}, {postcode}"
         web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
 
         # Create Selenium webdriver
-        driver = create_webdriver(web_driver)
+        driver = create_webdriver(web_driver, headless)
         driver.get(page)
 
         # If you bang in the house number (or property name) and postcode in the box it should find your property
