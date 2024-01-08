@@ -58,7 +58,11 @@ async def async_setup_entry(
 
     #Run with the --not-headless switch
     if config.data.get("headless", True):
-        args.append("--not-headless")
+        headless = config.data.get("headless")
+        if headless:
+            args.append("--headless")
+        else:
+            args.append("--not-headless")
 
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
 
