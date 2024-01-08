@@ -56,13 +56,12 @@ async def async_setup_entry(
     if config.data.get("skip_get_url", False):
         args.append("--skip_get_url")
 
-    #Run with the --not-headless switch
-    if config.data.get("headless", True):
-        headless = config.data.get("headless")
-        if headless:
-            args.append("--headless")
-        else:
-            args.append("--not-headless")
+    # Assuming headless is a boolean value obtained from config.data
+    headless = config.data.get("headless", True)  # Default to True if not specified
+    
+    # Only append the argument for non-headless mode
+    if headless is False:
+        args.append("--not-headless")
 
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
 
