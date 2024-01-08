@@ -88,6 +88,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North Somerset Council](#north-somerset-council)
 - [North Tyneside Council](#north-tyneside-council)
 - [Northumberland Council](#northumberland-council)
+- [Nottingham City Council](#nottingham-city-council)
 - [Oldham Council](#oldham-council)
 - [Portsmouth City Council](#portsmouth-city-council)
 - [Preston City Council](#preston-city-council)
@@ -175,7 +176,7 @@ Additional parameters:
 
 ### Barnet Council
 ```commandline
-python collect_data.py BarnetCouncil  -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BarnetCouncil https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -1031,6 +1032,16 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Nottingham City Council
+```commandline
+python collect_data.py NottinghamCityCouncil https://geoserver.nottinghamcity.gov.uk/myproperty/handler/proxy.ashx?https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/100031540180 -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
 
 ---
 
