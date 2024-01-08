@@ -50,11 +50,14 @@ async def async_setup_entry(
         *(
             f"--{key}={value}"
             for key, value in config.data.items()
-            if key not in {"name", "council", "url", "skip_get_url"}
+            if key not in {"name", "council", "url", "skip_get_url", "headless"}
         ),
     ]
     if config.data.get("skip_get_url", False):
         args.append("--skip_get_url")
+
+    if config.data.get("headless", False):
+        args.append("--not-headless")
 
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
 

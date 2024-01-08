@@ -71,7 +71,11 @@ def scrape_step(context, council, selenium_mode, selenium_url):
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
     if "headless" in context.metadata:
-        args.append(f"--headless")
+        headless = context.metadata["headless"]
+        if headless:
+            args.append(f"--headless")
+        else:
+            args.append(f"--not-headless")
     # TODO we should somehow run this test with and without this argument passed
     # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
 
