@@ -56,6 +56,7 @@ async def async_setup_entry(
     if config.data.get("skip_get_url", False):
         args.append("--skip_get_url")
 
+    #Run with the --not-headless switch
     if config.data.get("headless", True):
         args.append("--not-headless")
 
