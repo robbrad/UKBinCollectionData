@@ -49,9 +49,13 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get the collection items on the page and strip the bits of text that we don't care for
         collections = []
         for bin in collections_div.find_all("h3"):
-            bin_type = bin.find_next("br").next_sibling
-            collection_date = datetime.strptime(bin.text, "%A, %d %B %Y")
-            collections.append((bin_type, collection_date))
+            next_bin = bin.next_sibling
+
+            while next_bin.name != "h3" and next_bin.name != "p":
+                if next_bin.name != "br":
+                    collection_date = datetime.strptime(bin.text, "%A, %d %B %Y")
+                    collections.append((next_bin, collection_date))
+                next_bin = next_bin.next_sibling
 
         # Sort the collections by date order rather than bin type, then return as a dictionary (with str date)
         ordered_data = sorted(collections, key=lambda x: x[1])
