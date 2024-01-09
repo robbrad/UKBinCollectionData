@@ -552,6 +552,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| TamesideMBCouncil | None  | None  |
 
+        @TestValleyBoroughCouncil
+		Examples: TestValleyBoroughCouncil
+		| council | selenium_url | selenium_mode |
+		| TestValleyBoroughCouncil | None  | None  |
+
         @TonbridgeAndMallingBC
 		Examples: TonbridgeAndMallingBC
 		| council | selenium_url | selenium_mode |

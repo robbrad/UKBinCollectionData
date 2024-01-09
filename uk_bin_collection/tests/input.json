@@ -774,6 +774,13 @@
         "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
         "wiki_name": "Tameside Metropolitan Borough Council"
     },
+    "TestValleyBoroughCouncil": {
+        "postcode": "SO51 9ZD",
+        "skip_get_url": true,
+        "uprn": "200010012019",
+        "url": "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected",
+        "wiki_name": "Test Valley Borough Council"
+    },
     "TonbridgeAndMallingBC": {
         "postcode": "ME19 4JS",
         "skip_get_url": true,

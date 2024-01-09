@@ -119,6 +119,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Stratford Upon Avon Council](#stratford-upon-avon-council)
 - [Swale Borough Council](#swale-borough-council)
 - [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
+- [Test Valley Borough Council](#test-valley-borough-council)
 - [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
 - [Torbay Council](#torbay-council)
 - [Torridge District Council](#torridge-district-council)
@@ -1366,6 +1367,17 @@ python collect_data.py TamesideMBCouncil http://lite.tameside.gov.uk/BinCollecti
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### Test Valley Borough Council
+```commandline
+python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
