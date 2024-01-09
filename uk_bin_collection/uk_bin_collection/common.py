@@ -262,7 +262,7 @@ def contains_date(string, fuzzy=False) -> bool:
         return False
 
 
-def create_webdriver(web_driver: str, headless: bool) -> webdriver.Chrome:
+def create_webdriver(web_driver: str, headless: bool, user_agent: str) -> webdriver.Chrome:
     """
     Create and return a headless Selenium webdriver
     :rtype: webdriver.Chrome
@@ -275,6 +275,8 @@ def create_webdriver(web_driver: str, headless: bool) -> webdriver.Chrome:
     options.add_argument("--disable-gpu")
     options.add_argument("--start-maximized")
     options.add_argument("--disable-dev-shm-usage")
+    if user_agent is not None:
+        options.add_argument(f"--user-agent={user_agent}")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
     # Return a remote Selenium webdriver
     if web_driver is not None:

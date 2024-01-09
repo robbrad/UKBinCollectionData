@@ -33,6 +33,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Charnwood Borough Council](#charnwood-borough-council)
 - [Chelmsford City Council](#chelmsford-city-council)
 - [Cheshire East Council](#cheshire-east-council)
+- [Chorley Council](#chorley-council)
 - [Conwy County Borough Council](#conwy-county-borough-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
@@ -412,6 +413,21 @@ python collect_data.py CheshireEastCouncil https://online.cheshireeast.gov.uk/My
 
 Note: Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.
 Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`.
+
+---
+
+### Chorley Council
+```commandline
+python collect_data.py ChorleyCouncil https://myaccount.chorley.gov.uk/wastecollections.aspx -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
 
 ---
 

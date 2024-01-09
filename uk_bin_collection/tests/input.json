@@ -172,6 +172,15 @@
         "wiki_name": "Cheshire East Council",
         "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.\nUse the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`."
     },
+    "ChorleyCouncil": {
+        "postcode": "PR6 7PG",
+        "uprn": "UPRN100010382247",
+        "skip_get_url": true,
+        "url": "https://myaccount.chorley.gov.uk/wastecollections.aspx",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Chorley Council",
+        "wiki_note": "Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+    },
     "ConwyCountyBorough": {
         "postcode": "LL30 2DF",
         "uprn": "100100429249",
