@@ -55,15 +55,16 @@ class CouncilClass(AbstractGetBinDataClass):
         # Process dict for valid bin types
         for bin in list(binDict):
             if bin in binTypes:
-                # Convert date
-                date = datetime.strptime(binDict[bin], "%a, %d %b %Y")
-
-                # Set bin data
-                dict_data = {
-                    "type": bin,
-                    "collectionDate": date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+                if not binDict[bin].startswith("You haven't yet signed up for"):
+                    # Convert date
+                    date = datetime.strptime(binDict[bin], "%a, %d %b %Y")
+    
+                    # Set bin data
+                    dict_data = {
+                        "type": bin,
+                        "collectionDate": date.strftime(date_format),
+                    }
+                    data["bins"].append(dict_data)
 
         # Return bin data
         return data
