@@ -810,6 +810,7 @@
         "custom_component_show_url_field": false,
         "uprn": "100121391443",
         "url": "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb",
+        "skip_get_url": true,
         "wiki_name": "Vale of White Horse Council"
     },
     "WakefieldCityCouncil": {

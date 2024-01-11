@@ -53,27 +53,36 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         # Page has slider info side by side, which are two instances of this class
-        for bin in soup.find_all("div", {"class": "binextra"}):
-            bin_info = list(bin.stripped_strings)
+        for bin in soup.find_all("div", {"class": "bintxt"}):
             try:
-                # On standard collection schedule, date will be contained in the first stripped string
-                if contains_date(bin_info[0]):
+                # Check bin type heading and make that bin type and colour
+                bin_type_info = list(bin.stripped_strings)
+                if "rubbish" in bin_type_info[0]:
+                    bin_type = "Rubbish"
+                    bin_colour = "Black"
+                elif "recycling" in bin_type_info[0]:
+                    bin_type = "Recycling"
+                    bin_colour = "Green"
+                else:
+                    raise ValueError(f"No bin info found in {bin_type_info[0]}")
+                
+                bin_date_info = list(bin.find_next("div", {"class": "binextra"}).stripped_strings)
+                # On standard collection schedule, date will be contained in the first string
+                if contains_date(bin_date_info[0]):
                     bin_date = get_next_occurrence_from_day_month(
                         datetime.strptime(
-                            bin_info[0] + " " + datetime.today().strftime("%Y"),
+                            bin_date_info[0] + " " + datetime.today().strftime("%Y"),
                             "%A %d %B - %Y",
                         )
                     ).strftime(date_format)
-                    bin_type = str.capitalize(bin_info[1])
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
                     bin_date = get_next_occurrence_from_day_month(
                         datetime.strptime(
-                            bin_info[1] + " " + datetime.today().strftime("%Y"),
+                            bin_date_info[1] + " " + datetime.today().strftime("%Y"),
                             "%A %d %B - %Y",
                         )
                     ).strftime(date_format)
-                    bin_type = str.capitalize(bin_info[2])
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
 
@@ -81,6 +90,7 @@ class CouncilClass(AbstractGetBinDataClass):
             dict_data = {
                 "type": bin_type,
                 "collectionDate": bin_date,
+                "colour": bin_colour,
             }
             data["bins"].append(dict_data)
 
