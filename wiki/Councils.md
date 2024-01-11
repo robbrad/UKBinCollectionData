@@ -420,7 +420,7 @@ Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find
 
 ### Chorley Council
 ```commandline
-python collect_data.py ChorleyCouncil https://myaccount.chorley.gov.uk/wastecollections.aspx -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py ChorleyCouncil https://myaccount.chorley.gov.uk/wastecollections.aspx -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -428,8 +428,7 @@ Additional parameters:
 - `-p` - postcode
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search).
-
+Note: Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search)
 
 ---
 
@@ -1372,7 +1371,7 @@ Additional parameters:
 
 ### Test Valley Borough Council
 ```commandline
-python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected -s -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -1424,9 +1423,10 @@ Additional parameters:
 
 ### Vale of White Horse Council
 ```commandline
-python collect_data.py ValeofWhiteHorseCouncil https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb -u XXXXXXXX
+python collect_data.py ValeofWhiteHorseCouncil https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb -s -u XXXXXXXX
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 
 ---
