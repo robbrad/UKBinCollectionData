@@ -262,7 +262,9 @@ def contains_date(string, fuzzy=False) -> bool:
         return False
 
 
-def create_webdriver(web_driver: str, headless: bool, user_agent: str) -> webdriver.Chrome:
+def create_webdriver(
+    web_driver: str, headless: bool, user_agent: str = None
+) -> webdriver.Chrome:
     """
     Create and return a headless Selenium webdriver
     :rtype: webdriver.Chrome
