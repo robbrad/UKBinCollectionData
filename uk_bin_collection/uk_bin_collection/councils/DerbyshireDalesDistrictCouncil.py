@@ -67,9 +67,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            # Quit Selenium webdriver to release session
-            driver.quit()
-
             bin_rows = (
                 soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
                 .find("div", {"class": "row"})

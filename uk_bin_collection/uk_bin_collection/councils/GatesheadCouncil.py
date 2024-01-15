@@ -69,9 +69,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            # Quit Selenium webdriver to release session
-            driver.quit()
-
             # Get collections table
             table = soup.find("table", {"class": "bincollections__table"})
 
