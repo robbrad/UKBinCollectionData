@@ -120,9 +120,6 @@ class CouncilClass(AbstractGetBinDataClass):
                 By.ID, "FINDBINDAYSHIGHPEAK_CALENDAR_MAINCALENDAR"
             ).get_attribute("outerHTML")
 
-            # Quit Selenium webdriver to release session
-            driver.quit()
-
             # Parse data into dict
             data = self.get_data(table)
         except Exception as e:

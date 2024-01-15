@@ -81,9 +81,6 @@ class CouncilClass(AbstractGetBinDataClass):
             df = pd.read_html(table, header=[1])
             df = df[0]
 
-            # Quit Selenium webdriver to release session
-            driver.quit()
-
             # Parse data into dict
             data = self.get_data(df)
         except Exception as e:
