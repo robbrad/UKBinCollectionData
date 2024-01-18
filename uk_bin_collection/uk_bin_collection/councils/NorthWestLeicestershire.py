@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -76,8 +76,15 @@ class CouncilClass(AbstractGetBinDataClass):
                     waste_type = li.find("a").text.strip()  # Extract the waste type
 
                     # Parse the date from the string
-                    date = re.sub(r"(st|nd|rd|th)", "", date)
-                    parsed_date = datetime.strptime(date, "%a %d %b")
+                    # check for today and tomorrow
+                    if date.lower() == 'today':
+                        parsed_date = datetime.now().strftime("%a %d %b")
+                    elif date.lower() == 'tomorrow':
+                        parsed_date = (datetime.now() + timedelta(days=1)).strftime("%a %d %b")
+                    else:
+                        date = re.sub(r"(st|nd|rd|th)", "", date)
+                        parsed_date = datetime.strptime(date, "%a %d %b")
+
                     if parsed_date < datetime(
                         parsed_date.year, parsed_date.month, parsed_date.day
                     ):
