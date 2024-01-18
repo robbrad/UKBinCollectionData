@@ -50,7 +50,7 @@ jobs:
 
     - name: Get all councils files that have changed
       id: changed-council-files
-      uses: tj-actions/changed-files@v41
+      uses: tj-actions/changed-files@v42
       with:
         files: |
           uk_bin_collection/uk_bin_collection/councils/**.py
