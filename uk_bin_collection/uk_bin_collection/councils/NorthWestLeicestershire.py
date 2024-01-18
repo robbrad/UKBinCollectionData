@@ -77,20 +77,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     # Parse the date from the string
                     # check for today and tomorrow
-                    if date.lower() == 'today':
-                        parsed_date = datetime.now().strftime("%a %d %b")
+                    if date.lower() == 'today': 
+                        parsed_date = datetime.now().date()
                     elif date.lower() == 'tomorrow':
-                        parsed_date = (datetime.now() + timedelta(days=1)).strftime("%a %d %b")
+                        parsed_date = (datetime.now() + timedelta(days=1)).date()
                     else:
                         date = re.sub(r"(st|nd|rd|th)", "", date)
-                        parsed_date = datetime.strptime(date, "%a %d %b")
+                        parsed_date = datetime.strptime(date, "%a %d %b").date()
 
-                    if parsed_date < datetime(
-                        parsed_date.year, parsed_date.month, parsed_date.day
-                    ):
-                        parsed_date = parsed_date.replace(year=current_year + 1)
-                    else:
-                        parsed_date = parsed_date.replace(year=current_year)
+                    current_date = datetime.now().date()
+
+                    # double check we've got a year and if not the current one
+                    if parsed_date.year < current_date.year:
+                        parsed_date = parsed_date.replace(year=current_date.year)
+
+                    # check if the date is in the past and if so add a year
+                    if parsed_date < current_date:
+                        parsed_date = parsed_date.replace(year=current_date.year + 1)
 
                     # Append data to your 'bins' list (this replicates your existing logic)
                     data["bins"].append(
