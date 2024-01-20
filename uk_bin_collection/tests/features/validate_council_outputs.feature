@@ -402,6 +402,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| NorthWestLeicestershire | http://selenium:4444  | local  |
 
+		@NorthYorkshire
+		Examples: NorthYorkshire
+		| council | selenium_url | selenium_mode |
+		| NorthYorkshire | None  | None  |
+
         @NottinghamCityCouncil
 		Examples: NottinghamCityCouncil
 		| council | selenium_url | selenium_mode |
