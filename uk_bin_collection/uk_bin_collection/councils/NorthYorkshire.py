@@ -14,8 +14,6 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
-        # Disable urllib3 warnings
-        # requests.packages.urllib3.disable_warnings()
         # Figure bin data URL from UPRN
         url = "https://www.northyorks.gov.uk/bin-calendar/lookup"
 
