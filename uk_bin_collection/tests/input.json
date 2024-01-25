@@ -149,8 +149,8 @@
         "skip_get_url": true,
         "uprn": "4525",
         "url": "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "Castlepoint District Council"
+        "wiki_name": "Castlepoint District Council",
+        "wiki_note": "For this council 'uprn' is actually a 4 digit code for your street, go [here](https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar) and inspect the source of the dropdown box to find the 4 digit number for your street."
     },
     "CharnwoodBoroughCouncil": {
         "url": "https://my.charnwood.gov.uk/location?put=cbc10070067259&rememberme=0&redirect=%2F",

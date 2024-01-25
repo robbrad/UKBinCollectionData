@@ -105,7 +105,7 @@ Feature: Test each council output matches expected results
         @CastlepointDistrictCouncil
 		Examples: CastlepointDistrictCouncil
 		| council | selenium_url | selenium_mode |
-		| CastlepointDistrictCouncil | http://selenium:4444  | local  |
+		| CastlepointDistrictCouncil | None  | None  |
 
         @CharnwoodBoroughCouncil
 		Examples: CharnwoodBoroughCouncil
