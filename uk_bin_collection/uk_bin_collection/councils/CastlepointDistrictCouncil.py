@@ -1,21 +1,7 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-# This script pulls (in one hit) the data from Bromley Council Bins Data
-import datetime
-from bs4 import BeautifulSoup
-from datetime import datetime
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
-import time
-
-
-def get_month_number(month_name):
-    return datetime.strptime(month_name, "%B").month
+from uk_bin_collection.uk_bin_collection.get_bin_data import \
+    AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -27,88 +13,86 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
+        # Disable the SSL warnings that otherwise break everything
+        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ":HIGH:!DH:!aNULL"
         try:
-            # UPRN is street id here
-            uprn = kwargs.get("uprn")
-            check_uprn(uprn)
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            driver = create_webdriver(web_driver, headless)
-            driver.get(kwargs.get("url"))
-
-            wait = WebDriverWait(driver, 30)
-            roadid = wait.until(
-                EC.presence_of_element_located((By.XPATH, '//select[@name="roadID"]'))
+            requests.packages.urllib3.contrib.pyopenssl.util.ssl_.DEFAULT_CIPHERS += (
+                ":HIGH:!DH:!aNULL"
             )
-            dropdown = wait.until(
-                EC.element_to_be_clickable((By.XPATH, '//select[@name="roadID"]'))
-            )
+        except AttributeError:
+            pass
 
-            # Create a 'Select' for it, then select the first address in the list
-            # (Index 0 is "Make a selection from the list")
-            dropdownSelect = Select(dropdown)
-            dropdownSelect.select_by_value(str(uprn))
-            search_btn = wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        '//*[@id="wasteCalendarContainer"]/form/input[@value="Search"]',
-                    )
+        # UPRN is street id here
+        uprn = kwargs.get("uprn")
+        check_uprn(uprn)
+
+        post_url = "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar.displayDetails"
+        post_header_str = (
+            "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
+            "image/apng,"
+            "*/*;q=0.8,application/signed-exchange;v=b3;q=0.9|Accept-Encoding: gzip, deflate, "
+            "br|Accept-Language: en-GB;q=0.8|Cache-Control: max-age=0|Connection: "
+            "keep-alive|Content-Length: "
+            "11|Content-Type: application/x-www-form-urlencoded|Host: apps.castlepoint.gov.uk|Origin: "
+            "https://apps.castlepoint.gov.uk|Referer: "
+            "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar|Sec-Fetch-Dest: "
+            "document|Sec-Fetch-Mode: navigate|Sec-Fetch-Site: same-origin|Sec-Fetch-User: ?1|Sec-GPC: "
+            "1|Upgrade-Insecure-Requests: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+        )
+
+        post_headers = parse_header(post_header_str)
+        form_data = {"roadID": uprn}
+        post_response = requests.post(
+            post_url, headers=post_headers, data=form_data, verify=False
+        )
+
+        # Make a BS4 object
+        soup = BeautifulSoup(post_response.text, features="html.parser")
+        soup.prettify()
+
+        data = {"bins": []}
+        collection_tuple = []
+
+        for i in range(1, 3):
+            calendar = soup.select(
+                f"#wasteCalendarContainer > div:nth-child(2) > div:nth-child({i}) > div"
+            )[0]
+            month = datetime.strptime(
+                calendar.find_next("h2").get_text(), "%B %Y"
+            ).strftime("%m")
+            year = datetime.strptime(
+                calendar.find_next("h2").get_text(), "%B %Y"
+            ).strftime("%Y")
+
+            pink_days = [
+                day.get_text().strip() for day in calendar.find_all("td", class_="pink")
+            ]
+            black_days = [
+                day.get_text().strip()
+                for day in calendar.find_all("td", class_="normal")
+            ]
+
+            for day in pink_days:
+                collection_date = datetime(
+                    year=int(year), month=int(month), day=int(day)
                 )
-            )
-            search_btn.click()
+                collection_tuple.append(("Pink collection", collection_date))
 
-            results = wait.until(
-                EC.presence_of_element_located((By.ID, "wasteCalendarContainer"))
-            )
+            for day in black_days:
+                collection_date = datetime(
+                    year=int(year), month=int(month), day=int(day)
+                )
+                collection_tuple.append(("Normal collection", collection_date))
 
-            # Make a BS4 object
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
+        ordered_data = sorted(collection_tuple, key=lambda x: x[1])
 
-            data = {"bins": []}
+        for item in ordered_data:
+            dict_data = {
+                "type": item[0],
+                "collectionDate": item[1].strftime(date_format),
+            }
+            data["bins"].append(dict_data)
 
-            # Find all calendar containers
-            calendar_containers = soup.select(".calendarContainer > .calendarContainer")
-
-            # List to store dictionaries for each item
-            data_list = []
-
-            # Iterate through each calendar container
-            for container in calendar_containers:
-                # Find the header (h2 element) inside the current calendar container
-                header = container.find("h2")
-
-                # Extract month and year from the header
-                if header:
-                    month_year = header.get_text(strip=True)
-                    month, year = month_year.split()
-
-                    # Find all elements with class "pink" and "normal" inside the current calendar container
-                    pink_days = container.find_all("td", class_="pink")
-                    normal_days = container.find_all("td", class_="normal")
-                    month_number = get_month_number(month)
-                    # Extract the dates for "pink" and "normal" days and create dictionary items
-                    for date in pink_days + normal_days:
-                        day = date.get_text().zfill(2)
-                        formatted_date = f"{day}/{month_number:02d}/{year}"
-
-                        # Build dictionary for each item
-                        dict_data = {
-                            "type": "Pink" if date["class"][0] == "pink" else "Normal",
-                            "collectionDate": formatted_date,
-                        }
-                        data["bins"].append(dict_data)
-                else:
-                    print("Invalid calendar format encountered.")
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
         return data
