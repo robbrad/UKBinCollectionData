@@ -11,9 +11,9 @@ This document is still a work in progress, don't worry if your council isn't lis
 
 ## Contents
 - [Aylesbury Vale Council (Buckinghamshire)](#aylesbury-vale-council-(buckinghamshire))
-- [Barnsley Metropolitan Borough Council](#barnsley-metropolitan-borough-council)
 - [BCP Council](#bcp-council)
 - [Barnet Council](#barnet-council)
+- [Barnsley Metropolitan Borough Council](#barnsley-metropolitan-borough-council)
 - [Basingstoke Council](#basingstoke-council)
 - [Bath and North East Somerset Council](#bath-and-north-east-somerset-council)
 - [Bedfordshire Council](#bedfordshire-council)
@@ -83,11 +83,12 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North Kesteven District Council](#north-kesteven-district-council)
 - [North Lanarkshire Council](#north-lanarkshire-council)
 - [North Lincolnshire Council](#north-lincolnshire-council)
-- [North West Leicestershire Council](#north-west-leicestershire-council)
 - [North Norfolk District Council](#north-norfolk-district-council)
 - [North Northamptonshire Council](#north-northamptonshire-council)
 - [North Somerset Council](#north-somerset-council)
 - [North Tyneside Council](#north-tyneside-council)
+- [North West Leicestershire Council](#north-west-leicestershire-council)
+- [NorthYorkshire](#northyorkshire)
 - [Northumberland Council](#northumberland-council)
 - [Nottingham City Council](#nottingham-city-council)
 - [Oldham Council](#oldham-council)
@@ -153,19 +154,6 @@ Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyad
 
 ---
 
-### Barnsley Metropolitan Borough Council
-```commandline
-python collect_data.py BarnsleyMBCouncil https://waste.barnsley.gov.uk/ViewCollection/Collections -s -u XXXXXXXX -p "XXXX XXX"
-```
-Additional parameters:
-- `-s` - skip get URL
-- `-u` - UPRN
-- `-p` - postcode
-
-Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
-
----
-
 ### BCP Council
 ```commandline
 python collect_data.py BCPCouncil https://online.bcpcouncil.gov.uk/bindaylookup/ -s -u XXXXXXXX
@@ -185,6 +173,19 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Barnsley Metropolitan Borough Council
+```commandline
+python collect_data.py BarnsleyMBCouncil https://waste.barnsley.gov.uk/ViewCollection/Collections -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
@@ -377,12 +378,13 @@ Additional parameters:
 
 ### Castlepoint District Council
 ```commandline
-python collect_data.py CastlepointDistrictCouncil https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar -s -u XXXXXXXX -w http://HOST:PORT/
+python collect_data.py CastlepointDistrictCouncil https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: For this council 'uprn' is actually a 4 digit code for your street, go [here](https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar) and inspect the source of the dropdown box to find the 4 digit number for your street.
 
 ---
 
@@ -981,18 +983,6 @@ Additional parameters:
 
 ---
 
-### North West Leicestershire Council
-```commandline
-python collect_data.py NorthWestLeicestershire https://www.nwleics.gov.uk/pages/collection_information -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
-```
-Additional parameters:
-- `-s` - skip get URL
-- `-u` - UPRN
-- `-p` - postcode
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
-
----
-
 ### North Norfolk District Council
 ```commandline
 python collect_data.py NorthNorfolkDistrictCouncil https://www.north-norfolk.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -1036,6 +1026,28 @@ Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
+
+---
+
+### North West Leicestershire Council
+```commandline
+python collect_data.py NorthWestLeicestershire https://www.nwleics.gov.uk/pages/collection_information -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### NorthYorkshire
+```commandline
+python collect_data.py NorthYorkshire https://www.northyorks.gov.uk/bin-calendar/lookup -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
 
 ---
 
