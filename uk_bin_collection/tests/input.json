@@ -149,7 +149,6 @@
         "skip_get_url": true,
         "uprn": "4525",
         "url": "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Castlepoint District Council"
     },
     "CharnwoodBoroughCouncil": {
