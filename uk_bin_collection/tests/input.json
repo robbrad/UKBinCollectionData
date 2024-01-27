@@ -749,6 +749,12 @@
         "wiki_name": "Staffordshire Moorlands District Council",
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
     },
+    "StAlbansCityAndDistrictCouncil": {
+        "skip_get_url": true,
+        "uprn": "100081153583",
+        "url": "https://gis.stalbans.gov.uk/NoticeBoard9/VeoliaProxy.NoticeBoard.asmx/GetServicesByUprnAndNoticeBoard",
+        "wiki_name": "St Albans City and District Council"
+    },
     "StockportBoroughCouncil": {
         "url": "https://myaccount.stockport.gov.uk/bin-collections/show/100011434401",
         "wiki_command_url_override": "https://myaccount.stockport.gov.uk/bin-collections/show/XXXXXXXX",

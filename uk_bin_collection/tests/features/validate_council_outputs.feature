@@ -522,6 +522,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| SouthTynesideCouncil | None  | None  |
 
+        @StAlbansCityAndDistrictCouncil
+        Examples: StAlbansCityAndDistrictCouncil
+        | council | selenium_url | selenium_mode |
+        | StAlbansCityAndDistrictCouncil | None  | None  |
+
         @StaffordshireMoorlandsDistrictCouncil
 		Examples: StaffordshireMoorlandsDistrictCouncil
 		| council | selenium_url | selenium_mode |
