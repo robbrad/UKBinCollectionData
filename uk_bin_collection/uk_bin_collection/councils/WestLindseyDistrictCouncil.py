@@ -1,8 +1,8 @@
-import requests, re, urllib.parse
+import urllib.parse
 
-from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -23,7 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_address = "{} {}".format(user_number, user_postcode)
         user_address = urllib.parse.quote(user_address)
 
-        # This first URL checks against a string represenging the users address and returns values used for a second lookup.
+        # This first URL checks against a string representing the users address and returns values used for a second lookup.
         stage1_url = "https://wlnk.statmap.co.uk/map/Cluster.svc/findLocation?callback=getAddressesCallback1702938375023&script=%5CCluster%5CCluster.AuroraScript%24&address={}".format(
             user_address
         )
@@ -32,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Strip data and parse the JSON
         address_data = json.loads(
-            re.sub("getAddressesCallback[\d]+\(", "", address_data)[:-2]
+            re.sub("getAddressesCallback\d+\(", "", address_data)[:-2]
         )
 
         if address_data["TotalHits"] == 0:
@@ -40,7 +40,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "No address found for string {}. See Wiki".format(user_address)
             )
         elif address_data["TotalHits"] != 1:
-            # Multiple hits returned. Lets pick the first one. We could raise an exception here if this causes problems.
+            # Multiple hits returned. Let's pick the first one. We could raise an exception here if this causes problems.
             pass
 
         # Pull out the address data needed for the next step
