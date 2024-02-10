@@ -74,6 +74,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
+- [Mole Valley District Council](#mole-valley-district-council)
 - [Neath Port Talbot Council](#neath-port-talbot-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
@@ -887,6 +888,19 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes
+
+---
+
+### Mole Valley District Council
+```commandline
+python collect_data.py MoleValleyDistrictCouncil https://molevalley.cloudmappin.com/mmv/ -s -p "XXXX XXX" -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: In order to use this parser, you must provide a valid postcode and optionally a UPRN for your specific address.
 
 ---
 
