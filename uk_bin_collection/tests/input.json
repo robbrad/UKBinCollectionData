@@ -467,6 +467,14 @@
         "wiki_name": "Milton Keynes City Council",
         "wiki_note": "Pass the name of the estate with the UPRN parameter, wrapped in double quotes"
     },
+    "MoleValleyDistrictCouncil": {
+        "postcode": "RH4 1SJ",
+        "skip_get_url": true,
+        "uprn": "200000171235",
+        "url": "https://molevalley.cloudmappin.com/mmv/",
+        "wiki_name": "Mole Valley District Council",
+        "wiki_note": "UPRN can only be parsed with a valid postcode."
+    },
     "NeathPortTalbotCouncil": {
         "postcode": "SA13 3BA",
         "skip_get_url": true,

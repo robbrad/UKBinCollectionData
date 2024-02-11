@@ -327,6 +327,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| MiltonKeynesCityCouncil | None  | None  |
 
+        @MoleValleyDistrictCouncil
+        Examples: MoleValleyDistrictCouncil
+        | council | selenium_url | selenium_mode |
+        | MoleValleyDistrictCouncil | None | None |
+
         @NeathPortTalbotCouncil
 		Examples: NeathPortTalbotCouncil
 		| council | selenium_url | selenium_mode |
