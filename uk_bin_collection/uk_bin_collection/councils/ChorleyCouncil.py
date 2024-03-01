@@ -93,9 +93,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            # Quit Selenium webdriver to release session
-            driver.quit()
-
             # Get the property details
             property_details = soup.find(
                 "table",

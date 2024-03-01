@@ -1,7 +1,7 @@
-import requests, re, urllib.parse
+import urllib.parse
 
-from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -23,7 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_address = "{} {}".format(user_number, user_postcode)
         user_address = urllib.parse.quote(user_address)
 
-        # This first URL checks against a string represenging the users address and returns values used for a second lookup.
+        # This first URL checks against a string representing the users address and returns values used for a second lookup.
         stage1_url = "https://wlnk.statmap.co.uk/map/Cluster.svc/findLocation?callback=getAddressesCallback1702938375023&script=%5CCluster%5CCluster.AuroraScript%24&address={}".format(
             user_address
         )
@@ -32,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Strip data and parse the JSON
         address_data = json.loads(
-            re.sub("getAddressesCallback[\d]+\(", "", address_data)[:-2]
+            re.sub("getAddressesCallback\d+\(", "", address_data)[:-2]
         )
 
         if address_data["TotalHits"] == 0:
@@ -40,7 +40,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "No address found for string {}. See Wiki".format(user_address)
             )
         elif address_data["TotalHits"] != 1:
-            # Multiple hits returned. Lets pick the first one. We could raise an exception here if this causes problems.
+            # Multiple hits returned. Let's pick the first one. We could raise an exception here if this causes problems.
             pass
 
         # Pull out the address data needed for the next step
@@ -78,6 +78,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         collection_rows = soup.find("li", {"class": "auroraListItem"}).find_all("li")
 
+        collections = []
+
         for row in collection_rows:
             # Get bin type
             bin_type = row.find("span").text
@@ -87,35 +89,28 @@ class CouncilClass(AbstractGetBinDataClass):
             pattern = "\d+\/\d+"
             bin_dates = re.findall(pattern, bin_date_text)
 
-            input_date_format = "%d/%m"
-
             for bin_date in bin_dates:
-                # The date returned from the webpage only gives DD/MM. So we need to add a year, but we can't simply add this year otherwise we would get it wrong at the end of the year. So we will test to see if the returned date + this year is in the future. If not, add next years date.
-                bin_dt = datetime.strptime(bin_date, input_date_format)
-                bin_dt = bin_dt.replace(year=datetime.now().year)
+                # Split the bin date into day and month and build a full date with the current year
+                split_date = bin_date.split('/')
+                full_date = datetime(datetime.now().year, int(split_date[1]), int(split_date[0]))
 
-                if (
-                    bin_dt.date() == datetime.today().date()
-                ):  # Check if date is today. This is OK
-                    pass
-                elif (
-                    bin_dt.date() < datetime.today().date()
-                ):  # Check if the date is in the past. If so, increment the year
-                    bin_dt = bin_dt.replace(year=bin_dt.year + 1)
-                elif (
-                    bin_dt.date() > datetime.today().date()
-                ):  # Check if date is in the future. This is OK
-                    pass
-                else:
-                    raise Exception(
-                        "Date issue has occured. This should never happen. Please raise a bug in GitHub"
-                    )
+                # If the current month is December and one of the next collections is in January, increment the year
+                if datetime.now().month == 12 and int(split_date[1]) == 1:
+                    full_date = bin_date + relativedelta(years=1)
 
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": bin_dt.strftime(date_format),
-                }
+                # Since data in unordered, add to a tuple
+                collections.append((bin_type.title(), full_date))
 
-                data["bins"].append(dict_data)
+        # Sort the tuple by date
+        ordered_data = sorted(collections, key=lambda x: x[1])
+
+        # Add everything into the dictionary
+        for item in ordered_data:
+            dict_data = {
+                "type": item[0],
+                "collectionDate": item[1].strftime(date_format),
+            }
+
+            data["bins"].append(dict_data)
 
         return data

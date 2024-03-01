@@ -50,7 +50,7 @@ jobs:
 
     - name: Get all councils files that have changed
       id: changed-council-files
-      uses: tj-actions/changed-files@v41
+      uses: tj-actions/changed-files@v42
       with:
         files: |
           uk_bin_collection/uk_bin_collection/councils/**.py
@@ -81,7 +81,7 @@ jobs:
       continue-on-error: true
 
     - name: Upload Test Coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         gcov_ignore: uk_bin_collection/tests/**
 

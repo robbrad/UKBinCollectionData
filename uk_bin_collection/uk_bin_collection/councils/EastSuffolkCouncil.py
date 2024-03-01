@@ -84,9 +84,6 @@ class CouncilClass(AbstractGetBinDataClass):
                 data_table.get_attribute("innerHTML"), features="html.parser"
             )
 
-            # Quit Selenium webdriver to release session
-            driver.quit()
-
             data = {"bins": []}
 
             rows = soup.find("table").find("tbody").find_all("tr")
