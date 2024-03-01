@@ -115,7 +115,11 @@ class CouncilClass(AbstractGetBinDataClass):
             # Find the div with the specified id
             target_div = soup.find("div", {"id": target_div_id})
 
-            overrides_dict = get_seasonal_overrides()
+            # Handle the additional table of info for xmas
+            try:
+                overrides_dict = get_seasonal_overrides()
+            except Exception as e:
+                overrides_dict = {}
 
             # Check if the div is found
             if target_div:

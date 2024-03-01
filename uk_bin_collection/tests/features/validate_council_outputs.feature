@@ -105,7 +105,7 @@ Feature: Test each council output matches expected results
         @CastlepointDistrictCouncil
 		Examples: CastlepointDistrictCouncil
 		| council | selenium_url | selenium_mode |
-		| CastlepointDistrictCouncil | http://selenium:4444  | local  |
+		| CastlepointDistrictCouncil | None  | None  |
 
         @CharnwoodBoroughCouncil
 		Examples: CharnwoodBoroughCouncil
@@ -327,6 +327,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| MiltonKeynesCityCouncil | None  | None  |
 
+        @MoleValleyDistrictCouncil
+        Examples: MoleValleyDistrictCouncil
+        | council | selenium_url | selenium_mode |
+        | MoleValleyDistrictCouncil | None | None |
+
         @NeathPortTalbotCouncil
 		Examples: NeathPortTalbotCouncil
 		| council | selenium_url | selenium_mode |
@@ -401,6 +406,11 @@ Feature: Test each council output matches expected results
 		Examples: NorthWestLeicestershire
 		| council | selenium_url | selenium_mode |
 		| NorthWestLeicestershire | http://selenium:4444  | local  |
+
+		@NorthYorkshire
+		Examples: NorthYorkshire
+		| council | selenium_url | selenium_mode |
+		| NorthYorkshire | None  | None  |
 
         @NottinghamCityCouncil
 		Examples: NottinghamCityCouncil
@@ -516,6 +526,11 @@ Feature: Test each council output matches expected results
 		Examples: SouthTynesideCouncil
 		| council | selenium_url | selenium_mode |
 		| SouthTynesideCouncil | None  | None  |
+
+        @StAlbansCityAndDistrictCouncil
+        Examples: StAlbansCityAndDistrictCouncil
+        | council | selenium_url | selenium_mode |
+        | StAlbansCityAndDistrictCouncil | None  | None  |
 
         @StaffordshireMoorlandsDistrictCouncil
 		Examples: StaffordshireMoorlandsDistrictCouncil
