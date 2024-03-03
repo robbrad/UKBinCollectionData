@@ -347,6 +347,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| NewcastleCityCouncil | None  | None  |
 
+        @NewhamCouncil
+		Examples: NewhamCouncil
+		| council | selenium_url | selenium_mode |
+		| NewhamCouncil | None  | None  |
+
         @NewportCityCouncil
 		Examples: NewportCityCouncil
 		| council | selenium_url | selenium_mode |

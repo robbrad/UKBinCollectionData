@@ -78,6 +78,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Neath Port Talbot Council](#neath-port-talbot-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
+- [Newham Council](#newham-council)
 - [Newport City Council](#newport-city-council)
 - [North East Derbyshire District Council](#north-east-derbyshire-district-council)
 - [North East Lincolnshire Council](#north-east-lincolnshire-council)
