@@ -283,7 +283,7 @@
     "EppingForestDistrictCouncil": {
         "postcode": "IG9 6EP",
         "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
-        "wiki_name": "Epping Forest District Council",
+        "wiki_name": "Epping Forest District Council"
     },
     "ErewashBoroughCouncil": {
         "skip_get_url": true,
