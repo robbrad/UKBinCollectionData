@@ -336,6 +336,11 @@
         "wiki_name": "Environment First",
         "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne.\nReplace the XXXXXXXXXXX with the UPRN of your property - you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
     },
+    "EppingForestDistrictCouncil": {
+        "postcode": "IG9 6EP",
+        "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
+        "wiki_name": "Epping Forest District Council",
+    },
     "ErewashBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "10003582028",

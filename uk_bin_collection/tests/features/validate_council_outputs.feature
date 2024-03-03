@@ -236,6 +236,11 @@ Feature: Test each council output matches expected results
 		| council |
 		| EnvironmentFirst |
 
+		@EppingForestDistrictCouncil
+		Examples: EppingForestDistrictCouncil
+		| council | selenium_url | selenium_mode |
+		| EppingForestDistrictCouncil | None  | None  |
+
         @ErewashBoroughCouncil
 		Examples: ErewashBoroughCouncil
 		| council |
