@@ -32,6 +32,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 "https://www.gateshead.gov.uk/article/3150/Bin-collection-day-checker"
             )
 
+            accept_button = WebDriverWait(driver, timeout=30).until(
+                EC.element_to_be_clickable(
+                    (By.CLASS_NAME, "btn btn--contrast btn--complete")
+                )
+            )
+            accept_button.click()
+
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
