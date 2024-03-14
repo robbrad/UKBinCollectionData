@@ -4,6 +4,8 @@
 # Huntingdon District Council District Council Bins Data
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.common import date_format
+from datetime import datetime
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -27,9 +29,8 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(
                 {
                     "type": bin_types[i],
-                    "collectionDate": date.find("strong").get_text(strip=True),
+                    "collectionDate": datetime.strptime(date.find("strong").get_text(strip=True), "%A %d %B %Y").strftime(date_format)
                 }
             )
-            ++i
 
         return data
