@@ -53,7 +53,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             expand_postcode_box = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "//a[@href='#when-and-where-should-i-put-my-bin-out']")
+                    (By.ID, "when-and-where-should-i-put-my-bin-out")
                 )
             )
 
