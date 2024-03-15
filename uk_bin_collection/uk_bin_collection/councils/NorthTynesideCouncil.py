@@ -26,9 +26,9 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get form data
         s = requests.session()
         cookies = {
-            "has_js": "1",
-            "SSESS6ec6d5d2d471c0357053d5993a839bce": "nDJusnUyqrl2rk8LaiyDv3VaLUwSadRLGLPUpG2e2PY",
-            "ntc-cookie-policy": "1",
+            'ntc-cookie-policy': '1',
+            'SSESS6ec6d5d2d471c0357053d5993a839bce': 'qBdR7XhmSMd5_PDBIqG0It2R0Fq67igrejRY-WOcskE',
+            'has_js': '1',
         }
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -50,7 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         ajax_data = {
             "postcode": user_postcode,
-            "form_build_id": "form-O65oY-ly-CYJlnQrhohK2uS1OP-4vXsS3CqYXD7-BeM",
+            "form_build_id": "form-BQ47tM0NKADE0s8toYkdSef3QBn6lDM-yBseqIOho80",
             "form_id": "ntc_address_wizard",
             "_triggering_element_name": "op",
             "_triggering_element_value": "Find",
@@ -77,7 +77,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "backtotop",
             ],
             "ajax_page_state[theme]": "ntc_bootstrap",
-            "ajax_page_state[theme_token]": "sAhZZMhTYHnHhQ1H7ruHKsid2GUGRRHlLQKP0RFrotA",
+            "ajax_page_state[theme_token]": "LN05JIzI6rocWDiBpDyVeywYveuS4jlxD_N0_hhp2Ko",
             "ajax_page_state[css][0]": "1",
             "ajax_page_state[css][modules/system/system.base.css]": "1",
             "ajax_page_state[css][misc/ui/jquery.ui.core.css]": "1",
@@ -134,23 +134,30 @@ class CouncilClass(AbstractGetBinDataClass):
             "ajax_page_state[jquery_version]": "1.10",
         }
         uprn_data = {
-            "house_number": user_uprn,
+            "house_number": '0000' + f'{user_uprn}',
             "op": "Use",
-            "form_build_id": "form-O65oY-ly-CYJlnQrhohK2uS1OP-4vXsS3CqYXD7-BeM",
+            "form_build_id": "form-BQ47tM0NKADE0s8toYkdSef3QBn6lDM-yBseqIOho80",
             "form_id": "ntc_address_wizard",
         }
         collections = []
 
         response = s.post(
             "https://my.northtyneside.gov.uk/system/ajax",
-            cookies=cookies,
+            # cookies=cookies,
             headers=headers,
             data=ajax_data,
             verify=False,
         )
         response = s.post(
             "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
-            cookies=cookies,
+            # cookies=cookies,
+            headers=headers,
+            data=uprn_data,
+            verify=False,
+        )
+        response = s.get(
+            "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
+            # cookies=cookies,
             headers=headers,
             data=uprn_data,
             verify=False,
@@ -161,7 +168,11 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
         bin_text = soup.find("section", {"class": "block block-ntc-bins clearfix"})
         regular_text = bin_text.select("p:nth-child(2) > strong")[0].text.strip()
-        special_text = bin_text.select("p:nth-child(4) > strong")[0].text.strip()
+        x = bin_text.select("p:nth-child(4) > strong")
+        if len(bin_text.select("p:nth-child(4) > strong")) == 1:
+            special_text = bin_text.select("p:nth-child(4) > strong")[0].text.strip()
+        else:
+            special_text = bin_text.select("p:nth-child(5) > strong")[0].text.strip()
 
         # Since calendar only shows until end of March 2024, work out how many weeks that is
         weeks_total = math.floor((datetime(2024, 4, 1) - datetime.now()).days / 7)
@@ -185,9 +196,11 @@ class CouncilClass(AbstractGetBinDataClass):
             # Use the isoweek number to separate collections - at the time of writing 11th Jan is week 2, which
             # is for the grey bin
             if (item_as_date.date().isocalendar()[1] % 2) == 0:
-                collections.append(("Recycling bin (grey)", item_as_date))
-            else:
                 collections.append(("Regular bin (green)", item_as_date))
+
+            else:
+                collections.append(("Recycling bin (grey)", item_as_date))
+
 
         # Add the special collection dates to the collection tuple
         collections += [
