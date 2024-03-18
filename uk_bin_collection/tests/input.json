@@ -41,11 +41,11 @@
         "wiki_name": "Bath and North East Somerset Council"
     },
     "BedfordBoroughCouncil": {
-    "skip_get_url": true,
-    "uprn": "10024232065",
-    "url": "https://www.bedford.gov.uk/bins-and-recycling/household-bins-and-recycling/check-your-bin-day",
-    "wiki_name": "Bedford Borough Council"
-    },
+        "skip_get_url": true,
+        "uprn": "10024232065",
+        "url": "https://www.bedford.gov.uk/bins-and-recycling/household-bins-and-recycling/check-your-bin-day",
+        "wiki_name": "Bedford Borough Council"
+        },
     "BedfordshireCouncil": {
         "postcode": "SG19 2UP",
         "skip_get_url": true,
@@ -445,11 +445,11 @@
         "wiki_name": "Manchester City Council"
     },
     "MansfieldDistrictCouncil": {
-    "skip_get_url": true,
-    "uprn": "100031396580",
-    "url": "https://www.mansfield.gov.uk/xfp/form/1327",
-    "wiki_name": "Mansfield District Council"
-    },
+        "skip_get_url": true,
+        "uprn": "100031396580",
+        "url": "https://www.mansfield.gov.uk/xfp/form/1327",
+        "wiki_name": "Mansfield District Council"
+        },
     "MertonCouncil": {
         "url": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=28186366",
         "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
@@ -814,10 +814,10 @@
         "wiki_name": "Tameside Metropolitan Borough Council"
     },
     "TelfordAndWrekinCouncil": {
-    "skip_get_url": true,
-    "uprn": "000452015013",
-    "url": "https://dac.telford.gov.uk/bindayfinder/",
-    "wiki_name": "Telford and Wrekin Co-operative Council"
+        "skip_get_url": true,
+        "uprn": "000452015013",
+        "url": "https://dac.telford.gov.uk/bindayfinder/",
+        "wiki_name": "Telford and Wrekin Co-operative Council"
     },
     "TestValleyBoroughCouncil": {
         "postcode": "SO51 9ZD",
