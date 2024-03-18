@@ -72,7 +72,7 @@ class CouncilClass(AbstractGetBinDataClass):
         ordered_data = sorted(collections, key=lambda x: x[1])
         for item in ordered_data:
             dict_data = {
-                "type": item[0],
+                "type": item[0].capitalize(),
                 "collectionDate": item[1].strftime(date_format),
             }
             data["bins"].append(dict_data)
