@@ -371,6 +371,12 @@
     "wiki_name": "High Peak Council",
     "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
   },
+  "HullCityCouncil": {
+    "skip_get_url": true,
+    "uprn": "21033995",
+    "url": "https://www.hull.gov.uk/bins-and-recycling/bin-collections/bin-collection-day-checker",
+    "wiki_name": "Hull City Council"
+  },
   "HuntingdonDistrictCouncil": {
     "url": "http://www.huntingdonshire.gov.uk/refuse-calendar/10012048679",
     "wiki_command_url_override": "https://www.huntingdonshire.gov.uk/refuse-calendar/XXXXXXXX",

@@ -257,6 +257,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| HighPeakCouncil | http://selenium:4444  | local  |
 
+		@HullCityCouncil
+		Examples: HullCityCouncil
+		| council | selenium_url | selenium_mode |
+		| HullCityCouncil | None  | None  |
+
         @HuntingdonDistrictCouncil
 		Examples: HuntingdonDistrictCouncil
 		| council | selenium_url | selenium_mode |
