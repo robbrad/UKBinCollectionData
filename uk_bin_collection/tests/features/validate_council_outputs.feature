@@ -312,6 +312,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| ManchesterCityCouncil | None  | None  |
 
+		@MansfieldDistrictCouncil
+		Examples: MansfieldDistrictCouncil
+		| council | selenium_url | selenium_mode |
+		| MansfieldDistrictCouncil | None  | None  |
+
         @MertonCouncil
 		Examples: MertonCouncil
 		| council | selenium_url | selenium_mode |

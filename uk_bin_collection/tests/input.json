@@ -444,6 +444,12 @@
         "url": "https://www.manchester.gov.uk/bincollections",
         "wiki_name": "Manchester City Council"
     },
+    "MansfieldDistrictCouncil": {
+    "skip_get_url": true,
+    "uprn": "100031396580",
+    "url": "https://www.mansfield.gov.uk/xfp/form/1327",
+    "wiki_name": "Mansfield District Council"
+    },
     "MertonCouncil": {
         "url": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=28186366",
         "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
