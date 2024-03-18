@@ -917,6 +917,12 @@
     "wiki_name": "West Lothian Council",
     "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
   },
+  "WestNorthamptonshireCouncil": {
+    "postcode": "NN3 2JB",
+    "skip_get_url": true,
+    "url": "https://www.northampton.gov.uk/info/200084/bins-waste-and-recycling/1602/check-your-collection-day",
+    "wiki_name": "West Northamptonshire Council"
+  },
   "WestSuffolkCouncil": {
     "house_number": "1 The Drift",
     "postcode": "IP28 6DR",

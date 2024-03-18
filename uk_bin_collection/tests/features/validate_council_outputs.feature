@@ -657,6 +657,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| WestLothianCouncil | http://selenium:4444  | local  |
 
+		@WestNorthamptonshireCouncil
+		Examples: WestNorthamptonshireCouncil
+		| council | selenium_url | selenium_mode |
+		| WestNorthamptonshireCouncil | None  | None  |
+
         @WestSuffolkCouncil
 		Examples: WestSuffolkCouncil
 		| council | selenium_url | selenium_mode |
