@@ -813,6 +813,12 @@
         "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
         "wiki_name": "Tameside Metropolitan Borough Council"
     },
+    "TelfordAndWrekinCouncil": {
+    "skip_get_url": true,
+    "uprn": "000452015013",
+    "url": "https://dac.telford.gov.uk/bindayfinder/",
+    "wiki_name": "Telford and Wrekin Co-operative Council"
+    },
     "TestValleyBoroughCouncil": {
         "postcode": "SO51 9ZD",
         "skip_get_url": true,
