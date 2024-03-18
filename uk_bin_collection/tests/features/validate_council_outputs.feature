@@ -37,6 +37,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| BCPCouncil | None  | None  |
 
+		@BedfordBoroughCouncil
+		Examples: BedfordBoroughCouncil
+		| council | selenium_url | selenium_mode |
+		| BedfordBoroughCouncil | None  | None  |
+
         @BedfordshireCouncil
 		Examples: BedfordshireCouncil
 		| council | selenium_url | selenium_mode |

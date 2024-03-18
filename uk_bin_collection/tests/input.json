@@ -40,6 +40,12 @@
         "url": "https://www.bathnes.gov.uk/webforms/waste/collectionday/",
         "wiki_name": "Bath and North East Somerset Council"
     },
+    "BedfordBoroughCouncil": {
+    "skip_get_url": true,
+    "uprn": "10024232065",
+    "url": "https://www.bedford.gov.uk/bins-and-recycling/household-bins-and-recycling/check-your-bin-day",
+    "wiki_name": "Bedford Borough Council"
+    },
     "BedfordshireCouncil": {
         "postcode": "SG19 2UP",
         "skip_get_url": true,
