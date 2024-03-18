@@ -677,6 +677,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| WokingBoroughCouncil | None  | None  |
 
+		@WyreCouncil
+		Examples: WyreCouncil
+		| council | selenium_url | selenium_mode |
+		| WyreCouncil | None  | None  |
+
         @YorkCouncil
 		Examples: YorkCouncil
 		| council | selenium_url | selenium_mode |

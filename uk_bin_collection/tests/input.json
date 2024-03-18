@@ -949,6 +949,14 @@
         "wiki_name": "Woking Borough Council/Joint Waste Solutions",
         "wiki_note": "Works with all collection areas that use Joint Waste Solutions. Just use the correct URL."
     },
+    "WyreCouncil": {
+        "postcode": "FY6 8HG",
+        "skip_get_url": true,
+        "uprn": "10003519994",
+        "url": "https://www.wyre.gov.uk/bins-rubbish-recycling",
+        "wiki_name": "Wyre Council",
+        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).\n\nPostcode should be put in double quotes with a space in the middle."
+    },
     "YorkCouncil": {
         "skip_get_url": true,
         "uprn": "100050535540",
