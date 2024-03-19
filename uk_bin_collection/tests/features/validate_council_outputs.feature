@@ -162,6 +162,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| DorsetCouncil | None  | None  |
 
+        @DoverDistrictCouncil
+		Examples: DoverDistrictCouncil
+		| council | selenium_url | selenium_mode |
+		| DoverDistrictCouncil | None  | None  |
+
         @DurhamCouncil
 		Examples: DurhamCouncil
 		| council | selenium_url | selenium_mode |

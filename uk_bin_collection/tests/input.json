@@ -229,6 +229,12 @@
     "wiki_name": "Dorset Council",
     "wiki_note": "Replace XXXXXXXX with UPRN."
   },
+  "DoverDistrictCouncil": {
+    "url": "https://collections.dover.gov.uk/property/100060908340",
+    "wiki_command_url_override": "https://collections.dover.gov.uk/property/XXXXXXXXXXX",
+    "wiki_name": "Dover District Council",
+    "wiki_note": "Replace XXXXXXXXXXXX with your UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+  },
   "DurhamCouncil": {
     "skip_get_url": true,
     "uprn": "200003218818",
