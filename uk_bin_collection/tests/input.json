@@ -667,6 +667,11 @@
     "url": "https://webforms.rochdale.gov.uk/BinCalendar",
     "wiki_name": "Rochdale Council"
   },
+  "RochfordCouncil": {
+    "url": "https://www.rochford.gov.uk/online-bin-collections-calendar",
+    "wiki_name": "Rochford Council",
+    "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'."
+  },
   "RugbyBoroughCouncil": {
     "postcode": "CV22 6LA",
     "skip_get_url": true,

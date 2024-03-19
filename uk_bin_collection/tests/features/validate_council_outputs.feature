@@ -472,6 +472,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| RochdaleCouncil | None  | None  |
 
+		@RochfordCouncil
+		Examples: RochfordCouncil
+		| council | selenium_url | selenium_mode |
+		| RochfordCouncil | None  | None  |
+
         @RugbyBoroughCouncil
 		Examples: RugbyBoroughCouncil
 		| council | selenium_url | selenium_mode |
