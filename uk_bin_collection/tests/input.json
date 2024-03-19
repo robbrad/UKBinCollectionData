@@ -819,6 +819,11 @@
     "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
     "wiki_name": "Tameside Metropolitan Borough Council"
   },
+  "TandridgeDistrictCouncil": {
+    "skip_get_url": true,
+    "uprn": "100062160432",
+    "url": "https://tdcws01.tandridge.gov.uk/TDCWebAppsPublic/tfaBranded/408?utm_source=pressrelease&utm_medium=smposts&utm_campaign=check_my_bin_day",
+    "wiki_name": "Tandridge District Council",
   "TelfordAndWrekinCouncil": {
     "skip_get_url": true,
     "uprn": "000452015013",
@@ -975,4 +980,4 @@
     "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
     "wiki_name": "York Council"
   }
-}
+},

@@ -587,6 +587,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| TamesideMBCouncil | None  | None  |
 
+		@TandridgeDistrictCouncil
+		Examples: TandridgeDistrictCouncil
+		| council | selenium_url | selenium_mode |
+		| TandridgeDistrictCouncil | None  | None  |
+
 		@TelfordAndWrekinCouncil
 		Examples: TelfordAndWrekinCouncil
 		| council | selenium_url | selenium_mode |
