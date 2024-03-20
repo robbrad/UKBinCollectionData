@@ -6,6 +6,10 @@ Feature: Test each council output matches expected results
         Then the result is valid json
         And the output should validate against the schema
 
+		@AdurAndWorthingCouncils
+		Examples: AdurAndWorthingCouncils
+		| council | selenium_url | selenium_mode |
+		| AdurAndWorthingCouncils | None  | None  |
 
         @AylesburyValeCouncil
 		Examples: AylesburyValeCouncil
