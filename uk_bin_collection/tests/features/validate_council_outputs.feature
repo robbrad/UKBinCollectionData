@@ -521,6 +521,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| ShropshireCouncil | None  | None  |
 
+		@SolihullCouncil
+		Examples: SolihullCouncil
+		| council | selenium_url | selenium_mode |
+		| SolihullCouncil | None  | None  |
+
         @SomersetCouncil
 		Examples: SomersetCouncil
 		| council | selenium_url | selenium_mode |
