@@ -401,6 +401,14 @@
     "wiki_name": "Kingston Upon Thames Council",
     "wiki_note": "Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command."
   },
+  "KirkleesCouncil": {
+    "url": "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins",
+    "skip_get_url": true,
+    "uprn": "83002937",
+    "web_driver": "http://selenium:4444",
+    "wiki_name": "Kirklees Council",
+    "wiki_note": "Find your UPRN at https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins/ . Fill in the form and find the link to the calendar. In that link there is a UPRN parameter."
+  },
   "LancasterCityCouncil": {
     "house_number": "1",
     "postcode": "LA1 1RS",

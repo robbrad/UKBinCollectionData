@@ -281,6 +281,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| KingstonUponThamesCouncil | None  | None  |
 
+		@KirkleesCouncil
+		Examples: KirkleesCouncil
+		| council | selenium_url | selenium_mode |
+		| KirkleesCouncil | http://selenium:4444  | local  |
+
         @LancasterCityCouncil
 		Examples: LancasterCityCouncil
 		| council | selenium_url | selenium_mode |
