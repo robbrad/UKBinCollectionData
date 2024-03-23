@@ -6,6 +6,10 @@ Feature: Test each council output matches expected results
         Then the result is valid json
         And the output should validate against the schema
 
+		@AdurAndWorthingCouncils
+		Examples: AdurAndWorthingCouncils
+		| council | selenium_url | selenium_mode |
+		| AdurAndWorthingCouncils | None  | None  |
 
         @AylesburyValeCouncil
 		Examples: AylesburyValeCouncil
@@ -36,6 +40,11 @@ Feature: Test each council output matches expected results
 		Examples: BCPCouncil
 		| council | selenium_url | selenium_mode |
 		| BCPCouncil | None  | None  |
+
+		@BedfordBoroughCouncil
+		Examples: BedfordBoroughCouncil
+		| council | selenium_url | selenium_mode |
+		| BedfordBoroughCouncil | None  | None  |
 
         @BedfordshireCouncil
 		Examples: BedfordshireCouncil
@@ -157,6 +166,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| DorsetCouncil | None  | None  |
 
+        @DoverDistrictCouncil
+		Examples: DoverDistrictCouncil
+		| council | selenium_url | selenium_mode |
+		| DoverDistrictCouncil | None  | None  |
+
         @DurhamCouncil
 		Examples: DurhamCouncil
 		| council | selenium_url | selenium_mode |
@@ -252,6 +266,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| HighPeakCouncil | http://selenium:4444  | local  |
 
+		@HullCityCouncil
+		Examples: HullCityCouncil
+		| council | selenium_url | selenium_mode |
+		| HullCityCouncil | None  | None  |
+
         @HuntingdonDistrictCouncil
 		Examples: HuntingdonDistrictCouncil
 		| council | selenium_url | selenium_mode |
@@ -306,6 +325,11 @@ Feature: Test each council output matches expected results
 		Examples: ManchesterCityCouncil
 		| council | selenium_url | selenium_mode |
 		| ManchesterCityCouncil | None  | None  |
+
+		@MansfieldDistrictCouncil
+		Examples: MansfieldDistrictCouncil
+		| council | selenium_url | selenium_mode |
+		| MansfieldDistrictCouncil | None  | None  |
 
         @MertonCouncil
 		Examples: MertonCouncil
@@ -457,6 +481,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| RochdaleCouncil | None  | None  |
 
+		@RochfordCouncil
+		Examples: RochfordCouncil
+		| council | selenium_url | selenium_mode |
+		| RochfordCouncil | None  | None  |
+
         @RugbyBoroughCouncil
 		Examples: RugbyBoroughCouncil
 		| council | selenium_url | selenium_mode |
@@ -491,6 +520,11 @@ Feature: Test each council output matches expected results
 		Examples: ShropshireCouncil
 		| council | selenium_url | selenium_mode |
 		| ShropshireCouncil | None  | None  |
+
+		@SolihullCouncil
+		Examples: SolihullCouncil
+		| council | selenium_url | selenium_mode |
+		| SolihullCouncil | None  | None  |
 
         @SomersetCouncil
 		Examples: SomersetCouncil
@@ -572,6 +606,16 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| TamesideMBCouncil | None  | None  |
 
+		@TandridgeDistrictCouncil
+		Examples: TandridgeDistrictCouncil
+		| council | selenium_url | selenium_mode |
+		| TandridgeDistrictCouncil | None  | None  |
+
+		@TelfordAndWrekinCouncil
+		Examples: TelfordAndWrekinCouncil
+		| council | selenium_url | selenium_mode |
+		| TelfordAndWrekinCouncil | None  | None  |
+
         @TestValleyBoroughCouncil
 		Examples: TestValleyBoroughCouncil
 		| council | selenium_url | selenium_mode |
@@ -637,6 +681,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| WestLothianCouncil | http://selenium:4444  | local  |
 
+		@WestNorthamptonshireCouncil
+		Examples: WestNorthamptonshireCouncil
+		| council | selenium_url | selenium_mode |
+		| WestNorthamptonshireCouncil | None  | None  |
+
         @WestSuffolkCouncil
 		Examples: WestSuffolkCouncil
 		| council | selenium_url | selenium_mode |
@@ -661,6 +710,11 @@ Feature: Test each council output matches expected results
 		Examples: WokingBoroughCouncil
 		| council | selenium_url | selenium_mode |
 		| WokingBoroughCouncil | None  | None  |
+
+		@WyreCouncil
+		Examples: WyreCouncil
+		| council | selenium_url | selenium_mode |
+		| WyreCouncil | None  | None  |
 
         @YorkCouncil
 		Examples: YorkCouncil
