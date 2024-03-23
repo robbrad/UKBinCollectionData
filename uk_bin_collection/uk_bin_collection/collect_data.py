@@ -115,8 +115,13 @@ class UKBinCollectionApp:
         return get_bin_data_class.template_method(address_url, **kwargs)
 
 
-if __name__ == "__main__":
+def run():
+    global _LOGGER
     _LOGGER = setup_logging(LOGGING_CONFIG, None)
     app = UKBinCollectionApp()
     app.set_args(sys.argv[1:])
     print(app.run())
+
+
+if __name__ == "__main__":
+    run()
