@@ -401,6 +401,14 @@
     "wiki_name": "Kingston Upon Thames Council",
     "wiki_note": "Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command."
   },
+  "KirkleesCouncil": {
+    "url": "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins",
+    "skip_get_url": true,
+    "uprn": "83002937",
+    "web_driver": "http://selenium:4444",
+    "wiki_name": "Kirklees Council",
+    "wiki_note": "Find your UPRN at https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins/ . Fill in the form and find the link to the calendar. In that link there is a UPRN parameter."
+  },
   "LancasterCityCouncil": {
     "house_number": "1",
     "postcode": "LA1 1RS",
@@ -846,7 +854,8 @@
     "skip_get_url": true,
     "uprn": "100062160432",
     "url": "https://tdcws01.tandridge.gov.uk/TDCWebAppsPublic/tfaBranded/408?utm_source=pressrelease&utm_medium=smposts&utm_campaign=check_my_bin_day",
-    "wiki_name": "Tandridge District Council",
+    "wiki_name": "Tandridge District Council"
+  },
   "TelfordAndWrekinCouncil": {
     "skip_get_url": true,
     "uprn": "000452015013",
@@ -1003,4 +1012,4 @@
     "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
     "wiki_name": "York Council"
   }
-},
+}
