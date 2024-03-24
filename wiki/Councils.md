@@ -61,6 +61,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [High Peak Council](#high-peak-council)
 - [Huntingdon District Council](#huntingdon-district-council)
 - [Kingston Upon Thames Council](#kingston-upon-thames-council)
+- [Kirklees Council](#kirklees-council)
 - [Lancaster City Council](#lancaster-city-council)
 - [Leeds City Council](#leeds-city-council)
 - [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
@@ -746,6 +747,21 @@ python collect_data.py KingstonUponThamesCouncil https://waste-services.kingston
 
 Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the "Your bin days" page then copy the URL and replace the URL in the command.
 
+---
+
+### Kirklees Council
+```commandline
+python collect_data.py KirkleesCouncil -s -w http://127.0.0.1:4444 -n 24 -p 'HD7 5DX' unused.example.com
+```
+
+N.B. the URL positional argument is not used by the script. A webdriver is required.
+
+Parameters:
+
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - webdriver URL
 ---
 
 ### Lancaster City Council
