@@ -477,7 +477,7 @@
     "wiki_name": "Mansfield District Council"
   },
   "MertonCouncil": {
-    "url": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=28186366",
+    "url": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=28298025",
     "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
     "wiki_name": "Merton Council",
     "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page then copy the URL and replace the URL in the command (the Address parameter is optional)."
