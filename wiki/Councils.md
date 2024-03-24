@@ -751,7 +751,7 @@ Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/wast
 
 ### Kirklees Council
 ```commandline
-python collect_data.py KirkleesCouncil -s -w http://127.0.0.1:4444 -u UPRN unused.example.com
+python collect_data.py KirkleesCouncil -s -w http://127.0.0.1:4444 -n 24 -p 'HD7 5DX' unused.example.com
 ```
 
 N.B. the URL positional argument is not used by the script. A webdriver is required.
@@ -759,7 +759,8 @@ N.B. the URL positional argument is not used by the script. A webdriver is requi
 Parameters:
 
 - `-s` - skip get URL
-- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
 - `-w` - webdriver URL
 ---
 
