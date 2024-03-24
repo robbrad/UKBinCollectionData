@@ -57,14 +57,13 @@ class CouncilClass(AbstractGetBinDataClass):
         """
         bins = []
 
-        sentinal_paon = "24"
-        sentinal_postcode = "HD7 5DX"
-
-        user_uprn = kwargs["uprn"]
+        user_paon = kwargs["paon"]
+        user_postcode = kwargs["postcode"]
 
         self._driver = driver = create_webdriver(
             web_driver=kwargs["web_driver"], headless=kwargs.get("headless", True)
         )
+        driver.implicitly_wait(1)
 
         driver.get(
             "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins/default.aspx"
@@ -77,20 +76,38 @@ class CouncilClass(AbstractGetBinDataClass):
         house_input = driver.find_element(
             By.ID, "cphPageBody_cphContent_thisGeoSearch_txtGeoPremises"
         )
-        house_input.send_keys(sentinal_paon)
+        house_input.send_keys(user_paon)
 
         postcode_input = driver.find_element(
             By.ID, "cphPageBody_cphContent_thisGeoSearch_txtGeoSearch"
         )
-        postcode_input.send_keys(sentinal_postcode)
+        postcode_input.send_keys(user_postcode)
 
-        # submit
+        # submit address search
         driver.find_element(By.ID, "butGeoSearch").send_keys(Keys.RETURN)
 
-        # now we have a valid session we can fetch the calendar (by the user's UPRN)
-        driver.get(
-            "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins/calendar.aspx?UPRN=%s" % user_uprn
+        wait_for_element(
+            driver,
+            By.ID,
+            "cphPageBody_cphContent_wtcDomestic240__lnkAccordionAnchor",
+            # submitting can be slow
+            timeout=30
         )
+
+        # Open the panel
+        driver.find_element(
+            By.ID, "cphPageBody_cphContent_wtcDomestic240__lnkAccordionAnchor"
+        ).click()
+
+        # Domestic waste calendar
+        wait_for_element(
+            driver, By.ID, "cphPageBody_cphContent_wtcDomestic240__LnkCalendar"
+        )
+        calendar_link = driver.find_element(
+            By.ID, "cphPageBody_cphContent_wtcDomestic240__LnkCalendar"
+        )
+        driver.execute_script("arguments[0].click();", calendar_link)
+
         # <img alt="Recycling                      collection date 14 March 2024"
         # <img alt="Domestic                       collection date 21 March 2024
         date_strings = driver.find_elements(

@@ -404,10 +404,10 @@
   "KirkleesCouncil": {
     "url": "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins",
     "skip_get_url": true,
-    "uprn": "83002937",
+    "house_number": "24",
+    "postcode": "HD7 5DX",
     "web_driver": "http://selenium:4444",
-    "wiki_name": "Kirklees Council",
-    "wiki_note": "Find your UPRN at https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins/ . Fill in the form and find the link to the calendar. In that link there is a UPRN parameter."
+    "wiki_name": "Kirklees Council"
   },
   "LancasterCityCouncil": {
     "house_number": "1",
