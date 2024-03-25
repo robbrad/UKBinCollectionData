@@ -17,7 +17,8 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
-        bin_data_dict = {"bins": []}
+        data = {"bins": []}
+        collections = []
 
         # Search for the specific bin in the table using BS4
         rows = soup.find("table", class_=("collectiondays")).find_all(
@@ -39,15 +40,17 @@ class CouncilClass(AbstractGetBinDataClass):
             # First cell is the bin_type
             bin_type = cells[0].get_text().strip()
             # Date is on the second cell, second paragraph, wrapped in p
-            collectionDate = cells[1].select("p > b")[2].get_text(strip=True)
-            # Make each Bin element in the JSON
-            dict_data = {
-                "bin_type": bin_type,
-                "collectionDate": datetime.strptime(
-                    collectionDate, "%d %B %Y"
-                ).strftime(date_format),
-            }
-            # # Add data to the main JSON Wrapper
-            bin_data_dict["bins"].append(dict_data)
+            collectionDate = datetime.strptime(cells[1].select("p > b")[2].get_text(strip=True), "%d %B %Y")
 
-        return bin_data_dict
+            # Add each collection to the list as a tuple
+            collections.append((bin_type, collectionDate))
+
+        ordered_data = sorted(collections, key=lambda x: x[1])
+        for item in ordered_data:
+            dict_data = {
+                "type": item[0].capitalize(),
+                "collectionDate": item[1].strftime(date_format),
+            }
+            data["bins"].append(dict_data)
+
+        return data
