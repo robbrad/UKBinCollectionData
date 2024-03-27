@@ -39,7 +39,7 @@ pyhamcrest = "*"
 
 
 [tool.poetry.scripts]
-uk_bin_collection = "uk_bin_collection.uk_bin_collection:collect_data"
+uk_bin_collection = "uk_bin_collection.uk_bin_collection.collect_data:run"
 
 [tool.dephell.main]
 versioning = "semver"
