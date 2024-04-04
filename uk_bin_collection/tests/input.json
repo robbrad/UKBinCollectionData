@@ -837,6 +837,15 @@
     "url": "https://www.stratford.gov.uk/waste-recycling/when-we-collect.cfm/part/calendar",
     "wiki_name": "Stratford Upon Avon Council"
   },
+  "SunderlandCityCouncil": {
+    "house_number": "13",
+    "postcode": "SR4 6BJ",
+    "skip_get_url": true,
+    "url": "https://webapps.sunderland.gov.uk/WEBAPPS/WSS/Sunderland_Portal/Forms/bindaychecker.aspx",
+    "web_driver": "http://selenium:4444",
+    "wiki_name": "Sunderland City Council",
+    "wiki_note": "The postcode should be wrapped in double quotes and with a space in the middle. The house number doesn't need quotes."
+  },
   "SwaleBoroughCouncil": {
     "postcode": "ME12 2NQ",
     "skip_get_url": true,
