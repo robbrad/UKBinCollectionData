@@ -131,6 +131,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| CheshireEastCouncil | None  | None  |
 
+		@CheshireWestAndChesterCouncil
+		Examples: CheshireWestAndChesterCouncil
+		| council | selenium_url | selenium_mode |
+		| CheshireWestAndChesterCouncil | http://selenium:4444  | local  |
+
         @ChorleyCouncil
 		Examples: ChorleyCouncil
 		| council | selenium_url | selenium_mode |
