@@ -157,6 +157,20 @@ Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyad
 
 ---
 
+### Arun Council
+```commandline
+python collect_data.py ArunCouncil https://www1.arun.gov.uk/when-are-my-bins-collected/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: It will match from left to right on the dropdown address list. e.g for "1 High Street, Angmering" you would enter "1" in the house number parameter.
+
+---
+
 ### BCP Council
 ```commandline
 python collect_data.py BCPCouncil https://online.bcpcouncil.gov.uk/bindaylookup/ -s -u XXXXXXXX
