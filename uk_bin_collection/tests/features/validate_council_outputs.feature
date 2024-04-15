@@ -606,6 +606,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| StratfordUponAvonCouncil | None  | None  |
 
+		@SunderlandCityCouncil
+		Examples: SunderlandCityCouncil
+		| council | selenium_url | selenium_mode |
+		| SunderlandCityCouncil | http://selenium:4444  | local  |
+
         @SwaleBoroughCouncil
 		Examples: SwaleBoroughCouncil
 		| council | selenium_url | selenium_mode |
