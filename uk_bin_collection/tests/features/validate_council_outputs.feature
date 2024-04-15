@@ -11,6 +11,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| AdurAndWorthingCouncils | None  | None  |
 
+		@ArunCouncil
+		Examples: ArunCouncil
+		| council | selenium_url | selenium_mode |
+		| ArunCouncil | http://selenium:4444  | local  |
+
         @AylesburyValeCouncil
 		Examples: AylesburyValeCouncil
 		| council | selenium_url | selenium_mode |

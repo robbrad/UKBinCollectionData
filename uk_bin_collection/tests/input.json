@@ -5,6 +5,14 @@
     "wiki_name": "Adur and Worthing Councils",
     "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
   },
+  "ArunCouncil": {
+    "house_number": "1",
+    "postcode": "BN16 4DA",
+    "skip_get_url": true,
+    "url": "https://www1.arun.gov.uk/when-are-my-bins-collected",
+    "web_driver": "http://selenium:4444",
+    "wiki_name": "Arun Council"
+  },
   "AylesburyValeCouncil": {
     "skip_get_url": true,
     "uprn": "766252532",

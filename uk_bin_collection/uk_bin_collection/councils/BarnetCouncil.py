@@ -1,14 +1,10 @@
-from selenium import webdriver
+import time
+
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
-from bs4 import BeautifulSoup
-import re
-import time
-from datetime import datetime
-import json
-import requests
+from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -78,6 +74,8 @@ class CouncilClass(AbstractGetBinDataClass):
             page = "https://account.barnet.gov.uk/Forms/Home/Redirector/Index/?id=6a2ac067-3322-46e5-96e4-16c0c214454a&mod=OA&casetype=BAR&formname=BNTCOLDATE"
             driver.get(page)
 
+            time.sleep(5)
+
             postcode_input = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (By.CSS_SELECTOR, '[aria-label="Postcode"]')
@@ -93,23 +91,31 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             find_address_button.click()
 
-            time.sleep(5)
-            # Wait for the element with aria-label="Postcode" to be present
+            time.sleep(15)
+            # Wait for address box to be visible
             select_address_input = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, '[aria-label="Select your&nbsp;address"]')
+                    (By.ID, 'MainContent_CUSTOM_FIELD_808562d4b07f437ea751317cabd19d9eeaf8742f49cb4f7fa9bef99405b859f2')
                 )
             )
 
+            # Select address based
             select = Select(select_address_input)
-            select.select_by_visible_text(user_paon)
+            addr_label = f"{user_postcode}, {user_paon},"
+            for addr_option in select.options:
+                option_name = addr_option.accessible_name[0:len(addr_label)]
+                if option_name == addr_label:
+                    break
+            select.select_by_value(addr_option.text)
 
+            time.sleep(10)
             # Wait for the specified div to be present
             target_div_id = "MainContent_CUSTOM_FIELD_808562d4b07f437ea751317cabd19d9ed93a174c32b14f839b65f6abc42d8108_div"
             target_div = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, target_div_id))
             )
 
+            time.sleep(5)
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
             # Find the div with the specified id
@@ -126,8 +132,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_data = {"bins": []}
 
                 for bin_div in target_div.find_all(
-                    "div",
-                    {"style": re.compile("background-color:.*; padding-left: 4px;")},
+                        "div",
+                        {"style": re.compile("background-color:.*; padding-left: 4px;")},
                 ):
                     bin_type = bin_div.find("strong").text.strip()
                     collection_date_string = (
