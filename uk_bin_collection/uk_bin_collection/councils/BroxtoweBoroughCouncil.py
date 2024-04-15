@@ -78,14 +78,15 @@ class CouncilClass(AbstractGetBinDataClass):
                         bin_type = cells[0].get_text(strip=True)
                         # Skip header row
                         if bin_type and cells[3] and bin_type != "Bin Type":
-                            collection_date = datetime.strptime(
-                                cells[3].get_text(strip=True), "%A, %d %B %Y"
-                            )
-                            dict_data = {
-                                "type": bin_type,
-                                "collectionDate": collection_date.strftime(date_format),
-                            }
-                            data["bins"].append(dict_data)
+                            if len(cells[3].get_text(strip=True)) > 0:
+                                collection_date = datetime.strptime(
+                                    cells[3].get_text(strip=True), "%A, %d %B %Y"
+                                )
+                                dict_data = {
+                                    "type": bin_type,
+                                    "collectionDate": collection_date.strftime(date_format),
+                                }
+                                data["bins"].append(dict_data)
 
                             data["bins"].sort(
                                 key=lambda x: datetime.strptime(
