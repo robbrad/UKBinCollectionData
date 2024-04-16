@@ -19,5 +19,5 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: "echo \"module.exports = {extends: ['@commitlint/config-conventional'], rules: { 'subject-case': [0], 'body-max-line-length': [0], 'footer-max-line-length': [0] }}\" > commitlint.config.js"
+      - run: "echo \"export default {extends: ['@commitlint/config-conventional'], rules: { 'subject-case': [0], 'body-max-line-length': [0], 'footer-max-line-length': [0] }}\" > commitlint.config.mjs"
       - uses: wagoid/commitlint-github-action@v6
