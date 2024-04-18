@@ -15,33 +15,41 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         uprn = kwargs.get("uprn")
-        check_uprn(uprn)
+        check_uprn(uprn)  # Assuming check_uprn() raises an exception if UPRN is invalid
 
-        response = requests.post(
-            f"https://wastecollections.haringey.gov.uk/property/{uprn}"
-        )
-        if response.status_code != 200:
-            raise ConnectionAbortedError("Issue encountered getting addresses.")
-
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
-
-        sections = soup.find_all("div", {"class": "property-service-wrapper"})
-
-        date_regex = re.compile(r"\d{2}/\d{2}/\d{4}")
-        for section in sections:
-            service = section.find("h3", {"class": "service-name"}).text
-            next_collection = (
-                section.find("tbody")
-                .find("td", {"class": "next-service"})
-                .find(text=date_regex)
+        try:
+            response = requests.post(
+                f"https://wastecollections.haringey.gov.uk/property/{uprn}",
+                timeout=10  # Set a timeout for the request
             )
-            # Remove Collect and Collect Paid from the start of some bin entry names
-            # to make the naming more consistant.
-            dict_data = {
-                "type": service.replace("Collect ", "").replace("Paid ", "").strip(),
-                "collectionDate": next_collection.strip(),
-            }
-            data["bins"].append(dict_data)
+            response.raise_for_status()  # This will raise an exception for HTTP errors
+        except requests.RequestException as e:
+            logging.error(f"Network or HTTP error occurred: {e}")
+            raise ConnectionError("Failed to retrieve data.") from e
+
+        try:
+            soup = BeautifulSoup(response.text, features="html.parser")
+            soup.prettify()
+
+            sections = soup.find_all("div", {"class": "property-service-wrapper"})
+
+            date_regex = re.compile(r"\d{2}/\d{2}/\d{4}")
+            for section in sections:
+                service_name_element = section.find("h3", {"class": "service-name"})
+                next_service_element = section.find("tbody").find("td", {"class": "next-service"})
+
+                if service_name_element and next_service_element:
+                    service = service_name_element.text
+                    next_collection = next_service_element.find(text=date_regex)
+
+                    if next_collection:
+                        dict_data = {
+                            "type": service.replace("Collect ", "").replace("Paid ", "").strip(),
+                            "collectionDate": next_collection.strip(),
+                        }
+                        data["bins"].append(dict_data)
+        except Exception as e:
+            logging.error(f"Error parsing data: {e}")
+            raise ValueError("Error processing the HTML data.") from e
 
         return data
