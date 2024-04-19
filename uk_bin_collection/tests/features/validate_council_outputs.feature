@@ -71,6 +71,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| BoltonCouncil | http://selenium:4444  | local  |
 
+        @BradfordMDC
+		Examples: BradfordMDC
+		| council | selenium_url | selenium_mode |
+		| BradfordMDC | http://selenium:4444  | local  |
+  
         @BrightonandHoveCityCouncil
 		Examples: BrightonandHoveCityCouncil
 		| council | selenium_url | selenium_mode |
