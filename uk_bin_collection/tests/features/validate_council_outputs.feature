@@ -74,7 +74,7 @@ Feature: Test each council output matches expected results
         @BradfordMDC
 		Examples: BradfordMDC
 		| council | selenium_url | selenium_mode |
-		| BradfordMDC | http://selenium:4444  | local  |
+		| BradfordMDC | None  | None  |
   
         @BrightonandHoveCityCouncil
 		Examples: BrightonandHoveCityCouncil
