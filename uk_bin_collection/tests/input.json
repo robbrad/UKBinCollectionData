@@ -95,6 +95,14 @@
     "wiki_name": "Bolton Council",
     "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields."
   },
+  "BradfordMDC": {
+    "custom_component_show_url_field": false,
+    "skip_get_url": true,
+    "uprn": "100052235823",
+    "url": "https://onlineforms.bradford.gov.uk/ufs/collectiondates.eb",
+    "wiki_name": "Bradford MDC"
+    "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Post code isn't parsed by this script, but you can pass it in double quotes."
+  },
   "BrightonandHoveCityCouncil": {
     "house_number": "44 Carden Avenue, Brighton, BN1 8NE",
     "postcode": "BN1 8NE",
