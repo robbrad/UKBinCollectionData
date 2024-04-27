@@ -696,6 +696,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| WelhatCouncil | None  | None  |
 
+		@WestBerkshireCouncil
+		Examples: WestBerkshireCouncil
+		| council | selenium_url | selenium_mode |
+		| WestBerkshireCouncil | http://selenium:4444  | local  |
+
         @WestLindseyDistrictCouncil
 		Examples: WestLindseyDistrictCouncil
 		| council | selenium_url | selenium_mode |

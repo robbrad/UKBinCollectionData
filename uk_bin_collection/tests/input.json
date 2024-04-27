@@ -971,6 +971,15 @@
     "url": "https://www.welhat.gov.uk/xfp/form/214",
     "wiki_name": "Welhat Council"
   },
+  "WestBerkshireCouncil": {
+    "house_number": "8",
+    "postcode": "RG14 7DP",
+    "skip_get_url": true,
+    "url": "https://www.westberks.gov.uk/binday",
+    "web_driver": "http://selenium:4444",
+    "wiki_name": "West Berkshire Council",
+    "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes and the postcode in the postcode parameter"
+  },
   "WestLindseyDistrictCouncil": {
     "house_number": "PRIVATE ACCOMODATION",
     "postcode": "LN8 2AR",
