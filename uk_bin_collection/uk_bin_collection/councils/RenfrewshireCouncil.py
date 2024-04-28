@@ -31,13 +31,13 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(
                 "https://www.renfrewshire.gov.uk/article/2320/Check-your-bin-collection-day"
             )
-
-            #accept_button = WebDriverWait(driver, timeout=30).until(
-            #    EC.element_to_be_clickable(
-            #        (By.CLASS_NAME, "btn btn--contrast btn--complete")
-            #    )
-            #)
-            #accept_button.click()
+            
+            accept_button = WebDriverWait(driver, timeout=30).until(
+                EC.element_to_be_clickable(
+                    (By.ID, "ccc-notify-accept")
+                )
+            )
+            accept_button.click()
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
