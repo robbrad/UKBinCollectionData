@@ -496,6 +496,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| ReigateAndBansteadBoroughCouncil | http://selenium:4444  | local  |
 
+        @RenfrewshireCouncil
+		Examples: RenfrewshireCouncil
+		| council | selenium_url | selenium_mode |
+		| RenfrewshireCouncil | http://selenium:4444  | local  |
+
         @RhonddaCynonTaffCouncil
 		Examples: RhonddaCynonTaffCouncil
 		| council | selenium_url | selenium_mode |
