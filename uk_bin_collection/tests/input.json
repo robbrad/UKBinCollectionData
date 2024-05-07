@@ -78,6 +78,13 @@
         "wiki_name": "Bexley Council",
         "wiki_note": "In order to use this parser, you will need to sign up to [Bexley's @Home app](https://www.bexley.gov.uk/services/rubbish-and-recycling/bexley-home-recycling-app/about-app) (available for [iOS](https://apps.apple.com/gb/app/home-collection-reminder/id1050703690) and [Android](https://play.google.com/store/apps/details?id=com.contender.athome.android)).\nComplete the setup by entering your email and setting your address with postcode and address line.\nOnce you can see the calendar, you _should_ be good to run the parser.\nJust pass the email you used in quotes in the UPRN parameter.\n"
     },
+    "BirminghamCityCouncil": {
+        "postcode": "B5 7XE",
+        "skip_get_url": true,
+        "uprn": "100070445256",
+        "url": "https://www.birmingham.gov.uk/xfp/form/619",
+        "wiki_name": "Birmingham City Council"
+    },
     "BlackburnCouncil": {
         "skip_get_url": true,
         "uprn": "100010733027",

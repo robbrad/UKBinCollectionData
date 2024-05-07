@@ -61,6 +61,11 @@ Feature: Test each council output matches expected results
 		| council | selenium_url | selenium_mode |
 		| BexleyCouncil | http://selenium:4444  | local  |
 
+        @BirminghamCityCouncil
+		Examples: BirminghamCityCouncil
+		| council | selenium_url | selenium_mode |
+		| BirminghamCityCouncil | None  | None  |
+
         @BlackburnCouncil
 		Examples: BlackburnCouncil
 		| council | selenium_url | selenium_mode |
