@@ -227,10 +227,10 @@ def test_update_input_json_fail(capsys, monkeypatch):
 
 
 def test_create_webdriver_local():
-    result = create_webdriver(None)
+    result = create_webdriver(None, False)
     assert result.name == "chrome"
 
 
 def test_create_webdriver_remote():
-    result = create_webdriver("http://selenium:4444")
+    result = create_webdriver("http://selenium:4444", False)
     assert result.name == "chrome"
