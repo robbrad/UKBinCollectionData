@@ -27,20 +27,28 @@ class CouncilClass(AbstractGetBinDataClass):
         for idx, row in enumerate(soup.find_all("tr")):
             if idx == 0:
                 continue
+
             row_type = row.find("th").text.strip()
             row_data = row.find_all("td")
+
             # When we get the row data, we can loop through it all and parse it to datetime. Because there are no
             # years, we must add it in, then check if we need to overflow it to the following year.
             for item in row_data:
-                if item.text.strip() == "Today":
+                item_text = item.text.strip()
+
+                if item_text == "Today":
                     collections.append((row_type, curr_date))
+                elif item_text == "Tomorrow":
+                    collections.append((row_type, curr_date + relativedelta(days=1)))
                 else:
                     bin_date = datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(item.text.strip()),
+                        remove_ordinal_indicator_from_date_string(item_text),
                         "%A, %d %B",
                     ).replace(year=curr_date.year)
+
                     if curr_date.month == 12 and bin_date.month == 1:
                         bin_date = bin_date + relativedelta(years=1)
+
                     collections.append((row_type, bin_date))
 
         # Sort the text and list elements by date
