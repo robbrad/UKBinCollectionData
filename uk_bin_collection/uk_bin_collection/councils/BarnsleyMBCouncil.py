@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -63,7 +64,14 @@ class CouncilClass(AbstractGetBinDataClass):
         results = soup.find("div", {"class": "panel"}).find_all("fieldset")[0:2]
         heading = results[0].find_all("p")[1:3]
         bin_text = heading[1].text.strip() + " bin"
-        bin_date = datetime.strptime(heading[0].text, "%A, %B %d, %Y")
+
+        if heading[0].text == "Today":
+            bin_date = datetime.today()
+        elif heading[0].text == "Tomorrow":
+            bin_date = datetime.today() + relativedelta(days=1)
+        else:
+            bin_date = datetime.strptime(heading[0].text, "%A, %B %d, %Y")
+
         dict_data = {
             "type": bin_text,
             "collectionDate": bin_date.strftime(date_format),
@@ -74,7 +82,7 @@ class CouncilClass(AbstractGetBinDataClass):
         for row in results_table:
             text_list = [item.text.strip() for item in row.contents if item != "\n"]
             bin_text = text_list[1] + " bin"
-            bin_date = datetime.strptime(text_list[0], "%A, %B %d, %Y")
+
             dict_data = {
                 "type": bin_text,
                 "collectionDate": bin_date.strftime(date_format),
