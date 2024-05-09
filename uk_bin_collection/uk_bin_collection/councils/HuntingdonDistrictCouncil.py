@@ -23,14 +23,19 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        bin_types = ["Domestic", "Recycle", "Organic"]
+        no_garden_message = "Your property does not receive a garden waste collection"
+        results = soup.find("ul", class_="d-print-none").find_all("li")
 
-        for i, date in enumerate(soup.find("ul", class_="d-print-none").find_all("li")):
-            data["bins"].append(
-                {
-                    "type": bin_types[i],
-                    "collectionDate": datetime.strptime(date.find("strong").get_text(strip=True), "%A %d %B %Y").strftime(date_format)
-                }
-            )
+        for result in results:
+            if no_garden_message in result.get_text(strip=True):
+                continue
+            else:
+                data["bins"].append(
+                    {
+                        "type": ' '.join(result.get_text(strip=True).split(" ")[5:7]).capitalize(),
+                        "collectionDate": datetime.strptime(result.find("strong").get_text(strip=True),
+                                                            "%A %d %B %Y").strftime(date_format)
+                    }
+                )
 
         return data
