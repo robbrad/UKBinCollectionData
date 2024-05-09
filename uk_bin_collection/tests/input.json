@@ -538,7 +538,6 @@
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
     "MiltonKeynesCityCouncil": {
-        "skip_get_url": true,
         "uprn": "Fullers Slade",
         "url": "https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days",
         "wiki_name": "Milton Keynes City Council",
@@ -595,7 +594,6 @@
         "wiki_name": "North East Derbyshire District Council"
     },
     "NorthEastLincs": {
-        "skip_get_url": true,
         "uprn": "11062649",
         "url": "https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=11062649",
         "wiki_command_url_override": "https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=XXXXXXXX",
