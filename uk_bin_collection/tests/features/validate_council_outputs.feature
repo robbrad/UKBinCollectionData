@@ -14,7 +14,7 @@ Feature: Test each council output matches expected results
 		@ArunCouncil
 		Examples: ArunCouncil
 		| council | selenium_url | selenium_mode |
-		| ArunCouncil | http://localhost:4444  | remote  |
+		| ArunCouncil | http://selenium:4444  | local  |
 
         @AylesburyValeCouncil
 		Examples: AylesburyValeCouncil
