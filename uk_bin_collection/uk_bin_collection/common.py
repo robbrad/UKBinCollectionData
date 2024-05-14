@@ -257,36 +257,62 @@ def contains_date(string, fuzzy=False) -> bool:
         return False
 
 
+# def create_webdriver(
+#     web_driver: str = None, headless: bool = True, user_agent: str = None
+# ) -> webdriver.Chrome:
+#     """
+#     Create and return a Chrome WebDriver configured for optional headless operation.
+
+#     :param web_driver: URL to the Selenium server for remote web drivers. If None, a local driver is created.
+#     :param headless: Whether to run the browser in headless mode.
+#     :param user_agent: Optional custom user agent string.
+#     :return: An instance of a Chrome WebDriver.
+#     :raises WebDriverException: If the WebDriver cannot be created.
+#     """
+#     options = webdriver.ChromeOptions()
+#     if headless:
+#         options.add_argument("--headless")
+#     options.add_argument("--no-sandbox")
+#     options.add_argument("--disable-gpu")
+#     options.add_argument("--start-maximized")
+#     options.add_argument("--disable-dev-shm-usage")
+#     if user_agent:
+#         options.add_argument(f"--user-agent={user_agent}")
+#     options.add_experimental_option("excludeSwitches", ["enable-logging"])
+
+#     try:
+#         if web_driver:
+#             return webdriver.Remote(command_executor=web_driver, options=options)
+#         else:
+#             return webdriver.Chrome(
+#                 service=ChromeService(ChromeDriverManager().install()), options=options
+#             )
+#     except MaxRetryError as e:
+#         print(f"Failed to create WebDriver: {e}")
+#         raise
+
 def create_webdriver(
-    web_driver: str = None, headless: bool = True, user_agent: str = None
+    web_driver: str, headless: bool, user_agent: str = None
 ) -> webdriver.Chrome:
     """
-    Create and return a Chrome WebDriver configured for optional headless operation.
-
-    :param web_driver: URL to the Selenium server for remote web drivers. If None, a local driver is created.
-    :param headless: Whether to run the browser in headless mode.
-    :param user_agent: Optional custom user agent string.
-    :return: An instance of a Chrome WebDriver.
-    :raises WebDriverException: If the WebDriver cannot be created.
+    Create and return a headless Selenium webdriver
+    :rtype: webdriver.Chrome
     """
+    # Set up Selenium to run 'headless'
     options = webdriver.ChromeOptions()
-    if headless:
+    if headless is True:
         options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-gpu")
     options.add_argument("--start-maximized")
     options.add_argument("--disable-dev-shm-usage")
-    if user_agent:
+    if user_agent is not None:
         options.add_argument(f"--user-agent={user_agent}")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
-    try:
-        if web_driver:
-            return webdriver.Remote(command_executor=web_driver, options=options)
-        else:
-            return webdriver.Chrome(
-                service=ChromeService(ChromeDriverManager().install()), options=options
-            )
-    except MaxRetryError as e:
-        print(f"Failed to create WebDriver: {e}")
-        raise
+    # Return a remote Selenium webdriver
+    if web_driver is not None:
+        return webdriver.Remote(command_executor=web_driver, options=options)
+    # Return a local Selenium webdriver
+    return webdriver.Chrome(
+        service=ChromeService(ChromeDriverManager().install()), options=options
+    )
