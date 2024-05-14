@@ -258,7 +258,7 @@ def contains_date(string, fuzzy=False) -> bool:
 
 
 def create_webdriver(
-    web_driver: str = None, headless: bool = False, user_agent: str = None
+    web_driver: str = None, headless: bool = True, user_agent: str = None
 ) -> webdriver.Chrome:
     """
     Create and return a Chrome WebDriver configured for optional headless operation.
