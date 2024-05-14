@@ -28,14 +28,14 @@ RUN poetry completions bash >> /home/vscode/.bash_completion && \
     echo "export PATH=$PYTHON_VIRTUALENV_HOME/bin:$PATH" >> ~/.bashrc
 
 # Set the working directory for the app
-WORKDIR /workspaces/ukbc
+WORKDIR /ukbc_build
 
 # Use a multi-stage build to install dependencies
 FROM ukbc-dev-base AS ukbc-dev-dependencies
 
 ARG PYTHON_VIRTUALENV_HOME
 
-COPY / /workspaces/ukbc/
+COPY . /ukbc_build/
 
 RUN poetry install --no-interaction --no-ansi --with dev
 #docker build -f .devcontainer/dev.Dockerfile -t ukbc_dev_container .

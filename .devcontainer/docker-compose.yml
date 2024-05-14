@@ -5,24 +5,56 @@ services:
       context: ../  # Path to the directory containing the Dockerfile
       dockerfile: .devcontainer/dev.Dockerfile
     volumes:
-      - ../..:/workspaces:cached
+      - ../:/workspaces/UKBinCollectionData:rw
+    privileged: true
+    hostname: devcontainer
     networks:
       - devnet
     depends_on:
-      - selenium
+      - selenium-hub
     command: sleep infinity
 
-  selenium:
-    image: selenium/standalone-chrome:latest
-    networks:
-      - devnet
-    ports:
-      - "4444:4444"
-      - "7900:7900"
+  chrome:
+    image: selenium/node-chrome:4.20.0-20240505
     shm_size: 2gb
-    hostname: selenium
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     privileged: true
     restart: always
+    networks:
+      - devnet
+
+  chrome_video:
+    image: selenium/video:ffmpeg-6.1.1-20240505
+    volumes:
+      - ../test_videos:/videos/
+    depends_on:
+      - chrome
+    environment:
+      - DISPLAY_CONTAINER_NAME=chrome
+      - SE_VIDEO_FILE_NAME=auto
+      - SE_NODE_GRID_URL=http://selenium:4444
+    privileged: true
+    restart: always
+    networks:
+      - devnet
+
+  selenium-hub:
+    image: selenium/hub:4.20.0-20240505
+    container_name: selenium-hub
+    hostname: selenium
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    privileged: true
+    restart: always
+    networks:
+      - devnet
 
 networks:
   devnet:
