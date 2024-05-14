@@ -1,0 +1,29 @@
+services:
+  devcontainer:
+    image: ukbc_dev_container  # This tags the built image
+    build:
+      context: ../  # Path to the directory containing the Dockerfile
+      dockerfile: .devcontainer/dev.Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+    networks:
+      - devnet
+    depends_on:
+      - selenium
+    command: sleep infinity
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    networks:
+      - devnet
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    shm_size: 2gb
+    hostname: selenium
+    privileged: true
+    restart: always
+
+networks:
+  devnet:
+    driver: bridge
