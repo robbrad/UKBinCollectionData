@@ -333,7 +333,7 @@ def test_contains_date_with_mixed_content():
 
 def test_create_webdriver_local():
     result = create_webdriver(None, headless=True, user_agent="FireFox")
-    assert result.name == "chrome"
+    assert result.name in  ["chrome","chrome-headless-shell"]
 
 
 def test_create_webdriver_remote_failure():
