@@ -10,12 +10,16 @@ current_file_path = Path(__file__).resolve()
 BASE_PATH = current_file_path.parent.parent.parent.parent / "tests"
 
 
-def load_json_file(file_name):
+def load_json_file(file_name, encoding="utf-8"):
     file_path = BASE_PATH / file_name
-    with open(file_path) as f:
-        data = json.load(f)
-        logging.info(f"{file_name} file loaded")
-    return data
+    try:
+        with open(file_path, "r", encoding=encoding) as f:
+            data = json.load(f)
+            logging.info(f"{file_name} file successfully loaded")
+            return data
+    except UnicodeDecodeError as e:
+        logging.error(f"Failed to load {file_name} with encoding {encoding}: {e}")
+        raise
 
 
 def validate_json(json_str):

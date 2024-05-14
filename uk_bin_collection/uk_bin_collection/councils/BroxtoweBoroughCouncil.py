@@ -84,7 +84,9 @@ class CouncilClass(AbstractGetBinDataClass):
                                 )
                                 dict_data = {
                                     "type": bin_type,
-                                    "collectionDate": collection_date.strftime(date_format),
+                                    "collectionDate": collection_date.strftime(
+                                        date_format
+                                    ),
                                 }
                                 data["bins"].append(dict_data)
 

@@ -20,8 +20,20 @@ class CouncilClass(AbstractGetBinDataClass):
         collections = []
 
         for bin in soup.find_all("div", class_="mb-4 card"):
-            bin_type = bin.find("div", class_="card-title").find("h4").get_text().strip().replace("Wheelie ", "")
-            bin_date_text = bin.find_all("div", class_="mt-1")[1].find("strong").get_text().strip().replace(",", "")
+            bin_type = (
+                bin.find("div", class_="card-title")
+                .find("h4")
+                .get_text()
+                .strip()
+                .replace("Wheelie ", "")
+            )
+            bin_date_text = (
+                bin.find_all("div", class_="mt-1")[1]
+                .find("strong")
+                .get_text()
+                .strip()
+                .replace(",", "")
+            )
             bin_date = datetime.strptime(bin_date_text, "%A %d %B %Y")
             collections.append((bin_type, bin_date))
 

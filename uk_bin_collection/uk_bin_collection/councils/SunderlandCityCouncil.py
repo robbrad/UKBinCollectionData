@@ -7,7 +7,6 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -43,9 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
             inputElement_postcode.send_keys(user_postcode)
 
             inputElement_submit_button = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable(
-                    (By.ID, "ContentPlaceHolder1_btnLLPG")
-                )
+                EC.element_to_be_clickable((By.ID, "ContentPlaceHolder1_btnLLPG"))
             )
             inputElement_submit_button.click()
 
@@ -56,7 +53,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             selected_addressList = Select(addressList)
             for idx, addr_option in enumerate(selected_addressList.options):
-                option_name = addr_option.accessible_name[0:len(user_paon)]
+                option_name = addr_option.accessible_name[0 : len(user_paon)]
                 if option_name == user_paon:
                     break
             selected_addressList.select_by_index(idx)
@@ -65,10 +62,20 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             soup.prettify()
 
-            household_bin_date = datetime.strptime(soup.find("span", {"id": "ContentPlaceHolder1_LabelHouse"}).get_text(strip=True), "%A %d %B %Y")
+            household_bin_date = datetime.strptime(
+                soup.find("span", {"id": "ContentPlaceHolder1_LabelHouse"}).get_text(
+                    strip=True
+                ),
+                "%A %d %B %Y",
+            )
             collections.append(("Household bin", household_bin_date))
 
-            recycling_bin_date = datetime.strptime(soup.find("span", {"id": "ContentPlaceHolder1_LabelRecycle"}).get_text(strip=True), "%A %d %B %Y")
+            recycling_bin_date = datetime.strptime(
+                soup.find("span", {"id": "ContentPlaceHolder1_LabelRecycle"}).get_text(
+                    strip=True
+                ),
+                "%A %d %B %Y",
+            )
             collections.append(("Recycling bin", recycling_bin_date))
 
             ordered_data = sorted(collections, key=lambda x: x[1])

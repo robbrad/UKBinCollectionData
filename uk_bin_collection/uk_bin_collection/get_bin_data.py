@@ -3,10 +3,12 @@ handle the data recieved from the provided council class.
 
 Keyword arguments: None
 """
+
 import json
 import logging
 from abc import ABC, abstractmethod
 from logging.config import dictConfig
+import os
 
 import requests
 
@@ -89,9 +91,14 @@ class AbstractGetBinDataClass(ABC):
 
         # if dev mode create/update council's entry in the input.json
         if dev_mode is not None and dev_mode is True:
+            cwd = os.getcwd()
+            input_file_path = os.path.join(
+                cwd, "uk_bin_collection", "tests", "input.json"
+            )
             update_input_json(
                 council_module_str,
                 this_url,
+                input_file_path,
                 postcode=this_postcode,
                 paon=this_paon,
                 uprn=this_uprn,

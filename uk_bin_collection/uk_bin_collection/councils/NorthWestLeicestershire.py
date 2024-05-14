@@ -77,9 +77,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     # Parse the date from the string
                     # check for today and tomorrow
-                    if date.lower() == 'today': 
+                    if date.lower() == "today":
                         parsed_date = datetime.now().date()
-                    elif date.lower() == 'tomorrow':
+                    elif date.lower() == "tomorrow":
                         parsed_date = (datetime.now() + timedelta(days=1)).date()
                     else:
                         date = re.sub(r"(st|nd|rd|th)", "", date)

@@ -11,6 +11,8 @@ from enum import Enum
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.common.exceptions import WebDriverException
+from urllib3.exceptions import MaxRetryError
 
 date_format = "%d/%m/%Y"
 days_of_week = {
@@ -184,12 +186,21 @@ def get_dates_every_x_days(start: datetime, step: int, amount: int = 8) -> list:
 
 
 def get_next_occurrence_from_day_month(date: datetime) -> datetime:
-    day = datetime.now().date().strftime("%d")
-    month = datetime.now().date().strftime("%m")
-    if date.strftime("%m") < month or (
-        date.strftime("%m") == month and date.strftime("%d") < day
+    current_date = datetime.now()
+    # Get the current day and month as integers
+    current_day = current_date.day
+    current_month = current_date.month
+
+    # Extract the target day and month from the input date
+    target_day = date.day
+    target_month = date.month
+
+    # Check if the target date has already occurred this year
+    if (target_month < current_month) or (
+        target_month == current_month and target_day < current_day
     ):
         date = pd.to_datetime(date) + pd.DateOffset(years=1)
+
     return date
 
 
@@ -197,54 +208,38 @@ def remove_alpha_characters(input_string: str) -> str:
     return "".join(c for c in input_string if c.isdigit() or c == " ")
 
 
-def update_input_json(council: str, url: str, **kwargs):
+def update_input_json(council: str, url: str, input_file_path: str, **kwargs):
     """
-    Create/update council's entry in the input.json
-        :param council: Council
-        :param kwargs: Run arguments
+    Create or update a council's entry in the input.json file.
+
+    :param council: Name of the council.
+    :param url: URL associated with the council.
+    :param input_file_path: Path to the input JSON file.
+    :param kwargs: Additional parameters to store (postcode, paon, uprn, usrn, web_driver, skip_get_url).
     """
-    postcode = kwargs.get("postcode", None)
-    paon = kwargs.get("paon", None)
-    uprn = kwargs.get("uprn", None)
-    usrn = kwargs.get("usrn", None)
-    web_driver = kwargs.get("web_driver", None)
-    skip_get_url = kwargs.get("skip_get_url", None)
-    cwd = os.getcwd()
-    input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
-    if os.path.exists(input_file_path):
-        with open(input_file_path, "r") as f:
-            data = json.load(f)
-            if council not in data:
-                data[council] = {"wiki_name": council}
-            if "url" != "":
-                data[council]["url"] = url
-            if postcode is not None:
-                data[council]["postcode"] = postcode
-            if paon is not None:
-                data[council]["paon"] = paon
-            if uprn is not None:
-                data[council]["uprn"] = uprn
-            if usrn is not None:
-                data[council]["usrn"] = usrn
-            if web_driver is not None:
-                data[council]["web_driver"] = web_driver
-            if skip_get_url is not None:
-                data[council]["skip_get_url"] = skip_get_url
-        with open(input_file_path, "w") as f:
-            f.write(json.dumps(data, sort_keys=True, indent=4))
-    else:
-        print(
-            "Exception encountered: Unable to update input.json file for the council."
-        )
-        print(
-            "Please check you're running developer mode from either the UKBinCollectionData "
-            "or uk_bin_collection/uk_bin_collection/ directories."
-        )
+    try:
+        data = load_data(input_file_path)
+        council_data = data.get(council, {"wiki_name": council})
+        council_data.update({"url": url, **kwargs})
+        data[council] = council_data
+
+        save_data(input_file_path, data)
+    except IOError as e:
+        print(f"Error updating the JSON file: {e}")
+    except json.JSONDecodeError:
+        print("Failed to decode JSON, check the integrity of the input file.")
 
 
-def validate_dates(bin_dates: dict) -> dict:
-    raise NotImplementedError()
-    # If a date is in December and the next is in January, increase the year
+def load_data(file_path):
+    if os.path.exists(file_path):
+        with open(file_path, "r") as file:
+            return json.load(file)
+    return {}
+
+
+def save_data(file_path, data):
+    with open(file_path, "w") as file:
+        json.dump(data, file, sort_keys=True, indent=4)
 
 
 def contains_date(string, fuzzy=False) -> bool:
@@ -263,27 +258,35 @@ def contains_date(string, fuzzy=False) -> bool:
 
 
 def create_webdriver(
-    web_driver: str, headless: bool, user_agent: str = None
+    web_driver: str = None, headless: bool = True, user_agent: str = None
 ) -> webdriver.Chrome:
     """
-    Create and return a headless Selenium webdriver
-    :rtype: webdriver.Chrome
+    Create and return a Chrome WebDriver configured for optional headless operation.
+
+    :param web_driver: URL to the Selenium server for remote web drivers. If None, a local driver is created.
+    :param headless: Whether to run the browser in headless mode.
+    :param user_agent: Optional custom user agent string.
+    :return: An instance of a Chrome WebDriver.
+    :raises WebDriverException: If the WebDriver cannot be created.
     """
-    # Set up Selenium to run 'headless'
     options = webdriver.ChromeOptions()
-    if headless is True:
+    if headless:
         options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-gpu")
     options.add_argument("--start-maximized")
     options.add_argument("--disable-dev-shm-usage")
-    if user_agent is not None:
+    if user_agent:
         options.add_argument(f"--user-agent={user_agent}")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    # Return a remote Selenium webdriver
-    if web_driver is not None:
-        return webdriver.Remote(command_executor=web_driver, options=options)
-    # Return a local Selenium webdriver
-    return webdriver.Chrome(
-        service=ChromeService(ChromeDriverManager().install()), options=options
-    )
+
+    try:
+        if web_driver:
+            return webdriver.Remote(command_executor=web_driver, options=options)
+        else:
+            return webdriver.Chrome(
+                service=ChromeService(ChromeDriverManager().install()), options=options
+            )
+    except MaxRetryError as e:
+        print(f"Failed to create WebDriver: {e}")
+        raise

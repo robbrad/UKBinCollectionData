@@ -25,14 +25,16 @@ class CouncilClass(AbstractGetBinDataClass):
         if response.status_code != 200:
             raise ConnectionError("Could not get latest data!")
 
-        json_data = json.loads(response.text)['BinCollections']
+        json_data = json.loads(response.text)["BinCollections"]
         data = {"bins": []}
         collections = []
 
         for day in json_data:
             for bin in day:
                 bin_type = bin["BinType"]
-                next_date = datetime.strptime(bin["JobScheduledStart"], "%Y-%m-%dT%H:%M:%S")
+                next_date = datetime.strptime(
+                    bin["JobScheduledStart"], "%Y-%m-%dT%H:%M:%S"
+                )
                 collections.append((bin_type, next_date))
 
         ordered_data = sorted(collections, key=lambda x: x[1])

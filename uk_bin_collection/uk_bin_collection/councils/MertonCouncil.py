@@ -40,7 +40,9 @@ class CouncilClass(AbstractGetBinDataClass):
             # First cell is the bin_type
             bin_type = cells[0].get_text().strip()
             # Date is on the second cell, second paragraph, wrapped in p
-            collectionDate = datetime.strptime(cells[1].select("p > b")[2].get_text(strip=True), "%d %B %Y")
+            collectionDate = datetime.strptime(
+                cells[1].select("p > b")[2].get_text(strip=True), "%d %B %Y"
+            )
 
             # Add each collection to the list as a tuple
             collections.append((bin_type, collectionDate))

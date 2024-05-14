@@ -13,6 +13,7 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 import re
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -50,12 +51,16 @@ class CouncilClass(AbstractGetBinDataClass):
                             row.find("dd").get_text()
                         ).strip()
                         # strip out any text inside of the date string
-                        collection_date = re.sub(r'\n\s*\(this.*?\)', '', collection_date)
+                        collection_date = re.sub(
+                            r"\n\s*\(this.*?\)", "", collection_date
+                        )
                         dict_data = {
                             "type": c.get_text().strip().capitalize(),
                             "collectionDate": get_next_occurrence_from_day_month(
                                 datetime.strptime(
-                                    collection_date + " " + datetime.now().strftime("%Y"),
+                                    collection_date
+                                    + " "
+                                    + datetime.now().strftime("%Y"),
                                     "%A, %d %B %Y",
                                 )
                             ).strftime(date_format),

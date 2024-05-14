@@ -26,9 +26,9 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get form data
         s = requests.session()
         cookies = {
-            'ntc-cookie-policy': '1',
-            'SSESS6ec6d5d2d471c0357053d5993a839bce': 'qBdR7XhmSMd5_PDBIqG0It2R0Fq67igrejRY-WOcskE',
-            'has_js': '1',
+            "ntc-cookie-policy": "1",
+            "SSESS6ec6d5d2d471c0357053d5993a839bce": "qBdR7XhmSMd5_PDBIqG0It2R0Fq67igrejRY-WOcskE",
+            "has_js": "1",
         }
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -134,7 +134,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "ajax_page_state[jquery_version]": "1.10",
         }
         uprn_data = {
-            "house_number": '0000' + f'{user_uprn}',
+            "house_number": "0000" + f"{user_uprn}",
             "op": "Use",
             "form_build_id": "form-BQ47tM0NKADE0s8toYkdSef3QBn6lDM-yBseqIOho80",
             "form_id": "ntc_address_wizard",
@@ -200,7 +200,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
             else:
                 collections.append(("Recycling bin (grey)", item_as_date))
-
 
         # Add the special collection dates to the collection tuple
         collections += [

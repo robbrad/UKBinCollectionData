@@ -32,9 +32,12 @@ class CouncilClass(AbstractGetBinDataClass):
             else:
                 data["bins"].append(
                     {
-                        "type": ' '.join(result.get_text(strip=True).split(" ")[5:7]).capitalize(),
-                        "collectionDate": datetime.strptime(result.find("strong").get_text(strip=True),
-                                                            "%A %d %B %Y").strftime(date_format)
+                        "type": " ".join(
+                            result.get_text(strip=True).split(" ")[5:7]
+                        ).capitalize(),
+                        "collectionDate": datetime.strptime(
+                            result.find("strong").get_text(strip=True), "%A %d %B %Y"
+                        ).strftime(date_format),
                     }
                 )
 

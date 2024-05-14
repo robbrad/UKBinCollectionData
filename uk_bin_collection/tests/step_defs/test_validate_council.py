@@ -4,6 +4,7 @@ import traceback
 from pytest_bdd import scenario, given, when, then, parsers
 from hamcrest import assert_that, equal_to
 from functools import wraps
+import os
 
 from step_helpers import file_handler
 from uk_bin_collection.uk_bin_collection import collect_data
@@ -30,6 +31,7 @@ def handle_test_errors(func):
 
 
 @pytest.fixture
+@handle_test_errors
 def context():
     class Context(object):
         pass
@@ -43,15 +45,15 @@ def get_council_step(context, council_name):
     council_input_data = file_handler.load_json_file("input.json")
     context.metadata = council_input_data[council_name]
 
-
 # When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set.
+
 @handle_test_errors
 @when(
     parsers.parse(
         "we scrape the data from {council} using {selenium_mode} and the {selenium_url} is set"
     )
 )
-def scrape_step(context, council, selenium_mode, selenium_url):
+def scrape_step(context, council, selenium_mode, selenium_url, headless_mode):
     context.council = council
     context.selenium_mode = selenium_mode
     context.selenium_url = selenium_url
@@ -70,12 +72,10 @@ def scrape_step(context, council, selenium_mode, selenium_url):
     if "usrn" in context.metadata:
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
-    if "headless" in context.metadata:
-        headless = context.metadata["headless"]
-        if headless:
-            args.append(f"--headless")
-        else:
-            args.append(f"--not-headless")
+    if headless_mode == "True":
+        args.append(f"--headless")
+    else:
+        args.append(f"--not-headless")
     # TODO we should somehow run this test with and without this argument passed
     # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
 

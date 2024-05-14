@@ -98,7 +98,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 if len(collection_date) != 1:
                     continue
 
-                collection_date_obj = parse(re.sub("[()]", "", collection_date[0])).date()
+                collection_date_obj = parse(
+                    re.sub("[()]", "", collection_date[0])
+                ).date()
 
                 # since we only have the next collection day, if the parsed date is in the past,
                 # assume the day is instead next month

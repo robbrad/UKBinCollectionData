@@ -252,6 +252,23 @@ file.
 Based on the [input.json](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/input.json),
 this does an actual live run against the council's site and validates if the returned data is JSON and conforms to the common format [JSON Schema](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/output.schema).
 
+By default if the council is a Selenium based council it will run in headless mode. If you pass `--headless=False` to pytest (possible in VS Code via the workspace settings.json useful for debugging code) It will run in headless.
+
+```
+{
+    "python.testing.pytestArgs": [
+        "uk_bin_collection",
+        "--headless=True"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
+```
+
+It is also possible to run
+```
+poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False
+```
 
 #### Running the Behave tests for all councils
 ```commandline

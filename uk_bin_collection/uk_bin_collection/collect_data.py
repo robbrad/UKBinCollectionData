@@ -61,13 +61,19 @@ class UKBinCollectionApp:
             help="URL for remote Selenium web driver - should be wrapped in double quotes",
             required=False,
         )
-        self.parser.add_argument('--headless', dest='headless', action='store_true',
-            help='Should Selenium be headless. Defaults to true. Can be set to false to debug council')
-        self.parser.add_argument('--not-headless', dest='headless', action='store_false',
-            help='Should Selenium be headless. Defaults to true. Can be set to false to debug council')
+        self.parser.add_argument(
+            "--headless",
+            dest="headless",
+            action="store_true",
+            help="Should Selenium be headless. Defaults to true. Can be set to false to debug council",
+        )
+        self.parser.add_argument(
+            "--not-headless",
+            dest="headless",
+            action="store_false",
+            help="Should Selenium be headless. Defaults to true. Can be set to false to debug council",
+        )
         self.parser.set_defaults(headless=True)
-
-
 
         self.parser.add_argument(
             "-d",

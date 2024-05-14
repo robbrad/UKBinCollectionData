@@ -33,10 +33,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             # driver = create_webdriver(web_driver, headless)
-            driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-            driver.get(
-                "https://www.westberks.gov.uk/binday"
+            driver = webdriver.Chrome(
+                service=ChromeService(ChromeDriverManager().install())
             )
+            driver.get("https://www.westberks.gov.uk/binday")
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
@@ -77,9 +77,30 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             soup.prettify()
 
-            rubbish_date = datetime.strptime(' '.join(soup.find("div", {"id": "FINDYOURBINDAYS_RUBBISHDATE_OUTERDIV"}).get_text(strip=True).split()[6:8]), "%d %B").replace(year=datetime.now().year)
-            recycling_date = datetime.strptime(' '.join(soup.find("div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}).get_text(strip=True).split()[6:8]), "%d %B").replace(year=datetime.now().year)
-            food_date = datetime.strptime(' '.join(soup.find("div", {"id": "FINDYOURBINDAYS_FOODWASTEDATE_OUTERDIV"}).get_text(strip=True).split()[8:10]), "%d %B").replace(year=datetime.now().year)
+            rubbish_date = datetime.strptime(
+                " ".join(
+                    soup.find("div", {"id": "FINDYOURBINDAYS_RUBBISHDATE_OUTERDIV"})
+                    .get_text(strip=True)
+                    .split()[6:8]
+                ),
+                "%d %B",
+            ).replace(year=datetime.now().year)
+            recycling_date = datetime.strptime(
+                " ".join(
+                    soup.find("div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"})
+                    .get_text(strip=True)
+                    .split()[6:8]
+                ),
+                "%d %B",
+            ).replace(year=datetime.now().year)
+            food_date = datetime.strptime(
+                " ".join(
+                    soup.find("div", {"id": "FINDYOURBINDAYS_FOODWASTEDATE_OUTERDIV"})
+                    .get_text(strip=True)
+                    .split()[8:10]
+                ),
+                "%d %B",
+            ).replace(year=datetime.now().year)
 
             if datetime.now().month == 12 and rubbish_date.month == 1:
                 rubbish_date = rubbish_date + relativedelta(years=1)

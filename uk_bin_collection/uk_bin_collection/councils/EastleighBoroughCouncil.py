@@ -58,7 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 if not binDict[bin].startswith("You haven't yet signed up for"):
                     # Convert date
                     date = datetime.strptime(binDict[bin], "%a, %d %b %Y")
-    
+
                     # Set bin data
                     dict_data = {
                         "type": bin,

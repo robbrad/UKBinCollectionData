@@ -65,8 +65,10 @@ class CouncilClass(AbstractGetBinDataClass):
                     bin_colour = "Green"
                 else:
                     raise ValueError(f"No bin info found in {bin_type_info[0]}")
-                
-                bin_date_info = list(bin.find_next("div", {"class": "binextra"}).stripped_strings)
+
+                bin_date_info = list(
+                    bin.find_next("div", {"class": "binextra"}).stripped_strings
+                )
                 # On standard collection schedule, date will be contained in the first string
                 if contains_date(bin_date_info[0]):
                     bin_date = get_next_occurrence_from_day_month(

@@ -8,18 +8,13 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        data = {
-            "bins": []
-        }
+        data = {"bins": []}
 
         headers = {
             "Content-Type": "application/json; charset=UTF-8",
         }
 
-        req_data = {
-            "uprn": user_uprn,
-            "noticeBoard": "default"
-        }
+        req_data = {"uprn": user_uprn, "noticeBoard": "default"}
 
         url = "https://gis.stalbans.gov.uk/NoticeBoard9/VeoliaProxy.NoticeBoard.asmx/GetServicesByUprnAndNoticeBoard"
 

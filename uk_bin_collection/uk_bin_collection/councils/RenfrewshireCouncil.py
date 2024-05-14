@@ -31,11 +31,9 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(
                 "https://www.renfrewshire.gov.uk/article/2320/Check-your-bin-collection-day"
             )
-            
+
             accept_button = WebDriverWait(driver, timeout=30).until(
-                EC.element_to_be_clickable(
-                    (By.ID, "ccc-notify-accept")
-                )
+                EC.element_to_be_clickable((By.ID, "ccc-notify-accept"))
             )
             accept_button.click()
 
@@ -76,44 +74,54 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            next_collection_div = soup.find("div", {"class": "collection collection--next"})
-            
-            next_collection_date = datetime.strptime(
-                next_collection_div.find("p", {"class": "collection__date"}).get_text().strip(),
-                '%A %d %B %Y'
+            next_collection_div = soup.find(
+                "div", {"class": "collection collection--next"}
             )
 
-            next_collection_bin = next_collection_div.findAll("p", {"class": "bins__name"})
-            
+            next_collection_date = datetime.strptime(
+                next_collection_div.find("p", {"class": "collection__date"})
+                .get_text()
+                .strip(),
+                "%A %d %B %Y",
+            )
+
+            next_collection_bin = next_collection_div.findAll(
+                "p", {"class": "bins__name"}
+            )
+
             for row in next_collection_bin:
                 dict_data = {
-                    "type": row
-                    .get_text()
-                    .strip(),
+                    "type": row.get_text().strip(),
                     "collectionDate": next_collection_date.strftime("%d/%m/%Y"),
                 }
                 data["bins"].append(dict_data)
 
-            future_collection_div = soup.find("div", {"class": "collection collection--future"})
-            
-            future_collection_row = future_collection_div.findAll("div", {"class": "collection__row"})
+            future_collection_div = soup.find(
+                "div", {"class": "collection collection--future"}
+            )
+
+            future_collection_row = future_collection_div.findAll(
+                "div", {"class": "collection__row"}
+            )
 
             for collection_row in future_collection_row:
                 future_collection_date = datetime.strptime(
-                    collection_row.find("p", {"class": "collection__date"}).get_text().strip(),
-                    '%A %d %B %Y'
+                    collection_row.find("p", {"class": "collection__date"})
+                    .get_text()
+                    .strip(),
+                    "%A %d %B %Y",
                 )
-                future_collection_bin = collection_row.findAll("p", {"class": "bins__name"})
-                
+                future_collection_bin = collection_row.findAll(
+                    "p", {"class": "bins__name"}
+                )
+
                 for row in future_collection_bin:
                     dict_data = {
-                        "type": row
-                        .get_text()
-                        .strip(),
+                        "type": row.get_text().strip(),
                         "collectionDate": future_collection_date.strftime("%d/%m/%Y"),
                     }
-                    
-                    data["bins"].append(dict_data)            
+
+                    data["bins"].append(dict_data)
 
         except Exception as e:
             # Here you can log the exception if needed

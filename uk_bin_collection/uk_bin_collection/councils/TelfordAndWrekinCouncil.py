@@ -21,15 +21,18 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
         collections = []
-        api_url = f'https://dac.telford.gov.uk/BinDayFinder/Find/PropertySearch?uprn={user_uprn}'
+        api_url = f"https://dac.telford.gov.uk/BinDayFinder/Find/PropertySearch?uprn={user_uprn}"
 
         response = requests.get(api_url)
         if response.status_code != 200:
             raise ConnectionError("Could not get latest data!")
 
-        json_data = json.loads(response.text.replace("\\", "")[1:-1])['bincollections']
+        json_data = json.loads(response.text.replace("\\", "")[1:-1])["bincollections"]
         for item in json_data:
-            collection_date = datetime.strptime(remove_ordinal_indicator_from_date_string(item.get("nextDate")), "%A %d %B")
+            collection_date = datetime.strptime(
+                remove_ordinal_indicator_from_date_string(item.get("nextDate")),
+                "%A %d %B",
+            )
             next_collection = collection_date.replace(year=datetime.now().year)
             if datetime.now().month == 12 and next_collection.month == 1:
                 next_collection = next_collection + relativedelta(years=1)

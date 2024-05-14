@@ -20,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             response = requests.post(
                 f"https://wastecollections.haringey.gov.uk/property/{uprn}",
-                timeout=10  # Set a timeout for the request
+                timeout=10,  # Set a timeout for the request
             )
             response.raise_for_status()  # This will raise an exception for HTTP errors
         except requests.RequestException as e:
@@ -36,7 +36,9 @@ class CouncilClass(AbstractGetBinDataClass):
             date_regex = re.compile(r"\d{2}/\d{2}/\d{4}")
             for section in sections:
                 service_name_element = section.find("h3", {"class": "service-name"})
-                next_service_element = section.find("tbody").find("td", {"class": "next-service"})
+                next_service_element = section.find("tbody").find(
+                    "td", {"class": "next-service"}
+                )
 
                 if service_name_element and next_service_element:
                     service = service_name_element.text
@@ -44,7 +46,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     if next_collection:
                         dict_data = {
-                            "type": service.replace("Collect ", "").replace("Paid ", "").strip(),
+                            "type": service.replace("Collect ", "")
+                            .replace("Paid ", "")
+                            .strip(),
                             "collectionDate": next_collection.strip(),
                         }
                         data["bins"].append(dict_data)
