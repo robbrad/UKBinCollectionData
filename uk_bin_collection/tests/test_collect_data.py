@@ -6,7 +6,7 @@ from requests import exceptions as req_exp
 from requests.models import Response
 from uk_bin_collection.get_bin_data import AbstractGetBinDataClass as agbdc
 from uk_bin_collection.get_bin_data import setup_logging
-
+import logging
 
 def mocked_requests_get(*args, **kwargs):
     class MockResponse:
@@ -53,6 +53,30 @@ def test_logging_exception():
         result = setup_logging(logging_dict, "ROOT")
     assert exc_info.typename == "ValueError"
 
+def test_setup_logging_valid_config():
+    # Example of a minimal valid logging configuration dictionary
+    logging_config = {
+        'version': 1,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'level': 'DEBUG',
+            },
+        },
+        'loggers': {
+            'ROOT': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+            },
+        }
+    }
+    logger_name = "ROOT"
+    # Run the function with valid logging configuration
+    logger = setup_logging(logging_config, logger_name)
+    
+    # Assert that logger is correctly configured
+    assert logger.name == logger_name
+    assert logger.level == logging.DEBUG
 
 @mock.patch("requests.get", side_effect=mocked_requests_get)
 def test_get_data(mock_get):

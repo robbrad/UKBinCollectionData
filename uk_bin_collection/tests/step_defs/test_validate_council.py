@@ -4,6 +4,7 @@ import traceback
 from pytest_bdd import scenario, given, when, then, parsers
 from hamcrest import assert_that, equal_to
 from functools import wraps
+import os
 
 from step_helpers import file_handler
 from uk_bin_collection.uk_bin_collection import collect_data
@@ -30,10 +31,11 @@ def handle_test_errors(func):
 
 
 @pytest.fixture
+@handle_test_errors
 def context():
     class Context(object):
         pass
-
+    
     return Context()
 
 
@@ -45,6 +47,7 @@ def get_council_step(context, council_name):
 
 
 # When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set.
+@pytest.fixture
 @handle_test_errors
 @when(
     parsers.parse(
@@ -70,14 +73,14 @@ def scrape_step(context, council, selenium_mode, selenium_url):
     if "usrn" in context.metadata:
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
-    if "headless" in context.metadata:
-        headless = context.metadata["headless"]
-        if headless:
-            args.append(f"--headless")
-        else:
-            args.append(f"--not-headless")
-    # TODO we should somehow run this test with and without this argument passed
-    # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
+    if "HEADLESS" in os.environ:
+       headless = os.environ.get('HEADLESS')
+       if headless == "True":
+           args.append(f"--headless")
+       else:
+           args.append(f"--not-headless")
+   # TODO we should somehow run this test with and without this argument passed
+   # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
 
     # At the moment the feature file is set to local execution of the selenium so no url will be set
     # And it the behave test will execute locally

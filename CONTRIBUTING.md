@@ -252,6 +252,7 @@ file.
 Based on the [input.json](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/input.json),
 this does an actual live run against the council's site and validates if the returned data is JSON and conforms to the common format [JSON Schema](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/output.schema).
 
+By default if the council is a Selenium based Council it will not run in headless mode. If you set an environment variable called `HEADLESS=True` it will run in headless. The [GitHub runner](https://github.com/robbrad/UKBinCollectionData/blob/master/.github/workflows/behave.yml#L76) is set to do this.  
 
 #### Running the Behave tests for all councils
 ```commandline
