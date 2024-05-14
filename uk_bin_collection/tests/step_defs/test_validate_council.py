@@ -45,16 +45,15 @@ def get_council_step(context, council_name):
     council_input_data = file_handler.load_json_file("input.json")
     context.metadata = council_input_data[council_name]
 
-
 # When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set.
-@pytest.fixture
+
 @handle_test_errors
 @when(
     parsers.parse(
         "we scrape the data from {council} using {selenium_mode} and the {selenium_url} is set"
     )
 )
-def scrape_step(context, council, selenium_mode, selenium_url):
+def scrape_step(context, council, selenium_mode, selenium_url, headless_mode):
     context.council = council
     context.selenium_mode = selenium_mode
     context.selenium_url = selenium_url
@@ -73,12 +72,10 @@ def scrape_step(context, council, selenium_mode, selenium_url):
     if "usrn" in context.metadata:
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
-    if "HEADLESS" in os.environ:
-        headless = os.environ.get("HEADLESS")
-        if headless == "True":
-            args.append(f"--headless")
-        else:
-            args.append(f"--not-headless")
+    if headless_mode == "True":
+        args.append(f"--headless")
+    else:
+        args.append(f"--not-headless")
     # TODO we should somehow run this test with and without this argument passed
     # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
 
