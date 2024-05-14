@@ -25,7 +25,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         dict_data = {
             "type": json_data["type"].capitalize(),
-            "collectionDate": datetime.strptime(json_data['date'], "%Y%m%d%H%M").strftime(date_format)
+            "collectionDate": datetime.strptime(
+                json_data["date"], "%Y%m%d%H%M"
+            ).strftime(date_format),
         }
         data["bins"].append(dict_data)
 

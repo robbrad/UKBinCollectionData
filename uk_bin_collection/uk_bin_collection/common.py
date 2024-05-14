@@ -196,7 +196,9 @@ def get_next_occurrence_from_day_month(date: datetime) -> datetime:
     target_month = date.month
 
     # Check if the target date has already occurred this year
-    if (target_month < current_month) or (target_month == current_month and target_day < current_day):
+    if (target_month < current_month) or (
+        target_month == current_month and target_day < current_day
+    ):
         date = pd.to_datetime(date) + pd.DateOffset(years=1)
 
     return date
@@ -209,7 +211,7 @@ def remove_alpha_characters(input_string: str) -> str:
 def update_input_json(council: str, url: str, input_file_path: str, **kwargs):
     """
     Create or update a council's entry in the input.json file.
-    
+
     :param council: Name of the council.
     :param url: URL associated with the council.
     :param input_file_path: Path to the input JSON file.
@@ -227,14 +229,16 @@ def update_input_json(council: str, url: str, input_file_path: str, **kwargs):
     except json.JSONDecodeError:
         print("Failed to decode JSON, check the integrity of the input file.")
 
+
 def load_data(file_path):
     if os.path.exists(file_path):
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             return json.load(file)
     return {}
 
+
 def save_data(file_path, data):
-    with open(file_path, 'w') as file:
+    with open(file_path, "w") as file:
         json.dump(data, file, sort_keys=True, indent=4)
 
 
@@ -254,9 +258,7 @@ def contains_date(string, fuzzy=False) -> bool:
 
 
 def create_webdriver(
-    web_driver: str = None,
-    headless: bool = False,
-    user_agent: str = None
+    web_driver: str = None, headless: bool = False, user_agent: str = None
 ) -> webdriver.Chrome:
     """
     Create and return a Chrome WebDriver configured for optional headless operation.

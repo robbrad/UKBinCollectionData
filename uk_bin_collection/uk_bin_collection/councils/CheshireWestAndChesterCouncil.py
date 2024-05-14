@@ -40,12 +40,9 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(5)
 
             cookie_close_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located(
-                    (By.ID, "ccc-close")
-                )
+                EC.presence_of_element_located((By.ID, "ccc-close"))
             )
             cookie_close_button.click()
-
 
             find_collection_button = WebDriverWait(driver, timeout=10).until(
                 EC.presence_of_element_located(
@@ -55,36 +52,34 @@ class CouncilClass(AbstractGetBinDataClass):
             find_collection_button.click()
 
             banner_close_button = WebDriverWait(driver, timeout=30).until(
-                EC.presence_of_element_located(
-                    (By.ID, "close-cookie-message")
-                )
+                EC.presence_of_element_located((By.ID, "close-cookie-message"))
             )
             banner_close_button.click()
 
             time.sleep(5)
 
-            frame = driver.find_element(By.XPATH, "/html/body/div[4]/section/div/div[2]/div[2]/div/iframe")
+            frame = driver.find_element(
+                By.XPATH, "/html/body/div[4]/section/div/div[2]/div[2]/div/iframe"
+            )
             driver.switch_to.frame(frame)
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.NAME, 'postcode_search')
-                )
+                EC.presence_of_element_located((By.NAME, "postcode_search"))
             )
             inputElement_postcode.send_keys(user_postcode)
 
             address_box_text = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.ID, "label_Choose_Address")
-                )
+                EC.presence_of_element_located((By.ID, "label_Choose_Address"))
             )
             address_box_text.click()
             time.sleep(2)
 
-            address_selection_menu = Select(driver.find_element(By.ID, "Choose_Address"))
+            address_selection_menu = Select(
+                driver.find_element(By.ID, "Choose_Address")
+            )
             for idx, addr_option in enumerate(address_selection_menu.options):
-                option_name = addr_option.text[0:len(user_paon)]
+                option_name = addr_option.text[0 : len(user_paon)]
                 if option_name == user_paon:
                     selected_address = addr_option
                     break
@@ -103,7 +98,9 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_cards = soup.find_all("div", {"class": "bin-schedule-content-info"})
             for card in bin_cards:
                 bin_name = card.contents[0].text.strip() + " bin"
-                bin_date = datetime.strptime(card.contents[1].text.split(":")[1].strip(), "%A, %d %B %Y")
+                bin_date = datetime.strptime(
+                    card.contents[1].text.split(":")[1].strip(), "%A, %d %B %Y"
+                )
                 collections.append((bin_name, bin_date))
 
             ordered_data = sorted(collections, key=lambda x: x[1])

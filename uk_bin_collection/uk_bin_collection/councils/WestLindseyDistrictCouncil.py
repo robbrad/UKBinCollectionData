@@ -91,8 +91,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             for bin_date in bin_dates:
                 # Split the bin date into day and month and build a full date with the current year
-                split_date = bin_date.split('/')
-                full_date = datetime(datetime.now().year, int(split_date[1]), int(split_date[0]))
+                split_date = bin_date.split("/")
+                full_date = datetime(
+                    datetime.now().year, int(split_date[1]), int(split_date[0])
+                )
 
                 # If the current month is December and one of the next collections is in January, increment the year
                 if datetime.now().month == 12 and int(split_date[1]) == 1:

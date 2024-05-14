@@ -95,7 +95,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for address box to be visible
             select_address_input = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, 'MainContent_CUSTOM_FIELD_808562d4b07f437ea751317cabd19d9eeaf8742f49cb4f7fa9bef99405b859f2')
+                    (
+                        By.ID,
+                        "MainContent_CUSTOM_FIELD_808562d4b07f437ea751317cabd19d9eeaf8742f49cb4f7fa9bef99405b859f2",
+                    )
                 )
             )
 
@@ -103,7 +106,7 @@ class CouncilClass(AbstractGetBinDataClass):
             select = Select(select_address_input)
             addr_label = f"{user_postcode}, {user_paon},"
             for addr_option in select.options:
-                option_name = addr_option.accessible_name[0:len(addr_label)]
+                option_name = addr_option.accessible_name[0 : len(addr_label)]
                 if option_name == addr_label:
                     break
             select.select_by_value(addr_option.text)
@@ -132,8 +135,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_data = {"bins": []}
 
                 for bin_div in target_div.find_all(
-                        "div",
-                        {"style": re.compile("background-color:.*; padding-left: 4px;")},
+                    "div",
+                    {"style": re.compile("background-color:.*; padding-left: 4px;")},
                 ):
                     bin_type = bin_div.find("strong").text.strip()
                     collection_date_string = (

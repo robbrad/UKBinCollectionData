@@ -10,10 +10,10 @@ current_file_path = Path(__file__).resolve()
 BASE_PATH = current_file_path.parent.parent.parent.parent / "tests"
 
 
-def load_json_file(file_name, encoding='utf-8'):
+def load_json_file(file_name, encoding="utf-8"):
     file_path = BASE_PATH / file_name
     try:
-        with open(file_path, 'r', encoding=encoding) as f:
+        with open(file_path, "r", encoding=encoding) as f:
             data = json.load(f)
             logging.info(f"{file_name} file successfully loaded")
             return data

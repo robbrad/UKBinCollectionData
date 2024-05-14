@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -54,32 +55,32 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # BradfordMDC site has lots of embedded tables, find the table titled 'Your next general/recycling collections are:'
         for bin in soup.find_all(attrs={"class": "CTID-FHGh1Q77-_"}):
-             if bin.find_all(attrs={"class": "CTID-62bNngCB-_"}):
-                 bin_type = "General Waste"
-                 bin_colour = "Green"
-                 bin_date_text = bin.find(attrs={"class": "CTID-62bNngCB-_"}).get_text()
-             elif bin.find_all(attrs={"class": "CTID-LHo9iO0y-_"}):
-                 bin_type = "Recycling Waste"
-                 bin_colour = "Grey"
-                 bin_date_text = bin.find(attrs={"class": "CTID-LHo9iO0y-_"}).get_text()
-             else:
-                 raise ValueError(f"No bin info found in {bin_type_info[0]}")
-                
-             # Collection Date info is alongside the bin type, we got the whole line in the if/elif above
-             # below strips the text off at the beginning, to get a date, though recycling is a character shorter hence the lstrip
-             bin_date_info = bin_date_text[29:50].lstrip(' ')
+            if bin.find_all(attrs={"class": "CTID-62bNngCB-_"}):
+                bin_type = "General Waste"
+                bin_colour = "Green"
+                bin_date_text = bin.find(attrs={"class": "CTID-62bNngCB-_"}).get_text()
+            elif bin.find_all(attrs={"class": "CTID-LHo9iO0y-_"}):
+                bin_type = "Recycling Waste"
+                bin_colour = "Grey"
+                bin_date_text = bin.find(attrs={"class": "CTID-LHo9iO0y-_"}).get_text()
+            else:
+                raise ValueError(f"No bin info found in {bin_type_info[0]}")
 
-             if contains_date(bin_date_info):
+            # Collection Date info is alongside the bin type, we got the whole line in the if/elif above
+            # below strips the text off at the beginning, to get a date, though recycling is a character shorter hence the lstrip
+            bin_date_info = bin_date_text[29:50].lstrip(" ")
+
+            if contains_date(bin_date_info):
                 bin_date = get_next_occurrence_from_day_month(
                     datetime.strptime(
-                        bin_date_info,# + " " + datetime.today().strftime("%Y"),
+                        bin_date_info,  # + " " + datetime.today().strftime("%Y"),
                         "%a %b %d %Y",
                     )
                 ).strftime(date_format)
-                #print(bin_date_info)
-                #print(bin_date)
+                # print(bin_date_info)
+                # print(bin_date)
             # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
-             else:
+            else:
                 bin_date = get_next_occurrence_from_day_month(
                     datetime.strptime(
                         bin_date_info[1] + " " + datetime.today().strftime("%Y"),
@@ -89,9 +90,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Build data dict for each entry
         dict_data = {
-           "type": bin_type,
-           "collectionDate": bin_date,
-           "colour": bin_colour,
+            "type": bin_type,
+            "collectionDate": bin_date,
+            "colour": bin_colour,
         }
         data["bins"].append(dict_data)
 

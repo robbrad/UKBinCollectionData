@@ -19,10 +19,23 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         collections = []
 
-        bins = soup.find("div", {"class": "results-table-wrapper"}).find_all("div", {"class": "service-wrapper"})
+        bins = soup.find("div", {"class": "results-table-wrapper"}).find_all(
+            "div", {"class": "service-wrapper"}
+        )
         for bin in bins:
-            bin_type = bin.find("h3", {"class": "service-name"}).get_text().replace("Collection", "bin").strip()
-            bin_date = datetime.strptime(bin.find("td", {"class": "next-service"}).find("span", {"class": "table-label"}).next_sibling.get_text().strip(), "%d/%m/%Y")
+            bin_type = (
+                bin.find("h3", {"class": "service-name"})
+                .get_text()
+                .replace("Collection", "bin")
+                .strip()
+            )
+            bin_date = datetime.strptime(
+                bin.find("td", {"class": "next-service"})
+                .find("span", {"class": "table-label"})
+                .next_sibling.get_text()
+                .strip(),
+                "%d/%m/%Y",
+            )
             collections.append((bin_type, bin_date))
 
         ordered_data = sorted(collections, key=lambda x: x[1])

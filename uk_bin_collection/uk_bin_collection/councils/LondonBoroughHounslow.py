@@ -50,26 +50,32 @@ class CouncilClass(AbstractGetBinDataClass):
         ]
 
         for bin_type, collection_date in bins_with_dates:
-            if '-' in collection_date:
+            if "-" in collection_date:
                 date_part = collection_date.split(" - ")[1]
                 data["bins"].append(
                     {
                         "type": bin_type,
-                        "collectionDate": datetime.strptime(date_part,"%d %b %Y").strftime(date_format)
+                        "collectionDate": datetime.strptime(
+                            date_part, "%d %b %Y"
+                        ).strftime(date_format),
                     }
                 )
             elif len(collection_date.split(" ")) == 4:
                 data["bins"].append(
                     {
                         "type": bin_type,
-                        "collectionDate": datetime.strptime(collection_date,"%A %d %b %Y").strftime(date_format)
+                        "collectionDate": datetime.strptime(
+                            collection_date, "%A %d %b %Y"
+                        ).strftime(date_format),
                     }
                 )
             else:
                 data["bins"].append(
                     {
                         "type": bin_type,
-                        "collectionDate": datetime.strptime(collection_date,"%d %b %Y").strftime(date_format)
+                        "collectionDate": datetime.strptime(
+                            collection_date, "%d %b %Y"
+                        ).strftime(date_format),
                     }
                 )
 

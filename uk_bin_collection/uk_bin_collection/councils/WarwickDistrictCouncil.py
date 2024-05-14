@@ -7,7 +7,6 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-
     """
     Concrete classes have to implement all abstract operations of the
     baseclass. They can also override some

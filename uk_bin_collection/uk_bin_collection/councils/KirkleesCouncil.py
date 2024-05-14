@@ -91,7 +91,7 @@ class CouncilClass(AbstractGetBinDataClass):
             By.ID,
             "cphPageBody_cphContent_wtcDomestic240__lnkAccordionAnchor",
             # submitting can be slow
-            timeout=30
+            timeout=30,
         )
 
         # Open the panel

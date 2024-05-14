@@ -30,8 +30,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for bin in json_data:
             bin_type = bin["BinType"]
-            next_date = datetime.strptime(bin["Next"], "%m/%d/%Y %I:%M:%S %p") + timedelta(hours=1)
-            subseq_date = datetime.strptime(bin["Subsequent"], "%m/%d/%Y %I:%M:%S %p") + timedelta(hours=1)
+            next_date = datetime.strptime(
+                bin["Next"], "%m/%d/%Y %I:%M:%S %p"
+            ) + timedelta(hours=1)
+            subseq_date = datetime.strptime(
+                bin["Subsequent"], "%m/%d/%Y %I:%M:%S %p"
+            ) + timedelta(hours=1)
             collections.append((bin_type, next_date))
             collections.append((bin_type, subseq_date))
 

@@ -29,7 +29,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             dict_data = {
                 "type": item.get("Service").split(" ")[0] + " bin",
-                "collectionDate": datetime.strptime(item.get("Date"), "%d/%m/%Y %H:%M:%S").strftime(date_format),
+                "collectionDate": datetime.strptime(
+                    item.get("Date"), "%d/%m/%Y %H:%M:%S"
+                ).strftime(date_format),
             }
             data["bins"].append(dict_data)
 

@@ -20,7 +20,11 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         collections = []
 
-        for bin in soup.find("table", {"class": "no-style bin-days"}).find("tbody").find_all("tr"):
+        for bin in (
+            soup.find("table", {"class": "no-style bin-days"})
+            .find("tbody")
+            .find_all("tr")
+        ):
             bin_type = bin.find("th").get_text().strip() + " bin"
             bin_dates = bin.find_all("td")[1].contents
             for date in bin_dates:

@@ -9,6 +9,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 def format_bin_type(bin_colour: str):
     bin_types = {
         "grey": "Garden waste (Grey Bin)",
@@ -18,6 +19,7 @@ def format_bin_type(bin_colour: str):
     }
     bin_colour = urllib.parse.unquote(bin_colour).split(" ")[0].lower()
     return bin_types[bin_colour]
+
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -47,7 +49,9 @@ class CouncilClass(AbstractGetBinDataClass):
             cookieBanner = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.ID, "PrivacyPolicyNotification"))
             )
-            cookieClose = cookieBanner.find_element(By.CSS_SELECTOR, "span.ui-icon-circle-close")
+            cookieClose = cookieBanner.find_element(
+                By.CSS_SELECTOR, "span.ui-icon-circle-close"
+            )
             cookieClose.click()
 
             # Populate postcode field
@@ -85,9 +89,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for the submit button to appear, then click it to get the collection dates
             submit = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "MainContent_btnSearch")
-                )
+                EC.presence_of_element_located((By.ID, "MainContent_btnSearch"))
             )
             submit.click()
 
@@ -96,9 +98,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Get the property details
             property_details = soup.find(
                 "table",
-                {
-                    "class": "WasteCollection"
-                },
+                {"class": "WasteCollection"},
             )
 
             # Get the dates

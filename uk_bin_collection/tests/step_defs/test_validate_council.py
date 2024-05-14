@@ -35,7 +35,7 @@ def handle_test_errors(func):
 def context():
     class Context(object):
         pass
-    
+
     return Context()
 
 
@@ -74,13 +74,13 @@ def scrape_step(context, council, selenium_mode, selenium_url):
         usrn = context.metadata["usrn"]
         args.append(f"-us={usrn}")
     if "HEADLESS" in os.environ:
-       headless = os.environ.get('HEADLESS')
-       if headless == "True":
-           args.append(f"--headless")
-       else:
-           args.append(f"--not-headless")
-   # TODO we should somehow run this test with and without this argument passed
-   # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
+        headless = os.environ.get("HEADLESS")
+        if headless == "True":
+            args.append(f"--headless")
+        else:
+            args.append(f"--not-headless")
+    # TODO we should somehow run this test with and without this argument passed
+    # TODO I do think this would make the testing of the councils a lot longer and cause a double hit from us
 
     # At the moment the feature file is set to local execution of the selenium so no url will be set
     # And it the behave test will execute locally

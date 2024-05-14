@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -37,7 +38,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.visibility_of_element_located(
-                    (By.XPATH, '/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[1]/div/div/input')
+                    (
+                        By.XPATH,
+                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[1]/div/div/input",
+                    )
                 )
             )
             inputElement_postcode.send_keys(user_postcode)
@@ -45,7 +49,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for address search button, then click it
             addressSearch_button = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[2]/div/button')
+                    (
+                        By.XPATH,
+                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[2]/div/button",
+                    )
                 )
             )
             addressSearch_button.click()
@@ -53,14 +60,17 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait until the address list has loaded
             WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[3]/div/div')
+                    (
+                        By.XPATH,
+                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[3]/div/div",
+                    )
                 )
             )
 
             # Select the correct address from the list
-            addressList_rows = driver.find_elements(By.CLASS_NAME, 'row')
+            addressList_rows = driver.find_elements(By.CLASS_NAME, "row")
             for row in addressList_rows:
-                option_name = row.text[0:len(user_paon)]
+                option_name = row.text[0 : len(user_paon)]
                 if option_name == user_paon:
                     break
             address_to_select = row.find_element(By.LINK_TEXT, "Choose this address")
@@ -69,7 +79,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for bin dates to load
             WebDriverWait(driver, 20).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[4]/div/div')
+                    (
+                        By.XPATH,
+                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[4]/div/div",
+                    )
                 )
             )
 
@@ -77,22 +90,32 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             soup.prettify()
 
-            z = soup.find("div", {"class": "mx-name-textBox5 mx-textbox form-group"}).find_next(
-                    "div", {"class": "form-control-static"})
+            z = soup.find(
+                "div", {"class": "mx-name-textBox5 mx-textbox form-group"}
+            ).find_next("div", {"class": "form-control-static"})
 
             maroon_bin_date = datetime.strptime(
-                soup.find("div", {"class": "mx-name-textBox3 mx-textbox form-group"}).find_next(
-                    "div", {"class": "form-control-static"}).get_text(strip=True), "%A %d/%m/%Y")
+                soup.find("div", {"class": "mx-name-textBox3 mx-textbox form-group"})
+                .find_next("div", {"class": "form-control-static"})
+                .get_text(strip=True),
+                "%A %d/%m/%Y",
+            )
             collections.append(("Maroon bin", maroon_bin_date))
 
             grey_bin_date = datetime.strptime(
-                soup.find("div", {"class": "mx-name-textBox4 mx-textbox form-group"}).find_next(
-                    "div", {"class": "form-control-static"}).get_text(strip=True), "%A %d/%m/%Y")
+                soup.find("div", {"class": "mx-name-textBox4 mx-textbox form-group"})
+                .find_next("div", {"class": "form-control-static"})
+                .get_text(strip=True),
+                "%A %d/%m/%Y",
+            )
             collections.append(("Grey bin", grey_bin_date))
 
             blue_bin_date = datetime.strptime(
-                soup.find("div", {"class": "mx-name-textBox5 mx-textbox form-group"}).find_next(
-                    "div", {"class": "form-control-static"}).get_text(strip=True), "%A %d/%m/%Y")
+                soup.find("div", {"class": "mx-name-textBox5 mx-textbox form-group"})
+                .find_next("div", {"class": "form-control-static"})
+                .get_text(strip=True),
+                "%A %d/%m/%Y",
+            )
             collections.append(("Blue bin", blue_bin_date))
 
             ordered_data = sorted(collections, key=lambda x: x[1])
