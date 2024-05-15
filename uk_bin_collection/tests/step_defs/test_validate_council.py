@@ -2,9 +2,7 @@ import logging
 import pytest
 import traceback
 from pytest_bdd import scenario, given, when, then, parsers
-from hamcrest import assert_that, equal_to
 from functools import wraps
-import os
 
 from step_helpers import file_handler
 from uk_bin_collection.uk_bin_collection import collect_data
@@ -50,13 +48,11 @@ def get_council_step(context, council_name):
 @handle_test_errors
 @when(
     parsers.parse(
-        "we scrape the data from {council} using {selenium_mode} and the {selenium_url} is set"
+        "we scrape the data from {council}"
     )
 )
-def scrape_step(context, council, selenium_mode, selenium_url, headless_mode):
+def scrape_step(context, council, headless_mode, local_browser, selenium_url):
     context.council = council
-    context.selenium_mode = selenium_mode
-    context.selenium_url = selenium_url
 
     args = [council, context.metadata["url"]]
 
@@ -81,9 +77,8 @@ def scrape_step(context, council, selenium_mode, selenium_url, headless_mode):
 
     # At the moment the feature file is set to local execution of the selenium so no url will be set
     # And it the behave test will execute locally
-    if selenium_mode != "None" and selenium_url != "None":
-        if selenium_mode != "local":
-            args.append(f"-w={selenium_url}")
+    if local_browser == "False":
+        args.append(f"-w={selenium_url}")
     if "skip_get_url" in context.metadata:
         args.append(f"-s")
 

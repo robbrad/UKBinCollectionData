@@ -2,766 +2,766 @@ Feature: Test each council output matches expected results
 
     Scenario Outline: Validate Council Output
         Given the council: <council>
-        When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set
+        When we scrape the data from <council>
         Then the result is valid json
         And the output should validate against the schema
 
 		@AdurAndWorthingCouncils
 		Examples: AdurAndWorthingCouncils
-		| council | selenium_url | selenium_mode |
-		| AdurAndWorthingCouncils | None  | None  |
+		| council |
+		| AdurAndWorthingCouncils |
 
 		@ArunCouncil
 		Examples: ArunCouncil
-		| council | selenium_url | selenium_mode |
-		| ArunCouncil | http://localhost:4444  | remote  |
+		| council |
+		| ArunCouncil |
 
         @AylesburyValeCouncil
 		Examples: AylesburyValeCouncil
-		| council | selenium_url | selenium_mode |
-		| AylesburyValeCouncil | None  | None  |
+		| council |
+		| AylesburyValeCouncil |
 
         @BarnetCouncil
 		Examples: BarnetCouncil
-		| council | selenium_url | selenium_mode |
-		| BarnetCouncil | http://selenium:4444  | local  |
+		| council |
+		| BarnetCouncil |
 
         @BarnsleyMBCouncil
 		Examples: BarnsleyMBCouncil
-		| council | selenium_url | selenium_mode |
-		| BarnsleyMBCouncil | None  | None  |
+		| council |
+		| BarnsleyMBCouncil |
 
         @BasingstokeCouncil
 		Examples: BasingstokeCouncil
-		| council | selenium_url | selenium_mode |
-		| BasingstokeCouncil | None  | None  |
+		| council |
+		| BasingstokeCouncil |
 
         @BathAndNorthEastSomersetCouncil
 		Examples: BathAndNorthEastSomersetCouncil
-		| council | selenium_url | selenium_mode |
-		| BathAndNorthEastSomersetCouncil | None  | None  |
+		| council |
+		| BathAndNorthEastSomersetCouncil |
 
         @BCPCouncil
 		Examples: BCPCouncil
-		| council | selenium_url | selenium_mode |
-		| BCPCouncil | None  | None  |
+		| council |
+		| BCPCouncil |
 
 		@BedfordBoroughCouncil
 		Examples: BedfordBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| BedfordBoroughCouncil | None  | None  |
+		| council |
+		| BedfordBoroughCouncil |
 
         @BedfordshireCouncil
 		Examples: BedfordshireCouncil
-		| council | selenium_url | selenium_mode |
-		| BedfordshireCouncil | None  | None  |
+		| council |
+		| BedfordshireCouncil |
 
         @BexleyCouncil
 		Examples: BexleyCouncil
-		| council | selenium_url | selenium_mode |
-		| BexleyCouncil | http://selenium:4444  | local  |
+		| council |
+		| BexleyCouncil |
 
         @BirminghamCityCouncil
 		Examples: BirminghamCityCouncil
-		| council | selenium_url | selenium_mode |
-		| BirminghamCityCouncil | None  | None  |
+		| council |
+		| BirminghamCityCouncil |
 
         @BlackburnCouncil
 		Examples: BlackburnCouncil
-		| council | selenium_url | selenium_mode |
-		| BlackburnCouncil | http://selenium:4444  | local  |
+		| council |
+		| BlackburnCouncil |
 
         @BoltonCouncil
 		Examples: BoltonCouncil
-		| council | selenium_url | selenium_mode |
-		| BoltonCouncil | http://selenium:4444  | local  |
+		| council |
+		| BoltonCouncil |
 
         @BradfordMDC
 		Examples: BradfordMDC
-		| council | selenium_url | selenium_mode |
-		| BradfordMDC | None  | None  |
-  
+		| council |
+		| BradfordMDC |
+
         @BrightonandHoveCityCouncil
 		Examples: BrightonandHoveCityCouncil
-		| council | selenium_url | selenium_mode |
-		| BrightonandHoveCityCouncil | http://selenium:4444  | local  |
+		| council |
+		| BrightonandHoveCityCouncil |
 
         @BristolCityCouncil
 		Examples: BristolCityCouncil
-		| council | selenium_url | selenium_mode |
-		| BristolCityCouncil | None  | None  |
+		| council |
+		| BristolCityCouncil |
 
         @BromleyBoroughCouncil
 		Examples: BromleyBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| BromleyBoroughCouncil | http://selenium:4444  | local  |
+		| council |
+		| BromleyBoroughCouncil |
 
         @BroxtoweBoroughCouncil
 		Examples: BroxtoweBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| BroxtoweBoroughCouncil | http://selenium:4444  | local  |
+		| council |
+		| BroxtoweBoroughCouncil |
 
         @BuckinghamshireCouncil
 		Examples: BuckinghamshireCouncil
-		| council | selenium_url | selenium_mode |
-		| BuckinghamshireCouncil | http://selenium:4444  | local  |
+		| council |
+		| BuckinghamshireCouncil |
 
         @BuryCouncil
 		Examples: BuryCouncil
-		| council | selenium_url | selenium_mode |
-		| BuryCouncil | None  | None  |
+		| council |
+		| BuryCouncil |
 
         @CalderdaleCouncil
 		Examples: CalderdaleCouncil
-		| council | selenium_url | selenium_mode |
-		| CalderdaleCouncil | http://selenium:4444  | local  |
+		| council |
+		| CalderdaleCouncil |
 
         @CannockChaseDistrictCouncil
 		Examples: CannockChaseDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| CannockChaseDistrictCouncil | None  | None  |
+		| council |
+		| CannockChaseDistrictCouncil |
 
         @CardiffCouncil
 		Examples: CardiffCouncil
-		| council | selenium_url | selenium_mode |
-		| CardiffCouncil | None  | None  |
+		| council |
+		| CardiffCouncil |
 
         @CastlepointDistrictCouncil
 		Examples: CastlepointDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| CastlepointDistrictCouncil | None  | None  |
+		| council |
+		| CastlepointDistrictCouncil |
 
         @CharnwoodBoroughCouncil
 		Examples: CharnwoodBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| CharnwoodBoroughCouncil | None  | None  |
+		| council |
+		| CharnwoodBoroughCouncil |
 
         @ChelmsfordCityCouncil
 		Examples: ChelmsfordCityCouncil
-		| council | selenium_url | selenium_mode |
-		| ChelmsfordCityCouncil | http://selenium:4444  | local  |
+		| council |
+		| ChelmsfordCityCouncil |
 
         @CheshireEastCouncil
 		Examples: CheshireEastCouncil
-		| council | selenium_url | selenium_mode |
-		| CheshireEastCouncil | None  | None  |
+		| council |
+		| CheshireEastCouncil |
 
 		@CheshireWestAndChesterCouncil
 		Examples: CheshireWestAndChesterCouncil
-		| council | selenium_url | selenium_mode |
-		| CheshireWestAndChesterCouncil | http://selenium:4444  | local  |
+		| council |
+		| CheshireWestAndChesterCouncil |
 
         @ChorleyCouncil
 		Examples: ChorleyCouncil
-		| council | selenium_url | selenium_mode |
-		| ChorleyCouncil | http://selenium:4444  | local  |
+		| council |
+		| ChorleyCouncil |
 
         @ConwyCountyBorough
 		Examples: ConwyCountyBorough
-		| council | selenium_url | selenium_mode |
-		| ConwyCountyBorough | None  | None  |
+		| council |
+		| ConwyCountyBorough |
 
         @CrawleyBoroughCouncil
 		Examples: CrawleyBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| CrawleyBoroughCouncil | None  | None  |
+		| council |
+		| CrawleyBoroughCouncil |
 
         @CroydonCouncil
 		Examples: CroydonCouncil
-		| council | selenium_url | selenium_mode |
-		| CroydonCouncil | None  | None  |
+		| council |
+		| CroydonCouncil |
 
         @DerbyshireDalesDistrictCouncil
 		Examples: DerbyshireDalesDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| DerbyshireDalesDistrictCouncil | http://selenium:4444  | local  |
+		| council |
+		| DerbyshireDalesDistrictCouncil |
 
         @DoncasterCouncil
 		Examples: DoncasterCouncil
-		| council | selenium_url | selenium_mode |
-		| DoncasterCouncil | None  | None  |
+		| council |
+		| DoncasterCouncil |
 
         @DorsetCouncil
 		Examples: DorsetCouncil
-		| council | selenium_url | selenium_mode |
-		| DorsetCouncil | None  | None  |
+		| council |
+		| DorsetCouncil |
 
         @DoverDistrictCouncil
 		Examples: DoverDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| DoverDistrictCouncil | None  | None  |
+		| council |
+		| DoverDistrictCouncil |
 
         @DurhamCouncil
 		Examples: DurhamCouncil
-		| council | selenium_url | selenium_mode |
-		| DurhamCouncil | None  | None  |
+		| council |
+		| DurhamCouncil |
 
         @EastCambridgeshireCouncil
 		Examples: EastCambridgeshireCouncil
-		| council | selenium_url | selenium_mode |
-		| EastCambridgeshireCouncil | None  | None  |
+		| council |
+		| EastCambridgeshireCouncil |
 
         @EastDevonDC
 		Examples: EastDevonDC
-		| council | selenium_url | selenium_mode |
-		| EastDevonDC | None  | None  |
+		| council |
+		| EastDevonDC |
 
         @EastleighBoroughCouncil
 		Examples: EastleighBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| EastleighBoroughCouncil | None  | None  |
+		| council |
+		| EastleighBoroughCouncil |
 
         @EastLindseyDistrictCouncil
 		Examples: EastLindseyDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| EastLindseyDistrictCouncil | http://selenium:4444  | local  |
+		| council |
+		| EastLindseyDistrictCouncil |
 
         @EastRidingCouncil
 		Examples: EastRidingCouncil
-		| council | selenium_url | selenium_mode |
-		| EastRidingCouncil | http://selenium:4444  | local  |
+		| council |
+		| EastRidingCouncil |
 
         @EastSuffolkCouncil
 		Examples: EastSuffolkCouncil
-		| council | selenium_url | selenium_mode |
-		| EastSuffolkCouncil | http://selenium:4444  | local  |
+		| council |
+		| EastSuffolkCouncil |
 
         @EnvironmentFirst
 		Examples: EnvironmentFirst
-		| council | selenium_url | selenium_mode |
-		| EnvironmentFirst | None  | None  |
+		| council |
+		| EnvironmentFirst |
 
         @ErewashBoroughCouncil
 		Examples: ErewashBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| ErewashBoroughCouncil | None  | None  |
+		| council |
+		| ErewashBoroughCouncil |
 
         @FenlandDistrictCouncil
 		Examples: FenlandDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| FenlandDistrictCouncil | None  | None  |
+		| council |
+		| FenlandDistrictCouncil |
 
         @ForestOfDeanDistrictCouncil
 		Examples: ForestOfDeanDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| ForestOfDeanDistrictCouncil | http://selenium:4444  | local  |
+		| council |
+		| ForestOfDeanDistrictCouncil |
 
         @GatesheadCouncil
 		Examples: GatesheadCouncil
-		| council | selenium_url | selenium_mode |
-		| GatesheadCouncil | http://selenium:4444  | local  |
+		| council |
+		| GatesheadCouncil |
 
         @GedlingBoroughCouncil
 		Examples: GedlingBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| GedlingBoroughCouncil | None  | None  |
+		| council |
+		| GedlingBoroughCouncil |
 
         @GlasgowCityCouncil
 		Examples: GlasgowCityCouncil
-		| council | selenium_url | selenium_mode |
-		| GlasgowCityCouncil | None  | None  |
+		| council |
+		| GlasgowCityCouncil |
 
         @GuildfordCouncil
 		Examples: GuildfordCouncil
-		| council | selenium_url | selenium_mode |
-		| GuildfordCouncil | http://selenium:4444  | local  |
+		| council |
+		| GuildfordCouncil |
 
         @HaltonBoroughCouncil
 		Examples: HaltonBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| HaltonBoroughCouncil | http://selenium:4444  | local  |
+		| council |
+		| HaltonBoroughCouncil |
 
         @HaringeyCouncil
 		Examples: HaringeyCouncil
-		| council | selenium_url | selenium_mode |
-		| HaringeyCouncil | None  | None  |
+		| council |
+		| HaringeyCouncil |
 
         @HarrogateBoroughCouncil
 		Examples: HarrogateBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| HarrogateBoroughCouncil | None  | None  |
+		| council |
+		| HarrogateBoroughCouncil |
 
         @HighPeakCouncil
 		Examples: HighPeakCouncil
-		| council | selenium_url | selenium_mode |
-		| HighPeakCouncil | http://selenium:4444  | local  |
+		| council |
+		| HighPeakCouncil |
 
 		@HullCityCouncil
 		Examples: HullCityCouncil
-		| council | selenium_url | selenium_mode |
-		| HullCityCouncil | None  | None  |
+		| council |
+		| HullCityCouncil |
 
         @HuntingdonDistrictCouncil
 		Examples: HuntingdonDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| HuntingdonDistrictCouncil | None  | None  |
+		| council |
+		| HuntingdonDistrictCouncil |
 
         @KingstonUponThamesCouncil
 		Examples: KingstonUponThamesCouncil
-		| council | selenium_url | selenium_mode |
-		| KingstonUponThamesCouncil | None  | None  |
+		| council |
+		| KingstonUponThamesCouncil |
 
 		@KirkleesCouncil
 		Examples: KirkleesCouncil
-		| council | selenium_url | selenium_mode |
-		| KirkleesCouncil | http://selenium:4444  | local  |
+		| council |
+		| KirkleesCouncil |
 
 		@KnowsleyMBCouncil
 		Examples: KnowsleyMBCouncil
-		| council | selenium_url | selenium_mode |
-		| KnowsleyMBCouncil | http://selenium:4444  | local  |
+		| council |
+		| KnowsleyMBCouncil |
 
         @LancasterCityCouncil
 		Examples: LancasterCityCouncil
-		| council | selenium_url | selenium_mode |
-		| LancasterCityCouncil | None  | None  |
+		| council |
+		| LancasterCityCouncil |
 
         @LeedsCityCouncil
 		Examples: LeedsCityCouncil
-		| council | selenium_url | selenium_mode |
-		| LeedsCityCouncil | http://selenium:4444  | local  |
+		| council |
+		| LeedsCityCouncil |
 
         @LisburnCastlereaghCityCouncil
 		Examples: LisburnCastlereaghCityCouncil
-		| council | selenium_url | selenium_mode |
-		| LisburnCastlereaghCityCouncil | None  | None  |
+		| council |
+		| LisburnCastlereaghCityCouncil |
 
         @LiverpoolCityCouncil
 		Examples: LiverpoolCityCouncil
-		| council | selenium_url | selenium_mode |
-		| LiverpoolCityCouncil | None  | None  |
+		| council |
+		| LiverpoolCityCouncil |
 
         @LondonBoroughHounslow
 		Examples: LondonBoroughHounslow
-		| council | selenium_url | selenium_mode |
-		| LondonBoroughHounslow | None  | None  |
+		| council |
+		| LondonBoroughHounslow |
 
         @LondonBoroughRedbridge
 		Examples: LondonBoroughRedbridge
-		| council | selenium_url | selenium_mode |
-		| LondonBoroughRedbridge | http://selenium:4444  | local  |
- 
+		| council |
+		| LondonBoroughRedbridge |
+
         @MaldonDistrictCouncil
 		Examples: MaldonDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| MaldonDistrictCouncil | None  | None  |
+		| council |
+		| MaldonDistrictCouncil |
 
         @MalvernHillsDC
 		Examples: MalvernHillsDC
-		| council | selenium_url | selenium_mode |
-		| MalvernHillsDC | None  | None  |
+		| council |
+		| MalvernHillsDC |
 
         @ManchesterCityCouncil
 		Examples: ManchesterCityCouncil
-		| council | selenium_url | selenium_mode |
-		| ManchesterCityCouncil | None  | None  |
+		| council |
+		| ManchesterCityCouncil |
 
 		@MansfieldDistrictCouncil
 		Examples: MansfieldDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| MansfieldDistrictCouncil | None  | None  |
+		| council |
+		| MansfieldDistrictCouncil |
 
         @MertonCouncil
 		Examples: MertonCouncil
-		| council | selenium_url | selenium_mode |
-		| MertonCouncil | None  | None  |
+		| council |
+		| MertonCouncil |
 
         @MidAndEastAntrimBoroughCouncil
 		Examples: MidAndEastAntrimBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| MidAndEastAntrimBoroughCouncil | http://selenium:4444  | local  |
+		| council |
+		| MidAndEastAntrimBoroughCouncil |
 
         @MidSussexDistrictCouncil
 		Examples: MidSussexDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| MidSussexDistrictCouncil | None  | None  |
+		| council |
+		| MidSussexDistrictCouncil |
 
         @MiltonKeynesCityCouncil
 		Examples: MiltonKeynesCityCouncil
-		| council | selenium_url | selenium_mode |
-		| MiltonKeynesCityCouncil | None  | None  |
+		| council |
+		| MiltonKeynesCityCouncil |
 
         @MoleValleyDistrictCouncil
         Examples: MoleValleyDistrictCouncil
-        | council | selenium_url | selenium_mode |
-        | MoleValleyDistrictCouncil | None | None |
+        | council |
+        | MoleValleyDistrictCouncil |
 
         @NeathPortTalbotCouncil
 		Examples: NeathPortTalbotCouncil
-		| council | selenium_url | selenium_mode |
-		| NeathPortTalbotCouncil | http://selenium:4444  | local  |
+		| council |
+		| NeathPortTalbotCouncil |
 
         @NewarkAndSherwoodDC
 		Examples: NewarkAndSherwoodDC
-		| council | selenium_url | selenium_mode |
-		| NewarkAndSherwoodDC | None  | None  |
+		| council |
+		| NewarkAndSherwoodDC |
 
         @NewcastleCityCouncil
 		Examples: NewcastleCityCouncil
-		| council | selenium_url | selenium_mode |
-		| NewcastleCityCouncil | None  | None  |
+		| council |
+		| NewcastleCityCouncil |
 
         @NewhamCouncil
 		Examples: NewhamCouncil
-		| council | selenium_url | selenium_mode |
-		| NewhamCouncil | None  | None  |
+		| council |
+		| NewhamCouncil |
 
         @NewportCityCouncil
 		Examples: NewportCityCouncil
-		| council | selenium_url | selenium_mode |
-		| NewportCityCouncil | None  | None  |
+		| council |
+		| NewportCityCouncil |
 
         @NorthEastDerbyshireDistrictCouncil
 		Examples: NorthEastDerbyshireDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthEastDerbyshireDistrictCouncil | http://selenium:4444  | local  |
+		| council |
+		| NorthEastDerbyshireDistrictCouncil |
 
         @NorthEastLincs
 		Examples: NorthEastLincs
-		| council | selenium_url | selenium_mode |
-		| NorthEastLincs | None  | None  |
+		| council |
+		| NorthEastLincs |
 
         @NorthKestevenDistrictCouncil
 		Examples: NorthKestevenDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthKestevenDistrictCouncil | None  | None  |
+		| council |
+		| NorthKestevenDistrictCouncil |
 
         @NorthLanarkshireCouncil
 		Examples: NorthLanarkshireCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthLanarkshireCouncil | None  | None  |
+		| council |
+		| NorthLanarkshireCouncil |
 
         @NorthLincolnshireCouncil
 		Examples: NorthLincolnshireCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthLincolnshireCouncil | None  | None  |
+		| council |
+		| NorthLincolnshireCouncil |
 
         @NorthNorfolkDistrictCouncil
 		Examples: NorthNorfolkDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthNorfolkDistrictCouncil | http://selenium:4444  | local  |
+		| council |
+		| NorthNorfolkDistrictCouncil |
 
         @NorthNorthamptonshireCouncil
 		Examples: NorthNorthamptonshireCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthNorthamptonshireCouncil | None  | None  |
+		| council |
+		| NorthNorthamptonshireCouncil |
 
         @NorthSomersetCouncil
 		Examples: NorthSomersetCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthSomersetCouncil | None  | None  |
+		| council |
+		| NorthSomersetCouncil |
 
         @NorthTynesideCouncil
 		Examples: NorthTynesideCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthTynesideCouncil | None  | None  |
+		| council |
+		| NorthTynesideCouncil |
 
         @NorthumberlandCouncil
 		Examples: NorthumberlandCouncil
-		| council | selenium_url | selenium_mode |
-		| NorthumberlandCouncil | http://selenium:4444  | local  |
+		| council |
+		| NorthumberlandCouncil |
 
         @NorthWestLeicestershire
 		Examples: NorthWestLeicestershire
-		| council | selenium_url | selenium_mode |
-		| NorthWestLeicestershire | http://selenium:4444  | local  |
+		| council |
+		| NorthWestLeicestershire |
 
 		@NorthYorkshire
 		Examples: NorthYorkshire
-		| council | selenium_url | selenium_mode |
-		| NorthYorkshire | None  | None  |
+		| council |
+		| NorthYorkshire |
 
         @NottinghamCityCouncil
 		Examples: NottinghamCityCouncil
-		| council | selenium_url | selenium_mode |
-		| NottinghamCityCouncil | None  | None  |
+		| council |
+		| NottinghamCityCouncil |
 
         @OldhamCouncil
 		Examples: OldhamCouncil
-		| council | selenium_url | selenium_mode |
-		| OldhamCouncil | None  | None  |
+		| council |
+		| OldhamCouncil |
 
         @PortsmouthCityCouncil
 		Examples: PortsmouthCityCouncil
-		| council | selenium_url | selenium_mode |
-		| PortsmouthCityCouncil | http://selenium:4444  | local  |
+		| council |
+		| PortsmouthCityCouncil |
 
         @PrestonCityCouncil
 		Examples: PrestonCityCouncil
-		| council | selenium_url | selenium_mode |
-		| PrestonCityCouncil | http://selenium:4444  | local  |
+		| council |
+		| PrestonCityCouncil |
 
         @ReadingBoroughCouncil
 		Examples: ReadingBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| ReadingBoroughCouncil | None  | None  |
+		| council |
+		| ReadingBoroughCouncil |
 
         @ReigateAndBansteadBoroughCouncil
 		Examples: ReigateAndBansteadBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| ReigateAndBansteadBoroughCouncil | http://selenium:4444  | local  |
+		| council |
+		| ReigateAndBansteadBoroughCouncil |
 
         @RenfrewshireCouncil
 		Examples: RenfrewshireCouncil
-		| council | selenium_url | selenium_mode |
-		| RenfrewshireCouncil | http://selenium:4444  | local  |
+		| council |
+		| RenfrewshireCouncil |
 
         @RhonddaCynonTaffCouncil
 		Examples: RhonddaCynonTaffCouncil
-		| council | selenium_url | selenium_mode |
-		| RhonddaCynonTaffCouncil | None  | None  |
+		| council |
+		| RhonddaCynonTaffCouncil |
 
         @RochdaleCouncil
 		Examples: RochdaleCouncil
-		| council | selenium_url | selenium_mode |
-		| RochdaleCouncil | None  | None  |
+		| council |
+		| RochdaleCouncil |
 
 		@RochfordCouncil
 		Examples: RochfordCouncil
-		| council | selenium_url | selenium_mode |
-		| RochfordCouncil | None  | None  |
+		| council |
+		| RochfordCouncil |
 
         @RugbyBoroughCouncil
 		Examples: RugbyBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| RugbyBoroughCouncil | None  | None  |
+		| council |
+		| RugbyBoroughCouncil |
 
         @RushcliffeBoroughCouncil
 		Examples: RushcliffeBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| RushcliffeBoroughCouncil | http://selenium:4444  | local  |
+		| council |
+		| RushcliffeBoroughCouncil |
 
         @RushmoorCouncil
 		Examples: RushmoorCouncil
-		| council | selenium_url | selenium_mode |
-		| RushmoorCouncil | None  | None  |
+		| council |
+		| RushmoorCouncil |
 
         @SalfordCityCouncil
 		Examples: SalfordCityCouncil
-		| council | selenium_url | selenium_mode |
-		| SalfordCityCouncil | None  | None  |
+		| council |
+		| SalfordCityCouncil |
 
         @SevenoaksDistrictCouncil
 		Examples: SevenoaksDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| SevenoaksDistrictCouncil | http://selenium:4444  | local  |
+		| council |
+		| SevenoaksDistrictCouncil |
 
         @SheffieldCityCouncil
 		Examples: SheffieldCityCouncil
-		| council | selenium_url | selenium_mode |
-		| SheffieldCityCouncil | None  | None  |
+		| council |
+		| SheffieldCityCouncil |
 
         @ShropshireCouncil
 		Examples: ShropshireCouncil
-		| council | selenium_url | selenium_mode |
-		| ShropshireCouncil | None  | None  |
+		| council |
+		| ShropshireCouncil |
 
 		@SolihullCouncil
 		Examples: SolihullCouncil
-		| council | selenium_url | selenium_mode |
-		| SolihullCouncil | None  | None  |
+		| council |
+		| SolihullCouncil |
 
         @SomersetCouncil
 		Examples: SomersetCouncil
-		| council | selenium_url | selenium_mode |
-		| SomersetCouncil | None  | None  |
+		| council |
+		| SomersetCouncil |
 
         @SouthAyrshireCouncil
 		Examples: SouthAyrshireCouncil
-		| council | selenium_url | selenium_mode |
-		| SouthAyrshireCouncil | None  | None  |
+		| council |
+		| SouthAyrshireCouncil |
 
         @SouthCambridgeshireCouncil
 		Examples: SouthCambridgeshireCouncil
-		| council | selenium_url | selenium_mode |
-		| SouthCambridgeshireCouncil | None  | None  |
+		| council |
+		| SouthCambridgeshireCouncil |
 
         @SouthGloucestershireCouncil
 		Examples: SouthGloucestershireCouncil
-		| council | selenium_url | selenium_mode |
-		| SouthGloucestershireCouncil | None  | None  |
+		| council |
+		| SouthGloucestershireCouncil |
 
         @SouthLanarkshireCouncil
 		Examples: SouthLanarkshireCouncil
-		| council | selenium_url | selenium_mode |
-		| SouthLanarkshireCouncil | None  | None  |
+		| council |
+		| SouthLanarkshireCouncil |
 
         @SouthNorfolkCouncil
 		Examples: SouthNorfolkCouncil
-		| council | selenium_url | selenium_mode |
-		| SouthNorfolkCouncil | None  | None  |
+		| council |
+		| SouthNorfolkCouncil |
 
         @SouthOxfordshireCouncil
 		Examples: SouthOxfordshireCouncil
-		| council | selenium_url | selenium_mode |
-		| SouthOxfordshireCouncil | None  | None  |
+		| council |
+		| SouthOxfordshireCouncil |
 
         @SouthTynesideCouncil
 		Examples: SouthTynesideCouncil
-		| council | selenium_url | selenium_mode |
-		| SouthTynesideCouncil | None  | None  |
+		| council |
+		| SouthTynesideCouncil |
 
         @StAlbansCityAndDistrictCouncil
         Examples: StAlbansCityAndDistrictCouncil
-        | council | selenium_url | selenium_mode |
-        | StAlbansCityAndDistrictCouncil | None  | None  |
+        | council |
+        | StAlbansCityAndDistrictCouncil |
 
         @StaffordshireMoorlandsDistrictCouncil
 		Examples: StaffordshireMoorlandsDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| StaffordshireMoorlandsDistrictCouncil | http://selenium:4444  | local  |
+		| council |
+		| StaffordshireMoorlandsDistrictCouncil |
 
         @StHelensBC
 		Examples: StHelensBC
-		| council | selenium_url | selenium_mode |
-		| StHelensBC | None  | None  |
+		| council |
+		| StHelensBC |
 
         @StockportBoroughCouncil
 		Examples: StockportBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| StockportBoroughCouncil | None  | None  |
+		| council |
+		| StockportBoroughCouncil |
 
         @StokeOnTrentCityCouncil
 		Examples: StokeOnTrentCityCouncil
-		| council | selenium_url | selenium_mode |
-		| StokeOnTrentCityCouncil | None  | None  |
+		| council |
+		| StokeOnTrentCityCouncil |
 
         @StratfordUponAvonCouncil
 		Examples: StratfordUponAvonCouncil
-		| council | selenium_url | selenium_mode |
-		| StratfordUponAvonCouncil | None  | None  |
+		| council |
+		| StratfordUponAvonCouncil |
 
 		@SunderlandCityCouncil
 		Examples: SunderlandCityCouncil
-		| council | selenium_url | selenium_mode |
-		| SunderlandCityCouncil | http://selenium:4444  | local  |
+		| council |
+		| SunderlandCityCouncil |
 
         @SwaleBoroughCouncil
 		Examples: SwaleBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| SwaleBoroughCouncil | None  | None  |
+		| council |
+		| SwaleBoroughCouncil |
 
         @TamesideMBCouncil
 		Examples: TamesideMBCouncil
-		| council | selenium_url | selenium_mode |
-		| TamesideMBCouncil | None  | None  |
+		| council |
+		| TamesideMBCouncil |
 
 		@TandridgeDistrictCouncil
 		Examples: TandridgeDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| TandridgeDistrictCouncil | None  | None  |
+		| council |
+		| TandridgeDistrictCouncil |
 
 		@TelfordAndWrekinCouncil
 		Examples: TelfordAndWrekinCouncil
-		| council | selenium_url | selenium_mode |
-		| TelfordAndWrekinCouncil | None  | None  |
+		| council |
+		| TelfordAndWrekinCouncil |
 
         @TestValleyBoroughCouncil
 		Examples: TestValleyBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| TestValleyBoroughCouncil | None  | None  |
+		| council |
+		| TestValleyBoroughCouncil |
 
         @TonbridgeAndMallingBC
 		Examples: TonbridgeAndMallingBC
-		| council | selenium_url | selenium_mode |
-		| TonbridgeAndMallingBC | None  | None  |
+		| council |
+		| TonbridgeAndMallingBC |
 
         @TorbayCouncil
 		Examples: TorbayCouncil
-		| council | selenium_url | selenium_mode |
-		| TorbayCouncil | None  | None  |
+		| council |
+		| TorbayCouncil |
 
         @TorridgeDistrictCouncil
 		Examples: TorridgeDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| TorridgeDistrictCouncil | None  | None  |
+		| council |
+		| TorridgeDistrictCouncil |
 
         @ValeofGlamorganCouncil
 		Examples: ValeofGlamorganCouncil
-		| council | selenium_url | selenium_mode |
-		| ValeofGlamorganCouncil | None  | None  |
+		| council |
+		| ValeofGlamorganCouncil |
 
         @ValeofWhiteHorseCouncil
 		Examples: ValeofWhiteHorseCouncil
-		| council | selenium_url | selenium_mode |
-		| ValeofWhiteHorseCouncil | None  | None  |
+		| council |
+		| ValeofWhiteHorseCouncil |
 
         @WakefieldCityCouncil
 		Examples: WakefieldCityCouncil
-		| council | selenium_url | selenium_mode |
-		| WakefieldCityCouncil | http://selenium:4444  | local  |
+		| council |
+		| WakefieldCityCouncil |
 
         @WarwickDistrictCouncil
 		Examples: WarwickDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| WarwickDistrictCouncil | None  | None  |
+		| council |
+		| WarwickDistrictCouncil |
 
         @WaverleyBoroughCouncil
 		Examples: WaverleyBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| WaverleyBoroughCouncil | None  | None  |
+		| council |
+		| WaverleyBoroughCouncil |
 
         @WealdenDistrictCouncil
 		Examples: WealdenDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| WealdenDistrictCouncil | None  | None  |
+		| council |
+		| WealdenDistrictCouncil |
 
         @WelhatCouncil
 		Examples: WelhatCouncil
-		| council | selenium_url | selenium_mode |
-		| WelhatCouncil | None  | None  |
+		| council |
+		| WelhatCouncil |
 
 		@WestBerkshireCouncil
 		Examples: WestBerkshireCouncil
-		| council | selenium_url | selenium_mode |
-		| WestBerkshireCouncil | http://selenium:4444  | local  |
+		| council |
+		| WestBerkshireCouncil |
 
         @WestLindseyDistrictCouncil
 		Examples: WestLindseyDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| WestLindseyDistrictCouncil | None  | None  |
+		| council |
+		| WestLindseyDistrictCouncil |
 
         @WestLothianCouncil
 		Examples: WestLothianCouncil
-		| council | selenium_url | selenium_mode |
-		| WestLothianCouncil | http://selenium:4444  | local  |
+		| council |
+		| WestLothianCouncil |
 
 		@WestNorthamptonshireCouncil
 		Examples: WestNorthamptonshireCouncil
-		| council | selenium_url | selenium_mode |
-		| WestNorthamptonshireCouncil | None  | None  |
+		| council |
+		| WestNorthamptonshireCouncil |
 
         @WestSuffolkCouncil
 		Examples: WestSuffolkCouncil
-		| council | selenium_url | selenium_mode |
-		| WestSuffolkCouncil | http://selenium:4444  | local  |
+		| council |
+		| WestSuffolkCouncil |
 
         @WiganBoroughCouncil
 		Examples: WiganBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| WiganBoroughCouncil | None  | None  |
+		| council |
+		| WiganBoroughCouncil |
 
         @WiltshireCouncil
 		Examples: WiltshireCouncil
-		| council | selenium_url | selenium_mode |
-		| WiltshireCouncil | None  | None  |
+		| council |
+		| WiltshireCouncil |
 
         @WindsorAndMaidenheadCouncil
 		Examples: WindsorAndMaidenheadCouncil
-		| council | selenium_url | selenium_mode |
-		| WindsorAndMaidenheadCouncil | None  | None  |
+		| council |
+		| WindsorAndMaidenheadCouncil |
 
         @WokingBoroughCouncil
 		Examples: WokingBoroughCouncil
-		| council | selenium_url | selenium_mode |
-		| WokingBoroughCouncil | None  | None  |
+		| council |
+		| WokingBoroughCouncil |
 
 		@WyreCouncil
 		Examples: WyreCouncil
-		| council | selenium_url | selenium_mode |
-		| WyreCouncil | None  | None  |
+		| council |
+		| WyreCouncil |
 
         @YorkCouncil
 		Examples: YorkCouncil
-		| council | selenium_url | selenium_mode |
-		| YorkCouncil | None  | None  |
+		| council |
+		| YorkCouncil |

@@ -8,8 +8,7 @@ services:
       - ../:/workspaces/UKBinCollectionData:rw
     privileged: true
     hostname: devcontainer
-    networks:
-      - devnet
+    network_mode: host
     depends_on:
       - selenium-hub
     command: sleep infinity
@@ -22,13 +21,12 @@ services:
     ports:
       - "7900:7900"
     environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_HOST=localhost
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     privileged: true
     restart: always
-    networks:
-      - devnet
+    network_mode: host
 
   chrome_video:
     image: selenium/video:ffmpeg-6.1.1-20240505
@@ -39,11 +37,10 @@ services:
     environment:
       - DISPLAY_CONTAINER_NAME=chrome
       - SE_VIDEO_FILE_NAME=auto
-      - SE_NODE_GRID_URL=http://selenium:4444
+      - SE_NODE_GRID_URL=http://localhost:4444
     privileged: true
     restart: always
-    networks:
-      - devnet
+    network_mode: host
 
   selenium-hub:
     image: selenium/hub:4.20.0-20240505
@@ -55,9 +52,5 @@ services:
       - "4444:4444"
     privileged: true
     restart: always
-    networks:
-      - devnet
+    network_mode: host
 
-networks:
-  devnet:
-    driver: bridge
