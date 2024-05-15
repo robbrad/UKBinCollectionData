@@ -260,7 +260,7 @@ You can set pytest to test on your local web browser without Selenium Grid by se
 If you want a different Selenium URL you can set it with `--selenium_url=http://selenium:4444` NOTE: you can't set `--local_browser=True` (defaults: False) as Selenium testing will be ignored
 
 In VSCode if you set a make a launch.json you can debug the test locally with the following setup
-```
+```json
 {
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
@@ -281,7 +281,7 @@ In VSCode if you set a make a launch.json you can debug the test locally with th
 ```
 
 It is also possible to run
-```
+```commandline
 #Visable Selenium Run in Local Broswer
 poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False --local_browser=True
 
