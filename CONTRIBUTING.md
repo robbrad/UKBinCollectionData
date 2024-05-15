@@ -262,9 +262,6 @@ If you want a different Selenium URL you can set it with `--selenium_url=http://
 In VSCode if you set a make a launch.json you can debug the test locally with the following setup
 ```json
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
