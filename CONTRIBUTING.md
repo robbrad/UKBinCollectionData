@@ -252,7 +252,7 @@ file.
 Based on the [input.json](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/input.json),
 this does an actual live run against the council's site and validates if the returned data is JSON and conforms to the common format [JSON Schema](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/output.schema).
 
-By default if the council is a Selenium based council it will run in headless mode. If you pass `--headless=False` to pytest (possible in VS Code via the workspace settings.json useful for debugging code) It will run in headless.
+By default if the council is a Selenium based council it will run in headless mode. If you pass `--headless=False` to pytest (possible in VS Code launch.json useful for debugging code) It will run in a visable browser.
 
 It also defaults the Selenium URL to be `http://localhost:4444` and the local_browser to False
 
