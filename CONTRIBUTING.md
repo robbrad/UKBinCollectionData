@@ -225,20 +225,20 @@ Feature: Test each council output matches expected results
 
     Scenario Outline: Validate Council Output
         Given the council: <council>
-        When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set
+        When we scrape the data from <council>
         Then the result is valid json
         And the output should validate against the schema
 
 
         @AylesburyValeCouncil
               		Examples: AylesburyValeCouncil
-              		| council | selenium_url | selenium_mode |
+              		| council |
               		| AylesburyValeCouncil | None  | None  |
 
         @BarnetCouncil
                 Examples: BarnetCouncil
-                | council | selenium_url | selenium_mode |
-                | BarnetCouncil | http://selenium:4444  | local  |
+                | council |
+                | BarnetCouncil |
 ```
 
 
@@ -254,11 +254,18 @@ this does an actual live run against the council's site and validates if the ret
 
 By default if the council is a Selenium based council it will run in headless mode. If you pass `--headless=False` to pytest (possible in VS Code via the workspace settings.json useful for debugging code) It will run in headless.
 
+It also defaults the Selenium URL to be `http://localhost:4444` and the local_browser to False
+
+You can set pytest to test on your local web browser without Selenium Grid by setting `--local_browser=True`
+If you want a different Selenium URL you can set it with `--selenium_url=http://selenium:4444` NOTE: you can't set `--local_browser=True` (defaults: False) as Selenium testing will be ignored
+
 ```
 {
     "python.testing.pytestArgs": [
         "uk_bin_collection",
-        "--headless=True"
+        "--headless=True",
+        "--local_browser=False",
+        "--selenium_url=http://localhost:4444",
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
