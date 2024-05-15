@@ -259,16 +259,24 @@ It also defaults the Selenium URL to be `http://localhost:4444` and the local_br
 You can set pytest to test on your local web browser without Selenium Grid by setting `--local_browser=True`
 If you want a different Selenium URL you can set it with `--selenium_url=http://selenium:4444` NOTE: you can't set `--local_browser=True` (defaults: False) as Selenium testing will be ignored
 
+In VSCode if you set a make a launch.json you can debug the test locally with the following setup
 ```
 {
-    "python.testing.pytestArgs": [
-        "uk_bin_collection",
-        "--headless=True",
-        "--local_browser=False",
-        "--selenium_url=http://localhost:4444",
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "purpose": ["debug-test"],
+            "env": {
+                "PYTEST_ADDOPTS": "--headless=False --local_browser=True"
+            }
+        }
+    ]
 }
 ```
 
