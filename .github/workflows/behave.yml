@@ -24,6 +24,7 @@ on:
 
 jobs:
   build:
+    name: selenium
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     strategy:
@@ -34,7 +35,6 @@ jobs:
       selenium:
         image: selenium/standalone-chrome:latest
         options: --shm-size=2gb
-        hostname: selenium
         ports: 
           - 4444:4444
     steps:
