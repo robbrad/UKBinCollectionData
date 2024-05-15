@@ -231,9 +231,9 @@ Feature: Test each council output matches expected results
 
 
         @AylesburyValeCouncil
-              		Examples: AylesburyValeCouncil
-              		| council |
-              		| AylesburyValeCouncil | None  | None  |
+              	Examples: AylesburyValeCouncil
+              	| council |
+              	| AylesburyValeCouncil | None  | None  |
 
         @BarnetCouncil
                 Examples: BarnetCouncil
