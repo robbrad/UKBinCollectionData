@@ -274,7 +274,11 @@ If you want a different Selenium URL you can set it with `--selenium_url=http://
 
 It is also possible to run
 ```
-poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False
+#Visable Selenium Run in Local Broswer
+poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False --local_browser=True
+
+#Visable Selenium Run in on Selenium Grid
+poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False --selenium_url=http://localhost:4444
 ```
 
 #### Running the Behave tests for all councils

@@ -65,7 +65,13 @@
                     "editorError.foreground":   "#ff000088",
                     "editorWarning.foreground": "#ffe60033",
                     "editorInfo.foreground":    "#00ff0088"
-                }
+                },
+                "gherkin-autocomplete.featuresPath": "/workspaces/UKBinCollectionData/uk_bin_collection/tests/features",
+                "cucumberautocomplete.steps": [
+                    "/workspaces/UKBinCollectionData/uk_bin_collection/tests/step_defs/*.py"
+                ],
+                "cucumberautocomplete.syncfeatures": "/workspaces/UKBinCollectionData/uk_bin_collection/tests/features/*feature"
+                } 
             }
         }
     }
