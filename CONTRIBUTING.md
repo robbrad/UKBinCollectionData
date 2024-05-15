@@ -90,7 +90,7 @@ There are a few different options for scraping, and you are free to choose which
 To get started, first you will need to fork this repository and setup your own working environment before you can start developing.
 
 ### Developing using our Dev Container
-Sure! Here’s a simple guide to set up Docker, Visual Studio Code (VSCode), and a development container (devcontainer) after cloning the repository at https://github.com/robbrad/UKBinCollectionData.
+You need to set up Docker, Visual Studio Code (VSCode), and a development container (devcontainer) after cloning the repository at https://github.com/robbrad/UKBinCollectionData.
 
 #### Prerequisites
 Before you start, make sure you have the following installed on your computer:
