@@ -21,7 +21,7 @@
                 "alexkrechik.cucumberautocomplete"
             ],
             "settings": {
-                "makefile.makefilePath": "/workspaces/UKBinCollectionData/",
+                "makefile.makefilePath": "${workspaceFolder}/",
                 "files.exclude": {
                     "**/__pycache__": true,
                     "**/.pytest_cache": true
@@ -46,9 +46,9 @@
                 "python.testing.autoTestDiscoverOnSaveEnabled": false,
                 "python.defaultInterpreterPath": "/home/vscode/ukbc-py-env",
                 "python.testing.pytestArgs": [
-                    "/workspaces/UKBinCollectionData/uk_bin_collection",
+                    "${workspaceFolder}/uk_bin_collection",
                     "--headless=False",
-                    "-o cache_dir=/workspaces/UKBinCollectionData/.pytest_cache"
+                    "-o cache_dir=${workspaceFolder}/.pytest_cache"
                 ],
                 "python.testing.unittestEnabled": false,
                 "python.testing.pytestEnabled": true,
