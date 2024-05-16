@@ -19,6 +19,7 @@
 !behave.ini
 !*.Dockerfile
 !docker-compose.yml
+!.vscode/launch.json
 
 # Or these folders...
 !.github
