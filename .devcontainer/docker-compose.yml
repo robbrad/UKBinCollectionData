@@ -16,20 +16,24 @@ services:
   chrome:
     image: selenium/node-chrome:4.20.0-20240505
     shm_size: 2gb
+    networks:
+      - devnet
     depends_on:
       - selenium-hub
     ports:
       - "7900:7900"
+      - "5555:5555"
     environment:
-      - SE_EVENT_BUS_HOST=localhost
+      - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     privileged: true
     restart: always
-    network_mode: host
 
   chrome_video:
     image: selenium/video:ffmpeg-6.1.1-20240505
+    networks:
+      - devnet
     volumes:
       - ../test_videos:/videos/
     depends_on:
@@ -37,10 +41,9 @@ services:
     environment:
       - DISPLAY_CONTAINER_NAME=chrome
       - SE_VIDEO_FILE_NAME=auto
-      - SE_NODE_GRID_URL=http://localhost:4444
+      - SE_NODE_GRID_URL=http://selenium-hub:4444
     privileged: true
     restart: always
-    network_mode: host
 
   selenium-hub:
     image: selenium/hub:4.20.0-20240505
@@ -52,5 +55,9 @@ services:
       - "4444:4444"
     privileged: true
     restart: always
-    network_mode: host
+    networks:
+      - devnet
 
+networks:
+  devnet:
+    driver: bridge
