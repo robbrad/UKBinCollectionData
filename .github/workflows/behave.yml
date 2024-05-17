@@ -33,7 +33,9 @@ jobs:
     services:
       selenium:
         image: selenium/standalone-chrome:latest
-        options: --shm-size=2gb
+        options: --shm-size=2gb --name selenium --hostname selenium
+        ports: 
+          - 4444:4444
     steps:
     - uses: actions/checkout@v4
 

@@ -89,6 +89,46 @@ There are a few different options for scraping, and you are free to choose which
 ## Developing
 To get started, first you will need to fork this repository and setup your own working environment before you can start developing.
 
+### Developing using our Dev Container
+You need to set up Docker, Visual Studio Code (VSCode), and a development container (devcontainer) after cloning the repository at https://github.com/robbrad/UKBinCollectionData.
+
+#### Prerequisites
+Before you start, make sure you have the following installed on your computer:
+- Docker: [Download Docker](https://www.docker.com/products/docker-desktop)
+- Visual Studio Code (VSCode): [Download VSCode](https://code.visualstudio.com/download)
+- Remote - Containers extension for VSCode: Install it from the VSCode Marketplace or directly from the Extensions view (`Ctrl+Shift+X` in VSCode and search for "Remote - Containers").
+
+#### Step 1: Clone the Repository
+First, clone the repository to your local machine. Open a terminal and run the following command:
+```bash
+git clone https://github.com/robbrad/UKBinCollectionData.git
+```
+Navigate into the directory:
+```bash
+cd UKBinCollectionData
+```
+
+#### Step 2: Set Up Docker
+Ensure Docker is running on your system. You can verify this by running:
+```bash
+docker -v
+```
+This should return the version of Docker installed. If Docker is running, you’ll see no errors.
+
+#### Step 3: Open the Project in VSCode
+Open VSCode, and then open the cloned repository by going to `File > Open Folder...` and selecting the `UKBinCollectionData` folder.
+
+#### Step 4: Reopen in Container
+Once the folder is open in VSCode:
+1. A prompt might appear asking you to reopen in a container. If it does, select "Reopen in Container".
+2. If you don’t see the prompt, press `F1` to open the command palette, type "Remote-Containers: Reopen in Container", and select that option.
+
+VSCode will start building the Docker container as defined in the `.devcontainer/` folder in the repository. This process can take a few minutes as it involves downloading the base Docker and Selenium hub images and setting up the environment.
+
+#### Step 5: Verify the Development Environment
+Once the container is set up, VSCode will connect to it automatically. You can start editing and running the code inside the container. This ensures that your development environment is consistent and controlled, replicating the same settings and tools as specified in the devcontainer configuration.
+
+### Developing
 Once your environment is ready, create a new branch from your master/main branch and then create a new .py file within the `uk_bin_collection\councils` directory then use the development mode to generate the input.json entry. The new .py file will be used in the CLI to call the parser, so be sure to pick a sensible name - e.g. CheshireEastCouncil.py is called with:
 ```
 python collect_data.py CheshireEastCouncil <web-url>
@@ -225,20 +265,20 @@ Feature: Test each council output matches expected results
 
     Scenario Outline: Validate Council Output
         Given the council: <council>
-        When we scrape the data from <council> using <selenium_mode> and the <selenium_url> is set
+        When we scrape the data from <council>
         Then the result is valid json
         And the output should validate against the schema
 
 
         @AylesburyValeCouncil
-              		Examples: AylesburyValeCouncil
-              		| council | selenium_url | selenium_mode |
-              		| AylesburyValeCouncil | None  | None  |
+              	Examples: AylesburyValeCouncil
+              	| council |
+              	| AylesburyValeCouncil | None  | None  |
 
         @BarnetCouncil
                 Examples: BarnetCouncil
-                | council | selenium_url | selenium_mode |
-                | BarnetCouncil | http://selenium:4444  | local  |
+                | council |
+                | BarnetCouncil |
 ```
 
 
@@ -252,22 +292,38 @@ file.
 Based on the [input.json](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/tests/input.json),
 this does an actual live run against the council's site and validates if the returned data is JSON and conforms to the common format [JSON Schema](https://github.com/robbrad/UKBinCollectionData/tree/master/uk_bin_collection/tests/output.schema).
 
-By default if the council is a Selenium based council it will run in headless mode. If you pass `--headless=False` to pytest (possible in VS Code via the workspace settings.json useful for debugging code) It will run in headless.
+By default if the council is a Selenium based council it will run in headless mode. If you pass `--headless=False` to pytest (possible in VS Code launch.json useful for debugging code) It will run in a visable browser.
 
-```
+It also defaults the Selenium URL to be `http://localhost:4444` and the local_browser to False
+
+You can set pytest to test on your local web browser without Selenium Grid by setting `--local_browser=True`
+If you want a different Selenium URL you can set it with `--selenium_url=http://selenium:4444` NOTE: you can't set `--local_browser=True` (defaults: False) as Selenium testing will be ignored
+
+In VSCode if you set a make a launch.json you can debug the test locally with the following setup
+```json
 {
-    "python.testing.pytestArgs": [
-        "uk_bin_collection",
-        "--headless=True"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "purpose": ["debug-test"],
+            "env": {
+                "PYTEST_ADDOPTS": "--headless=False --local_browser=True"
+            }
+        }
+    ]
 }
 ```
 
 It is also possible to run
-```
-poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False
+```commandline
+#Visable Selenium Run in Local Broswer
+poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False --local_browser=True
+
+#Visable Selenium Run in on Selenium Grid
+poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False --selenium_url=http://localhost:4444
 ```
 
 #### Running the Behave tests for all councils

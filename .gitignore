@@ -7,8 +7,9 @@
 !PipFile
 !Pipfile.lock
 !.gitignore
+!.dockerignore
 !*.toml
-!.md
+!*.md
 !*.rst
 !LICENSE
 !*.schema
@@ -16,6 +17,9 @@
 !dependabot.yaml
 !poetry.lock
 !behave.ini
+!*.Dockerfile
+!docker-compose.yml
+!.vscode/launch.json
 
 # Or these folders...
 !.github
@@ -33,4 +37,4 @@
 !custom_components
 __pycache__
 !TO_BE_CONVERTED
-
+!.devcontainer

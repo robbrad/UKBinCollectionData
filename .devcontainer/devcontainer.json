@@ -1,0 +1,71 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
+{
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "devcontainer",
+    "workspaceFolder": "/workspaces/UKBinCollectionData",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "eamodio.gitlens",
+                "ms-python.black-formatter",
+                "ms-python.isort",
+                "ms-python.python",
+                "ryanluker.vscode-coverage-gutters",
+                "Gruntfuggly.todo-tree",
+                "oderwat.indent-rainbow",
+                "yzhang.markdown-all-in-one",
+                "alexkrechik.cucumberautocomplete"
+            ],
+            "settings": {
+                "makefile.makefilePath": "${workspaceFolder}/",
+                "files.exclude": {
+                    "**/__pycache__": true,
+                    "**/.pytest_cache": true
+                },
+                "autoSave": true,
+                "git.autorefresh": true,
+                "extensions.ignoreRecommendations": true,
+                "isort.args": [
+                    "--profile",
+                    "black"
+                ],
+                "python.analysis.diagnosticMode": "workspace",
+                "python.analysis.typeCheckingMode": "strict",
+                "python.analysis.logLevel": "Trace",
+                "python.analysis.disableSemanticOnNoPython": false,
+                "python.analysis.enableSyncServer": true,
+                "python.analysis.userFileIndexingLimit": -1,
+                "python.formatting.provider": "none",
+                "python.languageServer": "Pylance",
+                "python.linting.enabled": false,
+                "python.linting.lintOnSave": false,
+                "python.testing.autoTestDiscoverOnSaveEnabled": false,
+                "python.defaultInterpreterPath": "/home/vscode/ukbc-py-env",
+                "python.testing.pytestArgs": [
+                    "${workspaceFolder}/uk_bin_collection",
+                    "--headless=False",
+                    "-o cache_dir=${workspaceFolder}/.pytest_cache"
+                ],
+                "python.testing.unittestEnabled": false,
+                "python.testing.pytestEnabled": true,
+                "[python]": {
+                    "editor.defaultFormatter": "ms-python.black-formatter",
+                    "editor.formatOnSave": true,
+                    "editor.formatOnPaste": false,
+                    "editor.formatOnSaveMode": "file",
+                    "editor.codeActionsOnSave": {
+                        "source.organizeImports": true
+                    }
+                },
+                "workbench.colorCustomizations": {
+                    "editorError.foreground":   "#ff000088",
+                    "editorWarning.foreground": "#ffe60033",
+                    "editorInfo.foreground":    "#00ff0088"
+                }
+            }
+        }
+    }
+}

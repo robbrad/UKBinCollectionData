@@ -1,0 +1,38 @@
+# Ignore everything
+*
+
+# But not these files...
+!*.json
+!*.py
+!PipFile
+!Pipfile.lock
+!.gitignore
+!.dockerignore
+!*.toml
+!*.md
+!*.rst
+!LICENSE
+!*.schema
+!Makefile
+!dependabot.yaml
+!poetry.lock
+!behave.ini
+!*.Dockerfile
+
+# Or these folders...
+!.github
+!*.png
+!.github/ISSUE_TEMPLATE
+!.github/ISSUE_TEMPLATE/*.yaml
+!.github/workflows
+!.github/workflows/*.yml
+!uk_bin_collection
+!uk_bin_collection/**/*
+!uk_bin_collection_api_server
+!uk_bin_collection_api_server/**/*
+!wiki
+!wiki/**/*
+!custom_components
+__pycache__
+!TO_BE_CONVERTED
+!.devcontainer
