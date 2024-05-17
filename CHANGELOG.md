@@ -1,3 +1,9 @@
+## 0.71.0 (2024-05-17)
+
+### Feat
+
+- Update for West Suffolk Councils new website
+
 ## 0.70.0 (2024-05-17)
 
 ### Feat
