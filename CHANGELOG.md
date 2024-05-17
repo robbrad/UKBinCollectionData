@@ -1,3 +1,16 @@
+## 0.72.0 (2024-05-17)
+
+### Feat
+
+- #708 Adding HA to the dev container for debugging
+- #708 Adding HA to the dev container for debugging
+- #708 Adding HA to the dev container for debugging
+- #708 Adding HA to the dev container for debugging
+- #708 Adding HA to the dev container for debugging
+- #708 Adding HA to the dev container for debugging
+- #708 Adding HA to the dev container for debugging
+- #708 Adding HA to the dev container for debugging
+
 ## 0.71.0 (2024-05-17)
 
 ### Feat
