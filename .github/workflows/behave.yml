@@ -51,7 +51,9 @@ jobs:
         run: jq empty uk_bin_collection/tests/input.json
 
       - name: Check Parity of Councils / input.json / Feature file
-        run: make parity-check branch="${{ github.event.pull_request.head.ref }}"
+        run: |
+          branch=${{ github.event.pull_request.head.ref || 'master' }}
+          make parity-check branch=$branch
 
       - name: Get all councils files that have changed
         id: changed-council-files

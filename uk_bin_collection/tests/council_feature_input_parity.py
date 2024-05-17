@@ -44,7 +44,7 @@ def compare_councils(councils1, councils2, councils3):
             discrepancies_found = True
     return all_council_data, discrepancies_found
 
-def main(branch):
+def main(branch="master"):
     # Execute and print the comparison
     file_councils = get_councils_from_files(branch)
     json_councils = get_councils_from_json(branch)
@@ -75,8 +75,5 @@ def main(branch):
         print("No discrepancies found. Workflow successful.")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <branch>")
-        sys.exit(1)
-    branch = sys.argv[1]
+    branch = sys.argv[1] if len(sys.argv) > 1 else "master"
     main(branch)
