@@ -118,8 +118,8 @@ Please be aware that this project is run by volunteer contributors and completio
 
 ## Reports
 
-- [3.10](https://robbrad.github.io/UKBinCollectionData/3.10/)
 - [3.11](https://robbrad.github.io/UKBinCollectionData/3.11/)
+- [3.12](https://robbrad.github.io/UKBinCollectionData/3.12/)
 
 ---
 ## Docker API Server

@@ -1,27 +1,37 @@
 
 # Contents
+- [Contents](#contents)
 - [Contributor guidelines](#contributor-guidelines)
-  * [Getting Started](#getting-started)
-    + [Environment Setup](#environment-setup)
-  * [Project Aims](#project-aims)
-    + [What can I contribute to?](#what-can-i-contribute-to-)
-  * [Claiming an issue](#claiming-an-issue)
-  * [Pushing your changes](#pushing-your-changes)
+  - [Getting Started](#getting-started)
+    - [Environment Setup](#environment-setup)
+  - [Project Aims](#project-aims)
+    - [What can I contribute to?](#what-can-i-contribute-to)
+  - [Claiming an issue](#claiming-an-issue)
+  - [Pushing your changes](#pushing-your-changes)
 - [Adding a scraper](#adding-a-scraper)
-  * [Developing](#developing)
-    + [Kwargs](#kwargs)
-    + [Common Functions](#common-functions)
-  * [Additional files](#additional-files)
-    + [Input JSON file](#input-json-file)
-    + [Feature file](#feature-file)
-  * [Testing](#testing)
-    + [Behave (Integration Testing)](#behave--integration-testing-)
-      - [Running the Behave tests](#running-the-behave-tests)
+  - [Developing](#developing)
+    - [Developing using our Dev Container](#developing-using-our-dev-container)
+      - [Prerequisites](#prerequisites)
+      - [Step 1: Clone the Repository](#step-1-clone-the-repository)
+      - [Step 2: Set Up Docker](#step-2-set-up-docker)
+      - [Step 3: Open the Project in VSCode](#step-3-open-the-project-in-vscode)
+      - [Step 4: Reopen in Container](#step-4-reopen-in-container)
+      - [Step 5: Verify the Development Environment](#step-5-verify-the-development-environment)
+    - [Developing](#developing-1)
+    - [Kwargs](#kwargs)
+    - [Common Functions](#common-functions)
+  - [Additional files](#additional-files)
+    - [Input JSON file](#input-json-file)
+    - [Feature file](#feature-file)
+  - [Testing](#testing)
+    - [Behave (Integration Testing)](#behave-integration-testing)
+      - [Running the Behave tests for all councils](#running-the-behave-tests-for-all-councils)
+      - [Running the Behave tests for a specific council](#running-the-behave-tests-for-a-specific-council)
       - [GitHub Actions Integration Tests](#github-actions-integration-tests)
       - [Test Results](#test-results)
-        * [Allure Report](#allure-report)
-        * [CodeCov Report](#codecov-report)
-    + [Pytest (Unit Testing)](#pytest--unit-testing-)
+        - [Allure Report](#allure-report)
+        - [CodeCov Report](#codecov-report)
+    - [Pytest (Unit Testing)](#pytest-unit-testing)
       - [Running the Unittests](#running-the-unittests)
 - [Contact info](#contact-info)
 
@@ -32,8 +42,7 @@ This document contains guidelines on contributing to the UKBCD project including
 the environment, how we use our issue tracker, and how you can develop more scrapers.
 
 ## Getting Started
-You will need to install Python on the system you plan to run the script from. Python 3.8 and 3.9 are officially supported.
-Python 3.10 and 3.11 should work, but your mileage _may_ vary.
+You will need to install Python on the system you plan to run the script from. Python 3.11 and 3.12 are tested on this project .
 
 The project uses [poetry](https://python-poetry.org/docs/) to manage dependencies and setup the build environment.
 

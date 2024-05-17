@@ -25,8 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.10', 3.11]
-        poetry-version: [1.5.1]
+        python-version: [3.11, 3.12]
+        poetry-version: [1.8.3]
     services:
       selenium:
         image: selenium/standalone-chrome:latest
@@ -126,16 +126,17 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/download-artifact@v4
-        name: Download 3.10 artifacts
-        with:
-          name: allure_history_3.10
-          path: allure-history/tars
 
       - uses: actions/download-artifact@v4
         name: Download 3.11 artifacts
         with:
           name: allure_history_3.11
+          path: allure-history/tars
+
+      - uses: actions/download-artifact@v4
+        name: Download 3.12 artifacts
+        with:
+          name: allure_history_3.12
           path: allure-history/tars
 
       - name: Untar reports

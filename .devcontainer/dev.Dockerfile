@@ -1,4 +1,4 @@
-ARG VARIANT="3.11-bullseye"
+ARG VARIANT="3.12-bullseye"
 FROM mcr.microsoft.com/devcontainers/python:${VARIANT} AS ukbc-dev-base
 
 USER vscode
@@ -6,7 +6,7 @@ USER vscode
 # Define the version of Poetry to install (default is 1.4.2)
 # Define the directory of python virtual environment
 ARG PYTHON_VIRTUALENV_HOME=/home/vscode/ukbc-py-env \
-    POETRY_VERSION=1.5.1
+    POETRY_VERSION=1.8.3
 
 ENV POETRY_VIRTUALENVS_IN_PROJECT=false \
     POETRY_NO_INTERACTION=true 
