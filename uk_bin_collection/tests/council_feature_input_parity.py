@@ -28,6 +28,7 @@ def compare_councils(councils1, councils2, councils3):
     set3 = set(councils3)
     all_councils = set1 | set2 | set3
     all_council_data = {}
+    discrepancies_found = False
     for council in all_councils:
         in_files = council in set1
         in_json = council in set2
@@ -39,7 +40,9 @@ def compare_councils(councils1, councils2, councils3):
             'in_features': in_features,
             'discrepancies_count': discrepancies_count
         }
-    return all_council_data
+        if discrepancies_count > 0:
+            discrepancies_found = True
+    return all_council_data, discrepancies_found
 
 def main(branch):
     # Execute and print the comparison
@@ -47,7 +50,7 @@ def main(branch):
     json_councils = get_councils_from_json(branch)
     feature_councils = get_councils_from_features(branch)
 
-    all_councils_data = compare_councils(file_councils, json_councils, feature_councils)
+    all_councils_data, discrepancies_found = compare_councils(file_councils, json_councils, feature_councils)
 
     # Create a list of lists for tabulate, sort by discrepancies count and then by name
     table_data = []
@@ -64,6 +67,12 @@ def main(branch):
 
     # Print the table using tabulate
     print(tabulate(table_data, headers=headers, tablefmt='grid'))
+
+    if discrepancies_found:
+        print("Discrepancies found! Failing the workflow.")
+        sys.exit(1)
+    else:
+        print("No discrepancies found. Workflow successful.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
