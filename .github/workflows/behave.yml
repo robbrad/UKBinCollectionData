@@ -48,7 +48,7 @@ jobs:
         run: make install
 
       - name: Lint JSON
-        run: jq empty uk_bin_collection/uk_bin_collection/tests/input.json
+        run: jq empty uk_bin_collection/tests/input.json
 
       - name: Get all councils files that have changed
         id: changed-council-files
