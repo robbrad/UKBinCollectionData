@@ -29,6 +29,9 @@ integration-tests: ## runs tests for the project
 		poetry run pytest uk_bin_collection/tests/step_defs/ -k "$(councils)" -n logical --alluredir=build/$(matrix)/allure-results; \
 	fi
 
+parity-check:
+	poetry run python uk_bin_collection/tests/council_feature_input_parity.py $(branch)
+
 unit-tests:
 	poetry run coverage erase
 	poetry run coverage run --append --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/

@@ -13,6 +13,21 @@ services:
       - selenium-hub
     command: sleep infinity
 
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - .ha_config:/config:rw
+      - ../custom_components:/config/custom_components
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    networks:
+      - devnet
+    ports:
+      - "8124:8123/tcp"
+
   chrome:
     image: selenium/node-chrome:4.20.0-20240505
     shm_size: 2gb
