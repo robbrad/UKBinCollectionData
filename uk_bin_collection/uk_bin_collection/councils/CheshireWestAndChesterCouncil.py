@@ -23,7 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             data = {"bins": []}
             collections = []
-
+            user_uprn = kwargs.get("uprn")
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
@@ -36,80 +36,87 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(
                 "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day"
             )
+            wait = WebDriverWait(driver, 60)
 
             time.sleep(5)
 
-            cookie_close_button = WebDriverWait(driver, timeout=15).until(
+            cookie_close_button = wait.until(
                 EC.presence_of_element_located((By.ID, "ccc-close"))
             )
             cookie_close_button.click()
 
-            find_collection_button = WebDriverWait(driver, timeout=10).until(
+            find_collection_button = wait.until(
                 EC.presence_of_element_located(
                     (By.LINK_TEXT, "Find your collection day")
                 )
             )
             find_collection_button.click()
 
-            banner_close_button = WebDriverWait(driver, timeout=30).until(
-                EC.presence_of_element_located((By.ID, "close-cookie-message"))
+            iframe_presense = wait.until(
+                EC.presence_of_element_located((By.ID, "fillform-frame-1"))
             )
-            banner_close_button.click()
 
-            time.sleep(5)
-
-            frame = driver.find_element(
-                By.XPATH, "/html/body/div[4]/section/div/div[2]/div[2]/div/iframe"
-            )
-            driver.switch_to.frame(frame)
+            driver.switch_to.frame(iframe_presense)
 
             # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.NAME, "postcode_search"))
+            inputElement_postcode = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//input[@id="postcode_search"]')
+                )
             )
+
+
+            inputElement_postcode.click()
+
             inputElement_postcode.send_keys(user_postcode)
 
-            address_box_text = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "label_Choose_Address"))
-            )
-            address_box_text.click()
-            time.sleep(2)
+            # Wait for the 'Select your property' dropdown to appear and select the first result
+            dropdown = wait.until(EC.element_to_be_clickable((By.ID, "Choose_Address")))
 
-            address_selection_menu = Select(
-                driver.find_element(By.ID, "Choose_Address")
+            dropdown_options = wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "lookup-option"))
             )
-            for idx, addr_option in enumerate(address_selection_menu.options):
-                option_name = addr_option.text[0 : len(user_paon)]
-                if option_name == user_paon:
-                    selected_address = addr_option
-                    break
-            address_selection_menu.select_by_visible_text(selected_address.text)
 
-            WebDriverWait(driver, 30).until(
+            # Create a 'Select' for it, then select the first address in the list
+            # (Index 0 is "Make a selection from the list")
+            drop_down_values = Select(dropdown)
+            option_element = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="bin-schedule-content"]/div/h3')
+                    (By.CSS_SELECTOR, f'option.lookup-option[value="{str(user_uprn)}"]')
                 )
+            )
+
+            drop_down_values.select_by_value(str(user_uprn))
+
+            span_element = WebDriverWait(driver, 60).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'bin-schedule-content-bin-card'))
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
+            bin_cards = soup.find_all("div", {"class": "bin-schedule-content-bin-card"})
+            collections = []
 
-            # Get collections
-            bin_cards = soup.find_all("div", {"class": "bin-schedule-content-info"})
+            # Extract bin collection information
             for card in bin_cards:
-                bin_name = card.contents[0].text.strip() + " bin"
-                bin_date = datetime.strptime(
-                    card.contents[1].text.split(":")[1].strip(), "%A, %d %B %Y"
-                )
+                bin_info = card.find("div", {"class": "bin-schedule-content-info"})
+                bin_name = bin_info.find_all("p")[0].text.strip() + " bin"
+                bin_date_str = bin_info.find_all("p")[1].text.split(":")[1].strip()
+                bin_date = datetime.strptime(bin_date_str, "%A, %d %B %Y")
                 collections.append((bin_name, bin_date))
 
+            # Sort the collection data by date
             ordered_data = sorted(collections, key=lambda x: x[1])
+
+            # Format the data as required
+            data = {"bins": []}
             for item in ordered_data:
                 dict_data = {
                     "type": item[0].capitalize(),
                     "collectionDate": item[1].strftime(date_format),
                 }
                 data["bins"].append(dict_data)
+
+            return data
 
         except Exception as e:
             # Here you can log the exception if needed

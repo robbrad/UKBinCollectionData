@@ -207,8 +207,9 @@
         "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name and postcode.\nUse the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and post code and replace all spaces with `%20`."
     },
     "CheshireWestAndChesterCouncil": {
-        "house_number": "21",
-        "postcode": "CW8 1DX",
+        "house_number": "Hill View House",
+        "postcode": "CH3 9ER",
+        "uprn": "100012346655",
         "skip_get_url": true,
         "url": "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day",
         "web_driver": "http://selenium:4444",
