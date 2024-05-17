@@ -30,7 +30,7 @@ integration-tests: ## runs tests for the project
 	fi
 
 parity-check:
-	poetry run uk_bin_collection/tests/council_feature_input_parity.py $(branch)
+	poetry run python uk_bin_collection/tests/council_feature_input_parity.py $(branch)
 
 unit-tests:
 	poetry run coverage erase
