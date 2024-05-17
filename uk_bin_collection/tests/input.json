@@ -1025,14 +1025,11 @@
         "wiki_name": "West Northamptonshire Council"
     },
     "WestSuffolkCouncil": {
-        "house_number": "1 The Drift",
         "postcode": "IP28 6DR",
         "uprn": "10009739960",
         "skip_get_url": true,
         "url": "https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "West Suffolk Council",
-        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes and the postcode in the postcode parameter"
     },
     "WiganBoroughCouncil": {
         "postcode": "WN24UQ",
