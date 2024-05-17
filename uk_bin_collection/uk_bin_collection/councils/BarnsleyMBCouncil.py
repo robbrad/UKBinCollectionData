@@ -1,10 +1,16 @@
+from typing import Dict, Any
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
-from uk_bin_collection.uk_bin_collection.common import *
+import requests
+from datetime import datetime
+from uk_bin_collection.uk_bin_collection.common import (
+    check_postcode,
+    check_uprn,
+    date_format,
+)
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -12,12 +18,12 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
-        data = {"bins": []}
+    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, Any]:
+        data: Dict[str, Any] = {"bins": []}
 
-        # Get UPRN and postcode from commandline
-        user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
+        # Get UPRN and postcode from kwargs
+        user_uprn = str(kwargs.get("uprn"))
+        user_postcode = str(kwargs.get("postcode"))
         check_postcode(user_postcode)
         check_uprn(user_uprn)
 
@@ -52,41 +58,52 @@ class CouncilClass(AbstractGetBinDataClass):
             headers=headers,
             data=form_data,
         )
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
 
         if response.status_code != 200:
             raise ConnectionRefusedError(
                 "Error getting results from website! Please open an issue on GitHub!"
             )
 
-        # Parse the response, getting the top box first and then tabled collections after
-        results = soup.find("div", {"class": "panel"}).find_all("fieldset")[0:2]
-        heading = results[0].find_all("p")[1:3]
-        bin_text = heading[1].text.strip() + " bin"
+        soup = BeautifulSoup(response.text, features="html.parser")
 
-        if heading[0].text == "Today":
+        results = soup.find_all("fieldset")
+
+        # Next collection details
+        highlight_content = results[0].find("div", {"class": "highlight-content"})
+        bin_date_str = highlight_content.find(
+            "em", {"class": "ui-bin-next-date"}
+        ).text.strip()
+        bin_type = (
+            highlight_content.find("p", {"class": "ui-bin-next-type"}).text.strip()
+            + " bin"
+        )
+
+        if bin_date_str == "Today":
             bin_date = datetime.today()
-        elif heading[0].text == "Tomorrow":
+        elif bin_date_str == "Tomorrow":
             bin_date = datetime.today() + relativedelta(days=1)
         else:
-            bin_date = datetime.strptime(heading[0].text, "%A, %B %d, %Y")
+            bin_date = datetime.strptime(bin_date_str, "%A, %B %d, %Y")
 
         dict_data = {
-            "type": bin_text,
+            "type": bin_type,
             "collectionDate": bin_date.strftime(date_format),
         }
         data["bins"].append(dict_data)
 
-        results_table = [row for row in results[1].find_all("tbody")[0] if row != "\n"]
-        for row in results_table:
-            text_list = [item.text.strip() for item in row.contents if item != "\n"]
-            bin_text = text_list[1] + " bin"
+        # Upcoming collections
+        upcoming_collections = results[1].find("tbody").find_all("tr")
+        for row in upcoming_collections:
+            columns = row.find_all("td")
+            bin_date_str = columns[0].text.strip()
+            bin_types = columns[1].text.strip().split(", ")
 
-            dict_data = {
-                "type": bin_text,
-                "collectionDate": bin_date.strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+            for bin_type in bin_types:
+                bin_date = datetime.strptime(bin_date_str, "%A, %B %d, %Y")
+                dict_data = {
+                    "type": bin_type.strip() + " bin",
+                    "collectionDate": bin_date.strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
         return data
