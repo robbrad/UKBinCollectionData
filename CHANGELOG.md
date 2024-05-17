@@ -1,3 +1,11 @@
+## 0.74.0 (2024-05-17)
+
+### Feat
+
+- #722 Support Python 3.12
+- #722 Support Python 3.12
+- #722 Support Python 3.12
+
 ## 0.73.0 (2024-05-17)
 
 ### Feat
