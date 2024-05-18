@@ -1,3 +1,10 @@
+## 0.74.1 (2024-05-18)
+
+### Fix
+
+- #693 Cheshire West & Chester Council Sensor Bug
+- #693 Cheshire West & Chester Council Sensor Bug
+
 ## 0.74.0 (2024-05-17)
 
 ### Feat
