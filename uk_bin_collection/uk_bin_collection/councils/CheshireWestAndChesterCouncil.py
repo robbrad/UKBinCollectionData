@@ -1,29 +1,23 @@
 import time
-
+import logging
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
             data = {"bins": []}
             collections = []
-
+            user_uprn = kwargs.get("uprn")
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
@@ -33,77 +27,59 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless)
-            driver.get(
-                "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day"
-            )
+            if headless:
+                driver.set_window_size(1920, 1080)
 
-            time.sleep(5)
+            driver.get("https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day")
+            wait = WebDriverWait(driver, 60)
 
-            cookie_close_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "ccc-close"))
-            )
-            cookie_close_button.click()
+            def click_element(by, value):
+                element = wait.until(EC.element_to_be_clickable((by, value)))
+                driver.execute_script("arguments[0].scrollIntoView();", element)
+                element.click()
 
-            find_collection_button = WebDriverWait(driver, timeout=10).until(
-                EC.presence_of_element_located(
-                    (By.LINK_TEXT, "Find your collection day")
-                )
-            )
-            find_collection_button.click()
+            logging.info("Accepting cookies")
+            click_element(By.ID, "ccc-close")
 
-            banner_close_button = WebDriverWait(driver, timeout=30).until(
-                EC.presence_of_element_located((By.ID, "close-cookie-message"))
-            )
-            banner_close_button.click()
+            logging.info("Finding collection day")
+            click_element(By.LINK_TEXT, "Find your collection day")
 
-            time.sleep(5)
+            logging.info("Switching to iframe")
+            iframe_presence = wait.until(EC.presence_of_element_located((By.ID, "fillform-frame-1")))
+            driver.switch_to.frame(iframe_presence)
 
-            frame = driver.find_element(
-                By.XPATH, "/html/body/div[4]/section/div/div[2]/div[2]/div/iframe"
-            )
-            driver.switch_to.frame(frame)
+            logging.info("Entering postcode")
+            input_element_postcode = wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="postcode_search"]')))
+            input_element_postcode.send_keys(user_postcode)
 
-            # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.NAME, "postcode_search"))
-            )
-            inputElement_postcode.send_keys(user_postcode)
+            pcsearch_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='postcode_search']")))
+            click_element(By.XPATH, "//input[@id='postcode_search']")
 
-            address_box_text = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "label_Choose_Address"))
-            )
-            address_box_text.click()
-            time.sleep(2)
+            logging.info("Selecting address")
+            dropdown = wait.until(EC.element_to_be_clickable((By.ID, "Choose_Address")))
+            dropdown_options = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "lookup-option")))
+            drop_down_values = Select(dropdown)
+            option_element = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, f'option.lookup-option[value="{str(user_uprn)}"]')))
+            driver.execute_script("arguments[0].scrollIntoView();", option_element)
+            drop_down_values.select_by_value(str(user_uprn))
 
-            address_selection_menu = Select(
-                driver.find_element(By.ID, "Choose_Address")
-            )
-            for idx, addr_option in enumerate(address_selection_menu.options):
-                option_name = addr_option.text[0 : len(user_paon)]
-                if option_name == user_paon:
-                    selected_address = addr_option
-                    break
-            address_selection_menu.select_by_visible_text(selected_address.text)
+            logging.info("Waiting for bin schedule")
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'bin-schedule-content-bin-card')))
 
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="bin-schedule-content"]/div/h3')
-                )
-            )
-
+            logging.info("Extracting bin collection data")
             soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
+            bin_cards = soup.find_all("div", {"class": "bin-schedule-content-bin-card"})
+            collections = []
 
-            # Get collections
-            bin_cards = soup.find_all("div", {"class": "bin-schedule-content-info"})
             for card in bin_cards:
-                bin_name = card.contents[0].text.strip() + " bin"
-                bin_date = datetime.strptime(
-                    card.contents[1].text.split(":")[1].strip(), "%A, %d %B %Y"
-                )
+                bin_info = card.find("div", {"class": "bin-schedule-content-info"})
+                bin_name = bin_info.find_all("p")[0].text.strip() + " bin"
+                bin_date_str = bin_info.find_all("p")[1].text.split(":")[1].strip()
+                bin_date = datetime.strptime(bin_date_str, "%A, %B %d, %Y")
                 collections.append((bin_name, bin_date))
 
             ordered_data = sorted(collections, key=lambda x: x[1])
+
             for item in ordered_data:
                 dict_data = {
                     "type": item[0].capitalize(),
@@ -111,15 +87,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 }
                 data["bins"].append(dict_data)
 
+            logging.info("Data extraction complete")
+            return data
+
         except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
+            logging.error(f"An error occurred: {e}")
             raise
 
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
 
-        return data
