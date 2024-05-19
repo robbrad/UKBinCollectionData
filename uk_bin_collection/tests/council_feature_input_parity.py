@@ -8,7 +8,19 @@ def get_councils_from_files(branch):
     url = f"https://api.github.com/repos/robbrad/UKBinCollectionData/contents/uk_bin_collection/uk_bin_collection/councils?ref={branch}"
     response = requests.get(url)
     data = response.json()
-    return [item['name'].replace('.py', '') for item in data if item['name'].endswith('.py')]
+    
+    # Debugging lines to check the response content and type
+    print(f"Response Status Code: {response.status_code}")
+    print(f"Response Content: {response.content}")
+    print(f"Parsed JSON Data: {data}")
+    print(f"Data Type: {type(data)}")
+    
+    # Ensure 'data' is a list before proceeding
+    if isinstance(data, list):
+        return [item['name'].replace('.py', '') for item in data if item['name'].endswith('.py')]
+    else:
+        raise ValueError("Expected a list from the JSON response but got something else.")
+
 
 def get_councils_from_json(branch):
     url = f"https://raw.githubusercontent.com/robbrad/UKBinCollectionData/{branch}/uk_bin_collection/tests/input.json"
