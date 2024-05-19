@@ -3,8 +3,7 @@ import time
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -70,7 +69,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_paon(user_paon)
             headless = kwargs.get("headless")
             web_driver = kwargs.get("web_driver")
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             page = "https://account.barnet.gov.uk/Forms/Home/Redirector/Index/?id=6a2ac067-3322-46e5-96e4-16c0c214454a&mod=OA&casetype=BAR&formname=BNTCOLDATE"
             driver.get(page)
 

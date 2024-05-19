@@ -26,7 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
             user_uprn = user_uprn.zfill(12)
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(
                 f"https://my.reigate-banstead.gov.uk/en/service/Bins_and_recycling___collections_calendar?uprn={user_uprn}"
             )

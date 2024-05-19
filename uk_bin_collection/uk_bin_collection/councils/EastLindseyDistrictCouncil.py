@@ -27,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(
                 "https://www.e-lindsey.gov.uk/article/6714/Your-Waste-Collection-Days"
             )

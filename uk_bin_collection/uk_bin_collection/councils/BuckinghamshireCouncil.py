@@ -1,5 +1,6 @@
-import pandas as pd
 import time
+
+import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
@@ -42,7 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
             # Enter postcode in text box and wait

@@ -1,13 +1,15 @@
 import json
+import logging
+import ssl
 from collections import OrderedDict
 from datetime import datetime
-from bs4 import BeautifulSoup
+
 import requests
+import urllib3
+from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-import ssl
-import urllib3
-import logging
 
 
 class CustomHttpAdapter(requests.adapters.HTTPAdapter):
@@ -48,7 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 f"https://mybins.blackburn.gov.uk/api/mybins/getbincollectiondays?uprn={uprn}&month={current_month}"
                 f"&year={current_year}"
             )
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(url)
 
             soup = BeautifulSoup(driver.page_source, "html.parser")

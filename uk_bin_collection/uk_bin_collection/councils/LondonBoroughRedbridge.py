@@ -1,19 +1,19 @@
-import re
-import requests
-from bs4 import BeautifulSoup
-
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
+import re
+import time
 from datetime import datetime
+
+import requests
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
-import time
+
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -34,7 +34,7 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(kwargs.get("url"))
 
             wait = WebDriverWait(driver, 60)

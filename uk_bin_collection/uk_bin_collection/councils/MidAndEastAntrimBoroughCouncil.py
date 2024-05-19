@@ -1,10 +1,11 @@
-from bs4 import BeautifulSoup
 import time
+
+from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -31,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create Selenium webdriver
             options = webdriver.ChromeOptions()
             options.add_experimental_option("excludeSwitches", ["enable-logging"])
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
 
             driver.get(page)
 

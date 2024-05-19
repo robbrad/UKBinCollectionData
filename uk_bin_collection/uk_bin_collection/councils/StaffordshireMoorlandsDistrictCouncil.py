@@ -26,7 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
 
         # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless)
+        driver = create_webdriver(web_driver, headless, None, __name__)
         driver.get("https://www.staffsmoorlands.gov.uk/findyourbinday")
 
         # Close cookies banner

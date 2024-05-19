@@ -1,10 +1,11 @@
 from bs4 import BeautifulSoup
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
+
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -28,8 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_paon(user_paon)
             check_postcode(user_postcode)
 
-            driver = create_webdriver(web_driver, headless)
-            # driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(
                 "https://webapps.sunderland.gov.uk/WEBAPPS/WSS/Sunderland_Portal/Forms/bindaychecker.aspx"
             )
