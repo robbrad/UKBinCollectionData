@@ -76,6 +76,21 @@ class CouncilClass(AbstractGetBinDataClass):
 
             time.sleep(5)
 
+            try:
+                accept_cookies = WebDriverWait(driver, timeout=10).until(
+                    EC.presence_of_element_located((By.ID, "epdagree"))
+                )
+                accept_cookies.click()
+                accept_cookies_submit = WebDriverWait(driver, timeout=10).until(
+                    EC.presence_of_element_located((By.ID, "epdsubmit"))
+                )
+                accept_cookies_submit.click()
+            except:
+                print(
+                    "Accept cookies banner not found or clickable within the specified time."
+                )
+                pass
+
             postcode_input = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (By.CSS_SELECTOR, '[aria-label="Postcode"]')
