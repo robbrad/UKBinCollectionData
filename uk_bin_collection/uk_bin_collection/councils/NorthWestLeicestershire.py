@@ -1,14 +1,14 @@
-from bs4 import BeautifulSoup
+import re  # Import regular expressions
 from datetime import datetime, timedelta
+
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-import re  # Import regular expressions
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
 
 # import the wonderful Beautiful Soup and the URL grabber
 
@@ -34,7 +34,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create Selenium webdriver
             page = f"https://my.nwleics.gov.uk/my-property-finder?address={user_postcode}&go=1"
 
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
             # If you bang in the house number (or property name) and postcode in the box it should find your property

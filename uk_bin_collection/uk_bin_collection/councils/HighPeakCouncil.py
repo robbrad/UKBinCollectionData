@@ -66,7 +66,7 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
             # Hide Cookies

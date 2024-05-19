@@ -258,7 +258,7 @@ def contains_date(string, fuzzy=False) -> bool:
 
 
 def create_webdriver(
-    web_driver: str = None, headless: bool = True, user_agent: str = None
+    web_driver: str = None, headless: bool = True, user_agent: str = None, session_name: str = None
 ) -> webdriver.Chrome:
     """
     Create and return a Chrome WebDriver configured for optional headless operation.
@@ -266,6 +266,7 @@ def create_webdriver(
     :param web_driver: URL to the Selenium server for remote web drivers. If None, a local driver is created.
     :param headless: Whether to run the browser in headless mode.
     :param user_agent: Optional custom user agent string.
+    :param session_name: Optional custom session name string.
     :return: An instance of a Chrome WebDriver.
     :raises WebDriverException: If the WebDriver cannot be created.
     """
@@ -279,6 +280,8 @@ def create_webdriver(
     if user_agent:
         options.add_argument(f"--user-agent={user_agent}")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    if session_name and web_driver:
+        options.set_capability("se:name", session_name)
 
     try:
         if web_driver:

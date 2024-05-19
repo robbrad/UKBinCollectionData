@@ -1,17 +1,16 @@
+import urllib.request
 from datetime import datetime
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+import pandas as pd
 from bs4 import BeautifulSoup
-from datetime import datetime
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 
-import pandas as pd
-import urllib.request
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -37,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create Selenium webdriver
             page = f"https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day"
 
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
             wait = WebDriverWait(driver, 60)

@@ -1,5 +1,6 @@
 import time
 import urllib.parse
+
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -42,7 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent)
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get("https://myaccount.chorley.gov.uk/wastecollections.aspx")
 
             # Accept cookies banner

@@ -4,14 +4,16 @@
 
 # switched to using Selenium as the htmx elements are not rendered reliably with requests
 
+import re
+
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import WebDriverWait
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-import re
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -29,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             headless = kwargs.get("headless")
             web_driver = kwargs.get("web_driver")
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(kwargs.get("url"))
             wait = WebDriverWait(driver, 15, 2)
 

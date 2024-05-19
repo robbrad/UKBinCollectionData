@@ -17,7 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             # Create Selenium webdriver
             headless = kwargs.get("headless")
-            driver = create_webdriver(kwargs.get("web_driver"), headless)
+            driver = create_webdriver(kwargs.get("web_driver"), headless, None, __name__)
             driver.get(kwargs.get("url"))
 
             # Make a BS4 object

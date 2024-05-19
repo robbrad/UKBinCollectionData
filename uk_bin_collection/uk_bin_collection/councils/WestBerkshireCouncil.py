@@ -32,10 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
-            # driver = create_webdriver(web_driver, headless)
-            driver = webdriver.Chrome(
-                service=ChromeService(ChromeDriverManager().install())
-            )
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get("https://www.westberks.gov.uk/binday")
 
             # Wait for the postcode field to appear then populate it

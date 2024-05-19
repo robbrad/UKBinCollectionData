@@ -27,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(
                 "https://www.westlothian.gov.uk/article/31528/Bin-Collection-Calendar-Dates"
             )

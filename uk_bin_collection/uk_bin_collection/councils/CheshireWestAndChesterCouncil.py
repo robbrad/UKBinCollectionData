@@ -1,15 +1,20 @@
-import time
 import logging
+import time
+
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -26,11 +31,13 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             if headless:
                 driver.set_window_size(1920, 1080)
 
-            driver.get("https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day")
+            driver.get(
+                "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day"
+            )
             wait = WebDriverWait(driver, 60)
 
             def click_element(by, value):
@@ -45,26 +52,44 @@ class CouncilClass(AbstractGetBinDataClass):
             click_element(By.LINK_TEXT, "Find your collection day")
 
             logging.info("Switching to iframe")
-            iframe_presence = wait.until(EC.presence_of_element_located((By.ID, "fillform-frame-1")))
+            iframe_presence = wait.until(
+                EC.presence_of_element_located((By.ID, "fillform-frame-1"))
+            )
             driver.switch_to.frame(iframe_presence)
 
             logging.info("Entering postcode")
-            input_element_postcode = wait.until(EC.presence_of_element_located((By.XPATH, '//input[@id="postcode_search"]')))
+            input_element_postcode = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//input[@id="postcode_search"]')
+                )
+            )
             input_element_postcode.send_keys(user_postcode)
 
-            pcsearch_btn = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@id='postcode_search']")))
+            pcsearch_btn = wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@id='postcode_search']"))
+            )
             click_element(By.XPATH, "//input[@id='postcode_search']")
 
             logging.info("Selecting address")
             dropdown = wait.until(EC.element_to_be_clickable((By.ID, "Choose_Address")))
-            dropdown_options = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "lookup-option")))
+            dropdown_options = wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "lookup-option"))
+            )
             drop_down_values = Select(dropdown)
-            option_element = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, f'option.lookup-option[value="{str(user_uprn)}"]')))
+            option_element = wait.until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, f'option.lookup-option[value="{str(user_uprn)}"]')
+                )
+            )
             driver.execute_script("arguments[0].scrollIntoView();", option_element)
             drop_down_values.select_by_value(str(user_uprn))
 
             logging.info("Waiting for bin schedule")
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'bin-schedule-content-bin-card')))
+            wait.until(
+                EC.presence_of_element_located(
+                    (By.CLASS_NAME, "bin-schedule-content-bin-card")
+                )
+            )
 
             logging.info("Extracting bin collection data")
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -97,4 +122,3 @@ class CouncilClass(AbstractGetBinDataClass):
         finally:
             if driver:
                 driver.quit()
-

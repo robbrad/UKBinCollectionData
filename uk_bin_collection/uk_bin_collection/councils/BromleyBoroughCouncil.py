@@ -1,16 +1,16 @@
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
-from bs4 import BeautifulSoup
+import time
 from datetime import datetime
+
+from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
-import time
 
-from dateutil.relativedelta import relativedelta
-from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -35,7 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             # Get our initial session running
-            driver = create_webdriver(web_driver, headless)
+            driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(kwargs.get("url"))
 
             wait = WebDriverWait(driver, 30)
