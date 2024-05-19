@@ -1,3 +1,9 @@
+## 0.75.0 (2024-05-19)
+
+### Feat
+
+- #725 Add names to selenium test videos using "se:name" option in create webdriver function
+
 ## 0.74.1 (2024-05-18)
 
 ### Fix
