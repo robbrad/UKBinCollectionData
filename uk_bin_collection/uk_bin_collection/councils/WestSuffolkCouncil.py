@@ -13,9 +13,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         user_uprn = kwargs.get("uprn")
 
-        api_url = (
-            f"https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx?action=SetAddress&UniqueId={user_uprn}"
-        )
+        api_url = f"https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx?action=SetAddress&UniqueId={user_uprn}"
 
         response = requests.get(api_url)
 
@@ -33,7 +31,9 @@ class CouncilClass(AbstractGetBinDataClass):
             if tag_class is None:
                 return False
 
-            parent_has_header = cur_tag.parent.find_all("h4", string="Bin collection days")
+            parent_has_header = cur_tag.parent.find_all(
+                "h4", string="Bin collection days"
+            )
             if len(parent_has_header) < 1:
                 return False
 
@@ -46,19 +46,32 @@ class CouncilClass(AbstractGetBinDataClass):
             text_list = list(tag.stripped_strings)
             # Create and parse the list as tuples of name:date
             for bin_name, collection_date in itertools.batched(text_list, 2):
-                # Clean-up the bin_name
-                bin_name_clean = bin_name.strip().replace("\r", "").replace("\n", "")
-                bin_name_clean = re.sub(' +', ' ', bin_name_clean)
+                try:
+                    # Clean-up the bin_name
+                    bin_name_clean = (
+                        bin_name.strip()
+                        .replace("\r", "")
+                        .replace("\n", "")
+                        .replace(":", "")
+                    )
+                    bin_name_clean = re.sub(" +", " ", bin_name_clean)
 
-                # Parse the date
-                next_collection = date_parse(collection_date)
-                next_collection = next_collection.replace(year=datetime.now().year)
+                    # Get the bin colour
+                    bin_colour = "".join(re.findall(r"^(.*) ", bin_name_clean))
 
-                dict_data = {
-                    "type": bin_name_clean,
-                    "collectionDate": next_collection.strftime(date_format),
-                }
+                    # Parse the date
+                    next_collection = date_parse(collection_date)
+                    next_collection = next_collection.replace(year=datetime.now().year)
 
-                data["bins"].append(dict_data)
+                    dict_data = {
+                        "type": bin_name_clean,
+                        "colour": bin_colour,
+                        "collectionDate": next_collection.strftime(date_format),
+                    }
+
+                    data["bins"].append(dict_data)
+
+                except Exception as ex:
+                    raise ValueError(f"Error parsing bin data: {ex}")
 
         return data
