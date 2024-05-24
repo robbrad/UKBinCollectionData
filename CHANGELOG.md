@@ -1,3 +1,9 @@
+## 0.76.1 (2024-05-24)
+
+### Fix
+
+- Handle Barnet council cookies message
+
 ## 0.76.0 (2024-05-24)
 
 ### Feat
