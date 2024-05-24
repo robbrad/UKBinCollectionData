@@ -1,3 +1,10 @@
+## 0.76.0 (2024-05-24)
+
+### Feat
+
+- add bin colour support WestSuffolkCouncil style: black format WestSuffolkCouncil
+- add bin colour support WestSuffolkCouncil style: black format WestSuffolkCouncil
+
 ## 0.75.0 (2024-05-19)
 
 ### Feat
