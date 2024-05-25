@@ -101,6 +101,13 @@
         "wiki_name": "Bolton Council",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields."
     },
+    "BracknellForestCouncil": {
+        "paon": "57",
+        "postcode": "GU47 9BS",
+        "skip_get_url": true,
+        "url": "https://selfservice.mybfc.bracknell-forest.gov.uk/w/webpage/waste-collection-days",
+        "wiki_name": "Bracknell Forest Council"
+    },
     "BradfordMDC": {
         "custom_component_show_url_field": false,
         "skip_get_url": true,
@@ -209,8 +216,8 @@
     "CheshireWestAndChesterCouncil": {
         "house_number": "Hill View House",
         "postcode": "CH3 9ER",
-        "uprn": "100012346655",
         "skip_get_url": true,
+        "uprn": "100012346655",
         "url": "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Cheshire West and Chester Council"
@@ -1027,8 +1034,8 @@
     },
     "WestSuffolkCouncil": {
         "postcode": "IP28 6DR",
-        "uprn": "10009739960",
         "skip_get_url": true,
+        "uprn": "10009739960",
         "url": "https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx",
         "wiki_name": "West Suffolk Council"
     },
