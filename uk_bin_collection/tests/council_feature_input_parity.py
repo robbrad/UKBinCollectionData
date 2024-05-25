@@ -4,35 +4,52 @@ import requests
 import sys
 from tabulate import tabulate
 
-def get_councils_from_files(branch):
-    url = f"https://api.github.com/repos/robbrad/UKBinCollectionData/contents/uk_bin_collection/uk_bin_collection/councils?ref={branch}"
+def get_councils_from_files(repo, branch):
+    url = f"https://api.github.com/repos/{repo}/contents/uk_bin_collection/uk_bin_collection/councils?ref={branch}"
     response = requests.get(url)
-    data = response.json()
     
     # Debugging lines to check the response content and type
-    print(f"Response Status Code: {response.status_code}")
-    print(f"Response Content: {response.content}")
-    print(f"Parsed JSON Data: {data}")
-    print(f"Data Type: {type(data)}")
+    print(f"Response Status Code (Files): {response.status_code}")
     
-    # Ensure 'data' is a list before proceeding
-    if isinstance(data, list):
-        return [item['name'].replace('.py', '') for item in data if item['name'].endswith('.py')]
+    if response.status_code == 200:
+        data = response.json()
+        print(f"Parsed JSON Data (Files): {data}")
+        # Ensure 'data' is a list before proceeding
+        if isinstance(data, list):
+            return [item['name'].replace('.py', '') for item in data if item['name'].endswith('.py')]
+        else:
+            raise ValueError("Expected a list from the JSON response but got something else.")
     else:
-        raise ValueError("Expected a list from the JSON response but got something else.")
+        print(f"Failed to fetch councils from files: {response.content}")
+        return []
 
-
-def get_councils_from_json(branch):
-    url = f"https://raw.githubusercontent.com/robbrad/UKBinCollectionData/{branch}/uk_bin_collection/tests/input.json"
+def get_councils_from_json(repo, branch):
+    url = f"https://raw.githubusercontent.com/{repo}/{branch}/uk_bin_collection/tests/input.json"
     response = requests.get(url)
-    data = json.loads(response.text)
-    return list(data.keys())
+    
+    # Debugging lines to check the response content and type
+    print(f"Response Status Code (JSON): {response.status_code}")
+    
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        return list(data.keys())
+    else:
+        print(f"Failed to fetch councils from JSON: {response.content}")
+        return []
 
-def get_councils_from_features(branch):
-    url = f"https://raw.githubusercontent.com/robbrad/UKBinCollectionData/{branch}/uk_bin_collection/tests/features/validate_council_outputs.feature"
+def get_councils_from_features(repo, branch):
+    url = f"https://raw.githubusercontent.com/{repo}/{branch}/uk_bin_collection/tests/features/validate_council_outputs.feature"
     response = requests.get(url)
-    content = response.text
-    return re.findall(r'Examples:\s+(\w+)', content)
+    
+    # Debugging lines to check the response content and type
+    print(f"Response Status Code (Features): {response.status_code}")
+    
+    if response.status_code == 200:
+        content = response.text
+        return re.findall(r'Examples:\s+(\w+)', content)
+    else:
+        print(f"Failed to fetch councils from features: {response.content}")
+        return []
 
 def compare_councils(councils1, councils2, councils3):
     set1 = set(councils1)
@@ -56,11 +73,11 @@ def compare_councils(councils1, councils2, councils3):
             discrepancies_found = True
     return all_council_data, discrepancies_found
 
-def main(branch="master"):
+def main(repo="robbrad/UKBinCollectionData", branch="master"):
     # Execute and print the comparison
-    file_councils = get_councils_from_files(branch)
-    json_councils = get_councils_from_json(branch)
-    feature_councils = get_councils_from_features(branch)
+    file_councils = get_councils_from_files(repo, branch)
+    json_councils = get_councils_from_json(repo, branch)
+    feature_councils = get_councils_from_features(repo, branch)
 
     all_councils_data, discrepancies_found = compare_councils(file_councils, json_councils, feature_councils)
 
@@ -87,5 +104,6 @@ def main(branch="master"):
         print("No discrepancies found. Workflow successful.")
 
 if __name__ == "__main__":
-    branch = sys.argv[1] if len(sys.argv) > 1 else "master"
-    main(branch)
+    repo = sys.argv[1] if len(sys.argv) > 1 else "robbrad/UKBinCollectionData"
+    branch = sys.argv[2] if len(sys.argv) > 2 else "master"
+    main(repo, branch)
