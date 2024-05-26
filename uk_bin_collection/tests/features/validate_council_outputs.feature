@@ -241,6 +241,11 @@ Feature: Test each council output matches expected results
 		| council |
 		| ErewashBoroughCouncil |
 
+        @FarehamBoroughCouncil
+		Examples: FarehamBoroughCouncil
+		| council |
+		| FarehamBoroughCouncil |
+
         @FenlandDistrictCouncil
 		Examples: FenlandDistrictCouncil
 		| council |
