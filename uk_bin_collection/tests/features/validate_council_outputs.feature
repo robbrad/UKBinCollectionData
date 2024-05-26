@@ -76,6 +76,11 @@ Feature: Test each council output matches expected results
 		| council |
 		| BoltonCouncil |
 
+        @BracknellForestCouncil
+		Examples: BracknellForestCouncil
+		| council |
+		| BracknellForestCouncil |
+
         @BradfordMDC
 		Examples: BradfordMDC
 		| council |
