@@ -15,7 +15,7 @@ def get_councils_from_files(repo, branch):
     if response.status_code == 200:
         try:
             data = response.json()
-            print(f"Parsed JSON Data (Files): {data}")
+            #print(f"Parsed JSON Data (Files): {data}")
             # Ensure 'data' is a list before proceeding
             if isinstance(data, list):
                 return [item['name'].replace('.py', '') for item in data if item['name'].endswith('.py')]
@@ -40,7 +40,7 @@ def get_councils_from_json(repo, branch):
     if response.status_code == 200:
         try:
             data = json.loads(response.text)
-            print(f"Parsed JSON Data: {data}")
+            #print(f"Parsed JSON Data: {data}")
             return list(data.keys())
         except json.JSONDecodeError as e:
             print(f"JSON decoding error: {e}")
@@ -59,7 +59,7 @@ def get_councils_from_features(repo, branch):
     
     if response.status_code == 200:
         content = response.text
-        print(f"Fetched Features Content: {content[:500]}...")  # Print only the first 500 characters for brevity
+        #print(f"Fetched Features Content: {content[:500]}...")  # Print only the first 500 characters for brevity
         return re.findall(r'Examples:\s+(\w+)', content)
     else:
         print(f"Failed to fetch councils from features: {response.content}")
@@ -94,9 +94,9 @@ def main(repo="robbrad/UKBinCollectionData", branch="master"):
     json_councils = get_councils_from_json(repo, branch)
     feature_councils = get_councils_from_features(repo, branch)
 
-    print(f"Councils from files: {file_councils}")
-    print(f"Councils from JSON: {json_councils}")
-    print(f"Councils from features: {feature_councils}")
+    #print(f"Councils from files: {file_councils}")
+    #print(f"Councils from JSON: {json_councils}")
+    #print(f"Councils from features: {feature_councils}")
 
     all_councils_data, discrepancies_found = compare_councils(file_councils, json_councils, feature_councils)
 

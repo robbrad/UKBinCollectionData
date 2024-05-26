@@ -52,8 +52,9 @@ jobs:
 
       - name: Check Parity of Councils / input.json / Feature file
         run: |
+          repo=${{ github.repository || 'robbrad/UKBinCollectionData' }}
           branch=${{ github.event.pull_request.head.ref || 'master' }}
-          make parity-check branch=$branch
+          make parity-check repo=$repo branch=$branch
 
       - name: Get all councils files that have changed
         id: changed-council-files
