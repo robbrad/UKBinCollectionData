@@ -1,3 +1,9 @@
+## 0.78.0 (2024-05-26)
+
+### Feat
+
+- Add support for Fareham Borough Council
+
 ## 0.77.0 (2024-05-26)
 
 ### Feat
