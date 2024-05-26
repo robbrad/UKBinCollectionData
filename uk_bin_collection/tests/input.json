@@ -932,6 +932,14 @@
         "url": "https://dac.telford.gov.uk/bindayfinder/",
         "wiki_name": "Telford and Wrekin Co-operative Council"
     },
+    "TendringDistrictCouncil": {
+        "postcode": "CO15 4EU",
+        "skip_get_url": true,
+        "uprn": "100090604247",
+        "url": "https://tendring-self.achieveservice.com/en/service/Rubbish_and_recycling_collection_days",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Tendring District Council"
+    },
     "TestValleyBoroughCouncil": {
         "postcode": "SO51 9ZD",
         "skip_get_url": true,
