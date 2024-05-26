@@ -342,6 +342,12 @@
         "url": "https://map.erewash.gov.uk/isharelive.web/myerewash.aspx",
         "wiki_name": "Erewash Borough Council"
     },
+    "FarehamBoroughCouncil": {
+        "postcode": "PO14 4NR",        
+        "skip_get_url": true,
+        "url": "https://www.fareham.gov.uk/internetlookups/search_data.aspx?type=JSON&list=DomesticBinCollections&Road=&Postcode=PO14%204NR",
+        "wiki_name": "Fareham Borough Council"
+    },
     "FenlandDistrictCouncil": {
         "skip_get_url": true,
         "uprn": "200002981143",
