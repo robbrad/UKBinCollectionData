@@ -94,9 +94,9 @@ def main(repo="robbrad/UKBinCollectionData", branch="master"):
     json_councils = get_councils_from_json(repo, branch)
     feature_councils = get_councils_from_features(repo, branch)
 
-    print(f"Councils from files: {file_councils}")
-    print(f"Councils from JSON: {json_councils}")
-    print(f"Councils from features: {feature_councils}")
+    #print(f"Councils from files: {file_councils}")
+    #print(f"Councils from JSON: {json_councils}")
+    #print(f"Councils from features: {feature_councils}")
 
     all_councils_data, discrepancies_found = compare_councils(file_councils, json_councils, feature_councils)
 
