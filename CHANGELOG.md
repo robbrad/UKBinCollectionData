@@ -1,3 +1,9 @@
+## 0.77.0 (2024-05-26)
+
+### Feat
+
+- Add support for Bracknell Forest Council
+
 ## 0.76.1 (2024-05-24)
 
 ### Fix
