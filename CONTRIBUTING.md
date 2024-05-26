@@ -138,12 +138,26 @@ VSCode will start building the Docker container as defined in the `.devcontainer
 Once the container is set up, VSCode will connect to it automatically. You can start editing and running the code inside the container. This ensures that your development environment is consistent and controlled, replicating the same settings and tools as specified in the devcontainer configuration.
 
 ### Developing
-Once your environment is ready, create a new branch from your master/main branch and then create a new .py file within the `uk_bin_collection\councils` directory then use the development mode to generate the input.json entry. The new .py file will be used in the CLI to call the parser, so be sure to pick a sensible name - e.g. CheshireEastCouncil.py is called with:
+Once your environment is ready, create a new branch from your master/main branch
+
+Then you can run
+
+```
+poetry run python uk_bin_collection/uk_bin_collection/create_new_council.py "CouncilName" "CouncilURL"
+```
+
+The new .py file will be used in the CLI to call the parser, so be sure to pick a sensible name - e.g. CheshireEastCouncil.py is called with:
 ```
 python collect_data.py CheshireEastCouncil <web-url>
 ```
 
-To simplify things somewhat, a [template](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/council_class_template/councilclasstemplate.py) file has been created - open this file, copy the contents to your new .py file and start from there. You are pretty much free to approach the scraping however you would like, but please ensure that:
+To simplify things somewhat, a [template](https://github.com/robbrad/UKBinCollectionData/blob/master/uk_bin_collection/uk_bin_collection/councils/council_class_template/councilclasstemplate.py) file has been created - open this file, copy the contents to your new .py file and start from there. The create script above will create
+
+1. A council Class file under the councils folder
+2. Make an entry in input.json
+3. Make an entry in the feature file so it is added to intergration testing
+
+You are pretty much free to approach the scraping however you would like, but please ensure that:
 - Your scraper returns a dictionary made up of the key "bins" and a value that is a list of bin types and collection dates. An example of this can be seen below.
 - Any dates or times are formatted to standard UK formats (see [below](#common-functions))
 <details>
