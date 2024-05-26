@@ -775,3 +775,9 @@ Feature: Test each council output matches expected results
 		Examples: YorkCouncil
 		| council |
 		| YorkCouncil |
+
+
+		@WalthamForest
+		Examples: WalthamForest
+		| council |
+		| WalthamForest |

@@ -343,7 +343,7 @@
         "wiki_name": "Erewash Borough Council"
     },
     "FarehamBoroughCouncil": {
-        "postcode": "PO14 4NR",        
+        "postcode": "PO14 4NR",
         "skip_get_url": true,
         "url": "https://www.fareham.gov.uk/internetlookups/search_data.aspx?type=JSON&list=DomesticBinCollections&Road=&Postcode=PO14%204NR",
         "wiki_name": "Fareham Borough Council"
@@ -979,6 +979,10 @@
         "wiki_command_url_override": "https://www.wakefield.gov.uk/where-i-live/?uprn=XXXXXXXXXXX&a=XXXXXXXXXXX&usrn=XXXXXXXXXXX&e=XXXXXXXXXXX&n=XXXXXXXXXXX&p=XXXXXXXXXXX",
         "wiki_name": "Wakefield City Council",
         "wiki_note": "Follow the instructions [here](https://www.wakefield.gov.uk/where-i-live/) until you get the page that includes a \"Bin Collections\" section then copy the URL and replace the URL in the command."
+    },
+    "WalthamForest": {
+        "url": "https://portal.walthamforest.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393/AF-Stage-8bf39bf9-5391-4c24-857f-0dc2025c67f4/definition.json&process=1&process_uri=sandbox-processes://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393&process_id=AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393",
+        "wiki_name": "WalthamForest"
     },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
