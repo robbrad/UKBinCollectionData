@@ -666,6 +666,11 @@ Feature: Test each council output matches expected results
 		| council |
 		| TelfordAndWrekinCouncil |
 
+		@TendringDistrictCouncil
+		Examples: TendringDistrictCouncil
+		| council |
+		| TendringDistrictCouncil |
+
         @TestValleyBoroughCouncil
 		Examples: TestValleyBoroughCouncil
 		| council |
