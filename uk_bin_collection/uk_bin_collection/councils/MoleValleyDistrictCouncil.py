@@ -1,7 +1,9 @@
-from bs4 import BeautifulSoup
-from datetime import datetime
 import re
+from datetime import datetime
+
 import requests
+from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -19,35 +21,36 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
 
-        root_url = "https://molevalley.cloudmappin.com/my-mv-address-search/search/{}/0".format(
+        root_url = "https://myproperty.molevalley.gov.uk/molevalley/api/live_addresses/{}?format=json".format(
             user_postcode
         )
-        response = requests.get(root_url)
+        requests.packages.urllib3.disable_warnings()
+        response = requests.get(root_url, verify=False)
 
         if not response.ok:
             raise ValueError("Invalid server response code retreiving data.")
 
         jsonData = response.json()
 
-        if len(jsonData["results"]) == 0:
+        if len(jsonData["results"]["features"]) == 0:
             raise ValueError("No collection data found for postcode provided.")
 
-        properties_found = jsonData["results"][0]["items"]
+        properties_found = jsonData["results"]["features"]
 
         # If UPRN is provided, we can check a specific address.
         html_data = None
         uprn = kwargs.get("uprn")
         if uprn:
             check_uprn(uprn)
-            for n, item in enumerate(properties_found):
-                if uprn == str(int(item["info"][0][1]["value"])):
-                    html_data = properties_found[n]["info"][2][1]["value"]
+            for item in properties_found:
+                if uprn == str(int(item["properties"]["blpu_uprn"])):
+                    html_data = item["properties"]["three_column_layout_html"]
                     break
             if html_data is None:
                 raise ValueError("No collection data found for UPRN provided.")
         else:
             # If UPRN not provided, just use the first result
-            html_data = properties_found[0]["info"][2][1]["value"]
+            html_data = properties_found[0]["properties"]["three_column_layout_html"]
 
         soup = BeautifulSoup(html_data, features="html.parser")
         soup.prettify()
