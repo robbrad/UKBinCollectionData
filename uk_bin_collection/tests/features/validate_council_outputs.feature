@@ -236,6 +236,11 @@ Feature: Test each council output matches expected results
 		| council |
 		| EnvironmentFirst |
 
+		@EppingForestDistrictCouncil
+		Examples: EppingForestDistrictCouncil
+		| council |
+		| EppingForestDistrictCouncil |
+
         @ErewashBoroughCouncil
 		Examples: ErewashBoroughCouncil
 		| council |
