@@ -1,5 +1,4 @@
 import json
-import re
 import requests
 import sys
 from tabulate import tabulate
@@ -52,40 +51,19 @@ def get_councils_from_json(repo, branch):
         return []
 
 
-def get_councils_from_features(repo, branch):
-    url = f"https://api.github.com/repos/{repo}/contents/uk_bin_collection/tests/features/validate_council_outputs.feature?ref={branch}"
-    print(f"Fetching councils from features at URL: {url}")
-    response = requests.get(url, headers={"Accept": "application/vnd.github.v3+json"})
-
-    if response.status_code == 200:
-        try:
-            content = response.json().get("content", "")
-            content_decoded = base64.b64decode(content).decode("utf-8")
-            return re.findall(r"Examples:\s+(\w+)", content_decoded)
-        except Exception as e:
-            print(f"Error processing feature file: {e}")
-            raise
-    else:
-        print(f"Failed to fetch councils from features: {response.content}")
-        return []
-
-
-def compare_councils(councils1, councils2, councils3):
+def compare_councils(councils1, councils2):
     set1 = set(councils1)
     set2 = set(councils2)
-    set3 = set(councils3)
-    all_councils = set1 | set2 | set3
+    all_councils = set1 | set2
     all_council_data = {}
     discrepancies_found = False
     for council in all_councils:
         in_files = council in set1
         in_json = council in set2
-        in_features = council in set3
-        discrepancies_count = [in_files, in_json, in_features].count(False)
+        discrepancies_count = [in_files, in_json].count(False)
         all_council_data[council] = {
             "in_files": in_files,
             "in_json": in_json,
-            "in_features": in_features,
             "discrepancies_count": discrepancies_count,
         }
         if discrepancies_count > 0:
@@ -98,14 +76,13 @@ def main(repo="robbrad/UKBinCollectionData", branch="master"):
     print(f"Starting comparison for repo: {repo}, branch: {branch}")
     file_councils = get_councils_from_files(repo, branch)
     json_councils = get_councils_from_json(repo, branch)
-    feature_councils = get_councils_from_features(repo, branch)
 
     all_councils_data, discrepancies_found = compare_councils(
-        file_councils, json_councils, feature_councils
+        file_councils, json_councils
     )
 
     table_data = []
-    headers = ["Council Name", "In Files", "In JSON", "In Features", "Discrepancies"]
+    headers = ["Council Name", "In Files", "In JSON", "Discrepancies"]
     for council, presence in sorted(
         all_councils_data.items(), key=lambda x: (x[1]["discrepancies_count"], x[0])
     ):
@@ -113,7 +90,6 @@ def main(repo="robbrad/UKBinCollectionData", branch="master"):
             council,
             "✔" if presence["in_files"] else "✘",
             "✔" if presence["in_json"] else "✘",
-            "✔" if presence["in_features"] else "✘",
             presence["discrepancies_count"],
         ]
         table_data.append(row)

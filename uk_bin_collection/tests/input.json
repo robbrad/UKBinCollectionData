@@ -222,6 +222,15 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Cheshire West and Chester Council"
     },
+    "ChichesterDistrictCouncil": {
+        "url": "https://www.chichester.gov.uk/checkyourbinday",
+        "wiki_name": "ChichesterDistrictCouncil",
+        "house_number": "7, Plaistow Road, Kirdford, Billingshurst, West Sussex",
+        "postcode": "RH14 0JT",
+        "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
+        "wiki_note": "Needs the full address and postcode as appears on page https://www.chichester.gov.uk/checkyourbinday "
+    },
     "ChorleyCouncil": {
         "postcode": "PR6 7PG",
         "skip_get_url": true,
@@ -433,14 +442,13 @@
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
     "HounslowCouncil": {
-        "url": "https://www.hounslow.gov.uk/info/20272/recycling_and_waste_collection_day_finder",
-        "wiki_name": "HounslowCouncil",
-        "skip_get_url": true,
-        "web_driver": "http://selenium:4444",
-        "postcode": "TW3 4HS",
         "house_number": "17A LAMPTON PARK ROAD, HOUNSLOW",
-        "uprn": "10091596698"
-
+        "postcode": "TW3 4HS",
+        "skip_get_url": true,
+        "uprn": "10091596698",
+        "url": "https://www.hounslow.gov.uk/info/20272/recycling_and_waste_collection_day_finder",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "HounslowCouncil"
     },
     "HullCityCouncil": {
         "skip_get_url": true,

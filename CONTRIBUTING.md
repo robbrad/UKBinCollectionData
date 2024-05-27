@@ -22,7 +22,6 @@
     - [Common Functions](#common-functions)
   - [Additional files](#additional-files)
     - [Input JSON file](#input-json-file)
-    - [Feature file](#feature-file)
   - [Testing](#testing)
     - [Behave (Integration Testing)](#behave-integration-testing)
       - [Running the Behave tests for all councils](#running-the-behave-tests-for-all-councils)
@@ -155,7 +154,6 @@ To simplify things somewhat, a [template](https://github.com/robbrad/UKBinCollec
 
 1. A council Class file under the councils folder
 2. Make an entry in input.json
-3. Make an entry in the feature file so it is added to intergration testing
 
 You are pretty much free to approach the scraping however you would like, but please ensure that:
 - Your scraper returns a dictionary made up of the key "bins" and a value that is a list of bin types and collection dates. An example of this can be seen below.
@@ -233,7 +231,6 @@ Please feel free to contribute to this library as you see fit - added functions 
 In order for your scraper to work with the project's testing suite, some additional files need to be provided or
 modified:
 - [ ] [Input JSON file](#input-json-file)
-- [ ] [Feature file](#feature-file)
 
 **Note:** from here on, anything containing`<council_name>` should be replaced with the scraper's name.
 
@@ -273,37 +270,6 @@ recommended - the council's address is usually a good one).
     },
 ```
 </details>
-
-### Feature file
-| Type   | File location                                                                           |
-|--------|-----------------------------------------------------------------------------------------|
-| Modify | `UKBinCollectionData/uk_bin_collection/tests/features/validate_council_outputs.feature` |
-
-The council's name should be added to the feature file's example list. These names are alphabetically sorted.
-
-For example:
-
-```
-Feature: Test each council output matches expected results
-
-    Scenario Outline: Validate Council Output
-        Given the council: <council>
-        When we scrape the data from <council>
-        Then the result is valid json
-        And the output should validate against the schema
-
-
-        @AylesburyValeCouncil
-              	Examples: AylesburyValeCouncil
-              	| council |
-              	| AylesburyValeCouncil | None  | None  |
-
-        @BarnetCouncil
-                Examples: BarnetCouncil
-                | council |
-                | BarnetCouncil |
-```
-
 
 ## Testing
 ### Behave (Integration Testing)
