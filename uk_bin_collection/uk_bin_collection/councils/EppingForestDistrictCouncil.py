@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
+from uk_bin_collection.uk_bin_collection.common import date_format
+
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         postcode = kwargs.get('postcode', '')
@@ -30,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
             for div in bin_info_divs:
                 if 'collection day is' in div.text:
                     bin_type, date_str = div.text.split(' collection day is ')
-                    bin_dates = datetime.strptime(date_str.strip(), '%d/%m/%Y').strftime('%Y-%m-%d')
+                    bin_dates = datetime.strptime(date_str.strip(), '%d/%m/%Y').strftime(date_format)
                     data["bins"].append({"type": bin_type.strip(), "collectionDate": bin_dates})
             
             return data
