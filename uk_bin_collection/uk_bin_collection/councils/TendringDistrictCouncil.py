@@ -87,7 +87,9 @@ class CouncilClass(AbstractGetBinDataClass):
                             bin[1].get_text(strip=True), "%d/%m/%Y"
                         )
                         dict_data = {
-                            "type": re.sub(r"\([^)]*\)", "", bin[0].get_text(strip=True)),
+                            "type": re.sub(
+                                r"\([^)]*\)", "", bin[0].get_text(strip=True)
+                            ),
                             "collectionDate": bin_date.strftime(date_format),
                         }
                         bin_data["bins"].append(dict_data)
