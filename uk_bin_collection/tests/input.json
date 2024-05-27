@@ -898,6 +898,13 @@
         "url": "https://www.stratford.gov.uk/waste-recycling/when-we-collect.cfm/part/calendar",
         "wiki_name": "Stratford Upon Avon Council"
     },
+    "StroudDistrictCouncil": {
+        "url": "https://www.stroud.gov.uk/my-house?uprn=100120512183&postcode=GL10+3BH",
+        "postcode": "GL10 3BH",
+        "uprn": "100120512183",
+        "wiki_name": "Stroud District Council",
+        "wiki_note": "Find your uprn and replace it in the url do the same for the postcode."
+    },
     "SunderlandCityCouncil": {
         "house_number": "13",
         "postcode": "SR4 6BJ",

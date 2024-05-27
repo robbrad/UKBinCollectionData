@@ -641,6 +641,11 @@ Feature: Test each council output matches expected results
 		| council |
 		| StratfordUponAvonCouncil |
 
+		@StroudDistrictCouncil
+		Examples: StroudDistrictCouncil
+		| council |
+		| StroudDistrictCouncil |
+
 		@SunderlandCityCouncil
 		Examples: SunderlandCityCouncil
 		| council |
@@ -705,6 +710,11 @@ Feature: Test each council output matches expected results
 		Examples: WakefieldCityCouncil
 		| council |
 		| WakefieldCityCouncil |
+
+		@WalthamForest
+		Examples: WalthamForest
+		| council |
+		| WalthamForest |
 
         @WarwickDistrictCouncil
 		Examples: WarwickDistrictCouncil
@@ -780,9 +790,3 @@ Feature: Test each council output matches expected results
 		Examples: YorkCouncil
 		| council |
 		| YorkCouncil |
-
-
-		@WalthamForest
-		Examples: WalthamForest
-		| council |
-		| WalthamForest |
