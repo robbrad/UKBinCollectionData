@@ -432,6 +432,16 @@
         "wiki_name": "High Peak Council",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
+    "HounslowCouncil": {
+        "url": "https://www.hounslow.gov.uk/info/20272/recycling_and_waste_collection_day_finder",
+        "wiki_name": "HounslowCouncil",
+        "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
+        "postcode": "TW3 4HS",
+        "house_number": "17A LAMPTON PARK ROAD, HOUNSLOW",
+        "uprn": "10091596698"
+
+    },
     "HullCityCouncil": {
         "skip_get_url": true,
         "uprn": "21033995",
@@ -904,9 +914,9 @@
         "wiki_name": "Stratford Upon Avon Council"
     },
     "StroudDistrictCouncil": {
-        "url": "https://www.stroud.gov.uk/my-house?uprn=100120512183&postcode=GL10+3BH",
         "postcode": "GL10 3BH",
         "uprn": "100120512183",
+        "url": "https://www.stroud.gov.uk/my-house?uprn=100120512183&postcode=GL10+3BH",
         "wiki_name": "Stroud District Council",
         "wiki_note": "Find your uprn and replace it in the url do the same for the postcode."
     },

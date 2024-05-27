@@ -25,8 +25,6 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             page = "https://portal.walthamforest.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393/AF-Stage-8bf39bf9-5391-4c24-857f-0dc2025c67f4/definition.json&process=1&process_uri=sandbox-processes://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393&process_id=AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393"
 
-            data = {"bins": []}
-
             user_postcode = kwargs.get("postcode")
             user_uprn = kwargs.get("uprn")
             user_paon = kwargs.get("paon")

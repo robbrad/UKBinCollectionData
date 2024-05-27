@@ -301,6 +301,11 @@ Feature: Test each council output matches expected results
 		| council |
 		| HighPeakCouncil |
 
+		@HounslowCouncil
+		Examples: HounslowCouncil
+		| council |
+		| HounslowCouncil |
+
 		@HullCityCouncil
 		Examples: HullCityCouncil
 		| council |
