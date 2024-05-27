@@ -238,8 +238,8 @@ Feature: Test each council output matches expected results
 
 		@EppingForestDistrictCouncil
 		Examples: EppingForestDistrictCouncil
-		| council | selenium_url | selenium_mode |
-		| EppingForestDistrictCouncil | None  | None  |
+		| council |
+		| EppingForestDistrictCouncil |
 
         @ErewashBoroughCouncil
 		Examples: ErewashBoroughCouncil
