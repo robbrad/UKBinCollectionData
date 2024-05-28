@@ -222,6 +222,15 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Cheshire West and Chester Council"
     },
+    "ChichesterDistrictCouncil": {
+        "house_number": "7, Plaistow Road, Kirdford, Billingshurst, West Sussex",
+        "postcode": "RH14 0JT",
+        "skip_get_url": true,
+        "url": "https://www.chichester.gov.uk/checkyourbinday",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "ChichesterDistrictCouncil",
+        "wiki_note": "Needs the full address and postcode as appears on page https://www.chichester.gov.uk/checkyourbinday"
+    },
     "ChorleyCouncil": {
         "postcode": "PR6 7PG",
         "skip_get_url": true,
@@ -252,6 +261,12 @@
         "skip_get_url": true,
         "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
         "wiki_name": "Croydon Council"
+    },
+    "DartfordBoroughCouncil": {
+        "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
+        "wiki_name": "DartfordBoroughCouncil",
+        "uprn": "010094157511",
+        "wiki_note": "Use https://uprn.uk/ to find your UPRN "
     },
     "DerbyshireDalesDistrictCouncil": {
         "postcode": "DE4 3AS",
@@ -336,6 +351,11 @@
         "wiki_name": "Environment First",
         "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne.\nReplace the XXXXXXXXXXX with the UPRN of your property - you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
     },
+    "EppingForestDistrictCouncil": {
+        "postcode": "IG9 6EP",
+        "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
+        "wiki_name": "Epping Forest District Council"
+    },
     "ErewashBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "10003582028",
@@ -343,7 +363,7 @@
         "wiki_name": "Erewash Borough Council"
     },
     "FarehamBoroughCouncil": {
-        "postcode": "PO14 4NR",        
+        "postcode": "PO14 4NR",
         "skip_get_url": true,
         "url": "https://www.fareham.gov.uk/internetlookups/search_data.aspx?type=JSON&list=DomesticBinCollections&Road=&Postcode=PO14%204NR",
         "wiki_name": "Fareham Borough Council"
@@ -426,6 +446,15 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "High Peak Council",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
+    },
+    "HounslowCouncil": {
+        "house_number": "17A LAMPTON PARK ROAD, HOUNSLOW",
+        "postcode": "TW3 4HS",
+        "skip_get_url": true,
+        "uprn": "10091596698",
+        "url": "https://www.hounslow.gov.uk/info/20272/recycling_and_waste_collection_day_finder",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "HounslowCouncil"
     },
     "HullCityCouncil": {
         "skip_get_url": true,
@@ -561,7 +590,7 @@
         "postcode": "RH4 1SJ",
         "skip_get_url": true,
         "uprn": "200000171235",
-        "url": "https://molevalley.cloudmappin.com/mmv/",
+        "url": "https://myproperty.molevalley.gov.uk/molevalley/",
         "wiki_name": "Mole Valley District Council",
         "wiki_note": "UPRN can only be parsed with a valid postcode."
     },
@@ -834,6 +863,15 @@
         "url": "https://beta.southglos.gov.uk/waste-and-recycling-collection-date",
         "wiki_name": "South Gloucestershire Council"
     },
+    "SouthKestevenDistrictCouncil": {
+        "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",
+        "postcode": "PE68BL",
+        "skip_get_url": true,
+        "url": "https://pre.southkesteven.gov.uk/BinSearch.aspx",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "SouthKestevenDistrictCouncil",
+        "wiki_note": ""
+    },
     "SouthLanarkshireCouncil": {
         "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow",
         "wiki_command_url_override": "https://www.southlanarkshire.gov.uk/directory_record/XXXXX/XXXXX",
@@ -898,6 +936,13 @@
         "url": "https://www.stratford.gov.uk/waste-recycling/when-we-collect.cfm/part/calendar",
         "wiki_name": "Stratford Upon Avon Council"
     },
+    "StroudDistrictCouncil": {
+        "postcode": "GL10 3BH",
+        "uprn": "100120512183",
+        "url": "https://www.stroud.gov.uk/my-house?uprn=100120512183&postcode=GL10+3BH",
+        "wiki_name": "Stroud District Council",
+        "wiki_note": "Find your uprn and replace it in the url do the same for the postcode."
+    },
     "SunderlandCityCouncil": {
         "house_number": "13",
         "postcode": "SR4 6BJ",
@@ -931,6 +976,14 @@
         "uprn": "000452015013",
         "url": "https://dac.telford.gov.uk/bindayfinder/",
         "wiki_name": "Telford and Wrekin Co-operative Council"
+    },
+    "TendringDistrictCouncil": {
+        "postcode": "CO15 4EU",
+        "skip_get_url": true,
+        "uprn": "100090604247",
+        "url": "https://tendring-self.achieveservice.com/en/service/Rubbish_and_recycling_collection_days",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Tendring District Council"
     },
     "TestValleyBoroughCouncil": {
         "postcode": "SO51 9ZD",
@@ -979,6 +1032,16 @@
         "wiki_command_url_override": "https://www.wakefield.gov.uk/where-i-live/?uprn=XXXXXXXXXXX&a=XXXXXXXXXXX&usrn=XXXXXXXXXXX&e=XXXXXXXXXXX&n=XXXXXXXXXXX&p=XXXXXXXXXXX",
         "wiki_name": "Wakefield City Council",
         "wiki_note": "Follow the instructions [here](https://www.wakefield.gov.uk/where-i-live/) until you get the page that includes a \"Bin Collections\" section then copy the URL and replace the URL in the command."
+    },
+    "WalthamForest": {
+        "house_number": "17 Chingford Road, Walthamstow",
+        "postcode": "E17 4PW",
+        "skip_get_url": true,
+        "uprn": "200001415697",
+        "url": "https://portal.walthamforest.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393/AF-Stage-8bf39bf9-5391-4c24-857f-0dc2025c67f4/definition.json&process=1&process_uri=sandbox-processes://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393&process_id=AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Waltham Forest",
+        "wiki_note": "Use to find your UPRN https://uprn.uk/"
     },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",

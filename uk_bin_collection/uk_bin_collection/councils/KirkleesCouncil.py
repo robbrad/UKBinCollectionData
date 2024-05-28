@@ -61,7 +61,9 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs["postcode"]
 
         self._driver = driver = create_webdriver(
-            web_driver=kwargs["web_driver"], headless=kwargs.get("headless", True), session_name=__name__
+            web_driver=kwargs["web_driver"],
+            headless=kwargs.get("headless", True),
+            session_name=__name__,
         )
         driver.implicitly_wait(1)
 
