@@ -262,6 +262,12 @@
         "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
         "wiki_name": "Croydon Council"
     },
+    "DartfordBoroughCouncil": {
+        "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
+        "wiki_name": "DartfordBoroughCouncil",
+        "uprn": "010094157511",
+        "wiki_note": "Use https://uprn.uk/ to find your UPRN "
+    },
     "DerbyshireDalesDistrictCouncil": {
         "postcode": "DE4 3AS",
         "skip_get_url": true,
@@ -858,12 +864,12 @@
         "wiki_name": "South Gloucestershire Council"
     },
     "SouthKestevenDistrictCouncil": {
-        "url": "https://pre.southkesteven.gov.uk/BinSearch.aspx",
-        "wiki_name": "SouthKestevenDistrictCouncil",
         "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",
         "postcode": "PE68BL",
         "skip_get_url": true,
+        "url": "https://pre.southkesteven.gov.uk/BinSearch.aspx",
         "web_driver": "http://selenium:4444",
+        "wiki_name": "SouthKestevenDistrictCouncil",
         "wiki_note": ""
     },
     "SouthLanarkshireCouncil": {
