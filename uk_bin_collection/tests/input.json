@@ -223,13 +223,13 @@
         "wiki_name": "Cheshire West and Chester Council"
     },
     "ChichesterDistrictCouncil": {
-        "url": "https://www.chichester.gov.uk/checkyourbinday",
-        "wiki_name": "ChichesterDistrictCouncil",
         "house_number": "7, Plaistow Road, Kirdford, Billingshurst, West Sussex",
         "postcode": "RH14 0JT",
         "skip_get_url": true,
+        "url": "https://www.chichester.gov.uk/checkyourbinday",
         "web_driver": "http://selenium:4444",
-        "wiki_note": "Needs the full address and postcode as appears on page https://www.chichester.gov.uk/checkyourbinday "
+        "wiki_name": "ChichesterDistrictCouncil",
+        "wiki_note": "Needs the full address and postcode as appears on page https://www.chichester.gov.uk/checkyourbinday"
     },
     "ChorleyCouncil": {
         "postcode": "PR6 7PG",
@@ -856,6 +856,15 @@
         "uprn": "566419",
         "url": "https://beta.southglos.gov.uk/waste-and-recycling-collection-date",
         "wiki_name": "South Gloucestershire Council"
+    },
+    "SouthKestevenDistrictCouncil": {
+        "url": "https://pre.southkesteven.gov.uk/BinSearch.aspx",
+        "wiki_name": "SouthKestevenDistrictCouncil",
+        "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",
+        "postcode": "PE68BL",
+        "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
+        "wiki_note": ""
     },
     "SouthLanarkshireCouncil": {
         "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow",

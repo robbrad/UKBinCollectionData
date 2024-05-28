@@ -29,12 +29,6 @@ def create_council(council_name: str, url: str) -> None:
     with open(new_council_file, "w") as file:
         file.write(filedata)
 
-    # Update the test feature file
-    with open(test_file, "a") as file:
-        file.write(
-            f"\n\n\t\t@{council_name}\n\t\tExamples: {council_name}\n\t\t| council |\n\t\t| {council_name} |"
-        )
-
     # Update the input JSON
     update_input_json(council_name, url, input_file_path)
 
