@@ -1,3 +1,27 @@
+## 0.79.0 (2024-05-28)
+
+### Feat
+
+- Adding Dartford
+- Adding South Kesteven District Council
+- Adding ChichesterCouncil
+- adding HounslowCouncil
+- adding HounslowCouncil
+- adding HounslowCouncil
+- Epping Fix
+- Adding Epping Forest District Council
+- Update input.json
+- Epping Forest District Council
+- Adding Stroud District Council
+- Add support for Tendring District Council
+- #269 Adding Waltham Forest
+- #269 Adding Waltham Forest
+- Adding council creation script
+
+### Fix
+
+- Update Mole Valley URL
+
 ## 0.78.0 (2024-05-26)
 
 ### Feat
