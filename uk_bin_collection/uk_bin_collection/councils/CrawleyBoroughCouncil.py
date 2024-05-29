@@ -35,7 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        titles = [title.text for title in soup.select(".title")]
+        titles = [title.text for title in soup.select(".block-title")]
         collection_tag = soup.body.find_all(
             "div", {"class": "col-md-6 col-sm-6 col-xs-6"}, string="Next collection"
         )
