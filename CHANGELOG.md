@@ -1,3 +1,9 @@
+## 0.79.1 (2024-05-29)
+
+### Fix
+
+- Change CSS class in search for collection types
+
 ## 0.79.0 (2024-05-28)
 
 ### Feat
