@@ -17,27 +17,25 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
 
         # Extract data
-        bin_data = {
-            "bins": []
-        }
+        bin_data = {"bins": []}
 
         # Find the table containing the bin collection data
-        table = soup.find('table', {'class': 'eb-EVDNdR1G-tableContent'})
+        table = soup.find("table", {"class": "eb-EVDNdR1G-tableContent"})
 
         if table:
-            rows = table.find_all('tr', class_='eb-EVDNdR1G-tableRow')
-            
+            rows = table.find_all("tr", class_="eb-EVDNdR1G-tableRow")
+
             for row in rows:
-                columns = row.find_all('td')
+                columns = row.find_all("td")
                 if len(columns) >= 4:
                     collection_type = columns[1].get_text(strip=True)
                     collection_date = columns[3].get_text(strip=True)
-                    
+
                     # Validate collection_date format
                     if re.match(r"\d{2}/\d{2}/\d{4}", collection_date):
                         bin_entry = {
                             "type": collection_type,
-                            "collectionDate": collection_date
+                            "collectionDate": collection_date,
                         }
                         bin_data["bins"].append(bin_entry)
 

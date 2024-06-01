@@ -263,9 +263,9 @@
         "wiki_name": "Croydon Council"
     },
     "DartfordBoroughCouncil": {
+        "uprn": "010094157511",
         "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
         "wiki_name": "DartfordBoroughCouncil",
-        "uprn": "010094157511",
         "wiki_note": "Use https://uprn.uk/ to find your UPRN "
     },
     "DerbyshireDalesDistrictCouncil": {
@@ -991,6 +991,12 @@
         "uprn": "200010012019",
         "url": "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected",
         "wiki_name": "Test Valley Borough Council"
+    },
+    "ThreeRiversDistrictCouncil": {
+        "url": "https://my.threerivers.gov.uk/en/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b/AF-Stage-01ee28aa-1584-442c-8d1f-119b6e27114a/definition.json&process=1&process_uri=sandbox-processes://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&process_id=AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&noLoginPrompt=1",
+        "wiki_name": "ThreeRiversDistrictCouncil",
+        "postcode": "WD3 7AZ",
+        "uprn": "100080913662"
     },
     "TonbridgeAndMallingBC": {
         "postcode": "ME19 4JS",
