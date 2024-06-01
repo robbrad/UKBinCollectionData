@@ -994,9 +994,11 @@
     },
     "ThreeRiversDistrictCouncil": {
         "url": "https://my.threerivers.gov.uk/en/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b/AF-Stage-01ee28aa-1584-442c-8d1f-119b6e27114a/definition.json&process=1&process_uri=sandbox-processes://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&process_id=AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&noLoginPrompt=1",
-        "wiki_name": "ThreeRiversDistrictCouncil",
+        "wiki_name": "Three Rivers District Council",
         "postcode": "WD3 7AZ",
-        "uprn": "100080913662"
+        "uprn": "100080913662",
+        "web_driver": "http://selenium:4444",
+        "skip_get_url": true
     },
     "TonbridgeAndMallingBC": {
         "postcode": "ME19 4JS",
