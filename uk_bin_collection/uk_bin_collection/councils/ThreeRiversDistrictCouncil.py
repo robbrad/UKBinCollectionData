@@ -80,6 +80,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
             )
 
+            time.sleep(2)
+
             click_element(By.XPATH, "//button/span[contains(text(), 'Next')]")
 
             logging.info("Waiting for bin schedule")
