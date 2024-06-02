@@ -14,6 +14,8 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # This runs at 00:00 on Sunday every week
 
 jobs:
 
