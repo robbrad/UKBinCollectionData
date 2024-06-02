@@ -29,7 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
         start = BeautifulSoup(req.text, features="html.parser")
         start.prettify()
         base_link = start.select(
-            "#menu-content > div > div:nth-child(1) > p.govuk-body.govuk-\!-margin-bottom-0.colorblue.lineheight15 > a"
+            "#menu-content > div > div:nth-child(1) > p.govuk-body.govuk-\\!-margin-bottom-0.colorblue.lineheight15 > a"
         )[0].attrs.get("href")
 
         # We need to reorder the query parts from the unique URL, so split them up to make it easier
