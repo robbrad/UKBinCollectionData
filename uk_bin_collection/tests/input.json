@@ -917,6 +917,12 @@
         "url": "https://www.sthelens.gov.uk/",
         "wiki_name": "St Helens Borough Council"
     },
+    "StaffordBoroughCouncil": {
+        "url": "https://www.staffordbc.gov.uk/address/100032203010",
+        "wiki_name": "StaffordBoroughCouncil",
+        "uprn": "100032203010",
+        "wiki_note": "The URL needs to be https://www.staffordbc.gov.uk/address/<Your_UPRN>"
+    },
     "StaffordshireMoorlandsDistrictCouncil": {
         "postcode": "ST8 6HN",
         "skip_get_url": true,
@@ -968,11 +974,11 @@
         "wiki_name": "Swale Borough Council"
     },
     "SwanseaCouncil": {
-        "url": "https://www1.swansea.gov.uk/recyclingsearch/",
-        "wiki_name": "SwanseaCouncil",
-        "uprn": "100100324821",
         "postcode": "SA43PQ",
-        "skip_get_url": true
+        "skip_get_url": true,
+        "uprn": "100100324821",
+        "url": "https://www1.swansea.gov.uk/recyclingsearch/",
+        "wiki_name": "SwanseaCouncil"
     },
     "TamesideMBCouncil": {
         "skip_get_url": true,
