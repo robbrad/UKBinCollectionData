@@ -1,3 +1,22 @@
+## 0.80.0 (2024-06-02)
+
+### Feat
+
+- Adding Uttlesford District Council
+- Adding Stafford Boro Council
+- Adding Swansea Council
+- Adding New Forest
+- Adding Three Rivers
+- Adding Three Rivers
+
+### Fix
+
+- ThreeRivers
+- #425 Entities are not updated
+- sessions to avoid deprecation
+- Update docker-image.yml
+- Update docker-image.yml
+
 ## 0.79.1 (2024-05-29)
 
 ### Fix
