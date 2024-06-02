@@ -263,9 +263,9 @@
         "wiki_name": "Croydon Council"
     },
     "DartfordBoroughCouncil": {
+        "uprn": "010094157511",
         "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
         "wiki_name": "DartfordBoroughCouncil",
-        "uprn": "010094157511",
         "wiki_note": "Use https://uprn.uk/ to find your UPRN "
     },
     "DerbyshireDalesDistrictCouncil": {
@@ -602,6 +602,14 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Neath Port Talbot Council"
     },
+    "NewForestCouncil": {
+        "postcode": "SO41 0GJ",
+        "skip_get_url": true,
+        "uprn": "100060482345",
+        "url": "https://forms.newforest.gov.uk/id/FIND_MY_COLLECTION",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "New Forest Council"
+    },
     "NewarkAndSherwoodDC": {
         "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
         "wiki_command_url_override": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX",
@@ -909,6 +917,12 @@
         "url": "https://www.sthelens.gov.uk/",
         "wiki_name": "St Helens Borough Council"
     },
+    "StaffordBoroughCouncil": {
+        "uprn": "100032203010",
+        "url": "https://www.staffordbc.gov.uk/address/100032203010",
+        "wiki_name": "StaffordBoroughCouncil",
+        "wiki_note": "The URL needs to be https://www.staffordbc.gov.uk/address/<Your_UPRN>"
+    },
     "StaffordshireMoorlandsDistrictCouncil": {
         "postcode": "ST8 6HN",
         "skip_get_url": true,
@@ -959,6 +973,13 @@
         "url": "https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days",
         "wiki_name": "Swale Borough Council"
     },
+    "SwanseaCouncil": {
+        "postcode": "SA43PQ",
+        "skip_get_url": true,
+        "uprn": "100100324821",
+        "url": "https://www1.swansea.gov.uk/recyclingsearch/",
+        "wiki_name": "SwanseaCouncil"
+    },
     "TamesideMBCouncil": {
         "skip_get_url": true,
         "uprn": "100012835362",
@@ -992,6 +1013,14 @@
         "url": "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected",
         "wiki_name": "Test Valley Borough Council"
     },
+    "ThreeRiversDistrictCouncil": {
+        "postcode": "WD3 7AZ",
+        "skip_get_url": true,
+        "uprn": "100080913662",
+        "url": "https://my.threerivers.gov.uk/en/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b/AF-Stage-01ee28aa-1584-442c-8d1f-119b6e27114a/definition.json&process=1&process_uri=sandbox-processes://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&process_id=AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&noLoginPrompt=1",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Three Rivers District Council"
+    },
     "TonbridgeAndMallingBC": {
         "postcode": "ME19 4JS",
         "skip_get_url": true,
@@ -1010,6 +1039,15 @@
         "uprn": "10091078762",
         "url": "https://collections-torridge.azurewebsites.net/WebService2.asmx",
         "wiki_name": "Torridge District Council"
+    },
+    "UttlesfordDistrictCouncil": {
+        "url": "https://bins.uttlesford.gov.uk/",
+        "wiki_name": "UttlesfordDistrictCouncil",
+        "skip_get_url": true,
+        "postcode": "CM23 5QF",
+        "uprn": "100090643434",
+        "house_number": "72, Birchanger Lane",
+        "web_driver": "http://selenium:4444"
     },
     "ValeofGlamorganCouncil": {
         "skip_get_url": true,

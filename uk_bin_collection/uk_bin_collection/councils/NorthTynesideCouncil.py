@@ -3,6 +3,7 @@ from datetime import *
 
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -24,7 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
 
         # Get form data
-        s = requests.session()
+        s = requests.Session()
         cookies = {
             "ntc-cookie-policy": "1",
             "SSESS6ec6d5d2d471c0357053d5993a839bce": "qBdR7XhmSMd5_PDBIqG0It2R0Fq67igrejRY-WOcskE",

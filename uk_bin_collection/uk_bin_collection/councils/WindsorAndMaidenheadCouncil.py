@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -25,7 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         requests.packages.urllib3.disable_warnings()
-        s = requests.session()
+        s = requests.Session()
         # Form start
         headers = {
             "authority": "my.rbwm.gov.uk",

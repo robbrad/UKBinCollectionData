@@ -2,6 +2,7 @@ import ast
 
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -19,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
 
         requests.packages.urllib3.disable_warnings()
-        s = requests.session()
+        s = requests.Session()
 
         service_type_headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"

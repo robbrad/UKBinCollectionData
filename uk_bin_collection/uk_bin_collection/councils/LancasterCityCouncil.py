@@ -1,8 +1,10 @@
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from uk_bin_collection.uk_bin_collection.common import *
-from bs4 import BeautifulSoup
 from datetime import datetime
+
 import requests
+from bs4 import BeautifulSoup
+
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -19,7 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # start session
         # note: this ignores the given url
         base_url = "https://lcc-wrp.whitespacews.com"
-        session = requests.session()
+        session = requests.Session()
         response = session.get(base_url + "/#!")
         links = [
             a["href"]

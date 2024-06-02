@@ -2,6 +2,7 @@ from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -22,7 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Start a new session to walk through the form
         requests.packages.urllib3.disable_warnings()
-        s = requests.session()
+        s = requests.Session()
 
         headers = {
             "Origin": "https://www.centralbedfordshire.gov.uk",

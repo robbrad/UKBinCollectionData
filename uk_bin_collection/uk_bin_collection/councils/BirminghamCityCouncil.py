@@ -1,5 +1,6 @@
-from dateutil.relativedelta import relativedelta
 from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
