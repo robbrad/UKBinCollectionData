@@ -1,17 +1,14 @@
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
-import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import create_webdriver
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -28,7 +25,6 @@ class CouncilClass(AbstractGetBinDataClass):
         driver = None
         try:
             bin_data_dict = {"bins": []}
-            collections = []
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
 
@@ -39,18 +35,14 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(kwargs.get("url"))
 
             wait = WebDriverWait(driver, 30)
-            results = wait.until(
+            wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "waste-service-image"))
             )
-            # Search for the specific bins in the table using BS
-            # Parse the HTML content
-            # Find all elements with the class 'container-name' to extract bin types
+
             # Parse the HTML content
             soup = BeautifulSoup(driver.page_source, "html.parser")
-            soup.prettify
 
             # Find all elements with class 'govuk-summary-list'
-            bin_info = []
             waste_services = soup.find_all(
                 "h3", class_="govuk-heading-m waste-service-name"
             )
@@ -58,7 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
             for service in waste_services:
                 service_title = service.get_text(strip=True)
                 next_collection = service.find_next_sibling().find(
-                    "dt", text="Next collection"
+                    "dt", string="Next collection"
                 )
 
                 if next_collection:
@@ -69,8 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     next_collection_date_parse = next_collection_date.split(",")[
                         1
                     ].strip()
-                    day = next_collection_date_parse.split()[0]
-                    month = next_collection_date_parse.split()[1]
+                    day, month = next_collection_date_parse.split()[:2]
 
                     # Remove the suffix (e.g., 'th', 'nd', 'rd', 'st') from the day
                     if day.endswith(("th", "nd", "rd", "st")):
