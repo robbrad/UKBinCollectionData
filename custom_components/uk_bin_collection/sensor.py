@@ -6,6 +6,7 @@ import json
 
 
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.helpers.event import async_track_time_interval
 
 from homeassistant.core import callback
 from homeassistant.config_entries import ConfigEntry
@@ -141,7 +142,6 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
 
         return get_latest_collection_info(json.loads(data))
 
-
 class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     """Implementation of the UK Bin Collection Data sensor."""
 
@@ -152,10 +152,29 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self._bin_type = bin_type
         self.apply_values()
+        self._unsub_update_interval = None
+
+    async def async_added_to_hass(self):
+        """When entity is added to hass."""
+        # Schedule periodic updates
+        self._unsub_update_interval = async_track_time_interval(
+            self.hass, self._update_state_based_on_time, timedelta(minutes=15)
+        )
+
+    async def async_will_remove_from_hass(self):
+        """When entity is removed from hass."""
+        if self._unsub_update_interval:
+            self._unsub_update_interval()
+            self._unsub_update_interval = None
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
+        self.apply_values()
+        self.async_write_ha_state()
+
+    async def _update_state_based_on_time(self, now):
+        """Update the state based on the current time."""
         self.apply_values()
         self.async_write_ha_state()
 
