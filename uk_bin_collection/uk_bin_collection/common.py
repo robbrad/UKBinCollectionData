@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import re
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.parser import parse
 from enum import Enum
 from selenium import webdriver
@@ -240,6 +240,28 @@ def load_data(file_path):
 def save_data(file_path, data):
     with open(file_path, "w") as file:
         json.dump(data, file, sort_keys=True, indent=4)
+
+
+def get_next_day_of_week(day_name):
+    days_of_week = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]
+    today = datetime.now()
+    today_idx = today.weekday()  # Monday is 0 and Sunday is 6
+    target_idx = days_of_week.index(day_name)
+
+    days_until_target = (target_idx - today_idx) % 7
+    if days_until_target == 0:
+        days_until_target = 7  # Ensure it's the next instance of the day, not today if today is that day
+
+    next_day = today + timedelta(days=days_until_target)
+    return next_day.strftime(date_format)
 
 
 def contains_date(string, fuzzy=False) -> bool:
