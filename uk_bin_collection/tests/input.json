@@ -603,12 +603,12 @@
         "wiki_name": "Neath Port Talbot Council"
     },
     "NewForestCouncil": {
-        "url": "https://forms.newforest.gov.uk/id/FIND_MY_COLLECTION",
-        "wiki_name": "New Forest Council",
         "postcode": "SO41 0GJ",
         "skip_get_url": true,
         "uprn": "100060482345",
-        "web_driver": "http://selenium:4444"
+        "url": "https://forms.newforest.gov.uk/id/FIND_MY_COLLECTION",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "New Forest Council"
     },
     "NewarkAndSherwoodDC": {
         "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
@@ -966,6 +966,13 @@
         "uprn": "100061081168",
         "url": "https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days",
         "wiki_name": "Swale Borough Council"
+    },
+    "SwanseaCouncil": {
+        "url": "https://www1.swansea.gov.uk/recyclingsearch/",
+        "wiki_name": "SwanseaCouncil",
+        "uprn": "100100324821",
+        "postcode": "SA43PQ",
+        "skip_get_url": true
     },
     "TamesideMBCouncil": {
         "skip_get_url": true,
