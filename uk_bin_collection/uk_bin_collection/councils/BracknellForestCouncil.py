@@ -64,7 +64,7 @@ def get_csrf_token(s: requests.session, base_url: str) -> str:
     """
     Gets a CSRF token
         :rtype: str
-        :param s: requests.session() to use
+        :param s: requests.Session() to use
         :param base_url: Base URL to use
         :return: CSRF token
     """
@@ -95,7 +95,7 @@ def get_address_id(
     """
     Gets the address ID
         :rtype: str
-        :param s: requests.session() to use
+        :param s: requests.Session() to use
         :param base_url: Base URL to use
         :param csrf_token: CSRF token to use
         :param postcode: Postcode to use
@@ -156,7 +156,7 @@ def get_collection_data(
     """
     Gets the collection data
         :rtype: str
-        :param s: requests.session() to use
+        :param s: requests.Session() to use
         :param base_url: Base URL to use
         :param csrf_token: CSRF token to use
         :param address_id: Address id to use
@@ -203,7 +203,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         requests.packages.urllib3.disable_warnings()
-        s = requests.session()
+        s = requests.Session()
         base_url = "https://selfservice.mybfc.bracknell-forest.gov.uk"
         paon = kwargs.get("paon")
         postcode = kwargs.get("postcode")
