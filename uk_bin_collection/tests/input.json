@@ -918,9 +918,9 @@
         "wiki_name": "St Helens Borough Council"
     },
     "StaffordBoroughCouncil": {
+        "uprn": "100032203010",
         "url": "https://www.staffordbc.gov.uk/address/100032203010",
         "wiki_name": "StaffordBoroughCouncil",
-        "uprn": "100032203010",
         "wiki_note": "The URL needs to be https://www.staffordbc.gov.uk/address/<Your_UPRN>"
     },
     "StaffordshireMoorlandsDistrictCouncil": {
@@ -1039,6 +1039,15 @@
         "uprn": "10091078762",
         "url": "https://collections-torridge.azurewebsites.net/WebService2.asmx",
         "wiki_name": "Torridge District Council"
+    },
+    "UttlesfordDistrictCouncil": {
+        "url": "https://bins.uttlesford.gov.uk/",
+        "wiki_name": "UttlesfordDistrictCouncil",
+        "skip_get_url": true,
+        "postcode": "CM23 5QF",
+        "uprn": "100090643434",
+        "house_number": "72, Birchanger Lane",
+        "web_driver": "http://selenium:4444"
     },
     "ValeofGlamorganCouncil": {
         "skip_get_url": true,
