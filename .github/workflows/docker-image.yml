@@ -13,6 +13,7 @@ on:
       - "uk_bin_collection_api_server/**"
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
 
