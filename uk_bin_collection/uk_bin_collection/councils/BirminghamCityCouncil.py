@@ -11,6 +11,7 @@ from dateutil.parser import parse
 from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 def get_token(page) -> str:
     """
     Get a __token to include in the form data
@@ -21,6 +22,7 @@ def get_token(page) -> str:
     soup.prettify()
     token = soup.find("input", {"name": "__token"}).get("value")
     return token
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -65,7 +67,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
         uprn: Optional[str] = kwargs.get("uprn")
         postcode: Optional[str] = kwargs.get("postcode")
-        
+
         if uprn is None:
             raise ValueError("UPRN is required and must be a non-empty string.")
         if postcode is None:
