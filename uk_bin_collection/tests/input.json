@@ -1041,13 +1041,13 @@
         "wiki_name": "Torridge District Council"
     },
     "UttlesfordDistrictCouncil": {
-        "url": "https://bins.uttlesford.gov.uk/",
-        "wiki_name": "UttlesfordDistrictCouncil",
-        "skip_get_url": true,
-        "postcode": "CM23 5QF",
-        "uprn": "100090643434",
         "house_number": "72, Birchanger Lane",
-        "web_driver": "http://selenium:4444"
+        "postcode": "CM23 5QF",
+        "skip_get_url": true,
+        "uprn": "100090643434",
+        "url": "https://bins.uttlesford.gov.uk/",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "UttlesfordDistrictCouncil"
     },
     "ValeofGlamorganCouncil": {
         "skip_get_url": true,
@@ -1174,6 +1174,14 @@
         "url": "https://asjwsw-wrpwokingmunicipal-live.whitespacews.com/",
         "wiki_name": "Woking Borough Council/Joint Waste Solutions",
         "wiki_note": "Works with all collection areas that use Joint Waste Solutions. Just use the correct URL."
+    },
+    "WychavonDistrictCouncil": {
+        "url": "https://selfservice.wychavon.gov.uk/wdcroundlookup/wdc_search.jsp",
+        "wiki_name": "WychavonDistrictCouncil",
+        "web_driver": "http://selenium:4444",
+        "skip_get_url": true,
+        "postcode": "WR3 7RU", 
+        "uprn": "100120716273"
     },
     "WyreCouncil": {
         "postcode": "FY6 8HG",

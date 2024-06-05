@@ -1,11 +1,11 @@
 import time
-
 import pandas as pd
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
+from io import StringIO
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import create_webdriver
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -16,7 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def get_data(self, df) -> dict:
+    def get_data(self, df: pd.DataFrame) -> dict:
         # Create dictionary of data to be returned
         data = {"bins": []}
 
@@ -69,7 +69,7 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(4)
 
             # Submit address information and wait
-            inputElement_bn = driver.find_element(
+            driver.find_element(
                 By.ID, "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_NAV1_NEXT"
             ).click()
 
@@ -79,8 +79,10 @@ class CouncilClass(AbstractGetBinDataClass):
             table = driver.find_element(
                 By.ID, "COPYOFECHOCOLLECTIONDATES_PAGE1_DATES2"
             ).get_attribute("outerHTML")
-            df = pd.read_html(table, header=[1])
-            df = df[0]
+
+            # Wrap the HTML table in a StringIO object to address the warning
+            table_io = StringIO(table)
+            df = pd.read_html(table_io, header=[1])[0]
 
             # Parse data into dict
             data = self.get_data(df)

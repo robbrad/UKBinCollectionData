@@ -1,6 +1,10 @@
 from bs4 import BeautifulSoup
+import requests
+import logging
+import re
+from typing import Dict, List, Any, Optional
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import check_uprn
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -11,10 +15,14 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
-        data = {"bins": []}
+    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
+        data: Dict[str, List[Dict[str, str]]] = {"bins": []}
 
-        uprn = kwargs.get("uprn")
+        uprn: Optional[str] = kwargs.get("uprn")
+
+        if uprn is None:
+            raise ValueError("UPRN is required and must be a non-empty string.")
+
         check_uprn(uprn)  # Assuming check_uprn() raises an exception if UPRN is invalid
 
         try:
@@ -42,7 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 if service_name_element and next_service_element:
                     service = service_name_element.text
-                    next_collection = next_service_element.find(text=date_regex)
+                    next_collection = next_service_element.find(string=date_regex)
 
                     if next_collection:
                         dict_data = {
