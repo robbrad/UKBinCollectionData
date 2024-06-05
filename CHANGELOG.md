@@ -1,3 +1,14 @@
+## 0.81.0 (2024-06-05)
+
+### Feat
+
+- Adding Wychavon District Council
+
+### Fix
+
+- IntTestWarnings
+- IntTestWarnings
+
 ## 0.80.0 (2024-06-02)
 
 ### Feat
