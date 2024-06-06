@@ -5,17 +5,19 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python",
-                "ms-python.vscode-pylance",
+                "alexkrechik.cucumberautocomplete",
                 "eamodio.gitlens",
+                "Gruntfuggly.todo-tree",
                 "ms-python.black-formatter",
                 "ms-python.isort",
+                "ms-python.pylint", // Add pylint extension
                 "ms-python.python",
-                "ryanluker.vscode-coverage-gutters",
-                "Gruntfuggly.todo-tree",
+                "ms-python.python",
+                "ms-python.vscode-pep8", // Add pep8 extension
+                "ms-python.vscode-pylance",
                 "oderwat.indent-rainbow",
-                "yzhang.markdown-all-in-one",
-                "alexkrechik.cucumberautocomplete"
+                "ryanluker.vscode-coverage-gutters",
+                "yzhang.markdown-all-in-one"
             ],
             "settings": {
                 "makefile.makefilePath": "${workspaceFolder}/",
