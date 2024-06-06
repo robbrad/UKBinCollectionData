@@ -1,18 +1,19 @@
 import calendar
-import holidays
 import json
 import os
-import pandas as pd
 import re
-import requests
 from datetime import datetime, timedelta
-from dateutil.parser import parse
 from enum import Enum
+
+import holidays
+import pandas as pd
+import requests
+from dateutil.parser import parse
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.chrome.service import Service as ChromeService
 from urllib3.exceptions import MaxRetryError
+from webdriver_manager.chrome import ChromeDriverManager
 
 date_format = "%d/%m/%Y"
 days_of_week = {
