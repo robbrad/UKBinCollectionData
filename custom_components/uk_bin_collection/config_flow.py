@@ -54,10 +54,13 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
         if "web_driver" in self.councils_data[council]:
             council_schema = council_schema.extend(
-                {vol.Required("web_driver", default=""): cv.string}
+                {vol.Optional("web_driver", default=""): cv.string}
             )
             council_schema = council_schema.extend(
                 {vol.Optional("headless", default=True): bool}
+            )
+            council_schema = council_schema.extend(
+                {vol.Optional("local_browser", default=False): bool}
             )
 
         return council_schema

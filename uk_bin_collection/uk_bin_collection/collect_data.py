@@ -76,6 +76,14 @@ class UKBinCollectionApp:
         self.parser.set_defaults(headless=True)
 
         self.parser.add_argument(
+            "--local_browser",
+            dest="local_browser",
+            action="store_true",
+            help="Should Selenium be run on a remote server or locally. Defaults to false.",
+            required=False,
+        )
+
+        self.parser.add_argument(
             "-d",
             "--dev_mode",
             action="store_true",
@@ -97,6 +105,7 @@ class UKBinCollectionApp:
         skip_get_url = self.parsed_args.skip_get_url
         web_driver = self.parsed_args.web_driver
         headless = self.parsed_args.headless
+        local_browser = self.parsed_args.local_browser
         dev_mode = self.parsed_args.dev_mode
 
         return self.client_code(
@@ -108,6 +117,7 @@ class UKBinCollectionApp:
             skip_get_url=skip_get_url,
             web_driver=web_driver,
             headless=headless,
+            local_browser=local_browser,
             dev_mode=dev_mode,
             council_module_str=council_module_str,
         )

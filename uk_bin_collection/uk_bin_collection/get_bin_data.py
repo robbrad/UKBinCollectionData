@@ -56,7 +56,11 @@ class AbstractGetBinDataClass(ABC):
         this_paon = kwargs.get("paon", None)
         this_uprn = kwargs.get("uprn", None)
         this_usrn = kwargs.get("usrn", None)
-        this_web_driver = kwargs.get("web_driver", None)
+        this_local_browser = kwargs.get("local_browser", False)
+        if this_local_browser is False:
+            this_web_driver = kwargs.get("web_driver", None)
+        else:
+            this_web_driver = None
         this_headless = kwargs.get("headless", None)
         skip_get_url = kwargs.get("skip_get_url", None)
         dev_mode = kwargs.get("dev_mode", False)

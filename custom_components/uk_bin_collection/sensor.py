@@ -51,7 +51,7 @@ async def async_setup_entry(
         *(
             f"--{key}={value}"
             for key, value in config.data.items()
-            if key not in {"name", "council", "url", "skip_get_url", "headless"}
+            if key not in {"name", "council", "url", "skip_get_url", "headless", "local_browser"}
         ),
     ]
     if config.data.get("skip_get_url", False):
@@ -63,6 +63,11 @@ async def async_setup_entry(
     # Only append the argument for non-headless mode
     if headless is False:
         args.append("--not-headless")
+
+    local_browser = config.data.get("local_browser", False)  # Default to False if not specified
+
+    if local_browser is True:
+        args.append("--local_browser")
 
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
 
