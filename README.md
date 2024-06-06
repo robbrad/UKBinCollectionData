@@ -104,6 +104,120 @@ Install can be done via
 Some councils make use of the UPRN (Unique property reference number) to identify your property. You can find yours [here](https://www.findmyaddress.co.uk/search) or [here](https://uprn.uk/).
 
 ---
+## Selenium
+Some councils need Selenium to run the scrape on behalf of Home Assistant. The easiest way to do this is run Selenium as in a Docker container. However you do this the Home Assistant server must be able to reach the Selenium server
+
+### Instructions for Windows, Linux, and Mac
+
+#### Step 1: Install Docker
+
+##### Windows
+
+1.  **Download Docker Desktop for Windows:**
+    
+    *   Go to the Docker website: Docker Desktop for Windows
+    *   Download and install Docker Desktop.
+2.  **Run Docker Desktop:**
+    
+    *   After installation, run Docker Desktop.
+    *   Follow the on-screen instructions to complete the setup.
+    *   Ensure Docker is running by checking the Docker icon in the system tray.
+
+##### Linux
+
+1.  **Install Docker:**
+    
+    *   Open a terminal and run the following commands:
+        
+        bash
+        
+        Copy code
+        
+        `sudo apt-get update sudo apt-get install \     apt-transport-https \     ca-certificates \     curl \     gnupg \     lsb-release curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg echo \   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null sudo apt-get update sudo apt-get install docker-ce docker-ce-cli containerd.io`
+        
+2.  **Start Docker:**
+    
+    *   Run the following command to start Docker:
+        
+        bash
+        
+        Copy code
+        
+        `sudo systemctl start docker`
+        
+3.  **Enable Docker to start on boot:**
+    
+    bash
+    
+    Copy code
+    
+    `sudo systemctl enable docker`
+    
+
+##### Mac
+
+1.  **Download Docker Desktop for Mac:**
+    
+    *   Go to the Docker website: Docker Desktop for Mac
+    *   Download and install Docker Desktop.
+2.  **Run Docker Desktop:**
+    
+    *   After installation, run Docker Desktop.
+    *   Follow the on-screen instructions to complete the setup.
+    *   Ensure Docker is running by checking the Docker icon in the menu bar.
+
+#### Step 2: Pull and Run Selenium Standalone Chrome Docker Image
+
+1.  **Open a terminal or command prompt:**
+    
+2.  **Pull the Selenium Standalone Chrome image:**
+    
+    bash
+    
+    Copy code
+    
+    `docker pull selenium/standalone-chrome`
+    
+3.  **Run the Selenium Standalone Chrome container:**
+    
+    bash
+    
+    Copy code
+    
+    `docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome`
+    
+
+#### Step 3: Test the Selenium Server
+
+1.  **Navigate to the Selenium server URL in your web browser:**
+    *   Open a web browser and go to `http://localhost:4444`
+    *   You should see the Selenium Grid console.
+
+#### Step 4: Supply the Selenium Server URL to UKBinCollectionData
+
+1.  **Find the `UKBinCollectionData` project:**
+    
+    *   Go to the GitHub repository: [UKBinCollectionData](https://github.com/robbrad/UKBinCollectionData)
+2.  **Supply the Selenium Server URL:**
+    
+    *   Typically, the URL will be `http://localhost:4444/wd/hub`
+    *   You might need to update a configuration file or environment variable in the project to use this URL. Check the project's documentation for specific instructions.
+
+### Summary of Commands
+
+**Windows/Linux/Mac:**
+
+bash
+
+Copy code
+
+`docker pull selenium/standalone-chrome docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome`
+
+**Selenium Server URL:**
+
+*   `http://localhost:4444/wd/hub`
+
+---
 
 ## Requesting your council
 To make a request for your council, first check the [Issues](https://github.com/robbrad/UKBinCollectionData/issues) page to make sure it has not already been requested. If not, please fill in a new [Council Request](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) form, including as much information as possible, including:
