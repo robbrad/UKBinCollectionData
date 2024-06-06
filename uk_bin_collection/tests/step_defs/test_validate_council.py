@@ -1,13 +1,13 @@
+import json
 import logging
 import traceback
-from typing import Any, Generator, Callable
-import json
+from functools import wraps
+from typing import Any, Callable, Generator
 
 import pytest
-from pytest_bdd import scenario, given, when, then, parsers
-from functools import wraps
-
+from pytest_bdd import given, parsers, scenario, then, when
 from step_helpers import file_handler
+
 from uk_bin_collection.uk_bin_collection import collect_data
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
