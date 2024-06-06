@@ -128,12 +128,8 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
 1.  **Install Docker:**
     
     *   Open a terminal and run the following commands:
-        
-        bash
-        
-        Copy code
-        
-        ```
+                       
+        ```bash
         sudo apt-get update
         sudo apt-get install \
             apt-transport-https \
@@ -152,12 +148,10 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
 2.  **Start Docker:**
     
     *   Run the following command to start Docker:
-        
-        bash
-        
-        Copy code
-        
-        `sudo systemctl start docker`
+                        
+        ```bash
+        sudo systemctl start docker
+        ```
         
 3.  **Enable Docker to start on boot:**
     
@@ -165,7 +159,9 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
     
     Copy code
     
-    `sudo systemctl enable docker`
+    ```bash
+    sudo systemctl enable docker
+    ```
     
 
 ##### Mac
@@ -185,20 +181,16 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
 1.  **Open a terminal or command prompt:**
     
 2.  **Pull the Selenium Standalone Chrome image:**
+       
+    ```bash
+    docker pull selenium/standalone-chrome
+    ```
     
-    bash
-    
-    Copy code
-    
-    `docker pull selenium/standalone-chrome`
-    
-3.  **Run the Selenium Standalone Chrome container:**
-    
-    bash
-    
-    Copy code
-    
-    `docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome`
+4.  **Run the Selenium Standalone Chrome container:**
+        
+    ```bash
+    docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome
+    ```
     
 
 #### Step 3: Test the Selenium Server
@@ -221,11 +213,9 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
 
 **Windows/Linux/Mac:**
 
-bash
-
-Copy code
-
-`docker pull selenium/standalone-chrome docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome`
+```bash
+docker pull selenium/standalone-chrome docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome
+```
 
 **Selenium Server URL:**
 
