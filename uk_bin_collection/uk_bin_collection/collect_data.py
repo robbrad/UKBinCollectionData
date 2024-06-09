@@ -26,19 +26,69 @@ class UKBinCollectionApp:
 
     def setup_arg_parser(self):
         """Setup the argument parser for the script."""
-        self.parser = argparse.ArgumentParser(description="UK Bin Collection Data Parser")
-        self.parser.add_argument("module", type=str, help="Name of council module to use")
-        self.parser.add_argument("URL", type=str, help="URL to parse - should be wrapped in double quotes")
-        self.parser.add_argument("-p", "--postcode", type=str, help="Postcode to parse - should include a space and be wrapped in double quotes", required=False)
-        self.parser.add_argument("-n", "--number", type=str, help="House number to parse", required=False)
-        self.parser.add_argument("-s", "--skip_get_url", action="store_true", help="Skips the generic get_url - uses one in council class", required=False)
-        self.parser.add_argument("-u", "--uprn", type=str, help="UPRN to parse", required=False)
-        self.parser.add_argument("-w", "--web_driver", type=str, help="URL for remote Selenium web driver - should be wrapped in double quotes", required=False)
-        self.parser.add_argument("--headless", dest="headless", action="store_true", help="Should Selenium be headless. Defaults to true. Can be set to false to debug council")
-        self.parser.add_argument("--not-headless", dest="headless", action="store_false", help="Should Selenium be headless. Defaults to true. Can be set to false to debug council")
+        self.parser = argparse.ArgumentParser(
+            description="UK Bin Collection Data Parser"
+        )
+        self.parser.add_argument(
+            "module", type=str, help="Name of council module to use"
+        )
+        self.parser.add_argument(
+            "URL", type=str, help="URL to parse - should be wrapped in double quotes"
+        )
+        self.parser.add_argument(
+            "-p",
+            "--postcode",
+            type=str,
+            help="Postcode to parse - should include a space and be wrapped in double quotes",
+            required=False,
+        )
+        self.parser.add_argument(
+            "-n", "--number", type=str, help="House number to parse", required=False
+        )
+        self.parser.add_argument(
+            "-s",
+            "--skip_get_url",
+            action="store_true",
+            help="Skips the generic get_url - uses one in council class",
+            required=False,
+        )
+        self.parser.add_argument(
+            "-u", "--uprn", type=str, help="UPRN to parse", required=False
+        )
+        self.parser.add_argument(
+            "-w",
+            "--web_driver",
+            type=str,
+            help="URL for remote Selenium web driver - should be wrapped in double quotes",
+            required=False,
+        )
+        self.parser.add_argument(
+            "--headless",
+            dest="headless",
+            action="store_true",
+            help="Should Selenium be headless. Defaults to true. Can be set to false to debug council",
+        )
+        self.parser.add_argument(
+            "--not-headless",
+            dest="headless",
+            action="store_false",
+            help="Should Selenium be headless. Defaults to true. Can be set to false to debug council",
+        )
         self.parser.set_defaults(headless=True)
-        self.parser.add_argument("--local_browser", dest="local_browser", action="store_true", help="Should Selenium be run on a remote server or locally. Defaults to false.", required=False)
-        self.parser.add_argument("-d", "--dev_mode", action="store_true", help="Enables development mode - creates/updates entries in the input.json file for the council on each run", required=False)
+        self.parser.add_argument(
+            "--local_browser",
+            dest="local_browser",
+            action="store_true",
+            help="Should Selenium be run on a remote server or locally. Defaults to false.",
+            required=False,
+        )
+        self.parser.add_argument(
+            "-d",
+            "--dev_mode",
+            action="store_true",
+            help="Enables development mode - creates/updates entries in the input.json file for the council on each run",
+            required=False,
+        )
         self.parsed_args = None
 
     def set_args(self, args):

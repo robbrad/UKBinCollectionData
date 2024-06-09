@@ -573,12 +573,13 @@
         "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.)."
     },
     "MidSussexDistrictCouncil": {
-        "house_number": "OAKLANDS",
+        "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
         "postcode": "RH16 1SS",
         "skip_get_url": true,
         "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
         "wiki_name": "Mid Sussex District Council",
-        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
+        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes",
+        "web_driver": "http://selenium:4444"
     },
     "MiltonKeynesCityCouncil": {
         "uprn": "Fullers Slade",

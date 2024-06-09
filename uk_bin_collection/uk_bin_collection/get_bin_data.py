@@ -3,6 +3,7 @@
 Keyword arguments:
 None
 """
+
 import json
 import logging
 from abc import ABC, abstractmethod
@@ -62,8 +63,11 @@ class AbstractGetBinDataClass(ABC):
 
         # if dev mode create/update council's entry in the input.json
         if kwargs.get("dev_mode"):
-            self.update_dev_mode_data(council_module_str=kwargs.get("council_module_str"),
-                                      this_url=this_url, **kwargs)
+            self.update_dev_mode_data(
+                council_module_str=kwargs.get("council_module_str"),
+                this_url=this_url,
+                **kwargs,
+            )
 
         return json_output
 
@@ -114,7 +118,7 @@ class AbstractGetBinDataClass(ABC):
             "Chrome/108.0.0.0 Safari/537.36"
         )
         headers = {"User-Agent": user_agent}
-        urllib3.disable_warnings(category = urllib3.exceptions.InsecureRequestWarning)
+        urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
         try:
             full_page = requests.get(url, headers, verify=False, timeout=120)
