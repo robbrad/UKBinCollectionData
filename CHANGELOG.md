@@ -1,3 +1,16 @@
+## 0.82.0 (2024-06-13)
+
+### Feat
+
+- adding dev container updates
+- adding dev container updates
+- refactoring main files
+- adding ability to set local mode in HA custom comp. if users dont have a Selenium Server
+
+### Fix
+
+- MidSussex
+
 ## 0.81.0 (2024-06-05)
 
 ### Feat
