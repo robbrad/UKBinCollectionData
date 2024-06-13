@@ -1,5 +1,3 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/python
 {
     "dockerComposeFile": "docker-compose.yml",
     "service": "devcontainer",
@@ -7,17 +5,19 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python",
-                "ms-python.vscode-pylance",
+                "alexkrechik.cucumberautocomplete",
                 "eamodio.gitlens",
+                "Gruntfuggly.todo-tree",
                 "ms-python.black-formatter",
                 "ms-python.isort",
+                "ms-python.pylint", // Add pylint extension
                 "ms-python.python",
-                "ryanluker.vscode-coverage-gutters",
-                "Gruntfuggly.todo-tree",
+                "ms-python.python",
+                "ms-python.vscode-pep8", // Add pep8 extension
+                "ms-python.vscode-pylance",
                 "oderwat.indent-rainbow",
-                "yzhang.markdown-all-in-one",
-                "alexkrechik.cucumberautocomplete"
+                "ryanluker.vscode-coverage-gutters",
+                "yzhang.markdown-all-in-one"
             ],
             "settings": {
                 "makefile.makefilePath": "${workspaceFolder}/",
@@ -40,8 +40,10 @@
                 "python.analysis.userFileIndexingLimit": -1,
                 "python.formatting.provider": "none",
                 "python.languageServer": "Pylance",
-                "python.linting.enabled": false,
-                "python.linting.lintOnSave": false,
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "python.linting.pep8Enabled": true,
+                "python.linting.lintOnSave": true,
                 "python.testing.autoTestDiscoverOnSaveEnabled": false,
                 "python.defaultInterpreterPath": "/home/vscode/ukbc-py-env",
                 "python.testing.pytestArgs": [

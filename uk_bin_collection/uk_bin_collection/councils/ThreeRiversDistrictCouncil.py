@@ -30,7 +30,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            if headless:
+            if not headless:
                 driver.set_window_size(1920, 1080)
 
             driver.get(

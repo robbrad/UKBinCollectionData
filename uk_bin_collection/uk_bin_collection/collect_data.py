@@ -11,8 +11,8 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import (
 _LOGGER = logging.getLogger(__name__)
 
 
-# Dynamically importing the council processor
 def import_council_module(module_name, src_path="councils"):
+    """Dynamically import the council processor module."""
     module_path = os.path.realpath(os.path.join(os.path.dirname(__file__), src_path))
     if module_path not in sys.path:
         sys.path.append(module_path)
@@ -25,6 +25,7 @@ class UKBinCollectionApp:
         self.parsed_args = None
 
     def setup_arg_parser(self):
+        """Setup the argument parser for the script."""
         self.parser = argparse.ArgumentParser(
             description="UK Bin Collection Data Parser"
         )
@@ -38,8 +39,7 @@ class UKBinCollectionApp:
             "-p",
             "--postcode",
             type=str,
-            help="Postcode to parse - should include a space and be wrapped in "
-            "double-quotes",
+            help="Postcode to parse - should include a space and be wrapped in double quotes",
             required=False,
         )
         self.parser.add_argument(
@@ -58,6 +58,7 @@ class UKBinCollectionApp:
         self.parser.add_argument(
             "-w",
             "--web_driver",
+            type=str,
             help="URL for remote Selenium web driver - should be wrapped in double quotes",
             required=False,
         )
@@ -74,7 +75,13 @@ class UKBinCollectionApp:
             help="Should Selenium be headless. Defaults to true. Can be set to false to debug council",
         )
         self.parser.set_defaults(headless=True)
-
+        self.parser.add_argument(
+            "--local_browser",
+            dest="local_browser",
+            action="store_true",
+            help="Should Selenium be run on a remote server or locally. Defaults to false.",
+            required=False,
+        )
         self.parser.add_argument(
             "-d",
             "--dev_mode",
@@ -85,43 +92,37 @@ class UKBinCollectionApp:
         self.parsed_args = None
 
     def set_args(self, args):
+        """Parse the arguments from the command line."""
         self.parsed_args = self.parser.parse_args(args)
 
     def run(self):
-        council_module_str = self.parsed_args.module
-        council_module = import_council_module(council_module_str)
-        address_url = self.parsed_args.URL
-        postcode = self.parsed_args.postcode
-        paon = self.parsed_args.number
-        uprn = self.parsed_args.uprn
-        skip_get_url = self.parsed_args.skip_get_url
-        web_driver = self.parsed_args.web_driver
-        headless = self.parsed_args.headless
-        dev_mode = self.parsed_args.dev_mode
-
+        """Run the application with the provided arguments."""
+        council_module = import_council_module(self.parsed_args.module)
         return self.client_code(
             council_module.CouncilClass(),
-            address_url,
-            postcode=postcode,
-            paon=paon,
-            uprn=uprn,
-            skip_get_url=skip_get_url,
-            web_driver=web_driver,
-            headless=headless,
-            dev_mode=dev_mode,
-            council_module_str=council_module_str,
+            self.parsed_args.URL,
+            postcode=self.parsed_args.postcode,
+            paon=self.parsed_args.number,
+            uprn=self.parsed_args.uprn,
+            skip_get_url=self.parsed_args.skip_get_url,
+            web_driver=self.parsed_args.web_driver,
+            headless=self.parsed_args.headless,
+            local_browser=self.parsed_args.local_browser,
+            dev_mode=self.parsed_args.dev_mode,
+            council_module_str=self.parsed_args.module,
         )
 
-    def client_code(self, get_bin_data_class, address_url, **kwargs) -> None:
+    def client_code(self, get_bin_data_class, address_url, **kwargs):
         """
-        The client code calls the template method to execute the algorithm. Client
-        code does not have to know the concrete class of an object it works with,
-        as long as it works with objects through the interface of their base class.
+        Call the template method to execute the algorithm. Client code does not need
+        to know the concrete class of an object it works with, as long as it works with
+        objects through the interface of their base class.
         """
         return get_bin_data_class.template_method(address_url, **kwargs)
 
 
 def run():
+    """Set up logging and run the application."""
     global _LOGGER
     _LOGGER = setup_logging(LOGGING_CONFIG, None)
     app = UKBinCollectionApp()

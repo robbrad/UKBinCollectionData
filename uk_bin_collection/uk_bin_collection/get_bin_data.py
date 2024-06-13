@@ -1,16 +1,15 @@
-"""Module that contains an abstract class that can be imported to
-handle the data recieved from the provided council class.
+"""Get Bin Data
 
-Keyword arguments: None
+Keyword arguments:
+None
 """
 
 import json
 import logging
 from abc import ABC, abstractmethod
-from logging.config import dictConfig
 import os
-
 import requests
+import urllib3
 
 from uk_bin_collection.uk_bin_collection.common import update_input_json
 
@@ -27,6 +26,12 @@ LOGGING_CONFIG = dict(
 
 
 def setup_logging(logging_config, logger_name):
+    """Set up logging configuration.
+
+    Keyword arguments:
+    logging_config -- the logging configuration dictionary
+    logger_name -- the name of the logger
+    """
     try:
         logging.config.dictConfig(logging_config)
         logger = logging.getLogger(logger_name)
@@ -35,11 +40,8 @@ def setup_logging(logging_config, logger_name):
         raise exp
 
 
-# import the wonderful Beautiful Soup and the URL grabber
-
-
 class AbstractGetBinDataClass(ABC):
-    """An abstract class that can be imported to handle the data recieved from the provided
+    """An abstract class that can be imported to handle the data received from the provided
     council class.
 
     Keyword arguments: None
@@ -52,62 +54,57 @@ class AbstractGetBinDataClass(ABC):
         address_url -- the url to get the data from
         """
         this_url = address_url
-        this_postcode = kwargs.get("postcode", None)
-        this_paon = kwargs.get("paon", None)
-        this_uprn = kwargs.get("uprn", None)
-        this_usrn = kwargs.get("usrn", None)
-        this_web_driver = kwargs.get("web_driver", None)
-        this_headless = kwargs.get("headless", None)
-        skip_get_url = kwargs.get("skip_get_url", None)
-        dev_mode = kwargs.get("dev_mode", False)
-        council_module_str = kwargs.get("council_module_str", None)
-        if (
-            not skip_get_url or skip_get_url is False
-        ):  # we will not use the generic way to get data - needs a get data in the council class itself
-            page = self.get_data(address_url)
-            bin_data_dict = self.parse_data(
-                page,
-                postcode=this_postcode,
-                paon=this_paon,
-                uprn=this_uprn,
-                usrn=this_usrn,
-                web_driver=this_web_driver,
-                headless=this_headless,
-                url=this_url,
-            )
-            json_output = self.output_json(bin_data_dict)
-        else:
-            bin_data_dict = self.parse_data(
-                "",
-                postcode=this_postcode,
-                paon=this_paon,
-                uprn=this_uprn,
-                usrn=this_usrn,
-                web_driver=this_web_driver,
-                headless=this_headless,
-                url=this_url,
-            )
-            json_output = self.output_json(bin_data_dict)
+        this_local_browser = kwargs.get("local_browser", False)
+        if not this_local_browser:
+            kwargs["web_driver"] = kwargs.get("web_driver", None)
+
+        bin_data_dict = self.get_and_parse_data(this_url, **kwargs)
+        json_output = self.output_json(bin_data_dict)
 
         # if dev mode create/update council's entry in the input.json
-        if dev_mode is not None and dev_mode is True:
-            cwd = os.getcwd()
-            input_file_path = os.path.join(
-                cwd, "uk_bin_collection", "tests", "input.json"
-            )
-            update_input_json(
-                council_module_str,
-                this_url,
-                input_file_path,
-                postcode=this_postcode,
-                paon=this_paon,
-                uprn=this_uprn,
-                usrn=this_usrn,
-                web_driver=this_web_driver,
-                skip_get_url=skip_get_url,
+        if kwargs.get("dev_mode"):
+            self.update_dev_mode_data(
+                council_module_str=kwargs.get("council_module_str"),
+                this_url=this_url,
+                **kwargs,
             )
 
         return json_output
+
+    def get_and_parse_data(self, address_url, **kwargs):
+        """Get and parse data from the URL
+
+        Keyword arguments:
+        address_url -- the URL to get the data from
+        """
+        if not kwargs.get("skip_get_url"):
+            page = self.get_data(address_url)
+            bin_data_dict = self.parse_data(page, url=address_url, **kwargs)
+        else:
+            bin_data_dict = self.parse_data("", url=address_url, **kwargs)
+
+        return bin_data_dict
+
+    def update_dev_mode_data(self, council_module_str, this_url, **kwargs):
+        """Update input.json if in development mode
+
+        Keyword arguments:
+        council_module_str -- the council module string
+        this_url -- the URL used
+        """
+        cwd = os.getcwd()
+        input_file_path = os.path.join(cwd, "uk_bin_collection", "tests", "input.json")
+        update_input_json(
+            council_module_str,
+            this_url,
+            input_file_path,
+            postcode=kwargs.get("postcode"),
+            paon=kwargs.get("paon"),
+            uprn=kwargs.get("uprn"),
+            usrn=kwargs.get("usrn"),
+            web_driver=kwargs.get("web_driver"),
+            skip_get_url=kwargs.get("skip_get_url"),
+        )
 
     @classmethod
     def get_data(cls, url) -> str:
@@ -116,29 +113,18 @@ class AbstractGetBinDataClass(ABC):
         Keyword arguments:
         url -- the url to get the data from
         """
-        # Set a user agent so we look like a browser ;-)
         user_agent = (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
             "Chrome/108.0.0.0 Safari/537.36"
         )
         headers = {"User-Agent": user_agent}
-        requests.packages.urllib3.disable_warnings()
+        urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
-        # Make the Request - change the URL - find out your property number
         try:
-            full_page = requests.get(url, headers, verify=False)
+            full_page = requests.get(url, headers, verify=False, timeout=120)
             return full_page
-        except requests.exceptions.HTTPError as errh:
-            _LOGGER.error(f"Http Error: {errh}")
-            raise
-        except requests.exceptions.ConnectionError as errc:
-            _LOGGER.error(f"Error Connecting: {errc}")
-            raise
-        except requests.exceptions.Timeout as errt:
-            _LOGGER.error(f"Timeout Error: {errt}")
-            raise
         except requests.exceptions.RequestException as err:
-            _LOGGER.error(f"Oops: Something Else {err}")
+            _LOGGER.error(f"Request Error: {err}")
             raise
 
     @abstractmethod
@@ -154,12 +140,7 @@ class AbstractGetBinDataClass(ABC):
         """Method to output the json as a pretty printed string
 
         Keyword arguments:
-        bin_data_dict -- a dict parsed data
+        bin_data_dict -- a dict of parsed data
         """
-        # Form a JSON wrapper
-        # Make the JSON
-
         json_data = json.dumps(bin_data_dict, sort_keys=False, indent=4)
-
-        # Output the data
         return json_data

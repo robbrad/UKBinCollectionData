@@ -1,80 +1,168 @@
-import re
-from datetime import datetime
+import logging
+import time
 
-import requests
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
-def get_token(res) -> str:
-    """
-    Get a UFPRT code for the form data to be processed
-        :param res:
-        :return:
-    """
-    soup = BeautifulSoup(res, features="html.parser")
-    soup.prettify()
-    token = soup.find("input", {"name": "ufprt"}).get("value")
-    return token
+# Set up logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Concrete class for Mid-Sussex District Council implementing AbstractGetBinDataClass.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        api_url = "https://www.midsussex.gov.uk/waste-recycling/bin-collection/"
-        user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
-        postcode_re = "^([A-Za-z][A-Ha-hJ-Yj-y]?[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}|[Gg][Ii][Rr] ?0[Aa]{2})$"
-        user_full_addr = f"{user_paon} {user_postcode}"
+        driver = None
+        try:
+            data = {"bins": []}
+            collections = []
+            user_paon = kwargs.get("paon")
+            user_postcode = kwargs.get("postcode")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            check_postcode(user_postcode)
 
-        check_postcode(user_postcode)
-        check_paon(user_paon)
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless, None, __name__)
 
-        form_data = {
-            "PostCodeStep.strAddressSearch": user_postcode,
-            "AddressStep.strAddressSelect": user_full_addr,
-            "Next": "true",
-            "StepIndex": "1",
-        }
+            driver.get("https://www.midsussex.gov.uk/waste-recycling/bin-collection/")
+            wait = WebDriverWait(driver, 60)
 
-        # Get a ufprt by posting here (I have no idea how ufprt works, so may as well grab one from the server)
-        requests.packages.urllib3.disable_warnings()
-        init = requests.post(api_url, data=form_data)
-        ufprt = get_token(init.text)
-        form_data.update({"ufprt": ufprt})
+            try:
+                logging.info("Cookies")
+                cookie_window = wait.until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//div[@id="ccc-content"]')
+                    )
+                )
+                time.sleep(2)
+                accept_cookies = WebDriverWait(driver, timeout=10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//button[@id="ccc-recommended-settings"]')
+                    )
+                )
+                accept_cookies.send_keys(Keys.ENTER)
+                accept_cookies.click()
+                accept_cookies_close = WebDriverWait(driver, timeout=10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, '//button[@id="ccc-close"]')
+                    )
+                )
+                accept_cookies_close.send_keys(Keys.ENTER)
+                accept_cookies_close.click()
+            except:
+                print(
+                    "Accept cookies banner not found or clickable within the specified time."
+                )
+                pass
 
-        response = requests.post(api_url, data=form_data)
+            def click_element(by, value):
+                element = wait.until(EC.element_to_be_clickable((by, value)))
+                driver.execute_script("arguments[0].scrollIntoView();", element)
+                element.click()
 
-        # Make a BS4 object
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
+            logging.info("Entering postcode")
+            input_element_postcode = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//input[@id="PostCodeStep_strAddressSearch"]')
+                )
+            )
 
-        data = {"bins": []}
+            input_element_postcode.send_keys(user_postcode)
 
-        table_element = soup.find("table", {"class": "collDates"})
-        table_rows = table_element.find_all_next("tr")
+            logging.info("Entering postcode")
 
-        row_index = 0
-        for row in table_rows:
-            if row_index < 1:
-                row_index += 1
-                continue
+            click_element(By.XPATH, "//button[contains(text(), 'Search')]")
+
+            logging.info("Selecting address")
+            dropdown = wait.until(
+                EC.element_to_be_clickable((By.ID, "StrAddressSelect"))
+            )
+
+            dropdown_options = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//select[@id='StrAddressSelect']/option")
+                )
+            )
+            dropdownSelect = Select(dropdown)
+            dropdownSelect.select_by_visible_text(str(user_paon))
+
+            click_element(By.XPATH, "//button[contains(text(), 'Select')]")
+
+            logging.info("Waiting for bin schedule")
+            bin_results = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, f"//strong[contains(text(), '{user_paon}')]")
+                )
+            )
+
+            # Make a BS4 object
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+            # Find the table with bin collection data
+            table = soup.find("table", class_="collDates")
+            if table:
+                rows = table.find_all("tr")[1:]  # Skip the header row
             else:
-                details = row.find_all_next("td")
-                dict_data = {
-                    "type": details[1].get_text().replace("collection", "").strip(),
-                    "collectionDate": datetime.strptime(
-                        details[2].get_text(), "%A %d %B %Y"
-                    ).strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-                row_index += 1
+                rows = []
 
-        return data
+            # Extract the data from the table and format it according to the JSON schema
+            bins = []
+            date_pattern = re.compile(r"(\d{2}) (\w+) (\d{4})")
+
+            for row in rows:
+                cols = row.find_all("td")
+                if len(cols) < 3:
+                    print("Skipping row, not enough columns:", row)
+                    continue  # Skip rows that do not have enough columns
+
+                collection_type = cols[1].text.strip()
+                collection_date = cols[2].text.strip()
+
+                # Convert the collection date to the required format
+                date_match = date_pattern.search(collection_date)
+                if date_match:
+                    day, month, year = date_match.groups()
+                    month_number = {
+                        "January": "01",
+                        "February": "02",
+                        "March": "03",
+                        "April": "04",
+                        "May": "05",
+                        "June": "06",
+                        "July": "07",
+                        "August": "08",
+                        "September": "09",
+                        "October": "10",
+                        "November": "11",
+                        "December": "12",
+                    }.get(month, "00")
+
+                    formatted_date = f"{day}/{month_number}/{year}"
+                    bins.append(
+                        {"type": collection_type, "collectionDate": formatted_date}
+                    )
+                else:
+                    print("Date pattern not found in:", collection_date)
+
+            # Create the final JSON structure
+            bin_data = {"bins": bins}
+            return bin_data
+        except Exception as e:
+            logging.error(f"An error occurred: {e}")
+            raise
+
+        finally:
+            if driver:
+                driver.quit()
