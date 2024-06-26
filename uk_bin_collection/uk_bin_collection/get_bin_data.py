@@ -5,7 +5,7 @@ None
 """
 
 import json
-import logging
+import logging, logging.config
 from abc import ABC, abstractmethod
 import os
 import requests
