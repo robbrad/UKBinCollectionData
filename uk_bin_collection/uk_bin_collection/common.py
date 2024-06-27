@@ -106,6 +106,15 @@ def get_date_with_ordinal(date_number: int) -> str:
         else {1: "st", 2: "nd", 3: "rd"}.get(date_number % 10, "th")
     )
 
+def has_numbers(inputString: str) -> bool:
+    """
+
+    :rtype: bool
+    :param inputString: String to check for numbers
+    :return: True if any numbers are found in input string
+    """
+    return any(char.isdigit() for char in inputString)
+
 
 def remove_ordinal_indicator_from_date_string(date_string: str) -> str:
     """
