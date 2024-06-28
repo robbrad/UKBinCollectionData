@@ -1,3 +1,11 @@
+## 0.82.1 (2024-06-28)
+
+### Fix
+
+- update input.json to use UPRN parameter
+- change DorsetCouncil.py to use API links provided in #756
+- explicit import of logging.config to stop error in Python 3.11
+
 ## 0.82.0 (2024-06-13)
 
 ### Feat
