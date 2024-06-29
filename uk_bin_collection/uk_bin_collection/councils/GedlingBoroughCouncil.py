@@ -38,7 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
             for col in json_data:
                 bin_date = datetime.strptime(col.get("collectionDate"), "%Y-%m-%d").date()
                 if bin_date >= run_date:
-                    collections.append((col.get("name").replace("Collection", "").replace("Day","").strip().title(), bin_date))
+                    collections.append((col.get("alternativeName"), bin_date))
 
         # Sort the data
         ordered_data = sorted(collections, key=lambda x: x[1])
