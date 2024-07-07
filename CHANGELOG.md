@@ -1,3 +1,15 @@
+## 0.83.0 (2024-07-07)
+
+### Feat
+
+- add has_numbers() function
+
+### Fix
+
+- update Gedling Borough Council parser to use alternative name key
+- change Gedling to use new JSON data
+- update instructions for Gedling
+
 ## 0.82.1 (2024-06-28)
 
 ### Fix
