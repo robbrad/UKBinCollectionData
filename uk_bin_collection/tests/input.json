@@ -247,6 +247,13 @@
         "wiki_name": "Conwy County Borough Council",
         "wiki_note": "Conwy County Borough Council is a straight up uprn in the url eg &uprn=XXXXXXXXXXXXX ."
     },
+    "CornwallCouncil": {
+        "skip_get_url": true,
+        "uprn": "100040128734",
+        "url": "https://www.cornwall.gov.uk/my-area/",
+        "wiki_name": "Cornwall Council",
+        "wiki_note": "Use https://uprn.uk/ to find your UPRN."
+    },
     "CrawleyBoroughCouncil": {
         "house_number": "9701076",
         "skip_get_url": true,
