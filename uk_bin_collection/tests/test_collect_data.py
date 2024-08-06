@@ -4,8 +4,8 @@ from unittest import mock
 import pytest
 from requests import exceptions as req_exp
 from requests.models import Response
-from uk_bin_collection.get_bin_data import AbstractGetBinDataClass as agbdc
-from uk_bin_collection.get_bin_data import setup_logging
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass as agbdc
+from uk_bin_collection.uk_bin_collection.get_bin_data import setup_logging
 import logging
 
 

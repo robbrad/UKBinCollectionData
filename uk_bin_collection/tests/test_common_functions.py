@@ -1,6 +1,6 @@
 from unittest import mock
 import pytest
-from uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import *
 from io import StringIO
 from contextlib import redirect_stdout
 from unittest.mock import patch, MagicMock, mock_open
