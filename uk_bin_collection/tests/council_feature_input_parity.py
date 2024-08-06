@@ -17,7 +17,7 @@ def get_councils_from_files(repo, branch):
                 return [
                     item["name"].replace(".py", "")
                     for item in data
-                    if item["name"].endswith(".py")
+                    if item["name"].endswith(".py") and item["name"] != "__init__.py"
                 ]
             else:
                 print("Expected a list from the JSON response but got something else.")
