@@ -1,6 +1,5 @@
 import time
 from datetime import datetime
-
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -10,9 +9,9 @@ from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
+# Correct relative imports for your nested structure
+from ..common import *
+from ..get_bin_data import AbstractGetBinDataClass
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -33,23 +32,18 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
 
             data = {"bins": []}
-
             page = "https://carehomes.bolton.gov.uk/bins.aspx"
 
             # Set up WebDriver with WebDriver Manager
-            try:
-                options = webdriver.ChromeOptions()
-                if headless:
-                    options.add_argument('--headless')  # Run headless if specified
-                options.add_argument('--no-sandbox')
-                options.add_argument('--disable-dev-shm-usage')
-                options.add_argument('--disable-gpu')
+            options = webdriver.ChromeOptions()
+            if headless:
+                options.add_argument('--headless')  # Run headless if specified
+            options.add_argument('--no-sandbox')
+            options.add_argument('--disable-dev-shm-usage')
+            options.add_argument('--disable-gpu')
 
-                driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-                driver.get(page)
-            except Exception as driver_error:
-                print(f"Failed to create WebDriver: {driver_error}")
-                raise
+            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+            driver.get(page)
 
             # Wait for the webpage to load necessary elements
             wait = WebDriverWait(driver, 30)
@@ -63,12 +57,6 @@ class CouncilClass(AbstractGetBinDataClass):
             pcsearch_btn.click()
 
             dropdown = wait.until(EC.element_to_be_clickable((By.ID, "ddlAddresses")))
-
-            dropdown_options = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//select/option[1]"))
-            )
-
-            time.sleep(1)
             dropdownSelect = Select(dropdown)
             dropdownSelect.select_by_value(str(user_uprn))
 
@@ -79,20 +67,20 @@ class CouncilClass(AbstractGetBinDataClass):
             # Parse the page source with BeautifulSoup
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            collections = []
-
             # Find section with bins information
+            collections = []
             sections = soup.find_all("div", {"class": "bin-info"})
 
             for item in sections:
+                # Extract and clean bin type
                 words = item.find_next("strong").text.split()[2:4]
                 bin_type = " ".join(words).capitalize()
 
+                # Process dates
                 date_list = item.find_all("p")
                 for d in date_list:
+                    # Clean and parse date
                     clean_date_string = d.text.strip().lstrip("⯀").strip()
-
-                    # Convert string to date
                     try:
                         next_collection = datetime.strptime(clean_date_string, "%A %d %B %Y")
                         collections.append((bin_type, next_collection))
