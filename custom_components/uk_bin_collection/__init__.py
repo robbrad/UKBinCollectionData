@@ -34,7 +34,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def _async_finish_startup(_):
         await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    async_at_started(hass, _async_finish_startup)
+    hass.async_create_task(_async_finish_startup(None))
 
     _LOGGER.info(
         LOG_PREFIX + "Successfully set up UK Bin Collection Data for council: %s",
