@@ -1,3 +1,9 @@
+## 0.84.1 (2024-08-08)
+
+### Fix
+
+- #771 Bolton bullet points on dates is now fixed
+
 ## 0.84.0 (2024-07-31)
 
 ## 0.83.0 (2024-07-07)
