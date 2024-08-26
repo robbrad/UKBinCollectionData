@@ -58,6 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(response.text, features="html.parser")
         info_section  = soup.find("section", {"class": "block block-ntc-bins clearfix"})
 
+        regular_day, garden_day, special_day = None, None, None
         # Get day of week and week label for refuse, garden and special collections.
         # Week label is A or B.  Convert that to an int to use as an offset.
         for anchor in info_section.findAll("a"):
@@ -83,22 +84,26 @@ class CouncilClass(AbstractGetBinDataClass):
         # The garden calendar only shows until end of November 2024, work out how many weeks that is
         garden_weeks_total = math.floor((datetime(2024, 12, 1) - datetime.now()).days / 7)
 
+        regular_collections, garden_collections, special_collections = [], [], []
         # Convert day text to series of dates using previous calculation
-        regular_collections = get_weekday_dates_in_period(
-            datetime.today(),
-            days_of_week.get(regular_day.capitalize()),
-            amount=weeks_total,
-        )
-        garden_collections = get_weekday_dates_in_period(
-            datetime.today(),
-            days_of_week.get(garden_day.capitalize()),
-            amount=garden_weeks_total,
-        )
-        special_collections = get_weekday_dates_in_period(
-            datetime.today(),
-            days_of_week.get(special_day.capitalize()),
-            amount=weeks_total,
-        )
+        if regular_day is not None:
+            regular_collections = get_weekday_dates_in_period(
+                datetime.today(),
+                days_of_week.get(regular_day.capitalize()),
+                amount=weeks_total,
+            )
+        if garden_day is not None:
+            garden_collections = get_weekday_dates_in_period(
+                datetime.today(),
+                days_of_week.get(garden_day.capitalize()),
+                amount=garden_weeks_total,
+            )
+        if special_day is not None:
+            special_collections = get_weekday_dates_in_period(
+                datetime.today(),
+                days_of_week.get(special_day.capitalize()),
+                amount=weeks_total,
+            )
 
         collections = []
 
