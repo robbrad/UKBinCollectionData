@@ -352,6 +352,14 @@
         "url": "https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn=",
         "wiki_name": "Eastleigh Borough Council"
     },
+    "EnfieldCouncil": {
+        "url": "https://www.enfield.gov.uk/services/rubbish-and-recycling/find-my-collection-day",
+        "wiki_name": "Enfield Council",
+        "skip_get_url": true,
+        "postcode": "N13 5AJ",
+        "house_number": "111",
+        "web_driver": "http://selenium:4444"
+    },
     "EnvironmentFirst": {
         "url": "https://environmentfirst.co.uk/house.php?uprn=100060055444",
         "wiki_command_url_override": "https://environmentfirst.co.uk/house.php?uprn=XXXXXXXXXX",
