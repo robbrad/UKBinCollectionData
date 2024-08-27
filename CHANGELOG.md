@@ -1,3 +1,10 @@
+## 0.84.2 (2024-08-27)
+
+### Fix
+
+- Re-work North Tyneside Council module for 2024 - some addresses do not have a garden collection
+- Re-work North Tyneside Council module for 2024
+
 ## 0.84.1 (2024-08-08)
 
 ### Fix
