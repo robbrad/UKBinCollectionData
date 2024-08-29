@@ -115,20 +115,20 @@ class CouncilClass(AbstractGetBinDataClass):
                 item_as_date += timedelta(days=1)
             # Use the isoweek number to separate collections based on week label.
             if (item_as_date.date().isocalendar()[1] % 2) == regular_week:
-                collections.append(("Refuse (green)", item_as_date))
+                collections.append(("Refuse", item_as_date, "Green"))
             else:
-                collections.append(("Recycling (grey)", item_as_date))
+                collections.append(("Recycling", item_as_date, "Grey"))
 
         # Add garden collections
         for item in garden_collections:
             item_as_date = datetime.strptime(item, date_format)
             # Garden collections do not move for bank holidays
             if (item_as_date.date().isocalendar()[1] % 2) == garden_week:
-                collections.append(("Garden Waste (brown)", item_as_date))
+                collections.append(("Garden Waste", item_as_date, "Brown"))
 
         # Add special collections
         collections += [
-            ("Special Collection (bookable)", datetime.strptime(item, date_format))
+            ("Special Collection (bookable)", datetime.strptime(item, date_format), "Black")
             for item in special_collections
         ]
 
@@ -137,6 +137,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     {
                     "type": item[0],
                     "collectionDate": item[1].strftime(date_format),
+                    "colour": item[2],
                 }
                 for item in sorted(collections, key=lambda x: x[1])
             ]
