@@ -29,6 +29,9 @@
                 "collectionDate": {
                     "type": "string",
                     "pattern": "\\d{2}/\\d{2}/\\d{4}"
+                },
+                "colour": {
+                    "type": "string"
                 }
             },
             "required": [
