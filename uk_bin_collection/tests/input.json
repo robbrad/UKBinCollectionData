@@ -68,6 +68,13 @@
         "wiki_name": "Bedfordshire Council",
         "wiki_note": "In order to use this parser, you must provide a valid postcode and a uprn retrieved from the councils website for your specific address"
     },
+    "BelfastCityCouncil": {
+        "skip_get_url": true,
+        "url": "https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx",
+        "wiki_name": "BelfastCityCouncil",
+        "postcode": "BT10 0GY",
+        "uprn": "185086469"
+    },
     "BexleyCouncil": {
         "house_number": "1 Dorchester Avenue, Bexley",
         "postcode": "DA5 3AH",

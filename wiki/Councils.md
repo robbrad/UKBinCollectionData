@@ -17,6 +17,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Basingstoke Council](#basingstoke-council)
 - [Bath and North East Somerset Council](#bath-and-north-east-somerset-council)
 - [Bedfordshire Council](#bedfordshire-council)
+- [BelfastCityCouncil](#belfastcitycouncil)
 - [Bexley Council](#bexley-council)
 - [Blackburn Council](#blackburn-council)
 - [Bolton Council](#bolton-council)
@@ -237,6 +238,16 @@ Additional parameters:
 
 Note: In order to use this parser, you must provide a valid postcode and a uprn retrieved from the councils website for your specific address
 
+---
+
+### BelfastCityCouncil
+```commandline
+python collect_data.py BelfastCityCouncil https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx -u XXXXXXXX -p "XXXX XXX"
+```
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: The UPRN can be found using developer tools, look for "ctl00$MainContent$lstAddresses" variable in the Request headers. 
 ---
 
 ### Bexley Council
