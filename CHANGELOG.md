@@ -1,3 +1,9 @@
+## 0.85.1 (2024-09-02)
+
+### Fix
+
+- 779 Add correct async wait to Home Assistant
+
 ## 0.85.0 (2024-08-27)
 
 ### Feat
