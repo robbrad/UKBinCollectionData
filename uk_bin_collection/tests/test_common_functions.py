@@ -1,10 +1,11 @@
-from unittest import mock
-import pytest
-from uk_bin_collection.common import *
-from io import StringIO
 from contextlib import redirect_stdout
-from unittest.mock import patch, MagicMock, mock_open
+from io import StringIO
+from unittest import mock
+from unittest.mock import MagicMock, mock_open, patch
+
+import pytest
 from selenium.common.exceptions import WebDriverException
+from uk_bin_collection.common import *
 from urllib3.exceptions import MaxRetryError
 
 
@@ -342,3 +343,95 @@ def test_create_webdriver_remote_failure():
     # Test the scenario where the remote server is not available
     with pytest.raises(MaxRetryError) as exc_info:
         create_webdriver("http://invalid-url:4444", False)
+
+
+def test_create_webdriver_remote_with_session_name():
+    # Test creating a remote WebDriver with a session name
+    session_name = "test-session"
+    web_driver_url = (
+        "http://localhost:4444/wd/hub"  # Use a valid remote WebDriver URL for testing
+    )
+
+    # Mock the Remote WebDriver
+    with mock.patch("uk_bin_collection.common.webdriver.Remote") as mock_remote:
+        mock_instance = mock.MagicMock()
+        mock_instance.name = "chrome"
+        mock_remote.return_value = mock_instance
+
+        # Call the function with the test parameters
+        result = create_webdriver(web_driver=web_driver_url, session_name=session_name)
+
+        # Check if the session name was set in capabilities
+        args, kwargs = mock_remote.call_args
+        options = kwargs["options"]
+        assert options._caps.get("se:name") == session_name
+        assert result.name == "chrome"
+
+
+def test_string_with_numbers():
+    assert has_numbers("abc123") is True
+    assert has_numbers("1a2b3c") is True
+    assert has_numbers("123") is True
+
+
+def test_string_without_numbers():
+    assert has_numbers("abcdef") is False
+    assert has_numbers("ABC") is False
+    assert has_numbers("!@#") is False
+
+
+def test_empty_string():
+    assert has_numbers("") is False
+
+
+def test_string_with_only_numbers():
+    assert has_numbers("1234567890") is True
+
+
+def test_string_with_special_characters_and_numbers():
+    assert has_numbers("!@#123$%^") is True
+    assert has_numbers("abc!@#123") is True
+
+
+def test_string_with_whitespace_and_numbers():
+    assert has_numbers(" 123 ") is True
+    assert has_numbers("abc 123") is True
+
+
+@pytest.mark.parametrize(
+    "today_str, day_name, expected",
+    [
+        (
+            "2024-09-02",
+            "Monday",
+            "09/09/2024",
+        ),  # Today is Monday, so next Monday is in 7 days
+        (
+            "2024-09-02",
+            "Tuesday",
+            "03/09/2024",
+        ),  # Today is Monday, next Tuesday is tomorrow
+        (
+            "2024-09-02",
+            "Sunday",
+            "08/09/2024",
+        ),  # Today is Monday, next Sunday is in 6 days
+        (
+            "2024-09-03",
+            "Wednesday",
+            "04/09/2024",
+        ),  # Today is Tuesday, next Wednesday is tomorrow
+        (
+            "2024-09-03",
+            "Monday",
+            "09/09/2024",
+        ),  # Today is Tuesday, next Monday is in 6 days
+    ],
+)
+def test_get_next_day_of_week(today_str, day_name, expected):
+    mock_today = datetime.strptime(today_str, "%Y-%m-%d")
+    with patch("datetime.datetime") as mock_datetime:
+        mock_datetime.now.return_value = mock_today
+        mock_datetime.strptime = datetime.strptime  # to handle strptime within patch
+        result = get_next_day_of_week(day_name)
+        assert result == expected

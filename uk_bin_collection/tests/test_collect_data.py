@@ -102,3 +102,35 @@ def test_output_json():
     output = agbdc.output_json(bin_data)
     assert type(output) == str
     assert output == '{\n    "bin": ""\n}'
+
+class ConcreteGetBinDataClass(agbdc):
+    """Concrete implementation of the abstract class to test abstract methods."""
+    def parse_data(self, page: str, **kwargs) -> dict:
+        return {"mock_key": "mock_value"}
+
+@pytest.fixture
+def concrete_class_instance():
+    return ConcreteGetBinDataClass()
+
+def test_get_and_parse_data_no_skip_get_url(concrete_class_instance):
+    mock_page = "mocked page content"
+    mock_parsed_data = {"mock_key": "mock_value"}
+
+    with mock.patch.object(concrete_class_instance, 'get_data', return_value=mock_page) as mock_get_data, \
+         mock.patch.object(concrete_class_instance, 'parse_data', return_value=mock_parsed_data) as mock_parse_data:
+        
+        result = concrete_class_instance.get_and_parse_data("http://example.com")
+
+        mock_get_data.assert_called_once_with("http://example.com")
+        mock_parse_data.assert_called_once_with(mock_page, url="http://example.com")
+        assert result == mock_parsed_data
+
+def test_get_and_parse_data_skip_get_url(concrete_class_instance):
+    mock_parsed_data = {"mock_key": "mock_value"}
+
+    with mock.patch.object(concrete_class_instance, 'parse_data', return_value=mock_parsed_data) as mock_parse_data:
+        
+        result = concrete_class_instance.get_and_parse_data("http://example.com", skip_get_url=True)
+
+        mock_parse_data.assert_called_once_with("", url="http://example.com", skip_get_url=True)
+        assert result == mock_parsed_data
