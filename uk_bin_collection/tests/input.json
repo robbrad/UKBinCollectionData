@@ -422,8 +422,8 @@
         "wiki_note": "Use [this site](https://www.gbcbincalendars.co.uk/) to find the collections for your address. Use the -n parameter to add them in a comma-separated list inside quotes, such as: 'Friday G4, Friday J'."
     },
     "GlasgowCityCouncil": {
-        "url": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=906700034497",
-        "wiki_command_url_override": "https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=XXXXXXXX",
+        "url": "https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/CollectionsCalendar.aspx?UPRN=906700034497",
+        "wiki_command_url_override": "https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/CollectionsCalendar.aspx?UPRN=XXXXXXXX",
         "wiki_name": "Glasgow City Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
     },

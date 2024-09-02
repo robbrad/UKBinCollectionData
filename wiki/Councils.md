@@ -682,7 +682,7 @@ Note: Pass the street name into the -n parameter. Use [this](https://apps.gedlin
 
 ### Glasgow City Council
 ```commandline
-python collect_data.py GlasgowCityCouncil https://www.glasgow.gov.uk/forms/refuseandrecyclingcalendar/PrintCalendar.aspx?UPRN=XXXXXXXX
+python collect_data.py GlasgowCityCouncil https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/CollectionsCalendar.aspx?UPRN=XXXXXXXX
 ```
 
 Note: Replace XXXXXXXX with UPRN.
