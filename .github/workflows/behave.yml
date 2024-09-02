@@ -89,10 +89,17 @@ jobs:
         run: make unit-tests
         continue-on-error: true
 
-      - name: Upload test coverage to Codecov
-        uses: codecov/codecov-action@v4
+      #- name: Upload test coverage to Codecov
+      #  uses: codecov/codecov-action@v4
+      #  with:
+      #    gcov_ignore: uk_bin_collection/tests/**
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
-          gcov_ignore: uk_bin_collection/tests/**
+          token: ${{ secrets.CODECOV_TOKEN }}
+
 
       - name: Get Allure history
         uses: actions/checkout@v4
