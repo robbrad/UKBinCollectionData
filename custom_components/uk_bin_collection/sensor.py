@@ -1,4 +1,5 @@
 """Support for UK Bin Collection Dat sensors."""
+
 from datetime import timedelta, datetime
 from dateutil import parser
 import async_timeout
@@ -51,7 +52,15 @@ async def async_setup_entry(
         *(
             f"--{key}={value}"
             for key, value in config.data.items()
-            if key not in {"name", "council", "url", "skip_get_url", "headless", "local_browser"}
+            if key
+            not in {
+                "name",
+                "council",
+                "url",
+                "skip_get_url",
+                "headless",
+                "local_browser",
+            }
         ),
     ]
     if config.data.get("skip_get_url", False):
@@ -59,12 +68,14 @@ async def async_setup_entry(
 
     # Assuming headless is a boolean value obtained from config.data
     headless = config.data.get("headless", True)  # Default to True if not specified
-    
+
     # Only append the argument for non-headless mode
     if headless is False:
         args.append("--not-headless")
 
-    local_browser = config.data.get("local_browser", False)  # Default to False if not specified
+    local_browser = config.data.get(
+        "local_browser", False
+    )  # Default to False if not specified
 
     if local_browser is True:
         args.append("--local_browser")
@@ -146,6 +157,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
             )
 
         return get_latest_collection_info(json.loads(data))
+
 
 class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     """Implementation of the UK Bin Collection Data sensor."""
