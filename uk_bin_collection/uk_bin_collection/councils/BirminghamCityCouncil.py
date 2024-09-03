@@ -5,7 +5,7 @@ import requests
 import logging
 import re
 from datetime import datetime
-from uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import *
 from dateutil.parser import parse
 
 from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
