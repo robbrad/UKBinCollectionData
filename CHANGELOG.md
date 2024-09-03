@@ -1,3 +1,9 @@
+## 0.85.6 (2024-09-03)
+
+### Fix
+
+- #795 and add reconfigure to custom comp.
+
 ## 0.85.5 (2024-09-03)
 
 ### Fix
