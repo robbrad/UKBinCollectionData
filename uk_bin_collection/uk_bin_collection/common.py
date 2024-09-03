@@ -252,7 +252,7 @@ def save_data(file_path, data):
         json.dump(data, file, sort_keys=True, indent=4)
 
 
-def get_next_day_of_week(day_name):
+def get_next_day_of_week(day_name, date_format="%d/%m/%Y"):
     days_of_week = [
         "Monday",
         "Tuesday",

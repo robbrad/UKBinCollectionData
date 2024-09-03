@@ -409,17 +409,17 @@ def test_string_with_whitespace_and_numbers():
         (
             "2024-09-02",
             "Tuesday",
-            "03/09/2024",
+            "09/03/2024",
         ),  # Today is Monday, next Tuesday is tomorrow
         (
             "2024-09-02",
             "Sunday",
-            "08/09/2024",
+            "09/08/2024",
         ),  # Today is Monday, next Sunday is in 6 days
         (
             "2024-09-03",
             "Wednesday",
-            "04/09/2024",
+            "09/04/2024",
         ),  # Today is Tuesday, next Wednesday is tomorrow
         (
             "2024-09-03",
@@ -430,8 +430,8 @@ def test_string_with_whitespace_and_numbers():
 )
 def test_get_next_day_of_week(today_str, day_name, expected):
     mock_today = datetime.strptime(today_str, "%Y-%m-%d")
-    with patch("datetime.datetime") as mock_datetime:
+    with patch('uk_bin_collection.common.datetime') as mock_datetime:  # replace 'your_module' with the actual module name
         mock_datetime.now.return_value = mock_today
-        mock_datetime.strptime = datetime.strptime  # to handle strptime within patch
-        result = get_next_day_of_week(day_name)
+        mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
+        result = get_next_day_of_week(day_name, date_format="%m/%d/%Y")
         assert result == expected
