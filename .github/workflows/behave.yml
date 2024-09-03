@@ -95,9 +95,9 @@ jobs:
       #    gcov_ignore: uk_bin_collection/tests/**
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/codecov-action@v4
         with:
+          fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage.xml
 

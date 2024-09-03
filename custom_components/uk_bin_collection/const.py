@@ -1,4 +1,5 @@
 """Constants for UK Bin Collection Data."""
+
 from datetime import timedelta
 
 from homeassistant.const import Platform

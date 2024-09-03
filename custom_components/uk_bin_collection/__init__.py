@@ -1,18 +1,10 @@
-"""The UK Bin Collection Data integration."""
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.start import async_at_started
-
-# Make sure the 'uk_bin_collection' library is installed for this import to work
-from .const import (
-    DOMAIN,
-    LOG_PREFIX,
-    PLATFORMS,
-)
-
 import logging
 
 _LOGGER = logging.getLogger(__name__)
+
+from .const import DOMAIN, LOG_PREFIX, PLATFORMS
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
