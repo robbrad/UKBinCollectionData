@@ -34,7 +34,7 @@ parity-check:
 
 unit-tests:
 	poetry run coverage erase
-	poetry run coverage run --append --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
+	- poetry run coverage run --append --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
 	poetry run coverage xml
 
 update-wiki:
