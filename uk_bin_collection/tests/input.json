@@ -245,7 +245,7 @@
         "url": "https://myaccount.chorley.gov.uk/wastecollections.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Chorley Council",
-        "wiki_note": "Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+        "wiki_note": "Chorley needs to be passed both a Postcode & UPRN in the format of UPRNXXXXXX to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search)"
     },
     "ConwyCountyBorough": {
         "postcode": "LL30 2DF",
