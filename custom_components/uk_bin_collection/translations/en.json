@@ -14,6 +14,7 @@
                 "title": "Provide council details",
                 "data": {
                     "url": "URL to fetch bin collection data",
+                    "timeout": "The time in seconds for how long the sensor should wait for data",
                     "uprn": "UPRN (Unique Property Reference Number)",
                     "postcode": "Postcode of the address",
                     "number": "House number of the address",
@@ -29,6 +30,7 @@
                 "title": "Update council details",
                 "data": {
                     "url": "URL to fetch bin collection data",
+                    "timeout": "The time in seconds for how long the sensor should wait for data",
                     "uprn": "UPRN (Unique Property Reference Number)",
                     "postcode": "Postcode of the address",
                     "number": "House number of the address", 

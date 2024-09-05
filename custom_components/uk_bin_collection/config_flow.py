@@ -66,6 +66,15 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {vol.Optional("local_browser", default=False): bool}
             )
 
+            # Add timeout field with default value of 60 seconds
+        council_schema = council_schema.extend(
+            {
+                vol.Optional("timeout", default=60): vol.All(
+                    vol.Coerce(int), vol.Range(min=10)
+                )
+            }
+        )
+
         return council_schema
 
     async def async_step_user(self, user_input=None):
@@ -236,6 +245,13 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             )
             added_fields.add("local_browser")
+
+        # Include the fields from existing_data that were present in the original config
+        if "timeout" in existing_data:
+            schema = schema.extend(
+                {vol.Required("timeout", default=existing_data["timeout"]): int}
+            )
+            added_fields.add("timeout")
 
         # Add any other fields defined in council_schema that haven't been added yet
         for key, field in council_schema.schema.items():
