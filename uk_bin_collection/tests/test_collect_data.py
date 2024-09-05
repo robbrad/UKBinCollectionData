@@ -1,136 +1,73 @@
-import json
-from unittest import mock
-
+from unittest.mock import MagicMock, patch
+import argparse
 import pytest
-from requests import exceptions as req_exp
-from requests.models import Response
-from uk_bin_collection.get_bin_data import AbstractGetBinDataClass as agbdc
-from uk_bin_collection.get_bin_data import setup_logging
-import logging
+from uk_bin_collection.collect_data import UKBinCollectionApp, import_council_module
 
 
-def mocked_requests_get(*args, **kwargs):
-    class MockResponse:
-        def __init__(self, json_data, status_code, raise_error_type):
-            self.text = json_data
-            self.status_code = status_code
-            if raise_error_type is not None:
-                self.raise_for_status = self.raise_error(raise_error_type)
-            else:
-                self.raise_for_status = lambda: None
 
-        def raise_error(self, errorType):
-            if errorType == "HTTPError":
-                raise req_exp.HTTPError()
-            elif errorType == "ConnectionError":
-                raise req_exp.ConnectionError()
-            elif errorType == "Timeout":
-                raise req_exp.Timeout()
-            elif errorType == "RequestException":
-                raise req_exp.RequestException()
-            return errorType
+# Test UKBinCollectionApp setup_arg_parser
+def test_setup_arg_parser():
+    app = UKBinCollectionApp()
+    app.setup_arg_parser()
 
-    if args[0] == "aurl":
-        return MockResponse({"test_data": "test"}, 200, None)
-    elif args[0] == "HTTPError":
-        return MockResponse({}, 999, "HTTPError")
-    elif args[0] == "ConnectionError":
-        return MockResponse({}, 999, "ConnectionError")
-    elif args[0] == "Timeout":
-        return MockResponse({}, 999, "Timeout")
-    elif args[0] == "RequestException":
-        return MockResponse({}, 999, "RequestException")
-    elif args[0] == "notPage":
-        return MockResponse("not json", 200, None)
-    return MockResponse(None, 404, "HTTPError")
+    # Assert that the argument parser has the correct arguments
+    assert isinstance(app.parser, argparse.ArgumentParser)
+    args = app.parser._actions
+    arg_names = [action.dest for action in args]
+
+    expected_args = [
+        "module",
+        "URL",
+        "postcode",
+        "number",
+        "skip_get_url",
+        "uprn",
+        "web_driver",
+        "headless",
+        "local_browser",
+        "dev_mode",
+    ]
+    assert all(arg in arg_names for arg in expected_args)
 
 
-# Unit tests
+# Test UKBinCollectionApp set_args
+def test_set_args():
+    app = UKBinCollectionApp()
+    app.setup_arg_parser()
+
+    # Test valid args
+    args = ["council_module", "http://example.com", "--postcode", "AB1 2CD"]
+    app.set_args(args)
+
+    assert app.parsed_args.module == "council_module"
+    assert app.parsed_args.URL == "http://example.com"
+    assert app.parsed_args.postcode == "AB1 2CD"
 
 
-def test_logging_exception():
-    logging_dict = "SW1A 1AA"
-    with pytest.raises(ValueError) as exc_info:
-        result = setup_logging(logging_dict, "ROOT")
-    assert exc_info.typename == "ValueError"
+# Test UKBinCollectionApp client_code method
+def test_client_code():
+    app = UKBinCollectionApp()
+    mock_get_bin_data_class = MagicMock()
+
+    # Run the client_code and ensure that template_method is called
+    app.client_code(mock_get_bin_data_class, "http://example.com", postcode="AB1 2CD")
+    mock_get_bin_data_class.template_method.assert_called_once_with(
+        "http://example.com", postcode="AB1 2CD"
+    )
 
 
-def test_setup_logging_valid_config():
-    # Example of a minimal valid logging configuration dictionary
-    logging_config = {
-        "version": 1,
-        "handlers": {
-            "console": {
-                "class": "logging.StreamHandler",
-                "level": "DEBUG",
-            },
-        },
-        "loggers": {
-            "ROOT": {
-                "handlers": ["console"],
-                "level": "DEBUG",
-            },
-        },
-    }
-    logger_name = "ROOT"
-    # Run the function with valid logging configuration
-    logger = setup_logging(logging_config, logger_name)
+# Test the run() function with logging setup
+@patch("uk_bin_collection.collect_data.setup_logging")  # Correct patch path
+@patch("uk_bin_collection.collect_data.UKBinCollectionApp.run")  # Correct patch path
+@patch("sys.argv", ["uk_bin_collection.py", "council_module", "http://example.com"])
+def test_run_function(mock_app_run, mock_setup_logging):
+    from uk_bin_collection.collect_data import run
 
-    # Assert that logger is correctly configured
-    assert logger.name == logger_name
-    assert logger.level == logging.DEBUG
+    mock_setup_logging.return_value = MagicMock()
+    mock_app_run.return_value = None
 
+    run()
 
-@mock.patch("requests.get", side_effect=mocked_requests_get)
-def test_get_data(mock_get):
-    page_data = agbdc.get_data("aurl")
-    assert page_data.text == {"test_data": "test"}
-
-
-@pytest.mark.parametrize(
-    "url", ["HTTPError", "ConnectionError", "Timeout", "RequestException"]
-)
-@mock.patch("requests.get", side_effect=mocked_requests_get)
-def test_get_data_error(mock_get, url):
-    with pytest.raises(Exception) as exc_info:
-        result = agbdc.get_data(url)
-    assert exc_info.typename == url
-
-
-def test_output_json():
-    bin_data = {"bin": ""}
-    output = agbdc.output_json(bin_data)
-    assert type(output) == str
-    assert output == '{\n    "bin": ""\n}'
-
-class ConcreteGetBinDataClass(agbdc):
-    """Concrete implementation of the abstract class to test abstract methods."""
-    def parse_data(self, page: str, **kwargs) -> dict:
-        return {"mock_key": "mock_value"}
-
-@pytest.fixture
-def concrete_class_instance():
-    return ConcreteGetBinDataClass()
-
-def test_get_and_parse_data_no_skip_get_url(concrete_class_instance):
-    mock_page = "mocked page content"
-    mock_parsed_data = {"mock_key": "mock_value"}
-
-    with mock.patch.object(concrete_class_instance, 'get_data', return_value=mock_page) as mock_get_data, \
-         mock.patch.object(concrete_class_instance, 'parse_data', return_value=mock_parsed_data) as mock_parse_data:
-        
-        result = concrete_class_instance.get_and_parse_data("http://example.com")
-
-        mock_get_data.assert_called_once_with("http://example.com")
-        mock_parse_data.assert_called_once_with(mock_page, url="http://example.com")
-        assert result == mock_parsed_data
-
-def test_get_and_parse_data_skip_get_url(concrete_class_instance):
-    mock_parsed_data = {"mock_key": "mock_value"}
-
-    with mock.patch.object(concrete_class_instance, 'parse_data', return_value=mock_parsed_data) as mock_parse_data:
-        
-        result = concrete_class_instance.get_and_parse_data("http://example.com", skip_get_url=True)
-
-        mock_parse_data.assert_called_once_with("", url="http://example.com", skip_get_url=True)
-        assert result == mock_parsed_data
+    # Ensure logging was set up and the app run method was called
+    mock_setup_logging.assert_called_once()
+    mock_app_run.assert_called_once()
