@@ -46,6 +46,7 @@ async def async_setup_entry(
     _LOGGER.info(LOG_PREFIX + "Data Supplied: %s", config.data)
 
     name = config.data.get("name", "")
+    timeout = config.data.get("timeout", 60)  # Get timeout from config or default to 60
     args = [
         config.data.get("council", ""),
         config.data.get("url", ""),
@@ -60,6 +61,7 @@ async def async_setup_entry(
                 "skip_get_url",
                 "headless",
                 "local_browser",
+                "timeout",
             }
         ),
     ]
@@ -86,7 +88,7 @@ async def async_setup_entry(
     ukbcd.set_args(args)
     _LOGGER.info(f"{LOG_PREFIX} Args set")
 
-    coordinator = HouseholdBinCoordinator(hass, ukbcd, name)
+    coordinator = HouseholdBinCoordinator(hass, ukbcd, name, timeout=timeout)
 
     _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init Refresh")
     await coordinator.async_config_entry_first_refresh()
@@ -131,7 +133,7 @@ def get_latest_collection_info(data) -> dict:
 class HouseholdBinCoordinator(DataUpdateCoordinator):
     """Household Bin Coordinator"""
 
-    def __init__(self, hass, ukbcd, name):
+    def __init__(self, hass, ukbcd, name, timeout=60):
         """Initialize my coordinator."""
         super().__init__(
             hass,
@@ -142,9 +144,10 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Init")
         self.ukbcd = ukbcd
         self.name = name
+        self.timeout = timeout  # Set the timeout value
 
     async def _async_update_data(self):
-        async with async_timeout.timeout(60) as cm:
+        async with async_timeout.timeout(self.timeout) as cm:
             _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Updating")
 
             data = await self.hass.async_add_executor_job(self.ukbcd.run)
