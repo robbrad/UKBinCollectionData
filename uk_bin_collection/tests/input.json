@@ -69,11 +69,11 @@
         "wiki_note": "In order to use this parser, you must provide a valid postcode and a uprn retrieved from the councils website for your specific address"
     },
     "BelfastCityCouncil": {
-        "skip_get_url": true,
-        "url": "https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx",
-        "wiki_name": "BelfastCityCouncil",
         "postcode": "BT10 0GY",
-        "uprn": "185086469"
+        "skip_get_url": true,
+        "uprn": "185086469",
+        "url": "https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx",
+        "wiki_name": "BelfastCityCouncil"
     },
     "BexleyCouncil": {
         "house_number": "1 Dorchester Avenue, Bexley",
@@ -298,8 +298,8 @@
     },
     "DorsetCouncil": {
         "skip_get_url": true,
-        "url": "https://www.dorsetcouncil.gov.uk/",
         "uprn": "100040711049",
+        "url": "https://www.dorsetcouncil.gov.uk/",
         "wiki_name": "Dorset Council"
     },
     "DoverDistrictCouncil": {
@@ -360,12 +360,12 @@
         "wiki_name": "Eastleigh Borough Council"
     },
     "EnfieldCouncil": {
-        "url": "https://www.enfield.gov.uk/services/rubbish-and-recycling/find-my-collection-day",
-        "wiki_name": "Enfield Council",
-        "skip_get_url": true,
-        "postcode": "N13 5AJ",
         "house_number": "111",
-        "web_driver": "http://selenium:4444"
+        "postcode": "N13 5AJ",
+        "skip_get_url": true,
+        "url": "https://www.enfield.gov.uk/services/rubbish-and-recycling/find-my-collection-day",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Enfield Council"
     },
     "EnvironmentFirst": {
         "url": "https://environmentfirst.co.uk/house.php?uprn=100060055444",
@@ -599,9 +599,9 @@
         "postcode": "RH16 1SS",
         "skip_get_url": true,
         "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Mid Sussex District Council",
-        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes",
-        "web_driver": "http://selenium:4444"
+        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"
     },
     "MiltonKeynesCityCouncil": {
         "uprn": "Fullers Slade",
@@ -812,6 +812,11 @@
         "url": "https://www.rochford.gov.uk/online-bin-collections-calendar",
         "wiki_name": "Rochford Council",
         "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'."
+    },
+    "RotherhamCouncil": {
+        "url": "https://www.rotherham.gov.uk/bin-collections\\?address\\=100050866000\\&submit\\=Submit",
+        "uprn": "100050866000",
+        "wiki_name": "RotherhamCouncil"
     },
     "RugbyBoroughCouncil": {
         "postcode": "CV22 6LA",
@@ -1199,12 +1204,12 @@
         "wiki_note": "Works with all collection areas that use Joint Waste Solutions. Just use the correct URL."
     },
     "WychavonDistrictCouncil": {
-        "url": "https://selfservice.wychavon.gov.uk/wdcroundlookup/wdc_search.jsp",
-        "wiki_name": "WychavonDistrictCouncil",
-        "web_driver": "http://selenium:4444",
+        "postcode": "WR3 7RU",
         "skip_get_url": true,
-        "postcode": "WR3 7RU", 
-        "uprn": "100120716273"
+        "uprn": "100120716273",
+        "url": "https://selfservice.wychavon.gov.uk/wdcroundlookup/wdc_search.jsp",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "WychavonDistrictCouncil"
     },
     "WyreCouncil": {
         "postcode": "FY6 8HG",
