@@ -1,15 +1,11 @@
 from bs4 import BeautifulSoup
-
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from datetime import datetime
 
-
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the base
-    class. They can also override some operations with a default
-    implementation.
+    Concrete class to scrape bin collection data.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -27,65 +23,71 @@ class CouncilClass(AbstractGetBinDataClass):
             soup.prettify()
 
             data = {"bins": []}
+            # Locate the section with bin collection data
             sections = soup.find_all("div", {"class": "wil_c-content-section_heading"})
+            
             for s in sections:
                 if s.get_text(strip=True).lower() == "bin collections":
                     rows = s.find_next_sibling(
                         "div", {"class": "c-content-section_body"}
-                    ).find_all("div", {"class": "u-mb-8"})
+                    ).find_all("div", class_="tablet:l-col-fb-4 u-mt-10")
+                    
                     for row in rows:
-                        title = row.find("div", {"class": "u-mb-4"})
-                        collections = row.find_all("div", {"class": "u-mb-2"})
-                        if title and collections:
+                        title_elem = row.find("div", class_="u-mb-4")
+                        if title_elem:
+                            title = title_elem.get_text(strip=True).capitalize()
+                            
+                            # Find all collection info in the same section
+                            collections = row.find_all("div", class_="u-mb-2")
                             for c in collections:
-                                if (
-                                    c.get_text(strip=True)
-                                    .lower()
-                                    .startswith("next collection")
-                                ):
-                                    # add next collection
-                                    next_collection_date = datetime.strptime(
-                                        c.get_text(strip=True).replace(
-                                            "Next collection - ", ""
-                                        ),
-                                        "%A, %d %B %Y",
-                                    ).strftime(date_format)
-                                    dict_data = {
-                                        "type": title.get_text(strip=True).capitalize(),
-                                        "collectionDate": next_collection_date,
-                                    }
-                                    data["bins"].append(dict_data)
-                                    # add future collections without duplicating next collection
-                                    future_collections = row.find(
-                                        "ul", {"class": "u-mt-4"}
-                                    ).find_all("li")
-                                    for c in future_collections:
-                                        future_collection_date = datetime.strptime(
-                                            c.get_text(strip=True),
-                                            "%A, %d %B %Y",
+                                text = c.get_text(strip=True).lower()
+                                
+                                if "next collection" in text:
+                                    date_text = text.replace("next collection - ", "")
+                                    try:
+                                        next_collection_date = datetime.strptime(
+                                            date_text, "%A, %d %B %Y"
                                         ).strftime(date_format)
-                                        if (
-                                            future_collection_date
-                                            != next_collection_date
-                                        ):
+
+                                        dict_data = {
+                                            "type": title,
+                                            "collectionDate": next_collection_date
+                                        }
+                                        data["bins"].append(dict_data)
+                                    except ValueError:
+                                        # Skip if the date isn't a valid date
+                                        print(f"Skipping invalid date: {date_text}")
+                                    
+                            # Get future collections
+                            future_collections_section = row.find("ul", class_="u-mt-4")
+                            if future_collections_section:
+                                future_collections = future_collections_section.find_all("li")
+                                for future_collection in future_collections:
+                                    future_date_text = future_collection.get_text(strip=True)
+                                    try:
+                                        future_collection_date = datetime.strptime(
+                                            future_date_text, "%A, %d %B %Y"
+                                        ).strftime(date_format)
+
+                                        # Avoid duplicates of next collection date
+                                        if future_collection_date != next_collection_date:
                                             dict_data = {
-                                                "type": title.get_text(
-                                                    strip=True
-                                                ).capitalize(),
-                                                "collectionDate": future_collection_date,
+                                                "type": title,
+                                                "collectionDate": future_collection_date
                                             }
                                             data["bins"].append(dict_data)
+                                    except ValueError:
+                                        # Skip if the future collection date isn't valid
+                                        print(f"Skipping invalid future date: {future_date_text}")
 
+            # Sort the collections by date
             data["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
             )
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
         return data
