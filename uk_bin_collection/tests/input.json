@@ -498,6 +498,13 @@
         "wiki_name": "Huntingdon District Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
     },
+    "IslingtonCouncil": {
+        "uprn": "5300094897",
+        "url": "https://www.islington.gov.uk/your-area?Postcode=unused&Uprn=5300094897",
+        "wiki_command_url_override": "https://www.islington.gov.uk/your-area?Postcode=unused&Uprn=XXXXXXXX",
+        "wiki_name": "Islington Council",
+        "wiki_note": "Replace XXXXXXXX with UPRN."
+    },
     "KingstonUponThamesCouncil": {
         "url": "https://waste-services.kingston.gov.uk/waste/2701097",
         "wiki_command_url_override": "https://waste-services.kingston.gov.uk/waste/XXXXXXX",
