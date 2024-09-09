@@ -427,6 +427,14 @@
         "wiki_name": "Glasgow City Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
     },
+    "GloucesterCityCouncil": {
+        "house_number": "111",
+        "postcode": "GL2 0RR",
+        "uprn": "100120479507",
+        "skip_get_url": true,
+        "url": "https://gloucester-self.achieveservice.com/service/Bins___Check_your_bin_day",
+        "wiki_name": "Gloucester City Council"
+    },
     "GuildfordCouncil": {
         "house_number": "THE LODGE, PUTTENHAM HILL HOUSE, PUTTENHAM HILL, PUTTENHAM, GUILDFORD, GU3 1AH",
         "postcode": "GU3 1AH",
