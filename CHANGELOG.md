@@ -1,3 +1,9 @@
+## 0.86.2 (2024-09-09)
+
+### Fix
+
+- #565 Gloucester city council driver
+
 ## 0.86.1 (2024-09-09)
 
 ### Fix
