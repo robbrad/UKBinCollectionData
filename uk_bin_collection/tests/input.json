@@ -432,6 +432,7 @@
         "postcode": "GL2 0RR",
         "uprn": "100120479507",
         "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
         "url": "https://gloucester-self.achieveservice.com/service/Bins___Check_your_bin_day",
         "wiki_name": "Gloucester City Council"
     },
