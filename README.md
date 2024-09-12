@@ -34,6 +34,15 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 
 ### Install with HACS (recommended)
 
+#### Automated
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
+
+This integration can be installed directly via HACS. To install:
+
+* [Add the repository](https://my.home-assistant.io/redirect/hacs_repository/?owner=robbrad&repository=UKBinCollectionData&category=integration) to your HACS installation
+* Click `Download`
+
+#### Manual
 1. Ensure you have [HACS](https://hacs.xyz/) installed
 1. In the Home Assistant UI go to `HACS` > `Integrations` > `⋮` > `Custom repositories`.
 1. Enter `https://github.com/robbrad/UKBinCollectionData` in the `Repository` field.
