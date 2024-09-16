@@ -1,3 +1,13 @@
+## 0.88.0 (2024-09-16)
+
+### Feat
+
+- Add Ealing Council
+
+### Fix
+
+- Update README.md
+
 ## 0.87.0 (2024-09-10)
 
 ### Feat
