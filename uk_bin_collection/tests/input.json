@@ -314,6 +314,12 @@
         "url": "https://www.durham.gov.uk/bincollections?uprn=",
         "wiki_name": "Durham Council"
     },
+    "EalingCouncil": {
+        "skip_get_url": true,
+        "uprn": "12073883",
+        "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
+        "wiki_name": "Ealing Council"
+    },
     "EastCambridgeshireCouncil": {
         "skip_get_url": true,
         "uprn": "10002597178",
