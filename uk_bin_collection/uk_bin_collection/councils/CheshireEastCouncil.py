@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
+#Cheshire East
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         soup = BeautifulSoup(page.text, features="html.parser")
