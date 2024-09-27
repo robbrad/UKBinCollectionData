@@ -39,7 +39,7 @@ jobs:
         with:
           tag: ${{ env.RELEASE_VERSION }}
           generateReleaseNotes: true
-          prerelease: true
+          prerelease: false
           allowUpdates: true
 
       - name: Build and publish package
