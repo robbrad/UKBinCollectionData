@@ -347,4 +347,3 @@ Contributions are always welcome! See ```CONTRIBUTING.md``` to get started. Plea
 <a href="https://github.com/robbrad/UKBinCollectionData/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=robbrad/UKBinCollectionData"  alt="Image of contributors"/>
 </a>
-
