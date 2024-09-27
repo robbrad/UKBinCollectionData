@@ -1,3 +1,14 @@
+## 0.89.0 (2024-09-27)
+
+### Feat
+
+- Update CheshireEastCouncil.py
+- Update README.md
+
+### Fix
+
+- release to be non pre release
+
 ## 0.88.0 (2024-09-16)
 
 ### Feat
