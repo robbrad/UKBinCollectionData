@@ -1,0 +1,51 @@
+{
+    "title": "Dados de Recolha de Lixo do Reino Unido",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Selecione o conselho",
+                "data": {
+                    "name": "Nome da localidade",
+                    "council": "Conselho"
+                },
+                "description": "Por favor veja [aqui](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) se o seu conselho não estiver listado"
+            },
+            "council": {
+                "title": "Forneça os detalhes do conselho",
+                "data": {
+                    "url": "URL para obter dados de recolha de lixo",
+                    "timeout": "Tempo em segundos que o sensor deve aguardar pelos dados",
+                    "uprn": "UPRN (Número Único de Referência da Propriedade)",
+                    "postcode": "Código postal do endereço",
+                    "number": "Número da casa do endereço",
+                    "usrn": "USRN (Número Único de Referência da Rua)",
+                    "web_driver": "Para executar num servidor remoto Selenium, adicione o URL do servidor Selenium",
+                    "headless": "Executar o Selenium em modo headless (recomendado)",
+                    "local_browser": "Não executar o servidor remoto Selenium, utilizar a instalação local do Chrome",
+                    "submit": "Submeter"
+                },
+                "description": "Por favor, consulte a [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para obter detalhes sobre o que inserir"
+            },
+            "reconfigure_confirm": {
+                "title": "Atualizar os detalhes do conselho",
+                "data": {
+                    "url": "URL para obter dados de recolha de lixo",
+                    "timeout": "Tempo em segundos que o sensor deve aguardar pelos dados",
+                    "uprn": "UPRN (Número Único de Referência da Propriedade)",
+                    "postcode": "Código postal do endereço",
+                    "number": "Número da casa do endereço",
+                    "usrn": "USRN (Número Único de Referência da Rua)",
+                    "web_driver": "Para executar num servidor remoto Selenium, adicione o URL do servidor Selenium",
+                    "headless": "Executar o Selenium em modo headless (recomendado)",
+                    "local_browser": "Não executar o servidor remoto Selenium, utilizar a instalação local do Chrome",
+                    "submit": "Submeter"
+                },
+                "description": "Por favor, consulte a [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para obter detalhes sobre o que inserir"
+            }
+        },
+        "error": {
+            "name": "Por favor, insira um nome de localidade",
+            "council": "Por favor, selecione um conselho"
+        }
+    }
+}
