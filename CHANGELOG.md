@@ -1,3 +1,9 @@
+## 0.89.1 (2024-10-02)
+
+### Fix
+
+- High Peak have changed their cookie dialog Seems to be safe to ignore it now.
+
 ## 0.89.0 (2024-09-27)
 
 ### Feat
