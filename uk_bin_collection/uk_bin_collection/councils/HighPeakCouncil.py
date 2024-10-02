@@ -69,12 +69,6 @@ class CouncilClass(AbstractGetBinDataClass):
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
-            # Hide Cookies
-            inputElement_hc = driver.find_element(
-                By.CLASS_NAME, "cookiemessage__link--close"
-            )
-            inputElement_hc.click()
-
             # Enter postcode in text box and wait
             inputElement_pc = driver.find_element(
                 By.ID, "FINDBINDAYSHIGHPEAK_POSTCODESELECT_POSTCODE"
