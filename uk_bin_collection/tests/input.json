@@ -341,6 +341,15 @@
         "wiki_name": "East Lindsey District Council",
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },
+    "EastRenfrewshireCouncil": {
+        "house_number": "23",
+        "postcode": "G46 6RG",
+        "skip_get_url": true,
+        "url": "https://eastrenfrewshire.gov.uk/",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "East Renfrewshire Council",
+        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
+    },
     "EastRidingCouncil": {
         "house_number": "14 THE LEASES BEVERLEY HU17 8LG",
         "postcode": "HU17 8LG",
