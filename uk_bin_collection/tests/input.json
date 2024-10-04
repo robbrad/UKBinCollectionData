@@ -1220,10 +1220,10 @@
         "wiki_name": "Wiltshire Council"
     },
     "WindsorAndMaidenheadCouncil": {
-        "house_number": "11",
-        "postcode": "TW19 5NF",
+        "web_driver": "http://selenium:4444",
+        "uprn": "100080371082",
         "skip_get_url": true,
-        "url": "https://my.rbwm.gov.uk/special/find-your-collection-dates",
+        "url": "https://forms.rbwm.gov.uk/bincollections?uprn=",
         "wiki_name": "Windsor and Maidenhead Council"
     },
     "WokingBoroughCouncil": {
