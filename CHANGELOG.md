@@ -1,3 +1,12 @@
+## 0.91.1 (2024-10-04)
+
+### Fix
+
+- Update DorsetCouncil.py
+- #829
+- Update GatesheadCouncil.py
+- #822
+
 ## 0.91.0 (2024-10-03)
 
 ### Feat
