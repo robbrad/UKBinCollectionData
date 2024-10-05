@@ -58,9 +58,17 @@ class CouncilClass(AbstractGetBinDataClass):
                     case _:
                         type_descr = service_data["container"]
 
+
+                date_str = service_data.get("current_collection_date")
+                # Parse the date string into a datetime object
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+
+                # Convert the datetime object to the desired format
+                formatted_date = date_obj.strftime(date_format)
+
                 bins.append({
                     "type": type_descr,  # Use service name from the data
-                    "collectionDate": service_data.get("current_collection_date")
+                    "collectionDate": formatted_date
                 })
 
         else:
