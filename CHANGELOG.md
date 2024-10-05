@@ -1,3 +1,9 @@
+## 0.91.2 (2024-10-05)
+
+### Fix
+
+- Windsor and Maidenhead Council
+
 ## 0.91.1 (2024-10-04)
 
 ### Fix
