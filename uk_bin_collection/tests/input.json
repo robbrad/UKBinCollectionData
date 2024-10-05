@@ -48,7 +48,7 @@
         "url": "https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation",
         "wiki_name": "Basildon Council"
     },
-    "BasingstokeCouncil": {
+        "BasingstokeCouncil": {
         "skip_get_url": true,
         "uprn": "100060220926",
         "url": "https://www.basingstoke.gov.uk/bincollection",
