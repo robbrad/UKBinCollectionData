@@ -42,7 +42,13 @@
         "wiki_name": "Barnsley Metropolitan Borough Council",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
-    "BasingstokeCouncil": {
+"BasildonCouncil": {
+        "skip_get_url": true,
+        "uprn": "10013350430",
+        "url": "https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation",
+        "wiki_name": "Basildon Council"
+    },
+        "BasingstokeCouncil": {
         "skip_get_url": true,
         "uprn": "100060220926",
         "url": "https://www.basingstoke.gov.uk/bincollection",
