@@ -247,6 +247,16 @@
         "wiki_name": "Chorley Council",
         "wiki_note": "Chorley needs to be passed both a Postcode & UPRN in the format of UPRNXXXXXX to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search)"
     },
+    "ColchesterCityCouncil": {
+        "house_number": "29",
+        "paon": "29",
+        "postcode": "CO2 8UN",
+        "skip_get_url": false,
+        "url": "https://www.colchester.gov.uk/your-recycling-calendar",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Colchester City Council",
+        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
+    },
     "ConwyCountyBorough": {
         "postcode": "LL30 2DF",
         "uprn": "100100429249",
