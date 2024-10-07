@@ -666,9 +666,9 @@
         "wiki_note": "UPRN can only be parsed with a valid postcode."
     },
     "NeathPortTalbotCouncil": {
+        "house_number": "2",
         "postcode": "SA13 3BA",
         "skip_get_url": true,
-        "uprn": "10023947752",
         "url": "https://www.npt.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Neath Port Talbot Council"
