@@ -162,10 +162,10 @@
         "wiki_name": "Broxtowe Borough Council"
     },
     "BuckinghamshireCouncil": {
-        "house_number": "HUGHENDEN MANOR, MANOR ROAD, HUGHENDEN VALLEY, HIGH WYCOMBE",
-        "postcode": "HP14 4LA",
+        "house_number": "2",
+        "postcode": "HP13 7BA",
         "skip_get_url": true,
-        "url": "https://chiltern.gov.uk/collection-dates",
+        "url": "https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FA353FC74600CBE61BE409534D00A8EC09BDA3AC&lang=en",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Buckinghamshire Council (Chiltern, South Bucks, Wycombe)",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes"

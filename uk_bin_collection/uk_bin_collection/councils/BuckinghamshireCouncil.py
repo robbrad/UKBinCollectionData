@@ -1,11 +1,9 @@
-import time
-import pandas as pd
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from io import StringIO
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import create_webdriver
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -16,76 +14,95 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def get_data(self, df: pd.DataFrame) -> dict:
-        # Create dictionary of data to be returned
-        data = {"bins": []}
-
-        # Output collection data into dictionary
-        for i, row in df.iterrows():
-            dict_data = {
-                "type": row["Collection Name"],
-                "collectionDate": row["Next Collection Due"],
-            }
-
-            data["bins"].append(dict_data)
-
-        return data
-
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            page = "https://chiltern.gov.uk/collection-dates"
-
-            # Assign user info
-            user_postcode = kwargs.get("postcode")
+            data = {"bins": []}
             user_paon = kwargs.get("paon")
+            user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
+            check_paon(user_paon)
+            check_postcode(user_postcode)
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(page)
-
-            # Enter postcode in text box and wait
-            inputElement_pc = driver.find_element(
-                By.ID,
-                "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONPOSTCODE",
+            driver.get(
+                "https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FA353FC74600CBE61BE409534D00A8EC09BDA3AC&lang=en"
             )
-            inputElement_pc.send_keys(user_postcode)
-            inputElement_pc.send_keys(Keys.ENTER)
 
-            time.sleep(4)
+            # Wait for the postcode field to appear then populate it
+            inputElement_postcode = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "postcodeSearch"))
+            )
+            inputElement_postcode.send_keys(user_postcode)
 
-            # Select address from dropdown and wait
-            inputElement_ad = Select(
-                driver.find_element(
-                    By.ID,
-                    "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_ADDRESSSELECTIONADDRESS",
+            # Click search button
+            findAddress = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//button[@class="govuk-button mt-4"]')
+                )
+            )
+            findAddress.click()
+
+            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        "//select[@id='addressSelect']//option[contains(., '"
+                        + user_paon
+                        + "')]",
+                    )
+                )
+            ).click()
+
+            # Wait for the collections table to appear
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        '//div[@class="ant-row d-flex justify-content-between mb-4 mt-2 css-2rgkd4"]',
+                    )
                 )
             )
 
-            inputElement_ad.select_by_visible_text(user_paon)
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            time.sleep(4)
+            recyclingcalendar = soup.find(
+                "div",
+                {
+                    "class": "ant-row d-flex justify-content-between mb-4 mt-2 css-2rgkd4"
+                },
+            )
 
-            # Submit address information and wait
-            driver.find_element(
-                By.ID, "COPYOFECHOCOLLECTIONDATES_ADDRESSSELECTION_NAV1_NEXT"
-            ).click()
+            rows = recyclingcalendar.find_all(
+                "div",
+                {
+                    "class": "ant-col ant-col-xs-12 ant-col-sm-12 ant-col-md-12 ant-col-lg-12 ant-col-xl-12 css-2rgkd4"
+                },
+            )
 
-            time.sleep(4)
+            current_year = datetime.now().year
+            current_month = datetime.now().month
 
-            # Read next collection information into Pandas
-            table = driver.find_element(
-                By.ID, "COPYOFECHOCOLLECTIONDATES_PAGE1_DATES2"
-            ).get_attribute("outerHTML")
+            for row in rows:
+                BinType = row.find("h3").text
+                collectiondate = datetime.strptime(
+                    row.find("div", {"class": "text-white fw-bold"}).text,
+                    "%A %d %B",
+                )
+                if (current_month > 10) and (collectiondate.month < 3):
+                    collectiondate = collectiondate.replace(year=(current_year + 1))
+                else:
+                    collectiondate = collectiondate.replace(year=current_year)
 
-            # Wrap the HTML table in a StringIO object to address the warning
-            table_io = StringIO(table)
-            df = pd.read_html(table_io, header=[1])[0]
+                dict_data = {
+                    "type": BinType,
+                    "collectionDate": collectiondate.strftime("%d/%m/%Y"),
+                }
+                data["bins"].append(dict_data)
 
-            # Parse data into dict
-            data = self.get_data(df)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
