@@ -109,6 +109,7 @@
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields."
     },
     "BracknellForestCouncil": {
+        "house_number": "13",
         "paon": "57",
         "postcode": "GU47 9BS",
         "skip_get_url": true,
