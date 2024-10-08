@@ -1,3 +1,22 @@
+## 0.92.0 (2024-10-08)
+
+### Feat
+
+- Update CheshireEastCouncil.py
+- Update README.md
+- Adding Wokingham Borough Council
+- Adding Winchester City Council
+- Adding Basildon Council
+- Adding Colchester City Council
+
+### Fix
+
+- RochfordCouncil
+- Neath Port Talbot Council
+- Buckinghamshire Council
+- #639
+fix: #812
+
 ## 0.91.2 (2024-10-05)
 
 ### Fix
