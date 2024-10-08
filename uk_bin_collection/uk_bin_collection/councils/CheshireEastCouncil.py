@@ -28,4 +28,5 @@ class CouncilClass(AbstractGetBinDataClass):
                             "collectionDate": collection_date,
                         }
                     )
+
         return bin_data_dict
