@@ -1261,6 +1261,13 @@
         "wiki_name": "Woking Borough Council/Joint Waste Solutions",
         "wiki_note": "Works with all collection areas that use Joint Waste Solutions. Just use the correct URL."
     },
+    "WokinghamBoroughCouncil": {
+        "house_number": "90",
+        "postcode": "RG40 2HR",
+        "skip_get_url": true,
+        "url": "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day",
+        "wiki_name": "Wokingham Borough Council"
+    },
     "WychavonDistrictCouncil": {
         "postcode": "WR3 7RU",
         "skip_get_url": true,
