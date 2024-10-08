@@ -22,16 +22,16 @@ class CouncilClass(AbstractGetBinDataClass):
         driver = None
         try:
             data = {"bins": []}
-            user_uprn = kwargs.get("uprn")
+            user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
-            check_uprn(user_uprn)
+            check_paon(user_paon)
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get("https://www.npt.gov.uk/2195")
+            driver.get("https://beta.npt.gov.uk/bins-and-recycling/bin-day-finder/")
 
             # Accept cookies banner
             cookieAccept = WebDriverWait(driver, 10).until(
@@ -40,9 +40,13 @@ class CouncilClass(AbstractGetBinDataClass):
             cookieAccept.click()
 
             # Populate postcode field
-            inputElement_postcode = driver.find_element(
-                By.ID,
-                "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_txtTmpPostcode",
+            inputElement_postcode = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (
+                        By.ID,
+                        "PostCode",
+                    )
+                )
             )
             inputElement_postcode.send_keys(user_postcode)
 
@@ -50,67 +54,69 @@ class CouncilClass(AbstractGetBinDataClass):
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (
-                        By.ID,
-                        "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_btnFindAddress",
+                        By.XPATH,
+                        "//button[@value='Find address']",
                     )
                 )
             )
             findAddress.click()
-
-            time.sleep(1)
 
             # Wait for the 'Select address' dropdown to appear and select option matching UPRN
             dropdown = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (
                         By.ID,
-                        "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_addresslookup_ddlAddressLookup",
+                        "Address",
                     )
                 )
             )
-            # Create a 'Select' for it, then select the matching URPN option
-            dropdownSelect = Select(dropdown)
-            dropdownSelect.select_by_value(user_uprn)
-
-            # Remove back to top button if exists
-            driver.execute_script(
-                """
-            if (document.contains(document.querySelector(".backtotop"))) {
-                document.querySelector(".backtotop").remove();
-            }
-            """
-            )
+            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//select[@ID='Address']//option[contains(., '"
+                        + user_paon
+                        + "')]",
+                    )
+                )
+            ).click()
 
             # Wait for the submit button to appear, then click it to get the collection dates
             submit = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_btnDisplay")
+                    (
+                        By.XPATH,
+                        "//input[@value='Find bin day']",
+                    )
                 )
             )
             submit.click()
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            # Get the property details
-            property_details = soup.find(
+            soup = soup.find(
                 "div",
-                {
-                    "id": "ContentPlaceHolderDefault_ctl13_nptLLPG2_25_divPropertyDetails"
-                },
+                {"id": "contentInner"},
             )
 
             # Get the dates
-            for date in property_details.find_all("h2"):
+            for date in soup.find_all("h2"):
                 if date.get_text(strip=True) != "Bank Holidays":
                     bin_date = datetime.strptime(
-                        date.get_text(strip=True).replace("&nbsp", " ")
+                        date.get_text(strip=True)
+                        .removesuffix("(Today)")
+                        .replace("&nbsp", " ")
                         + " "
                         + datetime.now().strftime("%Y"),
                         "%A, %d %B %Y",
                     )
                     bin_types_wrapper = date.find_next_sibling("div")
                     for bin_type_wrapper in bin_types_wrapper.find_all(
-                        "div", {"class": "card"}
+                        "div",
+                        {
+                            "class": "card-body ps-5 ps-md-4 ps-lg-5 position-relative bg-white"
+                        },
                     ):
                         if bin_date and bin_type_wrapper:
                             bin_type = bin_type_wrapper.find("a").get_text(strip=True)
