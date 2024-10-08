@@ -30,6 +30,21 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 
 ---
 
+## Requesting your council
+> :warning: Please check that a request for your council has not already been made. You can do this by searching on the [Issues](https://github.com/robbrad/UKBinCollectionData/issues) page.
+
+If an issue already exists, please comment on that issue to express your interest. Please do not open a new issue, as it will be closed as a duplicate.
+
+If an issue does not already exist, please fill in a new [Council Request](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) form, including as much information as possible, including:
+- Name of the council
+- URL to bin collections
+- An example postcode and/or UPRN (whichever is relevant)
+- Any further information
+
+Please be aware that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get added.
+
+---
+
 ## Home Assistant Usage
 
 ### Install with HACS (recommended)
@@ -229,17 +244,6 @@ docker pull selenium/standalone-chrome docker run -d -p 4444:4444 --name seleniu
 **Selenium Server URL:**
 
 *   `http://localhost:4444/wd/hub`
-
----
-
-## Requesting your council
-To make a request for your council, first check the [Issues](https://github.com/robbrad/UKBinCollectionData/issues) page to make sure it has not already been requested. If not, please fill in a new [Council Request](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) form, including as much information as possible, including:
-- Name of the council
-- URL to bin collections
-- An example postcode and/or UPRN (whichever is relevant)
-- Any further information
-
-Please be aware that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get a script.
 
 ---
 
