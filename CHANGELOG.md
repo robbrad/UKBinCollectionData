@@ -1,3 +1,9 @@
+## 0.93.0 (2024-10-08)
+
+### Feat
+
+- Update CheshireEastCouncil.py
+
 ## 0.92.0 (2024-10-08)
 
 ### Feat
