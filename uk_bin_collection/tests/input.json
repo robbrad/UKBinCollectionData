@@ -516,6 +516,13 @@
         "wiki_name": "Harrogate Borough Council",
         "wiki_note": "Pass the UPRN which can be found at https://secure.harrogate.gov.uk/inmyarea URL doesn't need to be passed."
     },
+    "HighlandCouncil": {
+        "url": "https://www.highland.gov.uk",
+        "wiki_command_url_override": "https://www.highland.gov.uk",
+        "uprn": "130072429",
+        "wiki_name": "Highland Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HighPeakCouncil": {
         "house_number": "9 Ellison Street, Glossop",
         "postcode": "SK13 8BX",
