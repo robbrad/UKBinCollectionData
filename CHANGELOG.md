@@ -1,3 +1,15 @@
+## 0.94.0 (2024-10-09)
+
+### Feat
+
+- Adding London Borough of Lambeth
+- Adding Dacorum Borough Council
+
+### Fix
+
+- Dacorum Borough Council
+- East Devon DC
+
 ## 0.93.0 (2024-10-08)
 
 ### Feat
