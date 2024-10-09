@@ -1,3 +1,9 @@
+## 0.95.0 (2024-10-09)
+
+### Feat
+
+- Adding London Borough of Ealing
+
 ## 0.94.0 (2024-10-09)
 
 ### Feat
