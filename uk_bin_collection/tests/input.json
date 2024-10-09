@@ -604,6 +604,12 @@
         "url": "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder",
         "wiki_name": "London Borough Hounslow"
     },
+    "LondonBoroughLambeth": {
+        "skip_get_url": true,
+        "uprn": "100021881738",
+        "url": "https://wasteservice.lambeth.gov.uk/WhitespaceComms/GetServicesByUprn",
+        "wiki_name": "London Borough Lambeth"
+    },
     "LondonBoroughRedbridge": {
         "postcode": "IG2 6LQ",
         "uprn": "10023770353",
