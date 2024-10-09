@@ -297,6 +297,7 @@
         "house_number": "13",
         "postcode": "HP3 9JY",
         "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
         "url": "https://webapps.dacorum.gov.uk/bincollections/",
         "wiki_name": "Dacorum Borough Council"
     },
