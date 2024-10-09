@@ -598,6 +598,12 @@
         "wiki_name": "Liverpool City Council",
         "wiki_note": "Replace XXXXXXXX with your property's UPRN."
     },
+    "LondonBoroughEaling": {
+        "skip_get_url": true,
+        "uprn": "12081498",
+        "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
+        "wiki_name": "London Borough Ealing"
+    },
     "LondonBoroughHounslow": {
         "skip_get_url": true,
         "uprn": "100021577765",
