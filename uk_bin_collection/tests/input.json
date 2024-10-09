@@ -293,6 +293,13 @@
         "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
         "wiki_name": "Croydon Council"
     },
+    "DacorumBoroughCouncil": {
+        "house_number": "13",
+        "postcode": "HP3 9JY",
+        "skip_get_url": true,
+        "url": "https://webapps.dacorum.gov.uk/bincollections/",
+        "wiki_name": "Dacorum Borough Council"
+    },
     "DartfordBoroughCouncil": {
         "uprn": "010094157511",
         "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
