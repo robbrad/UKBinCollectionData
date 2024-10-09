@@ -293,6 +293,14 @@
         "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
         "wiki_name": "Croydon Council"
     },
+    "DacorumBoroughCouncil": {
+        "house_number": "13",
+        "postcode": "HP3 9JY",
+        "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
+        "url": "https://webapps.dacorum.gov.uk/bincollections/",
+        "wiki_name": "Dacorum Borough Council"
+    },
     "DartfordBoroughCouncil": {
         "uprn": "010094157511",
         "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
@@ -344,8 +352,8 @@
         "wiki_name": "East Cambridgeshire Council"
     },
     "EastDevonDC": {
-        "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=010090909915",
-        "wiki_command_url_override": "https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
+        "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=010090909915",
+        "wiki_command_url_override": "https://eastdevon.gov.uk/recycling-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
         "wiki_name": "East Devon District Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
     },
@@ -595,6 +603,12 @@
         "uprn": "100021577765",
         "url": "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder",
         "wiki_name": "London Borough Hounslow"
+    },
+    "LondonBoroughLambeth": {
+        "skip_get_url": true,
+        "uprn": "100021881738",
+        "url": "https://wasteservice.lambeth.gov.uk/WhitespaceComms/GetServicesByUprn",
+        "wiki_name": "London Borough Lambeth"
     },
     "LondonBoroughRedbridge": {
         "postcode": "IG2 6LQ",
