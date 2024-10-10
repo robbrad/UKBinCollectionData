@@ -1,3 +1,20 @@
+## 0.96.0 (2024-10-10)
+
+### Feat
+
+- Adding Highland Council
+- Add Elmbridge Borough Council
+- Adding Southwark Council
+- South Derbyshire District Council
+
+### Fix
+
+- #780
+- #845
+fix: #754
+- #835
+- #842
+
 ## 0.95.0 (2024-10-09)
 
 ### Feat
