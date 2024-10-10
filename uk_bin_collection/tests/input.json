@@ -431,6 +431,13 @@
         "url": "https://map.erewash.gov.uk/isharelive.web/myerewash.aspx",
         "wiki_name": "Erewash Borough Council"
     },
+    "FalkirkCouncil": {
+        "url": "https://www.falkirk.gov.uk",
+        "wiki_command_url_override": "https://www.falkirk.gov.uk",
+        "uprn": "136065818",
+        "wiki_name": "Falkirk Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "FarehamBoroughCouncil": {
         "postcode": "PO14 4NR",
         "skip_get_url": true,
