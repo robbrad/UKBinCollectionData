@@ -399,6 +399,13 @@
         "url": "https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn=",
         "wiki_name": "Eastleigh Borough Council"
     },
+    "ElmbridgeBoroughCouncil": {
+        "url": "https://www.elmbridge.gov.uk",
+        "wiki_command_url_override": "https://www.elmbridge.gov.uk",
+        "uprn": "10013119164",
+        "wiki_name": "Elmbridge Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "EnfieldCouncil": {
         "house_number": "111",
         "postcode": "N13 5AJ",
@@ -508,6 +515,13 @@
         "url": "https://secure.harrogate.gov.uk/inmyarea",
         "wiki_name": "Harrogate Borough Council",
         "wiki_note": "Pass the UPRN which can be found at https://secure.harrogate.gov.uk/inmyarea URL doesn't need to be passed."
+    },
+    "HighlandCouncil": {
+        "url": "https://www.highland.gov.uk",
+        "wiki_command_url_override": "https://www.highland.gov.uk",
+        "uprn": "130072429",
+        "wiki_name": "Highland Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "HighPeakCouncil": {
         "house_number": "9 Ellison Street, Glossop",
@@ -961,6 +975,13 @@
         "url": "https://www.scambs.gov.uk/recycling-and-bins/find-your-household-bin-collection-day/",
         "wiki_name": "South Cambridgeshire Council"
     },
+    "SouthDerbyshireDistrictCouncil": {
+        "url": "https://maps.southderbyshire.gov.uk/iShareLIVE.web//getdata.aspx?RequestType=LocalInfo&ms=mapsources/MyHouse&format=JSONP&group=Recycling%20Bins%20and%20Waste|Next%20Bin%20Collections&uid=",
+        "wiki_command_url_override": "https://maps.southderbyshire.gov.uk/iShareLIVE.web//getdata.aspx?RequestType=LocalInfo&ms=mapsources/MyHouse&format=JSONP&group=Recycling%20Bins%20and%20Waste|Next%20Bin%20Collections&uid=XXXXXXXX",
+        "uprn": "10000820668",
+        "wiki_name": "South Derbyshire District Council",
+        "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "SouthGloucestershireCouncil": {
         "skip_get_url": true,
         "uprn": "566419",
@@ -1000,6 +1021,13 @@
         "skip_get_url": true,
         "url": "https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates",
         "wiki_name": "South Tyneside Council"
+    },
+    "SouthwarkCouncil": {
+        "url": "https://www.southwark.gov.uk/bins/lookup/",
+        "wiki_command_url_override": "https://www.southwark.gov.uk/bins/lookup/XXXXXXXX",
+        "uprn": "200003469271",
+        "wiki_name": "Southwark Council",
+        "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "StAlbansCityAndDistrictCouncil": {
         "skip_get_url": true,
