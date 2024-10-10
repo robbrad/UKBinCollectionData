@@ -431,6 +431,13 @@
         "url": "https://map.erewash.gov.uk/isharelive.web/myerewash.aspx",
         "wiki_name": "Erewash Borough Council"
     },
+    "FalkirkCouncil": {
+        "url": "https://www.falkirk.gov.uk",
+        "wiki_command_url_override": "https://www.falkirk.gov.uk",
+        "uprn": "136065818",
+        "wiki_name": "Falkirk Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "FarehamBoroughCouncil": {
         "postcode": "PO14 4NR",
         "skip_get_url": true,
@@ -618,6 +625,13 @@
         "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
         "wiki_name": "London Borough Ealing"
     },
+    "LondonBoroughHarrow": {
+        "url": "https://www.harrow.gov.uk",
+        "wiki_command_url_override": "https://www.harrow.gov.uk",
+        "uprn": "100021298754",
+        "wiki_name": "London Borough Harrow",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "LondonBoroughHounslow": {
         "skip_get_url": true,
         "uprn": "100021577765",
@@ -740,6 +754,13 @@
         "uprn": "100100688837",
         "url": "https://www.newport.gov.uk/",
         "wiki_name": "Newport City Council"
+    },
+    "NorthAyrshireCouncil": {
+        "url": "https://www.north-ayrshire.gov.uk/",
+        "wiki_command_url_override": "https://www.north-ayrshire.gov.uk/",
+        "uprn": "126045552",
+        "wiki_name": "North Ayrshire Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "NorthEastDerbyshireDistrictCouncil": {
         "postcode": "S42 5RB",
