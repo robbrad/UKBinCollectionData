@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -14,7 +15,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        api_url = f"https://geoserver.nottinghamcity.gov.uk/myproperty/handler/proxy.ashx?https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/{user_uprn}"
+        api_url = f"https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/{user_uprn}"
 
         requests.packages.urllib3.disable_warnings()
         response = requests.get(api_url)

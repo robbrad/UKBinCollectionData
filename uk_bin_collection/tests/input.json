@@ -849,7 +849,7 @@
     "NottinghamCityCouncil": {
         "skip_get_url": true,
         "uprn": "100031540180",
-        "url": "https://geoserver.nottinghamcity.gov.uk/myproperty/handler/proxy.ashx?https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/100031540180",
+        "url": "https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/100031540180",
         "wiki_name": "Nottingham City Council"
     },
     "OldhamCouncil": {
