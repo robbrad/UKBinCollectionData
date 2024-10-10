@@ -1,3 +1,17 @@
+## 0.97.0 (2024-10-10)
+
+### Feat
+
+- Adding Falkirk Council
+- Adding London Borough Harrow
+- Adding North Ayrshire Council
+
+### Fix
+
+- #761
+- #871
+- #869
+
 ## 0.96.0 (2024-10-10)
 
 ### Feat
