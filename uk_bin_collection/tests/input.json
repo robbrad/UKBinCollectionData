@@ -5,6 +5,13 @@
         "wiki_name": "Adur and Worthing Councils",
         "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "ArmaghBanbridgeCraigavonCouncil": {
+        "url": "https://www.armaghbanbridgecraigavon.gov.uk/",
+        "wiki_command_url_override": "https://www.armaghbanbridgecraigavon.gov.uk/",
+        "uprn": "185625284",
+        "wiki_name": "Armagh Banbridge Craigavon Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "ArunCouncil": {
         "house_number": "1",
         "postcode": "BN16 4DA",
