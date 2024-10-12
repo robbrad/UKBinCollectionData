@@ -1292,6 +1292,13 @@
         "wiki_name": "West Lothian Council",
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },
+    "WestMorlandAndFurness": {
+        "url": "https://www.westmorlandandfurness.gov.uk/",
+        "wiki_command_url_override": "https://www.westmorlandandfurness.gov.uk/",
+        "uprn": "100110353478",
+        "wiki_name": "West Morland And Furness Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "WestNorthamptonshireCouncil": {
         "postcode": "NN3 2JB",
         "skip_get_url": true,
