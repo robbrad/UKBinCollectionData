@@ -1350,6 +1350,13 @@
         "url": "https://forms.rbwm.gov.uk/bincollections?uprn=",
         "wiki_name": "Windsor and Maidenhead Council"
     },
+    "WirralCouncil": {
+        "url": "https://www.wirral.gov.uk",
+        "wiki_command_url_override": "https://www.wirral.gov.uk",
+        "uprn": "Vernon Avenue,Seacombe",
+        "wiki_name": "Wirral Council",
+        "wiki_note": "Please use the UPRN field to enter your street name and suburb separated by a comma, for example 'Vernon Avenue,Seacombe'"
+    },
     "WokingBoroughCouncil": {
         "house_number": "2",
         "postcode": "GU214JY",
