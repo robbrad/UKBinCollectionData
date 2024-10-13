@@ -5,6 +5,13 @@
         "wiki_name": "Adur and Worthing Councils",
         "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "ArmaghBanbridgeCraigavonCouncil": {
+        "url": "https://www.armaghbanbridgecraigavon.gov.uk/",
+        "wiki_command_url_override": "https://www.armaghbanbridgecraigavon.gov.uk/",
+        "uprn": "185625284",
+        "wiki_name": "Armagh Banbridge Craigavon Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "ArunCouncil": {
         "house_number": "1",
         "postcode": "BN16 4DA",
@@ -605,6 +612,13 @@
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Leeds City Council"
+    },
+    "LichfieldDistrictCouncil": {
+        "url": "https://www.lichfielddc.gov.uk",
+        "wiki_command_url_override": "https://www.lichfielddc.gov.uk",
+        "uprn": "100031694085",
+        "wiki_name": "Lichfield District Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LisburnCastlereaghCityCouncil": {
         "house_number": "97",
@@ -1216,6 +1230,13 @@
         "wiki_name": "Wakefield City Council",
         "wiki_note": "Follow the instructions [here](https://www.wakefield.gov.uk/where-i-live/) until you get the page that includes a \"Bin Collections\" section then copy the URL and replace the URL in the command."
     },
+    "WalsallCouncil": {
+        "url": "https://cag.walsall.gov.uk/",
+        "wiki_command_url_override": "https://cag.walsall.gov.uk/",
+        "uprn": "100071080513",
+        "wiki_name": "Walsall Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "WalthamForest": {
         "house_number": "17 Chingford Road, Walthamstow",
         "postcode": "E17 4PW",
@@ -1278,6 +1299,13 @@
         "wiki_name": "West Lothian Council",
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },
+    "WestMorlandAndFurness": {
+        "url": "https://www.westmorlandandfurness.gov.uk/",
+        "wiki_command_url_override": "https://www.westmorlandandfurness.gov.uk/",
+        "uprn": "100110353478",
+        "wiki_name": "West Morland And Furness Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "WestNorthamptonshireCouncil": {
         "postcode": "NN3 2JB",
         "skip_get_url": true,
@@ -1321,6 +1349,13 @@
         "skip_get_url": true,
         "url": "https://forms.rbwm.gov.uk/bincollections?uprn=",
         "wiki_name": "Windsor and Maidenhead Council"
+    },
+    "WirralCouncil": {
+        "url": "https://www.wirral.gov.uk",
+        "wiki_command_url_override": "https://www.wirral.gov.uk",
+        "uprn": "Vernon Avenue,Seacombe",
+        "wiki_name": "Wirral Council",
+        "wiki_note": "Please use the UPRN field to enter your street name and suburb separated by a comma, for example 'Vernon Avenue,Seacombe'"
     },
     "WokingBoroughCouncil": {
         "house_number": "2",
