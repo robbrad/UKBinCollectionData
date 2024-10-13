@@ -18,90 +18,73 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get and check UPRN
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
+        bindata = {"bins": []}
 
-        # Start a new session to walk through the form
-        requests.packages.urllib3.disable_warnings()
-        s = requests.Session()
+        COLLECTION_MAP = {
+            "ahtm_dates_black_bin": "Black bin",
+            "ahtm_dates_brown_commingled_bin": "Brown bin",
+            "ahtm_dates_blue_pulpable_bin": "Blue bin",
+            "ahtm_dates_green_organic_bin": "Green Bin",
+        }
 
-        # There's a cookie that makes the whole thing valid when you search for a postcode,
-        # but postcode and UPRN is a hassle imo, so this makes a request for the session to get a cookie
-        # using a Manchester City Council postcode I hardcoded in the data payload
-        postcode_request_header = {
-            "authority": "www.manchester.gov.uk",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
-            "image/webp,image/apng,*/*;q=0.8",
-            "accept-language": "en-GB,en;q=0.6",
-            "cache-control": "max-age=0",
-            # Requests sorts cookies= alphabetically
-            "origin": "https://www.manchester.gov.uk",
-            "referer": "https://www.manchester.gov.uk/bincollections",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "sec-gpc": "1",
-            "upgrade-insecure-requests": "1",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+        API_URL = "https://manchester.form.uk.empro.verintcloudservices.com/api/custom?action=bin_checker-get_bin_col_info&actionedby=_KDF_custom&loadform=true&access=citizen&locale=en"
+        AUTH_URL = "https://manchester.form.uk.empro.verintcloudservices.com/api/citizen?archived=Y&preview=false&locale=en"
+        AUTH_KEY = "Authorization"
+
+        r = requests.get(AUTH_URL)
+        r.raise_for_status()
+        auth_token = r.headers[AUTH_KEY]
+
+        post_data = {
+            "name": "sr_bin_coll_day_checker",
+            "data": {
+                "uprn": user_uprn,
+                "nextCollectionFromDate": (datetime.now() - timedelta(days=1)).strftime(
+                    "%Y-%m-%d"
+                ),
+                "nextCollectionToDate": (datetime.now() + timedelta(days=30)).strftime(
+                    "%Y-%m-%d"
+                ),
+            },
+            "email": "",
+            "caseid": "",
+            "xref": "",
+            "xref1": "",
+            "xref2": "",
         }
-        postcode_request_data = {
-            "mcc_bin_dates_search_term": "M2 5DB",
-            "mcc_bin_dates_submit": "Go",
+
+        headers = {
+            "referer": "https://manchester.portal.uk.empro.verintcloudservices.com/",
+            "accept": "application/json",
+            "content-type": "application/json",
+            AUTH_KEY: auth_token,
         }
-        response = s.post(
-            "https://www.manchester.gov.uk/bincollections",
-            headers=postcode_request_header,
-            data=postcode_request_data,
+
+        r = requests.post(API_URL, data=json.dumps(post_data), headers=headers)
+        r.raise_for_status()
+
+        result = r.json()
+        print(result["data"])
+
+        for key, value in result["data"].items():
+            if key.startswith("ahtm_dates_"):
+                print(key)
+                print(value)
+
+                dates_list = [
+                    datetime.strptime(date.strip(), "%d/%m/%Y %H:%M:%S").date()
+                    for date in value.split(";")
+                    if date.strip()
+                ]
+
+                for current_date in dates_list:
+                    dict_data = {
+                        "type": COLLECTION_MAP.get(key),
+                        "collectionDate": current_date.strftime(date_format),
+                    }
+                    bindata["bins"].append(dict_data)
+
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
         )
-
-        # Make a POST with the same cookie-fied session using the user's UPRN data
-        uprn_request_headers = {
-            "authority": "www.manchester.gov.uk",
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "accept-language": "en-GB,en;q=0.6",
-            "cache-control": "max-age=0",
-            # Requests sorts cookies= alphabetically
-            # 'cookie': 'TestCookie=Test; CookieConsent={stamp:%27D8rypjMDBJhpfMWybSMdGXP1hCZWGJYtGETiMTu1UuXTdRIKl8SU5g==%27%2Cnecessary:true%2Cpreferences:true%2Cstatistics:true%2Cmarketing:true%2Cver:6%2Cutc:1661783732090%2Cregion:%27gb%27}; PHPSESSID=kElJxYAt%2Cf-4ZWoskt0s5tn32BUQRXDYUVp3G-NsqOAOaeIcKlm2T4r7ATSgqfz6',
-            "origin": "https://www.manchester.gov.uk",
-            "referer": "https://www.manchester.gov.uk/bincollections",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "sec-gpc": "1",
-            "upgrade-insecure-requests": "1",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
-        }
-        uprn_request_data = {
-            "mcc_bin_dates_uprn": user_uprn,
-            "mcc_bin_dates_submit": "Go",
-        }
-        response = s.post(
-            "https://www.manchester.gov.uk/bincollections",
-            headers=uprn_request_headers,
-            data=uprn_request_data,
-        )
-
-        # Make that BS4 object and use it to prettify the response
-        soup = BeautifulSoup(response.content, features="html.parser")
-        soup.prettify()
-
-        # Get the collection items on the page and strip the bits of text that we don't care for
-        collections = []
-        for bin in soup.find_all("div", {"class": "collection"}):
-            bin_type = bin.find_next("h3").text.replace("  DUE TODAY", "").strip()
-            next_collection = bin.find_next("p").text.replace("Next collection ", "")
-            next_collection = datetime.strptime(next_collection, "%A %d %b %Y")
-            collections.append((bin_type, next_collection))
-
-        # Sort the collections by date order rather than bin type, then return as a dictionary (with str date)
-        ordered_data = sorted(collections, key=lambda x: x[1])
-        data = {"bins": []}
-        for item in ordered_data:
-            dict_data = {
-                "type": item[0],
-                "collectionDate": item[1].strftime(date_format),
-            }
-            data["bins"].append(dict_data)
-
-        return data
+        return bindata

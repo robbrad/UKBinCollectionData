@@ -680,7 +680,7 @@
     },
     "ManchesterCityCouncil": {
         "skip_get_url": true,
-        "uprn": "000077048077",
+        "uprn": "77127089",
         "url": "https://www.manchester.gov.uk/bincollections",
         "wiki_name": "Manchester City Council"
     },
