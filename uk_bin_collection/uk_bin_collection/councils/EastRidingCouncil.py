@@ -29,7 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
 
             # Create Selenium webdriver
-            page = f"https://www.eastriding.gov.uk/environment/bins-rubbish-recycling/bins-and-collections/bin-collection-dates/"
+            page = "https://www.eastriding.gov.uk/environment/bins-rubbish-recycling/bins-and-collections/bin-collection-dates/#"
 
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
@@ -52,7 +52,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             expand_postcode_box = wait.until(
                 EC.element_to_be_clickable(
-                    (By.ID, "when-and-where-should-i-put-my-bin-out")
+                    (By.XPATH, '//a[contains(text(), "Open all")]')
                 )
             )
 
