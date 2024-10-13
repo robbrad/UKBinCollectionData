@@ -7,28 +7,18 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
 
-        root_url = "https://myproperty.molevalley.gov.uk/molevalley/api/live_addresses/{}?format=json".format(
-            user_postcode
-        )
-        requests.packages.urllib3.disable_warnings()
+        # Fetch the page content
+        root_url = "https://myproperty.molevalley.gov.uk/molevalley/api/live_addresses/{}?format=json".format(user_postcode)
         response = requests.get(root_url, verify=False)
 
         if not response.ok:
-            raise ValueError("Invalid server response code retreiving data.")
+            raise ValueError("Invalid server response code retrieving data.")
 
         jsonData = response.json()
 
@@ -37,7 +27,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
         properties_found = jsonData["results"]["features"]
 
-        # If UPRN is provided, we can check a specific address.
         html_data = None
         uprn = kwargs.get("uprn")
         if uprn:
@@ -49,53 +38,81 @@ class CouncilClass(AbstractGetBinDataClass):
             if html_data is None:
                 raise ValueError("No collection data found for UPRN provided.")
         else:
-            # If UPRN not provided, just use the first result
             html_data = properties_found[0]["properties"]["three_column_layout_html"]
 
-        soup = BeautifulSoup(html_data, features="html.parser")
-        soup.prettify()
+        # Conditionally replace the commented-out sections (<!-- ... -->)
+        if "<!--" in html_data and "-->" in html_data:
+            print("Commented-out section found, replacing comments...")
+            html_data = html_data.replace("<!--", "").replace("-->", "")
+        else:
+            print("No commented-out section found, processing as is.")
+
+        # Process the updated HTML data with BeautifulSoup
+        soup = BeautifulSoup(html_data, "html.parser")
 
         data = {"bins": []}
         all_collection_dates = []
-        regex_date = re.compile(r".* ([\d]+\/[\d]+\/[\d]+)")
+        regex_date = re.compile(r"(\d{2}/\d{2}/\d{4})")  # Adjusted date regex
         regex_additional_collection = re.compile(r"We also collect (.*) on (.*) -")
 
-        # Search for the 'Bins and Recycling' panel
-        for panel in soup.select('div[class*="panel"]'):
-            if panel.h2.text.strip() == "Bins and Recycling":
+        # Debugging to verify the HTML content is parsed correctly
+        print("HTML content parsed successfully.")
 
-                # Gather the bin types and dates
-                for collection in panel.select("div > strong"):
-                    bin_type = collection.text.strip()
-                    collection_string = collection.find_next("p").text.strip()
-                    m = regex_date.match(collection_string)
-                    if m:
-                        collection_date = datetime.strptime(
-                            m.group(1), "%d/%m/%Y"
-                        ).date()
-                        data["bins"].append(
-                            {
+        # Search for the 'Bins and Recycling' panel
+        bins_panel = soup.find("h2", string="Bins and Recycling")
+        if bins_panel:
+            panel = bins_panel.find_parent("div", class_="panel")
+            print("Found 'Bins and Recycling' panel.")
+            
+            # Extract bin collection info from the un-commented HTML
+            for strong_tag in panel.find_all("strong"):
+                bin_type = strong_tag.text.strip()
+                collection_string = strong_tag.find_next("p").text.strip()
+                
+                # Debugging output
+                print(f"Processing bin type: {bin_type}")
+                print(f"Collection string: {collection_string}")
+                
+                match = regex_date.search(collection_string)
+                if match:
+                    collection_date = datetime.strptime(match.group(1), "%d/%m/%Y").date()
+                    data["bins"].append({
+                        "type": bin_type,
+                        "collectionDate": collection_date.strftime("%d/%m/%Y"),
+                    })
+                    all_collection_dates.append(collection_date)
+                else:
+                    # Add a debug line to show which collections are missing dates
+                    print(f"No valid date found for bin type: {bin_type}")
+
+            # Search for additional collections like electrical and textiles
+            for p in panel.find_all("p"):
+                additional_match = regex_additional_collection.match(p.text.strip())
+                
+                # Debugging output for additional collections
+                if additional_match:
+                    bin_type = additional_match.group(1)
+                    print(f"Found additional collection: {bin_type}")
+                    if "each collection day" in additional_match.group(2):
+                        if all_collection_dates:
+                            collection_date = min(all_collection_dates)
+                            data["bins"].append({
                                 "type": bin_type,
                                 "collectionDate": collection_date.strftime("%d/%m/%Y"),
-                            }
-                        )
-                        all_collection_dates.append(collection_date)
+                            })
+                        else:
+                            print("No collection dates available for additional collection.")
+                            raise ValueError("No valid bin collection dates found.")
+                else:
+                    print(f"No additional collection found in paragraph: {p.text.strip()}")
+        else:
+            raise ValueError("Unable to find 'Bins and Recycling' panel in the HTML data.")
 
-                # Search for additional collections
-                for p in panel.select("p"):
-                    m2 = regex_additional_collection.match(p.text.strip())
-                    if m2:
-                        bin_type = m2.group(1)
-                        if "each collection day" in m2.group(2):
-                            collection_date = min(all_collection_dates)
-                            data["bins"].append(
-                                {
-                                    "type": bin_type,
-                                    "collectionDate": collection_date.strftime(
-                                        "%d/%m/%Y"
-                                    ),
-                                }
-                            )
-                break
-
+        # Debugging to check collected data
+        print(f"Collected bin data: {data}")
+        
+        # Handle the case where no collection dates were found
+        if not all_collection_dates:
+            raise ValueError("No valid collection dates were found in the data.")
+        
         return data
