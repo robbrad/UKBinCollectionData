@@ -1,3 +1,21 @@
+## 0.98.0 (2024-10-13)
+
+### Feat
+
+- Adding Wirral Council
+- Adding Lichfield District Council
+- Adding West Morland And Furness
+- Adding Walsall Council
+- Adding Armagh, Banbridge and Craigavon Council
+
+### Fix
+
+- #602
+- #830
+- #870
+- #873
+- #877
+
 ## 0.97.1 (2024-10-10)
 
 ### Fix
