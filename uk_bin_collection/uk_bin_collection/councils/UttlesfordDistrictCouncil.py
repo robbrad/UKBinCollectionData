@@ -10,7 +10,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from uk_bin_collection.uk_bin_collection.common import *
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -91,9 +90,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 if len(cols) == 2:
                     bin_types = [img["alt"] for img in cols[0].find_all("img")]
                     collection_date_str = cols[1].text
-                    collection_date = datetime.strptime(
-                        collection_date_str, "%A %dth %B"
+                    collection_date_str = remove_ordinal_indicator_from_date_string(
+                        collection_date_str
                     )
+                    collection_date = datetime.strptime(collection_date_str, "%A %d %B")
                     collection_date = collection_date.replace(
                         year=2024
                     )  # Assuming the year is 2024
