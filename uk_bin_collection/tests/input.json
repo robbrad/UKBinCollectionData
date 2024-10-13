@@ -132,7 +132,7 @@
     "BradfordMDC": {
         "custom_component_show_url_field": false,
         "skip_get_url": true,
-        "uprn": "100052235823",
+        "uprn": "100051146921",
         "url": "https://onlineforms.bradford.gov.uk/ufs/collectiondates.eb",
         "wiki_name": "Bradford MDC",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Post code isn't parsed by this script, but you can pass it in double quotes."
