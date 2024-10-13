@@ -70,10 +70,19 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
             web_driver = kwargs.get("web_driver")
             driver = create_webdriver(web_driver, headless, None, __name__)
-            page = "https://account.barnet.gov.uk/Forms/Home/Redirector/Index/?id=6a2ac067-3322-46e5-96e4-16c0c214454a&mod=OA&casetype=BAR&formname=BNTCOLDATE"
+            page = "https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day"
+
             driver.get(page)
 
-            time.sleep(5)
+            # Wait for the element to be clickable
+            find_your_collection_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, '//a[contains(text(), "Find your household collection day")]')
+                )
+            )
+
+            # Click the element
+            find_your_collection_button.click()
 
             try:
                 accept_cookies = WebDriverWait(driver, timeout=10).until(
