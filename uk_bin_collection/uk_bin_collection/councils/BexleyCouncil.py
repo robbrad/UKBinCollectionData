@@ -24,7 +24,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            page = "https://mybexley.bexley.gov.uk/service/When_is_my_collection_day"
+            page = "https://waste.bexley.gov.uk/waste"
 
             data = {"bins": []}
 
@@ -38,102 +38,102 @@ class CouncilClass(AbstractGetBinDataClass):
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
-            # If you bang in the house number (or property name) and postcode in the box it should find your property
-
-            iframe_presense = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "fillform-frame-1"))
-            )
-
-            driver.switch_to.frame(iframe_presense)
-            wait = WebDriverWait(driver, 60)
-            start_btn = wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, "//button/span[contains(text(), 'Next')]")
-                )
-            )
-
-            start_btn.click()
+            wait = WebDriverWait(driver, 10)
 
             inputElement_postcodesearch = wait.until(
-                EC.element_to_be_clickable((By.ID, "postcode_search"))
+                EC.element_to_be_clickable((By.ID, "pc"))
             )
             inputElement_postcodesearch.send_keys(user_postcode)
 
+
+
             find_address_btn = wait.until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="search"]'))
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="sub"]'))
             )
             find_address_btn.click()
 
             dropdown_options = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="select2-chosen-1"]')
+                    (By.XPATH, '//*[@id="address"]')
                 )
             )
             time.sleep(2)
             dropdown_options.click()
             time.sleep(1)
-            dropdown_input = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="s2id_autogen1_search"]')
+
+            # Wait for the element to be clickable
+            address = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, f'//li[contains(text(), "{user_paon}")]')
                 )
             )
-            time.sleep(1)
-            dropdown_input.send_keys(user_paon)
-            dropdown_input.send_keys(Keys.ENTER)
+
+            # Click the element
+            address.click()
+
+
+            submit_address = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, '//*[@id="go"]')
+                )
+            )
+            time.sleep(2)
+            submit_address.click()
 
             results_found = wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "found-content"))
-            )
-            finish_btn = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "//button/span[contains(text(), 'Next')]")
+                    (By.XPATH, '//h1[contains(text(), "Your bin days")]')
+                )           
                 )
-            )
-            finish_btn.click()
+
             final_page = wait.until(
                 EC.presence_of_element_located(
-                    (By.CLASS_NAME, "waste-header-container")
+                    (By.CLASS_NAME, "waste__collections")
                 )
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            bin_fields = soup.find_all("div", class_="waste-panel-container")
-            # Define your XPath
+            # Find all waste services
 
-            for bin in bin_fields:
-                # Extract h3 text from the current element
-                h3_text = (
-                    bin.find("h3", class_="container-name").get_text(strip=True)
-                    if bin.find("h3", class_="container-name")
-                    else None
-                )
+            # Initialize the data dictionary
+            data = {"bins": []}
+            bin_sections = soup.find_all("h3", class_="waste-service-name")
 
-                date_text = (
-                    bin.find("p", class_="container-status").get_text(strip=True)
-                    if bin.find("p", class_="container-status")
-                    else None
-                )
+            # Loop through each bin field
+            for bin_section in bin_sections:
+                # Extract the bin type (e.g., "Brown Caddy", "Green Wheelie Bin", etc.)
+                bin_type = bin_section.get_text(strip=True).split("\n")[0]  # The first part is the bin type
 
-                if h3_text and date_text:
-                    # Parse the date using the appropriate format
-                    parsed_date = datetime.strptime(date_text, "%A %d %B")
+                # Find the next sibling <dl> tag that contains the next collection information
+                summary_list = bin_section.find_next("dl", class_="govuk-summary-list")
 
-                    # Assuming the current year is used for the collection date
-                    current_year = datetime.now().year
+                if summary_list:
+                    # Now, instead of finding by class, we'll search by text within the dt element
+                    next_collection_dt = summary_list.find("dt", string=lambda text: "Next collection" in text)
 
-                    # If the parsed date is in the past, assume it's for the next year
-                    if parsed_date < datetime.now():
-                        current_year += 1
+                    if next_collection_dt:
+                        # Find the sibling <dd> tag for the collection date
+                        next_collection = next_collection_dt.find_next_sibling("dd").get_text(strip=True)
 
-                    data["bins"].append(
-                        {
-                            "type": h3_text,
-                            "collectionDate": parsed_date.replace(
-                                year=current_year
-                            ).strftime("%d/%m/%Y"),
-                        }
-                    )
+                        if next_collection:
+                            try:
+                                # Parse the next collection date (assuming the format is like "Tuesday 15 October 2024")
+                                parsed_date = datetime.strptime(next_collection, "%A %d %B %Y")
+
+                                # Add the bin information to the data dictionary
+                                data["bins"].append({
+                                    "type": bin_type,
+                                    "collectionDate": parsed_date.strftime(date_format),
+                                })
+                            except ValueError as e:
+                                print(f"Error parsing date for {bin_type}: {e}")
+                        else:
+                            print(f"No next collection date found for {bin_type}")
+                    else:
+                        print(f"No 'Next collection' text found for {bin_type}")
+                else:
+                    print(f"No summary list found for {bin_type}")
 
         except Exception as e:
             # Here you can log the exception if needed
