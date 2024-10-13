@@ -65,7 +65,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     dict_data = {
                         "type": bin_name_clean,
-                        "colour": bin_colour,
                         "collectionDate": next_collection.strftime(date_format),
                     }
 
