@@ -1,3 +1,16 @@
+## 0.98.4 (2024-10-14)
+
+### Fix
+
+- West Suffolk Council
+- Vale of White Horse Council
+- Uttlesford District Council
+- Neath Port Talbot Council
+- Merton Council
+- Manchester City Council
+- Glasgow City Council
+- BradfordMDC
+
 ## 0.98.3 (2024-10-13)
 
 ### Fix
