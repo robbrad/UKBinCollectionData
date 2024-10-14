@@ -74,30 +74,51 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             soup.prettify()
 
-            rubbish_date = datetime.strptime(
-                " ".join(
-                    soup.find("div", {"id": "FINDYOURBINDAYS_RUBBISHDATE_OUTERDIV"})
-                    .get_text(strip=True)
-                    .split()[6:8]
-                ),
-                "%d %B",
-            ).replace(year=datetime.now().year)
-            recycling_date = datetime.strptime(
-                " ".join(
-                    soup.find("div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"})
-                    .get_text(strip=True)
-                    .split()[6:8]
-                ),
-                "%d %B",
-            ).replace(year=datetime.now().year)
-            food_date = datetime.strptime(
-                " ".join(
-                    soup.find("div", {"id": "FINDYOURBINDAYS_FOODWASTEDATE_OUTERDIV"})
-                    .get_text(strip=True)
-                    .split()[8:10]
-                ),
-                "%d %B",
-            ).replace(year=datetime.now().year)
+            rubbish_div = soup.find(
+                "div", {"id": "FINDYOURBINDAYS_RUBBISHDATE_OUTERDIV"}
+            )
+            try:
+                rubbish_date = rubbish_div.find_all("div")[2]
+                rubbish_date = datetime.strptime(
+                    rubbish_date.text,
+                    "%A %d %B",
+                ).replace(year=datetime.now().year)
+            except:
+                rubbish_date = rubbish_div.find_all("div")[3]
+                rubbish_date = datetime.strptime(
+                    rubbish_date.text,
+                    "%A %d %B",
+                ).replace(year=datetime.now().year)
+            recycling_div = soup.find(
+                "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
+            )
+            try:
+                recycling_date = recycling_div.find_all("div")[2]
+                recycling_date = datetime.strptime(
+                    recycling_date.text,
+                    "%A %d %B",
+                ).replace(year=datetime.now().year)
+            except:
+                rubbish_date = recycling_div.find_all("div")[3]
+                rubbish_date = datetime.strptime(
+                    rubbish_date.text,
+                    "%A %d %B",
+                ).replace(year=datetime.now().year)
+            food_div = soup.find(
+                "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
+            )
+            try:
+                food_date = food_div.find_all("div")[2]
+                food_date = datetime.strptime(
+                    food_date.text,
+                    "%A %d %B",
+                ).replace(year=datetime.now().year)
+            except:
+                food_date = food_div.find_all("div")[3]
+                food_date = datetime.strptime(
+                    food_date.text,
+                    "%A %d %B",
+                ).replace(year=datetime.now().year)
 
             if datetime.now().month == 12 and rubbish_date.month == 1:
                 rubbish_date = rubbish_date + relativedelta(years=1)
