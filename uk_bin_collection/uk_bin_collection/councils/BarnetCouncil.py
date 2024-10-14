@@ -74,11 +74,28 @@ class CouncilClass(AbstractGetBinDataClass):
 
             driver.get(page)
 
-            # Wait for the element to be clickable
-            find_your_collection_button = WebDriverWait(driver, 10).until(
+            wait = WebDriverWait(driver, 10)
+            accept_cookies_button = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, '//a[contains(text(), "Find your household collection day")]')
+                    (
+                        By.XPATH,
+                        "//button[contains(text(), 'Accept additional cookies')]",
+                    )
                 )
+            )
+            accept_cookies_button.click()
+
+            # Wait for the element to be clickable
+            wait = WebDriverWait(driver, 10)
+            find_your_collection_button = wait.until(
+                EC.element_to_be_clickable(
+                    (By.LINK_TEXT, "Find your household collection day")
+                )
+            )
+
+            # Scroll to the element (in case something is blocking it)
+            driver.execute_script(
+                "arguments[0].scrollIntoView();", find_your_collection_button
             )
 
             # Click the element
@@ -107,12 +124,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             postcode_input.send_keys(user_postcode)
 
-            find_address_button = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, '[value="Find address"]')
-                )
+            find_address_button = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '[value="Find address"]'))
             )
-            find_address_button.click()
+            driver.execute_script("arguments[0].scrollIntoView();", find_address_button)
+            driver.execute_script("arguments[0].click();", find_address_button)
+            # find_address_button.click()
 
             time.sleep(15)
             # Wait for address box to be visible
