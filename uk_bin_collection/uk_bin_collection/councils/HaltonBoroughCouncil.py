@@ -80,6 +80,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
             )
             search_btn.send_keys(Keys.ENTER)
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "collectionTabs"))
+            )
+
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
             # Find all tab panels within the collectionTabs
