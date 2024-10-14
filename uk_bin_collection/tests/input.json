@@ -132,7 +132,7 @@
     "BradfordMDC": {
         "custom_component_show_url_field": false,
         "skip_get_url": true,
-        "uprn": "100052235823",
+        "uprn": "100051146921",
         "url": "https://onlineforms.bradford.gov.uk/ufs/collectiondates.eb",
         "wiki_name": "Bradford MDC",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Post code isn't parsed by this script, but you can pass it in double quotes."
@@ -680,7 +680,7 @@
     },
     "ManchesterCityCouncil": {
         "skip_get_url": true,
-        "uprn": "000077048077",
+        "uprn": "77127089",
         "url": "https://www.manchester.gov.uk/bincollections",
         "wiki_name": "Manchester City Council"
     },
@@ -691,7 +691,7 @@
         "wiki_name": "Mansfield District Council"
     },
     "MertonCouncil": {
-        "url": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=28298025",
+        "url": "https://myneighbourhood.merton.gov.uk/wasteservices/WasteServices.aspx?ID=25851371",
         "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
         "wiki_name": "Merton Council",
         "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page then copy the URL and replace the URL in the command (the Address parameter is optional)."

@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -92,7 +93,6 @@ class CouncilClass(AbstractGetBinDataClass):
         dict_data = {
             "type": bin_type,
             "collectionDate": bin_date,
-            "colour": bin_colour,
         }
         data["bins"].append(dict_data)
 

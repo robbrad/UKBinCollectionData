@@ -106,6 +106,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     bin_date = datetime.strptime(
                         date.get_text(strip=True)
                         .removesuffix("(Today)")
+                        .removesuffix("(Tomorrow)")
                         .replace("&nbsp", " ")
                         + " "
                         + datetime.now().strftime("%Y"),
