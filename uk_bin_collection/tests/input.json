@@ -1128,7 +1128,8 @@
     "SwaleBoroughCouncil": {
         "postcode": "ME12 2NQ",
         "skip_get_url": true,
-        "uprn": "100061081168",
+        "house_number": "81",
+        "web_driver": "http://selenium:4444",
         "url": "https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days",
         "wiki_name": "Swale Borough Council"
     },
