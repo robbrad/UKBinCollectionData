@@ -1,3 +1,12 @@
+## 0.98.5 (2024-10-15)
+
+### Fix
+
+- Swale Borough Council
+- HaltonBoroughCouncil
+- Barnet Council
+- WestBerkshireCouncil
+
 ## 0.98.4 (2024-10-14)
 
 ### Fix
