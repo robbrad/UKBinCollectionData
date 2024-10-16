@@ -10,141 +10,236 @@ For scripts that need postcodes, these should be provided in double quotes and w
 This document is still a work in progress, don't worry if your council isn't listed - it will be soon!
 
 ## Contents
-- [Contents](#contents)
-  - [Aylesbury Vale Council (Buckinghamshire)](#aylesbury-vale-council-buckinghamshire)
-  - [Arun Council](#arun-council)
-  - [BCP Council](#bcp-council)
-  - [Barnet Council](#barnet-council)
-  - [Barnsley Metropolitan Borough Council](#barnsley-metropolitan-borough-council)
-  - [Basingstoke Council](#basingstoke-council)
-  - [Bath and North East Somerset Council](#bath-and-north-east-somerset-council)
-  - [Bedfordshire Council](#bedfordshire-council)
-  - [BelfastCityCouncil](#belfastcitycouncil)
-- [Note: The UPRN can be found using developer tools, look for "ctl00$MainContent$lstAddresses" variable in the Request headers.](#note-the-uprn-can-be-found-using-developer-tools-look-for-ctl00maincontentlstaddresses-variable-in-the-request-headers)
-  - [Bexley Council](#bexley-council)
-  - [Blackburn Council](#blackburn-council)
-  - [Bolton Council](#bolton-council)
-  - [Brighton and Hove City Council](#brighton-and-hove-city-council)
-  - [Bristol City Council](#bristol-city-council)
-  - [Bromley Borough Council](#bromley-borough-council)
-  - [Broxtowe Borough Council](#broxtowe-borough-council)
-  - [Buckinghamshire Council (Chiltern, South Bucks, Wycombe)](#buckinghamshire-council-chiltern-south-bucks-wycombe)
-  - [Bury Council](#bury-council)
-  - [Calderdale Council](#calderdale-council)
-  - [Cannock Chase District Council](#cannock-chase-district-council)
-  - [Cardiff Council](#cardiff-council)
-  - [Castlepoint District Council](#castlepoint-district-council)
-  - [Charnwood Borough Council](#charnwood-borough-council)
-  - [Chelmsford City Council](#chelmsford-city-council)
-  - [Cheshire East Council](#cheshire-east-council)
-  - [Chorley Council](#chorley-council)
-  - [Conwy County Borough Council](#conwy-county-borough-council)
-  - [Crawley Borough Council](#crawley-borough-council)
-  - [Croydon Council](#croydon-council)
-  - [Derbyshire Dales District Council](#derbyshire-dales-district-council)
-  - [Doncaster Council](#doncaster-council)
-  - [Dorset Council](#dorset-council)
-  - [Durham Council](#durham-council)
-  - [East Cambridgeshire Council](#east-cambridgeshire-council)
-  - [East Devon District Council](#east-devon-district-council)
-  - [East Lindsey District Council](#east-lindsey-district-council)
-  - [East Riding Council](#east-riding-council)
-  - [East Suffolk Council](#east-suffolk-council)
-  - [Eastleigh Borough Council](#eastleigh-borough-council)
-  - [Environment First](#environment-first)
-  - [Erewash Borough Council](#erewash-borough-council)
-  - [Fenland District Council](#fenland-district-council)
-  - [Forest of Dean District Council](#forest-of-dean-district-council)
-  - [Gateshead Council](#gateshead-council)
-  - [Gedling Borough Council](#gedling-borough-council)
-  - [Glasgow City Council](#glasgow-city-council)
-  - [Guildford Council](#guildford-council)
-  - [Halton Borough Council](#halton-borough-council)
-  - [Haringey Council](#haringey-council)
-  - [Harrogate Borough Council](#harrogate-borough-council)
-  - [High Peak Council](#high-peak-council)
-  - [Huntingdon District Council](#huntingdon-district-council)
-  - [Kingston Upon Thames Council](#kingston-upon-thames-council)
-  - [Kirklees Council](#kirklees-council)
-  - [Lancaster City Council](#lancaster-city-council)
-  - [Leeds City Council](#leeds-city-council)
-  - [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
-  - [Liverpool City Council](#liverpool-city-council)
-  - [London Borough Hounslow](#london-borough-hounslow)
-  - [London Borough Redbridge](#london-borough-redbridge)
-  - [Maldon District Council](#maldon-district-council)
-  - [Malvern Hills District Council](#malvern-hills-district-council)
-  - [Manchester City Council](#manchester-city-council)
-  - [Merton Council](#merton-council)
-  - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
-  - [Mid Sussex District Council](#mid-sussex-district-council)
-  - [Milton Keynes City Council](#milton-keynes-city-council)
-  - [Mole Valley District Council](#mole-valley-district-council)
-  - [Neath Port Talbot Council](#neath-port-talbot-council)
-  - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
-  - [Newcastle City Council](#newcastle-city-council)
-  - [Newport City Council](#newport-city-council)
-  - [North East Derbyshire District Council](#north-east-derbyshire-district-council)
-  - [North East Lincolnshire Council](#north-east-lincolnshire-council)
-  - [North Kesteven District Council](#north-kesteven-district-council)
-  - [North Lanarkshire Council](#north-lanarkshire-council)
-  - [North Lincolnshire Council](#north-lincolnshire-council)
-  - [North Norfolk District Council](#north-norfolk-district-council)
-  - [North Northamptonshire Council](#north-northamptonshire-council)
-  - [North Somerset Council](#north-somerset-council)
-  - [North Tyneside Council](#north-tyneside-council)
-  - [North West Leicestershire Council](#north-west-leicestershire-council)
-  - [NorthYorkshire](#northyorkshire)
-  - [Northumberland Council](#northumberland-council)
-  - [Nottingham City Council](#nottingham-city-council)
-  - [Oldham Council](#oldham-council)
-  - [Portsmouth City Council](#portsmouth-city-council)
-  - [Preston City Council](#preston-city-council)
-  - [Reading Borough Council](#reading-borough-council)
-  - [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
-  - [Rhondda Cynon Taff Council](#rhondda-cynon-taff-council)
-  - [Rochdale Council](#rochdale-council)
-  - [Rugby Borough Council](#rugby-borough-council)
-  - [Rushcliffe Borough Council](#rushcliffe-borough-council)
-  - [Rushmoor Council](#rushmoor-council)
-  - [Salford City Council](#salford-city-council)
-  - [Sevenoaks District Council](#sevenoaks-district-council)
-  - [Sheffield City Council](#sheffield-city-council)
-  - [Shropshire Council](#shropshire-council)
-  - [Somerset Council](#somerset-council)
-  - [South Ayrshire Council](#south-ayrshire-council)
-  - [South Cambridgeshire Council](#south-cambridgeshire-council)
-  - [South Gloucestershire Council](#south-gloucestershire-council)
-  - [South Lanarkshire Council](#south-lanarkshire-council)
-  - [South Norfolk Council](#south-norfolk-council)
-  - [South Oxfordshire Council](#south-oxfordshire-council)
-  - [South Tyneside Council](#south-tyneside-council)
-  - [St Helens Borough Council](#st-helens-borough-council)
-  - [Staffordshire Moorlands District Council](#staffordshire-moorlands-district-council)
-  - [Stockport Borough Council](#stockport-borough-council)
-  - [Stoke-on-Trent City Council](#stoke-on-trent-city-council)
-  - [Stratford Upon Avon Council](#stratford-upon-avon-council)
-  - [Swale Borough Council](#swale-borough-council)
-  - [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
-  - [Test Valley Borough Council](#test-valley-borough-council)
-  - [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
-  - [Torbay Council](#torbay-council)
-  - [Torridge District Council](#torridge-district-council)
-  - [Vale of Glamorgan Council](#vale-of-glamorgan-council)
-  - [Vale of White Horse Council](#vale-of-white-horse-council)
-  - [Wakefield City Council](#wakefield-city-council)
-  - [Warwick District Council](#warwick-district-council)
-  - [Waverley Borough Council](#waverley-borough-council)
-  - [Wealden District Council](#wealden-district-council)
-  - [Welhat Council](#welhat-council)
-  - [West Lindsey District Council](#west-lindsey-district-council)
-  - [West Lothian Council](#west-lothian-council)
-  - [West Suffolk Council](#west-suffolk-council)
-  - [Wigan Borough Council](#wigan-borough-council)
-  - [Wiltshire Council](#wiltshire-council)
-  - [Windsor and Maidenhead Council](#windsor-and-maidenhead-council)
-  - [Woking Borough Council/Joint Waste Solutions](#woking-borough-counciljoint-waste-solutions)
-  - [York Council](#york-council)
+- [Adur and Worthing Councils](#adur-and-worthing-councils)
+- [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
+- [Arun Council](#arun-council)
+- [Aylesbury Vale Council (Buckinghamshire)](#aylesbury-vale-council-(buckinghamshire))
+- [BCP Council](#bcp-council)
+- [Barnet Council](#barnet-council)
+- [Barnsley Metropolitan Borough Council](#barnsley-metropolitan-borough-council)
+- [Basildon Council](#basildon-council)
+- [Basingstoke Council](#basingstoke-council)
+- [Bath and North East Somerset Council](#bath-and-north-east-somerset-council)
+- [Bedford Borough Council](#bedford-borough-council)
+- [Bedfordshire Council](#bedfordshire-council)
+- [BelfastCityCouncil](#belfastcitycouncil)
+- [Bexley Council](#bexley-council)
+- [Birmingham City Council](#birmingham-city-council)
+- [Blackburn Council](#blackburn-council)
+- [Bolton Council](#bolton-council)
+- [Bracknell Forest Council](#bracknell-forest-council)
+- [Bradford MDC](#bradford-mdc)
+- [Brighton and Hove City Council](#brighton-and-hove-city-council)
+- [Bristol City Council](#bristol-city-council)
+- [Bromley Borough Council](#bromley-borough-council)
+- [Broxtowe Borough Council](#broxtowe-borough-council)
+- [Buckinghamshire Council (Chiltern, South Bucks, Wycombe)](#buckinghamshire-council-(chiltern,-south-bucks,-wycombe))
+- [Bury Council](#bury-council)
+- [Calderdale Council](#calderdale-council)
+- [Cannock Chase District Council](#cannock-chase-district-council)
+- [Cardiff Council](#cardiff-council)
+- [Castlepoint District Council](#castlepoint-district-council)
+- [Charnwood Borough Council](#charnwood-borough-council)
+- [Chelmsford City Council](#chelmsford-city-council)
+- [Cheshire East Council](#cheshire-east-council)
+- [Cheshire West and Chester Council](#cheshire-west-and-chester-council)
+- [ChichesterDistrictCouncil](#chichesterdistrictcouncil)
+- [Chorley Council](#chorley-council)
+- [Colchester City Council](#colchester-city-council)
+- [Conwy County Borough Council](#conwy-county-borough-council)
+- [Cornwall Council](#cornwall-council)
+- [Crawley Borough Council](#crawley-borough-council)
+- [Croydon Council](#croydon-council)
+- [Dacorum Borough Council](#dacorum-borough-council)
+- [DartfordBoroughCouncil](#dartfordboroughcouncil)
+- [Derbyshire Dales District Council](#derbyshire-dales-district-council)
+- [Doncaster Council](#doncaster-council)
+- [Dorset Council](#dorset-council)
+- [Dover District Council](#dover-district-council)
+- [Durham Council](#durham-council)
+- [Ealing Council](#ealing-council)
+- [East Cambridgeshire Council](#east-cambridgeshire-council)
+- [East Devon District Council](#east-devon-district-council)
+- [East Lindsey District Council](#east-lindsey-district-council)
+- [East Renfrewshire Council](#east-renfrewshire-council)
+- [East Riding Council](#east-riding-council)
+- [East Suffolk Council](#east-suffolk-council)
+- [Eastleigh Borough Council](#eastleigh-borough-council)
+- [Elmbridge Borough Council](#elmbridge-borough-council)
+- [Enfield Council](#enfield-council)
+- [Environment First](#environment-first)
+- [Epping Forest District Council](#epping-forest-district-council)
+- [Erewash Borough Council](#erewash-borough-council)
+- [Falkirk Council](#falkirk-council)
+- [Fareham Borough Council](#fareham-borough-council)
+- [Fenland District Council](#fenland-district-council)
+- [Forest of Dean District Council](#forest-of-dean-district-council)
+- [Gateshead Council](#gateshead-council)
+- [Gedling Borough Council](#gedling-borough-council)
+- [Glasgow City Council](#glasgow-city-council)
+- [Gloucester City Council](#gloucester-city-council)
+- [Guildford Council](#guildford-council)
+- [Halton Borough Council](#halton-borough-council)
+- [Haringey Council](#haringey-council)
+- [Harrogate Borough Council](#harrogate-borough-council)
+- [Highland Council](#highland-council)
+- [High Peak Council](#high-peak-council)
+- [HounslowCouncil](#hounslowcouncil)
+- [Hull City Council](#hull-city-council)
+- [Huntingdon District Council](#huntingdon-district-council)
+- [Islington Council](#islington-council)
+- [Kingston Upon Thames Council](#kingston-upon-thames-council)
+- [Kirklees Council](#kirklees-council)
+- [Knowsley Metropolitan Borough Council](#knowsley-metropolitan-borough-council)
+- [Lancaster City Council](#lancaster-city-council)
+- [Leeds City Council](#leeds-city-council)
+- [Lichfield District Council](#lichfield-district-council)
+- [Tunbridge Wells Council](#tunbridge-wells-council)
+- [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
+- [Liverpool City Council](#liverpool-city-council)
+- [London Borough Ealing](#london-borough-ealing)
+- [London Borough Harrow](#london-borough-harrow)
+- [London Borough Hounslow](#london-borough-hounslow)
+- [London Borough Lambeth](#london-borough-lambeth)
+- [London Borough Redbridge](#london-borough-redbridge)
+- [Maldon District Council](#maldon-district-council)
+- [Malvern Hills District Council](#malvern-hills-district-council)
+- [Manchester City Council](#manchester-city-council)
+- [Mansfield District Council](#mansfield-district-council)
+- [Merton Council](#merton-council)
+- [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
+- [Mid Sussex District Council](#mid-sussex-district-council)
+- [Milton Keynes City Council](#milton-keynes-city-council)
+- [Mole Valley District Council](#mole-valley-district-council)
+- [Neath Port Talbot Council](#neath-port-talbot-council)
+- [New Forest Council](#new-forest-council)
+- [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
+- [Newcastle City Council](#newcastle-city-council)
+- [Newham Council](#newham-council)
+- [Newport City Council](#newport-city-council)
+- [North Ayrshire Council](#north-ayrshire-council)
+- [North East Derbyshire District Council](#north-east-derbyshire-district-council)
+- [North East Lincolnshire Council](#north-east-lincolnshire-council)
+- [North Kesteven District Council](#north-kesteven-district-council)
+- [North Lanarkshire Council](#north-lanarkshire-council)
+- [North Lincolnshire Council](#north-lincolnshire-council)
+- [North Norfolk District Council](#north-norfolk-district-council)
+- [North Northamptonshire Council](#north-northamptonshire-council)
+- [North Somerset Council](#north-somerset-council)
+- [North Tyneside Council](#north-tyneside-council)
+- [North West Leicestershire Council](#north-west-leicestershire-council)
+- [North Yorkshire Council](#north-yorkshire-council)
+- [Northumberland Council](#northumberland-council)
+- [Nottingham City Council](#nottingham-city-council)
+- [Oldham Council](#oldham-council)
+- [Perth and Kinross Council](#perth-and-kinross-council)
+- [Portsmouth City Council](#portsmouth-city-council)
+- [Preston City Council](#preston-city-council)
+- [Reading Borough Council](#reading-borough-council)
+- [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
+- [Renfrewshire Council](#renfrewshire-council)
+- [Rhondda Cynon Taff Council](#rhondda-cynon-taff-council)
+- [Rochdale Council](#rochdale-council)
+- [Rochford Council](#rochford-council)
+- [RotherhamCouncil](#rotherhamcouncil)
+- [Rugby Borough Council](#rugby-borough-council)
+- [Rushcliffe Borough Council](#rushcliffe-borough-council)
+- [Rushmoor Council](#rushmoor-council)
+- [Salford City Council](#salford-city-council)
+- [Sevenoaks District Council](#sevenoaks-district-council)
+- [Sheffield City Council](#sheffield-city-council)
+- [Shropshire Council](#shropshire-council)
+- [Solihull Council](#solihull-council)
+- [Somerset Council](#somerset-council)
+- [South Ayrshire Council](#south-ayrshire-council)
+- [South Cambridgeshire Council](#south-cambridgeshire-council)
+- [South Derbyshire District Council](#south-derbyshire-district-council)
+- [South Gloucestershire Council](#south-gloucestershire-council)
+- [SouthKestevenDistrictCouncil](#southkestevendistrictcouncil)
+- [South Lanarkshire Council](#south-lanarkshire-council)
+- [South Norfolk Council](#south-norfolk-council)
+- [South Oxfordshire Council](#south-oxfordshire-council)
+- [South Tyneside Council](#south-tyneside-council)
+- [Southwark Council](#southwark-council)
+- [St Albans City and District Council](#st-albans-city-and-district-council)
+- [St Helens Borough Council](#st-helens-borough-council)
+- [StaffordBoroughCouncil](#staffordboroughcouncil)
+- [Staffordshire Moorlands District Council](#staffordshire-moorlands-district-council)
+- [Stockport Borough Council](#stockport-borough-council)
+- [Stoke-on-Trent City Council](#stoke-on-trent-city-council)
+- [Stratford Upon Avon Council](#stratford-upon-avon-council)
+- [Stroud District Council](#stroud-district-council)
+- [Sunderland City Council](#sunderland-city-council)
+- [Swale Borough Council](#swale-borough-council)
+- [SwanseaCouncil](#swanseacouncil)
+- [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
+- [Tandridge District Council](#tandridge-district-council)
+- [Telford and Wrekin Co-operative Council](#telford-and-wrekin-co-operative-council)
+- [Tendring District Council](#tendring-district-council)
+- [Test Valley Borough Council](#test-valley-borough-council)
+- [Three Rivers District Council](#three-rivers-district-council)
+- [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
+- [Torbay Council](#torbay-council)
+- [Torridge District Council](#torridge-district-council)
+- [Tunbridge Wells Council](#tunbridge-wells-council)
+- [UttlesfordDistrictCouncil](#uttlesforddistrictcouncil)
+- [Vale of Glamorgan Council](#vale-of-glamorgan-council)
+- [Vale of White Horse Council](#vale-of-white-horse-council)
+- [Wakefield City Council](#wakefield-city-council)
+- [Walsall Council](#walsall-council)
+- [Waltham Forest](#waltham-forest)
+- [Warwick District Council](#warwick-district-council)
+- [Waverley Borough Council](#waverley-borough-council)
+- [Wealden District Council](#wealden-district-council)
+- [Welhat Council](#welhat-council)
+- [West Berkshire Council](#west-berkshire-council)
+- [West Lindsey District Council](#west-lindsey-district-council)
+- [West Lothian Council](#west-lothian-council)
+- [West Morland And Furness Council](#west-morland-and-furness-council)
+- [West Northamptonshire Council](#west-northamptonshire-council)
+- [West Suffolk Council](#west-suffolk-council)
+- [Wigan Borough Council](#wigan-borough-council)
+- [Wiltshire Council](#wiltshire-council)
+- [Winchester City Council](#winchester-city-council)
+- [Windsor and Maidenhead Council](#windsor-and-maidenhead-council)
+- [Wirral Council](#wirral-council)
+- [Woking Borough Council/Joint Waste Solutions](#woking-borough-council/joint-waste-solutions)
+- [Wokingham Borough Council](#wokingham-borough-council)
+- [WychavonDistrictCouncil](#wychavondistrictcouncil)
+- [Wyre Council](#wyre-council)
+- [York Council](#york-council)
+
+---
+
+### Adur and Worthing Councils
+```commandline
+python collect_data.py AdurAndWorthingCouncils https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=XXXXXXXX
+```
+
+Note: Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Armagh Banbridge Craigavon Council
+```commandline
+python collect_data.py ArmaghBanbridgeCraigavonCouncil https://www.armaghbanbridgecraigavon.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Arun Council
+```commandline
+python collect_data.py ArunCouncil https://www1.arun.gov.uk/when-are-my-bins-collected -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
 
@@ -156,21 +251,7 @@ Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 
-Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN. Returns all published collections in the past, present, future.
-
----
-
-### Arun Council
-```commandline
-python collect_data.py ArunCouncil https://www1.arun.gov.uk/when-are-my-bins-collected/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
-```
-Additional parameters:
-- `-s` - skip get URL
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
-
-Note: It will match from left to right on the dropdown address list. e.g for "1 High Street, Angmering" you would enter "1" in the house number parameter.
+Note: To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.uk/search). Returns all published collections in the past, present, future.
 
 ---
 
@@ -209,6 +290,16 @@ Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyad
 
 ---
 
+### Basildon Council
+```commandline
+python collect_data.py BasildonCouncil https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
 ### Basingstoke Council
 ```commandline
 python collect_data.py BasingstokeCouncil https://www.basingstoke.gov.uk/bincollection -s -u XXXXXXXX
@@ -222,6 +313,16 @@ Additional parameters:
 ### Bath and North East Somerset Council
 ```commandline
 python collect_data.py BathAndNorthEastSomersetCouncil https://www.bathnes.gov.uk/webforms/waste/collectionday/ -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
+### Bedford Borough Council
+```commandline
+python collect_data.py BedfordBoroughCouncil https://www.bedford.gov.uk/bins-and-recycling/household-bins-and-recycling/check-your-bin-day -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -244,12 +345,13 @@ Note: In order to use this parser, you must provide a valid postcode and a uprn 
 
 ### BelfastCityCouncil
 ```commandline
-python collect_data.py BelfastCityCouncil https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py BelfastCityCouncil https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx -s -u XXXXXXXX -p "XXXX XXX"
 ```
+Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
 
-Note: The UPRN can be found using developer tools, look for "ctl00$MainContent$lstAddresses" variable in the Request headers. 
 ---
 
 ### Bexley Council
@@ -268,6 +370,16 @@ Complete the setup by entering your email and setting your address with postcode
 Once you can see the calendar, you _should_ be good to run the parser.
 Just pass the email you used in quotes in the UPRN parameter.
 
+
+---
+
+### Birmingham City Council
+```commandline
+python collect_data.py BirminghamCityCouncil https://www.birmingham.gov.uk/xfp/form/619 -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
@@ -293,6 +405,29 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required single field that was UPRN and full address, now requires UPRN and postcode as separate fields.
+
+---
+
+### Bracknell Forest Council
+```commandline
+python collect_data.py BracknellForestCouncil https://selfservice.mybfc.bracknell-forest.gov.uk/w/webpage/waste-collection-days -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+---
+
+### Bradford MDC
+```commandline
+python collect_data.py BradfordMDC https://onlineforms.bradford.gov.uk/ufs/collectiondates.eb -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Post code isn't parsed by this script, but you can pass it in double quotes.
 
 ---
 
@@ -346,7 +481,7 @@ Additional parameters:
 
 ### Buckinghamshire Council (Chiltern, South Bucks, Wycombe)
 ```commandline
-python collect_data.py BuckinghamshireCouncil https://chiltern.gov.uk/collection-dates -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BuckinghamshireCouncil https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FA353FC74600CBE61BE409534D00A8EC09BDA3AC&lang=en -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -450,9 +585,36 @@ Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find
 
 ---
 
+### Cheshire West and Chester Council
+```commandline
+python collect_data.py CheshireWestAndChesterCouncil https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### ChichesterDistrictCouncil
+```commandline
+python collect_data.py ChichesterDistrictCouncil https://www.chichester.gov.uk/checkyourbinday -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Needs the full address and postcode as appears on page https://www.chichester.gov.uk/checkyourbinday
+
+---
+
 ### Chorley Council
 ```commandline
-python collect_data.py ChorleyCouncil https://myaccount.chorley.gov.uk/wastecollections.aspx -s -u UPRNXXXXXXXX -p "XXXX XXX" -w http://HOST:PORT
+python collect_data.py ChorleyCouncil https://myaccount.chorley.gov.uk/wastecollections.aspx -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -461,6 +623,20 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Chorley needs to be passed both a Postcode & UPRN in the format of UPRNXXXXXX to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search)
+
+---
+
+### Colchester City Council
+```commandline
+python collect_data.py ColchesterCityCouncil https://www.colchester.gov.uk/your-recycling-calendar -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number in the house number parameter, wrapped in double quotes
 
 ---
 
@@ -473,6 +649,18 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Conwy County Borough Council is a straight up uprn in the url eg &uprn=XXXXXXXXXXXXX .
+
+---
+
+### Cornwall Council
+```commandline
+python collect_data.py CornwallCouncil https://www.cornwall.gov.uk/my-area/ -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Use https://uprn.uk/ to find your UPRN.
 
 ---
 
@@ -500,6 +688,29 @@ Additional parameters:
 
 ---
 
+### Dacorum Borough Council
+```commandline
+python collect_data.py DacorumBoroughCouncil https://webapps.dacorum.gov.uk/bincollections/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### DartfordBoroughCouncil
+```commandline
+python collect_data.py DartfordBoroughCouncil https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511 -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use https://uprn.uk/ to find your UPRN 
+
+---
+
 ### Derbyshire Dales District Council
 ```commandline
 python collect_data.py DerbyshireDalesDistrictCouncil https://www.derbyshiredales.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
@@ -524,16 +735,36 @@ Additional parameters:
 
 ### Dorset Council
 ```commandline
-python collect_data.py DorsetCouncil https://gi.dorsetcouncil.gov.uk/mapping/mylocal/viewresults/XXXXXXXX
+python collect_data.py DorsetCouncil https://www.dorsetcouncil.gov.uk/ -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
+### Dover District Council
+```commandline
+python collect_data.py DoverDistrictCouncil https://collections.dover.gov.uk/property/XXXXXXXXXXX
 ```
 
-Note: Replace XXXXXXXX with UPRN.
+Note: Replace XXXXXXXXXXXX with your UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
 ### Durham Council
 ```commandline
 python collect_data.py DurhamCouncil https://www.durham.gov.uk/bincollections?uprn= -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
+### Ealing Council
+```commandline
+python collect_data.py EalingCouncil https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -553,7 +784,7 @@ Additional parameters:
 
 ### East Devon District Council
 ```commandline
-python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-and-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX
+python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX
 ```
 
 Note: Replace XXXXXXXX with UPRN.
@@ -563,6 +794,20 @@ Note: Replace XXXXXXXX with UPRN.
 ### East Lindsey District Council
 ```commandline
 python collect_data.py EastLindseyDistrictCouncil https://www.e-lindsey.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number in the house number parameter, wrapped in double quotes
+
+---
+
+### East Renfrewshire Council
+```commandline
+python collect_data.py EastRenfrewshireCouncil https://eastrenfrewshire.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -612,6 +857,29 @@ Additional parameters:
 
 ---
 
+### Elmbridge Borough Council
+```commandline
+python collect_data.py ElmbridgeBoroughCouncil https://www.elmbridge.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Enfield Council
+```commandline
+python collect_data.py EnfieldCouncil https://www.enfield.gov.uk/services/rubbish-and-recycling/find-my-collection-day -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
 ### Environment First
 ```commandline
 python collect_data.py EnvironmentFirst https://environmentfirst.co.uk/house.php?uprn=XXXXXXXXXX
@@ -622,6 +890,15 @@ Replace the XXXXXXXXXXX with the UPRN of your property - you can use [FindMyAddr
 
 ---
 
+### Epping Forest District Council
+```commandline
+python collect_data.py EppingForestDistrictCouncil https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP -p "XXXX XXX"
+```
+Additional parameters:
+- `-p` - postcode
+
+---
+
 ### Erewash Borough Council
 ```commandline
 python collect_data.py ErewashBoroughCouncil https://map.erewash.gov.uk/isharelive.web/myerewash.aspx -s -u XXXXXXXX
@@ -629,6 +906,27 @@ python collect_data.py ErewashBoroughCouncil https://map.erewash.gov.uk/ishareli
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### Falkirk Council
+```commandline
+python collect_data.py FalkirkCouncil https://www.falkirk.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Fareham Borough Council
+```commandline
+python collect_data.py FarehamBoroughCouncil https://www.fareham.gov.uk/internetlookups/search_data.aspx?type=JSON&list=DomesticBinCollections&Road=&Postcode=PO14%204NR -s -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
 
 ---
 
@@ -678,7 +976,7 @@ Additional parameters:
 - `-s` - skip get URL
 - `-n` - house number
 
-Note: Pass the street name into the -n parameter. Use [this](https://apps.gedling.gov.uk/refuse/search.aspx) to help work out a street search that is unique. Known issues: 1) If multiple streets returned, it will pick the first and these may have different bin schedules. 2) This data is hand entered as council only provide non-parseable non-accessible PDFs - Please double check for any issues. 2b) Data is only included until end of Nov 2024 (refuse) and March 2024 (Garden). Data will need to be updated by hand after these dates.
+Note: Use [this site](https://www.gbcbincalendars.co.uk/) to find the collections for your address. Use the -n parameter to add them in a comma-separated list inside quotes, such as: 'Friday G4, Friday J'.
 
 ---
 
@@ -688,6 +986,19 @@ python collect_data.py GlasgowCityCouncil https://onlineservices.glasgow.gov.uk/
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Gloucester City Council
+```commandline
+python collect_data.py GloucesterCityCouncil https://gloucester-self.achieveservice.com/service/Bins___Check_your_bin_day -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
 
@@ -744,6 +1055,17 @@ Note: Pass the UPRN which can be found at https://secure.harrogate.gov.uk/inmyar
 
 ---
 
+### Highland Council
+```commandline
+python collect_data.py HighlandCouncil https://www.highland.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### High Peak Council
 ```commandline
 python collect_data.py HighPeakCouncil https://www.highpeak.gov.uk/findyourbinday -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -758,10 +1080,44 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ---
 
+### HounslowCouncil
+```commandline
+python collect_data.py HounslowCouncil https://www.hounslow.gov.uk/info/20272/recycling_and_waste_collection_day_finder -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Hull City Council
+```commandline
+python collect_data.py HullCityCouncil https://www.hull.gov.uk/bins-and-recycling/bin-collections/bin-collection-day-checker -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
 ### Huntingdon District Council
 ```commandline
 python collect_data.py HuntingdonDistrictCouncil https://www.huntingdonshire.gov.uk/refuse-calendar/XXXXXXXX
 ```
+
+Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Islington Council
+```commandline
+python collect_data.py IslingtonCouncil https://www.islington.gov.uk/your-area?Postcode=unused&Uprn=XXXXXXXX -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
 
 Note: Replace XXXXXXXX with UPRN.
 
@@ -778,17 +1134,28 @@ Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/wast
 
 ### Kirklees Council
 ```commandline
-python collect_data.py KirkleesCouncil -s -w http://127.0.0.1:4444 -n 24 -p 'HD7 5DX' unused.example.com
+python collect_data.py KirkleesCouncil https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
-
-N.B. the URL positional argument is not used by the script. A webdriver is required.
-
-Parameters:
-
+Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
-- `-w` - webdriver URL
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Knowsley Metropolitan Borough Council
+```commandline
+python collect_data.py KnowsleyMBCouncil https://knowsleytransaction.mendixcloud.com/link/youarebeingredirected?target=bincollectioninformation -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the postcode in the postcode parameter, wrapped in double quotes and with a space.
+
 ---
 
 ### Lancaster City Council
@@ -815,6 +1182,29 @@ Additional parameters:
 
 ---
 
+### Lichfield District Council
+```commandline
+python collect_data.py LichfieldDistrictCouncil https://www.lichfielddc.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Tunbridge Wells Council
+```commandline
+python collect_data.py LincolnCouncil https://lincoln.gov.uk -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Lisburn and Castlereagh City Council
 ```commandline
 python collect_data.py LisburnCastlereaghCityCouncil https://lisburn.isl-fusion.com -s -p "XXXX XXX" -n XX
@@ -835,9 +1225,40 @@ Note: Replace XXXXXXXX with your property's UPRN.
 
 ---
 
+### London Borough Ealing
+```commandline
+python collect_data.py LondonBoroughEaling https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
+### London Borough Harrow
+```commandline
+python collect_data.py LondonBoroughHarrow https://www.harrow.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### London Borough Hounslow
 ```commandline
 python collect_data.py LondonBoroughHounslow https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
+### London Borough Lambeth
+```commandline
+python collect_data.py LondonBoroughLambeth https://wasteservice.lambeth.gov.uk/WhitespaceComms/GetServicesByUprn -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -888,6 +1309,16 @@ Additional parameters:
 
 ---
 
+### Mansfield District Council
+```commandline
+python collect_data.py MansfieldDistrictCouncil https://www.mansfield.gov.uk/xfp/form/1327 -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
 ### Merton Council
 ```commandline
 python collect_data.py MertonCouncil https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX
@@ -912,12 +1343,13 @@ Note: Pass the house name/number plus the name of the street with the postcode p
 
 ### Mid Sussex District Council
 ```commandline
-python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -s -p "XXXX XXX" -n XX
+python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the name of the street with the house number parameter, wrapped in double quotes
 
@@ -925,10 +1357,9 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ### Milton Keynes City Council
 ```commandline
-python collect_data.py MiltonKeynesCityCouncil https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days -s -u XXXXXXXX
+python collect_data.py MiltonKeynesCityCouncil https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days -u XXXXXXXX
 ```
 Additional parameters:
-- `-s` - skip get URL
 - `-u` - UPRN
 
 Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes
@@ -937,20 +1368,32 @@ Note: Pass the name of the estate with the UPRN parameter, wrapped in double quo
 
 ### Mole Valley District Council
 ```commandline
-python collect_data.py MoleValleyDistrictCouncil https://molevalley.cloudmappin.com/mmv/ -s -p "XXXX XXX" -u XXXXXXXX
+python collect_data.py MoleValleyDistrictCouncil https://myproperty.molevalley.gov.uk/molevalley/ -s -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
 
-Note: In order to use this parser, you must provide a valid postcode and optionally a UPRN for your specific address.
+Note: UPRN can only be parsed with a valid postcode.
 
 ---
 
 ### Neath Port Talbot Council
 ```commandline
-python collect_data.py NeathPortTalbotCouncil https://www.npt.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+python collect_data.py NeathPortTalbotCouncil https://www.npt.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### New Forest Council
+```commandline
+python collect_data.py NewForestCouncil https://forms.newforest.gov.uk/id/FIND_MY_COLLECTION -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -978,6 +1421,17 @@ Note: Replace XXXXXXXX with UPRN.
 
 ---
 
+### Newham Council
+```commandline
+python collect_data.py NewhamCouncil https://bincollection.newham.gov.uk/Details/Index/XXXXXXXXXXX -s
+```
+Additional parameters:
+- `-s` - skip get URL
+
+Note: Follow the instructions [here](https://bincollection.newham.gov.uk/) until you get the "Rubbish and Recycling Collections" page then copy the URL and replace the URL in the command.
+
+---
+
 ### Newport City Council
 ```commandline
 python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
@@ -986,6 +1440,17 @@ Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
+
+---
+
+### North Ayrshire Council
+```commandline
+python collect_data.py NorthAyrshireCouncil https://www.north-ayrshire.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -1003,10 +1468,9 @@ Additional parameters:
 
 ### North East Lincolnshire Council
 ```commandline
-python collect_data.py NorthEastLincs https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=XXXXXXXX -s -u XXXXXXXX
+python collect_data.py NorthEastLincs https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=XXXXXXXX -u XXXXXXXX
 ```
 Additional parameters:
-- `-s` - skip get URL
 - `-u` - UPRN
 
 Note: Replace XXXXXXXX with UPRN.
@@ -1099,7 +1563,7 @@ Additional parameters:
 
 ---
 
-### NorthYorkshire
+### North Yorkshire Council
 ```commandline
 python collect_data.py NorthYorkshire https://www.northyorks.gov.uk/bin-calendar/lookup -s -u XXXXXXXX
 ```
@@ -1123,7 +1587,7 @@ Additional parameters:
 
 ### Nottingham City Council
 ```commandline
-python collect_data.py NottinghamCityCouncil https://geoserver.nottinghamcity.gov.uk/myproperty/handler/proxy.ashx?https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/100031540180 -s -u XXXXXXXX
+python collect_data.py NottinghamCityCouncil https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/100031540180 -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -1137,6 +1601,17 @@ python collect_data.py OldhamCouncil https://portal.oldham.gov.uk/bincollectiond
 ```
 
 Note: Replace UPRN in URL with your own UPRN.
+
+---
+
+### Perth and Kinross Council
+```commandline
+python collect_data.py PerthAndKinrossCouncil https://www.pkc.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -1186,6 +1661,20 @@ Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.
 
 ---
 
+### Renfrewshire Council
+```commandline
+python collect_data.py RenfrewshireCouncil https://www.renfrewshire.gov.uk/article/2320/Check-your-bin-collection-day -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number in the house number parameter, wrapped in double quotes
+
+---
+
 ### Rhondda Cynon Taff Council
 ```commandline
 python collect_data.py RhonddaCynonTaffCouncil https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWaste/RecyclingandWasteCollectionDays.aspx -s -u XXXXXXXX
@@ -1206,6 +1695,24 @@ Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
+
+---
+
+### Rochford Council
+```commandline
+python collect_data.py RochfordCouncil https://www.rochford.gov.uk/online-bin-collections-calendar
+```
+
+Note: No extra parameters are required. Dates presented should be read as 'week commencing'.
+
+---
+
+### RotherhamCouncil
+```commandline
+python collect_data.py RotherhamCouncil https://www.rotherham.gov.uk/bin-collections\?address\=100050866000\&submit\=Submit -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
 
 ---
 
@@ -1283,6 +1790,15 @@ Note: Follow the instructions [here](https://bins.shropshire.gov.uk/) until you 
 
 ---
 
+### Solihull Council
+```commandline
+python collect_data.py SolihullCouncil https://digital.solihull.gov.uk/BinCollectionCalendar/Calendar.aspx?UPRN=XXXXXXXX
+```
+
+Note: Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Somerset Council
 ```commandline
 python collect_data.py SomersetCouncil https://www.somerset.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
@@ -1316,6 +1832,17 @@ Additional parameters:
 
 ---
 
+### South Derbyshire District Council
+```commandline
+python collect_data.py SouthDerbyshireDistrictCouncil https://maps.southderbyshire.gov.uk/iShareLIVE.web//getdata.aspx?RequestType=LocalInfo&ms=mapsources/MyHouse&format=JSONP&group=Recycling%20Bins%20and%20Waste|Next%20Bin%20Collections&uid=XXXXXXXX -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### South Gloucestershire Council
 ```commandline
 python collect_data.py SouthGloucestershireCouncil https://beta.southglos.gov.uk/waste-and-recycling-collection-date -s -u XXXXXXXX
@@ -1323,6 +1850,18 @@ python collect_data.py SouthGloucestershireCouncil https://beta.southglos.gov.uk
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### SouthKestevenDistrictCouncil
+```commandline
+python collect_data.py SouthKestevenDistrictCouncil https://pre.southkesteven.gov.uk/BinSearch.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
 
@@ -1366,6 +1905,27 @@ Additional parameters:
 
 ---
 
+### Southwark Council
+```commandline
+python collect_data.py SouthwarkCouncil https://www.southwark.gov.uk/bins/lookup/XXXXXXXX -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### St Albans City and District Council
+```commandline
+python collect_data.py StAlbansCityAndDistrictCouncil https://gis.stalbans.gov.uk/NoticeBoard9/VeoliaProxy.NoticeBoard.asmx/GetServicesByUprnAndNoticeBoard -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
 ### St Helens Borough Council
 ```commandline
 python collect_data.py StHelensBC https://www.sthelens.gov.uk/ -s -u XXXXXXXX
@@ -1373,6 +1933,17 @@ python collect_data.py StHelensBC https://www.sthelens.gov.uk/ -s -u XXXXXXXX
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### StaffordBoroughCouncil
+```commandline
+python collect_data.py StaffordBoroughCouncil https://www.staffordbc.gov.uk/address/100032203010 -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: The URL needs to be https://www.staffordbc.gov.uk/address/<Your_UPRN>
 
 ---
 
@@ -1418,9 +1989,47 @@ Additional parameters:
 
 ---
 
+### Stroud District Council
+```commandline
+python collect_data.py StroudDistrictCouncil https://www.stroud.gov.uk/my-house?uprn=100120512183&postcode=GL10+3BH -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: Find your uprn and replace it in the url do the same for the postcode.
+
+---
+
+### Sunderland City Council
+```commandline
+python collect_data.py SunderlandCityCouncil https://webapps.sunderland.gov.uk/WEBAPPS/WSS/Sunderland_Portal/Forms/bindaychecker.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: The postcode should be wrapped in double quotes and with a space in the middle. The house number doesn't need quotes.
+
+---
+
 ### Swale Borough Council
 ```commandline
-python collect_data.py SwaleBoroughCouncil https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py SwaleBoroughCouncil https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### SwanseaCouncil
+```commandline
+python collect_data.py SwanseaCouncil https://www1.swansea.gov.uk/recyclingsearch/ -s -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -1439,6 +2048,38 @@ Additional parameters:
 
 ---
 
+### Tandridge District Council
+```commandline
+python collect_data.py TandridgeDistrictCouncil https://tdcws01.tandridge.gov.uk/TDCWebAppsPublic/tfaBranded/408?utm_source=pressrelease&utm_medium=smposts&utm_campaign=check_my_bin_day -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
+### Telford and Wrekin Co-operative Council
+```commandline
+python collect_data.py TelfordAndWrekinCouncil https://dac.telford.gov.uk/bindayfinder/ -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
+### Tendring District Council
+```commandline
+python collect_data.py TendringDistrictCouncil https://tendring-self.achieveservice.com/en/service/Rubbish_and_recycling_collection_days -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
 ### Test Valley Borough Council
 ```commandline
 python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected -s -u XXXXXXXX -p "XXXX XXX"
@@ -1447,6 +2088,18 @@ Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
+
+---
+
+### Three Rivers District Council
+```commandline
+python collect_data.py ThreeRiversDistrictCouncil https://my.threerivers.gov.uk/en/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b/AF-Stage-01ee28aa-1584-442c-8d1f-119b6e27114a/definition.json&process=1&process_uri=sandbox-processes://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&process_id=AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&noLoginPrompt=1 -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
 
@@ -1481,6 +2134,30 @@ Additional parameters:
 
 ---
 
+### Tunbridge Wells Council
+```commandline
+python collect_data.py TunbridgeWellsCouncil https://tunbridgewells.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### UttlesfordDistrictCouncil
+```commandline
+python collect_data.py UttlesfordDistrictCouncil https://bins.uttlesford.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
 ### Vale of Glamorgan Council
 ```commandline
 python collect_data.py ValeofGlamorganCouncil https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/ -s -u XXXXXXXX
@@ -1510,6 +2187,32 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Follow the instructions [here](https://www.wakefield.gov.uk/where-i-live/) until you get the page that includes a "Bin Collections" section then copy the URL and replace the URL in the command.
+
+---
+
+### Walsall Council
+```commandline
+python collect_data.py WalsallCouncil https://cag.walsall.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Waltham Forest
+```commandline
+python collect_data.py WalthamForest https://portal.walthamforest.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393/AF-Stage-8bf39bf9-5391-4c24-857f-0dc2025c67f4/definition.json&process=1&process_uri=sandbox-processes://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393&process_id=AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393 -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Use to find your UPRN https://uprn.uk/
 
 ---
 
@@ -1548,12 +2251,25 @@ Additional parameters:
 
 ### Welhat Council
 ```commandline
-python collect_data.py WelhatCouncil https://www.welhat.gov.uk/xfp/form/214 -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py WelhatCouncil https://www.welhat.gov.uk/xfp/form/214 -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+---
+
+### West Berkshire Council
+```commandline
+python collect_data.py WestBerkshireCouncil https://www.westberks.gov.uk/binday -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
 - `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number in the house number parameter, wrapped in double quotes and the postcode in the postcode parameter
 
 ---
 
@@ -1584,17 +2300,35 @@ Note: Pass the house name/number in the house number parameter, wrapped in doubl
 
 ---
 
-### West Suffolk Council
+### West Morland And Furness Council
 ```commandline
-python collect_data.py WestSuffolkCouncil https://westsuffolk-self.achieveservice.com/service/WSS_EX_Inf_Bin_Collection_Postcode_Lookup -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py WestMorlandAndFurness https://www.westmorlandandfurness.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### West Northamptonshire Council
+```commandline
+python collect_data.py WestNorthamptonshireCouncil https://www.northampton.gov.uk/info/200084/bins-waste-and-recycling/1602/check-your-collection-day -s -p "XXXX XXX"
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Pass the house name/number in the house number parameter, wrapped in double quotes and the postcode in the postcode parameter
+---
+
+### West Suffolk Council
+```commandline
+python collect_data.py WestSuffolkCouncil https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
 
 ---
 
@@ -1620,14 +2354,39 @@ Additional parameters:
 
 ---
 
-### Windsor and Maidenhead Council
+### Winchester City Council
 ```commandline
-python collect_data.py WindsorAndMaidenheadCouncil https://my.rbwm.gov.uk/special/find-your-collection-dates -s -p "XXXX XXX" -n XX
+python collect_data.py WinchesterCityCouncil https://iportal.itouchvision.com/icollectionday/collection-day -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number in the house number parameter, wrapped in double quotes
+
+---
+
+### Windsor and Maidenhead Council
+```commandline
+python collect_data.py WindsorAndMaidenheadCouncil https://forms.rbwm.gov.uk/bincollections?uprn= -s -u XXXXXXXX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Wirral Council
+```commandline
+python collect_data.py WirralCouncil https://www.wirral.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Please use the UPRN field to enter your street name and suburb separated by a comma, for example 'Vernon Avenue,Seacombe'
 
 ---
 
@@ -1641,6 +2400,44 @@ Additional parameters:
 - `-n` - house number
 
 Note: Works with all collection areas that use Joint Waste Solutions. Just use the correct URL.
+
+---
+
+### Wokingham Borough Council
+```commandline
+python collect_data.py WokinghamBoroughCouncil https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+---
+
+### WychavonDistrictCouncil
+```commandline
+python collect_data.py WychavonDistrictCouncil https://selfservice.wychavon.gov.uk/wdcroundlookup/wdc_search.jsp -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Wyre Council
+```commandline
+python collect_data.py WyreCouncil https://www.wyre.gov.uk/bins-rubbish-recycling -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+Postcode should be put in double quotes with a space in the middle.
 
 ---
 
