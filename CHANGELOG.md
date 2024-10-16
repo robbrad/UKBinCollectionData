@@ -1,3 +1,9 @@
+## 0.99.1 (2024-10-16)
+
+### Fix
+
+- #792 adding web_driver option to Wokingham Council
+
 ## 0.99.0 (2024-10-16)
 
 ### Feat
