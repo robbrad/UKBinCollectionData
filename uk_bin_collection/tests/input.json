@@ -620,6 +620,14 @@
         "wiki_name": "Lichfield District Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "LincolnCouncil": {
+        "url": "https://lincoln.gov.uk",
+        "wiki_command_url_override": "https://lincoln.gov.uk",
+        "uprn": "000235024846",
+        "postcode": "LN5 7SH",
+        "wiki_name": "Tunbridge Wells Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "LisburnCastlereaghCityCouncil": {
         "house_number": "97",
         "postcode": "BT28 1JN",
@@ -870,6 +878,13 @@
         "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
         "wiki_name": "Oldham Council",
         "wiki_note": "Replace UPRN in URL with your own UPRN."
+    },
+    "PerthAndKinrossCouncil": {
+        "url": "https://www.pkc.gov.uk",
+        "wiki_command_url_override": "https://www.pkc.gov.uk",
+        "uprn": "124032322",
+        "wiki_name": "Perth and Kinross Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "PortsmouthCityCouncil": {
         "postcode": "PO4 0LE",
@@ -1199,6 +1214,13 @@
         "uprn": "10091078762",
         "url": "https://collections-torridge.azurewebsites.net/WebService2.asmx",
         "wiki_name": "Torridge District Council"
+    },
+    "TunbridgeWellsCouncil": {
+        "url": "https://tunbridgewells.gov.uk",
+        "wiki_command_url_override": "https://tunbridgewells.gov.uk",
+        "uprn": "10090058289",
+        "wiki_name": "Tunbridge Wells Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "UttlesfordDistrictCouncil": {
         "house_number": "72, Birchanger Lane",
