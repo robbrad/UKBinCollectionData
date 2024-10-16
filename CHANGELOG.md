@@ -1,3 +1,18 @@
+## 0.99.0 (2024-10-16)
+
+### Feat
+
+- Adding Lincoln Council
+- Adding Tunbridge Wells Council
+- Adding Perth and Kinross Council
+
+### Fix
+
+- Update wiki
+- #748
+- #598
+- #572
+
 ## 0.98.5 (2024-10-15)
 
 ### Fix
