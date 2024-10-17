@@ -129,6 +129,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North Tyneside Council](#north-tyneside-council)
 - [North West Leicestershire Council](#north-west-leicestershire-council)
 - [North Yorkshire Council](#north-yorkshire-council)
+- [Norwich City Council](#norwich-city-council)
 - [Northumberland Council](#northumberland-council)
 - [Nottingham City Council](#nottingham-city-council)
 - [Oldham Council](#oldham-council)
@@ -1573,6 +1574,17 @@ Additional parameters:
 
 ---
 
+### Norwich City Council
+```commandline
+python collect_data.py NorwichCityCouncil https://www.norwich.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Northumberland Council
 ```commandline
 python collect_data.py NorthumberlandCouncil https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -2405,12 +2417,13 @@ Note: Works with all collection areas that use Joint Waste Solutions. Just use t
 
 ### Wokingham Borough Council
 ```commandline
-python collect_data.py WokinghamBoroughCouncil https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day -s -p "XXXX XXX" -n XX
+python collect_data.py WokinghamBoroughCouncil https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
 
