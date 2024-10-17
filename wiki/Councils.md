@@ -56,6 +56,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Doncaster Council](#doncaster-council)
 - [Dorset Council](#dorset-council)
 - [Dover District Council](#dover-district-council)
+- [Dudley Council](#dudley-council)
 - [Durham Council](#durham-council)
 - [Ealing Council](#ealing-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
@@ -752,6 +753,17 @@ python collect_data.py DoverDistrictCouncil https://collections.dover.gov.uk/pro
 ```
 
 Note: Replace XXXXXXXXXXXX with your UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Dudley Council
+```commandline
+python collect_data.py DudleyCouncil https://my.dudley.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

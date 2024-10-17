@@ -340,6 +340,13 @@
         "wiki_name": "Dover District Council",
         "wiki_note": "Replace XXXXXXXXXXXX with your UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "DudleyCouncil": {
+        "url": "https://my.dudley.gov.uk",
+        "wiki_command_url_override": "https://my.dudley.gov.uk",
+        "uprn": "90014244",
+        "wiki_name": "Dudley Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "DurhamCouncil": {
         "skip_get_url": true,
         "uprn": "200003218818",
