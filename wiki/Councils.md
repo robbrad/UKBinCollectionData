@@ -134,6 +134,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Nottingham City Council](#nottingham-city-council)
 - [Oldham Council](#oldham-council)
 - [Perth and Kinross Council](#perth-and-kinross-council)
+- [Plymouth Council](#plymouth-council)
 - [Portsmouth City Council](#portsmouth-city-council)
 - [Preston City Council](#preston-city-council)
 - [Reading Borough Council](#reading-borough-council)
@@ -1619,6 +1620,17 @@ Note: Replace UPRN in URL with your own UPRN.
 ### Perth and Kinross Council
 ```commandline
 python collect_data.py PerthAndKinrossCouncil https://www.pkc.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Plymouth Council
+```commandline
+python collect_data.py PlymouthCouncil https://www.plymouth.gov.uk -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN

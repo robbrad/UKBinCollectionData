@@ -893,6 +893,13 @@
         "wiki_name": "Perth and Kinross Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "PlymouthCouncil": {
+        "url": "https://www.plymouth.gov.uk",
+        "wiki_command_url_override": "https://www.plymouth.gov.uk",
+        "uprn": "100040420582",
+        "wiki_name": "Plymouth Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "PortsmouthCityCouncil": {
         "postcode": "PO4 0LE",
         "skip_get_url": true,
