@@ -20,7 +20,6 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        # SESSION_URL = "https://contact.lincoln.gov.uk/authapi/isauthenticated?uri=https://contact.lincoln.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196/AF-Stage-a1c0af0f-fec1-4419-80c0-0dd4e1d965c9/definition.json&process=1&process_uri=sandbox-processes://AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196&process_id=AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196&hostname=contact.lincoln.gov.uk&withCredentials=true"
         SESSION_URL = "https://plymouth-self.achieveservice.com/authapi/isauthenticated?uri=https%253A%252F%252Fplymouth-self.achieveservice.com%252Fen%252FAchieveForms%252F%253Fform_uri%253Dsandbox-publish%253A%252F%252FAF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b%252FAF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875%252Fdefinition.json%2526redirectlink%253D%25252Fen%2526cancelRedirectLink%253D%25252Fen%2526consentMessage%253Dyes&hostname=plymouth-self.achieveservice.com&withCredentials=true"
 
         API_URL = "https://plymouth-self.achieveservice.com/apibroker/runLookup"
@@ -72,7 +71,7 @@ class CouncilClass(AbstractGetBinDataClass):
         bin_type_dict = dict(BIN_TYPES)
 
         for row in rows_data.items():
-            bin_type = bin_type_dict.get(row[1]["Round_Type"], "Unknown")
+            bin_type = bin_type_dict.get(row[1]["Round_Type"], row[1]["Round_Type"])
             collection_date = datetime.strptime(
                 row[1]["Date"].split("T")[0], "%Y-%m-%d"
             ).strftime("%d/%m/%Y")

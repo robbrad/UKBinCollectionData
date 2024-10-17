@@ -1079,6 +1079,13 @@
         "url": "https://www.southoxon.gov.uk/south-oxfordshire-district-council/recycling-rubbish-and-waste/when-is-your-collection-day/",
         "wiki_name": "South Oxfordshire Council"
     },
+    "SouthRibbleCouncil": {
+        "url": "https://www.southribble.gov.uk",
+        "wiki_command_url_override": "https://www.southribble.gov.uk",
+        "uprn": "010013246384",
+        "wiki_name": "South Ribble Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "SouthTynesideCouncil": {
         "house_number": "1",
         "postcode": "NE33 3JW",

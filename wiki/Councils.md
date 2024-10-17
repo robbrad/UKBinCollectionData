@@ -161,6 +161,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Lanarkshire Council](#south-lanarkshire-council)
 - [South Norfolk Council](#south-norfolk-council)
 - [South Oxfordshire Council](#south-oxfordshire-council)
+- [South Ribble Council](#south-ribble-council)
 - [South Tyneside Council](#south-tyneside-council)
 - [Southwark Council](#southwark-council)
 - [St Albans City and District Council](#st-albans-city-and-district-council)
@@ -1915,6 +1916,17 @@ python collect_data.py SouthOxfordshireCouncil https://www.southoxon.gov.uk/sout
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### South Ribble Council
+```commandline
+python collect_data.py SouthRibbleCouncil https://www.southribble.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
