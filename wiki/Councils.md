@@ -56,6 +56,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Doncaster Council](#doncaster-council)
 - [Dorset Council](#dorset-council)
 - [Dover District Council](#dover-district-council)
+- [Dudley Council](#dudley-council)
 - [Durham Council](#durham-council)
 - [Ealing Council](#ealing-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
@@ -129,10 +130,12 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North Tyneside Council](#north-tyneside-council)
 - [North West Leicestershire Council](#north-west-leicestershire-council)
 - [North Yorkshire Council](#north-yorkshire-council)
+- [Norwich City Council](#norwich-city-council)
 - [Northumberland Council](#northumberland-council)
 - [Nottingham City Council](#nottingham-city-council)
 - [Oldham Council](#oldham-council)
 - [Perth and Kinross Council](#perth-and-kinross-council)
+- [Plymouth Council](#plymouth-council)
 - [Portsmouth City Council](#portsmouth-city-council)
 - [Preston City Council](#preston-city-council)
 - [Reading Borough Council](#reading-borough-council)
@@ -159,6 +162,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Lanarkshire Council](#south-lanarkshire-council)
 - [South Norfolk Council](#south-norfolk-council)
 - [South Oxfordshire Council](#south-oxfordshire-council)
+- [South Ribble Council](#south-ribble-council)
 - [South Tyneside Council](#south-tyneside-council)
 - [Southwark Council](#southwark-council)
 - [St Albans City and District Council](#st-albans-city-and-district-council)
@@ -749,6 +753,17 @@ python collect_data.py DoverDistrictCouncil https://collections.dover.gov.uk/pro
 ```
 
 Note: Replace XXXXXXXXXXXX with your UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Dudley Council
+```commandline
+python collect_data.py DudleyCouncil https://my.dudley.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -1573,6 +1588,17 @@ Additional parameters:
 
 ---
 
+### Norwich City Council
+```commandline
+python collect_data.py NorwichCityCouncil https://www.norwich.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Northumberland Council
 ```commandline
 python collect_data.py NorthumberlandCouncil https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -1607,6 +1633,17 @@ Note: Replace UPRN in URL with your own UPRN.
 ### Perth and Kinross Council
 ```commandline
 python collect_data.py PerthAndKinrossCouncil https://www.pkc.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Plymouth Council
+```commandline
+python collect_data.py PlymouthCouncil https://www.plymouth.gov.uk -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -1891,6 +1928,17 @@ python collect_data.py SouthOxfordshireCouncil https://www.southoxon.gov.uk/sout
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### South Ribble Council
+```commandline
+python collect_data.py SouthRibbleCouncil https://www.southribble.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -2405,12 +2453,13 @@ Note: Works with all collection areas that use Joint Waste Solutions. Just use t
 
 ### Wokingham Borough Council
 ```commandline
-python collect_data.py WokinghamBoroughCouncil https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day -s -p "XXXX XXX" -n XX
+python collect_data.py WokinghamBoroughCouncil https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
 

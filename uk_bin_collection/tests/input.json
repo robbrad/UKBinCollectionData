@@ -340,6 +340,13 @@
         "wiki_name": "Dover District Council",
         "wiki_note": "Replace XXXXXXXXXXXX with your UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "DudleyCouncil": {
+        "url": "https://my.dudley.gov.uk",
+        "wiki_command_url_override": "https://my.dudley.gov.uk",
+        "uprn": "90014244",
+        "wiki_name": "Dudley Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "DurhamCouncil": {
         "skip_get_url": true,
         "uprn": "200003218818",
@@ -860,6 +867,13 @@
         "url": "https://www.northyorks.gov.uk/bin-calendar/lookup",
         "wiki_name": "North Yorkshire Council"
     },
+    "NorwichCityCouncil": {
+        "url": "https://www.norwich.gov.uk",
+        "wiki_command_url_override": "https://www.norwich.gov.uk",
+        "uprn": "100090888980",
+        "wiki_name": "Norwich City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "NorthumberlandCouncil": {
         "house_number": "22",
         "postcode": "NE46 1UQ",
@@ -884,6 +898,13 @@
         "wiki_command_url_override": "https://www.pkc.gov.uk",
         "uprn": "124032322",
         "wiki_name": "Perth and Kinross Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
+    "PlymouthCouncil": {
+        "url": "https://www.plymouth.gov.uk",
+        "wiki_command_url_override": "https://www.plymouth.gov.uk",
+        "uprn": "100040420582",
+        "wiki_name": "Plymouth Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "PortsmouthCityCouncil": {
@@ -1064,6 +1085,13 @@
         "uprn": "10033002851",
         "url": "https://www.southoxon.gov.uk/south-oxfordshire-district-council/recycling-rubbish-and-waste/when-is-your-collection-day/",
         "wiki_name": "South Oxfordshire Council"
+    },
+    "SouthRibbleCouncil": {
+        "url": "https://www.southribble.gov.uk",
+        "wiki_command_url_override": "https://www.southribble.gov.uk",
+        "uprn": "010013246384",
+        "wiki_name": "South Ribble Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "SouthTynesideCouncil": {
         "house_number": "1",
