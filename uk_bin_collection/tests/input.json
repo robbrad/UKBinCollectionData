@@ -1390,6 +1390,15 @@
         "url": "https://www.northampton.gov.uk/info/200084/bins-waste-and-recycling/1602/check-your-collection-day",
         "wiki_name": "West Northamptonshire Council"
     },
+    "WestOxfordshireDistrictCouncil": {
+        "house_number": "24",
+        "postcode": "OX28 1YA",
+        "skip_get_url": true,
+        "url": "https://community.westoxon.gov.uk/s/waste-collection-enquiry",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "West Oxfordshire District Council",
+        "wiki_note": "Pass the full address in the house number and postcode in"
+    },
     "WestSuffolkCouncil": {
         "postcode": "IP28 6DR",
         "skip_get_url": true,
