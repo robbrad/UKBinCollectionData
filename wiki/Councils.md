@@ -827,7 +827,7 @@ Additional parameters:
 
 ### East Devon District Council
 ```commandline
-python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX
+python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX
 ```
 
 Note: Replace XXXXXXXX with UPRN.
