@@ -719,6 +719,12 @@
         "wiki_name": "Mid and East Antrim Borough Council",
         "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.)."
     },
+    "MidlothianCouncil": {
+        "url": "https://www.midlothian.gov.uk/directory_record/92551426/glenesk_bonnyrigg_eh19_3je",
+        "wiki_command_url_override": "https://www.midlothian.gov.uk/directory_record/XXXXXX/XXXXXX",
+        "wiki_name": "Midlothian Council",
+        "wiki_note": "Follow the instructions [here](https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command."
+    },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
         "postcode": "RH16 1SS",
