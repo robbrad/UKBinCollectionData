@@ -12,7 +12,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     _LOGGER.info(LOG_PREFIX + "Data Supplied: %s", entry.data)
 
     council_name = entry.data.get("council", "Unknown Council")
-    _LOGGER.info(LOG_PREFIX + "Setting up UK Bin Collection Data for council: %s", council_name)
+    _LOGGER.info(
+        LOG_PREFIX + "Setting up UK Bin Collection Data for council: %s", council_name
+    )
 
     hass.data.setdefault(DOMAIN, {})
 
@@ -25,9 +27,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Forward the entry setup to the sensor platform
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    _LOGGER.info(LOG_PREFIX + "Successfully set up UK Bin Collection Data for council: %s", council_name)
+    _LOGGER.info(
+        LOG_PREFIX + "Successfully set up UK Bin Collection Data for council: %s",
+        council_name,
+    )
     return True
-
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

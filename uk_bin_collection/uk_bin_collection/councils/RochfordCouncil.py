@@ -36,8 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     collection_date = datetime.strptime(
                         remove_ordinal_indicator_from_date_string(
                             week_text[0].split(" - ")[0]
-                        )
-                        .strip(),
+                        ).strip(),
                         "%A %d %B",
                     )
                     next_collection = collection_date.replace(year=datetime.now().year)

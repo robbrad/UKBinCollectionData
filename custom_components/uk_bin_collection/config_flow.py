@@ -118,7 +118,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("name", default=""): cv.string,
                     vol.Required("council", default=""): vol.In(self.council_options),
-                    vol.Optional("icon_color_mapping", default=""): cv.string,  # Optional field
+                    vol.Optional(
+                        "icon_color_mapping", default=""
+                    ): cv.string,  # Optional field
                 }
             ),
             errors=errors,
@@ -279,7 +281,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         schema = schema.extend(
             {
                 vol.Optional(
-                    "icon_color_mapping", default=existing_data.get("icon_color_mapping", "")
+                    "icon_color_mapping",
+                    default=existing_data.get("icon_color_mapping", ""),
                 ): str
             }
         )

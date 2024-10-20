@@ -23,7 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get the first form
         response = s.get(
             "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
-            verify = False,
+            verify=False,
         )
 
         # Find the form ID and submit with a postcode
@@ -31,13 +31,13 @@ class CouncilClass(AbstractGetBinDataClass):
         form_build_id = soup.find("input", {"name": "form_build_id"})["value"]
         response = s.post(
             "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
-            data = {
+            data={
                 "postcode": user_postcode,
                 "op": "Find",
                 "form_build_id": form_build_id,
                 "form_id": "ntc_address_wizard",
             },
-            verify = False,
+            verify=False,
         )
 
         # Find the form ID and submit with the UPRN
@@ -45,18 +45,18 @@ class CouncilClass(AbstractGetBinDataClass):
         form_build_id = soup.find("input", {"name": "form_build_id"})["value"]
         response = s.post(
             "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
-            data = {
+            data={
                 "house_number": f"0000{user_uprn}",
                 "op": "Use",
                 "form_build_id": form_build_id,
                 "form_id": "ntc_address_wizard",
             },
-            verify = False,
+            verify=False,
         )
 
         # Parse form page and get the day of week and week offsets
         soup = BeautifulSoup(response.text, features="html.parser")
-        info_section  = soup.find("section", {"class": "block block-ntc-bins clearfix"})
+        info_section = soup.find("section", {"class": "block block-ntc-bins clearfix"})
 
         regular_day, garden_day, special_day = None, None, None
         # Get day of week and week label for refuse, garden and special collections.
@@ -82,7 +82,9 @@ class CouncilClass(AbstractGetBinDataClass):
         weeks_total = math.floor((datetime(2026, 4, 1) - datetime.now()).days / 7)
 
         # The garden calendar only shows until end of November 2024, work out how many weeks that is
-        garden_weeks_total = math.floor((datetime(2024, 12, 1) - datetime.now()).days / 7)
+        garden_weeks_total = math.floor(
+            (datetime(2024, 12, 1) - datetime.now()).days / 7
+        )
 
         regular_collections, garden_collections, special_collections = [], [], []
         # Convert day text to series of dates using previous calculation
@@ -134,7 +136,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         return {
             "bins": [
-                    {
+                {
                     "type": item[0],
                     "collectionDate": item[1].strftime(date_format),
                 }

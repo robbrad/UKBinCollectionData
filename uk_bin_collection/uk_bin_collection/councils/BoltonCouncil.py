@@ -82,7 +82,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_type = " ".join(words).capitalize()
                 date_list = item.find_all("p")
                 for d in date_list:
-                    clean_date_str = re.sub(r'[^A-Za-z0-9 ]+', '', d.text.strip())
+                    clean_date_str = re.sub(r"[^A-Za-z0-9 ]+", "", d.text.strip())
                     next_collection = datetime.strptime(clean_date_str, "%A %d %B %Y")
                     collections.append((bin_type, next_collection))
 
