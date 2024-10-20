@@ -1,3 +1,21 @@
+## 0.104.0 (2024-10-20)
+
+### Feat
+
+- Adding Luton Borough Council
+- Adding West Oxfordshire District Council
+- Adding Aberdeenshire Council
+- Adding Canterbury City Council
+- Adding Swindon Borough Council
+
+### Fix
+
+- #697
+- #694
+- #659
+- #590
+- #900
+
 ## 0.103.0 (2024-10-20)
 
 ### Feat
