@@ -1,5 +1,6 @@
 import json
 import logging
+import json
 
 import aiohttp
 import homeassistant.helpers.config_validation as cv
@@ -21,7 +22,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def get_councils_json(self) -> object:
         """Returns an object of supported council's and their required fields."""
         # Fetch the JSON data from the provided URL
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.100.0/uk_bin_collection/tests/input.json"
+        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.102.0/uk_bin_collection/tests/input.json"
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
                 data_text = await response.text()
@@ -88,11 +89,20 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         ]
 
         if user_input is not None:
+            # Perform validation and setup here based on user_input
             if user_input["name"] is None or user_input["name"] == "":
                 errors["base"] = "name"
             if user_input["council"] is None or user_input["council"] == "":
                 errors["base"] = "council"
 
+            # Validate the JSON mapping only if provided
+            if user_input.get("icon_color_mapping"):
+                try:
+                    json.loads(user_input["icon_color_mapping"])
+                except json.JSONDecodeError:
+                    errors["icon_color_mapping"] = "invalid_json"
+
+            # Check for errors
             if not errors:
                 user_input["council"] = self.council_names[
                     self.council_options.index(user_input["council"])
@@ -101,15 +111,14 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 _LOGGER.info(LOG_PREFIX + "User input: %s", user_input)
                 return await self.async_step_council()
 
-        _LOGGER.info(
-            LOG_PREFIX + "Showing user form with options: %s", self.council_options
-        )
+        # Show the form
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
                     vol.Required("name", default=""): cv.string,
                     vol.Required("council", default=""): vol.In(self.council_options),
+                    vol.Optional("icon_color_mapping", default=""): cv.string,  # Optional field
                 }
             ),
             errors=errors,
@@ -178,16 +187,29 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             user_input["council"] = self.council_names[
                 self.council_options.index(user_input["council"])
             ]
-            # Update the config entry with the new data
-            data = {**existing_data, **user_input}
-            self.hass.config_entries.async_update_entry(
-                self.config_entry,
-                title=user_input.get("name", self.config_entry.title),
-                data=data,
-            )
-            # Optionally, reload the integration to apply changes
-            await self.hass.config_entries.async_reload(self.config_entry.entry_id)
-            return self.async_abort(reason="Reconfigure Successful")
+
+            # Validate the icon and color mapping JSON if provided
+            if user_input.get("icon_color_mapping"):
+                try:
+                    json.loads(user_input["icon_color_mapping"])
+                except json.JSONDecodeError:
+                    errors["icon_color_mapping"] = "invalid_json"
+
+            if not errors:
+                # Merge the user input with existing data
+                data = {**existing_data, **user_input}
+
+                # Ensure icon_color_mapping is properly updated
+                data["icon_color_mapping"] = user_input.get("icon_color_mapping", "")
+
+                self.hass.config_entries.async_update_entry(
+                    self.config_entry,
+                    title=user_input.get("name", self.config_entry.title),
+                    data=data,
+                )
+                # Optionally, reload the integration to apply changes
+                await self.hass.config_entries.async_reload(self.config_entry.entry_id)
+                return self.async_abort(reason="Reconfigure Successful")
 
         # Get the council schema based on the current council setting
         council_schema = await self.get_council_schema(council_key)
@@ -252,6 +274,15 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {vol.Required("timeout", default=existing_data["timeout"]): int}
             )
             added_fields.add("timeout")
+
+        # Add the icon_color_mapping field with a default value if it exists
+        schema = schema.extend(
+            {
+                vol.Optional(
+                    "icon_color_mapping", default=existing_data.get("icon_color_mapping", "")
+                ): str
+            }
+        )
 
         # Add any other fields defined in council_schema that haven't been added yet
         for key, field in council_schema.schema.items():

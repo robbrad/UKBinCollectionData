@@ -75,6 +75,24 @@ This integration can be installed directly via HACS. To install:
 1. Restart your Home Assistant.
 1. In the Home Assistant UI go to `Settings` > `Devices & Services` click `+ Add Integration` and search for `UK Bin Collection Data`.
 
+### Overriding the Bin Icon and Bin Colour
+We realise it is difficult to set a colour from the councils text for the Bin Type and to keep the integration generic we dont capture colour from a council(not all councils supply this as a field), only bin type and next collection date.
+
+When you configure the componenent on the first screen you can set a JSON string to map the bin type to the colour and icon
+
+Here is an example to set the colour and icon for the type `Empty Standard General Waste`. This type is the type returned from the council for the bin. You can do this for multiple bins.
+
+If you miss this on the first setup you can reconfigure it.
+
+```
+{     
+  "Empty Standard General Waste": 
+  {         
+    "icon": "mdi:trash-can",         
+    "color": "blue"     
+  }
+}
+
 ---
 
 ## Standalone Usage

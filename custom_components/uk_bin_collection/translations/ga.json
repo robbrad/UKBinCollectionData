@@ -1,0 +1,53 @@
+{
+    "title": "Sonraí Bailiúcháin Binn na RA",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Roghnaigh an comhairle",
+                "data": {
+                    "name": "Ainm an tSuímh",
+                    "council": "Comhairle"
+                },
+                "description": "Féach [anseo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) más rud é nach bhfuil do chomhairle liostaithe"
+            },
+            "council": {
+                "title": "Sonraí na comhairle a sholáthar",
+                "data": {
+                    "url": "URL chun sonraí bailiúcháin bín a fháil",
+                    "timeout": "An t-am i soicindí ar chóir don bhraiteoir fanacht le sonraí",
+                    "uprn": "UPRN (Uimhir Thagartha Aonair Maoine)",
+                    "postcode": "Cód poist an tseolta",
+                    "number": "Uimhir an tí ag an seoladh",
+                    "usrn": "USRN (Uimhir Tagartha Uathúil Sráide)",
+                    "web_driver": "Chun a rith ar Fhreastalaí Selenium iargúlta cuir URL Freastalaí Selenium isteach",
+                    "headless": "Selenium a rith i mód gan cheann (molta)",
+                    "local_browser": "Ná rith freastalaí iargúlta Selenium, bain úsáid as suiteáil áitiúil de Chrome",
+                    "icon_color_mapping": "JSON chun Cineál Binn a léarscáiliú le haghaidh Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData",
+                    "submit": "Cuir isteach"
+                },
+                "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad ba cheart a iontráil"
+            },
+            "reconfigure_confirm": {
+                "title": "Sonraí na comhairle a nuashonrú",
+                "data": {
+                    "url": "URL chun sonraí bailiúcháin bín a fháil",
+                    "timeout": "An t-am i soicindí ar chóir don bhraiteoir fanacht le sonraí",
+                    "uprn": "UPRN (Uimhir Thagartha Aonair Maoine)",
+                    "postcode": "Cód poist an tseolta",
+                    "number": "Uimhir an tí ag an seoladh",
+                    "usrn": "USRN (Uimhir Tagartha Uathúil Sráide)",
+                    "web_driver": "Chun a rith ar Fhreastalaí Selenium iargúlta cuir URL Freastalaí Selenium isteach",
+                    "headless": "Selenium a rith i mód gan cheann (molta)",
+                    "local_browser": "Ná rith freastalaí iargúlta Selenium, bain úsáid as suiteáil áitiúil de Chrome",
+                    "icon_color_mapping": "JSON chun Cineál Binn a léarscáiliú le haghaidh Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData",
+                    "submit": "Cuir isteach"
+                },
+                "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad ba cheart a iontráil"
+            }
+        },
+        "error": {
+            "name": "Cuir isteach ainm an tsuímh",
+            "council": "Roghnaigh comhairle"
+        }
+    }
+}

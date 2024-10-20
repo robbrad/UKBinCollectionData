@@ -1,0 +1,53 @@
+{
+    "title": "Data Casgliad Bin y DU",
+    "config": {
+        "step": {
+            "user": {
+                "title": "Dewiswch y cyngor",
+                "data": {
+                    "name": "Enw lleoliad",
+                    "council": "Cyngor"
+                },
+                "description": "Gweler [yma](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) os nad yw eich cyngor wedi'i restru"
+            },
+            "council": {
+                "title": "Darparu manylion y cyngor",
+                "data": {
+                    "url": "URL i gael data casgliad bin",
+                    "timeout": "Yr amser mewn eiliadau y dylai'r synhwyrydd aros am ddata",
+                    "uprn": "UPRN (Rhif Cyfeirnod Eiddo Unigryw)",
+                    "postcode": "Cod post y cyfeiriad",
+                    "number": "Rhif y tŷ o'r cyfeiriad",
+                    "usrn": "USRN (Rhif Cyfeirnod Stryd Unigryw)",
+                    "web_driver": "I redeg ar weinydd Selenium o bell ychwanegwch URL y Gweinydd Selenium",
+                    "headless": "Rhedeg Selenium mewn modd headless (argymhellir)",
+                    "local_browser": "Peidiwch â rhedeg gweinydd Selenium o bell, defnyddiwch Chrome wedi'i osod yn lleol yn lle",
+                    "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData",
+                    "submit": "Cyflwyno"
+                },
+                "description": "Cyfeiriwch at [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) eich cyngor am fanylion ar beth i'w fewnbynnu"
+            },
+            "reconfigure_confirm": {
+                "title": "Diweddaru manylion cyngor",
+                "data": {
+                    "url": "URL i gael data casgliad bin",
+                    "timeout": "Yr amser mewn eiliadau y dylai'r synhwyrydd aros am ddata",
+                    "uprn": "UPRN (Rhif Cyfeirnod Eiddo Unigryw)",
+                    "postcode": "Cod post y cyfeiriad",
+                    "number": "Rhif y tŷ o'r cyfeiriad",
+                    "usrn": "USRN (Rhif Cyfeirnod Stryd Unigryw)",
+                    "web_driver": "I redeg ar weinydd Selenium o bell ychwanegwch URL y Gweinydd Selenium",
+                    "headless": "Rhedeg Selenium mewn modd headless (argymhellir)",
+                    "local_browser": "Peidiwch â rhedeg gweinydd Selenium o bell, defnyddiwch Chrome wedi'i osod yn lleol yn lle",
+                    "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData",
+                    "submit": "Cyflwyno"
+                },
+                "description": "Cyfeiriwch at [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) eich cyngor am fanylion ar beth i'w fewnbynnu"
+            }
+        },
+        "error": {
+            "name": "Rhowch enw lleoliad",
+            "council": "Dewiswch gyngor"
+        }
+    }
+}
