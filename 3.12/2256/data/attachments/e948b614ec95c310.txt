@@ -1,0 +1,45 @@
+Running test for council: MoleValleyDistrictCouncil
+Commented-out section found, replacing comments...
+HTML content parsed successfully.
+Found 'Bins and Recycling' panel.
+Processing bin type: Refuse (black bin)
+Collection string: Next collection - No collection dates available
+No valid date found for bin type: Refuse (black bin)
+Processing bin type: No collection dates available
+Collection string: Next collection - (Thu) 24/10/2024
+Processing bin type: Recycling (green bin)
+Collection string: Next collection - (Thu) 24/10/2024
+Processing bin type: (Thu) 24/10/2024
+Collection string: Not a Garden Waste member
+No valid date found for bin type: (Thu) 24/10/2024
+Processing bin type: Garden Waste (brown lid)
+Collection string: Not a Garden Waste member
+No valid date found for bin type: Garden Waste (brown lid)
+Processing bin type: Food Waste
+Collection string: Next collection - No collection dates available
+No valid date found for bin type: Food Waste
+Processing bin type: No collection dates available
+Collection string: We also collect Small Electricals and Textiles on each collection day - Read more
+No valid date found for bin type: No collection dates available
+Processing bin type: Read more
+Collection string: Report a Missed Bin collection
+No valid date found for bin type: Read more
+Processing bin type: Missed Bin
+Collection string: Sign Up or Manage Garden Waste collection service
+No valid date found for bin type: Missed Bin
+Processing bin type: Sign Up or Manage
+Collection string: Sign Up for the Assisted Bin collection service
+No valid date found for bin type: Sign Up or Manage
+Processing bin type: Sign Up
+Collection string: Ref: MO/2021/0938
+No valid date found for bin type: Sign Up
+No additional collection found in paragraph: Please ensure your bins are out for collection by 6.00am.
+No additional collection found in paragraph: Next collection - No collection dates available
+No additional collection found in paragraph: Next collection - (Thu) 24/10/2024
+No additional collection found in paragraph: Not a Garden Waste member
+No additional collection found in paragraph: Next collection - No collection dates available
+Found additional collection: Small Electricals and Textiles
+No additional collection found in paragraph: Report a Missed Bin collection
+No additional collection found in paragraph: Sign Up or Manage Garden Waste collection service
+No additional collection found in paragraph: Sign Up for the Assisted Bin collection service
+Collected bin data: {'bins': [{'type': 'No collection dates available', 'collectionDate': '24/10/2024'}, {'type': 'Recycling (green bin)', 'collectionDate': '24/10/2024'}, {'type': 'Small Electricals and Textiles', 'collectionDate': '24/10/2024'}]}

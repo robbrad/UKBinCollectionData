@@ -1,0 +1,3 @@
+Running test for council: TendringDistrictCouncil
+An error occurred: Message: Cannot locate option with value: 100090604247; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+

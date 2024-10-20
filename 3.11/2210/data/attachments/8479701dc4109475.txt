@@ -1,1 +1,0 @@
-ERROR    root:UttlesfordDistrictCouncil.py:112 An error occurred: time data 'Thursday 31st October' does not match format '%A %dth %B'
