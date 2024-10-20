@@ -22,6 +22,7 @@
                     "web_driver": "Para executar num servidor remoto Selenium, adicione o URL do servidor Selenium",
                     "headless": "Executar o Selenium em modo headless (recomendado)",
                     "local_browser": "Não executar o servidor remoto Selenium, utilizar a instalação local do Chrome",
+                    "icon_color_mapping": "JSON para mapear o Tipo de Lixeira para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Submeter"
                 },
                 "description": "Por favor, consulte a [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para obter detalhes sobre o que inserir"
@@ -38,6 +39,7 @@
                     "web_driver": "Para executar num servidor remoto Selenium, adicione o URL do servidor Selenium",
                     "headless": "Executar o Selenium em modo headless (recomendado)",
                     "local_browser": "Não executar o servidor remoto Selenium, utilizar a instalação local do Chrome.",
+                    "icon_color_mapping": "JSON para mapear o Tipo de Lixeira para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Submeter"
                 },
                 "description": "Por favor, consulte a [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para obter detalhes sobre o que inserir"
