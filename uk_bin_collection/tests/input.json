@@ -1,4 +1,11 @@
 {
+    "AberdeenshireCouncil": {
+        "url": "https://online.aberdeenshire.gov.uk",
+        "wiki_command_url_override": "https://online.aberdeenshire.gov.uk",
+        "uprn": "151176430",
+        "wiki_name": "Aberdeenshire Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "AdurAndWorthingCouncils": {
         "url": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=100061878829",
         "wiki_command_url_override": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=XXXXXXXX",
