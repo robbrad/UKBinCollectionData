@@ -695,6 +695,13 @@
         "wiki_name": "London Borough Redbridge",
         "wiki_note": "Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your \"Address\" then copy the entire address text and use that in the house number field."
     },
+    "LutonBoroughCouncil": {
+        "url": "https://myforms.luton.gov.uk",
+        "wiki_command_url_override": "https://myforms.luton.gov.uk",
+        "uprn": "100080155778",
+        "wiki_name": "Luton Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "MaldonDistrictCouncil": {
         "skip_get_url": true,
         "uprn": "100090557253",
