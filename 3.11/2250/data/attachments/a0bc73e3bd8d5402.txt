@@ -1,0 +1,2 @@
+Running test for council: StroudDistrictCouncil
+Extracted data: {'Next rubbish collection date': 'Tuesday 22 October 2024', 'Next recycling collection date': 'Tuesday 29 October 2024', 'Food waste collection': 'Every Tuesday', 'Garden waste collection': 'Tuesday 22 October 2024'}

@@ -1,0 +1,22 @@
+ERROR    root:NewForestCouncil.py:141 An error occurred: Message: 
+Stacktrace:
+#0 0x5599abf34b9a <unknown>
+#1 0x5599abc1a670 <unknown>
+#2 0x5599abc69c48 <unknown>
+#3 0x5599abc69ee1 <unknown>
+#4 0x5599abcb0924 <unknown>
+#5 0x5599abc8ebad <unknown>
+#6 0x5599abcaddd6 <unknown>
+#7 0x5599abc8e923 <unknown>
+#8 0x5599abc5c6e7 <unknown>
+#9 0x5599abc5d6de <unknown>
+#10 0x5599abefe66b <unknown>
+#11 0x5599abf02611 <unknown>
+#12 0x5599abeea4e5 <unknown>
+#13 0x5599abf03192 <unknown>
+#14 0x5599abecf6ef <unknown>
+#15 0x5599abf239d8 <unknown>
+#16 0x5599abf23ba7 <unknown>
+#17 0x5599abf339ec <unknown>
+#18 0x7fbe73405a94 <unknown>
+#19 0x7fbe73492a34 __clone

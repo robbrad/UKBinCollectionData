@@ -1,4 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Thu Oct 10 14:08:27 GMT 2024","Thu Oct 10 14:08:29 GMT 2024","1752","","","","","","Validate Council Output [NorthAyrshireCouncil]",""
-"passed","Thu Oct 10 14:08:27 GMT 2024","Thu Oct 10 14:08:40 GMT 2024","12839","","","","","","Validate Council Output [LondonBoroughHarrow]",""
-"passed","Thu Oct 10 14:08:27 GMT 2024","Thu Oct 10 14:08:29 GMT 2024","1792","","","","","","Validate Council Output [FalkirkCouncil]",""
