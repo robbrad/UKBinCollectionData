@@ -1,4 +1,11 @@
 {
+    "AberdeenshireCouncil": {
+        "url": "https://online.aberdeenshire.gov.uk",
+        "wiki_command_url_override": "https://online.aberdeenshire.gov.uk",
+        "uprn": "151176430",
+        "wiki_name": "Aberdeenshire Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "AdurAndWorthingCouncils": {
         "url": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=100061878829",
         "wiki_command_url_override": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=XXXXXXXX",
@@ -200,6 +207,13 @@
         "url": "https://www.cannockchasedc.gov.uk/",
         "wiki_name": "Cannock Chase District Council",
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)"
+    },
+    "CanterburyCityCouncil": {
+        "url": "https://www.canterbury.gov.uk",
+        "wiki_command_url_override": "https://www.canterbury.gov.uk",
+        "uprn": "10094583181",
+        "wiki_name": "Canterbury City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "CardiffCouncil": {
         "skip_get_url": true,
@@ -680,6 +694,13 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "London Borough Redbridge",
         "wiki_note": "Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your \"Address\" then copy the entire address text and use that in the house number field."
+    },
+    "LutonBoroughCouncil": {
+        "url": "https://myforms.luton.gov.uk",
+        "wiki_command_url_override": "https://myforms.luton.gov.uk",
+        "uprn": "100080155778",
+        "wiki_name": "Luton Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MaldonDistrictCouncil": {
         "skip_get_url": true,
@@ -1189,6 +1210,13 @@
         "url": "https://www1.swansea.gov.uk/recyclingsearch/",
         "wiki_name": "SwanseaCouncil"
     },
+    "SwindonBoroughCouncil": {
+        "url": "https://www.swindon.gov.uk",
+        "wiki_command_url_override": "https://www.swindon.gov.uk",
+        "uprn": "10022793351",
+        "wiki_name": "Swindon Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "TamesideMBCouncil": {
         "skip_get_url": true,
         "uprn": "100012835362",
@@ -1368,6 +1396,15 @@
         "skip_get_url": true,
         "url": "https://www.northampton.gov.uk/info/200084/bins-waste-and-recycling/1602/check-your-collection-day",
         "wiki_name": "West Northamptonshire Council"
+    },
+    "WestOxfordshireDistrictCouncil": {
+        "house_number": "24",
+        "postcode": "OX28 1YA",
+        "skip_get_url": true,
+        "url": "https://community.westoxon.gov.uk/s/waste-collection-enquiry",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "West Oxfordshire District Council",
+        "wiki_note": "Pass the full address in the house number and postcode in"
     },
     "WestSuffolkCouncil": {
         "postcode": "IP28 6DR",

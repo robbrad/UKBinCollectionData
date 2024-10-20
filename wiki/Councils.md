@@ -10,6 +10,7 @@ For scripts that need postcodes, these should be provided in double quotes and w
 This document is still a work in progress, don't worry if your council isn't listed - it will be soon!
 
 ## Contents
+- [Aberdeenshire Council](#aberdeenshire-council)
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
 - [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
 - [Arun Council](#arun-council)
@@ -37,6 +38,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Bury Council](#bury-council)
 - [Calderdale Council](#calderdale-council)
 - [Cannock Chase District Council](#cannock-chase-district-council)
+- [Canterbury City Council](#canterbury-city-council)
 - [Cardiff Council](#cardiff-council)
 - [Castlepoint District Council](#castlepoint-district-council)
 - [Charnwood Borough Council](#charnwood-borough-council)
@@ -103,12 +105,14 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [London Borough Hounslow](#london-borough-hounslow)
 - [London Borough Lambeth](#london-borough-lambeth)
 - [London Borough Redbridge](#london-borough-redbridge)
+- [Luton Borough Council](#luton-borough-council)
 - [Maldon District Council](#maldon-district-council)
 - [Malvern Hills District Council](#malvern-hills-district-council)
 - [Manchester City Council](#manchester-city-council)
 - [Mansfield District Council](#mansfield-district-council)
 - [Merton Council](#merton-council)
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
+- [Midlothian Council](#midlothian-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
 - [Mole Valley District Council](#mole-valley-district-council)
@@ -176,6 +180,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Sunderland City Council](#sunderland-city-council)
 - [Swale Borough Council](#swale-borough-council)
 - [SwanseaCouncil](#swanseacouncil)
+- [Swindon Borough Council](#swindon-borough-council)
 - [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
 - [Tandridge District Council](#tandridge-district-council)
 - [Telford and Wrekin Co-operative Council](#telford-and-wrekin-co-operative-council)
@@ -201,6 +206,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [West Lothian Council](#west-lothian-council)
 - [West Morland And Furness Council](#west-morland-and-furness-council)
 - [West Northamptonshire Council](#west-northamptonshire-council)
+- [West Oxfordshire District Council](#west-oxfordshire-district-council)
 - [West Suffolk Council](#west-suffolk-council)
 - [Wigan Borough Council](#wigan-borough-council)
 - [Wiltshire Council](#wiltshire-council)
@@ -212,6 +218,17 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [WychavonDistrictCouncil](#wychavondistrictcouncil)
 - [Wyre Council](#wyre-council)
 - [York Council](#york-council)
+
+---
+
+### Aberdeenshire Council
+```commandline
+python collect_data.py AberdeenshireCouncil https://online.aberdeenshire.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -532,6 +549,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)
+
+---
+
+### Canterbury City Council
+```commandline
+python collect_data.py CanterburyCityCouncil https://www.canterbury.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -1294,6 +1322,17 @@ Note: Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) 
 
 ---
 
+### Luton Borough Council
+```commandline
+python collect_data.py LutonBoroughCouncil https://myforms.luton.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Maldon District Council
 ```commandline
 python collect_data.py MaldonDistrictCouncil https://maldon.suez.co.uk/maldon/ServiceSummary -s -u XXXXXXXX
@@ -1353,6 +1392,15 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.).
+
+---
+
+### Midlothian Council
+```commandline
+python collect_data.py MidlothianCouncil https://www.midlothian.gov.uk/directory_record/XXXXXX/XXXXXX
+```
+
+Note: Follow the instructions [here](https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command.
 
 ---
 
@@ -2086,6 +2134,17 @@ Additional parameters:
 
 ---
 
+### Swindon Borough Council
+```commandline
+python collect_data.py SwindonBoroughCouncil https://www.swindon.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Tameside Metropolitan Borough Council
 ```commandline
 python collect_data.py TamesideMBCouncil http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection -s -u XXXXXXXX
@@ -2366,6 +2425,20 @@ python collect_data.py WestNorthamptonshireCouncil https://www.northampton.gov.u
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
+
+---
+
+### West Oxfordshire District Council
+```commandline
+python collect_data.py WestOxfordshireDistrictCouncil https://community.westoxon.gov.uk/s/waste-collection-enquiry -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the full address in the house number and postcode in
 
 ---
 
