@@ -44,7 +44,9 @@ async def async_setup_entry(hass, config, async_add_entities):
 
     name = config.data.get("name", "")
     timeout = config.data.get("timeout", 60)
-    icon_color_mapping = config.data.get("icon_color_mapping", "{}")  # Use an empty JSON object as default
+    icon_color_mapping = config.data.get(
+        "icon_color_mapping", "{}"
+    )  # Use an empty JSON object as default
 
     args = [
         config.data.get("council", ""),
@@ -52,7 +54,8 @@ async def async_setup_entry(hass, config, async_add_entities):
         *(
             f"--{key}={value}"
             for key, value in config.data.items()
-            if key not in {
+            if key
+            not in {
                 "name",
                 "council",
                 "url",
@@ -87,7 +90,9 @@ async def async_setup_entry(hass, config, async_add_entities):
     for bin_type in coordinator.data.keys():
         device_id = f"{name}_{bin_type}"
         entities.append(
-            UKBinCollectionDataSensor(coordinator, bin_type, device_id, icon_color_mapping)
+            UKBinCollectionDataSensor(
+                coordinator, bin_type, device_id, icon_color_mapping
+            )
         )
         entities.append(
             UKBinCollectionAttributeSensor(
@@ -140,7 +145,11 @@ async def async_setup_entry(hass, config, async_add_entities):
             )
         )
 
+    # Add the new Raw JSON Sensor
+    entities.append(UKBinCollectionRawJSONSensor(coordinator, f"{name}_raw_json", name))
+
     async_add_entities(entities)
+
 
 class HouseholdBinCoordinator(DataUpdateCoordinator):
     """Household Bin Coordinator"""
@@ -168,15 +177,17 @@ def get_latest_collection_info(data) -> dict:
     """Process the bin collection data."""
     current_date = datetime.now()
     next_collection_dates = {}
-    
+
     for bin_data in data["bins"]:
         bin_type = bin_data["type"]
         collection_date_str = bin_data["collectionDate"]
         collection_date = datetime.strptime(collection_date_str, "%d/%m/%Y")
-        
+
         if collection_date.date() >= current_date.date():
             if bin_type in next_collection_dates:
-                if collection_date < datetime.strptime(next_collection_dates[bin_type], "%d/%m/%Y"):
+                if collection_date < datetime.strptime(
+                    next_collection_dates[bin_type], "%d/%m/%Y"
+                ):
                     next_collection_dates[bin_type] = collection_date_str
             else:
                 next_collection_dates[bin_type] = collection_date_str
@@ -190,12 +201,16 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
 
     device_class = DEVICE_CLASS
 
-    def __init__(self, coordinator, bin_type, device_id, icon_color_mapping=None) -> None:
+    def __init__(
+        self, coordinator, bin_type, device_id, icon_color_mapping=None
+    ) -> None:
         """Initialize the main bin sensor."""
         super().__init__(coordinator)
         self._bin_type = bin_type
         self._device_id = device_id
-        self._icon_color_mapping = json.loads(icon_color_mapping) if icon_color_mapping else {}
+        self._icon_color_mapping = (
+            json.loads(icon_color_mapping) if icon_color_mapping else {}
+        )
         self.apply_values()
 
     @property
@@ -270,6 +285,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
             STATE_ATTR_NEXT_COLLECTION: self._next_collection.strftime("%d/%m/%Y"),
             STATE_ATTR_DAYS: self._days,
         }
+
     @property
     def color(self):
         """Return the entity icon."""
@@ -284,14 +300,24 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
 class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
     """Implementation of the attribute sensors (Colour, Next Collection, Days, Bin Type, Raw Next Collection)."""
 
-    def __init__(self, coordinator, bin_type, unique_id, attribute_type, device_id, icon_color_mapping=None) -> None:
+    def __init__(
+        self,
+        coordinator,
+        bin_type,
+        unique_id,
+        attribute_type,
+        device_id,
+        icon_color_mapping=None,
+    ) -> None:
         """Initialize the attribute sensor."""
         super().__init__(coordinator)
         self._bin_type = bin_type
         self._unique_id = unique_id
         self._attribute_type = attribute_type
         self._device_id = device_id
-        self._icon_color_mapping = json.loads(icon_color_mapping) if icon_color_mapping else {}
+        self._icon_color_mapping = (
+            json.loads(icon_color_mapping) if icon_color_mapping else {}
+        )
 
         # Use user-supplied icon and color if available
         self._icon = self._icon_color_mapping.get(self._bin_type, {}).get("icon")
@@ -320,14 +346,20 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
         if self._attribute_type == "Colour":
             return self._color  # Return the colour of the bin
         elif self._attribute_type == "Next Collection Human Readable":
-            return self.coordinator.data[self._bin_type]  # Already formatted next collection
+            return self.coordinator.data[
+                self._bin_type
+            ]  # Already formatted next collection
         elif self._attribute_type == "Days Until Collection":
-            next_collection = parser.parse(self.coordinator.data[self._bin_type], dayfirst=True).date()
+            next_collection = parser.parse(
+                self.coordinator.data[self._bin_type], dayfirst=True
+            ).date()
             return (next_collection - datetime.now().date()).days
         elif self._attribute_type == "Bin Type":
             return self._bin_type  # Return the bin type for the Bin Type sensor
         elif self._attribute_type == "Next Collection Date":
-            return self.coordinator.data[self._bin_type]  # Return the raw next collection date
+            return self.coordinator.data[
+                self._bin_type
+            ]  # Return the raw next collection date
 
     @property
     def icon(self):
@@ -344,14 +376,18 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
         """Return extra attributes of the sensor."""
         return {
             STATE_ATTR_COLOUR: self._color,
-            STATE_ATTR_NEXT_COLLECTION: self.coordinator.data[self._bin_type],  # Return the collection date
+            STATE_ATTR_NEXT_COLLECTION: self.coordinator.data[
+                self._bin_type
+            ],  # Return the collection date
         }
 
     @property
     def device_info(self):
         """Return device information for grouping sensors."""
         return {
-            "identifiers": {(DOMAIN, self._device_id)},  # Use the same device_id for all sensors of the same bin type
+            "identifiers": {
+                (DOMAIN, self._device_id)
+            },  # Use the same device_id for all sensors of the same bin type
             "name": f"{self.coordinator.name} {self._bin_type}",
             "manufacturer": "UK Bin Collection",
             "model": "Bin Sensor",
@@ -362,3 +398,35 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
     def unique_id(self):
         """Return a unique ID for the sensor."""
         return self._unique_id
+
+
+class UKBinCollectionRawJSONSensor(CoordinatorEntity, SensorEntity):
+    """Sensor to hold the raw JSON data for bin collections."""
+
+    def __init__(self, coordinator, unique_id, name) -> None:
+        """Initialize the raw JSON sensor."""
+        super().__init__(coordinator)
+        self._unique_id = unique_id
+        self._name = name
+
+    @property
+    def name(self):
+        """Return the name of the sensor."""
+        return f"{self._name} Raw JSON"
+
+    @property
+    def state(self):
+        """Return the state, which is the raw JSON data."""
+        return json.dumps(self.coordinator.data)  # Convert the raw dict to JSON string
+
+    @property
+    def unique_id(self):
+        """Return a unique ID for the sensor."""
+        return self._unique_id
+
+    @property
+    def extra_state_attributes(self):
+        """Return extra attributes for the sensor."""
+        return {
+            "raw_data": self.coordinator.data  # Provide the raw data as an attribute
+        }
