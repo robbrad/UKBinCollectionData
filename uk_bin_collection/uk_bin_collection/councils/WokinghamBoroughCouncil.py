@@ -56,7 +56,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
                 )
             ).click()
-            
+
             # Wait for the Show collection dates button to appear, then click it to get the collection dates
             inputElement_show_dates_button = WebDriverWait(driver, timeout).until(
                 EC.presence_of_element_located(

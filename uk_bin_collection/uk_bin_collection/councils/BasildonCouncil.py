@@ -11,7 +11,9 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        url_base = "https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation"
+        url_base = (
+            "https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation"
+        )
 
         uprn = kwargs.get("uprn")
         # Check the UPRN is valid
@@ -23,9 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Headers for the request
-        headers = {
-            "Content-Type": "application/json"
-        }
+        headers = {"Content-Type": "application/json"}
 
         response = requests.post(url_base, data=json.dumps(payload), headers=headers)
 
@@ -39,10 +39,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Function to add collection details to bins list
             def add_collection(service_name, collection_data):
-                bins.append({
-                    "type": service_name,
-                    "collectionDate": collection_data.get("current_collection_date")
-                })
+                bins.append(
+                    {
+                        "type": service_name,
+                        "collectionDate": collection_data.get(
+                            "current_collection_date"
+                        ),
+                    }
+                )
 
             # Extract refuse information
             available_services = data["refuse"]["available_services"]
@@ -51,13 +55,16 @@ class CouncilClass(AbstractGetBinDataClass):
                 # Append the service name and current collection date to the "bins" list
                 match service_data["container"]:
                     case "Green Wheelie Bin":
-                        subscription_status = service_data["subscription"]["active"] if service_data["subscription"] else False
+                        subscription_status = (
+                            service_data["subscription"]["active"]
+                            if service_data["subscription"]
+                            else False
+                        )
                         type_descr = f"Green Wheelie Bin ({"Active" if subscription_status else "Expired"})"
                     case "N/A":
                         type_descr = service_data["name"]
                     case _:
                         type_descr = service_data["container"]
-
 
                 date_str = service_data.get("current_collection_date")
                 # Parse the date string into a datetime object
@@ -66,16 +73,16 @@ class CouncilClass(AbstractGetBinDataClass):
                 # Convert the datetime object to the desired format
                 formatted_date = date_obj.strftime(date_format)
 
-                bins.append({
-                    "type": type_descr,  # Use service name from the data
-                    "collectionDate": formatted_date
-                })
+                bins.append(
+                    {
+                        "type": type_descr,  # Use service name from the data
+                        "collectionDate": formatted_date,
+                    }
+                )
 
         else:
             print(f"Failed to fetch data. Status code: {response.status_code}")
 
-        data = {
-            "bins": bins
-        }
+        data = {"bins": bins}
 
         return data

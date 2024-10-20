@@ -9,7 +9,6 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -34,7 +33,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         session = requests.Session()
         session.headers.update(headers)
-        
+
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
         URL = "https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx"
@@ -47,14 +46,16 @@ class CouncilClass(AbstractGetBinDataClass):
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
             "__VIEWSTATE": self.get_session_variable(soup, "__VIEWSTATE"),
-            "__VIEWSTATEGENERATOR": self.get_session_variable(soup, "__VIEWSTATEGENERATOR"),
+            "__VIEWSTATEGENERATOR": self.get_session_variable(
+                soup, "__VIEWSTATEGENERATOR"
+            ),
             "__SCROLLPOSITIONX": "0",
             "__SCROLLPOSITIONY": "0",
             "__EVENTVALIDATION": self.get_session_variable(soup, "__EVENTVALIDATION"),
             "ctl00$MainContent$searchBy_radio": "P",
             "ctl00$MainContent$Street_textbox": "",
             "ctl00$MainContent$Postcode_textbox": user_postcode,
-            "ctl00$MainContent$AddressLookup_button": "Find address"
+            "ctl00$MainContent$AddressLookup_button": "Find address",
         }
 
         # Build intermediate ASP.NET variables for uprn Select address
@@ -65,7 +66,9 @@ class CouncilClass(AbstractGetBinDataClass):
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
             "__VIEWSTATE": self.get_session_variable(soup, "__VIEWSTATE"),
-            "__VIEWSTATEGENERATOR": self.get_session_variable(soup, "__VIEWSTATEGENERATOR"),
+            "__VIEWSTATEGENERATOR": self.get_session_variable(
+                soup, "__VIEWSTATEGENERATOR"
+            ),
             "__SCROLLPOSITIONX": "0",
             "__SCROLLPOSITIONY": "0",
             "__EVENTVALIDATION": self.get_session_variable(soup, "__EVENTVALIDATION"),
@@ -73,14 +76,14 @@ class CouncilClass(AbstractGetBinDataClass):
             "ctl00$MainContent$Street_textbox": "",
             "ctl00$MainContent$Postcode_textbox": user_postcode,
             "ctl00$MainContent$lstAddresses": user_uprn,
-            "ctl00$MainContent$SelectAddress_button": "Select address"
+            "ctl00$MainContent$SelectAddress_button": "Select address",
         }
 
         # Actual http call to get Bins Data
         response = session.post(URL, data=form_data)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-        
+
         # Find Bins table and data
         table = soup.find("div", {"id": "binsGrid"})
         if table:
@@ -91,7 +94,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     collection_type = columns[0].get_text(strip=True)
                     collection_date_raw = columns[3].get_text(strip=True)
                     # if the month number is a single digit there are 2 spaces, stripping all spaces to make it consistent
-                    collection_date = datetime.strptime(collection_date_raw.replace(" ", ""),'%a%b%d%Y')
+                    collection_date = datetime.strptime(
+                        collection_date_raw.replace(" ", ""), "%a%b%d%Y"
+                    )
                     bin_entry = {
                         "type": collection_type,
                         "collectionDate": collection_date.strftime(date_format),

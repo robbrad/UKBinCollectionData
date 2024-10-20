@@ -29,9 +29,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 waste_type = row.find("th").text.strip()
                 next_collection = parse(row.find("td").text.strip()).date()
 
-                data['bins'].append({
-                    "type": waste_type,
-                    "collectionDate": next_collection.strftime(date_format),
-                })
+                data["bins"].append(
+                    {
+                        "type": waste_type,
+                        "collectionDate": next_collection.strftime(date_format),
+                    }
+                )
 
         return data

@@ -16,7 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         data = {"bins": []}
         collections = []
-        selected_collections = kwargs.get("paon").split(',')
+        selected_collections = kwargs.get("paon").split(",")
         calendar_urls = []
         run_date = datetime.now().date()
 
@@ -25,9 +25,13 @@ class CouncilClass(AbstractGetBinDataClass):
         for item in selected_collections:
             item = item.strip().lower().replace(" ", "_")
             if has_numbers(item):
-                calendar_urls.append(f"https://www.gbcbincalendars.co.uk/json/gedling_borough_council_{item}_bin_schedule.json")
+                calendar_urls.append(
+                    f"https://www.gbcbincalendars.co.uk/json/gedling_borough_council_{item}_bin_schedule.json"
+                )
             else:
-                calendar_urls.append(f"https://www.gbcbincalendars.co.uk/json/gedling_borough_council_{item}_garden_bin_schedule.json")
+                calendar_urls.append(
+                    f"https://www.gbcbincalendars.co.uk/json/gedling_borough_council_{item}_garden_bin_schedule.json"
+                )
 
         # Parse each URL and load future data
         for url in calendar_urls:
@@ -36,7 +40,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 raise ConnectionError(f"Could not get response from: {url}")
             json_data = response.json()["collectionDates"]
             for col in json_data:
-                bin_date = datetime.strptime(col.get("collectionDate"), "%Y-%m-%d").date()
+                bin_date = datetime.strptime(
+                    col.get("collectionDate"), "%Y-%m-%d"
+                ).date()
                 if bin_date >= run_date:
                     collections.append((col.get("alternativeName"), bin_date))
 

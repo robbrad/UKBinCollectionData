@@ -17,7 +17,9 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
 
         response = requests.post(
-            "https://www.rotherham.gov.uk/bin-collections?address={}&submit=Submit".format(user_uprn)
+            "https://www.rotherham.gov.uk/bin-collections?address={}&submit=Submit".format(
+                user_uprn
+            )
         )
         # Make a BS4 object
         soup = BeautifulSoup(response.text, features="html.parser")
@@ -25,15 +27,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        table = soup.select('table')[0]
+        table = soup.select("table")[0]
 
         if table:
-            rows = table.select('tr')
+            rows = table.select("tr")
 
             for index, row in enumerate(rows):
-                bin_info_cell = row.select('td')
-                if bin_info_cell: 
-                    bin_type = bin_info_cell[0].get_text(separator=' ', strip=True)
+                bin_info_cell = row.select("td")
+                if bin_info_cell:
+                    bin_type = bin_info_cell[0].get_text(separator=" ", strip=True)
                     bin_collection = bin_info_cell[1]
 
                     if bin_collection:

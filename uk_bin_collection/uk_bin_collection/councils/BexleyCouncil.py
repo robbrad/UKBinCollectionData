@@ -45,17 +45,13 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             inputElement_postcodesearch.send_keys(user_postcode)
 
-
-
             find_address_btn = wait.until(
                 EC.element_to_be_clickable((By.XPATH, '//*[@id="sub"]'))
             )
             find_address_btn.click()
 
             dropdown_options = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="address"]')
-                )
+                EC.presence_of_element_located((By.XPATH, '//*[@id="address"]'))
             )
             time.sleep(2)
             dropdown_options.click()
@@ -71,11 +67,8 @@ class CouncilClass(AbstractGetBinDataClass):
             # Click the element
             address.click()
 
-
             submit_address = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="go"]')
-                )
+                EC.presence_of_element_located((By.XPATH, '//*[@id="go"]'))
             )
             time.sleep(2)
             submit_address.click()
@@ -83,13 +76,11 @@ class CouncilClass(AbstractGetBinDataClass):
             results_found = wait.until(
                 EC.element_to_be_clickable(
                     (By.XPATH, '//h1[contains(text(), "Your bin days")]')
-                )           
                 )
+            )
 
             final_page = wait.until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "waste__collections")
-                )
+                EC.presence_of_element_located((By.CLASS_NAME, "waste__collections"))
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -103,29 +94,41 @@ class CouncilClass(AbstractGetBinDataClass):
             # Loop through each bin field
             for bin_section in bin_sections:
                 # Extract the bin type (e.g., "Brown Caddy", "Green Wheelie Bin", etc.)
-                bin_type = bin_section.get_text(strip=True).split("\n")[0]  # The first part is the bin type
+                bin_type = bin_section.get_text(strip=True).split("\n")[
+                    0
+                ]  # The first part is the bin type
 
                 # Find the next sibling <dl> tag that contains the next collection information
                 summary_list = bin_section.find_next("dl", class_="govuk-summary-list")
 
                 if summary_list:
                     # Now, instead of finding by class, we'll search by text within the dt element
-                    next_collection_dt = summary_list.find("dt", string=lambda text: "Next collection" in text)
+                    next_collection_dt = summary_list.find(
+                        "dt", string=lambda text: "Next collection" in text
+                    )
 
                     if next_collection_dt:
                         # Find the sibling <dd> tag for the collection date
-                        next_collection = next_collection_dt.find_next_sibling("dd").get_text(strip=True)
+                        next_collection = next_collection_dt.find_next_sibling(
+                            "dd"
+                        ).get_text(strip=True)
 
                         if next_collection:
                             try:
                                 # Parse the next collection date (assuming the format is like "Tuesday 15 October 2024")
-                                parsed_date = datetime.strptime(next_collection, "%A %d %B %Y")
+                                parsed_date = datetime.strptime(
+                                    next_collection, "%A %d %B %Y"
+                                )
 
                                 # Add the bin information to the data dictionary
-                                data["bins"].append({
-                                    "type": bin_type,
-                                    "collectionDate": parsed_date.strftime(date_format),
-                                })
+                                data["bins"].append(
+                                    {
+                                        "type": bin_type,
+                                        "collectionDate": parsed_date.strftime(
+                                            date_format
+                                        ),
+                                    }
+                                )
                             except ValueError as e:
                                 print(f"Error parsing date for {bin_type}: {e}")
                         else:
