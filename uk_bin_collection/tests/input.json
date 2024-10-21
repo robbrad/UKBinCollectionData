@@ -543,6 +543,13 @@
         "wiki_name": "Halton Borough Council",
         "wiki_note": "Pass the House number and post code"
     },
+    "HarboroughDistrictCouncil": {
+        "url": "https://www.harborough.gov.uk",
+        "wiki_command_url_override": "https://www.harborough.gov.uk",
+        "uprn": "100030489072",
+        "wiki_name": "Harborough District Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HaringeyCouncil": {
         "skip_get_url": true,
         "uprn": "100021203052",
