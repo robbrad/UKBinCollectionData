@@ -198,6 +198,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Walsall Council](#walsall-council)
 - [Waltham Forest](#waltham-forest)
 - [Warwick District Council](#warwick-district-council)
+- [Watford Borough Council](#watford-borough-council)
 - [Waverley Borough Council](#waverley-borough-council)
 - [Wealden District Council](#wealden-district-council)
 - [Welhat Council](#welhat-council)
@@ -2329,6 +2330,17 @@ python collect_data.py WarwickDistrictCouncil https://estates7.warwickdc.gov.uk/
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Watford Borough Council
+```commandline
+python collect_data.py WatfordBoroughCouncil https://www.watford.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
