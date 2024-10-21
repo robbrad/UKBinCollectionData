@@ -1,0 +1,25 @@
+Running test for council: BarnetCouncil
+Accept cookies banner not found or clickable within the specified time.
+An error occurred: Message: 
+Stacktrace:
+#0 0x5628c1bb1b9a <unknown>
+#1 0x5628c1897670 <unknown>
+#2 0x5628c18e6c48 <unknown>
+#3 0x5628c18e6ee1 <unknown>
+#4 0x5628c192d924 <unknown>
+#5 0x5628c190bbad <unknown>
+#6 0x5628c192add6 <unknown>
+#7 0x5628c190b923 <unknown>
+#8 0x5628c18d96e7 <unknown>
+#9 0x5628c18da6de <unknown>
+#10 0x5628c1b7b66b <unknown>
+#11 0x5628c1b7f611 <unknown>
+#12 0x5628c1b674e5 <unknown>
+#13 0x5628c1b80192 <unknown>
+#14 0x5628c1b4c6ef <unknown>
+#15 0x5628c1ba09d8 <unknown>
+#16 0x5628c1ba0ba7 <unknown>
+#17 0x5628c1bb09ec <unknown>
+#18 0x7f95444f5a94 <unknown>
+#19 0x7f9544582a34 __clone
+

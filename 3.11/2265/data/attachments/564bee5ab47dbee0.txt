@@ -1,0 +1,24 @@
+Running test for council: DacorumBoroughCouncil
+An error occurred: Message: 
+Stacktrace:
+#0 0x55ec5305ab9a <unknown>
+#1 0x55ec52d40670 <unknown>
+#2 0x55ec52d8fc48 <unknown>
+#3 0x55ec52d8fee1 <unknown>
+#4 0x55ec52dd6924 <unknown>
+#5 0x55ec52db4bad <unknown>
+#6 0x55ec52dd3dd6 <unknown>
+#7 0x55ec52db4923 <unknown>
+#8 0x55ec52d826e7 <unknown>
+#9 0x55ec52d836de <unknown>
+#10 0x55ec5302466b <unknown>
+#11 0x55ec53028611 <unknown>
+#12 0x55ec530104e5 <unknown>
+#13 0x55ec53029192 <unknown>
+#14 0x55ec52ff56ef <unknown>
+#15 0x55ec530499d8 <unknown>
+#16 0x55ec53049ba7 <unknown>
+#17 0x55ec530599ec <unknown>
+#18 0x7f6aeea0aa94 <unknown>
+#19 0x7f6aeea97a34 __clone
+

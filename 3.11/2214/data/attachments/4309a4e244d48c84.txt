@@ -1,2 +1,0 @@
-Running test for council: NeathPortTalbotCouncil
-An error occurred: time data 'Monday, 14\xa0October    (Tomorrow) 2024' does not match format '%A, %d %B %Y'

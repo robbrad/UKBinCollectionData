@@ -1,0 +1,2 @@
+Running test for council: WestBerkshireCouncil
+An error occurred: '<' not supported between instances of 'Tag' and 'datetime.datetime'
