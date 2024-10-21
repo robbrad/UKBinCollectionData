@@ -50,6 +50,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Colchester City Council](#colchester-city-council)
 - [Conwy County Borough Council](#conwy-county-borough-council)
 - [Cornwall Council](#cornwall-council)
+- [Coventry City Council](#coventry-city-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
 - [Dacorum Borough Council](#dacorum-borough-council)
@@ -83,6 +84,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Gloucester City Council](#gloucester-city-council)
 - [Guildford Council](#guildford-council)
 - [Halton Borough Council](#halton-borough-council)
+- [Harborough District Council](#harborough-district-council)
 - [Haringey Council](#haringey-council)
 - [Harrogate Borough Council](#harrogate-borough-council)
 - [Highland Council](#highland-council)
@@ -183,6 +185,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Swindon Borough Council](#swindon-borough-council)
 - [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
 - [Tandridge District Council](#tandridge-district-council)
+- [Teignbridge Council](#teignbridge-council)
 - [Telford and Wrekin Co-operative Council](#telford-and-wrekin-co-operative-council)
 - [Tendring District Council](#tendring-district-council)
 - [Test Valley Borough Council](#test-valley-borough-council)
@@ -198,6 +201,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Walsall Council](#walsall-council)
 - [Waltham Forest](#waltham-forest)
 - [Warwick District Council](#warwick-district-council)
+- [Watford Borough Council](#watford-borough-council)
 - [Waverley Borough Council](#waverley-borough-council)
 - [Wealden District Council](#wealden-district-council)
 - [Welhat Council](#welhat-council)
@@ -696,6 +700,15 @@ Note: Use https://uprn.uk/ to find your UPRN.
 
 ---
 
+### Coventry City Council
+```commandline
+python collect_data.py CoventryCityCouncil https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX
+```
+
+Note: Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command.
+
+---
+
 ### Crawley Borough Council
 ```commandline
 python collect_data.py CrawleyBoroughCouncil https://my.crawley.gov.uk/ -s -u XXXXXXXX -n XX
@@ -827,7 +840,7 @@ Additional parameters:
 
 ### East Devon District Council
 ```commandline
-python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-waste/recycling-and-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX
+python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX
 ```
 
 Note: Replace XXXXXXXX with UPRN.
@@ -1071,6 +1084,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the House number and post code
+
+---
+
+### Harborough District Council
+```commandline
+python collect_data.py HarboroughDistrictCouncil https://www.harborough.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -2165,6 +2189,17 @@ Additional parameters:
 
 ---
 
+### Teignbridge Council
+```commandline
+python collect_data.py TeignbridgeCouncil https://www.google.co.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Telford and Wrekin Co-operative Council
 ```commandline
 python collect_data.py TelfordAndWrekinCouncil https://dac.telford.gov.uk/bindayfinder/ -s -u XXXXXXXX
@@ -2329,6 +2364,17 @@ python collect_data.py WarwickDistrictCouncil https://estates7.warwickdc.gov.uk/
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Watford Borough Council
+```commandline
+python collect_data.py WatfordBoroughCouncil https://www.watford.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

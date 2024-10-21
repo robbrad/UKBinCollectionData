@@ -299,6 +299,12 @@
         "wiki_name": "Cornwall Council",
         "wiki_note": "Use https://uprn.uk/ to find your UPRN."
     },
+    "CoventryCityCouncil": {
+        "url": "https://www.coventry.gov.uk/directory-record/56384/abberton-way-",
+        "wiki_command_url_override": "https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX",
+        "wiki_name": "Coventry City Council",
+        "wiki_note": "Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command."
+    },
     "CrawleyBoroughCouncil": {
         "house_number": "9701076",
         "skip_get_url": true,
@@ -537,6 +543,13 @@
         "wiki_name": "Halton Borough Council",
         "wiki_note": "Pass the House number and post code"
     },
+    "HarboroughDistrictCouncil": {
+        "url": "https://www.harborough.gov.uk",
+        "wiki_command_url_override": "https://www.harborough.gov.uk",
+        "uprn": "100030489072",
+        "wiki_name": "Harborough District Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HaringeyCouncil": {
         "skip_get_url": true,
         "uprn": "100021203052",
@@ -741,7 +754,7 @@
         "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.)."
     },
     "MidlothianCouncil": {
-        "url": "https://www.midlothian.gov.uk/directory_record/92551426/glenesk_bonnyrigg_eh19_3je",
+        "url": "https://www.midlothian.gov.uk/directory_record/92594377/glenesk_bonnyrigg_eh19_3je",
         "wiki_command_url_override": "https://www.midlothian.gov.uk/directory_record/XXXXXX/XXXXXX",
         "wiki_name": "Midlothian Council",
         "wiki_note": "Follow the instructions [here](https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command."
@@ -1229,6 +1242,14 @@
         "url": "https://tdcws01.tandridge.gov.uk/TDCWebAppsPublic/tfaBranded/408?utm_source=pressrelease&utm_medium=smposts&utm_campaign=check_my_bin_day",
         "wiki_name": "Tandridge District Council"
     },
+    "TeignbridgeCouncil": {
+        "url": "https://www.google.co.uk",
+        "wiki_command_url_override": "https://www.google.co.uk",
+        "uprn": "100040338776",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Teignbridge Council",
+        "wiki_note": "Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "TelfordAndWrekinCouncil": {
         "skip_get_url": true,
         "uprn": "000452015013",
@@ -1337,6 +1358,13 @@
         "wiki_command_url_override": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/XXXXXXXX",
         "wiki_name": "Warwick District Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
+    },
+    "WatfordBoroughCouncil": {
+        "url": "https://www.watford.gov.uk",
+        "wiki_command_url_override": "https://www.watford.gov.uk",
+        "uprn": "100080942183",
+        "wiki_name": "Watford Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WaverleyBoroughCouncil": {
         "house_number": "23",
