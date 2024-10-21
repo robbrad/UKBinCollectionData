@@ -83,6 +83,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Gloucester City Council](#gloucester-city-council)
 - [Guildford Council](#guildford-council)
 - [Halton Borough Council](#halton-borough-council)
+- [Harborough District Council](#harborough-district-council)
 - [Haringey Council](#haringey-council)
 - [Harrogate Borough Council](#harrogate-borough-council)
 - [Highland Council](#highland-council)
@@ -1072,6 +1073,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the House number and post code
+
+---
+
+### Harborough District Council
+```commandline
+python collect_data.py HarboroughDistrictCouncil https://www.harborough.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
