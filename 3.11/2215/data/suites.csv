@@ -1,6 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Sun Oct 13 05:39:47 GMT 2024","Sun Oct 13 05:39:48 GMT 2024","1637","","","","","","Validate Council Output [LichfieldDistrictCouncil]",""
-"passed","Sun Oct 13 05:39:47 GMT 2024","Sun Oct 13 05:39:54 GMT 2024","7461","","","","","","Validate Council Output [ArmaghBanbridgeCraigavonCouncil]",""
-"passed","Sun Oct 13 05:39:47 GMT 2024","Sun Oct 13 05:39:49 GMT 2024","2223","","","","","","Validate Council Output [WestMorlandAndFurness]",""
-"passed","Sun Oct 13 05:39:54 GMT 2024","Sun Oct 13 05:39:56 GMT 2024","2223","","","","","","Validate Council Output [WirralCouncil]",""
-"passed","Sun Oct 13 05:39:47 GMT 2024","Sun Oct 13 05:39:50 GMT 2024","3195","","","","","","Validate Council Output [WalsallCouncil]",""

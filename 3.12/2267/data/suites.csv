@@ -1,0 +1,5 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Mon Oct 21 22:01:34 GMT 2024","Mon Oct 21 22:01:36 GMT 2024","2059","","","","","","Validate Council Output [WatfordBoroughCouncil]",""
+"passed","Mon Oct 21 22:01:34 GMT 2024","Mon Oct 21 22:01:37 GMT 2024","3052","","","","","","Validate Council Output [TeignbridgeCouncil]",""
+"passed","Mon Oct 21 22:01:34 GMT 2024","Mon Oct 21 22:01:36 GMT 2024","1363","","","","","","Validate Council Output [CoventryCityCouncil]",""
+"passed","Mon Oct 21 22:01:34 GMT 2024","Mon Oct 21 22:01:36 GMT 2024","1737","","","","","","Validate Council Output [HarboroughDistrictCouncil]",""
