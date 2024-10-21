@@ -50,6 +50,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Colchester City Council](#colchester-city-council)
 - [Conwy County Borough Council](#conwy-county-borough-council)
 - [Cornwall Council](#cornwall-council)
+- [Coventry City Council](#coventry-city-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
 - [Dacorum Borough Council](#dacorum-borough-council)
@@ -184,6 +185,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Swindon Borough Council](#swindon-borough-council)
 - [Tameside Metropolitan Borough Council](#tameside-metropolitan-borough-council)
 - [Tandridge District Council](#tandridge-district-council)
+- [Teignbridge Council](#teignbridge-council)
 - [Telford and Wrekin Co-operative Council](#telford-and-wrekin-co-operative-council)
 - [Tendring District Council](#tendring-district-council)
 - [Test Valley Borough Council](#test-valley-borough-council)
@@ -695,6 +697,15 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Use https://uprn.uk/ to find your UPRN.
+
+---
+
+### Coventry City Council
+```commandline
+python collect_data.py CoventryCityCouncil https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX
+```
+
+Note: Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command.
 
 ---
 
@@ -2175,6 +2186,17 @@ python collect_data.py TandridgeDistrictCouncil https://tdcws01.tandridge.gov.uk
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### Teignbridge Council
+```commandline
+python collect_data.py TeignbridgeCouncil https://www.google.co.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
