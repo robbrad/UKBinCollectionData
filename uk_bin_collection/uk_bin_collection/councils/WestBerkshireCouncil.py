@@ -77,44 +77,34 @@ class CouncilClass(AbstractGetBinDataClass):
             rubbish_div = soup.find(
                 "div", {"id": "FINDYOURBINDAYS_RUBBISHDATE_OUTERDIV"}
             )
-            try:
-                rubbish_date = rubbish_div.find_all("div")[2]
+            rubbish_date = rubbish_div.find_all("div")[2]
+            if rubbish_date.text == "Today":
+                rubbish_date = datetime.now()
+            else:
                 rubbish_date = datetime.strptime(
                     rubbish_date.text,
                     "%A %d %B",
                 ).replace(year=datetime.now().year)
-            except:
-                rubbish_date = rubbish_div.find_all("div")[3]
-                rubbish_date = datetime.strptime(
-                    rubbish_date.text,
-                    "%A %d %B",
-                ).replace(year=datetime.now().year)
+
             recycling_div = soup.find(
                 "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
             )
-            try:
-                recycling_date = recycling_div.find_all("div")[2]
+            recycling_date = recycling_div.find_all("div")[2]
+            if recycling_date.text == "Today":
+                recycling_date = datetime.now()
+            else:
                 recycling_date = datetime.strptime(
                     recycling_date.text,
                     "%A %d %B",
                 ).replace(year=datetime.now().year)
-            except:
-                rubbish_date = recycling_div.find_all("div")[3]
-                rubbish_date = datetime.strptime(
-                    rubbish_date.text,
-                    "%A %d %B",
-                ).replace(year=datetime.now().year)
+
             food_div = soup.find(
                 "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
             )
-            try:
-                food_date = food_div.find_all("div")[2]
-                food_date = datetime.strptime(
-                    food_date.text,
-                    "%A %d %B",
-                ).replace(year=datetime.now().year)
-            except:
-                food_date = food_div.find_all("div")[3]
+            food_date = food_div.find_all("div")[2]
+            if food_date.text == "Today":
+                food_date = datetime.now()
+            else:
                 food_date = datetime.strptime(
                     food_date.text,
                     "%A %d %B",
