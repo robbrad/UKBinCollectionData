@@ -1,3 +1,19 @@
+## 0.105.0 (2024-10-21)
+
+### Feat
+
+- Adding Teignbridge Council
+- Adding Harborough District Council
+- Adding Watford Borough Council
+- Adding Coventry City Council
+
+### Fix
+
+- #580
+- #888
+- #902
+- #607
+
 ## 0.104.0 (2024-10-20)
 
 ### Feat
