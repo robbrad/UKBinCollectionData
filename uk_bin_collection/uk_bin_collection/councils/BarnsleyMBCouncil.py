@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, List, Any
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 import requests
@@ -10,6 +10,30 @@ from uk_bin_collection.uk_bin_collection.common import (
 )
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
+def parse_bin_text(bin_type_str: str, bin_date_str: str) -> List[Dict[str, str]]:
+    """
+    Takes a raw bin and date string, parses the bin(s) and date, then returns
+    a list of bins with their date.
+    """
+
+    bins = []
+
+    if bin_date_str == "Today":
+        bin_date = datetime.today()
+    elif bin_date_str == "Tomorrow":
+        bin_date = datetime.today() + relativedelta(days=1)
+    else:
+        bin_date = datetime.strptime(bin_date_str, "%A, %B %d, %Y")
+
+    for bin_type in bin_type_str.split(", "):
+        bins.append({
+            "type": bin_type.strip() + " bin",
+            "collectionDate": bin_date.strftime(date_format)
+        })
+
+    return bins
+    
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -73,37 +97,29 @@ class CouncilClass(AbstractGetBinDataClass):
         bin_date_str = highlight_content.find(
             "em", {"class": "ui-bin-next-date"}
         ).text.strip()
-        bin_type = (
-            highlight_content.find("p", {"class": "ui-bin-next-type"}).text.strip()
-            + " bin"
-        )
+        bin_type_str = highlight_content.find(
+            "p", {"class": "ui-bin-next-type"}
+        ).text.strip()
 
-        if bin_date_str == "Today":
-            bin_date = datetime.today()
-        elif bin_date_str == "Tomorrow":
-            bin_date = datetime.today() + relativedelta(days=1)
-        else:
-            bin_date = datetime.strptime(bin_date_str, "%A, %B %d, %Y")
+        data["bins"].extend(parse_bin_text(bin_type_str, bin_date_str))
 
-        dict_data = {
-            "type": bin_type,
-            "collectionDate": bin_date.strftime(date_format),
-        }
-        data["bins"].append(dict_data)
+        # Hold bins we already got from next collection, to avoid re-adding
+        # from upcoming collections.
+        used_bins = set(bin["type"] for bin in data["bins"])
 
         # Upcoming collections
         upcoming_collections = results[1].find("tbody").find_all("tr")
         for row in upcoming_collections:
             columns = row.find_all("td")
             bin_date_str = columns[0].text.strip()
-            bin_types = columns[1].text.strip().split(", ")
+            bin_type_str = columns[1].text.strip()
 
-            for bin_type in bin_types:
-                bin_date = datetime.strptime(bin_date_str, "%A, %B %d, %Y")
-                dict_data = {
-                    "type": bin_type.strip() + " bin",
-                    "collectionDate": bin_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+            # Only add to bin list if not already present.
+            for bin in parse_bin_text(bin_type_str, bin_date_str):
+                if bin["type"] not in used_bins:
+                    data["bins"].append(bin)
+
+                    # Add to used bins, so future collections are not re-added.
+                    used_bins.add(bin["type"])
 
         return data
