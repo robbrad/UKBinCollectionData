@@ -1,0 +1,25 @@
+Running test for council: HighPeakCouncil
+An error occurred: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[id="FINDBINDAYSHIGHPEAK_POSTCODESELECT_POSTCODE"]"}
+  (Session info: chrome=129.0.6668.100); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
+Stacktrace:
+#0 0x5567d09c2b9a <unknown>
+#1 0x5567d06a8670 <unknown>
+#2 0x5567d06f7c48 <unknown>
+#3 0x5567d06f7ee1 <unknown>
+#4 0x5567d073e924 <unknown>
+#5 0x5567d071cbad <unknown>
+#6 0x5567d073bdd6 <unknown>
+#7 0x5567d071c923 <unknown>
+#8 0x5567d06ea6e7 <unknown>
+#9 0x5567d06eb6de <unknown>
+#10 0x5567d098c66b <unknown>
+#11 0x5567d0990611 <unknown>
+#12 0x5567d09784e5 <unknown>
+#13 0x5567d0991192 <unknown>
+#14 0x5567d095d6ef <unknown>
+#15 0x5567d09b19d8 <unknown>
+#16 0x5567d09b1ba7 <unknown>
+#17 0x5567d09c19ec <unknown>
+#18 0x7f1b3a2a1a94 <unknown>
+#19 0x7f1b3a32ea34 __clone
+
