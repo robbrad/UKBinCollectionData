@@ -1,8 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Mon Oct 14 03:33:21 GMT 2024","Mon Oct 14 03:33:22 GMT 2024","1125","","","","","","Validate Council Output [BradfordMDC]",""
-"passed","Mon Oct 14 03:33:21 GMT 2024","Mon Oct 14 03:33:23 GMT 2024","1872","","","","","","Validate Council Output [ManchesterCityCouncil]",""
-"passed","Mon Oct 14 03:33:21 GMT 2024","Mon Oct 14 03:33:23 GMT 2024","2338","","","","","","Validate Council Output [GlasgowCityCouncil]",""
-"passed","Mon Oct 14 03:33:22 GMT 2024","Mon Oct 14 03:33:32 GMT 2024","10088","","","","","","Validate Council Output [UttlesfordDistrictCouncil]",""
-"failed","Mon Oct 14 03:33:23 GMT 2024","Mon Oct 14 03:35:24 GMT 2024","120973","","","","","","Validate Council Output [ValeofWhiteHorseCouncil]",""
-"passed","Mon Oct 14 03:33:23 GMT 2024","Mon Oct 14 03:33:34 GMT 2024","11599","","","","","","Validate Council Output [WestSuffolkCouncil]",""
-"passed","Mon Oct 14 03:33:21 GMT 2024","Mon Oct 14 03:33:30 GMT 2024","8722","","","","","","Validate Council Output [NeathPortTalbotCouncil]",""
