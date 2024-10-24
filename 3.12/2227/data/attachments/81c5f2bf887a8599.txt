@@ -1,2 +1,0 @@
-Running test for council: WestBerkshireCouncil
-An error occurred: time data 'October' does not match format '%d %B'

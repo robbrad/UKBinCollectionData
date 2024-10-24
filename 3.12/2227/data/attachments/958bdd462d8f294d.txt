@@ -1,2 +1,0 @@
-Running test for council: MidSussexDistrictCouncil
-Accept cookies banner not found or clickable within the specified time.

@@ -1,7 +1,0 @@
-ERROR    root:file_handler.py:42 Schema validation error: [] should be non-empty
-
-Failed validating 'minItems' in schema['properties']['bins']:
-    {'type': 'array', 'items': {'$ref': '#/definitions/Bin'}, 'minItems': 1}
-
-On instance['bins']:
-    []
