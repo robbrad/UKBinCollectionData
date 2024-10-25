@@ -1,2 +1,0 @@
-Running test for council: WychavonDistrictCouncil
-Accept cookies banner not found or clickable within the specified time.

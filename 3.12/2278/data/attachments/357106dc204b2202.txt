@@ -1,0 +1,24 @@
+Running test for council: WestOxfordshireDistrictCouncil
+An error occurred: Message: 
+Stacktrace:
+#0 0x55895722a10a <unknown>
+#1 0x558956d45460 <unknown>
+#2 0x558956d91f96 <unknown>
+#3 0x558956d92221 <unknown>
+#4 0x558956dd75d4 <unknown>
+#5 0x558956db603d <unknown>
+#6 0x558956dd4af6 <unknown>
+#7 0x558956db5db3 <unknown>
+#8 0x558956d84c10 <unknown>
+#9 0x558956d85bee <unknown>
+#10 0x5589571f639b <unknown>
+#11 0x5589571fa338 <unknown>
+#12 0x5589571e3ebc <unknown>
+#13 0x5589571faeb7 <unknown>
+#14 0x5589571c910f <unknown>
+#15 0x558957218828 <unknown>
+#16 0x5589572189f0 <unknown>
+#17 0x558957228f86 <unknown>
+#18 0x7f979a8a5a94 <unknown>
+#19 0x7f979a932a34 __clone
+

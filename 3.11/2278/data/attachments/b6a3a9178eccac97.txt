@@ -1,0 +1,57 @@
+Running test for council: GatesheadCouncil
+An error occurred: Message: Unable to execute request for an existing session: java.util.concurrent.TimeoutException
+Build info: version: '4.25.0', revision: '030fcf7918'
+System info: os.name: 'Linux', os.arch: 'amd64', os.version: '6.5.0-1025-azure', java.version: '17.0.12'
+Driver info: driver.version: unknown
+Stacktrace:
+java.lang.RuntimeException: Unable to execute request for an existing session: java.util.concurrent.TimeoutException
+Build info: version: '4.25.0', revision: '030fcf7918'
+System info: os.name: 'Linux', os.arch: 'amd64', os.version: '6.5.0-1025-azure', java.version: '17.0.12'
+Driver info: driver.version: unknown
+	at org.openqa.selenium.grid.router.HandleSession.execute(HandleSession.java:208)
+	at org.openqa.selenium.remote.http.Route$PredicatedRoute.handle(Route.java:397)
+	at org.openqa.selenium.remote.http.Route.execute(Route.java:69)
+	at org.openqa.selenium.remote.http.Route$CombinedRoute.handle(Route.java:360)
+	at org.openqa.selenium.remote.http.Route.execute(Route.java:69)
+	at org.openqa.selenium.grid.router.Router.execute(Router.java:87)
+	at org.openqa.selenium.grid.web.EnsureSpecCompliantResponseHeaders.lambda$apply$0(EnsureSpecCompliantResponseHeaders.java:34)
+	at org.openqa.selenium.remote.http.Filter$1.execute(Filter.java:63)
+	at org.openqa.selenium.remote.http.Route$CombinedRoute.handle(Route.java:360)
+	at org.openqa.selenium.remote.http.Route.execute(Route.java:69)
+	at org.openqa.selenium.remote.AddWebDriverSpecHeaders.lambda$apply$0(AddWebDriverSpecHeaders.java:35)
+	at org.openqa.selenium.remote.ErrorFilter.lambda$apply$0(ErrorFilter.java:44)
+	at org.openqa.selenium.remote.http.Filter$1.execute(Filter.java:63)
+	at org.openqa.selenium.remote.ErrorFilter.lambda$apply$0(ErrorFilter.java:44)
+	at org.openqa.selenium.remote.http.Filter$1.execute(Filter.java:63)
+	at org.openqa.selenium.netty.server.SeleniumHandler.lambda$channelRead0$0(SeleniumHandler.java:44)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: java.util.concurrent.TimeoutException
+	at java.base/java.util.concurrent.CompletableFuture.timedGet(CompletableFuture.java:1960)
+	at java.base/java.util.concurrent.CompletableFuture.get(CompletableFuture.java:2095)
+	at org.openqa.selenium.remote.http.jdk.JdkHttpClient.execute0(JdkHttpClient.java:401)
+	at org.openqa.selenium.remote.http.AddSeleniumUserAgent.lambda$apply$0(AddSeleniumUserAgent.java:42)
+	at org.openqa.selenium.remote.http.Filter.lambda$andFinally$1(Filter.java:55)
+	at org.openqa.selenium.remote.http.jdk.JdkHttpClient.execute(JdkHttpClient.java:374)
+	at org.openqa.selenium.remote.tracing.TracedHttpClient.execute(TracedHttpClient.java:54)
+	at org.openqa.selenium.grid.web.ReverseProxyHandler.execute(ReverseProxyHandler.java:90)
+	at org.openqa.selenium.grid.node.DefaultActiveSession.execute(DefaultActiveSession.java:62)
+	at org.openqa.selenium.grid.node.local.SessionSlot.execute(SessionSlot.java:126)
+	at org.openqa.selenium.grid.node.local.LocalNode.executeWebDriverCommand(LocalNode.java:633)
+	at org.openqa.selenium.grid.node.ForwardWebDriverCommand.execute(ForwardWebDriverCommand.java:35)
+	at org.openqa.selenium.remote.http.Route$PredicatedRoute.handle(Route.java:397)
+	at org.openqa.selenium.remote.http.Route.execute(Route.java:69)
+	at org.openqa.selenium.remote.tracing.SpanWrappedHttpHandler.execute(SpanWrappedHttpHandler.java:87)
+	at org.openqa.selenium.remote.http.Filter$1.execute(Filter.java:63)
+	at org.openqa.selenium.remote.http.Route$CombinedRoute.handle(Route.java:360)
+	at org.openqa.selenium.remote.http.Route.execute(Route.java:69)
+	at org.openqa.selenium.grid.node.Node.execute(Node.java:270)
+	at org.openqa.selenium.grid.web.CombinedHandler.execute(CombinedHandler.java:55)
+	at org.openqa.selenium.grid.web.RoutableHttpClientFactory$1.execute(RoutableHttpClientFactory.java:71)
+	at org.openqa.selenium.grid.web.ReverseProxyHandler.execute(ReverseProxyHandler.java:90)
+	at org.openqa.selenium.grid.router.HandleSession.execute(HandleSession.java:181)
+	... 20 more
+

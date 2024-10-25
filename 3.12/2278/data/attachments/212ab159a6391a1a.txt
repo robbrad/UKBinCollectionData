@@ -1,0 +1,27 @@
+ERROR    root:CheshireWestAndChesterCouncil.py:119 An error occurred: Message: element click intercepted: Element <iframe id="fillform-frame-1" title="Your bin collection" data-category="AF-Category-Waste-Collection-external---no-registration" class="achieveforms-iframe" scrolling="no" src="/fillform/?iframe_id=fillform-frame-1&amp;db_id=" style="overflow: hidden; height: 433.328px; border: 0px;" cd_frame_id_="d02a610a2021f1494624fcdba334764f"></iframe> is not clickable at point (841, 18). Other element would receive the click: <div class="header__upper">...</div>
+  (Session info: chrome=130.0.6723.69)
+Stacktrace:
+#0 0x560bfaa9f10a <unknown>
+#1 0x560bfa5ba460 <unknown>
+#2 0x560bfa60db26 <unknown>
+#3 0x560bfa60baad <unknown>
+#4 0x560bfa609d56 <unknown>
+#5 0x560bfa608971 <unknown>
+#6 0x560bfa5fbf78 <unknown>
+#7 0x560bfa62b012 <unknown>
+#8 0x560bfa5fb958 <unknown>
+#9 0x560bfa62b1de <unknown>
+#10 0x560bfa649af6 <unknown>
+#11 0x560bfa62adb3 <unknown>
+#12 0x560bfa5f9c10 <unknown>
+#13 0x560bfa5fabee <unknown>
+#14 0x560bfaa6b39b <unknown>
+#15 0x560bfaa6f338 <unknown>
+#16 0x560bfaa58ebc <unknown>
+#17 0x560bfaa6feb7 <unknown>
+#18 0x560bfaa3e10f <unknown>
+#19 0x560bfaa8d828 <unknown>
+#20 0x560bfaa8d9f0 <unknown>
+#21 0x560bfaa9df86 <unknown>
+#22 0x7f3bfd1a8a94 <unknown>
+#23 0x7f3bfd235a34 __clone
