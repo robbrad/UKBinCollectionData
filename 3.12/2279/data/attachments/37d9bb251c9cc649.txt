@@ -1,0 +1,57 @@
+Running test for council: FalkirkCouncil
+Bin Type: Burgundy bin
+Collection Date: 2024-10-02
+Bin Type: Burgundy bin
+Collection Date: 2024-10-30
+Bin Type: Burgundy bin
+Collection Date: 2024-11-27
+Bin Type: Burgundy bin
+Collection Date: 2024-12-25
+Bin Type: Burgundy bin
+Collection Date: 2025-01-22
+Bin Type: Burgundy bin
+Collection Date: 2025-02-19
+Bin Type: Burgundy bin
+Collection Date: 2025-03-19
+Bin Type: Green bin
+Collection Date: 2024-10-09
+Bin Type: Green bin
+Collection Date: 2024-10-23
+Bin Type: Green bin
+Collection Date: 2024-11-06
+Bin Type: Green bin
+Collection Date: 2024-11-20
+Bin Type: Green bin
+Collection Date: 2024-12-04
+Bin Type: Green bin
+Collection Date: 2024-12-18
+Bin Type: Green bin
+Collection Date: 2025-01-01
+Bin Type: Green bin
+Collection Date: 2025-01-15
+Bin Type: Green bin
+Collection Date: 2025-01-29
+Bin Type: Green bin
+Collection Date: 2025-02-12
+Bin Type: Green bin
+Collection Date: 2025-02-26
+Bin Type: Green bin
+Collection Date: 2025-03-12
+Bin Type: Green bin
+Collection Date: 2025-03-26
+Bin Type: Green bin
+Collection Date: 2025-04-09
+Bin Type: Blue bin
+Collection Date: 2024-10-16
+Bin Type: Blue bin
+Collection Date: 2024-11-13
+Bin Type: Blue bin
+Collection Date: 2024-12-11
+Bin Type: Blue bin
+Collection Date: 2025-01-08
+Bin Type: Blue bin
+Collection Date: 2025-02-05
+Bin Type: Blue bin
+Collection Date: 2025-03-05
+Bin Type: Blue bin
+Collection Date: 2025-04-02

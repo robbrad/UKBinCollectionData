@@ -1,0 +1,26 @@
+Running test for council: NeathPortTalbotCouncil
+An error occurred: Message: element not interactable
+  (Session info: chrome=130.0.6723.69)
+Stacktrace:
+#0 0x559ebfcb110a <unknown>
+#1 0x559ebf7cc2bd <unknown>
+#2 0x559ebf81a10b <unknown>
+#3 0x559ebf80df78 <unknown>
+#4 0x559ebf83d012 <unknown>
+#5 0x559ebf80d958 <unknown>
+#6 0x559ebf83d1de <unknown>
+#7 0x559ebf85baf6 <unknown>
+#8 0x559ebf83cdb3 <unknown>
+#9 0x559ebf80bc10 <unknown>
+#10 0x559ebf80cbee <unknown>
+#11 0x559ebfc7d39b <unknown>
+#12 0x559ebfc81338 <unknown>
+#13 0x559ebfc6aebc <unknown>
+#14 0x559ebfc81eb7 <unknown>
+#15 0x559ebfc5010f <unknown>
+#16 0x559ebfc9f828 <unknown>
+#17 0x559ebfc9f9f0 <unknown>
+#18 0x559ebfcaff86 <unknown>
+#19 0x7fc8446a6a94 <unknown>
+#20 0x7fc844733a34 __clone
+

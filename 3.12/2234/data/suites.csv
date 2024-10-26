@@ -1,5 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Tue Oct 15 05:01:01 GMT 2024","Tue Oct 15 05:02:22 GMT 2024","80409","","","","","","Validate Council Output [SwaleBoroughCouncil]",""
-"passed","Tue Oct 15 05:01:01 GMT 2024","Tue Oct 15 05:02:04 GMT 2024","62855","","","","","","Validate Council Output [BarnetCouncil]",""
-"passed","Tue Oct 15 05:01:01 GMT 2024","Tue Oct 15 05:02:11 GMT 2024","69414","","","","","","Validate Council Output [WestBerkshireCouncil]",""
-"failed","Tue Oct 15 05:01:01 GMT 2024","Tue Oct 15 05:01:23 GMT 2024","21424","","","","","","Validate Council Output [HaltonBoroughCouncil]",""
