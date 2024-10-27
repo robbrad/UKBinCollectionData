@@ -484,6 +484,13 @@
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland District Council"
     },
+    "FifeCouncil": {
+        "url": "https://www.fife.gov.uk",
+        "wiki_command_url_override": "https://www.fife.gov.uk",
+        "uprn": "320203521",
+        "wiki_name": "Fife Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "FlintshireCountyCouncil": {
         "url": "https://digital.flintshire.gov.uk",
         "wiki_command_url_override": "https://digital.flintshire.gov.uk",
