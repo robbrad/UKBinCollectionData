@@ -77,6 +77,8 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Falkirk Council](#falkirk-council)
 - [Fareham Borough Council](#fareham-borough-council)
 - [Fenland District Council](#fenland-district-council)
+- [Fife Council](#fife-council)
+- [Flintshire County Council](#flintshire-county-council)
 - [Forest of Dean District Council](#forest-of-dean-district-council)
 - [Gateshead Council](#gateshead-council)
 - [Gedling Borough Council](#gedling-borough-council)
@@ -996,6 +998,28 @@ Additional parameters:
 
 ---
 
+### Fife Council
+```commandline
+python collect_data.py FifeCouncil https://www.fife.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Flintshire County Council
+```commandline
+python collect_data.py FlintshireCountyCouncil https://digital.flintshire.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Forest of Dean District Council
 ```commandline
 python collect_data.py ForestOfDeanDistrictCouncil https://community.fdean.gov.uk/s/waste-collection-enquiry -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -1421,10 +1445,14 @@ Note: Pass the house name/number plus the name of the street with the postcode p
 
 ### Midlothian Council
 ```commandline
-python collect_data.py MidlothianCouncil https://www.midlothian.gov.uk/directory_record/XXXXXX/XXXXXX
+python collect_data.py MidlothianCouncil https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days -s -p "XXXX XXX" -n XX
 ```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
 
-Note: Follow the instructions [here](https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command.
+Note: Pass the house name/number wrapped in double quotes along with the postcode parameter
 
 ---
 
@@ -2027,7 +2055,7 @@ Additional parameters:
 
 ### Southwark Council
 ```commandline
-python collect_data.py SouthwarkCouncil https://www.southwark.gov.uk/bins/lookup/XXXXXXXX -u XXXXXXXX
+python collect_data.py SouthwarkCouncil https://services.southwark.gov.uk/bins/lookup/XXXXXXXX -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -2191,10 +2219,11 @@ Additional parameters:
 
 ### Teignbridge Council
 ```commandline
-python collect_data.py TeignbridgeCouncil https://www.google.co.uk -u XXXXXXXX
+python collect_data.py TeignbridgeCouncil https://www.google.co.uk -u XXXXXXXX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-u` - UPRN
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
