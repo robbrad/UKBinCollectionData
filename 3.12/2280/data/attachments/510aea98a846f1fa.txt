@@ -1,0 +1,29 @@
+Running test for council: RenfrewshireCouncil
+An error occurred: Message: element click intercepted: Element is not clickable at point (1142, 1033)
+  (Session info: chrome=130.0.6723.69)
+Stacktrace:
+#0 0x55e2c7b4410a <unknown>
+#1 0x55e2c765f460 <unknown>
+#2 0x55e2c76b2b26 <unknown>
+#3 0x55e2c76b0aad <unknown>
+#4 0x55e2c76ae557 <unknown>
+#5 0x55e2c76ad971 <unknown>
+#6 0x55e2c76a0f78 <unknown>
+#7 0x55e2c76d0012 <unknown>
+#8 0x55e2c76a0958 <unknown>
+#9 0x55e2c76d01de <unknown>
+#10 0x55e2c76eeaf6 <unknown>
+#11 0x55e2c76cfdb3 <unknown>
+#12 0x55e2c769ec10 <unknown>
+#13 0x55e2c769fbee <unknown>
+#14 0x55e2c7b1039b <unknown>
+#15 0x55e2c7b14338 <unknown>
+#16 0x55e2c7afdebc <unknown>
+#17 0x55e2c7b14eb7 <unknown>
+#18 0x55e2c7ae310f <unknown>
+#19 0x55e2c7b32828 <unknown>
+#20 0x55e2c7b329f0 <unknown>
+#21 0x55e2c7b42f86 <unknown>
+#22 0x7fdfa9de2a94 <unknown>
+#23 0x7fdfa9e6fa34 __clone
+

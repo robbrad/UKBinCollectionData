@@ -1,2 +1,0 @@
-Running test for council: KingstonUponThamesCouncil
-An error occurred: time data 'Wednesday, 16 October\n              \n              \n              (In progress) 2024' does not match format '%A, %d %B %Y'

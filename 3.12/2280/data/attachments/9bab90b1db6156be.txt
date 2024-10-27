@@ -1,0 +1,1 @@
+ERROR    root:HaringeyCouncil.py:35 Network or HTTP error occurred: HTTPSConnectionPool(host='wastecollections.haringey.gov.uk', port=443): Read timed out. (read timeout=10)
