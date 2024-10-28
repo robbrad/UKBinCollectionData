@@ -28,7 +28,7 @@ jobs:
         python-version: '3.12'
 
     - name: Run image
-      uses: abatilo/actions-poetry@v3.0.0
+      uses: abatilo/actions-poetry@v3.0.1
       with:
         poetry-version: '1.8.4'
 
