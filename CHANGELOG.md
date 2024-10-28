@@ -1,3 +1,19 @@
+## 0.106.0 (2024-10-28)
+
+### Feat
+
+- Adding Stockton On Tees Council
+- Adding Fife Council
+- Adding Flintshire County Council
+
+### Fix
+
+- #930
+- #933
+- #750
+- West Berkshire Council
+- Southwark Council
+
 ## 0.105.1 (2024-10-24)
 
 ### Fix
