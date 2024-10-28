@@ -178,6 +178,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [StaffordBoroughCouncil](#staffordboroughcouncil)
 - [Staffordshire Moorlands District Council](#staffordshire-moorlands-district-council)
 - [Stockport Borough Council](#stockport-borough-council)
+- [Stockton On Tees Council](#stockton-on-tees-council)
 - [Stoke-on-Trent City Council](#stoke-on-trent-city-council)
 - [Stratford Upon Avon Council](#stratford-upon-avon-council)
 - [Stroud District Council](#stroud-district-council)
@@ -2115,6 +2116,18 @@ python collect_data.py StockportBoroughCouncil https://myaccount.stockport.gov.u
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### Stockton On Tees Council
+```commandline
+python collect_data.py StocktonOnTeesCouncil https://www.stockton.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
 
