@@ -1,0 +1,2 @@
+Running test for council: BarnetCouncil
+Accept cookies banner not found or clickable within the specified time.

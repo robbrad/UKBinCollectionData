@@ -1,4 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Wed Oct 16 10:17:30 GMT 2024","Wed Oct 16 10:17:31 GMT 2024","1400","","","","","","Validate Council Output [PerthAndKinrossCouncil]",""
-"passed","Wed Oct 16 10:17:30 GMT 2024","Wed Oct 16 10:17:32 GMT 2024","2811","","","","","","Validate Council Output [TunbridgeWellsCouncil]",""
-"passed","Wed Oct 16 10:17:30 GMT 2024","Wed Oct 16 10:17:32 GMT 2024","2645","","","","","","Validate Council Output [LincolnCouncil]",""
