@@ -484,6 +484,20 @@
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland District Council"
     },
+    "FifeCouncil": {
+        "url": "https://www.fife.gov.uk",
+        "wiki_command_url_override": "https://www.fife.gov.uk",
+        "uprn": "320203521",
+        "wiki_name": "Fife Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
+    "FlintshireCountyCouncil": {
+        "url": "https://digital.flintshire.gov.uk",
+        "wiki_command_url_override": "https://digital.flintshire.gov.uk",
+        "uprn": "100100213710",
+        "wiki_name": "Flintshire County Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "ForestOfDeanDistrictCouncil": {
         "house_number": "ELMOGAL, PARKEND ROAD, BREAM, LYDNEY",
         "postcode": "GL15 6JT",
@@ -1143,8 +1157,8 @@
         "wiki_name": "South Tyneside Council"
     },
     "SouthwarkCouncil": {
-        "url": "https://www.southwark.gov.uk/bins/lookup/",
-        "wiki_command_url_override": "https://www.southwark.gov.uk/bins/lookup/XXXXXXXX",
+        "url": "https://services.southwark.gov.uk/bins/lookup/",
+        "wiki_command_url_override": "https://services.southwark.gov.uk/bins/lookup/XXXXXXXX",
         "uprn": "200003469271",
         "wiki_name": "Southwark Council",
         "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
@@ -1181,6 +1195,14 @@
         "wiki_command_url_override": "https://myaccount.stockport.gov.uk/bin-collections/show/XXXXXXXX",
         "wiki_name": "Stockport Borough Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
+    },
+    "StocktonOnTeesCouncil": {
+        "house_number": "24",
+        "postcode": "TS20 2RD",
+        "skip_get_url": true,
+        "url": "https://www.stockton.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Stockton On Tees Council"
     },
     "StokeOnTrentCityCouncil": {
         "url": "https://www.stoke.gov.uk/jadu/custom/webserviceLookUps/BarTecWebServices_missed_bin_calendar.php?UPRN=3455121482",
