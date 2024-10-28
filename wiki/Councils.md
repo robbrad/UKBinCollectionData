@@ -14,6 +14,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
 - [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
 - [Arun Council](#arun-council)
+- [Ashford Borough Council](#ashford-borough-council)
 - [Aylesbury Vale Council (Buckinghamshire)](#aylesbury-vale-council-(buckinghamshire))
 - [BCP Council](#bcp-council)
 - [Barnet Council](#barnet-council)
@@ -268,6 +269,18 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Ashford Borough Council
+```commandline
+python collect_data.py AshfordBoroughCouncil https://ashford.gov.uk -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
