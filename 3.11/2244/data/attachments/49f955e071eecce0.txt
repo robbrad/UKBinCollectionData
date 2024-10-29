@@ -1,2 +1,0 @@
-Running test for council: ForestOfDeanDistrictCouncil
-An error occurred: time data 'Today' does not match format '%a, %d %B'
