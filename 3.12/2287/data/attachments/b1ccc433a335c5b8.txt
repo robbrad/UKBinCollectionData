@@ -1,0 +1,4 @@
+Running test for council: BexleyCouncil
+Error parsing date for Brown CaddyFood waste: time data 'Being collected today' does not match format '%A %d %B %Y'
+Error parsing date for Brown Wheelie BinGarden waste: time data 'Being collected today' does not match format '%A %d %B %Y'
+Error parsing date for White Lidded Wheelie BinPlastics, cans and glass: time data 'Being collected today' does not match format '%A %d %B %Y'

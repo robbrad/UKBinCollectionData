@@ -1,0 +1,24 @@
+Running test for council: WestLothianCouncil
+An error occurred: Message: 
+Stacktrace:
+#0 0x56221b05410a <unknown>
+#1 0x56221ab6f460 <unknown>
+#2 0x56221abbbf96 <unknown>
+#3 0x56221abbc221 <unknown>
+#4 0x56221ac015d4 <unknown>
+#5 0x56221abe003d <unknown>
+#6 0x56221abfeaf6 <unknown>
+#7 0x56221abdfdb3 <unknown>
+#8 0x56221abaec10 <unknown>
+#9 0x56221abafbee <unknown>
+#10 0x56221b02039b <unknown>
+#11 0x56221b024338 <unknown>
+#12 0x56221b00debc <unknown>
+#13 0x56221b024eb7 <unknown>
+#14 0x56221aff310f <unknown>
+#15 0x56221b042828 <unknown>
+#16 0x56221b0429f0 <unknown>
+#17 0x56221b052f86 <unknown>
+#18 0x7fd3e0d5ea94 <unknown>
+#19 0x7fd3e0deba34 __clone
+
