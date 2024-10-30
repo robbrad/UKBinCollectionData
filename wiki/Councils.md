@@ -65,6 +65,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Ealing Council](#ealing-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
 - [East Devon District Council](#east-devon-district-council)
+- [East Herts Council](#east-herts-council)
 - [East Lindsey District Council](#east-lindsey-district-council)
 - [East Renfrewshire Council](#east-renfrewshire-council)
 - [East Riding Council](#east-riding-council)
@@ -860,6 +861,17 @@ python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-and-waste/
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### East Herts Council
+```commandline
+python collect_data.py EastHertsCouncil https://www.eastherts.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
 
 ---
 
