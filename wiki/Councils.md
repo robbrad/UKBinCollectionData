@@ -12,6 +12,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 ## Contents
 - [Aberdeenshire Council](#aberdeenshire-council)
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
+- [Ards and North Down Council](#ards-and-north-down-council)
 - [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
 - [Arun Council](#arun-council)
 - [Ashford Borough Council](#ashford-borough-council)
@@ -247,6 +248,17 @@ python collect_data.py AdurAndWorthingCouncils https://www.adur-worthing.gov.uk/
 ```
 
 Note: Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Ards and North Down Council
+```commandline
+python collect_data.py ArdsAndNorthDownCouncil https://www.ardsandnorthdown.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

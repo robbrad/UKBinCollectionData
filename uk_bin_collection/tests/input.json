@@ -12,6 +12,13 @@
         "wiki_name": "Adur and Worthing Councils",
         "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "ArdsAndNorthDownCouncil": {
+        "url": "https://www.ardsandnorthdown.gov.uk",
+        "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
+        "uprn": "187136177",
+        "wiki_name": "Ards and North Down Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "ArmaghBanbridgeCraigavonCouncil": {
         "url": "https://www.armaghbanbridgecraigavon.gov.uk/",
         "wiki_command_url_override": "https://www.armaghbanbridgecraigavon.gov.uk/",
