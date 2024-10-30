@@ -225,6 +225,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Wirral Council](#wirral-council)
 - [Woking Borough Council/Joint Waste Solutions](#woking-borough-council/joint-waste-solutions)
 - [Wokingham Borough Council](#wokingham-borough-council)
+- [Worcester City Council](#worcester-city-council)
 - [WychavonDistrictCouncil](#wychavondistrictcouncil)
 - [Wyre Council](#wyre-council)
 - [York Council](#york-council)
@@ -2658,6 +2659,17 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Worcester City Council
+```commandline
+python collect_data.py WorcesterCityCouncil https://www.Worcester.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
