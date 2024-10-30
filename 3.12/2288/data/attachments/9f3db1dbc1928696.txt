@@ -1,0 +1,24 @@
+Running test for council: StocktonOnTeesCouncil
+An error occurred: Message: 
+Stacktrace:
+#0 0x55903b37410a <unknown>
+#1 0x55903ae8f460 <unknown>
+#2 0x55903aedbf96 <unknown>
+#3 0x55903aedc221 <unknown>
+#4 0x55903af215d4 <unknown>
+#5 0x55903af0003d <unknown>
+#6 0x55903af1eaf6 <unknown>
+#7 0x55903aeffdb3 <unknown>
+#8 0x55903aecec10 <unknown>
+#9 0x55903aecfbee <unknown>
+#10 0x55903b34039b <unknown>
+#11 0x55903b344338 <unknown>
+#12 0x55903b32debc <unknown>
+#13 0x55903b344eb7 <unknown>
+#14 0x55903b31310f <unknown>
+#15 0x55903b362828 <unknown>
+#16 0x55903b3629f0 <unknown>
+#17 0x55903b372f86 <unknown>
+#18 0x7ff027f26a94 <unknown>
+#19 0x7ff027fb3a34 __clone
+

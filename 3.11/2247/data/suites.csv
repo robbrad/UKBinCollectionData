@@ -1,5 +1,0 @@
-"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
-"passed","Fri Oct 18 10:03:38 GMT 2024","Fri Oct 18 10:03:40 GMT 2024","2592","","","","","","Validate Council Output [NorwichCityCouncil]",""
-"passed","Fri Oct 18 10:03:38 GMT 2024","Fri Oct 18 10:03:40 GMT 2024","2667","","","","","","Validate Council Output [SouthRibbleCouncil]",""
-"passed","Fri Oct 18 10:03:38 GMT 2024","Fri Oct 18 10:03:39 GMT 2024","1847","","","","","","Validate Council Output [DudleyCouncil]",""
-"passed","Fri Oct 18 10:03:38 GMT 2024","Fri Oct 18 10:03:40 GMT 2024","2156","","","","","","Validate Council Output [PlymouthCouncil]",""
