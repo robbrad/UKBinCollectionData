@@ -32,6 +32,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Bolton Council](#bolton-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
 - [Bradford MDC](#bradford-mdc)
+- [Breckland Council](#breckland-council)
 - [Brighton and Hove City Council](#brighton-and-hove-city-council)
 - [Bristol City Council](#bristol-city-council)
 - [Bromley Borough Council](#bromley-borough-council)
@@ -484,6 +485,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Post code isn't parsed by this script, but you can pass it in double quotes.
+
+---
+
+### Breckland Council
+```commandline
+python collect_data.py BrecklandCouncil https://www.breckland.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

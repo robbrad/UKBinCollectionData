@@ -159,6 +159,13 @@
         "wiki_name": "Bradford MDC",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Post code isn't parsed by this script, but you can pass it in double quotes."
     },
+    "BrecklandCouncil": {
+        "url": "https://www.breckland.gov.uk",
+        "wiki_command_url_override": "https://www.breckland.gov.uk",
+        "uprn": "100091495479",
+        "wiki_name": "Breckland Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "BrightonandHoveCityCouncil": {
         "house_number": "44 Carden Avenue, Brighton, BN1 8NE",
         "postcode": "BN1 8NE",
