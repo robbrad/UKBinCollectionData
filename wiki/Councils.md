@@ -12,8 +12,10 @@ This document is still a work in progress, don't worry if your council isn't lis
 ## Contents
 - [Aberdeenshire Council](#aberdeenshire-council)
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
+- [Ards and North Down Council](#ards-and-north-down-council)
 - [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
 - [Arun Council](#arun-council)
+- [Ashford Borough Council](#ashford-borough-council)
 - [Aylesbury Vale Council (Buckinghamshire)](#aylesbury-vale-council-(buckinghamshire))
 - [BCP Council](#bcp-council)
 - [Barnet Council](#barnet-council)
@@ -64,6 +66,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Ealing Council](#ealing-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
 - [East Devon District Council](#east-devon-district-council)
+- [East Herts Council](#east-herts-council)
 - [East Lindsey District Council](#east-lindsey-district-council)
 - [East Renfrewshire Council](#east-renfrewshire-council)
 - [East Riding Council](#east-riding-council)
@@ -145,6 +148,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Perth and Kinross Council](#perth-and-kinross-council)
 - [Plymouth Council](#plymouth-council)
 - [Portsmouth City Council](#portsmouth-city-council)
+- [Powys Council](#powys-council)
 - [Preston City Council](#preston-city-council)
 - [Reading Borough Council](#reading-borough-council)
 - [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
@@ -222,6 +226,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Wirral Council](#wirral-council)
 - [Woking Borough Council/Joint Waste Solutions](#woking-borough-council/joint-waste-solutions)
 - [Wokingham Borough Council](#wokingham-borough-council)
+- [Worcester City Council](#worcester-city-council)
 - [WychavonDistrictCouncil](#wychavondistrictcouncil)
 - [Wyre Council](#wyre-council)
 - [York Council](#york-council)
@@ -248,6 +253,17 @@ Note: Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://w
 
 ---
 
+### Ards and North Down Council
+```commandline
+python collect_data.py ArdsAndNorthDownCouncil https://www.ardsandnorthdown.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Armagh Banbridge Craigavon Council
 ```commandline
 python collect_data.py ArmaghBanbridgeCraigavonCouncil https://www.armaghbanbridgecraigavon.gov.uk/ -u XXXXXXXX
@@ -268,6 +284,18 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Ashford Borough Council
+```commandline
+python collect_data.py AshfordBoroughCouncil https://ashford.gov.uk -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -847,6 +875,17 @@ python collect_data.py EastDevonDC https://eastdevon.gov.uk/recycling-and-waste/
 ```
 
 Note: Replace XXXXXXXX with UPRN.
+
+---
+
+### East Herts Council
+```commandline
+python collect_data.py EastHertsCouncil https://www.eastherts.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
 
 ---
 
@@ -1765,6 +1804,18 @@ Additional parameters:
 
 ---
 
+### Powys Council
+```commandline
+python collect_data.py PowysCouncil https://www.powys.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
 ### Preston City Council
 ```commandline
 python collect_data.py PrestonCityCouncil https://selfservice.preston.gov.uk/service/Forms/FindMyNearest.aspx?Service=bins -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -2621,6 +2672,17 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Worcester City Council
+```commandline
+python collect_data.py WorcesterCityCouncil https://www.Worcester.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

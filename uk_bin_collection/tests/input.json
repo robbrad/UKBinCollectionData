@@ -12,6 +12,13 @@
         "wiki_name": "Adur and Worthing Councils",
         "wiki_note": "Replace XXXXXXXX with UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "ArdsAndNorthDownCouncil": {
+        "url": "https://www.ardsandnorthdown.gov.uk",
+        "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
+        "uprn": "187136177",
+        "wiki_name": "Ards and North Down Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "ArmaghBanbridgeCraigavonCouncil": {
         "url": "https://www.armaghbanbridgecraigavon.gov.uk/",
         "wiki_command_url_override": "https://www.armaghbanbridgecraigavon.gov.uk/",
@@ -26,6 +33,14 @@
         "url": "https://www1.arun.gov.uk/when-are-my-bins-collected",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Arun Council"
+    },
+    "AshfordBoroughCouncil": {
+        "url": "https://ashford.gov.uk",
+        "wiki_command_url_override": "https://ashford.gov.uk",
+        "postcode": "TN23 7SP",
+        "uprn": "100060777899",
+        "wiki_name": "Ashford Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "AylesburyValeCouncil": {
         "skip_get_url": true,
@@ -390,6 +405,13 @@
         "wiki_command_url_override": "https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
         "wiki_name": "East Devon District Council",
         "wiki_note": "Replace XXXXXXXX with UPRN."
+    },
+    "EastHertsCouncil": {
+        "house_number": "1",
+        "postcode": "CM20 2FZ",
+        "skip_get_url": true,
+        "url": "https://www.eastherts.gov.uk",
+        "wiki_name": "East Herts Council"
     },
     "EastLindseyDistrictCouncil": {
         "house_number": "Raf Coningsby",
@@ -971,6 +993,14 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Portsmouth City Council"
     },
+    "PowysCouncil": {
+        "house_number": "LANE COTTAGE",
+        "postcode": "HR3 5JS",
+        "skip_get_url": true,
+        "url": "https://www.powys.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Powys Council"
+    },
     "PrestonCityCouncil": {
         "house_number": "Town Hall",
         "postcode": "PR1 2RL",
@@ -1518,6 +1548,13 @@
         "url": "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Wokingham Borough Council"
+    },
+    "WorcesterCityCouncil": {
+        "url": "https://www.Worcester.gov.uk",
+        "wiki_command_url_override": "https://www.Worcester.gov.uk",
+        "uprn": "100120650345",
+        "wiki_name": "Worcester City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WychavonDistrictCouncil": {
         "postcode": "WR3 7RU",
