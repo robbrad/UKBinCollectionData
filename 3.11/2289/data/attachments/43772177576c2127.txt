@@ -1,0 +1,1 @@
+ERROR    root:ThreeRiversDistrictCouncil.py:135 An error occurred: HTTPConnectionPool(host='localhost', port=4444): Read timed out. (read timeout=120)

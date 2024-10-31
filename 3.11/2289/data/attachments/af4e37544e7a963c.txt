@@ -1,0 +1,7 @@
+ERROR    root:file_handler.py:42 Schema validation error: 'Today' does not match '\\d{2}/\\d{2}/\\d{4}'
+
+Failed validating 'pattern' in schema['properties']['bins']['items']['properties']['collectionDate']:
+    {'type': 'string', 'pattern': '\\d{2}/\\d{2}/\\d{4}'}
+
+On instance['bins'][0]['collectionDate']:
+    'Today'

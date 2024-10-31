@@ -1,2 +1,0 @@
-Running test for council: KirkleesCouncil
-Timed out waiting for page to load
