@@ -86,6 +86,13 @@ class CouncilClass(AbstractGetBinDataClass):
                         r"[^a-zA-Z0-9,\s]", "", columns[0].get_text()
                     ).strip()
 
+                    if columns[0].get_text() == "Today":
+                        collection_day = datetime.now().strftime("%a, %d %B")
+                    elif columns[0].get_text() == "Tomorrow":
+                        collection_day = (datetime.now() + timedelta(days=1)).strftime(
+                            "%a, %d %B"
+                        )
+
                     # Parse the date from the string
                     parsed_date = datetime.strptime(collection_day, "%a, %d %B")
                     if parsed_date < datetime(
