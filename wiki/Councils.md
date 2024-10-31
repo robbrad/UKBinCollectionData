@@ -148,6 +148,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Perth and Kinross Council](#perth-and-kinross-council)
 - [Plymouth Council](#plymouth-council)
 - [Portsmouth City Council](#portsmouth-city-council)
+- [Powys Council](#powys-council)
 - [Preston City Council](#preston-city-council)
 - [Reading Borough Council](#reading-borough-council)
 - [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
@@ -1799,6 +1800,18 @@ Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Powys Council
+```commandline
+python collect_data.py PowysCouncil https://www.powys.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 ---
