@@ -321,6 +321,15 @@
         "wiki_name": "Cornwall Council",
         "wiki_note": "Use https://uprn.uk/ to find your UPRN."
     },
+    "CotswoldDistrictCouncil": {
+        "house_number": "19",
+        "postcode": "GL56 0GB",
+        "skip_get_url": true,
+        "url": "https://community.cotswold.gov.uk/s/waste-collection-enquiry",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Cotswold District Council",
+        "wiki_note": "Pass the full address in the house number and postcode in"
+    },
     "CoventryCityCouncil": {
         "url": "https://www.coventry.gov.uk/directory-record/56384/abberton-way-",
         "wiki_command_url_override": "https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX",

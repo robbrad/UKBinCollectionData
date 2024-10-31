@@ -53,6 +53,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Colchester City Council](#colchester-city-council)
 - [Conwy County Borough Council](#conwy-county-borough-council)
 - [Cornwall Council](#cornwall-council)
+- [Cotswold District Council](#cotswold-district-council)
 - [Coventry City Council](#coventry-city-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
@@ -740,6 +741,20 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Use https://uprn.uk/ to find your UPRN.
+
+---
+
+### Cotswold District Council
+```commandline
+python collect_data.py CotswoldDistrictCouncil https://community.cotswold.gov.uk/s/waste-collection-enquiry -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the full address in the house number and postcode in
 
 ---
 
