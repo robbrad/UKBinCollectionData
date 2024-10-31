@@ -267,18 +267,12 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             for e in collection_record_elements:
-                collection_type = e.find_all(
-                    "div", {"class": "fragment_presenter_template_show"}
-                )[0].text.strip()
-                collection_date = (
-                    e.find("div", {"class": "bin-collection-next"})
-                    .attrs["data-current_value"]
-                    .strip()
-                )
+                collection_type = e.find("h2").get_text()
+                collection_date = e.find("span", {"class": "value-as-text"}).get_text()
                 dict_data = {
                     "type": collection_type,
                     "collectionDate": datetime.strptime(
-                        collection_date, "%d/%m/%Y %H:%M"
+                        collection_date, "%A %d %B %Y"
                     ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
