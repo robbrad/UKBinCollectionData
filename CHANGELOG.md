@@ -1,3 +1,27 @@
+## 0.107.0 (2024-10-31)
+
+### Feat
+
+- Adding Powys Council
+- Adding Worcester City Council
+- Adding Ards and North Down Council
+- Adding East Herts Council
+- Adding Ashford Borough Council
+
+### Fix
+
+- WestOxfordshireDistrictCouncil
+- South Norfolk Council
+- ForestOfDeanDistrictCouncil
+- Croydon Council
+- South Kesteven District Council
+- #647
+- #630
+- #623
+- #586
+- #578
+- #389
+
 ## 0.106.0 (2024-10-28)
 
 ### Feat
