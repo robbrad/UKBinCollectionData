@@ -1,0 +1,34 @@
+Running test for council: SunderlandCityCouncil
+An error occurred: Message: Could not start a new session. New session request timed out 
+Host info: host: 'selenium', ip: '172.18.0.2'
+Build info: version: '4.25.0', revision: '030fcf7918'
+System info: os.name: 'Linux', os.arch: 'amd64', os.version: '6.5.0-1025-azure', java.version: '17.0.12'
+Driver info: driver.version: unknown
+Stacktrace:
+    at org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue.addToQueue (LocalNewSessionQueue.java:221)
+    at org.openqa.selenium.grid.sessionqueue.NewSessionQueue.lambda$new$0 (NewSessionQueue.java:68)
+    at org.openqa.selenium.remote.http.Route$TemplatizedRoute.handle (Route.java:192)
+    at org.openqa.selenium.remote.http.Route.execute (Route.java:69)
+    at org.openqa.selenium.remote.http.Route$CombinedRoute.handle (Route.java:360)
+    at org.openqa.selenium.remote.http.Route.execute (Route.java:69)
+    at org.openqa.selenium.grid.sessionqueue.NewSessionQueue.execute (NewSessionQueue.java:128)
+    at org.openqa.selenium.remote.tracing.SpanWrappedHttpHandler.execute (SpanWrappedHttpHandler.java:87)
+    at org.openqa.selenium.remote.http.Filter$1.execute (Filter.java:63)
+    at org.openqa.selenium.remote.http.Route$CombinedRoute.handle (Route.java:360)
+    at org.openqa.selenium.remote.http.Route.execute (Route.java:69)
+    at org.openqa.selenium.grid.router.Router.execute (Router.java:87)
+    at org.openqa.selenium.grid.web.EnsureSpecCompliantResponseHeaders.lambda$apply$0 (EnsureSpecCompliantResponseHeaders.java:34)
+    at org.openqa.selenium.remote.http.Filter$1.execute (Filter.java:63)
+    at org.openqa.selenium.remote.http.Route$CombinedRoute.handle (Route.java:360)
+    at org.openqa.selenium.remote.http.Route.execute (Route.java:69)
+    at org.openqa.selenium.remote.AddWebDriverSpecHeaders.lambda$apply$0 (AddWebDriverSpecHeaders.java:35)
+    at org.openqa.selenium.remote.ErrorFilter.lambda$apply$0 (ErrorFilter.java:44)
+    at org.openqa.selenium.remote.http.Filter$1.execute (Filter.java:63)
+    at org.openqa.selenium.remote.ErrorFilter.lambda$apply$0 (ErrorFilter.java:44)
+    at org.openqa.selenium.remote.http.Filter$1.execute (Filter.java:63)
+    at org.openqa.selenium.netty.server.SeleniumHandler.lambda$channelRead0$0 (SeleniumHandler.java:44)
+    at java.util.concurrent.Executors$RunnableAdapter.call (Executors.java:539)
+    at java.util.concurrent.FutureTask.run (FutureTask.java:264)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1136)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:635)
+    at java.lang.Thread.run (Thread.java:840)
