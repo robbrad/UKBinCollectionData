@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "uk_bin_collection"
-version = "0.107.0"
+version = "0.108.0"
 description = "Python Lib to collect UK Bin Data"
 readme = "README.md"
 authors = ["Robert Bradley <robbrad182@gmail.com>"]
@@ -52,13 +52,16 @@ bs4 = "*"
 python-dateutil = "*"
 holidays = "*"
 pandas = "*"
-python = ">=3.11"
+python = ">=3.12,<3.14"
 requests = "*"
 selenium = "*"
 lxml = "*"
 urllib3 = "*"
 webdriver-manager = "^4.0.1"
 tabulate = "^0.9.0"
+pytest-homeassistant-custom-component = "^0.13.177"
+pytest-asyncio = "^0.24.0"
+pytest-freezer = "^0.4.8"
 
 [tool.commitizen]
 major_version_zero = true

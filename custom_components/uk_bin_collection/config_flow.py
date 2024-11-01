@@ -20,13 +20,20 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.councils_data = None
 
     async def get_councils_json(self) -> object:
-        """Returns an object of supported council's and their required fields."""
-        # Fetch the JSON data from the provided URL
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.107.0/uk_bin_collection/tests/input.json"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                data_text = await response.text()
-                return json.loads(data_text)
+        """Returns an object of supported councils and their required fields."""
+        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.108.0/uk_bin_collection/tests/input.json"
+        try:
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(url) as response:
+                        data_text = await response.text()
+                        return json.loads(data_text)
+                except Exception as e:
+                    _LOGGER.error("Failed to fetch data from URL: %s", e)
+                    raise
+        except Exception as e:
+            _LOGGER.error("Failed to create aiohttp ClientSession: %s", e)
+            return {}
 
     async def get_council_schema(self, council=str) -> vol.Schema:
         """Returns a config flow form schema based on a specific council's fields."""
@@ -83,6 +90,10 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         self.councils_data = await self.get_councils_json()
+        if not self.councils_data:
+            _LOGGER.error("Council data is unavailable.")
+            return self.async_abort(reason="council_data_unavailable")
+
         self.council_names = list(self.councils_data.keys())
         self.council_options = [
             self.councils_data[name]["wiki_name"] for name in self.council_names
@@ -131,7 +142,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
 
         if user_input is not None:
-            if "skip_get_url" in self.councils_data[self.data["council"]]:
+            # Check the value of 'skip_get_url' rather than just its presence
+            if self.councils_data[self.data["council"]].get("skip_get_url", False):
                 user_input["skip_get_url"] = True
                 user_input["url"] = self.councils_data[self.data["council"]]["url"]
 
@@ -152,7 +164,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_init(self, user_input=None):
         """Handle a flow initiated by the user."""
         _LOGGER.info(LOG_PREFIX + "Initiating flow with user input: %s", user_input)
-        return await self.async_step_user(user_input)
+        return await self.async_step_user(user_input=user_input)
 
     async def async_step_reconfigure(self, user_input=None):
         """Handle reconfiguration of the integration."""

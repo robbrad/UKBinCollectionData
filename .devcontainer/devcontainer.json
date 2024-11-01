@@ -47,7 +47,10 @@
                 "python.testing.autoTestDiscoverOnSaveEnabled": false,
                 "python.defaultInterpreterPath": "/home/vscode/ukbc-py-env",
                 "python.testing.pytestArgs": [
+                    "--disable-socket", 
+                    "--allow-unix-socket",
                     "${workspaceFolder}/uk_bin_collection",
+                    "${workspaceFolder}/custom_components/uk_bin_collection/tests",
                     "--headless=False",
                     "-o cache_dir=${workspaceFolder}/.pytest_cache"
                 ],

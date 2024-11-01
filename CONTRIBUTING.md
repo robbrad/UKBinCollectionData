@@ -41,7 +41,7 @@ This document contains guidelines on contributing to the UKBCD project including
 the environment, how we use our issue tracker, and how you can develop more scrapers.
 
 ## Getting Started
-You will need to install Python on the system you plan to run the script from. Python 3.11 and 3.12 are tested on this project .
+You will need to install Python on the system you plan to run the script from. Python 3.12 is tested on this project .
 
 The project uses [poetry](https://python-poetry.org/docs/) to manage dependencies and setup the build environment.
 

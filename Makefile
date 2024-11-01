@@ -24,9 +24,9 @@ pycodestyle:
 ## @Testing runs unit tests
 integration-tests: ## runs tests for the project
 	if [ -z "$(councils)" ]; then \
-		poetry run pytest uk_bin_collection/tests/step_defs/ -n logical --alluredir=build/$(matrix)/allure-results; \
+		poetry run pytest --disable-socket --allow-unix-socket uk_bin_collection/tests/step_defs/ -n logical --alluredir=build/$(matrix)/allure-results; \
 	else \
-		poetry run pytest uk_bin_collection/tests/step_defs/ -k "$(councils)" -n logical --alluredir=build/$(matrix)/allure-results; \
+		poetry run pytest --disable-socket --allow-unix-socket uk_bin_collection/tests/step_defs/ -k "$(councils)" -n logical --alluredir=build/$(matrix)/allure-results; \
 	fi
 
 parity-check:
@@ -34,7 +34,7 @@ parity-check:
 
 unit-tests:
 	poetry run coverage erase
-	- poetry run coverage run --append --omit "*/tests/*" -m pytest uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/
+	- poetry run coverage run --append --omit "*/tests/*" -m pytest --disable-socket --allow-unix-socket uk_bin_collection/tests custom_components/uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/ 
 	poetry run coverage xml
 
 update-wiki:

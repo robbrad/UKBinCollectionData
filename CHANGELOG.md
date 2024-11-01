@@ -1,3 +1,15 @@
+## 0.108.0 (2024-11-01)
+
+### Feat
+
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- Python 3.12 only and CustomComp. Unit testing
+
 ## 0.107.0 (2024-10-31)
 
 ### Feat
