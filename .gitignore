@@ -20,6 +20,7 @@
 !*.Dockerfile
 !docker-compose.yml
 !.vscode/launch.json
+!pytest.ini
 
 # Or these folders...
 !.github
