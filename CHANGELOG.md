@@ -1,3 +1,10 @@
+## 0.108.1 (2024-11-01)
+
+### Fix
+
+- Pydandic version
+- Pydandic version
+
 ## 0.108.0 (2024-11-01)
 
 ### Feat
