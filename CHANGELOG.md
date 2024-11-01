@@ -1,3 +1,65 @@
+## 0.107.0 (2024-10-31)
+
+### Feat
+
+- Adding Powys Council
+- Adding Worcester City Council
+- Adding Ards and North Down Council
+- Adding East Herts Council
+- Adding Ashford Borough Council
+
+### Fix
+
+- WestOxfordshireDistrictCouncil
+- South Norfolk Council
+- ForestOfDeanDistrictCouncil
+- Croydon Council
+- South Kesteven District Council
+- #647
+- #630
+- #623
+- #586
+- #578
+- #389
+
+## 0.106.0 (2024-10-28)
+
+### Feat
+
+- Adding Stockton On Tees Council
+- Adding Fife Council
+- Adding Flintshire County Council
+
+### Fix
+
+- #930
+- #933
+- #750
+- West Berkshire Council
+- Southwark Council
+
+## 0.105.1 (2024-10-24)
+
+### Fix
+
+- Refactor Midlothian Council scraper to use house number and postcode
+
+## 0.105.0 (2024-10-21)
+
+### Feat
+
+- Adding Teignbridge Council
+- Adding Harborough District Council
+- Adding Watford Borough Council
+- Adding Coventry City Council
+
+### Fix
+
+- #580
+- #888
+- #902
+- #607
+
 ## 0.104.0 (2024-10-20)
 
 ### Feat

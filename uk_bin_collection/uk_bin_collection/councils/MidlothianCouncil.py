@@ -1,3 +1,5 @@
+from urllib.parse import quote, urljoin
+
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -12,57 +14,134 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
+    BASE_URL = "https://www.midlothian.gov.uk"
+    DIRECTORY_URL = f"{BASE_URL}/site/scripts/directory_search.php?directoryID=35&keywords={{}}&search=Search"
+    BIN_TYPES = {
+        "Next recycling collection": "Recycling",
+        "Next grey bin collection": "Grey Bin",
+        "Next brown bin collection": "Brown Bin",
+        "Next food bin collection": "Food Bin",
+    }
+
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Parse the HTML content using BeautifulSoup
-        soup = BeautifulSoup(page.text, features="html.parser")
 
-        # Initialize a dictionary to store the parsed bin data
+        house_identifier = kwargs.get(
+            "paon", ""
+        ).strip()  # Could be house number or name
+        postcode = kwargs.get("postcode")
+
+        # Check if both house identifier and postcode are provided
+        if not house_identifier:
+            print("Error: House identifier (number or name) must be provided.")
+            return {"bins": []}
+
+        if not postcode:
+            print("Error: Postcode must be provided.")
+            return {"bins": []}
+
+        check_postcode(postcode)
+        check_paon(house_identifier)
+
         data = {"bins": []}
+        search_url = self.DIRECTORY_URL.format(quote(postcode))
 
-        # Define a mapping of bin collection labels to their corresponding types
-        bin_types = {
-            "Next recycling collection": "Recycling",
-            "Next grey bin collection": "Grey Bin",
-            "Next brown bin collection": "Brown Bin",
-            "Next food bin collection": "Food Bin",
-        }
+        try:
+            search_results_html = requests.get(search_url)
+            search_results_html.raise_for_status()
 
-        # Locate the <ul> element with the class "data-table"
-        bin_collections = soup.find("ul", {"class": "data-table"})
+            soup = BeautifulSoup(search_results_html.text, "html.parser")
+            address_link = self._get_result_by_identifier(soup, house_identifier)
 
-        # Proceed only if the <ul> element is found
-        if bin_collections:
-            # Retrieve all <li> elements within the <ul>, skipping the first two (not relevant)
-            bin_items = bin_collections.find_all("li")[2:]
+            if address_link:
+                collections_url = urljoin(search_url, address_link["href"])
+                bin_collection_data = self._fetch_bin_collection_data(collections_url)
 
-            # Iterate through each bin item
-            for bin in bin_items:
-                bin_type = None
-                # Retrieve the bin type from the header if it exists
-                if bin.h2 and bin.h2.text.strip() in bin_types:
-                    bin_type = bin_types[bin.h2.text.strip()]
+                if bin_collection_data:
+                    data["bins"].extend(bin_collection_data)
+
+        except requests.RequestException as e:
+            print(f"Warning: Failed to fetch data from {search_url}. Error: {e}")
+
+        return data
+
+    def _get_result_by_identifier(self, soup, identifier: str) -> list:
+        """Extract the result link that matches the given house number or house name."""
+        try:
+            results_list = (
+                soup.find("article", class_="container")
+                .find("h2", text="Search results")
+                .find_next("ul", class_="item-list item-list__rich")
+            )
+
+            pattern = re.compile(re.escape(identifier.lower()) + r"[ ,]")
+
+            for item in results_list.find_all("li"):
+                address_link = item.find("a")
+                if address_link:
+                    link_text = address_link.text.strip().lower()
+                    if pattern.match(link_text):
+                        return address_link
+
+            print(f"Warning: No results found for identifier '{identifier}'.")
+            return None  # Return None if no match is found
+
+        except AttributeError as e:
+            print(f"Warning: Could not find the search results. Error: {e}")
+            return None  # Return None if no result found
+
+    def _fetch_bin_collection_data(self, url: str) -> list:
+        """Fetch and parse bin collection data from the given URL."""
+        try:
+            bin_collection_html = requests.get(url)
+            bin_collection_html.raise_for_status()
+
+            soup = BeautifulSoup(bin_collection_html.text, "html.parser")
+            bin_collections = soup.find("ul", class_="data-table")
+
+            if bin_collections:
+                return self._parse_bin_collection_items(
+                    bin_collections.find_all("li")[2:]  # Skip the first two items
+                )
+
+        except requests.RequestException as e:
+            print(
+                f"Warning: Failed to fetch bin collection data from {url}. Error: {e}"
+            )
+
+        return []  # Return an empty list on error
+
+    def _parse_bin_collection_items(self, bin_items: list) -> list:
+        """Parse bin collection items into a structured format."""
+        parsed_bins = []
+
+        for bin_item in bin_items:
+            bin_type = None
+            try:
+                if bin_item.h2 and bin_item.h2.text.strip() in self.BIN_TYPES:
+                    bin_type = self.BIN_TYPES[bin_item.h2.text.strip()]
 
                 bin_collection_date = None
-                # Retrieve the bin collection date from the div if it exists
-                if bin.div and bin.div.text.strip():
+                if bin_item.div and bin_item.div.text.strip():
                     try:
-                        # Parse the collection date from the div text and format it
                         bin_collection_date = datetime.strptime(
-                            bin.div.text.strip(),
-                            "%A %d/%m/%Y",
+                            bin_item.div.text.strip(), "%A %d/%m/%Y"
                         ).strftime(date_format)
                     except ValueError:
-                        # If date parsing fails, keep bin_collection_date as None
-                        pass
+                        print(
+                            f"Warning: Date parsing failed for {bin_item.div.text.strip()}."
+                        )
 
-                # If both bin type and collection date are identified, add to the data
                 if bin_type and bin_collection_date:
-                    data["bins"].append(
+                    parsed_bins.append(
                         {
                             "type": bin_type,
                             "collectionDate": bin_collection_date,
                         }
                     )
+                else:
+                    print(f"Warning: Missing data for bin item: {bin_item}")
 
-        # Return the parsed data, which may be empty if no bins were found
-        return data
+            except Exception as e:
+                print(f"Warning: An error occurred while parsing bin item. Error: {e}")
+
+        return parsed_bins

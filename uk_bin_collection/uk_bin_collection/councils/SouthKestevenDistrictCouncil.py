@@ -1,13 +1,12 @@
-import time
+import re
 from datetime import datetime
 
-from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -51,10 +50,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def extract_bin_data(self, article):
         date = article.find("div", class_="binday__cell--day").text.strip()
-        bin_type_class = article.get("class")[
-            1
-        ]  # Assuming the second class indicates the bin type
-        bin_type = "black" if "black" in bin_type_class else "silver"
+        bin_type_class = article.get("class")[1]
+        bin_type = bin_type_class.split("--")[1]
+        # bin_type = "black" if "black" in bin_type_class else "silver"
         formatted_date = self.format_date(date)
         return {"type": bin_type, "collectionDate": formatted_date}
 
@@ -88,15 +86,17 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             inputElement_postcodesearch_btn.click()
 
-            inputElement_select_address = wait.until(
-                EC.element_to_be_clickable((By.ID, "address"))
-            )
-
-            # Now create a Select object based on the found element
-            dropdown = Select(inputElement_select_address)
-
-            # Select the option by visible text
-            dropdown.select_by_visible_text(house_number)
+            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        "//select[@id='address']//option[contains(., '"
+                        + house_number
+                        + "')]",
+                    )
+                )
+            ).click()
 
             inputElement_results_btn = wait.until(
                 EC.element_to_be_clickable(
@@ -122,11 +122,24 @@ class CouncilClass(AbstractGetBinDataClass):
             # Extract data from the first aside element
             first_aside = soup.find("aside", class_="alert")
             if first_aside:
+                color_text = first_aside.find(
+                    "p", string=re.compile("This is a")
+                ).get_text()
+                color = re.search(r"This is a (\w+) bin day", color_text)
                 next_collection_date = first_aside.find(
                     "span", class_="alert__heading alpha"
                 ).text.strip()
+                if next_collection_date == "Today":
+                    next_collection_date = datetime.now().strftime("%a %d %B %Y")
+                elif next_collection_date == "Tomorrow":
+                    next_collection_date = (
+                        datetime.now() + timedelta(days=1)
+                    ).strftime("%a %d %B %Y")
+
                 bin_info = {
-                    "type": "purple",  # Based on the provided information in the HTML, assuming it's a purple bin day.
+                    "type": color.group(
+                        1
+                    ),  # Based on the provided information in the HTML, assuming it's a purple bin day.
                     "collectionDate": self.format_date(next_collection_date),
                 }
                 bin_data.append(bin_info)

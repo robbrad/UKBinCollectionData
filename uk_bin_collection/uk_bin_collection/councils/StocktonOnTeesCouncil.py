@@ -33,12 +33,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get("https://www.westberks.gov.uk/binday")
+            driver.get("https://www.stockton.gov.uk/bin-collection-days")
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.ID, "FINDYOURBINDAYS_ADDRESSLOOKUPPOSTCODE")
+                    (
+                        By.ID,
+                        "LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_ADDRESSLOOKUPPOSTCODE",
+                    )
                 )
             )
             inputElement_postcode.send_keys(user_postcode)
@@ -46,7 +49,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Click search button
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "FINDYOURBINDAYS_ADDRESSLOOKUPSEARCH")
+                    (
+                        By.ID,
+                        "LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_ADDRESSLOOKUPSEARCH",
+                    )
                 )
             )
             findAddress.click()
@@ -56,7 +62,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     (
                         By.XPATH,
                         ""
-                        "//*[@id='FINDYOURBINDAYS_ADDRESSLOOKUPADDRESS']//option[contains(., '"
+                        "//*[@id='LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_ADDRESSLOOKUPADDRESS']//option[contains(., '"
                         + user_paon
                         + "')]",
                     )
@@ -66,7 +72,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the submit button to appear, then click it to get the collection dates
             WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="FINDYOURBINDAYS_RUBBISHDATE"]/div')
+                    (
+                        By.XPATH,
+                        '//*[@id="LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_COLLECTIONDETAILS2"]/div',
+                    )
                 )
             )
             time.sleep(2)
@@ -75,51 +84,59 @@ class CouncilClass(AbstractGetBinDataClass):
             soup.prettify()
 
             rubbish_div = soup.find(
-                "div", {"id": "FINDYOURBINDAYS_RUBBISHDATE_OUTERDIV"}
+                "p",
+                {
+                    "class": "myaccount-block__date myaccount-block__date--bin myaccount-block__date--waste"
+                },
             )
-            rubbish_date = rubbish_div.find_all("div")[2]
-            if rubbish_date.text == "Today":
+            rubbish_date = rubbish_div.text
+            if rubbish_date == "Today":
                 rubbish_date = datetime.now()
             else:
                 rubbish_date = datetime.strptime(
-                    rubbish_date.text,
-                    "%A %d %B",
+                    remove_ordinal_indicator_from_date_string(rubbish_date).strip(),
+                    "%a %d %B %Y",
                 ).replace(year=datetime.now().year)
 
             recycling_div = soup.find(
-                "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
+                "p",
+                {
+                    "class": "myaccount-block__date myaccount-block__date--bin myaccount-block__date--recycling"
+                },
             )
-            recycling_date = recycling_div.find_all("div")[2]
-            if recycling_date.text == "Today":
+            recycling_date = recycling_div.text
+            if recycling_date == "Today":
                 recycling_date = datetime.now()
             else:
                 recycling_date = datetime.strptime(
-                    recycling_date.text,
-                    "%A %d %B",
-                ).replace(year=datetime.now().year)
+                    remove_ordinal_indicator_from_date_string(recycling_date).strip(),
+                    "%a %d %B %Y",
+                )
 
-            food_div = soup.find(
-                "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
+            garden_div = soup.find(
+                "div",
+                {
+                    "class": "myaccount-block__item myaccount-block__item--bin myaccount-block__item--garden"
+                },
             )
-            food_date = food_div.find_all("div")[2]
-            if food_date.text == "Today":
-                food_date = datetime.now()
+            garden_date = garden_div.find("strong")
+            if garden_date.text.strip() == "Date not available":
+                print("Garden waste unavailable")
             else:
-                food_date = datetime.strptime(
-                    food_date.text,
-                    "%A %d %B",
-                ).replace(year=datetime.now().year)
-
-            if datetime.now().month == 12 and rubbish_date.month == 1:
-                rubbish_date = rubbish_date + relativedelta(years=1)
-            if datetime.now().month == 12 and recycling_date.month == 1:
-                recycling_date = recycling_date + relativedelta(years=1)
-            if datetime.now().month == 12 and food_date.month == 1:
-                food_date = food_date + relativedelta(years=1)
+                if garden_date.text == "Today":
+                    garden_date = datetime.now()
+                    collections.append(("Garden waste bin", garden_date))
+                else:
+                    garden_date = datetime.strptime(
+                        remove_ordinal_indicator_from_date_string(
+                            garden_date.text
+                        ).strip(),
+                        "%a %d %B %Y",
+                    )
+                    collections.append(("Garden waste bin", garden_date))
 
             collections.append(("Rubbish bin", rubbish_date))
             collections.append(("Recycling bin", recycling_date))
-            collections.append(("Food waste bin", food_date))
 
             ordered_data = sorted(collections, key=lambda x: x[1])
             for item in ordered_data:

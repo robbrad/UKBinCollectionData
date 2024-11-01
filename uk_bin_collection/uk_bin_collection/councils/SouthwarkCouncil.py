@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         data = {"bins": []}
 
-        baseurl = "https://www.southwark.gov.uk/bins/lookup/"
+        baseurl = "https://services.southwark.gov.uk/bins/lookup/"
         url = baseurl + user_uprn
 
         headers = {
@@ -74,9 +74,13 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         # Extract food waste collection information
-        food_section = soup.find("div", {"aria-labelledby": "organicsCollectionTitle"})
+        food_section = soup.find(
+            "div", {"aria-labelledby": "domesticFoodCollectionTitle"}
+        )
         if food_section:
-            food_title = food_section.find("p", {"id": "organicsCollectionTitle"}).text
+            food_title = food_section.find(
+                "p", {"id": "domesticFoodCollectionTitle"}
+            ).text
             food_next_collection = (
                 food_section.find(text=lambda text: "Next collection" in text)
                 .strip()
