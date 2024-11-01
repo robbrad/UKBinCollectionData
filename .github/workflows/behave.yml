@@ -21,22 +21,15 @@ jobs:
   setup:
     name: Setup Environment
     runs-on: ubuntu-latest
-    outputs:
-      python-version: ${{ matrix.python-version }}
-      poetry-version: ${{ matrix.poetry-version }}
-    strategy:
-      matrix:
-        python-version: [3.12]
-        poetry-version: [1.8.4]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install poetry
-        run: pipx install poetry==${{ matrix.poetry-version }}
+      - name: Install Poetry
+        run: pipx install poetry==1.8.4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.12
 
       - name: Install Dependencies
         run: make install
@@ -64,7 +57,8 @@ jobs:
               COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
             fi
           done
-          echo "::set-output name=council_tests::$COUNCIL_TESTS"
+          echo "council_tests=$COUNCIL_TESTS" >> $GITHUB_OUTPUT
+
     outputs:
       council_tests: ${{ steps.set-council-tests.outputs.council_tests }}
 
@@ -83,7 +77,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install poetry
+      - name: Install Poetry
         run: pipx install poetry==${{ matrix.poetry-version }}
 
       - name: Install Dependencies
@@ -114,7 +108,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install poetry
+      - name: Install Poetry
         run: pipx install poetry==${{ matrix.poetry-version }}
 
       - name: Install Dependencies
@@ -147,7 +141,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install poetry
+      - name: Install Poetry
         run: pipx install poetry==${{ matrix.poetry-version }}
 
       - name: Install Dependencies
@@ -264,9 +258,4 @@ jobs:
           publish_branch: gh-pages
           publish_dir: allure-history/full
 
-      - name: Deploy Partial Report
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history/partial
+      - name: Deploy
