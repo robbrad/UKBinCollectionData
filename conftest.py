@@ -1,7 +1,16 @@
 import pytest
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import FixtureRequest
+import asyncio
 
+from pytest_socket import enable_socket, disable_socket, socket_allow_hosts
+
+@pytest.hookimpl(trylast=True)
+def pytest_runtest_setup():
+    enable_socket()
+    socket_allow_hosts(None)  # Allow all hosts
+
+## Integration Tests
 def pytest_addoption(parser: Parser) -> None:
     parser.addoption("--headless", action="store", default="True", type=str)
     parser.addoption("--local_browser", action="store", default="False", type=str)

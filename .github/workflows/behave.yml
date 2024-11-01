@@ -3,21 +3,19 @@ name: Test Councils
 on:
   workflow_dispatch:
   push:
-    # Trigger unless only the wiki directory changed
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
       - "uk_bin_collection_api_server/**"
     branches: [ "master" ]
   pull_request:
-    # Trigger unless only the wiki directory changed
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
       - "uk_bin_collection_api_server/**"
     branches: [ "master" ]
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *' # Nightly schedule for full test run
 
 jobs:
   build:
@@ -25,8 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.11, 3.12]
-        poetry-version: [1.8.3]
+        python-version: [3.12]
+        poetry-version: [1.8.4]
     services:
       selenium:
         image: selenium/standalone-chrome:latest
@@ -42,7 +40,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          #cache: 'poetry'
 
       - name: Install
         run: make install
@@ -89,11 +86,6 @@ jobs:
         run: make unit-tests
         continue-on-error: true
 
-      #- name: Upload test coverage to Codecov
-      #  uses: codecov/codecov-action@v4
-      #  with:
-      #    gcov_ignore: uk_bin_collection/tests/**
-
       - name: Upload test results to Codecov
         uses: codecov/codecov-action@v4
         with:
@@ -101,34 +93,62 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage.xml
 
-
-      - name: Get Allure history
+      # Separate steps for Full and Partial Reports
+      - name: Get Allure history - Full Report
+        if: github.event_name == 'schedule' || github.event_name == 'push'
         uses: actions/checkout@v4
-        if: github.ref == 'refs/heads/master'
         continue-on-error: true
         with:
           ref: gh-pages
-          path: gh-pages
+          path: gh-pages/allure-full-history
 
-      - name: Allure report action from marketplace
+      - name: Get Allure history - Partial Report
+        if: github.event_name != 'schedule' && github.event_name != 'push'
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages/allure-partial-history
+
+      - name: Allure report action for Full Run
         uses: simple-elf/allure-report-action@master
-        if: github.ref == 'refs/heads/master'
+        if: github.event_name == 'schedule' || github.event_name == 'push'
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
           subfolder: ${{ matrix.python-version }}
-          allure_history: allure-history
+          allure_history: gh-pages/allure-full-history
           keep_reports: 20
 
-      - name: Tar report
-        if: github.ref == 'refs/heads/master'
-        run: tar -cvf allure_history_${{ matrix.python-version }}.tar allure-history/${{ matrix.python-version }}
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/master'
+      - name: Allure report action for Partial Run
+        uses: simple-elf/allure-report-action@master
+        if: github.event_name != 'schedule' && github.event_name != 'push'
         with:
-          name: allure_history_${{ matrix.python-version }}
-          path: allure_history_${{ matrix.python-version }}.tar
+          allure_results: build/${{ matrix.python-version }}/allure-results
+          subfolder: ${{ matrix.python-version }}
+          allure_history: gh-pages/allure-partial-history
+          keep_reports: 20
+
+      - name: Tar full report
+        if: github.event_name == 'schedule' || github.event_name == 'push'
+        run: tar -cvf allure_full_history_${{ matrix.python-version }}.tar gh-pages/allure-full-history/${{ matrix.python-version }}
+
+      - name: Tar partial report
+        if: github.event_name != 'schedule' && github.event_name != 'push'
+        run: tar -cvf allure_partial_history_${{ matrix.python-version }}.tar gh-pages/allure-partial-history/${{ matrix.python-version }}
+
+      - name: Upload artifact for Full Report
+        uses: actions/upload-artifact@v4
+        if: github.event_name == 'schedule' || github.event_name == 'push'
+        with:
+          name: allure_full_history_${{ matrix.python-version }}
+          path: allure_full_history_${{ matrix.python-version }}.tar
+
+      - name: Upload artifact for Partial Report
+        uses: actions/upload-artifact@v4
+        if: github.event_name != 'schedule' && github.event_name != 'push'
+        with:
+          name: allure_partial_history_${{ matrix.python-version }}
+          path: allure_partial_history_${{ matrix.python-version }}.tar
 
   deploy:
     runs-on: ubuntu-latest
@@ -137,29 +157,36 @@ jobs:
     steps:
 
       - uses: actions/download-artifact@v4
-        name: Download 3.11 artifacts
+        name: Download artifacts
         with:
-          name: allure_history_3.11
-          path: allure-history/tars
+          name: allure_full_history_3.12
+          path: allure-history/tars/full
 
       - uses: actions/download-artifact@v4
-        name: Download 3.12 artifacts
+        name: Download partial artifacts
         with:
-          name: allure_history_3.12
-          path: allure-history/tars
+          name: allure_partial_history_3.12
+          path: allure-history/tars/partial
 
-      - name: Untar reports
-        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history ;done
+      - name: Untar full reports
+        run: for i in allure-history/tars/full/*.tar; do tar -xvf "$i" allure-history/full ;done
+
+      - name: Untar partial reports
+        run: for i in allure-history/tars/partial/*.tar; do tar -xvf "$i" allure-history/partial ;done
 
       - name: Remove tar reports
         run: rm -rf allure-history/tars
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      - name: Deploy
+      - name: Deploy Full Report
         uses: peaceiris/actions-gh-pages@v4
         with:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: allure-history
+          PUBLISH_DIR: allure-history/full
+
+      - name: Deploy Partial Report
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history/partial

@@ -1,21 +1,25 @@
-"""Support for UK Bin Collection Dat sensors."""
+"""Support for UK Bin Collection Data sensors."""
 
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
+import json
+from json import JSONDecodeError
+import logging
+
 from dateutil import parser
 import async_timeout
-import json
 
-
+from homeassistant.core import HomeAssistant, callback
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.event import async_track_time_interval
-
-from homeassistant.core import callback
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
+    UpdateFailed,
 )
-import homeassistant.util.dt as dt_util
+from homeassistant.util import dt as dt_util
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
 from .const import (
     DOMAIN,
     LOG_PREFIX,
@@ -24,77 +28,81 @@ from .const import (
     DEVICE_CLASS,
     STATE_ATTR_COLOUR,
 )
-
-"""The UK Bin Collection Data integration."""
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.start import async_at_started
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
-
-import logging
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config, async_add_entities):
-    """Set up the sensor platform."""
-    _LOGGER.info(LOG_PREFIX + "Setting up UK Bin Collection Data platform.")
-    _LOGGER.info(LOG_PREFIX + "Data Supplied: %s", config.data)
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback
+) -> None:
+    """
+    Set up the UK Bin Collection Data sensor platform.
 
-    name = config.data.get("name", "")
-    timeout = config.data.get("timeout", 60)
-    icon_color_mapping = config.data.get(
-        "icon_color_mapping", "{}"
-    )  # Use an empty JSON object as default
+    This function initializes the sensor entities based on the configuration entry.
+    It sets up the data coordinator and creates sensors for each bin type along with
+    their respective attributes and a raw JSON sensor.
+    """
+    _LOGGER.info(f"{LOG_PREFIX} Setting up UK Bin Collection Data platform.")
+    _LOGGER.debug(f"{LOG_PREFIX} Data Supplied: %s", config_entry.data)
 
+    name = config_entry.data.get("name", "UK Bin Collection")
+    timeout = config_entry.data.get("timeout", 60)
+    icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")  # Default to empty JSON
+
+    # Validate and sanitize 'timeout'
+    try:
+        timeout = int(timeout)
+    except (ValueError, TypeError):
+        _LOGGER.warning(f"{LOG_PREFIX} Invalid timeout value: {timeout}. Using default 60 seconds.")
+        timeout = 60
+
+    excluded_keys = {
+        "name", "council", "url", "skip_get_url", "headless",
+        "local_browser", "timeout", "icon_color_mapping",
+    }
+
+    # Construct arguments for UKBinCollectionApp
     args = [
-        config.data.get("council", ""),
-        config.data.get("url", ""),
-        *(
-            f"--{key}={value}"
-            for key, value in config.data.items()
-            if key
-            not in {
-                "name",
-                "council",
-                "url",
-                "skip_get_url",
-                "headless",
-                "local_browser",
-                "timeout",
-                "icon_color_mapping",  # Exclude this key, even if empty
-            }
-        ),
+        config_entry.data.get("council", ""),
+        config_entry.data.get("url", ""),
+        *(f"--{key}={value}" for key, value in config_entry.data.items() if key not in excluded_keys),
     ]
-    if config.data.get("skip_get_url", False):
+
+    if config_entry.data.get("skip_get_url", False):
         args.append("--skip_get_url")
 
-    headless = config.data.get("headless", True)
+    headless = config_entry.data.get("headless", True)
     if not headless:
         args.append("--not-headless")
 
-    local_browser = config.data.get("local_browser", False)
+    local_browser = config_entry.data.get("local_browser", False)
     if local_browser:
         args.append("--local_browser")
 
-    _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
+    _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
 
+    # Initialize the UK Bin Collection Data application
     ukbcd = UKBinCollectionApp()
     ukbcd.set_args(args)
 
-    coordinator = HouseholdBinCoordinator(hass, ukbcd, name, timeout=timeout)
-    await coordinator.async_config_entry_first_refresh()
+    # Initialize the data coordinator
+    coordinator = HouseholdBinCoordinator(
+        hass, ukbcd, name, config_entry, timeout=timeout
+    )
+    await coordinator.async_refresh()
+
+    # Store the coordinator in Home Assistant's data
+    hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN][config_entry.entry_id] = coordinator
 
     entities = []
     for bin_type in coordinator.data.keys():
         device_id = f"{name}_{bin_type}"
-        entities.append(
-            UKBinCollectionDataSensor(
-                coordinator, bin_type, device_id, icon_color_mapping
-            )
-        )
-        entities.append(
+        entities.extend([
+            UKBinCollectionDataSensor(coordinator, bin_type, device_id, icon_color_mapping),
             UKBinCollectionAttributeSensor(
                 coordinator,
                 bin_type,
@@ -102,9 +110,7 @@ async def async_setup_entry(hass, config, async_add_entities):
                 "Colour",
                 device_id,
                 icon_color_mapping,
-            )
-        )
-        entities.append(
+            ),
             UKBinCollectionAttributeSensor(
                 coordinator,
                 bin_type,
@@ -112,9 +118,7 @@ async def async_setup_entry(hass, config, async_add_entities):
                 "Next Collection Human Readable",
                 device_id,
                 icon_color_mapping,
-            )
-        )
-        entities.append(
+            ),
             UKBinCollectionAttributeSensor(
                 coordinator,
                 bin_type,
@@ -122,9 +126,7 @@ async def async_setup_entry(hass, config, async_add_entities):
                 "Days Until Collection",
                 device_id,
                 icon_color_mapping,
-            )
-        )
-        entities.append(
+            ),
             UKBinCollectionAttributeSensor(
                 coordinator,
                 bin_type,
@@ -132,9 +134,7 @@ async def async_setup_entry(hass, config, async_add_entities):
                 "Bin Type",
                 device_id,
                 icon_color_mapping,
-            )
-        )
-        entities.append(
+            ),
             UKBinCollectionAttributeSensor(
                 coordinator,
                 bin_type,
@@ -142,20 +142,37 @@ async def async_setup_entry(hass, config, async_add_entities):
                 "Next Collection Date",
                 device_id,
                 icon_color_mapping,
-            )
-        )
+            ),
+        ])
 
-    # Add the new Raw JSON Sensor
+    # Add the Raw JSON Sensor
     entities.append(UKBinCollectionRawJSONSensor(coordinator, f"{name}_raw_json", name))
 
+    # Register all sensor entities with Home Assistant
     async_add_entities(entities)
 
 
 class HouseholdBinCoordinator(DataUpdateCoordinator):
-    """Household Bin Coordinator"""
+    """Coordinator to manage fetching and updating UK Bin Collection data."""
 
-    def __init__(self, hass, ukbcd, name, timeout=60):
-        """Initialize the coordinator."""
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        ukbcd: UKBinCollectionApp,
+        name: str,
+        config_entry: ConfigEntry,
+        timeout: int = 60,
+    ) -> None:
+        """
+        Initialize the data coordinator.
+
+        Args:
+            hass: Home Assistant instance.
+            ukbcd: Instance of UKBinCollectionApp to fetch data.
+            name: Name of the sensor.
+            config_entry: Configuration entry.
+            timeout: Timeout for data fetching in seconds.
+        """
         super().__init__(
             hass,
             _LOGGER,
@@ -165,57 +182,113 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         self.ukbcd = ukbcd
         self.name = name
         self.timeout = timeout
+        self.config_entry = config_entry
 
-    async def _async_update_data(self):
-        async with async_timeout.timeout(self.timeout):
-            _LOGGER.info(f"{LOG_PREFIX} UKBinCollectionApp Updating")
-            data = await self.hass.async_add_executor_job(self.ukbcd.run)
-        return get_latest_collection_info(json.loads(data))
+    async def _async_update_data(self) -> dict:
+        """
+        Fetch and process the latest bin collection data.
+
+        Returns:
+            A dictionary containing the latest collection information.
+
+        Raises:
+            UpdateFailed: If there is an error fetching or processing the data.
+        """
+        try:
+            async with async_timeout.timeout(self.timeout):
+                _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp Updating")
+                data = await self.hass.async_add_executor_job(self.ukbcd.run)
+            parsed_data = json.loads(data)
+            return get_latest_collection_info(parsed_data)
+        except (async_timeout.TimeoutError, JSONDecodeError) as exc:
+            _LOGGER.error(f"{LOG_PREFIX} Error updating data: {exc}")
+            raise UpdateFailed(f"Error updating data: {exc}") from exc
+        except Exception as exc:
+            _LOGGER.exception(f"{LOG_PREFIX} Unexpected error: {exc}")
+            raise UpdateFailed(f"Unexpected error: {exc}") from exc
 
 
-def get_latest_collection_info(data) -> dict:
-    """Process the bin collection data."""
-    current_date = datetime.now()
+def get_latest_collection_info(data: dict) -> dict:
+    """
+    Process the raw bin collection data to determine the next collection dates.
+
+    Args:
+        data: Raw data from UK Bin Collection API.
+
+    Returns:
+        A dictionary mapping bin types to their next collection dates.
+    """
+    current_date = dt_util.now()
     next_collection_dates = {}
 
-    for bin_data in data["bins"]:
-        bin_type = bin_data["type"]
-        collection_date_str = bin_data["collectionDate"]
-        collection_date = datetime.strptime(collection_date_str, "%d/%m/%Y")
+    for bin_data in data.get("bins", []):
+        bin_type = bin_data.get("type")
+        collection_date_str = bin_data.get("collectionDate")
 
+        if not bin_type or not collection_date_str:
+            _LOGGER.warning(f"{LOG_PREFIX} Missing 'type' or 'collectionDate' in bin data: {bin_data}")
+            continue  # Skip entries with missing fields
+
+        try:
+            collection_date = datetime.strptime(collection_date_str, "%d/%m/%Y")
+        except (ValueError, TypeError):
+            _LOGGER.warning(f"{LOG_PREFIX} Invalid date format for bin type '{bin_type}': '{collection_date_str}'.")
+            continue  # Skip entries with invalid date formats
+
+        # Ensure the collection date is today or in the future
         if collection_date.date() >= current_date.date():
-            if bin_type in next_collection_dates:
-                if collection_date < datetime.strptime(
-                    next_collection_dates[bin_type], "%d/%m/%Y"
-                ):
-                    next_collection_dates[bin_type] = collection_date_str
-            else:
+            existing_date_str = next_collection_dates.get(bin_type)
+            if (not existing_date_str) or (collection_date < datetime.strptime(existing_date_str, "%d/%m/%Y")):
                 next_collection_dates[bin_type] = collection_date_str
 
-    _LOGGER.info(f"{LOG_PREFIX} Next Collection Dates: {next_collection_dates}")
+    _LOGGER.debug(f"{LOG_PREFIX} Next Collection Dates: {next_collection_dates}")
     return next_collection_dates
 
 
 class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
-    """Implementation of the UK Bin Collection Data sensor."""
+    """Sensor entity for individual bin collection data."""
 
-    device_class = DEVICE_CLASS
+    _attr_device_class = DEVICE_CLASS
 
     def __init__(
-        self, coordinator, bin_type, device_id, icon_color_mapping=None
+        self,
+        coordinator: HouseholdBinCoordinator,
+        bin_type: str,
+        device_id: str,
+        icon_color_mapping: str = "{}",
     ) -> None:
-        """Initialize the main bin sensor."""
+        """
+        Initialize the main bin sensor.
+
+        Args:
+            coordinator: Data coordinator instance.
+            bin_type: Type of the bin (e.g., recycling, waste).
+            device_id: Unique identifier for the device.
+            icon_color_mapping: JSON string mapping bin types to icons and colors.
+        """
         super().__init__(coordinator)
         self._bin_type = bin_type
         self._device_id = device_id
-        self._icon_color_mapping = (
-            json.loads(icon_color_mapping) if icon_color_mapping else {}
-        )
+        self._state = None
+        self._next_collection = None
+        self._days = None
+        self._icon = None
+        self._color = None
+
+        # Load icon and color mappings
+        try:
+            self._icon_color_mapping = json.loads(icon_color_mapping) if icon_color_mapping else {}
+        except JSONDecodeError:
+            _LOGGER.warning(
+                f"{LOG_PREFIX} Invalid icon_color_mapping JSON: {icon_color_mapping}. Using default settings."
+            )
+            self._icon_color_mapping = {}
+
         self.apply_values()
 
     @property
-    def device_info(self):
-        """Return device information for each bin."""
+    def device_info(self) -> dict:
+        """Return device information for device registry."""
         return {
             "identifiers": {(DOMAIN, self._device_id)},
             "name": f"{self.coordinator.name} {self._bin_type}",
@@ -226,168 +299,220 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
 
     @callback
     def _handle_coordinator_update(self) -> None:
-        """Handle updates from the coordinator."""
+        """Handle updates from the coordinator and refresh sensor state."""
         self.apply_values()
         self.async_write_ha_state()
 
-    def apply_values(self):
-        """Apply values to the sensor."""
-        self._next_collection = parser.parse(
-            self.coordinator.data[self._bin_type], dayfirst=True
-        ).date()
-        now = dt_util.now()
-        self._days = (self._next_collection - now.date()).days
+    def apply_values(self) -> None:
+        """Apply the latest data to the sensor's state and attributes."""
+        bin_data = self.coordinator.data.get(self._bin_type)
+        if bin_data:
+            try:
+                self._next_collection = parser.parse(bin_data, dayfirst=True).date()
+                now = dt_util.now().date()
+                self._days = (self._next_collection - now).days
 
-        # Use user-supplied icon and color if available
-        self._icon = self._icon_color_mapping.get(self._bin_type, {}).get("icon")
-        self._color = self._icon_color_mapping.get(self._bin_type, {}).get("color")
+                # Set icon and color based on mapping or defaults
+                bin_mapping = self._icon_color_mapping.get(self._bin_type, {})
+                self._icon = bin_mapping.get("icon") or self.get_default_icon()
+                self._color = bin_mapping.get("color") or "black"
 
-        # Fall back to default logic if icon or color is not provided
-        if not self._icon:
-            if "recycling" in self._bin_type.lower():
-                self._icon = "mdi:recycle"
-            elif "waste" in self._bin_type.lower():
-                self._icon = "mdi:trash-can"
-            else:
-                self._icon = "mdi:delete"
-
-        if not self._color:
-            self._color = "black"  # Default color
-
-        # Set the state based on the collection day
-        if self._next_collection == now.date():
-            self._state = "Today"
-        elif self._next_collection == (now + timedelta(days=1)).date():
-            self._state = "Tomorrow"
+                # Determine state based on collection date
+                if self._next_collection == now:
+                    self._state = "Today"
+                elif self._next_collection == now + timedelta(days=1):
+                    self._state = "Tomorrow"
+                else:
+                    day_label = "day" if self._days == 1 else "days"
+                    self._state = f"In {self._days} {day_label}"
+            except (ValueError, TypeError) as exc:
+                _LOGGER.warning(
+                    f"{LOG_PREFIX} Error parsing collection date for '{self._bin_type}': {exc}"
+                )
+                self._state = "Unknown"
+                self._next_collection = None
+                self._days = None
+                self._icon = "mdi:delete-alert"
+                self._color = "grey"
         else:
-            self._state = f"In {self._days} days"
+            _LOGGER.warning(f"{LOG_PREFIX} Data for bin type '{self._bin_type}' is missing.")
+            self._state = "Unknown"
+            self._next_collection = None
+            self._days = None
+            self._icon = "mdi:delete-alert"
+            self._color = "grey"
+
+    def get_default_icon(self) -> str:
+        """Return a default icon based on the bin type."""
+        if "recycling" in self._bin_type.lower():
+            return "mdi:recycle"
+        elif "waste" in self._bin_type.lower():
+            return "mdi:trash-can"
+        else:
+            return "mdi:delete"
 
     @property
-    def name(self):
-        """Return the name of the bin."""
+    def name(self) -> str:
+        """Return the name of the sensor."""
         return f"{self.coordinator.name} {self._bin_type}"
 
     @property
-    def state(self):
-        """Return the state of the bin."""
-        return self._state
+    def state(self) -> str:
+        """Return the current state of the sensor."""
+        return self._state if self._state else "Unknown"
 
     @property
-    def icon(self):
-        """Return the entity icon."""
-        return self._icon
+    def icon(self) -> str:
+        """Return the icon for the sensor."""
+        return self._icon if self._icon else "mdi:alert"
 
     @property
-    def extra_state_attributes(self):
-        """Return extra attributes of the sensor."""
+    def extra_state_attributes(self) -> dict:
+        """Return extra state attributes for the sensor."""
         return {
             STATE_ATTR_COLOUR: self._color,
-            STATE_ATTR_NEXT_COLLECTION: self._next_collection.strftime("%d/%m/%Y"),
+            STATE_ATTR_NEXT_COLLECTION: self._next_collection.strftime("%d/%m/%Y") if self._next_collection else None,
             STATE_ATTR_DAYS: self._days,
         }
 
     @property
-    def color(self):
-        """Return the entity icon."""
-        return self._color
+    def color(self) -> str:
+        """Return the color associated with the bin."""
+        return self._color if self._color else "grey"
 
     @property
-    def unique_id(self):
+    def available(self) -> bool:
+        """Return the availability of the sensor."""
+        return self._state not in [None, "Unknown"]
+
+    @property
+    def unique_id(self) -> str:
         """Return a unique ID for the sensor."""
         return self._device_id
 
 
 class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
-    """Implementation of the attribute sensors (Colour, Next Collection, Days, Bin Type, Raw Next Collection)."""
+    """Sensor entity for additional attributes of a bin."""
 
     def __init__(
         self,
-        coordinator,
-        bin_type,
-        unique_id,
-        attribute_type,
-        device_id,
-        icon_color_mapping=None,
+        coordinator: HouseholdBinCoordinator,
+        bin_type: str,
+        unique_id: str,
+        attribute_type: str,
+        device_id: str,
+        icon_color_mapping: str = "{}",
     ) -> None:
-        """Initialize the attribute sensor."""
+        """
+        Initialize the attribute sensor.
+
+        Args:
+            coordinator: Data coordinator instance.
+            bin_type: Type of the bin (e.g., recycling, waste).
+            unique_id: Unique identifier for the sensor.
+            attribute_type: The specific attribute this sensor represents.
+            device_id: Unique identifier for the device.
+            icon_color_mapping: JSON string mapping bin types to icons and colors.
+        """
         super().__init__(coordinator)
         self._bin_type = bin_type
         self._unique_id = unique_id
         self._attribute_type = attribute_type
         self._device_id = device_id
-        self._icon_color_mapping = (
-            json.loads(icon_color_mapping) if icon_color_mapping else {}
-        )
 
-        # Use user-supplied icon and color if available
-        self._icon = self._icon_color_mapping.get(self._bin_type, {}).get("icon")
-        self._color = self._icon_color_mapping.get(self._bin_type, {}).get("color")
+        # Load icon and color mappings
+        try:
+            self._icon_color_mapping = json.loads(icon_color_mapping) if icon_color_mapping else {}
+        except JSONDecodeError:
+            _LOGGER.warning(
+                f"{LOG_PREFIX} Invalid icon_color_mapping JSON: {icon_color_mapping}. Using default settings."
+            )
+            self._icon_color_mapping = {}
 
-        # Fall back to default logic if icon or color is not provided
-        if not self._icon:
-            if "recycling" in self._bin_type.lower():
-                self._icon = "mdi:recycle"
-            elif "waste" in self._bin_type.lower():
-                self._icon = "mdi:trash-can"
-            else:
-                self._icon = "mdi:delete"
+        # Set icon and color based on mapping or defaults
+        bin_mapping = self._icon_color_mapping.get(self._bin_type, {})
+        self._icon = bin_mapping.get("icon") or self.get_default_icon()
+        self._color = bin_mapping.get("color") or "black"
 
-        if not self._color:
-            self._color = "black"  # Default color
+    def get_default_icon(self) -> str:
+        """Return a default icon based on the bin type."""
+        if "recycling" in self._bin_type.lower():
+            return "mdi:recycle"
+        elif "waste" in self._bin_type.lower():
+            return "mdi:trash-can"
+        else:
+            return "mdi:delete"
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the name of the attribute sensor."""
         return f"{self.coordinator.name} {self._bin_type} {self._attribute_type}"
 
     @property
     def state(self):
         """Return the state based on the attribute type."""
+        bin_data = self.coordinator.data.get(self._bin_type)
+        if not bin_data:
+            return "Unknown"
+
         if self._attribute_type == "Colour":
-            return self._color  # Return the colour of the bin
+            return self._color
+
         elif self._attribute_type == "Next Collection Human Readable":
-            return self.coordinator.data[
-                self._bin_type
-            ]  # Already formatted next collection
+            try:
+                collection_date = parser.parse(bin_data, dayfirst=True).date()
+                now = dt_util.now().date()
+                if collection_date == now:
+                    return "Today"
+                elif collection_date == now + timedelta(days=1):
+                    return "Tomorrow"
+                else:
+                    days = (collection_date - now).days
+                    day_label = "day" if days == 1 else "days"
+                    return f"In {days} {day_label}"
+            except (ValueError, TypeError):
+                return "Invalid Date"
+
         elif self._attribute_type == "Days Until Collection":
-            next_collection = parser.parse(
-                self.coordinator.data[self._bin_type], dayfirst=True
-            ).date()
-            return (next_collection - datetime.now().date()).days
+            try:
+                next_collection = parser.parse(bin_data, dayfirst=True).date()
+                return (next_collection - dt_util.now().date()).days
+            except (ValueError, TypeError):
+                return "Invalid Date"
+
         elif self._attribute_type == "Bin Type":
-            return self._bin_type  # Return the bin type for the Bin Type sensor
+            return self._bin_type
+
         elif self._attribute_type == "Next Collection Date":
-            return self.coordinator.data[
-                self._bin_type
-            ]  # Return the raw next collection date
+            return bin_data
+
+        else:
+            _LOGGER.warning(f"{LOG_PREFIX} Undefined attribute type: {self._attribute_type}")
+            return "Undefined"
 
     @property
-    def icon(self):
-        """Return the entity icon."""
+    def icon(self) -> str:
+        """Return the icon for the attribute sensor."""
         return self._icon
 
     @property
-    def color(self):
-        """Return the entity icon."""
+    def color(self) -> str:
+        """Return the color associated with the attribute sensor."""
         return self._color
 
     @property
-    def extra_state_attributes(self):
-        """Return extra attributes of the sensor."""
+    def extra_state_attributes(self) -> dict:
+        """Return extra state attributes for the attribute sensor."""
         return {
             STATE_ATTR_COLOUR: self._color,
-            STATE_ATTR_NEXT_COLLECTION: self.coordinator.data[
-                self._bin_type
-            ],  # Return the collection date
+            STATE_ATTR_NEXT_COLLECTION: self.coordinator.data.get(self._bin_type),
         }
 
     @property
-    def device_info(self):
-        """Return device information for grouping sensors."""
+    def device_info(self) -> dict:
+        """Return device information for device registry."""
         return {
-            "identifiers": {
-                (DOMAIN, self._device_id)
-            },  # Use the same device_id for all sensors of the same bin type
+            "identifiers": {(DOMAIN, self._device_id)},
             "name": f"{self.coordinator.name} {self._bin_type}",
             "manufacturer": "UK Bin Collection",
             "model": "Bin Sensor",
@@ -395,38 +520,60 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
         }
 
     @property
-    def unique_id(self):
-        """Return a unique ID for the sensor."""
+    def unique_id(self) -> str:
+        """Return a unique ID for the attribute sensor."""
         return self._unique_id
+
+    @property
+    def available(self) -> bool:
+        """Return the availability of the attribute sensor."""
+        return self.coordinator.last_update_success
 
 
 class UKBinCollectionRawJSONSensor(CoordinatorEntity, SensorEntity):
-    """Sensor to hold the raw JSON data for bin collections."""
+    """Sensor entity to hold the raw JSON data for bin collections."""
 
-    def __init__(self, coordinator, unique_id, name) -> None:
-        """Initialize the raw JSON sensor."""
+    def __init__(
+        self,
+        coordinator: HouseholdBinCoordinator,
+        unique_id: str,
+        name: str,
+    ) -> None:
+        """
+        Initialize the raw JSON sensor.
+
+        Args:
+            coordinator: Data coordinator instance.
+            unique_id: Unique identifier for the sensor.
+            name: Base name for the sensor.
+        """
         super().__init__(coordinator)
         self._unique_id = unique_id
         self._name = name
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
+    def name(self) -> str:
+        """Return the name of the raw JSON sensor."""
         return f"{self._name} Raw JSON"
 
     @property
-    def state(self):
-        """Return the state, which is the raw JSON data."""
-        return json.dumps(self.coordinator.data)  # Convert the raw dict to JSON string
+    def state(self) -> str:
+        """Return the raw JSON data as the state."""
+        return json.dumps(self.coordinator.data) if self.coordinator.data else "{}"
 
     @property
-    def unique_id(self):
-        """Return a unique ID for the sensor."""
+    def unique_id(self) -> str:
+        """Return a unique ID for the raw JSON sensor."""
         return self._unique_id
 
     @property
-    def extra_state_attributes(self):
-        """Return extra attributes for the sensor."""
+    def extra_state_attributes(self) -> dict:
+        """Return the raw JSON data as an attribute."""
         return {
-            "raw_data": self.coordinator.data  # Provide the raw data as an attribute
+            "raw_data": self.coordinator.data or {}
         }
+
+    @property
+    def available(self) -> bool:
+        """Return the availability of the raw JSON sensor."""
+        return self.coordinator.last_update_success

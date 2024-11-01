@@ -5,7 +5,7 @@ labels: ["bug", "home assistant custom component"]
 body:
   - type: markdown
     attributes:
-      value: If you were trying to add a specific council, please check it is listed as working [here](https://robbrad.github.io/UKBinCollectionData/3.11/) and open a [Council Issue](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) instead if it's failing
+      value: If you were trying to add a specific council, please check it is listed as working [here](https://robbrad.github.io/UKBinCollectionData/3.12/) and open a [Council Issue](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) instead if it's failing
   - type: input
     id: ha_version
     attributes:
@@ -46,7 +46,7 @@ body:
       options:
         - label: I searched for similar issues at https://github.com/robbrad/UKBinCollectionData/issues?q=is:issue and found no duplicates
           required: true
-        - label: If trying to add a specific council, I've checked it is listed as working at https://robbrad.github.io/UKBinCollectionData/3.11/
+        - label: If trying to add a specific council, I've checked it is listed as working at https://robbrad.github.io/UKBinCollectionData/3.12/
           required: true
         - label: I have provided a detailed explanation of the issue as well as steps to replicate the issue
           required: true

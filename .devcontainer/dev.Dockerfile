@@ -29,7 +29,7 @@ USER vscode
 # Define the version of Poetry to install (default is 1.4.2)
 # Define the directory of python virtual environment
 ARG PYTHON_VIRTUALENV_HOME=/home/vscode/ukbc-py-env \
-    POETRY_VERSION=1.8.3
+    POETRY_VERSION=1.8.4
 
 ENV POETRY_VIRTUALENVS_IN_PROJECT=false \
     POETRY_NO_INTERACTION=true

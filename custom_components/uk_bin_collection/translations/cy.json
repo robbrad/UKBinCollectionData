@@ -6,7 +6,9 @@
                 "title": "Dewiswch y cyngor",
                 "data": {
                     "name": "Enw lleoliad",
-                    "council": "Cyngor"
+                    "council": "Cyngor",
+                    "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData"
+
                 },
                 "description": "Gweler [yma](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) os nad yw eich cyngor wedi'i restru"
             },
@@ -22,7 +24,6 @@
                     "web_driver": "I redeg ar weinydd Selenium o bell ychwanegwch URL y Gweinydd Selenium",
                     "headless": "Rhedeg Selenium mewn modd headless (argymhellir)",
                     "local_browser": "Peidiwch â rhedeg gweinydd Selenium o bell, defnyddiwch Chrome wedi'i osod yn lleol yn lle",
-                    "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cyflwyno"
                 },
                 "description": "Cyfeiriwch at [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) eich cyngor am fanylion ar beth i'w fewnbynnu"

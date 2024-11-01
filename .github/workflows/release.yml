@@ -21,7 +21,7 @@ jobs:
       - name: Run image
         uses: abatilo/actions-poetry@v3.0.0
         with:
-          poetry-version: '1.8.3'
+          poetry-version: '1.8.4'
 
       - name: Install dependencies
         run: |
