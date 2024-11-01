@@ -1,3 +1,9 @@
+## 0.108.2 (2024-11-01)
+
+### Fix
+
+- pytest-homeassistant-custom-component
+
 ## 0.108.1 (2024-11-01)
 
 ### Fix
