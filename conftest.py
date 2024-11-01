@@ -1,7 +1,6 @@
 import pytest
 from _pytest.config.argparsing import Parser
 from _pytest.fixtures import FixtureRequest
-import asyncio
 
 from pytest_socket import enable_socket, disable_socket, socket_allow_hosts
 

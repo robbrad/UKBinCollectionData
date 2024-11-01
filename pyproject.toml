@@ -13,7 +13,6 @@ include = ["uk_bin_collection"]
 pythonpath = [
     ".", "uk_bin_collection"
 ]
-asyncio_mode = "auto"
 
 [tool.flit.metadata]
 module = "uk_bin_collection"
