@@ -1216,10 +1216,13 @@
         "wiki_name": "St Albans City and District Council"
     },
     "StHelensBC": {
+        "house_number": "15",
+        "postcode": "L34 2GA",
         "skip_get_url": true,
-        "uprn": "39081672",
         "url": "https://www.sthelens.gov.uk/",
-        "wiki_name": "St Helens Borough Council"
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "St Helens Borough Council",
+        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },
     "StaffordBoroughCouncil": {
         "uprn": "100032203010",

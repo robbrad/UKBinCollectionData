@@ -1587,7 +1587,7 @@ Additional parameters:
 
 ### Newark and Sherwood District Council
 ```commandline
-python collect_data.py NewarkAndSherwoodDC http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX
+python collect_data.py NewarkAndSherwoodDC http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX&nc=1
 ```
 
 Note: Replace XXXXXXXX with UPRN.
@@ -2155,11 +2155,15 @@ Additional parameters:
 
 ### St Helens Borough Council
 ```commandline
-python collect_data.py StHelensBC https://www.sthelens.gov.uk/ -s -u XXXXXXXX
+python collect_data.py StHelensBC https://www.sthelens.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number in the house number parameter, wrapped in double quotes
 
 ---
 
