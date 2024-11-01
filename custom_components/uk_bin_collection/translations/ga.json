@@ -6,7 +6,8 @@
                 "title": "Roghnaigh an comhairle",
                 "data": {
                     "name": "Ainm an tSuímh",
-                    "council": "Comhairle"
+                    "council": "Comhairle",
+                    "icon_color_mapping": "JSON chun Cineál Binn a léarscáiliú le haghaidh Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData"
                 },
                 "description": "Féach [anseo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) más rud é nach bhfuil do chomhairle liostaithe"
             },
@@ -22,7 +23,6 @@
                     "web_driver": "Chun a rith ar Fhreastalaí Selenium iargúlta cuir URL Freastalaí Selenium isteach",
                     "headless": "Selenium a rith i mód gan cheann (molta)",
                     "local_browser": "Ná rith freastalaí iargúlta Selenium, bain úsáid as suiteáil áitiúil de Chrome",
-                    "icon_color_mapping": "JSON chun Cineál Binn a léarscáiliú le haghaidh Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir isteach"
                 },
                 "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad ba cheart a iontráil"

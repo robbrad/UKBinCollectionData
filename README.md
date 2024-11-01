@@ -267,7 +267,6 @@ docker pull selenium/standalone-chrome docker run -d -p 4444:4444 --name seleniu
 
 ## Reports
 
-- [3.11](https://robbrad.github.io/UKBinCollectionData/3.11/)
 - [3.12](https://robbrad.github.io/UKBinCollectionData/3.12/)
 
 ---

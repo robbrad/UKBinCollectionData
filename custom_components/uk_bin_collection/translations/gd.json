@@ -6,7 +6,8 @@
                 "title": "Tagh a’ chomhairle",
                 "data": {
                     "name": "Ainm an àite",
-                    "council": "Comhairle"
+                    "council": "Comhairle",
+                    "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData"
                 },
                 "description": "Faic [an seo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura h-eil do chomhairle air a liostadh"
             },
@@ -22,7 +23,6 @@
                     "web_driver": "Gus ruith air Freiceadan Selenium iomallach cuir URL Freiceadan Selenium ris",
                     "headless": "Ruith Selenium ann am modh gun cheann (molta)",
                     "local_browser": "Na ruith Freiceadan Selenium iomallach, cleachd stàladh ionadail de Chrome",
-                    "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir a-steach"
                 },
                 "description": "Thoir sùil air [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) na comhairle agad airson fiosrachadh air dè bu chòir a chur a-steach"
