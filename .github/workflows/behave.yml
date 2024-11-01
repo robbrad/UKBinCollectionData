@@ -258,4 +258,9 @@ jobs:
           publish_branch: gh-pages
           publish_dir: allure-history/full
 
-      - name: Deploy
+      - name: Deploy Partial Report
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history/partial
