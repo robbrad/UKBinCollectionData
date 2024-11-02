@@ -32,6 +32,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Bolton Council](#bolton-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
 - [Bradford MDC](#bradford-mdc)
+- [Breckland Council](#breckland-council)
 - [Brighton and Hove City Council](#brighton-and-hove-city-council)
 - [Bristol City Council](#bristol-city-council)
 - [Bromley Borough Council](#bromley-borough-council)
@@ -52,6 +53,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Colchester City Council](#colchester-city-council)
 - [Conwy County Borough Council](#conwy-county-borough-council)
 - [Cornwall Council](#cornwall-council)
+- [Cotswold District Council](#cotswold-district-council)
 - [Coventry City Council](#coventry-city-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
@@ -487,6 +489,17 @@ Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyad
 
 ---
 
+### Breckland Council
+```commandline
+python collect_data.py BrecklandCouncil https://www.breckland.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Brighton and Hove City Council
 ```commandline
 python collect_data.py BrightonandHoveCityCouncil https://cityclean.brighton-hove.gov.uk/link/collections -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -728,6 +741,20 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Use https://uprn.uk/ to find your UPRN.
+
+---
+
+### Cotswold District Council
+```commandline
+python collect_data.py CotswoldDistrictCouncil https://community.cotswold.gov.uk/s/waste-collection-enquiry -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the full address in the house number and postcode in
 
 ---
 
@@ -1560,7 +1587,7 @@ Additional parameters:
 
 ### Newark and Sherwood District Council
 ```commandline
-python collect_data.py NewarkAndSherwoodDC http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX
+python collect_data.py NewarkAndSherwoodDC http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX&nc=1
 ```
 
 Note: Replace XXXXXXXX with UPRN.
@@ -2128,11 +2155,15 @@ Additional parameters:
 
 ### St Helens Borough Council
 ```commandline
-python collect_data.py StHelensBC https://www.sthelens.gov.uk/ -s -u XXXXXXXX
+python collect_data.py StHelensBC https://www.sthelens.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number in the house number parameter, wrapped in double quotes
 
 ---
 
