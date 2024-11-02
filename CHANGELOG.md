@@ -1,3 +1,19 @@
+## 0.109.0 (2024-11-02)
+
+### Feat
+
+- Adding Cotswold District Council
+- Adding Breckland Council
+
+### Fix
+
+- St Helens Borough Council
+- #753
+- NewarkAndSherwoodDC
+- #941
+- #658
+- #656
+
 ## 0.108.2 (2024-11-01)
 
 ### Fix
