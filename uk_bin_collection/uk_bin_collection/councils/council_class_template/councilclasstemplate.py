@@ -2,7 +2,6 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -25,7 +24,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 dict_data = {
                     "type": bin_type,
                     "collectionDate": datetime.strptime(
-                        bin_collection.get_text(strip=True), "%A, %d %B %Y"
+                        bin_collection.get_text(strip=True), date_format
                     ),
                 }
                 data["bins"].append(dict_data)

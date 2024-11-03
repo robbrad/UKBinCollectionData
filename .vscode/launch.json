@@ -24,7 +24,7 @@
                 "debug-test"
             ],
             "env": {
-                "PYTEST_ADDOPTS": "--headless=False --local_browser=False --disable-socket --allow-unix-socket"
+                "PYTEST_ADDOPTS": "--headless=False --local_browser=False"
             },
         }
     ]

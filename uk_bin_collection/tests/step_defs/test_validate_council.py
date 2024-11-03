@@ -28,6 +28,7 @@ def council(request):
 
 
 @scenario("../features/validate_council_outputs.feature", "Validate Council Output")
+@pytest.mark.no_homeassistant  # Apply marker here
 def test_scenario_outline(council) -> None:
     pass
 
