@@ -2,7 +2,10 @@
 
 ## @CI_actions Installs the checked out version of the code to your poetry managed venv
 install:
-	poetry install
+	poetry install --without dev
+
+install-dev:
+	poetry install 
 
 ## @CI_actions Runs code quality checks
 pre-build: black unit-tests
