@@ -28,6 +28,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [BelfastCityCouncil](#belfastcitycouncil)
 - [Bexley Council](#bexley-council)
 - [Birmingham City Council](#birmingham-city-council)
+- [Blaby District Council](#blaby-district-council)
 - [Blackburn Council](#blackburn-council)
 - [Bolton Council](#bolton-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
@@ -443,6 +444,17 @@ python collect_data.py BirminghamCityCouncil https://www.birmingham.gov.uk/xfp/f
 Additional parameters:
 - `-u` - UPRN
 - `-p` - postcode
+
+---
+
+### Blaby District Council
+```commandline
+python collect_data.py BlabyDistrictCouncil https://www.blaby.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

@@ -126,6 +126,13 @@
         "url": "https://www.birmingham.gov.uk/xfp/form/619",
         "wiki_name": "Birmingham City Council"
     },
+    "BlabyDistrictCouncil": {
+        "url": "https://www.blaby.gov.uk",
+        "wiki_command_url_override": "https://www.blaby.gov.uk",
+        "uprn": "100030401782",
+        "wiki_name": "Blaby District Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "BlackburnCouncil": {
         "skip_get_url": true,
         "uprn": "100010733027",
