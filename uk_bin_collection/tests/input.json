@@ -416,6 +416,13 @@
         "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
         "wiki_name": "Ealing Council"
     },
+    "EastAyrshireCouncil": {
+        "url": "https://www.east-ayrshire.gov.uk",
+        "wiki_command_url_override": "https://www.east-ayrshire.gov.uk",
+        "uprn": "127074727",
+        "wiki_name": "East Ayrshire Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "EastCambridgeshireCouncil": {
         "skip_get_url": true,
         "uprn": "10002597178",

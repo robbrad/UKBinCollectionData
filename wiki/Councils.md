@@ -48,6 +48,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Chelmsford City Council](#chelmsford-city-council)
 - [Cheshire East Council](#cheshire-east-council)
 - [Cheshire West and Chester Council](#cheshire-west-and-chester-council)
+- [Chesterfield Borough Council](#chesterfield-borough-council)
 - [ChichesterDistrictCouncil](#chichesterdistrictcouncil)
 - [Chorley Council](#chorley-council)
 - [Colchester City Council](#colchester-city-council)
@@ -66,6 +67,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Dudley Council](#dudley-council)
 - [Durham Council](#durham-council)
 - [Ealing Council](#ealing-council)
+- [East Ayrshire Council](#east-ayrshire-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
 - [East Devon District Council](#east-devon-district-council)
 - [East Herts Council](#east-herts-council)
@@ -678,6 +680,16 @@ Additional parameters:
 
 ---
 
+### Chesterfield Borough Council
+```commandline
+python collect_data.py ChesterfieldBoroughCouncil https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+---
+
 ### ChichesterDistrictCouncil
 ```commandline
 python collect_data.py ChichesterDistrictCouncil https://www.chichester.gov.uk/checkyourbinday -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -883,6 +895,17 @@ python collect_data.py EalingCouncil https://www.ealing.gov.uk/site/custom_scrip
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### East Ayrshire Council
+```commandline
+python collect_data.py EastAyrshireCouncil https://www.east-ayrshire.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
