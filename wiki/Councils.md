@@ -43,6 +43,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Cannock Chase District Council](#cannock-chase-district-council)
 - [Canterbury City Council](#canterbury-city-council)
 - [Cardiff Council](#cardiff-council)
+- [Carmarthenshire County Council](#carmarthenshire-county-council)
 - [Castlepoint District Council](#castlepoint-district-council)
 - [Charnwood Borough Council](#charnwood-borough-council)
 - [Chelmsford City Council](#chelmsford-city-council)
@@ -620,6 +621,17 @@ python collect_data.py CardiffCouncil https://www.cardiff.gov.uk/ENG/resident/Ru
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### Carmarthenshire County Council
+```commandline
+python collect_data.py CarmarthenshireCountyCouncil https://www.carmarthenshire.gov.wales -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
