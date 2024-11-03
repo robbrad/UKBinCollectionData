@@ -4,9 +4,6 @@
 install:
 	poetry install
 
-install-dev:
-	poetry install --dev
-
 ## @CI_actions Runs code quality checks
 pre-build: black unit-tests
 	rm setup.py || echo "There was no setup.py"

@@ -32,7 +32,7 @@ jobs:
           python-version: 3.12
 
       - name: Install Dependencies
-        run: make install-dev
+        run: make install
 
       - name: Lint JSON
         run: jq empty uk_bin_collection/tests/input.json
@@ -81,7 +81,7 @@ jobs:
         run: pipx install poetry==${{ matrix.poetry-version }}
 
       - name: Install Dependencies
-        run: make install-dev
+        run: make install
 
       - name: Run Unit Tests
         run: make unit-tests
@@ -112,7 +112,7 @@ jobs:
         run: pipx install poetry==${{ matrix.poetry-version }}
 
       - name: Install Dependencies
-        run: make install-dev
+        run: make install
 
       - name: Check Parity of Councils / input.json / Feature file
         run: |
@@ -145,7 +145,7 @@ jobs:
         run: pipx install poetry==${{ matrix.poetry-version }}
 
       - name: Install Dependencies
-        run: make install-dev
+        run: make install
 
       - name: Run Integration Tests
         env:
