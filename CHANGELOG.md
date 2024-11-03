@@ -1,3 +1,9 @@
+## 0.109.2 (2024-11-03)
+
+### Fix
+
+- CC testing and add Chesterfield
+
 ## 0.109.1 (2024-11-03)
 
 ### Fix
