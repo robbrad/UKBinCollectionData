@@ -272,6 +272,12 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Cheshire West and Chester Council"
     },
+    "ChesterfieldBoroughCouncil": {
+        "uprn": "74008234",
+        "skip_get_url": true,
+        "url": "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day",
+        "wiki_name": "Chesterfield Borough Council"
+    },
     "ChichesterDistrictCouncil": {
         "house_number": "7, Plaistow Road, Kirdford, Billingshurst, West Sussex",
         "postcode": "RH14 0JT",
