@@ -6,11 +6,12 @@ from json import JSONDecodeError
 import logging
 
 from dateutil import parser
-import async_timeout
+import asyncio
 
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -40,15 +41,15 @@ async def async_setup_entry(
 ) -> None:
     """
     Set up the UK Bin Collection Data sensor platform.
-
-    This function initializes the sensor entities based on the configuration entry.
-    It sets up the data coordinator and creates sensors for each bin type along with
-    their respective attributes and a raw JSON sensor.
     """
     _LOGGER.info(f"{LOG_PREFIX} Setting up UK Bin Collection Data platform.")
     _LOGGER.debug(f"{LOG_PREFIX} Data Supplied: %s", config_entry.data)
 
-    name = config_entry.data.get("name", "UK Bin Collection")
+    name = config_entry.data.get("name")
+    if not name:
+        _LOGGER.error(f"{LOG_PREFIX} 'name' is missing in config entry.")
+        raise ConfigEntryNotReady("Missing 'name' in configuration.")
+
     timeout = config_entry.data.get("timeout", 60)
     icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")  # Default to empty JSON
 
@@ -92,7 +93,12 @@ async def async_setup_entry(
     coordinator = HouseholdBinCoordinator(
         hass, ukbcd, name, config_entry, timeout=timeout
     )
-    await coordinator.async_refresh()
+
+    try:
+        await coordinator.async_refresh()
+    except UpdateFailed as e:
+        _LOGGER.error(f"{LOG_PREFIX} Unable to fetch initial data: {e}")
+        raise ConfigEntryNotReady from e
 
     # Store the coordinator in Home Assistant's data
     hass.data.setdefault(DOMAIN, {})
@@ -152,6 +158,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
+
 class HouseholdBinCoordinator(DataUpdateCoordinator):
     """Coordinator to manage fetching and updating UK Bin Collection data."""
 
@@ -185,24 +192,21 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         self.config_entry = config_entry
 
     async def _async_update_data(self) -> dict:
-        """
-        Fetch and process the latest bin collection data.
-
-        Returns:
-            A dictionary containing the latest collection information.
-
-        Raises:
-            UpdateFailed: If there is an error fetching or processing the data.
-        """
+        """Fetch and process the latest bin collection data."""
         try:
-            async with async_timeout.timeout(self.timeout):
+            async with asyncio.timeout(self.timeout):
                 _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp Updating")
                 data = await self.hass.async_add_executor_job(self.ukbcd.run)
+                _LOGGER.debug(f"{LOG_PREFIX} Data fetched: {data}")
             parsed_data = json.loads(data)
-            return get_latest_collection_info(parsed_data)
-        except (async_timeout.TimeoutError, JSONDecodeError) as exc:
-            _LOGGER.error(f"{LOG_PREFIX} Error updating data: {exc}")
-            raise UpdateFailed(f"Error updating data: {exc}") from exc
+            _LOGGER.debug(f"{LOG_PREFIX} Parsed data: {parsed_data}")
+            return get_latest_collection_info(parsed_data) if parsed_data else {}
+        except asyncio.TimeoutError as exc:
+            _LOGGER.error(f"{LOG_PREFIX} Timeout while updating data: {exc}")
+            raise UpdateFailed(f"Timeout while updating data: {exc}") from exc
+        except JSONDecodeError as exc:
+            _LOGGER.error(f"{LOG_PREFIX} JSON decode error: {exc}")
+            raise UpdateFailed(f"JSON decode error: {exc}") from exc
         except Exception as exc:
             _LOGGER.exception(f"{LOG_PREFIX} Unexpected error: {exc}")
             raise UpdateFailed(f"Unexpected error: {exc}") from exc

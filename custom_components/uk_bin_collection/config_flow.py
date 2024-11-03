@@ -178,7 +178,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_reconfigure_confirm(
         self, user_input: dict[str, Any] | None = None
-    ) -> config_entries.ConfigFlowResult:
+    ):
         """Handle a reconfiguration flow initialized by the user."""
         errors: dict[str, str] = {}
         existing_data = self.config_entry.data
