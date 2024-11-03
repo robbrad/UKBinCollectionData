@@ -167,6 +167,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
 - [Rushmoor Council](#rushmoor-council)
 - [Salford City Council](#salford-city-council)
+- [Sefton Council](#sefton-council)
 - [Sevenoaks District Council](#sevenoaks-district-council)
 - [Sheffield City Council](#sheffield-city-council)
 - [Shropshire Council](#shropshire-council)
@@ -542,7 +543,7 @@ Note: Follow the instructions [here](https://recyclingservices.bromley.gov.uk/wa
 
 ### Bromsgrove District Council
 ```commandline
-python collect_data.py BromsgroveDistrictCouncil https://www.Bromsgrove.gov.uk -u XXXXXXXX
+python collect_data.py BromsgroveDistrictCouncil https://www.bromsgrove.gov.uk -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
@@ -2018,6 +2019,18 @@ python collect_data.py SalfordCityCouncil https://www.salford.gov.uk/bins-and-re
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### Sefton Council
+```commandline
+python collect_data.py SeftonCouncil https://www.sefton.gov.uk -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the postcode and house number in their respective arguments, both wrapped in quotes.
 
 ---
 

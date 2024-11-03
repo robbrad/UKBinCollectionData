@@ -1127,6 +1127,13 @@
         "url": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections",
         "wiki_name": "Salford City Council"
     },
+    "SeftonCouncil": {
+        "house_number": "1",
+        "postcode": "L20 6GG",
+        "url": "https://www.sefton.gov.uk",
+        "wiki_name": "Sefton Council",
+        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
+    },
     "SevenoaksDistrictCouncil": {
         "house_number": "60 Hever Road",
         "postcode": "TN15 6EB",
