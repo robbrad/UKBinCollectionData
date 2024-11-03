@@ -36,6 +36,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Brighton and Hove City Council](#brighton-and-hove-city-council)
 - [Bristol City Council](#bristol-city-council)
 - [Bromley Borough Council](#bromley-borough-council)
+- [Bromsgrove District Council](#bromsgrove-district-council)
 - [Broxtowe Borough Council](#broxtowe-borough-council)
 - [Buckinghamshire Council (Chiltern, South Bucks, Wycombe)](#buckinghamshire-council-(chiltern,-south-bucks,-wycombe))
 - [Bury Council](#bury-council)
@@ -536,6 +537,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the "Your bin days" page then copy the URL and replace the URL in the command.
+
+---
+
+### Bromsgrove District Council
+```commandline
+python collect_data.py BromsgroveDistrictCouncil https://www.Bromsgrove.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
