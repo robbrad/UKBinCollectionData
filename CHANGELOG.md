@@ -1,3 +1,21 @@
+## 0.110.0 (2024-11-04)
+
+### Fix
+
+- Adding Blaby District Council
+- #904
+- Adding Sefton Council
+- #770
+- Adding Bromsgrove District Council
+- #893
+- East Lindsey District Council
+- #957
+- Adding Carmarthenshire County Council
+- #892
+fix: #710
+- Adding East Ayrshire Council
+- #955
+
 ## 0.109.2 (2024-11-03)
 
 ### Fix

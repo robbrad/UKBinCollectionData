@@ -21,7 +21,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def get_councils_json(self) -> object:
         """Returns an object of supported councils and their required fields."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.109.2/uk_bin_collection/tests/input.json"
+        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.110.0/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
                 try:
