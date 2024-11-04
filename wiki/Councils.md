@@ -28,6 +28,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [BelfastCityCouncil](#belfastcitycouncil)
 - [Bexley Council](#bexley-council)
 - [Birmingham City Council](#birmingham-city-council)
+- [Blaby District Council](#blaby-district-council)
 - [Blackburn Council](#blackburn-council)
 - [Bolton Council](#bolton-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
@@ -36,6 +37,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Brighton and Hove City Council](#brighton-and-hove-city-council)
 - [Bristol City Council](#bristol-city-council)
 - [Bromley Borough Council](#bromley-borough-council)
+- [Bromsgrove District Council](#bromsgrove-district-council)
 - [Broxtowe Borough Council](#broxtowe-borough-council)
 - [Buckinghamshire Council (Chiltern, South Bucks, Wycombe)](#buckinghamshire-council-(chiltern,-south-bucks,-wycombe))
 - [Bury Council](#bury-council)
@@ -43,11 +45,13 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Cannock Chase District Council](#cannock-chase-district-council)
 - [Canterbury City Council](#canterbury-city-council)
 - [Cardiff Council](#cardiff-council)
+- [Carmarthenshire County Council](#carmarthenshire-county-council)
 - [Castlepoint District Council](#castlepoint-district-council)
 - [Charnwood Borough Council](#charnwood-borough-council)
 - [Chelmsford City Council](#chelmsford-city-council)
 - [Cheshire East Council](#cheshire-east-council)
 - [Cheshire West and Chester Council](#cheshire-west-and-chester-council)
+- [Chesterfield Borough Council](#chesterfield-borough-council)
 - [ChichesterDistrictCouncil](#chichesterdistrictcouncil)
 - [Chorley Council](#chorley-council)
 - [Colchester City Council](#colchester-city-council)
@@ -66,6 +70,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Dudley Council](#dudley-council)
 - [Durham Council](#durham-council)
 - [Ealing Council](#ealing-council)
+- [East Ayrshire Council](#east-ayrshire-council)
 - [East Cambridgeshire Council](#east-cambridgeshire-council)
 - [East Devon District Council](#east-devon-district-council)
 - [East Herts Council](#east-herts-council)
@@ -163,6 +168,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
 - [Rushmoor Council](#rushmoor-council)
 - [Salford City Council](#salford-city-council)
+- [Sefton Council](#sefton-council)
 - [Sevenoaks District Council](#sevenoaks-district-council)
 - [Sheffield City Council](#sheffield-city-council)
 - [Shropshire Council](#shropshire-council)
@@ -441,6 +447,17 @@ Additional parameters:
 
 ---
 
+### Blaby District Council
+```commandline
+python collect_data.py BlabyDistrictCouncil https://www.blaby.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Blackburn Council
 ```commandline
 python collect_data.py BlackburnCouncil https://www.blackburn.gov.uk -s -u XXXXXXXX -w http://HOST:PORT/
@@ -536,6 +553,17 @@ Note: Follow the instructions [here](https://recyclingservices.bromley.gov.uk/wa
 
 ---
 
+### Bromsgrove District Council
+```commandline
+python collect_data.py BromsgroveDistrictCouncil https://www.bromsgrove.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Broxtowe Borough Council
 ```commandline
 python collect_data.py BroxtoweBoroughCouncil https://www.broxtowe.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
@@ -621,6 +649,17 @@ Additional parameters:
 
 ---
 
+### Carmarthenshire County Council
+```commandline
+python collect_data.py CarmarthenshireCountyCouncil https://www.carmarthenshire.gov.wales -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Castlepoint District Council
 ```commandline
 python collect_data.py CastlepointDistrictCouncil https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar -s -u XXXXXXXX
@@ -675,6 +714,16 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+---
+
+### Chesterfield Borough Council
+```commandline
+python collect_data.py ChesterfieldBoroughCouncil https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
 
 ---
 
@@ -883,6 +932,17 @@ python collect_data.py EalingCouncil https://www.ealing.gov.uk/site/custom_scrip
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### East Ayrshire Council
+```commandline
+python collect_data.py EastAyrshireCouncil https://www.east-ayrshire.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -1971,6 +2031,18 @@ python collect_data.py SalfordCityCouncil https://www.salford.gov.uk/bins-and-re
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### Sefton Council
+```commandline
+python collect_data.py SeftonCouncil https://www.sefton.gov.uk -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the postcode and house number in their respective arguments, both wrapped in quotes.
 
 ---
 
