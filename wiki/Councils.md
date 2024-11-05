@@ -152,6 +152,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Northumberland Council](#northumberland-council)
 - [Nottingham City Council](#nottingham-city-council)
 - [Oldham Council](#oldham-council)
+- [Oxford City Council](#oxford-city-council)
 - [Perth and Kinross Council](#perth-and-kinross-council)
 - [Plymouth Council](#plymouth-council)
 - [Portsmouth City Council](#portsmouth-city-council)
@@ -1854,6 +1855,18 @@ python collect_data.py OldhamCouncil https://portal.oldham.gov.uk/bincollectiond
 ```
 
 Note: Replace UPRN in URL with your own UPRN.
+
+---
+
+### Oxford City Council
+```commandline
+python collect_data.py OxfordCityCouncil https://www.oxford.gov.uk -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

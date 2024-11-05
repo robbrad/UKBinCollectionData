@@ -1021,6 +1021,14 @@
         "wiki_name": "Oldham Council",
         "wiki_note": "Replace UPRN in URL with your own UPRN."
     },
+    "OxfordCityCouncil": {
+        "url": "https://www.oxford.gov.uk",
+        "wiki_command_url_override": "https://www.oxford.gov.uk",
+        "uprn": "100120820551",
+        "postcode": "OX3 7QF",
+        "wiki_name": "Oxford City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "PerthAndKinrossCouncil": {
         "url": "https://www.pkc.gov.uk",
         "wiki_command_url_override": "https://www.pkc.gov.uk",
