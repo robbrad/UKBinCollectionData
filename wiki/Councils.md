@@ -111,7 +111,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Lancaster City Council](#lancaster-city-council)
 - [Leeds City Council](#leeds-city-council)
 - [Lichfield District Council](#lichfield-district-council)
-- [Tunbridge Wells Council](#tunbridge-wells-council)
+- [Lincoln Council](#lincoln-council)
 - [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
 - [Liverpool City Council](#liverpool-city-council)
 - [London Borough Ealing](#london-borough-ealing)
@@ -1411,7 +1411,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ---
 
-### Tunbridge Wells Council
+### Lincoln Council
 ```commandline
 python collect_data.py LincolnCouncil https://lincoln.gov.uk -u XXXXXXXX -p "XXXX XXX"
 ```
