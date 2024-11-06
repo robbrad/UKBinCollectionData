@@ -794,6 +794,13 @@
         "wiki_name": "London Borough Redbridge",
         "wiki_note": "Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your \"Address\" then copy the entire address text and use that in the house number field."
     },
+    "LondonBoroughSutton": {
+        "url": "https://waste-services.sutton.gov.uk/waste",
+        "wiki_command_url_override": "https://waste-services.sutton.gov.uk/waste",
+        "uprn": "4473006",
+        "wiki_name": "London Borough Sutton",
+        "wiki_note": "You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN"
+    },
     "LutonBoroughCouncil": {
         "url": "https://myforms.luton.gov.uk",
         "wiki_command_url_override": "https://myforms.luton.gov.uk",

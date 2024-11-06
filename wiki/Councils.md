@@ -119,6 +119,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [London Borough Hounslow](#london-borough-hounslow)
 - [London Borough Lambeth](#london-borough-lambeth)
 - [London Borough Redbridge](#london-borough-redbridge)
+- [London Borough Sutton](#london-borough-sutton)
 - [Luton Borough Council](#luton-borough-council)
 - [Maldon District Council](#maldon-district-council)
 - [Malvern Hills District Council](#malvern-hills-district-council)
@@ -1496,6 +1497,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your "Address" then copy the entire address text and use that in the house number field.
+
+---
+
+### London Borough Sutton
+```commandline
+python collect_data.py LondonBoroughSutton https://waste-services.sutton.gov.uk/waste -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN
 
 ---
 
