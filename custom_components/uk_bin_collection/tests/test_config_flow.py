@@ -692,7 +692,7 @@ async def test_reconfigure_flow_entry_missing(hass):
 
         # Assert that the flow aborts due to the missing config entry
         assert result["type"] == data_entry_flow.FlowResultType.ABORT
-        assert result["reason"] == "reconfigure_failed"
+        assert result["reason"] == "Reconfigure Failed"
 
 
 @pytest.mark.asyncio
@@ -834,7 +834,7 @@ async def test_async_step_reconfigure_entry_none(hass: HomeAssistant):
     result = await flow.async_step_reconfigure()
 
     assert result["type"] == data_entry_flow.FlowResultType.ABORT
-    assert result["reason"] == "reconfigure_failed"
+    assert result["reason"] == "Reconfigure Failed"
 
 
 @pytest.mark.asyncio
