@@ -18,7 +18,7 @@ build:
 
 ## @Code_quality Runs black on the checked out code
 black:
-	poetry run black uk_bin_collection
+	poetry run black **/*.py
 
 ## @Code_quality Runs pycodestyle on the the checked out code
 pycodestyle:

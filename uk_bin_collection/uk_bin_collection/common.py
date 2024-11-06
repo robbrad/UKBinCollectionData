@@ -106,6 +106,7 @@ def get_date_with_ordinal(date_number: int) -> str:
         else {1: "st", 2: "nd", 3: "rd"}.get(date_number % 10, "th")
     )
 
+
 def has_numbers(inputString: str) -> bool:
     """
 

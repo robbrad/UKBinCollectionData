@@ -4,7 +4,6 @@ import pytest
 from uk_bin_collection.collect_data import UKBinCollectionApp, import_council_module
 
 
-
 # Test UKBinCollectionApp setup_arg_parser
 def test_setup_arg_parser():
     app = UKBinCollectionApp()

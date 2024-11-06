@@ -5,49 +5,51 @@
             "user": {
                 "title": "Tagh a’ chomhairle",
                 "data": {
-                    "name": "Ainm an àite",
+                    "name": "Ainm Àite",
                     "council": "Comhairle",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData"
                 },
-                "description": "Faic [an seo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura h-eil do chomhairle air a liostadh"
+                "description": "Feuch an toir thu sùil [an seo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura h-eil do chomhairle air a liostadh"
             },
             "council": {
-                "title": "Thoir seachad fiosrachadh mun chomhairle",
+                "title": "Thoir seachad mion-fhiosrachadh na comhairle",
                 "data": {
-                    "url": "URL airson dàta cruinneachaidh biona fhaighinn",
-                    "timeout": "An ùine ann an diogan a bu chòir don sensor feitheamh airson dàta",
-                    "uprn": "UPRN (Àireamh Fiosrachaidh Seilbh Gun Samhail)",
-                    "postcode": "Còd-puist an t-seòlaidh",
+                    "url": "URL gus dàta cruinneachadh biona fhaighinn",
+                    "timeout": "An ùine ann an diogan airson cho fada bu chòir don sensor feitheamh airson dàta",
+                    "uprn": "UPRN (Àireamh Iomraidh Seilbh Aonraic)",
+                    "postcode": "Còd-puist an t-seòladh",
                     "number": "Àireamh an taighe den t-seòladh",
-                    "usrn": "USRN (Àireamh Fiosrachaidh Sràid Gun Samhail)",
-                    "web_driver": "Gus ruith air Freiceadan Selenium iomallach cuir URL Freiceadan Selenium ris",
-                    "headless": "Ruith Selenium ann am modh gun cheann (molta)",
-                    "local_browser": "Na ruith Freiceadan Selenium iomallach, cleachd stàladh ionadail de Chrome",
+                    "usrn": "USRN (Àireamh Iomraidh Sràid Aonraic)",
+                    "web_driver": "Gus ruith air Frithealaiche Selenium iomallach cuir a-steach an URL Frithealaiche Selenium",
+                    "headless": "Ruith Selenium ann am modh gun cheann (air a mholadh)",
+                    "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "submit": "Cuir a-steach"
                 },
-                "description": "Thoir sùil air [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) na comhairle agad airson fiosrachadh air dè bu chòir a chur a-steach"
+                "description": "Feuch an toir thu sùil air inntrigeadh [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) na comhairle agad airson mion-fhiosrachadh air dè a chur a-steach.\n{selenium_message}"
             },
             "reconfigure_confirm": {
-                "title": "Ùraich fiosrachadh na comhairle",
+                "title": "Ùraich mion-fhiosrachadh na comhairle",
                 "data": {
-                    "url": "URL airson dàta cruinneachaidh biona fhaighinn",
-                    "timeout": "An ùine ann an diogan a bu chòir don sensor feitheamh airson dàta",
-                    "uprn": "UPRN (Àireamh Fiosrachaidh Seilbh Gun Samhail)",
-                    "postcode": "Còd-puist an t-seòlaidh",
+                    "url": "URL gus dàta cruinneachadh biona fhaighinn",
+                    "timeout": "An ùine ann an diogan airson cho fada bu chòir don sensor feitheamh airson dàta",
+                    "uprn": "UPRN (Àireamh Iomraidh Seilbh Aonraic)",
+                    "postcode": "Còd-puist an t-seòladh",
                     "number": "Àireamh an taighe den t-seòladh",
-                    "usrn": "USRN (Àireamh Fiosrachaidh Sràid Gun Samhail)",
-                    "web_driver": "Gus ruith air Freiceadan Selenium iomallach cuir URL Freiceadan Selenium ris",
-                    "headless": "Ruith Selenium ann am modh gun cheann (molta)",
-                    "local_browser": "Na ruith Freiceadan Selenium iomallach, cleachd stàladh ionadail de Chrome",
+                    "usrn": "USRN (Àireamh Iomraidh Sràid Aonraic)",
+                    "web_driver": "Gus ruith air Frithealaiche Selenium iomallach cuir a-steach an URL Frithealaiche Selenium",
+                    "headless": "Ruith Selenium ann am modh gun cheann (air a mholadh)",
+                    "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir a-steach"
                 },
-                "description": "Thoir sùil air [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) na comhairle agad airson fiosrachadh air dè bu chòir a chur a-steach"
+                "description": "Feuch an toir thu sùil air inntrigeadh [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) na comhairle agad airson mion-fhiosrachadh air dè a chur a-steach."
             }
         },
         "error": {
-            "name": "Cuir a-steach ainm àite",
-            "council": "Tagh comhairle"
+            "name": "Cuir a-steach ainm àite mas e do thoil e",
+            "council": "Tagh comhairle mas e do thoil e",
+            "selenium_unavailable": "❌ Chan eil frithealaiche Selenium ruigsinneach. Dèan cinnteach gu bheil e a’ ruith aig http://localhost:4444 no http://selenium:4444. [Stiùireadh Stèidheachaidh](https://example.com/selenium-setup)",
+            "chromium_not_found": "❌ Chan eil brabhsair Chromium air a chuir a-steach. Stàlaich Chromium no Google Chrome mas e do thoil e. [Stiùireadh Stàlaidh](https://example.com/chromium-install)"
         }
     }
 }

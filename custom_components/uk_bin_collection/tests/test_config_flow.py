@@ -256,7 +256,7 @@ async def test_config_flow_missing_name(hass: HomeAssistant):
 
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["step_id"] == "user"
-        assert result["errors"] == {"base": "name"}
+        assert result["errors"] == {"name": "Name is required."}
 
 
 async def test_config_flow_invalid_icon_color_mapping(hass: HomeAssistant):
@@ -279,7 +279,7 @@ async def test_config_flow_invalid_icon_color_mapping(hass: HomeAssistant):
         # Should return to the user step with an error
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["step_id"] == "user"
-        assert result["errors"] == {"icon_color_mapping": "invalid_json"}
+        assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
 
 
 async def test_config_flow_with_usrn(hass: HomeAssistant):
@@ -423,20 +423,6 @@ async def test_get_councils_json_failure(hass: HomeAssistant):
         # The flow should abort due to council data being unavailable
         assert result["type"] == data_entry_flow.FlowResultType.ABORT
         assert result["reason"] == "council_data_unavailable"
-
-
-async def test_async_step_init(hass: HomeAssistant):
-    """Test the initial step of the flow."""
-    with patch(
-        "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.async_step_user",
-        return_value=data_entry_flow.FlowResultType.FORM,
-    ) as mock_async_step_user:
-        flow = UkBinCollectionConfigFlow()
-        flow.hass = hass
-
-        result = await flow.async_step_init(user_input=None)
-        mock_async_step_user.assert_called_once_with(user_input=None)
-        assert result == data_entry_flow.FlowResultType.FORM
 
 
 async def test_config_flow_user_input_none(hass: HomeAssistant):
@@ -606,7 +592,7 @@ async def test_config_flow_missing_council(hass: HomeAssistant):
         # Should return to the user step with an error
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["step_id"] == "user"
-        assert result["errors"] == {"base": "council"}
+        assert result["errors"] == {"council": "Council is required."}
 
 
 @pytest.mark.asyncio
@@ -756,3 +742,201 @@ async def test_reconfigure_flow_no_user_input(hass):
 
             assert result["type"] == data_entry_flow.FlowResultType.FORM
             assert result["step_id"] == "reconfigure_confirm"
+
+
+@pytest.mark.asyncio
+async def test_check_selenium_server_exception(hass: HomeAssistant):
+    """Test exception handling in check_selenium_server."""
+    with patch(
+        "aiohttp.ClientSession.get",
+        side_effect=Exception("Connection error"),
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+
+        result = await flow.check_selenium_server()
+        # Expected result is that all URLs are marked as not accessible
+        expected_result = [
+            ("http://localhost:4444", False),
+            ("http://selenium:4444", False),
+        ]
+        assert result == expected_result
+
+
+@pytest.mark.asyncio
+async def test_get_councils_json_exception(hass: HomeAssistant):
+    """Test exception handling in get_councils_json."""
+    with patch(
+        "aiohttp.ClientSession.get",
+        side_effect=Exception("Network error"),
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+
+        result = await flow.get_councils_json()
+        assert result == {}
+
+
+@pytest.mark.asyncio
+async def test_async_step_user_council_data_unavailable(hass: HomeAssistant):
+    """Test async_step_user when council data is unavailable."""
+    with patch(
+        "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.get_councils_json",
+        return_value=None,
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+
+        result = await flow.async_step_user(user_input={})
+
+        assert result["type"] == data_entry_flow.FlowResultType.ABORT
+        assert result["reason"] == "council_data_unavailable"
+
+
+@pytest.mark.asyncio
+async def test_async_step_council_invalid_icon_color_mapping(hass: HomeAssistant):
+    """Test async_step_council with invalid JSON in icon_color_mapping."""
+    with patch(
+        "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.get_councils_json",
+        return_value=MOCK_COUNCILS_DATA,
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+        flow.data = {
+            "name": "Test Name",
+            "council": "CouncilWithUPRN",
+        }
+        flow.councils_data = MOCK_COUNCILS_DATA
+
+        user_input = {
+            "uprn": "1234567890",
+            "icon_color_mapping": "invalid json",
+            "timeout": 60,
+        }
+
+        result = await flow.async_step_council(user_input=user_input)
+
+        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["step_id"] == "council"
+        assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+
+
+@pytest.mark.asyncio
+async def test_async_step_reconfigure_entry_none(hass: HomeAssistant):
+    """Test async_step_reconfigure when config entry is None."""
+    flow = UkBinCollectionConfigFlow()
+    flow.hass = hass
+    flow.context = {"entry_id": "non_existent_entry_id"}
+
+    # Mock async_get_entry to return None
+    flow.hass.config_entries.async_get_entry = MagicMock(return_value=None)
+
+    result = await flow.async_step_reconfigure()
+
+    assert result["type"] == data_entry_flow.FlowResultType.ABORT
+    assert result["reason"] == "reconfigure_failed"
+
+
+@pytest.mark.asyncio
+async def test_async_step_reconfigure_confirm_user_input_none(hass: HomeAssistant):
+    """Test async_step_reconfigure_confirm when user_input is None."""
+    flow = UkBinCollectionConfigFlow()
+    flow.hass = hass
+
+    # Create a mock config entry
+    config_entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            "name": "Test Name",
+            "council": "CouncilWithUPRN",
+            "uprn": "1234567890",
+            "timeout": 60,
+        },
+    )
+    config_entry.add_to_hass(hass)
+
+    flow.config_entry = config_entry
+    flow.context = {"entry_id": config_entry.entry_id}
+    flow.councils_data = MOCK_COUNCILS_DATA
+
+    result = await flow.async_step_reconfigure_confirm(user_input=None)
+
+    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["step_id"] == "reconfigure_confirm"
+
+
+@pytest.mark.asyncio
+async def test_async_step_council_missing_council_key(hass: HomeAssistant):
+    """Test async_step_council when council_key is missing in councils_data."""
+    flow = UkBinCollectionConfigFlow()
+    flow.hass = hass
+    flow.data = {
+        "name": "Test Name",
+        "council": "NonExistentCouncil",
+    }
+    flow.councils_data = MOCK_COUNCILS_DATA
+
+    result = await flow.async_step_council(user_input=None)
+
+    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["step_id"] == "council"
+
+
+@pytest.mark.asyncio
+async def test_check_chromium_installed_exception(hass: HomeAssistant):
+    """Test exception handling in check_chromium_installed."""
+    with patch(
+        "shutil.which",
+        side_effect=Exception("Filesystem error"),
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+
+        result = await flow.check_chromium_installed()
+        assert result is False
+
+
+
+@pytest.mark.asyncio
+async def test_async_step_reconfigure_confirm_invalid_json(hass: HomeAssistant):
+    """Test async_step_reconfigure_confirm with invalid JSON."""
+    with patch(
+        "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.get_councils_json",
+        return_value=MOCK_COUNCILS_DATA,
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+
+        # Create a mock config entry
+        config_entry = MockConfigEntry(
+            domain=DOMAIN,
+            data={
+                "name": "Existing Entry",
+                "council": "CouncilWithUPRN",
+                "uprn": "1234567890",
+                "timeout": 60,
+            },
+        )
+        config_entry.add_to_hass(hass)
+
+        flow.config_entry = config_entry
+        flow.context = {"entry_id": config_entry.entry_id}
+
+        # Set up mocks for async methods
+        hass.config_entries.async_reload = AsyncMock()
+        hass.config_entries.async_update_entry = MagicMock()
+
+        user_input = {
+            "name": "Updated Entry",
+            "council": "Council with UPRN",
+            "icon_color_mapping": "invalid json",
+            "uprn": "0987654321",
+            "timeout": 120,
+        }
+
+        result = await flow.async_step_reconfigure_confirm(user_input=user_input)
+
+        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["step_id"] == "reconfigure_confirm"
+        assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+

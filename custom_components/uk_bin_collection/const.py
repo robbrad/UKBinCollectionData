@@ -17,3 +17,7 @@ STATE_ATTR_NEXT_COLLECTION = "next_collection"
 STATE_ATTR_DAYS = "days"
 
 DEVICE_CLASS = "bin_collection_schedule"
+
+SELENIUM_SERVER_URLS = ["http://localhost:4444", "http://selenium:4444"]
+
+BROWSER_BINARIES = ["chromium", "chromium-browser", "google-chrome"]

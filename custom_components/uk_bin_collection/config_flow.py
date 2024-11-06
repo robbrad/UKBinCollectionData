@@ -1,170 +1,144 @@
 import json
 import logging
-import json
+import shutil
+import asyncio
+from typing import Any, Dict, Optional
 
 import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
 
-from typing import Any
-
+from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES
 
 _LOGGER = logging.getLogger(__name__)
 
-from .const import DOMAIN, LOG_PREFIX
-
 
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for UkBinCollection."""
+
+    VERSION = 1
+
     def __init__(self):
-        self.councils_data = None
+        self.councils_data: Optional[Dict[str, Any]] = None
+        self.data: Dict[str, Any] = {}
+        self.council_names: list = []
+        self.council_options: list = []
+        self.selenium_checked: bool = False
+        self.selenium_available: bool = False
+        self.selenium_results: list = []
+        self.chromium_checked: bool = False
+        self.chromium_installed: bool = False
 
-    async def get_councils_json(self) -> object:
-        """Returns an object of supported councils and their required fields."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.107.0/uk_bin_collection/tests/input.json"
-        try:
-            async with aiohttp.ClientSession() as session:
-                try:
-                    async with session.get(url) as response:
-                        data_text = await response.text()
-                        return json.loads(data_text)
-                except Exception as e:
-                    _LOGGER.error("Failed to fetch data from URL: %s", e)
-                    raise
-        except Exception as e:
-            _LOGGER.error("Failed to create aiohttp ClientSession: %s", e)
-            return {}
-
-    async def get_council_schema(self, council=str) -> vol.Schema:
-        """Returns a config flow form schema based on a specific council's fields."""
-        if self.councils_data is None:
-            self.councils_data = await self.get_councils_json()
-        council_schema = vol.Schema({})
-        if (
-            "skip_get_url" not in self.councils_data[council]
-            or "custom_component_show_url_field" in self.councils_data[council]
-        ):
-            council_schema = council_schema.extend(
-                {vol.Required("url", default=""): cv.string}
-            )
-        if "uprn" in self.councils_data[council]:
-            council_schema = council_schema.extend(
-                {vol.Required("uprn", default=""): cv.string}
-            )
-        if "postcode" in self.councils_data[council]:
-            council_schema = council_schema.extend(
-                {vol.Required("postcode", default=""): cv.string}
-            )
-        if "house_number" in self.councils_data[council]:
-            council_schema = council_schema.extend(
-                {vol.Required("number", default=""): cv.string}
-            )
-        if "usrn" in self.councils_data[council]:
-            council_schema = council_schema.extend(
-                {vol.Required("usrn", default=""): cv.string}
-            )
-        if "web_driver" in self.councils_data[council]:
-            council_schema = council_schema.extend(
-                {vol.Optional("web_driver", default=""): cv.string}
-            )
-            council_schema = council_schema.extend(
-                {vol.Optional("headless", default=True): bool}
-            )
-            council_schema = council_schema.extend(
-                {vol.Optional("local_browser", default=False): bool}
-            )
-
-            # Add timeout field with default value of 60 seconds
-        council_schema = council_schema.extend(
-            {
-                vol.Optional("timeout", default=60): vol.All(
-                    vol.Coerce(int), vol.Range(min=10)
-                )
-            }
-        )
-
-        return council_schema
-
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(self, user_input: Optional[Dict[str, Any]] = None):
         """Handle the initial step."""
         errors = {}
 
-        self.councils_data = await self.get_councils_json()
-        if not self.councils_data:
-            _LOGGER.error("Council data is unavailable.")
-            return self.async_abort(reason="council_data_unavailable")
+        if self.councils_data is None:
+            self.councils_data = await self.get_councils_json()
+            if not self.councils_data:
+                _LOGGER.error("Council data is unavailable.")
+                return self.async_abort(reason="council_data_unavailable")
 
-        self.council_names = list(self.councils_data.keys())
-        self.council_options = [
-            self.councils_data[name]["wiki_name"] for name in self.council_names
-        ]
+            self.council_names = list(self.councils_data.keys())
+            self.council_options = [
+                self.councils_data[name]["wiki_name"] for name in self.council_names
+            ]
+            _LOGGER.debug("Loaded council data: %s", self.council_names)
 
         if user_input is not None:
-            # Perform validation and setup here based on user_input
-            if user_input["name"] is None or user_input["name"] == "":
-                errors["base"] = "name"
-            if user_input["council"] is None or user_input["council"] == "":
-                errors["base"] = "council"
+            _LOGGER.debug("User input received: %s", user_input)
+            # Validate user input
+            if not user_input.get("name"):
+                errors["name"] = "Name is required."
+            if not user_input.get("council"):
+                errors["council"] = "Council is required."
 
-            # Validate the JSON mapping only if provided
+            # Validate JSON mapping if provided
             if user_input.get("icon_color_mapping"):
-                try:
-                    json.loads(user_input["icon_color_mapping"])
-                except json.JSONDecodeError:
-                    errors["icon_color_mapping"] = "invalid_json"
+                if not self.is_valid_json(user_input["icon_color_mapping"]):
+                    errors["icon_color_mapping"] = "Invalid JSON format."
 
-            # Check for errors
+            # Check for duplicate entries
             if not errors:
-                user_input["council"] = self.council_names[
-                    self.council_options.index(user_input["council"])
-                ]
-                self.data = user_input
-                _LOGGER.info(LOG_PREFIX + "User input: %s", user_input)
+                existing_entry = await self._async_entry_exists(user_input)
+                if existing_entry:
+                    errors["base"] = "duplicate_entry"
+                    _LOGGER.warning(
+                        "Duplicate entry found: %s", existing_entry.data.get("name")
+                    )
+
+            if not errors:
+                # Map selected wiki_name back to council key
+                council_key = self.map_wiki_name_to_council_key(user_input["council"])
+                user_input["council"] = council_key
+                self.data.update(user_input)
+
+                _LOGGER.debug("User input after mapping: %s", self.data)
+
+                # Proceed to the council step
                 return await self.async_step_council()
 
-        # Show the form
+        # Show the initial form
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
-                    vol.Required("name", default=""): cv.string,
-                    vol.Required("council", default=""): vol.In(self.council_options),
-                    vol.Optional(
-                        "icon_color_mapping", default=""
-                    ): cv.string,  # Optional field
+                    vol.Required("name"): cv.string,
+                    vol.Required("council"): vol.In(self.council_options),
+                    vol.Optional("icon_color_mapping", default=""): cv.string,
                 }
             ),
             errors=errors,
+            description_placeholders={"cancel": "Press Cancel to abort setup."},
         )
 
-    async def async_step_council(self, user_input=None):
+    async def async_step_council(self, user_input: Optional[Dict[str, Any]] = None):
         """Second step to configure the council details."""
         errors = {}
+        council_key = self.data.get("council")
+        council_info = self.councils_data.get(council_key, {})
+        requires_selenium = "web_driver" in council_info
 
         if user_input is not None:
-            # Check the value of 'skip_get_url' rather than just its presence
-            if self.councils_data[self.data["council"]].get("skip_get_url", False):
+            _LOGGER.debug("Council step user input: %s", user_input)
+            # Validate JSON mapping if provided
+            if user_input.get("icon_color_mapping"):
+                if not self.is_valid_json(user_input["icon_color_mapping"]):
+                    errors["icon_color_mapping"] = "Invalid JSON format."
+
+            # Handle 'skip_get_url' if necessary
+            if council_info.get("skip_get_url", False):
                 user_input["skip_get_url"] = True
-                user_input["url"] = self.councils_data[self.data["council"]]["url"]
+                user_input["url"] = council_info.get("url", "")
 
-            user_input["name"] = "{}".format(self.data["name"])
-            user_input["council"] = self.data["council"]
+            # Merge user_input with existing data
+            self.data.update(user_input)
 
-            _LOGGER.info(LOG_PREFIX + "Creating config entry with data: %s", user_input)
-            return self.async_create_entry(title=user_input["name"], data=user_input)
+            # If no errors, create the config entry
+            if not errors:
+                _LOGGER.info(
+                    "%s Creating config entry with data: %s", LOG_PREFIX, self.data
+                )
+                return self.async_create_entry(title=self.data["name"], data=self.data)
+            else:
+                _LOGGER.debug("Errors in council step: %s", errors)
 
-        council_schema = await self.get_council_schema(self.data["council"])
-        _LOGGER.info(
-            LOG_PREFIX + "Showing council form with schema: %s", council_schema
-        )
+        # Prepare description placeholders
+        description_placeholders = {}
+        if requires_selenium:
+            description = await self.perform_selenium_checks(council_key)
+            description_placeholders["selenium_message"] = description
+        else:
+            description_placeholders["selenium_message"] = ""
+
+        # Show the form
         return self.async_show_form(
-            step_id="council", data_schema=council_schema, errors=errors
+            step_id="council",
+            data_schema=await self.get_council_schema(council_key),
+            errors=errors,
+            description_placeholders=description_placeholders,
         )
-
-    async def async_step_init(self, user_input=None):
-        """Handle a flow initiated by the user."""
-        _LOGGER.info(LOG_PREFIX + "Initiating flow with user input: %s", user_input)
-        return await self.async_step_user(user_input=user_input)
 
     async def async_step_reconfigure(self, user_input=None):
         """Handle reconfiguration of the integration."""
@@ -172,48 +146,44 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.context["entry_id"]
         )
         if self.config_entry is None:
-            return self.async_abort(reason="reconfigure_failed")
+            _LOGGER.error("Reconfiguration failed: Config entry not found.")
+            return self.async_abort(reason="Reconfigure Failed")
 
         return await self.async_step_reconfigure_confirm()
 
     async def async_step_reconfigure_confirm(
-        self, user_input: dict[str, Any] | None = None
+        self, user_input: Optional[Dict[str, Any]] = None
     ):
         """Handle a reconfiguration flow initialized by the user."""
-        errors: dict[str, str] = {}
+        errors = {}
         existing_data = self.config_entry.data
 
-        # Load council data and initialize options
-        self.councils_data = await self.get_councils_json()
-        self.council_names = list(self.councils_data.keys())
-        self.council_options = [
-            self.councils_data[name]["wiki_name"] for name in self.council_names
-        ]
+        if self.councils_data is None:
+            self.councils_data = await self.get_councils_json()
+            self.council_names = list(self.councils_data.keys())
+            self.council_options = [
+                self.councils_data[name]["wiki_name"] for name in self.council_names
+            ]
+            _LOGGER.debug("Loaded council data for reconfiguration.")
 
-        # Map the stored council key to its corresponding wiki_name
         council_key = existing_data.get("council")
-        council_wiki_name = (
-            self.councils_data[council_key]["wiki_name"] if council_key else None
-        )
+        council_info = self.councils_data.get(council_key, {})
+        council_wiki_name = council_info.get("wiki_name", "")
 
         if user_input is not None:
-            # Reverse map the selected wiki_name back to the council key
-            user_input["council"] = self.council_names[
-                self.council_options.index(user_input["council"])
-            ]
+            _LOGGER.debug("Reconfigure user input: %s", user_input)
+            # Map selected wiki_name back to council key
+            council_key = self.map_wiki_name_to_council_key(user_input["council"])
+            user_input["council"] = council_key
 
-            # Validate the icon and color mapping JSON if provided
+            # Validate JSON mapping if provided
             if user_input.get("icon_color_mapping"):
-                try:
-                    json.loads(user_input["icon_color_mapping"])
-                except json.JSONDecodeError:
-                    errors["icon_color_mapping"] = "invalid_json"
+                if not self.is_valid_json(user_input["icon_color_mapping"]):
+                    errors["icon_color_mapping"] = "Invalid JSON format."
 
             if not errors:
                 # Merge the user input with existing data
                 data = {**existing_data, **user_input}
-
-                # Ensure icon_color_mapping is properly updated
                 data["icon_color_mapping"] = user_input.get("icon_color_mapping", "")
 
                 self.hass.config_entries.async_update_entry(
@@ -221,92 +191,238 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     title=user_input.get("name", self.config_entry.title),
                     data=data,
                 )
-                # Optionally, reload the integration to apply changes
                 await self.hass.config_entries.async_reload(self.config_entry.entry_id)
+                _LOGGER.info("Configuration updated for entry: %s", self.config_entry.entry_id)
                 return self.async_abort(reason="Reconfigure Successful")
+            else:
+                _LOGGER.debug("Errors in reconfiguration: %s", errors)
 
-        # Get the council schema based on the current council setting
-        council_schema = await self.get_council_schema(council_key)
+        # Build the schema with existing data
+        schema = self.build_reconfigure_schema(existing_data, council_wiki_name)
 
-        # Track added fields to avoid duplicates
-        added_fields = set()
-
-        # Build the schema dynamically based on the existing data and council-specific fields
-        schema = vol.Schema(
-            {
-                vol.Required("name", default=existing_data.get("name", "")): str,
-                vol.Required("council", default=council_wiki_name): vol.In(
-                    self.council_options
-                ),
-            }
-        )
-
-        added_fields.update(["name", "council"])
-
-        # Include the fields from existing_data that were present in the original config
-        if "url" in existing_data:
-            schema = schema.extend(
-                {vol.Required("url", default=existing_data["url"]): str}
-            )
-            added_fields.add("url")
-        if "uprn" in existing_data:
-            schema = schema.extend(
-                {vol.Required("uprn", default=existing_data["uprn"]): str}
-            )
-            added_fields.add("uprn")
-        if "postcode" in existing_data:
-            schema = schema.extend(
-                {vol.Required("postcode", default=existing_data["postcode"]): str}
-            )
-            added_fields.add("postcode")
-        if "number" in existing_data:
-            schema = schema.extend(
-                {vol.Required("number", default=existing_data["number"]): str}
-            )
-            added_fields.add("number")
-        if "web_driver" in existing_data:
-            schema = schema.extend(
-                {vol.Optional("web_driver", default=existing_data["web_driver"]): str}
-            )
-            added_fields.add("web_driver")
-            schema = schema.extend(
-                {vol.Optional("headless", default=existing_data["headless"]): bool}
-            )
-            added_fields.add("headless")
-            schema = schema.extend(
-                {
-                    vol.Optional(
-                        "local_browser", default=existing_data["local_browser"]
-                    ): bool
-                }
-            )
-            added_fields.add("local_browser")
-
-        # Include the fields from existing_data that were present in the original config
-        if "timeout" in existing_data:
-            schema = schema.extend(
-                {vol.Required("timeout", default=existing_data["timeout"]): int}
-            )
-            added_fields.add("timeout")
-
-        # Add the icon_color_mapping field with a default value if it exists
-        schema = schema.extend(
-            {
-                vol.Optional(
-                    "icon_color_mapping",
-                    default=existing_data.get("icon_color_mapping", ""),
-                ): str
-            }
-        )
-
-        # Add any other fields defined in council_schema that haven't been added yet
-        for key, field in council_schema.schema.items():
-            if key not in added_fields:
-                schema = schema.extend({key: field})
-
-        # Show the form with the dynamically built schema
         return self.async_show_form(
             step_id="reconfigure_confirm",
             data_schema=schema,
             errors=errors,
+            description_placeholders={"selenium_message": ""},
         )
+
+    async def get_councils_json(self) -> Dict[str, Any]:
+        """Fetch and return the supported councils data."""
+        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.107.0/uk_bin_collection/tests/input.json"
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    response.raise_for_status()
+                    data_text = await response.text()
+                    return json.loads(data_text)
+        except aiohttp.ClientError as e:
+            _LOGGER.error("HTTP error while fetching council data: %s", e)
+        except json.JSONDecodeError as e:
+            _LOGGER.error("Error decoding council data JSON: %s", e)
+        except Exception as e:
+            _LOGGER.exception("Unexpected error while fetching council data: %s", e)
+        return {}
+
+    async def get_council_schema(self, council: str) -> vol.Schema:
+        """Generate the form schema based on council requirements."""
+        council_info = self.councils_data.get(council, {})
+        fields = {}
+
+        if not council_info.get("skip_get_url", False) or council_info.get(
+            "custom_component_show_url_field"
+        ):
+            fields[vol.Required("url")] = cv.string
+        if "uprn" in council_info:
+            fields[vol.Required("uprn")] = cv.string
+        if "postcode" in council_info:
+            fields[vol.Required("postcode")] = cv.string
+        if "house_number" in council_info:
+            fields[vol.Required("number")] = cv.string
+        if "usrn" in council_info:
+            fields[vol.Required("usrn")] = cv.string
+        if "web_driver" in council_info:
+            fields[vol.Optional("web_driver", default="")] = cv.string
+            fields[vol.Optional("headless", default=True)] = bool
+            fields[vol.Optional("local_browser", default=False)] = bool
+
+        fields[vol.Optional("timeout", default=60)] = vol.All(
+            vol.Coerce(int), vol.Range(min=10)
+        )
+
+        return vol.Schema(fields)
+
+    def build_reconfigure_schema(
+        self, existing_data: Dict[str, Any], council_wiki_name: str
+    ) -> vol.Schema:
+        """Build the schema for reconfiguration with existing data."""
+        fields = {
+            vol.Required("name", default=existing_data.get("name", "")): str,
+            vol.Required("council", default=council_wiki_name): vol.In(
+                self.council_options
+            ),
+        }
+
+        optional_fields = [
+            ("url", cv.string),
+            ("uprn", cv.string),
+            ("postcode", cv.string),
+            ("number", cv.string),
+            ("web_driver", cv.string),
+            ("headless", bool),
+            ("local_browser", bool),
+            ("timeout", vol.All(vol.Coerce(int), vol.Range(min=10))),
+        ]
+
+        for field_name, validator in optional_fields:
+            if field_name in existing_data:
+                fields[
+                    vol.Optional(field_name, default=existing_data[field_name])
+                ] = validator
+
+        fields[
+            vol.Optional(
+                "icon_color_mapping",
+                default=existing_data.get("icon_color_mapping", ""),
+            )
+        ] = str
+
+        return vol.Schema(fields)
+
+    async def perform_selenium_checks(self, council_key: str) -> str:
+        """Perform Selenium and Chromium checks and return a formatted message."""
+        messages = []
+        council_info = self.councils_data.get(council_key, {})
+        council_name = council_info.get("wiki_name", council_key)
+
+        custom_selenium_url = self.data.get("selenium_url")
+        selenium_results = await self.check_selenium_server(custom_selenium_url)
+        self.selenium_available = any(accessible for _, accessible in selenium_results)
+        self.selenium_checked = True
+
+        self.chromium_installed = await self.check_chromium_installed()
+        self.chromium_checked = True
+
+        # Start building the message with formatted HTML
+        messages.append(f"<b>{council_name}</b> requires Selenium to run.<br><br>")
+
+        # Selenium server check results
+        messages.append("<b>Remote Selenium server URLs checked:</b><br>")
+        for url, accessible in selenium_results:
+            status = "✅ Accessible" if accessible else "❌ Not accessible"
+            messages.append(f"{url}: {status}<br>")
+
+        # Chromium installation check
+        chromium_status = "✅ Installed" if self.chromium_installed else "❌ Not installed"
+        messages.append("<br><b>Local Chromium browser check:</b><br>")
+        messages.append(f"Chromium browser is {chromium_status}.")
+
+        # Combine messages
+        return "".join(messages)
+
+
+    async def check_selenium_server(self, custom_url: Optional[str] = None) -> list:
+        """Check if Selenium servers are accessible."""
+        urls = SELENIUM_SERVER_URLS.copy()
+        if custom_url:
+            urls.insert(0, custom_url)
+
+        results = []
+        async with aiohttp.ClientSession() as session:
+            for url in urls:
+                try:
+                    async with session.get(url, timeout=5) as response:
+                        response.raise_for_status()
+                        accessible = response.status == 200
+                        results.append((url, accessible))
+                        _LOGGER.debug("Selenium server %s is accessible.", url)
+                except aiohttp.ClientError as e:
+                    _LOGGER.warning(
+                        "Failed to connect to Selenium server at %s: %s", url, e
+                    )
+                    results.append((url, False))
+                except Exception as e:
+                    _LOGGER.exception(
+                        "Unexpected error checking Selenium server at %s: %s", url, e
+                    )
+                    results.append((url, False))
+        return results
+
+    async def check_chromium_installed(self) -> bool:
+        """Check if Chromium is installed."""
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(None, self._sync_check_chromium)
+        if result:
+            _LOGGER.debug("Chromium is installed.")
+        else:
+            _LOGGER.warning("Chromium is not installed.")
+        return result
+
+    def _sync_check_chromium(self) -> bool:
+        """Synchronous check for Chromium installation."""
+        for exec_name in BROWSER_BINARIES:
+            try:
+                if shutil.which(exec_name):
+                    _LOGGER.debug(f"Found Chromium executable: {exec_name}")
+                    return True
+            except Exception as e:
+                _LOGGER.error(
+                    f"Exception while checking for executable '{exec_name}': {e}"
+                )
+                continue  # Continue checking other binaries
+        _LOGGER.debug("No Chromium executable found.")
+        return False
+
+    def map_wiki_name_to_council_key(self, wiki_name: str) -> str:
+        """Map the council wiki name back to the council key."""
+        index = self.council_options.index(wiki_name)
+        council_key = self.council_names[index]
+        _LOGGER.debug("Mapped wiki name '%s' to council key '%s'.", wiki_name, council_key)
+        return council_key
+
+    @staticmethod
+    def is_valid_json(json_str: str) -> bool:
+        """Validate if a string is valid JSON."""
+        try:
+            json.loads(json_str)
+            return True
+        except json.JSONDecodeError as e:
+            _LOGGER.debug("JSON decode error: %s", e)
+            return False
+
+    async def _async_entry_exists(self, user_input: Dict[str, Any]) -> Optional[config_entries.ConfigEntry]:
+        """Check if a config entry with the same name or data already exists."""
+        for entry in self._async_current_entries():
+            if entry.data.get("name") == user_input.get("name"):
+                return entry
+            if entry.data.get("council") == user_input.get("council") and entry.data.get("url") == user_input.get("url"):
+                return entry
+        return None
+
+    @staticmethod
+    @config_entries.HANDLERS.register(DOMAIN)
+    class OptionsFlowHandler(config_entries.OptionsFlow):
+        """Handle options flow."""
+
+        def __init__(self, config_entry):
+            self.config_entry = config_entry
+
+        async def async_step_init(self, user_input=None):
+            """Manage the options."""
+            if user_input is not None:
+                return self.async_create_entry(title="", data=user_input)
+
+            options = vol.Schema(
+                {
+                    vol.Optional(
+                        "option1",
+                        default=self.config_entry.options.get("option1", True),
+                    ): bool,
+                    vol.Optional(
+                        "option2",
+                        default=self.config_entry.options.get("option2", False),
+                    ): bool,
+                }
+            )
+
+            return self.async_show_form(step_id="init", data_schema=options)
