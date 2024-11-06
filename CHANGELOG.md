@@ -1,4 +1,56 @@
 =======
+## 0.112.0 (2024-11-06)
+
+### Feat
+
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- Adding Powys Council
+- Adding Worcester City Council
+- Adding Ards and North Down Council
+- Adding East Herts Council
+- Adding Ashford Borough Council
+- Adding Stockton On Tees Council
+- Adding Fife Council
+- Adding Flintshire County Council
+- Adding Teignbridge Council
+- Adding Harborough District Council
+- Adding Watford Borough Council
+- Adding Coventry City Council
+
+### Fix
+
+- CC testing and add Chesterfield
+- CC testing and add Chesterfield
+- CC testing and add Chesterfield
+- pytest-homeassistant-custom-component
+- Pydandic version
+- Pydandic version
+- WestOxfordshireDistrictCouncil
+- South Norfolk Council
+- ForestOfDeanDistrictCouncil
+- Croydon Council
+- South Kesteven District Council
+- #647
+- #630
+- #623
+- #586
+- #578
+- #389
+- #930
+- #933
+- #750
+- Refactor Midlothian Council scraper to use house number and postcode
+- West Berkshire Council
+- Southwark Council
+- #580
+- #888
+- #902
+- #607
+
 ## 0.111.0 (2024-11-06)
 
 ### Fix
