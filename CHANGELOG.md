@@ -1,3 +1,9 @@
+## 0.105.1 (2024-10-24)
+
+### Fix
+
+- Refactor Midlothian Council scraper to use house number and postcode
+
 ## 0.105.0 (2024-10-21)
 
 ### Feat
