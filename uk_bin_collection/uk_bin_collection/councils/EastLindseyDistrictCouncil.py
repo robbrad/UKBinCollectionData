@@ -28,14 +28,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(
-                "https://www.e-lindsey.gov.uk/article/6714/Your-Waste-Collection-Days"
-            )
+            driver.get("https://www.e-lindsey.gov.uk/mywastecollections")
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.ID, "WASTECOLLECTIONDAYS202324_LOOKUP_ADDRESSLOOKUPPOSTCODE")
+                    (By.ID, "WASTECOLLECTIONDAYS202425_LOOKUP_ADDRESSLOOKUPPOSTCODE")
                 )
             )
             inputElement_postcode.send_keys(user_postcode)
@@ -43,7 +41,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Click search button
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "WASTECOLLECTIONDAYS202324_LOOKUP_ADDRESSLOOKUPSEARCH")
+                    (By.ID, "WASTECOLLECTIONDAYS202425_LOOKUP_ADDRESSLOOKUPSEARCH")
                 )
             )
             findAddress.click()
@@ -53,7 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.element_to_be_clickable(
                     (
                         By.XPATH,
-                        "//select[@id='WASTECOLLECTIONDAYS202324_LOOKUP_ADDRESSLOOKUPADDRESS']//option[contains(., '"
+                        "//select[@id='WASTECOLLECTIONDAYS202425_LOOKUP_ADDRESSLOOKUPADDRESS']//option[contains(., '"
                         + user_paon
                         + "')]",
                     )
@@ -63,7 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the submit button to appear, then click it to get the collection dates
             submit = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "WASTECOLLECTIONDAYS202324_LOOKUP_FIELD2_NEXT")
+                    (By.ID, "WASTECOLLECTIONDAYS202425_LOOKUP_FIELD2_NEXT")
                 )
             )
             submit.click()
@@ -77,25 +75,25 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Get collections
             for collection in soup.find_all("div", {"class": "waste-result"}):
-                ptags = collection.find_all("p")
-                dict_data = {
-                    "type": collection.find("h3").get_text(strip=True),
-                    "collectionDate": datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(
-                            ptags[1]
-                            .get_text()
-                            .replace("The date of your next collection is", "")
-                            .replace(".", "")
-                            .strip()
-                        ),
-                        "%A %d %B %Y",
-                    ).strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+                collection_date = None
+                for p_tag in collection.find_all("p"):
+                    if "next collection is" in p_tag.text:
+                        collection_date = p_tag.find("strong").text
+                        break
+                if collection_date:
+                    dict_data = {
+                        "type": collection.find("h3").get_text(strip=True),
+                        "collectionDate": datetime.strptime(
+                            remove_ordinal_indicator_from_date_string(collection_date),
+                            "%A %d %B %Y",
+                        ).strftime(date_format),
+                    }
+                    data["bins"].append(dict_data)
 
             data["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
             )
+
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

@@ -1,3 +1,90 @@
+=======
+## 0.111.0 (2024-11-06)
+
+### Fix
+
+- Add London Borough of Sutton
+- #944
+- Add Mid Devon Council
+- #945
+- Adding Oxford City Council
+- #962
+- Tunbridge Wells / Lincoln
+- #963
+- Glasgow City Council
+
+## 0.110.0 (2024-11-04)
+
+### Fix
+
+- Adding Blaby District Council
+- #904
+- Adding Sefton Council
+- #770
+- Adding Bromsgrove District Council
+- #893
+- East Lindsey District Council
+- #957
+- Adding Carmarthenshire County Council
+- #892
+fix: #710
+- Adding East Ayrshire Council
+- #955
+
+## 0.109.2 (2024-11-03)
+
+### Fix
+
+- CC testing and add Chesterfield
+
+## 0.109.1 (2024-11-03)
+
+### Fix
+
+- CC testing and add Chesterfield
+- CC testing and add Chesterfield
+
+## 0.109.0 (2024-11-02)
+
+### Feat
+
+- Adding Cotswold District Council
+- Adding Breckland Council
+
+### Fix
+
+- St Helens Borough Council
+- #753
+- NewarkAndSherwoodDC
+- #941
+- #658
+- #656
+
+## 0.108.2 (2024-11-01)
+
+### Fix
+
+- pytest-homeassistant-custom-component
+
+## 0.108.1 (2024-11-01)
+
+### Fix
+
+- Pydandic version
+- Pydandic version
+
+## 0.108.0 (2024-11-01)
+
+### Feat
+
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- pytest fixes
+- Python 3.12 only and CustomComp. Unit testing
+
 ## 0.107.0 (2024-10-31)
 
 ### Feat

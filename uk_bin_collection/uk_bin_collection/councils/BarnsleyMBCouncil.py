@@ -36,7 +36,6 @@ def parse_bin_text(bin_type_str: str, bin_date_str: str) -> List[Dict[str, str]]
 
     return bins
 
-
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
