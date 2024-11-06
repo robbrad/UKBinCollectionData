@@ -20,20 +20,13 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.councils_data = None
 
     async def get_councils_json(self) -> object:
-        """Returns an object of supported councils and their required fields."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.104.0/uk_bin_collection/tests/input.json"
-        try:
-            async with aiohttp.ClientSession() as session:
-                try:
-                    async with session.get(url) as response:
-                        data_text = await response.text()
-                        return json.loads(data_text)
-                except Exception as e:
-                    _LOGGER.error("Failed to fetch data from URL: %s", e)
-                    raise
-        except Exception as e:
-            _LOGGER.error("Failed to create aiohttp ClientSession: %s", e)
-            return {}
+        """Returns an object of supported council's and their required fields."""
+        # Fetch the JSON data from the provided URL
+        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.106.0/uk_bin_collection/tests/input.json"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                data_text = await response.text()
+                return json.loads(data_text)
 
     async def get_council_schema(self, council=str) -> vol.Schema:
         """Returns a config flow form schema based on a specific council's fields."""
