@@ -745,7 +745,7 @@
         "wiki_command_url_override": "https://lincoln.gov.uk",
         "uprn": "000235024846",
         "postcode": "LN5 7SH",
-        "wiki_name": "Tunbridge Wells Council",
+        "wiki_name": "Lincoln Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LisburnCastlereaghCityCouncil": {
@@ -794,6 +794,13 @@
         "wiki_name": "London Borough Redbridge",
         "wiki_note": "Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your \"Address\" then copy the entire address text and use that in the house number field."
     },
+    "LondonBoroughSutton": {
+        "url": "https://waste-services.sutton.gov.uk/waste",
+        "wiki_command_url_override": "https://waste-services.sutton.gov.uk/waste",
+        "uprn": "4473006",
+        "wiki_name": "London Borough Sutton",
+        "wiki_note": "You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN"
+    },
     "LutonBoroughCouncil": {
         "url": "https://myforms.luton.gov.uk",
         "wiki_command_url_override": "https://myforms.luton.gov.uk",
@@ -838,6 +845,13 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Mid and East Antrim Borough Council",
         "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.)."
+    },
+    "MidDevonCouncil": {
+        "url": "https://www.middevon.gov.uk",
+        "wiki_command_url_override": "https://www.middevon.gov.uk",
+        "uprn": "200003997770",
+        "wiki_name": "Mid Devon Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MidlothianCouncil": {
         "house_number": "52",
@@ -1020,6 +1034,14 @@
         "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
         "wiki_name": "Oldham Council",
         "wiki_note": "Replace UPRN in URL with your own UPRN."
+    },
+    "OxfordCityCouncil": {
+        "url": "https://www.oxford.gov.uk",
+        "wiki_command_url_override": "https://www.oxford.gov.uk",
+        "uprn": "100120820551",
+        "postcode": "OX3 7QF",
+        "wiki_name": "Oxford City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "PerthAndKinrossCouncil": {
         "url": "https://www.pkc.gov.uk",

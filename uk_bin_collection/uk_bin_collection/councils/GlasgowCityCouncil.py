@@ -38,7 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
             for icon in icons:
                 cal_item = icon.find_parent().find_parent()
                 bin_date = datetime.strptime(
-                    cal_item["title"],
+                    cal_item["title"].replace("today is ", ""),
                     "%A, %d %B %Y",
                 )
 

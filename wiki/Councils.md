@@ -111,7 +111,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Lancaster City Council](#lancaster-city-council)
 - [Leeds City Council](#leeds-city-council)
 - [Lichfield District Council](#lichfield-district-council)
-- [Tunbridge Wells Council](#tunbridge-wells-council)
+- [Lincoln Council](#lincoln-council)
 - [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
 - [Liverpool City Council](#liverpool-city-council)
 - [London Borough Ealing](#london-borough-ealing)
@@ -119,6 +119,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [London Borough Hounslow](#london-borough-hounslow)
 - [London Borough Lambeth](#london-borough-lambeth)
 - [London Borough Redbridge](#london-borough-redbridge)
+- [London Borough Sutton](#london-borough-sutton)
 - [Luton Borough Council](#luton-borough-council)
 - [Maldon District Council](#maldon-district-council)
 - [Malvern Hills District Council](#malvern-hills-district-council)
@@ -126,6 +127,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Mansfield District Council](#mansfield-district-council)
 - [Merton Council](#merton-council)
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
+- [Mid Devon Council](#mid-devon-council)
 - [Midlothian Council](#midlothian-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
@@ -152,6 +154,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Northumberland Council](#northumberland-council)
 - [Nottingham City Council](#nottingham-city-council)
 - [Oldham Council](#oldham-council)
+- [Oxford City Council](#oxford-city-council)
 - [Perth and Kinross Council](#perth-and-kinross-council)
 - [Plymouth Council](#plymouth-council)
 - [Portsmouth City Council](#portsmouth-city-council)
@@ -1411,7 +1414,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ---
 
-### Tunbridge Wells Council
+### Lincoln Council
 ```commandline
 python collect_data.py LincolnCouncil https://lincoln.gov.uk -u XXXXXXXX -p "XXXX XXX"
 ```
@@ -1497,6 +1500,17 @@ Note: Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) 
 
 ---
 
+### London Borough Sutton
+```commandline
+python collect_data.py LondonBoroughSutton https://waste-services.sutton.gov.uk/waste -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN
+
+---
+
 ### Luton Borough Council
 ```commandline
 python collect_data.py LutonBoroughCouncil https://myforms.luton.gov.uk -u XXXXXXXX
@@ -1567,6 +1581,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.).
+
+---
+
+### Mid Devon Council
+```commandline
+python collect_data.py MidDevonCouncil https://www.middevon.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -1854,6 +1879,18 @@ python collect_data.py OldhamCouncil https://portal.oldham.gov.uk/bincollectiond
 ```
 
 Note: Replace UPRN in URL with your own UPRN.
+
+---
+
+### Oxford City Council
+```commandline
+python collect_data.py OxfordCityCouncil https://www.oxford.gov.uk -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
