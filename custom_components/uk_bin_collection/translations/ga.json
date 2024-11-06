@@ -1,53 +1,55 @@
 {
-    "title": "Sonraí Bailiúcháin Binn na RA",
+    "title": "Sonraí Bailithe Binn RA",
     "config": {
         "step": {
             "user": {
-                "title": "Roghnaigh an comhairle",
+                "title": "Roghnaigh an chomhairle",
                 "data": {
-                    "name": "Ainm an tSuímh",
+                    "name": "Ainm Suíomh",
                     "council": "Comhairle",
-                    "icon_color_mapping": "JSON chun Cineál Binn a léarscáiliú le haghaidh Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData"
+                    "icon_color_mapping": "JSON chun Cineál Bin a mhapáil do Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData"
                 },
-                "description": "Féach [anseo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) más rud é nach bhfuil do chomhairle liostaithe"
+                "description": "Féach [anseo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura bhfuil do chomhairle liostaithe"
             },
             "council": {
                 "title": "Sonraí na comhairle a sholáthar",
                 "data": {
-                    "url": "URL chun sonraí bailiúcháin bín a fháil",
-                    "timeout": "An t-am i soicindí ar chóir don bhraiteoir fanacht le sonraí",
-                    "uprn": "UPRN (Uimhir Thagartha Aonair Maoine)",
-                    "postcode": "Cód poist an tseolta",
-                    "number": "Uimhir an tí ag an seoladh",
-                    "usrn": "USRN (Uimhir Tagartha Uathúil Sráide)",
-                    "web_driver": "Chun a rith ar Fhreastalaí Selenium iargúlta cuir URL Freastalaí Selenium isteach",
-                    "headless": "Selenium a rith i mód gan cheann (molta)",
-                    "local_browser": "Ná rith freastalaí iargúlta Selenium, bain úsáid as suiteáil áitiúil de Chrome",
+                    "url": "URL chun sonraí bailithe bin a fháil",
+                    "timeout": "An t-am i soicindí don braiteoir fanacht le haghaidh sonraí",
+                    "uprn": "UPRN (Uimhir Tagartha Aonair Maoine)",
+                    "postcode": "Cód poist an seoladh",
+                    "number": "Uimhir tí an seoladh",
+                    "usrn": "USRN (Uimhir Tagartha Sráide Uathúil)",
+                    "web_driver": "Chun rith ar Fhreastalaí Iargúlta Selenium cuir isteach URL an Fhreastalaí Selenium",
+                    "headless": "Rith Selenium i mód gan cheann (molta)",
+                    "local_browser": "Ná rith ar fhreastalaí iargúlta Selenium, úsáid suiteáil áitiúil de Chrome ina ionad",
                     "submit": "Cuir isteach"
                 },
-                "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad ba cheart a iontráil"
+                "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad atá le cur isteach.\n{selenium_message}"
             },
             "reconfigure_confirm": {
-                "title": "Sonraí na comhairle a nuashonrú",
+                "title": "Nuashonraigh sonraí na comhairle",
                 "data": {
-                    "url": "URL chun sonraí bailiúcháin bín a fháil",
-                    "timeout": "An t-am i soicindí ar chóir don bhraiteoir fanacht le sonraí",
-                    "uprn": "UPRN (Uimhir Thagartha Aonair Maoine)",
-                    "postcode": "Cód poist an tseolta",
-                    "number": "Uimhir an tí ag an seoladh",
-                    "usrn": "USRN (Uimhir Tagartha Uathúil Sráide)",
-                    "web_driver": "Chun a rith ar Fhreastalaí Selenium iargúlta cuir URL Freastalaí Selenium isteach",
-                    "headless": "Selenium a rith i mód gan cheann (molta)",
-                    "local_browser": "Ná rith freastalaí iargúlta Selenium, bain úsáid as suiteáil áitiúil de Chrome",
-                    "icon_color_mapping": "JSON chun Cineál Binn a léarscáiliú le haghaidh Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData",
+                    "url": "URL chun sonraí bailithe bin a fháil",
+                    "timeout": "An t-am i soicindí don braiteoir fanacht le haghaidh sonraí",
+                    "uprn": "UPRN (Uimhir Tagartha Aonair Maoine)",
+                    "postcode": "Cód poist an seoladh",
+                    "number": "Uimhir tí an seoladh",
+                    "usrn": "USRN (Uimhir Tagartha Sráide Uathúil)",
+                    "web_driver": "Chun rith ar Fhreastalaí Iargúlta Selenium cuir isteach URL an Fhreastalaí Selenium",
+                    "headless": "Rith Selenium i mód gan cheann (molta)",
+                    "local_browser": "Ná rith ar fhreastalaí iargúlta Selenium, úsáid suiteáil áitiúil de Chrome ina ionad",
+                    "icon_color_mapping": "JSON chun Cineál Bin a mhapáil do Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir isteach"
                 },
-                "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad ba cheart a iontráil"
+                "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad atá le cur isteach."
             }
         },
         "error": {
-            "name": "Cuir isteach ainm an tsuímh",
-            "council": "Roghnaigh comhairle"
+            "name": "Cuir isteach ainm suíomh le do thoil",
+            "council": "Roghnaigh comhairle le do thoil",
+            "selenium_unavailable": "❌ Níl freastalaí Selenium inrochtana. Cinntigh go bhfuil sé ag rith ag http://localhost:4444 nó http://selenium:4444. [Treoir Socraithe](https://example.com/selenium-setup)",
+            "chromium_not_found": "❌ Níl brabhsálaí Chromium suiteáilte. Suiteáil Chromium nó Google Chrome le do thoil. [Treoir Suiteála](https://example.com/chromium-install)"
         }
     }
 }

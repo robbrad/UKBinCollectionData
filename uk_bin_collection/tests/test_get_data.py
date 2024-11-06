@@ -105,8 +105,10 @@ def test_output_json():
     assert type(output) == str
     assert output == '{\n    "bin": ""\n}'
 
+
 class ConcreteGetBinDataClass(agbdc):
     """Concrete implementation of the abstract class to test abstract methods."""
+
     def parse_data(self, page: str, **kwargs) -> dict:
         return {"mock_key": "mock_value"}
 
@@ -114,33 +116,46 @@ class ConcreteGetBinDataClass(agbdc):
         # You can implement the method or delegate it to the abstract class's method
         super().update_dev_mode_data(council_module_str, this_url, **kwargs)
 
+
 @pytest.fixture
 def concrete_class_instance():
     return ConcreteGetBinDataClass()
+
 
 def test_get_and_parse_data_no_skip_get_url(concrete_class_instance):
     mock_page = "mocked page content"
     mock_parsed_data = {"mock_key": "mock_value"}
 
-    with mock.patch.object(concrete_class_instance, 'get_data', return_value=mock_page) as mock_get_data, \
-         mock.patch.object(concrete_class_instance, 'parse_data', return_value=mock_parsed_data) as mock_parse_data:
-        
+    with mock.patch.object(
+        concrete_class_instance, "get_data", return_value=mock_page
+    ) as mock_get_data, mock.patch.object(
+        concrete_class_instance, "parse_data", return_value=mock_parsed_data
+    ) as mock_parse_data:
+
         result = concrete_class_instance.get_and_parse_data("http://example.com")
 
         mock_get_data.assert_called_once_with("http://example.com")
         mock_parse_data.assert_called_once_with(mock_page, url="http://example.com")
         assert result == mock_parsed_data
 
+
 def test_get_and_parse_data_skip_get_url(concrete_class_instance):
     mock_parsed_data = {"mock_key": "mock_value"}
 
-    with mock.patch.object(concrete_class_instance, 'parse_data', return_value=mock_parsed_data) as mock_parse_data:
-        
-        result = concrete_class_instance.get_and_parse_data("http://example.com", skip_get_url=True)
+    with mock.patch.object(
+        concrete_class_instance, "parse_data", return_value=mock_parsed_data
+    ) as mock_parse_data:
 
-        mock_parse_data.assert_called_once_with("", url="http://example.com", skip_get_url=True)
+        result = concrete_class_instance.get_and_parse_data(
+            "http://example.com", skip_get_url=True
+        )
+
+        mock_parse_data.assert_called_once_with(
+            "", url="http://example.com", skip_get_url=True
+        )
         assert result == mock_parsed_data
-        
+
+
 @pytest.fixture
 def setup_test_update_dev_mode_data():
     """Fixture to set up and tear down the environment for test_update_dev_mode_data"""
@@ -148,7 +163,7 @@ def setup_test_update_dev_mode_data():
     test_dir = tempfile.TemporaryDirectory()
 
     # Patch os.getcwd() to return the temporary directory
-    cwd_patch = patch('os.getcwd', return_value=test_dir.name)
+    cwd_patch = patch("os.getcwd", return_value=test_dir.name)
     mock_getcwd = cwd_patch.start()
 
     # Ensure the nested directory structure exists
@@ -171,15 +186,15 @@ def test_update_dev_mode_data(setup_test_update_dev_mode_data):
     obj = ConcreteGetBinDataClass()
 
     # Define input arguments for the method
-    council_module_str = 'test_council_module'
-    this_url = 'https://example.com'
+    council_module_str = "test_council_module"
+    this_url = "https://example.com"
     kwargs = {
-        'postcode': '12345',
-        'paon': '1A',
-        'uprn': '100012345',
-        'usrn': '200012345',
-        'web_driver': 'mocked_web_driver',
-        'skip_get_url': True,
+        "postcode": "12345",
+        "paon": "1A",
+        "uprn": "100012345",
+        "usrn": "200012345",
+        "web_driver": "mocked_web_driver",
+        "skip_get_url": True,
     }
 
     # Call the method being tested on the instance
@@ -190,8 +205,8 @@ def test_update_dev_mode_data(setup_test_update_dev_mode_data):
     assert os.path.exists(input_file_path)
 
     # Read the contents of the file and make necessary assertions
-    with open(input_file_path, 'r') as f:
+    with open(input_file_path, "r") as f:
         file_content = f.read()
 
     # Example assertion - check if certain values exist in the file content (based on your actual file format)
-    assert '100012345' in file_content  # Checking UPRN as an example
+    assert "100012345" in file_content  # Checking UPRN as an example

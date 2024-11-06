@@ -15,6 +15,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Implementation for Chesterfield Borough Council waste collection data retrieval.
@@ -56,7 +57,9 @@ class CouncilClass(AbstractGetBinDataClass):
             session.get(API_URLS["session"], headers=HEADERS, verify=False)
 
             # Step 2: Get fwuid
-            fwuid_response = session.get(API_URLS["fwuid"], headers=HEADERS, verify=False)
+            fwuid_response = session.get(
+                API_URLS["fwuid"], headers=HEADERS, verify=False
+            )
             fwuid_data = fwuid_response.json()
             fwuid = fwuid_data.get("auraConfig", {}).get("context", {}).get("fwuid")
 
@@ -66,50 +69,58 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Step 3: Prepare payload for UPRN search
             payload = {
-                "message": json.dumps({
-                    "actions": [{
-                        "id": "4;a",
-                        "descriptor": "aura://ApexActionController/ACTION$execute",
-                        "callingDescriptor": "UNKNOWN",
-                        "params": {
-                            "namespace": "",
-                            "classname": "CBC_VE_CollectionDays",
-                            "method": "getServicesByUPRN",
-                            "params": {
-                                "propertyUprn": user_uprn,
-                                "executedFrom": "Main Website"
-                            },
-                            "cacheable": False,
-                            "isContinuation": False
-                        }
-                    }]
-                }),
-                "aura.context": json.dumps({
-                    "mode": "PROD",
-                    "fwuid": fwuid,
-                    "app": "c:cbc_VE_CollectionDaysLO",
-                    "loaded": {
-                        "APPLICATION@markup://c:cbc_VE_CollectionDaysLO": "pqeNg7kPWCbx1pO8sIjdLA"
-                    },
-                    "dn": [],
-                    "globals": {},
-                    "uad": True
-                }),
+                "message": json.dumps(
+                    {
+                        "actions": [
+                            {
+                                "id": "4;a",
+                                "descriptor": "aura://ApexActionController/ACTION$execute",
+                                "callingDescriptor": "UNKNOWN",
+                                "params": {
+                                    "namespace": "",
+                                    "classname": "CBC_VE_CollectionDays",
+                                    "method": "getServicesByUPRN",
+                                    "params": {
+                                        "propertyUprn": user_uprn,
+                                        "executedFrom": "Main Website",
+                                    },
+                                    "cacheable": False,
+                                    "isContinuation": False,
+                                },
+                            }
+                        ]
+                    }
+                ),
+                "aura.context": json.dumps(
+                    {
+                        "mode": "PROD",
+                        "fwuid": fwuid,
+                        "app": "c:cbc_VE_CollectionDaysLO",
+                        "loaded": {
+                            "APPLICATION@markup://c:cbc_VE_CollectionDaysLO": "pqeNg7kPWCbx1pO8sIjdLA"
+                        },
+                        "dn": [],
+                        "globals": {},
+                        "uad": True,
+                    }
+                ),
                 "aura.pageURI": "/bins-and-recycling/bin-collections/check-bin-collections.aspx",
                 "aura.token": "null",
             }
 
             # Step 4: Make POST request to fetch collection data
             search_response = session.post(
-                API_URLS["search"],
-                data=payload,
-                headers=HEADERS,
-                verify=False
+                API_URLS["search"], data=payload, headers=HEADERS, verify=False
             )
             search_data = search_response.json()
 
             # Step 5: Extract service units
-            service_units = search_data.get("actions", [])[0].get("returnValue", {}).get("returnValue", {}).get("serviceUnits", [])
+            service_units = (
+                search_data.get("actions", [])[0]
+                .get("returnValue", {})
+                .get("returnValue", {})
+                .get("serviceUnits", [])
+            )
 
             if not service_units:
                 _LOGGER.warning("No service units found for the given UPRN.")
@@ -141,7 +152,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 # Extract the next scheduled date
                 try:
-                    dt_zulu = item["serviceTasks"][0]["serviceTaskSchedules"][0]["nextInstance"]["currentScheduledDate"]
+                    dt_zulu = item["serviceTasks"][0]["serviceTaskSchedules"][0][
+                        "nextInstance"
+                    ]["currentScheduledDate"]
                     dt_utc = datetime.strptime(dt_zulu, "%Y-%m-%dT%H:%M:%S.%f%z")
                     dt_local = dt_utc.astimezone(None)
                     collection_date = dt_local.date()

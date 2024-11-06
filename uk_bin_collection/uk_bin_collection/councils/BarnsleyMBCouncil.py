@@ -27,13 +27,14 @@ def parse_bin_text(bin_type_str: str, bin_date_str: str) -> List[Dict[str, str]]
         bin_date = datetime.strptime(bin_date_str, "%A, %B %d, %Y")
 
     for bin_type in bin_type_str.split(", "):
-        bins.append({
-            "type": bin_type.strip() + " bin",
-            "collectionDate": bin_date.strftime(date_format)
-        })
+        bins.append(
+            {
+                "type": bin_type.strip() + " bin",
+                "collectionDate": bin_date.strftime(date_format),
+            }
+        )
 
     return bins
-    
 
 class CouncilClass(AbstractGetBinDataClass):
     """

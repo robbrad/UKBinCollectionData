@@ -430,7 +430,9 @@ def test_string_with_whitespace_and_numbers():
 )
 def test_get_next_day_of_week(today_str, day_name, expected):
     mock_today = datetime.strptime(today_str, "%Y-%m-%d")
-    with patch('uk_bin_collection.common.datetime') as mock_datetime:  # replace 'your_module' with the actual module name
+    with patch(
+        "uk_bin_collection.common.datetime"
+    ) as mock_datetime:  # replace 'your_module' with the actual module name
         mock_datetime.now.return_value = mock_today
         mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
         result = get_next_day_of_week(day_name, date_format="%m/%d/%Y")

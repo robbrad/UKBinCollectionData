@@ -1,53 +1,55 @@
 {
-    "title": "Dados de Recolha de Lixo do Reino Unido",
+    "title": "Dados de Coleta de Lixo do Reino Unido",
     "config": {
         "step": {
             "user": {
                 "title": "Selecione o conselho",
                 "data": {
-                    "name": "Nome da localidade",
+                    "name": "Nome da localização",
                     "council": "Conselho",
-                    "icon_color_mapping": "JSON para mapear o Tipo de Lixeira para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData"
+                    "icon_color_mapping": "JSON para mapear Tipo de Lixo para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData"
                 },
-                "description": "Por favor veja [aqui](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) se o seu conselho não estiver listado"
+                "description": "Por favor, veja [aqui](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) se o seu conselho não estiver listado"
             },
             "council": {
                 "title": "Forneça os detalhes do conselho",
                 "data": {
-                    "url": "URL para obter dados de recolha de lixo",
-                    "timeout": "Tempo em segundos que o sensor deve aguardar pelos dados",
-                    "uprn": "UPRN (Número Único de Referência da Propriedade)",
+                    "url": "URL para buscar dados de coleta de lixo",
+                    "timeout": "O tempo em segundos que o sensor deve esperar por dados",
+                    "uprn": "UPRN (Número de Referência Único da Propriedade)",
                     "postcode": "Código postal do endereço",
                     "number": "Número da casa do endereço",
-                    "usrn": "USRN (Número Único de Referência da Rua)",
-                    "web_driver": "Para executar num servidor remoto Selenium, adicione o URL do servidor Selenium",
-                    "headless": "Executar o Selenium em modo headless (recomendado)",
-                    "local_browser": "Não executar o servidor remoto Selenium, utilizar a instalação local do Chrome",
-                    "submit": "Submeter"
+                    "usrn": "USRN (Número de Referência Único da Rua)",
+                    "web_driver": "Para executar em um Servidor Selenium remoto, adicione o URL do Servidor Selenium",
+                    "headless": "Execute o Selenium no modo sem cabeça (recomendado)",
+                    "local_browser": "Não execute no servidor Selenium remoto, use a instalação local do Chrome em vez disso",
+                    "submit": "Enviar"
                 },
-                "description": "Por favor, consulte a [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para obter detalhes sobre o que inserir"
+                "description": "Por favor, consulte a entrada [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para detalhes sobre o que inserir.\n{selenium_message}"
             },
             "reconfigure_confirm": {
-                "title": "Atualizar os detalhes do conselho",
+                "title": "Atualizar detalhes do conselho",
                 "data": {
-                    "url": "URL para obter dados de recolha de lixo",
-                    "timeout": "Tempo em segundos que o sensor deve aguardar pelos dados",
-                    "uprn": "UPRN (Número Único de Referência da Propriedade)",
+                    "url": "URL para buscar dados de coleta de lixo",
+                    "timeout": "O tempo em segundos que o sensor deve esperar por dados",
+                    "uprn": "UPRN (Número de Referência Único da Propriedade)",
                     "postcode": "Código postal do endereço",
                     "number": "Número da casa do endereço",
-                    "usrn": "USRN (Número Único de Referência da Rua)",
-                    "web_driver": "Para executar num servidor remoto Selenium, adicione o URL do servidor Selenium",
-                    "headless": "Executar o Selenium em modo headless (recomendado)",
-                    "local_browser": "Não executar o servidor remoto Selenium, utilizar a instalação local do Chrome.",
-                    "icon_color_mapping": "JSON para mapear o Tipo de Lixeira para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData",
-                    "submit": "Submeter"
+                    "usrn": "USRN (Número de Referência Único da Rua)",
+                    "web_driver": "Para executar em um Servidor Selenium remoto, adicione o URL do Servidor Selenium",
+                    "headless": "Execute o Selenium no modo sem cabeça (recomendado)",
+                    "local_browser": "Não execute no servidor Selenium remoto, use a instalação local do Chrome em vez disso",
+                    "icon_color_mapping": "JSON para mapear Tipo de Lixo para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData",
+                    "submit": "Enviar"
                 },
-                "description": "Por favor, consulte a [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para obter detalhes sobre o que inserir"
+                "description": "Por favor, consulte a entrada [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para detalhes sobre o que inserir."
             }
         },
         "error": {
-            "name": "Por favor, insira um nome de localidade",
-            "council": "Por favor, selecione um conselho"
+            "name": "Por favor, insira um nome de localização",
+            "council": "Por favor, selecione um conselho",
+            "selenium_unavailable": "❌ O servidor Selenium não está acessível. Por favor, certifique-se de que está em execução em http://localhost:4444 ou http://selenium:4444. [Guia de Configuração](https://example.com/selenium-setup)",
+            "chromium_not_found": "❌ O navegador Chromium não está instalado. Por favor, instale o Chromium ou o Google Chrome. [Guia de Instalação](https://example.com/chromium-install)"
         }
     }
 }

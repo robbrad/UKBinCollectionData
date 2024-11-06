@@ -1,7 +1,10 @@
 import requests
 import json
 from datetime import datetime
-from uk_bin_collection.uk_bin_collection.common import check_uprn, date_format as DATE_FORMAT
+from uk_bin_collection.uk_bin_collection.common import (
+    check_uprn,
+    date_format as DATE_FORMAT,
+)
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -11,15 +14,15 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        url_base = "https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation"
+        url_base = (
+            "https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation"
+        )
 
         uprn = kwargs.get("uprn")
         # Check the UPRN is valid
         check_uprn(uprn)
 
-        payload = {
-            "uprn": uprn
-        }
+        payload = {"uprn": uprn}
 
         headers = {"Content-Type": "application/json"}
 
@@ -36,7 +39,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 bins.append(
                     {
                         "type": service_name,
-                        "collectionDate": collection_data.get("current_collection_date"),
+                        "collectionDate": collection_data.get(
+                            "current_collection_date"
+                        ),
                     }
                 )
 
