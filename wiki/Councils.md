@@ -126,6 +126,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Mansfield District Council](#mansfield-district-council)
 - [Merton Council](#merton-council)
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
+- [Mid Devon Council](#mid-devon-council)
 - [Midlothian Council](#midlothian-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
@@ -1568,6 +1569,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes.  Check the address in the web site first. This version will only pick the first SHOW button returned by the search or if it is fully unique.  The search is not very predictable (e.g. house number 4 returns 14,24,4,44 etc.).
+
+---
+
+### Mid Devon Council
+```commandline
+python collect_data.py MidDevonCouncil https://www.middevon.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
