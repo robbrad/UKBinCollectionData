@@ -1,3 +1,17 @@
+## 0.111.0 (2024-11-06)
+
+### Fix
+
+- Add London Borough of Sutton
+- #944
+- Add Mid Devon Council
+- #945
+- Adding Oxford City Council
+- #962
+- Tunbridge Wells / Lincoln
+- #963
+- Glasgow City Council
+
 ## 0.110.0 (2024-11-04)
 
 ### Fix
