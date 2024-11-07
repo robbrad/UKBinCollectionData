@@ -1141,6 +1141,13 @@
         "wiki_name": "Nottingham City Council",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "NuneatonBedworthBoroughCouncil": {
+        "url": "https://www.nuneatonandbedworth.gov.uk",
+        "wiki_name": "Nuneaton and Bedworth Borough Council",
+        "skip_get_url": true,
+        "house_number": "Newdigate Road",
+        "wiki_note": "Pass the name of the street ONLY in the house number parameter, wrapped in double quotes. Street name must match exactly as it appears on the council's website."
+    },
     "OldhamCouncil": {
         "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
         "wiki_name": "Oldham Council",
