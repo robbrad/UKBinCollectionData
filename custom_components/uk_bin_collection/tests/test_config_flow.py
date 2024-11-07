@@ -790,7 +790,7 @@ async def test_async_step_user_council_data_unavailable(hass: HomeAssistant):
         result = await flow.async_step_user(user_input={})
 
         assert result["type"] == data_entry_flow.FlowResultType.ABORT
-        assert result["reason"] == "council_data_unavailable"
+        assert result["reason"] == "Council Data Unavailable"
 
 
 @pytest.mark.asyncio

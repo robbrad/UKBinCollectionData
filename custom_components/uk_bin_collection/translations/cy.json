@@ -16,6 +16,7 @@
                 "data": {
                     "url": "URL i nôl data casglu biniau",
                     "timeout": "Yr amser mewn eiliadau y dylai'r synhwyrydd aros am ddata",
+                    "update_interval": "Amser mewn oriau rhwng diweddariadau",
                     "uprn": "UPRN (Rhif Cyfeirnod Eiddo Unigryw)",
                     "postcode": "Cod post y cyfeiriad",
                     "number": "Rhif tŷ y cyfeiriad",
@@ -32,6 +33,7 @@
                 "data": {
                     "url": "URL i nôl data casglu biniau",
                     "timeout": "Yr amser mewn eiliadau y dylai'r synhwyrydd aros am ddata",
+                    "update_interval": "Amser mewn oriau rhwng diweddariadau",
                     "uprn": "UPRN (Rhif Cyfeirnod Eiddo Unigryw)",
                     "postcode": "Cod post y cyfeiriad",
                     "number": "Rhif tŷ y cyfeiriad",

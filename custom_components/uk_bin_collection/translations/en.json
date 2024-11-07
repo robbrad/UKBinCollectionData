@@ -16,6 +16,7 @@
                 "data": {
                     "url": "URL to fetch bin collection data",
                     "timeout": "The time in seconds for how long the sensor should wait for data",
+                    "update_interval": "Time in hours between updates",
                     "uprn": "UPRN (Unique Property Reference Number)",
                     "postcode": "Postcode of the address",
                     "number": "House number of the address",
@@ -32,6 +33,7 @@
                 "data": {
                     "url": "URL to fetch bin collection data",
                     "timeout": "The time in seconds for how long the sensor should wait for data",
+                    "update_interval": "Time in hours between updates",
                     "uprn": "UPRN (Unique Property Reference Number)",
                     "postcode": "Postcode of the address",
                     "number": "House number of the address",

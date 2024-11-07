@@ -14,12 +14,13 @@ from homeassistant.util import dt as dt_util
 
 from custom_components.uk_bin_collection.const import DOMAIN
 from custom_components.uk_bin_collection.sensor import (
-    HouseholdBinCoordinator,
     UKBinCollectionAttributeSensor,
     UKBinCollectionDataSensor,
     UKBinCollectionRawJSONSensor,
     async_setup_entry,
 )
+
+from custom_components.uk_bin_collection import HouseholdBinCoordinator
 
 logging.basicConfig(level=logging.DEBUG)
 

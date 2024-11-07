@@ -16,6 +16,7 @@
                 "data": {
                     "url": "URL para buscar dados de coleta de lixo",
                     "timeout": "O tempo em segundos que o sensor deve esperar por dados",
+                    "update_interval": "Tempo em horas entre as atualizações",
                     "uprn": "UPRN (Número de Referência Único da Propriedade)",
                     "postcode": "Código postal do endereço",
                     "number": "Número da casa do endereço",
@@ -32,6 +33,7 @@
                 "data": {
                     "url": "URL para buscar dados de coleta de lixo",
                     "timeout": "O tempo em segundos que o sensor deve esperar por dados",
+                    "update_interval": "Tempo em horas entre as atualizações",
                     "uprn": "UPRN (Número de Referência Único da Propriedade)",
                     "postcode": "Código postal do endereço",
                     "number": "Número da casa do endereço",

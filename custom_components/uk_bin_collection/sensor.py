@@ -40,83 +40,17 @@ async def async_setup_entry(
     """Set up the UK Bin Collection Data sensor platform."""
     _LOGGER.info(f"{LOG_PREFIX} Setting up UK Bin Collection Data platform.")
 
-    name = config_entry.data.get("name")
-    if not name:
-        _LOGGER.error(f"{LOG_PREFIX} 'name' is missing in config entry.")
-        raise ConfigEntryNotReady("Missing 'name' in configuration.")
+    # Retrieve the coordinator from hass.data
+    coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
-    timeout = config_entry.data.get("timeout", 60)
+    # Get icon_color_mapping from config
     icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")
-
-    # Validate 'timeout'
-    try:
-        timeout = int(timeout)
-    except (ValueError, TypeError):
-        _LOGGER.warning(
-            f"{LOG_PREFIX} Invalid timeout value: {timeout}. Using default 60 seconds."
-        )
-        timeout = 60
-
-    # Prepare arguments for UKBinCollectionApp
-    args = build_ukbcd_args(config_entry.data)
-
-    _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
-
-    # Initialize the UK Bin Collection Data application
-    ukbcd = UKBinCollectionApp()
-    ukbcd.set_args(args)
-
-    # Initialize the data coordinator
-    coordinator = HouseholdBinCoordinator(hass, ukbcd, name, timeout=timeout)
-
-    try:
-        await coordinator.async_refresh()
-    except UpdateFailed as e:
-        _LOGGER.error(f"{LOG_PREFIX} Unable to fetch initial data: {e}")
-        raise ConfigEntryNotReady from e
-
-    # Store the coordinator in Home Assistant's data
-    hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][config_entry.entry_id] = coordinator
 
     # Create sensor entities
     entities = create_sensor_entities(coordinator, config_entry.entry_id, icon_color_mapping)
 
     # Register all sensor entities with Home Assistant
     async_add_entities(entities)
-
-def build_ukbcd_args(config_data: Dict[str, Any]) -> list:
-    """Build arguments list for UKBinCollectionApp."""
-    excluded_keys = {
-        "name",
-        "council",
-        "url",
-        "skip_get_url",
-        "headless",
-        "local_browser",
-        "timeout",
-        "icon_color_mapping",
-    }
-
-    args = [config_data.get("council", ""), config_data.get("url", "")]
-
-    # Add other arguments
-    for key, value in config_data.items():
-        if key in excluded_keys:
-            continue
-        if key == "web_driver":
-            value = value.rstrip("/")
-        args.append(f"--{key}={value}")
-
-    # Add flags based on config options
-    if config_data.get("skip_get_url", False):
-        args.append("--skip_get_url")
-    if not config_data.get("headless", True):
-        args.append("--not-headless")
-    if config_data.get("local_browser", False):
-        args.append("--local_browser")
-
-    return args
 
 
 def create_sensor_entities(coordinator, entry_id, icon_color_mapping):
@@ -161,85 +95,6 @@ def load_icon_color_mapping(icon_color_mapping: str) -> Dict[str, Any]:
         return {}
 
 
-class HouseholdBinCoordinator(DataUpdateCoordinator):
-    """Coordinator to manage fetching and updating UK Bin Collection data."""
-
-    def __init__(
-        self,
-        hass: HomeAssistant,
-        ukbcd: UKBinCollectionApp,
-        name: str,
-        timeout: int = 60,
-    ) -> None:
-        """Initialize the data coordinator."""
-        super().__init__(
-            hass,
-            _LOGGER,
-            name="UK Bin Collection Data",
-            update_interval=timedelta(hours=12),
-        )
-        self.ukbcd = ukbcd
-        self.name = name
-        self.timeout = timeout
-
-    async def _async_update_data(self) -> dict:
-        """Fetch and process the latest bin collection data."""
-        try:
-            data = await asyncio.wait_for(
-                self.hass.async_add_executor_job(self.ukbcd.run),
-                timeout=self.timeout,
-            )
-            _LOGGER.debug(f"{LOG_PREFIX} Data fetched: {data}")
-            parsed_data = json.loads(data)
-            _LOGGER.debug(f"{LOG_PREFIX} Parsed data: {parsed_data}")
-            return self.process_bin_data(parsed_data)
-        except asyncio.TimeoutError as exc:
-            _LOGGER.error(f"{LOG_PREFIX} Timeout while updating data: {exc}")
-            raise UpdateFailed(f"Timeout while updating data: {exc}") from exc
-        except JSONDecodeError as exc:
-            _LOGGER.error(f"{LOG_PREFIX} JSON decode error: {exc}")
-            raise UpdateFailed(f"JSON decode error: {exc}") from exc
-        except Exception as exc:
-            _LOGGER.exception(f"{LOG_PREFIX} Unexpected error: {exc}")
-            raise UpdateFailed(f"Unexpected error: {exc}") from exc
-    @staticmethod
-    def process_bin_data(data: dict) -> dict:
-        """Process raw data to determine the next collection dates."""
-        current_date = dt_util.now().date()
-        next_collection_dates = {}
-
-        for bin_data in data.get("bins", []):
-            bin_type = bin_data.get("type")
-            collection_date_str = bin_data.get("collectionDate")
-
-            if not bin_type or not collection_date_str:
-                _LOGGER.warning(
-                    f"{LOG_PREFIX} Missing 'type' or 'collectionDate' in bin data: {bin_data}"
-                )
-                continue
-
-            try:
-                collection_date = datetime.strptime(
-                    collection_date_str, "%d/%m/%Y"
-                ).date()
-            except (ValueError, TypeError):
-                _LOGGER.warning(
-                    f"{LOG_PREFIX} Invalid date format for bin type '{bin_type}': '{collection_date_str}'."
-                )
-                continue
-
-            # Update next collection date if it's sooner
-            existing_date = next_collection_dates.get(bin_type)
-            if (
-                collection_date >= current_date
-                and (not existing_date or collection_date < existing_date)
-            ):
-                next_collection_dates[bin_type] = collection_date
-
-        _LOGGER.debug(f"{LOG_PREFIX} Next Collection Dates: {next_collection_dates}")
-        return next_collection_dates
-
-
 class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     """Sensor entity for individual bin collection data."""
 
@@ -247,13 +102,14 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
 
     def __init__(
         self,
-        coordinator: HouseholdBinCoordinator,
+        coordinator: DataUpdateCoordinator,
         bin_type: str,
         device_id: str,
         icon_color_mapping: Dict[str, Any],
     ) -> None:
         """Initialize the main bin sensor."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._bin_type = bin_type
         self._device_id = device_id
         self._icon_color_mapping = icon_color_mapping
@@ -373,7 +229,7 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
 
     def __init__(
         self,
-        coordinator: HouseholdBinCoordinator,
+        coordinator: DataUpdateCoordinator,
         bin_type: str,
         unique_id: str,
         attribute_type: str,
@@ -382,6 +238,7 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
     ) -> None:
         """Initialize the attribute sensor."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._bin_type = bin_type
         self._unique_id = unique_id
         self._attribute_type = attribute_type
@@ -464,7 +321,7 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict:
-        """Return extra state attributes for the attribute sensor."""
+        """Return the extra state attributes."""
         return {
             STATE_ATTR_COLOUR: self._color,
             STATE_ATTR_NEXT_COLLECTION: self.coordinator.data.get(self._bin_type),
@@ -497,14 +354,15 @@ class UKBinCollectionRawJSONSensor(CoordinatorEntity, SensorEntity):
 
     def __init__(
         self,
-        coordinator: HouseholdBinCoordinator,
+        coordinator: DataUpdateCoordinator,
         unique_id: str,
         name: str,
     ) -> None:
         """Initialize the raw JSON sensor."""
         super().__init__(coordinator)
+        self.coordinator = coordinator
         self._unique_id = unique_id
-        self._name = f"{self.coordinator.name} Raw JSON"
+        self._name = f"{name} Raw JSON"
 
     @property
     def name(self) -> str:
