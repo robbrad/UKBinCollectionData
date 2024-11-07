@@ -16,6 +16,7 @@
                 "data": {
                     "url": "URL gus dàta cruinneachadh biona fhaighinn",
                     "timeout": "An ùine ann an diogan airson cho fada bu chòir don sensor feitheamh airson dàta",
+                    "update_interval": "Am i n-uaireanta idir nuashonruithe",
                     "uprn": "UPRN (Àireamh Iomraidh Seilbh Aonraic)",
                     "postcode": "Còd-puist an t-seòladh",
                     "number": "Àireamh an taighe den t-seòladh",
@@ -32,6 +33,7 @@
                 "data": {
                     "url": "URL gus dàta cruinneachadh biona fhaighinn",
                     "timeout": "An ùine ann an diogan airson cho fada bu chòir don sensor feitheamh airson dàta",
+                    "update_interval": "Am i n-uaireanta idir nuashonruithe",
                     "uprn": "UPRN (Àireamh Iomraidh Seilbh Aonraic)",
                     "postcode": "Còd-puist an t-seòladh",
                     "number": "Àireamh an taighe den t-seòladh",
