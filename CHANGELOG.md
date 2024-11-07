@@ -1,4 +1,10 @@
 =======
+## 0.112.1 (2024-11-07)
+
+### Fix
+
+- #767 BREAKING CHANGE - READD your sensors / config
+
 ## 0.112.0 (2024-11-06)
 
 ### Feat
