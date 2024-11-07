@@ -1,4 +1,10 @@
 =======
+## 0.113.0 (2024-11-07)
+
+### Feat
+
+- adding calendar for Bins in Custom Component
+
 ## 0.112.1 (2024-11-07)
 
 ### Fix
