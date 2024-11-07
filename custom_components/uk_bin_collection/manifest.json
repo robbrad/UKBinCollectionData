@@ -11,5 +11,6 @@
     "issue_tracker": "https://github.com/robbrad/UKBinCollectionData/issues",
     "requirements": ["uk-bin-collection>=0.112.1"],
     "version": "0.112.1",
-    "zeroconf": []
+    "zeroconf": [],
+    "platforms": ["sensor", "calendar"]
 }
