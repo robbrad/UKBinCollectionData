@@ -9,8 +9,8 @@
     "integration_type": "service",
     "iot_class": "cloud_polling",
     "issue_tracker": "https://github.com/robbrad/UKBinCollectionData/issues",
-    "requirements": ["uk-bin-collection>=0.113.0"],
-    "version": "0.113.0",
+    "requirements": ["uk-bin-collection>=0.114.0"],
+    "version": "0.114.0",
     "zeroconf": [],
     "platforms": ["sensor", "calendar"]
 }

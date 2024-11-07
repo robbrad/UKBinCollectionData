@@ -1,4 +1,10 @@
 =======
+## 0.114.0 (2024-11-07)
+
+### Feat
+
+- Nuneaton and Bedworth Borough Council
+
 ## 0.113.0 (2024-11-07)
 
 ### Feat
