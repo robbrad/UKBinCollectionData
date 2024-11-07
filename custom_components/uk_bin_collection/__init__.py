@@ -1,3 +1,5 @@
+# init.py
+
 """The UK Bin Collection integration."""
 
 import asyncio
@@ -14,7 +16,7 @@ from datetime import datetime
 
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN, LOG_PREFIX
+from .const import DOMAIN, LOG_PREFIX, PLATFORMS
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
 
 _LOGGER = logging.getLogger(__name__)
@@ -99,11 +101,11 @@ async def async_setup_entry(
     hass.data[DOMAIN][config_entry.entry_id] = {"coordinator": coordinator}
     _LOGGER.debug(f"{LOG_PREFIX} Coordinator stored in hass.data under entry_id={config_entry.entry_id}.")
 
-    # Forward the setup to the sensor platform without awaiting
+    # Forward the setup to all platforms (sensor and calendar)
     hass.async_create_task(
-        hass.config_entries.async_forward_entry_setups(config_entry, ["sensor"])
+        hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
     )
-    _LOGGER.debug(f"{LOG_PREFIX} Setup forwarded to 'sensor' platform.")
+    _LOGGER.debug(f"{LOG_PREFIX} Setup forwarded to platforms: {PLATFORMS}.")
 
     return True
 
@@ -116,11 +118,15 @@ async def async_unload_entry(
     unload_ok = await hass.config_entries.async_forward_entry_unload(
         config_entry, "sensor"
     )
+    calendar_unload_ok = await hass.config_entries.async_forward_entry_unload(
+        config_entry, "calendar"
+    )
+    unload_ok = unload_ok and calendar_unload_ok
     if unload_ok:
         hass.data[DOMAIN].pop(config_entry.entry_id)
         _LOGGER.debug(f"{LOG_PREFIX} Unloaded and removed coordinator for entry_id={config_entry.entry_id}.")
     else:
-        _LOGGER.warning(f"{LOG_PREFIX} Failed to unload 'sensor' platform for entry_id={config_entry.entry_id}.")
+        _LOGGER.warning(f"{LOG_PREFIX} Failed to unload one or more platforms for entry_id={config_entry.entry_id}.")
 
     return unload_ok
 
@@ -202,7 +208,6 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         except Exception as exc:
             _LOGGER.exception(f"{LOG_PREFIX} Unexpected error: {exc}")
             raise UpdateFailed(f"Unexpected error: {exc}") from exc
-
 
     @staticmethod
     def process_bin_data(data: dict) -> dict:

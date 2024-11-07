@@ -28,6 +28,7 @@ from .const import (
     STATE_ATTR_NEXT_COLLECTION,
     DEVICE_CLASS,
     STATE_ATTR_COLOUR,
+    PLATFORMS,
 )
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
 
