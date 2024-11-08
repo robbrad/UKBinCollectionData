@@ -18,7 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UkBinCollection."""
 
-    VERSION = 1  # Incremented version for config flow changes
+    VERSION = 2  # Incremented version for config flow changes
 
     def __init__(self):
         self.councils_data: Optional[Dict[str, Any]] = None
