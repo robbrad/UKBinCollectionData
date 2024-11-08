@@ -174,7 +174,7 @@ jobs:
           path: gh-pages/allure-full-history
 
       - name: Get Allure history - Partial Report
-        if: github.event_name != 'schedule' && github.event_name != 'push'
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
         continue-on-error: true
         with:
@@ -193,7 +193,7 @@ jobs:
 
       - name: Allure report action for Partial Run
         uses: simple-elf/allure-report-action@master
-        if: github.event_name != 'schedule' && github.event_name != 'push'
+        if: github.event_name == 'pull_request'
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
           subfolder: ${{ matrix.python-version }}
@@ -206,7 +206,7 @@ jobs:
         run: tar -cvf allure_full_history_${{ matrix.python-version }}.tar gh-pages/allure-full-history/${{ matrix.python-version }}
 
       - name: Tar partial report
-        if: github.event_name != 'schedule' && github.event_name != 'push'
+        if: github.event_name == 'pull_request'
         run: tar -cvf allure_partial_history_${{ matrix.python-version }}.tar gh-pages/allure-partial-history/${{ matrix.python-version }}
 
       # Upload Report Artifacts
@@ -219,7 +219,7 @@ jobs:
 
       - name: Upload artifact for Partial Report
         uses: actions/upload-artifact@v4
-        if: github.event_name != 'schedule' && github.event_name != 'push'
+        if: github.event_name == 'pull_request'
         with:
           name: allure_partial_history_${{ matrix.python-version }}
           path: allure_partial_history_${{ matrix.python-version }}.tar
@@ -235,17 +235,21 @@ jobs:
         with:
           name: allure_full_history_3.12
           path: allure-history/tars/full
+          # Removed repository and run-id
 
-      - uses: actions/download-artifact@v4
-        name: Download Partial Artifacts
+      - name: Download Partial Artifacts
+        if: github.event_name == 'pull_request'
+        uses: actions/download-artifact@v4
         with:
           name: allure_partial_history_3.12
           path: allure-history/tars/partial
+          # Removed repository and run-id
 
       - name: Untar Full Reports
         run: for i in allure-history/tars/full/*.tar; do tar -xvf "$i" -C allure-history/full ;done
 
       - name: Untar Partial Reports
+        if: github.event_name == 'pull_request'
         run: for i in allure-history/tars/partial/*.tar; do tar -xvf "$i" -C allure-history/partial ;done
 
       - name: Remove Tar Reports
@@ -259,6 +263,7 @@ jobs:
           publish_dir: allure-history/full
 
       - name: Deploy Partial Report
+        if: github.event_name == 'pull_request'
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.GITHUB_TOKEN }}
