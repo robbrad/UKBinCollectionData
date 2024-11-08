@@ -1,4 +1,10 @@
 =======
+## 0.114.3 (2024-11-08)
+
+### Fix
+
+- fix manifest in custom component
+
 ## 0.114.2 (2024-11-08)
 
 ### Fix
