@@ -1,4 +1,10 @@
 =======
+## 0.114.5 (2024-11-08)
+
+### Fix
+
+- migration logging and debugging
+
 ## 0.114.4 (2024-11-08)
 
 ### Fix
