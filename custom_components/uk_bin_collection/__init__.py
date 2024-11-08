@@ -37,7 +37,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry) -> bool:
         data = config_entry.data.copy()
         data.setdefault("update_interval", 12)
 
-        self.hass.config_entries.async_update_entry(config_entry, data=data)
+        hass.config_entries.async_update_entry(config_entry, data=data)
         config_entry.version = 2
 
         _LOGGER.info(f"{LOG_PREFIX} Migration of config entry {config_entry.entry_id} successful.")
