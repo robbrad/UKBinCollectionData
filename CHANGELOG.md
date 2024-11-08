@@ -1,4 +1,11 @@
 =======
+## 0.114.2 (2024-11-08)
+
+### Fix
+
+- #975 adding routine to handle migration error
+- #975 adding routine to handle migration error
+
 ## 0.114.1 (2024-11-08)
 
 ### Fix
