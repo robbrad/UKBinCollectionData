@@ -1,5 +1,3 @@
-# init.py
-
 """The UK Bin Collection integration."""
 
 import asyncio
@@ -28,20 +26,35 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     _LOGGER.debug(f"{LOG_PREFIX} async_setup called with config: {config}")
     return True
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry) -> bool:
+
+async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Migrate old config entries to new version."""
     if config_entry.version == 1:
-        _LOGGER.info(f"{LOG_PREFIX} Migrating config entry {config_entry.entry_id} from version 1 to 2.")
+        _LOGGER.info(
+            f"{LOG_PREFIX} Migrating config entry {config_entry.entry_id} from version 1 to 2."
+        )
 
         # Example: Add default update_interval if not present
         data = config_entry.data.copy()
-        data.setdefault("update_interval", 12)
+        if "update_interval" not in data:
+            data["update_interval"] = 12
+            _LOGGER.debug(
+                f"{LOG_PREFIX} 'update_interval' not found. Setting default to 12 hours."
+            )
+        else:
+            _LOGGER.debug(
+                f"{LOG_PREFIX} 'update_interval' found: {data['update_interval']} hours."
+            )
 
+        # Update the config entry with the new data
         hass.config_entries.async_update_entry(config_entry, data=data)
-        config_entry.version = 2
 
-        _LOGGER.info(f"{LOG_PREFIX} Migration of config entry {config_entry.entry_id} successful.")
+        _LOGGER.info(
+            f"{LOG_PREFIX} Migration of config entry {config_entry.entry_id} to version 2 successful."
+        )
+
     return True
+
 
 async def async_setup_entry(
     hass: HomeAssistant, config_entry: ConfigEntry
@@ -59,13 +72,20 @@ async def async_setup_entry(
     update_interval_hours = config_entry.data.get("update_interval", 12)
 
     _LOGGER.debug(
-        f"{LOG_PREFIX} Retrieved configuration: name={name}, timeout={timeout}, "
-        f"update_interval={update_interval_hours} hours, icon_color_mapping={icon_color_mapping}"
+        f"{LOG_PREFIX} Retrieved configuration: "
+        f"name={name}, timeout={timeout}, "
+        f"update_interval={update_interval_hours} hours, "
+        f"icon_color_mapping={icon_color_mapping}"
     )
 
     # Validate 'timeout'
     try:
         timeout = int(timeout)
+        if timeout < 10:
+            _LOGGER.warning(
+                f"{LOG_PREFIX} Timeout value {timeout} is less than 10. Setting to minimum of 10 seconds."
+            )
+            timeout = 10
     except (ValueError, TypeError):
         _LOGGER.warning(
             f"{LOG_PREFIX} Invalid timeout value: {timeout}. Using default 60 seconds."
@@ -98,10 +118,16 @@ async def async_setup_entry(
 
     # Initialize the data coordinator
     coordinator = HouseholdBinCoordinator(
-        hass, ukbcd, name, timeout=timeout, update_interval=timedelta(hours=update_interval_hours)
+        hass,
+        ukbcd,
+        name,
+        timeout=timeout,
+        update_interval=timedelta(hours=update_interval_hours),
     )
 
-    _LOGGER.debug(f"{LOG_PREFIX} HouseholdBinCoordinator initialized with update_interval={update_interval_hours} hours.")
+    _LOGGER.debug(
+        f"{LOG_PREFIX} HouseholdBinCoordinator initialized with update_interval={update_interval_hours} hours."
+    )
 
     try:
         await coordinator.async_config_entry_first_refresh()
@@ -113,7 +139,9 @@ async def async_setup_entry(
 
     # Store the coordinator in Home Assistant's data
     hass.data[DOMAIN][config_entry.entry_id] = {"coordinator": coordinator}
-    _LOGGER.debug(f"{LOG_PREFIX} Coordinator stored in hass.data under entry_id={config_entry.entry_id}.")
+    _LOGGER.debug(
+        f"{LOG_PREFIX} Coordinator stored in hass.data under entry_id={config_entry.entry_id}."
+    )
 
     # Forward the setup to all platforms (sensor and calendar)
     hass.async_create_task(
@@ -129,18 +157,31 @@ async def async_unload_entry(
 ) -> bool:
     """Unload a config entry."""
     _LOGGER.info(f"{LOG_PREFIX} Unloading config entry {config_entry.entry_id}.")
-    unload_ok = await hass.config_entries.async_forward_entry_unload(
-        config_entry, "sensor"
-    )
-    calendar_unload_ok = await hass.config_entries.async_forward_entry_unload(
-        config_entry, "calendar"
-    )
-    unload_ok = unload_ok and calendar_unload_ok
+    unload_ok = True
+
+    for platform in PLATFORMS:
+        platform_unload_ok = await hass.config_entries.async_forward_entry_unload(
+            config_entry, platform
+        )
+        if not platform_unload_ok:
+            _LOGGER.warning(
+                f"{LOG_PREFIX} Failed to unload '{platform}' platform for entry_id={config_entry.entry_id}."
+            )
+            unload_ok = False
+        else:
+            _LOGGER.debug(
+                f"{LOG_PREFIX} Successfully unloaded '{platform}' platform for entry_id={config_entry.entry_id}."
+            )
+
     if unload_ok:
         hass.data[DOMAIN].pop(config_entry.entry_id)
-        _LOGGER.debug(f"{LOG_PREFIX} Unloaded and removed coordinator for entry_id={config_entry.entry_id}.")
+        _LOGGER.debug(
+            f"{LOG_PREFIX} Unloaded and removed coordinator for entry_id={config_entry.entry_id}."
+        )
     else:
-        _LOGGER.warning(f"{LOG_PREFIX} Failed to unload one or more platforms for entry_id={config_entry.entry_id}.")
+        _LOGGER.warning(
+            f"{LOG_PREFIX} One or more platforms failed to unload for entry_id={config_entry.entry_id}."
+        )
 
     return unload_ok
 
@@ -195,11 +236,15 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         self.name = name
         self.timeout = timeout
 
-        _LOGGER.debug(f"{LOG_PREFIX} DataUpdateCoordinator initialized with update_interval={update_interval}.")
+        _LOGGER.debug(
+            f"{LOG_PREFIX} DataUpdateCoordinator initialized with update_interval={update_interval}."
+        )
 
     async def _async_update_data(self) -> dict:
         """Fetch and process the latest bin collection data."""
-        _LOGGER.debug(f"{LOG_PREFIX} Starting data fetch with timeout={self.timeout} seconds.")
+        _LOGGER.debug(
+            f"{LOG_PREFIX} Starting data fetch with timeout={self.timeout} seconds."
+        )
         _LOGGER.info(f"{LOG_PREFIX} Fetching latest bin collection data.")
         try:
             data = await asyncio.wait_for(
