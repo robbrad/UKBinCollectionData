@@ -153,6 +153,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Norwich City Council](#norwich-city-council)
 - [Northumberland Council](#northumberland-council)
 - [Nottingham City Council](#nottingham-city-council)
+- [Nuneaton and Bedworth Borough Council](#nuneaton-and-bedworth-borough-council)
 - [Oldham Council](#oldham-council)
 - [Oxford City Council](#oxford-city-council)
 - [Perth and Kinross Council](#perth-and-kinross-council)
@@ -1870,6 +1871,18 @@ python collect_data.py NottinghamCityCouncil https://geoserver.nottinghamcity.go
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+---
+
+### Nuneaton and Bedworth Borough Council
+```commandline
+python collect_data.py NuneatonBedworthBoroughCouncil https://www.nuneatonandbedworth.gov.uk -s -n "XXXXXXX XXXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-n` - house number
+
+Note: Enter ONLY the street name in the house number parameter. Ensure street name is entered as exactly on the council website. (Some street names may also include the town)
 
 ---
 

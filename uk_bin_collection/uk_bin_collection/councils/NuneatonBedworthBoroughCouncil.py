@@ -36,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     for date in v:
                         dict_data = {
                             "type": k,
-                            "collectionDate": date
+                            "collectionDate": datetime.strptime(date, "%Y-%m-%d").strftime(date_format)
                         }
                         data["bins"].append(dict_data)
     
