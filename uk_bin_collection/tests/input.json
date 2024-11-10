@@ -1722,6 +1722,13 @@
         "wiki_name": "West Berkshire Council",
         "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
+    "WestLancashireBoroughCouncil": {
+        "url": "https://www.westlancs.gov.uk",
+        "uprn": "10012343339",
+        "postcode": "WN8 0HR",
+        "wiki_name": "West Lancashire Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "WestLindseyDistrictCouncil": {
         "house_number": "PRIVATE ACCOMMODATION",
         "postcode": "LN8 2AR",
