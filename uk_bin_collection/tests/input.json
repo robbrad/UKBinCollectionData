@@ -32,6 +32,13 @@
         "wiki_name": "Ards and North Down Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "ArgyllandButeCouncil": {
+        "uprn": "125061759",
+        "skip_get_url": true,
+        "url": "https://www.argyll-bute.gov.uk",
+        "wiki_name": "Argyll and Bute Council",
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "ArmaghBanbridgeCraigavonCouncil": {
         "url": "https://www.armaghbanbridgecraigavon.gov.uk/",
         "wiki_command_url_override": "https://www.armaghbanbridgecraigavon.gov.uk/",

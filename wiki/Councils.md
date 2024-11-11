@@ -14,6 +14,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
 - [Antrim & Newtonabbey Council](#antrim-&-newtonabbey-council)
 - [Ards and North Down Council](#ards-and-north-down-council)
+- [Argyll and Bute Council](#argyll-and-bute-council)
 - [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
 - [Arun Council](#arun-council)
 - [Ashford Borough Council](#ashford-borough-council)
@@ -290,6 +291,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Argyll and Bute Council
+```commandline
+python collect_data.py ArgyllandButeCouncil https://www.argyll-bute.gov.uk -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
