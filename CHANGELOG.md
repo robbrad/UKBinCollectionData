@@ -1,4 +1,24 @@
 =======
+## 0.115.0 (2024-11-11)
+
+### Feat
+
+- Adding Warrington Borough Council
+- Adding Antrim And Newtonabbey Council
+- Adding Hertsmere Borough Council
+- Adding West Lancashire Borough Council
+- Broxbourne Council
+
+### Fix
+
+- #695
+- #969
+- #776
+- #980
+- #982
+- Bradford MDC
+- #984
+
 ## 0.114.6 (2024-11-09)
 
 ### Fix
