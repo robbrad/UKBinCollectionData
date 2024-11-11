@@ -350,7 +350,7 @@ Additional parameters:
 - `-s` - skip get URL
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday
+Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday
 
 ---
 
@@ -776,24 +776,25 @@ Note: Both the UPRN and a one-line address are passed in the URL, which needs to
 
 ### Cheshire West and Chester Council
 ```commandline
-python collect_data.py CheshireWestAndChesterCouncil https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day -s -p "XXXX XXX" -n XX
+python collect_data.py CheshireWestAndChesterCouncil https://my.cheshirewestandchester.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-p` - postcode
-- `-n` - house number
+- `-u` - UPRN
 
-Note: Pass the house name/number and postcode in their respective parameters.
+Note: Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
 ### Chesterfield Borough Council
 ```commandline
-python collect_data.py ChesterfieldBoroughCouncil https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day -s -u XXXXXXXX
+python collect_data.py ChesterfieldBoroughCouncil https://www.chesterfield.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+Note: Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
@@ -1763,7 +1764,7 @@ Additional parameters:
 - `-s` - skip get URL
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday
+Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday
 
 ---
 
@@ -1783,12 +1784,12 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ### Milton Keynes City Council
 ```commandline
-python collect_data.py MiltonKeynesCityCouncil https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days -u XXXXXXXX
+python collect_data.py MiltonKeynesCityCouncil https://mycouncil.milton-keynes.gov.uk/en/service/Waste_Collection_Round_Checker -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
 
-Note: Pass the name of the estate with the UPRN parameter, wrapped in double quotes.
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

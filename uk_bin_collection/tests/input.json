@@ -342,25 +342,18 @@
         "wiki_note": "Both the UPRN and a one-line address are passed in the URL, which needs to be wrapped in double quotes. The one-line address is made up of the house number, street name, and postcode. Use the form [here](https://online.cheshireeast.gov.uk/mycollectionday/) to find them, then take the first line and postcode and replace all spaces with `%20`."
     },
     "CheshireWestAndChesterCouncil": {
-        "house_number": "Hill View House",
-        "postcode": "CH3 9ER",
+        "uprn": "100012346655",
         "skip_get_url": true,
-        "url": "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day",
+        "url": "https://my.cheshirewestandchester.gov.uk",
         "wiki_name": "Cheshire West and Chester Council",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters."
-    },
-    "ChesterfieldBoroughCouncil": {
-        "uprn": "74008234",
-        "skip_get_url": true,
-        "url": "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day",
-        "wiki_name": "Chesterfield Borough Council",
         "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ChesterfieldBoroughCouncil": {
         "uprn": "74008234",
         "skip_get_url": true,
-        "url": "https://www.cheshirewestandchester.gov.uk/residents/waste-and-recycling/your-bin-collection/collection-day",
-        "wiki_name": "Chesterfield Borough Council"
+        "url": "https://www.chesterfield.gov.uk",
+        "wiki_name": "Chesterfield Borough Council",
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ChichesterDistrictCouncil": {
         "house_number": "7, Plaistow Road, Kirdford, Billingshurst, West Sussex",
