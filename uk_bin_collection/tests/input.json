@@ -76,7 +76,7 @@
         "house_number": "Monday",
         "url": "https://www.babergh.gov.uk",
         "wiki_name": "Babergh District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday"
     },
     "BCPCouncil": {
         "skip_get_url": true,
@@ -1000,7 +1000,7 @@
         "house_number": "Monday",
         "url": "https://www.midsuffolk.gov.uk",
         "wiki_name": "Mid Suffolk District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday"
     },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
@@ -1012,10 +1012,10 @@
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
     },
     "MiltonKeynesCityCouncil": {
-        "uprn": "Fullers Slade",
-        "url": "https://www.milton-keynes.gov.uk/waste-and-recycling/collection-days",
+        "uprn": "25109551",
+        "url": "https://mycouncil.milton-keynes.gov.uk/en/service/Waste_Collection_Round_Checker",
         "wiki_name": "Milton Keynes City Council",
-        "wiki_note": "Pass the name of the estate with the UPRN parameter, wrapped in double quotes."
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MoleValleyDistrictCouncil": {
         "postcode": "RH4 1SJ",
