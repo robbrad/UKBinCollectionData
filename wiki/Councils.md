@@ -99,6 +99,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Gedling Borough Council](#gedling-borough-council)
 - [Glasgow City Council](#glasgow-city-council)
 - [Gloucester City Council](#gloucester-city-council)
+- [Gravesham Borough Council](#gravesham-borough-council)
 - [Guildford Council](#guildford-council)
 - [Halton Borough Council](#halton-borough-council)
 - [Harborough District Council](#harborough-district-council)
@@ -1330,6 +1331,18 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house number, postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver.
+
+---
+
+### Gravesham Borough Council
+```commandline
+python collect_data.py GraveshamBoroughCouncil https://www.gravesham.gov.uk -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

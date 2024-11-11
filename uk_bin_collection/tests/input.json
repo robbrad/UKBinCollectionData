@@ -715,6 +715,13 @@
         "wiki_name": "Gloucester City Council",
         "wiki_note": "Pass the house number, postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
     },
+    "GraveshamBoroughCouncil": {
+        "uprn": "100060927046",
+        "skip_get_url": true,
+        "url": "https://www.gravesham.gov.uk",
+        "wiki_name": "Gravesham Borough Council",
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "GuildfordCouncil": {
         "house_number": "THE LODGE, PUTTENHAM HILL HOUSE, PUTTENHAM HILL, PUTTENHAM, GUILDFORD, GU3 1AH",
         "postcode": "GU3 1AH",
