@@ -1686,6 +1686,13 @@
         "wiki_name": "Waltham Forest",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
+    "WarringtonBoroughCouncil": {
+        "url": "https://www.warrington.gov.uk",
+        "wiki_command_url_override": "https://www.warrington.gov.uk",
+        "uprn": "10094964379",
+        "wiki_name": "Warrington Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "wiki_command_url_override": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/XXXXXXXX",
