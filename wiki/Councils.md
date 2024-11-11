@@ -65,6 +65,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Croydon Council](#croydon-council)
 - [Dacorum Borough Council](#dacorum-borough-council)
 - [Dartford Borough Council](#dartford-borough-council)
+- [Derby City Council](#derby-city-council)
 - [Derbyshire Dales District Council](#derbyshire-dales-district-council)
 - [Doncaster Council](#doncaster-council)
 - [Dorset Council](#dorset-council)
@@ -919,6 +920,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Derby City Council
+```commandline
+python collect_data.py DerbyCityCouncil https://www.derby.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
