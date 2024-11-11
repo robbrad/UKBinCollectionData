@@ -71,6 +71,13 @@
         "wiki_name": "Aylesbury Vale Council (Buckinghamshire)",
         "wiki_note": "To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.uk/search). Returns all published collections in the past, present, future."
     },
+    "BaberghDistrictCouncil": {
+        "skip_get_url": true,
+        "house_number": "Monday",
+        "url": "https://www.babergh.gov.uk",
+        "wiki_name": "Babergh District Council",
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday"
+    },
     "BCPCouncil": {
         "skip_get_url": true,
         "uprn": "100040810214",
@@ -987,6 +994,13 @@
         "url": "https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days",
         "wiki_name": "Midlothian Council",
         "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter."
+    },
+    "MidSuffolkDistrictCouncil": {
+        "skip_get_url": true,
+        "house_number": "Monday",
+        "url": "https://www.midsuffolk.gov.uk",
+        "wiki_name": "Mid Suffolk District Council",
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday"
     },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",

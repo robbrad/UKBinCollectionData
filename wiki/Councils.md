@@ -18,6 +18,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Arun Council](#arun-council)
 - [Ashford Borough Council](#ashford-borough-council)
 - [Aylesbury Vale Council (Buckinghamshire)](#aylesbury-vale-council-(buckinghamshire))
+- [Babergh District Council](#babergh-district-council)
 - [BCP Council](#bcp-council)
 - [Barnet Council](#barnet-council)
 - [Barnsley Metropolitan Borough Council](#barnsley-metropolitan-borough-council)
@@ -133,6 +134,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
 - [Mid Devon Council](#mid-devon-council)
 - [Midlothian Council](#midlothian-council)
+- [Mid Suffolk District Council](#mid-suffolk-district-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
 - [Mole Valley District Council](#mole-valley-district-council)
@@ -337,6 +339,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.uk/search). Returns all published collections in the past, present, future.
+
+---
+
+### Babergh District Council
+```commandline
+python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-n` - house number
+
+Note: Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday
 
 ---
 
@@ -1738,6 +1752,18 @@ Additional parameters:
 - `-n` - house number
 
 Note: Pass the house name/number wrapped in double quotes along with the postcode parameter.
+
+---
+
+### Mid Suffolk District Council
+```commandline
+python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-n` - house number
+
+Note: Use the House Number field to pass the DAY of the week for your colletions. Monday/Tuesday/Wednesday/Thursday/Friday
 
 ---
 
