@@ -100,6 +100,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Harborough District Council](#harborough-district-council)
 - [Haringey Council](#haringey-council)
 - [Harrogate Borough Council](#harrogate-borough-council)
+- [Hertsmere Borough Council](#hertsmere-borough-council)
 - [Highland Council](#highland-council)
 - [High Peak Council](#high-peak-council)
 - [Hounslow Council](#hounslow-council)
@@ -1342,6 +1343,20 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed.
+
+---
+
+### Hertsmere Borough Council
+```commandline
+python collect_data.py HertsmereBoroughCouncil https://www.hertsmere.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.
 
 ---
 

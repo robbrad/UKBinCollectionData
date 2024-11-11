@@ -743,6 +743,15 @@
         "wiki_name": "Harrogate Borough Council",
         "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
     },
+    "HertsmereBoroughCouncil": {
+        "house_number": "1",
+        "postcode": "WD7 9HZ",
+        "skip_get_url": true,
+        "url": "https://www.hertsmere.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Hertsmere Borough Council",
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
+    },
     "HighlandCouncil": {
         "url": "https://www.highland.gov.uk",
         "wiki_command_url_override": "https://www.highland.gov.uk",
