@@ -12,6 +12,12 @@
         "wiki_name": "Adur and Worthing Councils",
         "wiki_note": "Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
+    "AntrimAndNewtonabbeyCouncil": {
+        "url": "https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=643",
+        "wiki_command_url_override": "https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=XXXX",
+        "wiki_name": "Antrim & Newtonabbey Council",
+        "wiki_note": "Navigate to [https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule] and search for your street name. Use the URL with the ID to replace XXXXXXXX with your specific ID."
+    },
     "ArdsAndNorthDownCouncil": {
         "url": "https://www.ardsandnorthdown.gov.uk",
         "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",

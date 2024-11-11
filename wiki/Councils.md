@@ -12,6 +12,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 ## Contents
 - [Aberdeenshire Council](#aberdeenshire-council)
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
+- [Antrim & Newtonabbey Council](#antrim-&-newtonabbey-council)
 - [Ards and North Down Council](#ards-and-north-down-council)
 - [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
 - [Arun Council](#arun-council)
@@ -265,6 +266,15 @@ python collect_data.py AdurAndWorthingCouncils https://www.adur-worthing.gov.uk/
 ```
 
 Note: Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.
+
+---
+
+### Antrim & Newtonabbey Council
+```commandline
+python collect_data.py AntrimAndNewtonabbeyCouncil https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=XXXX
+```
+
+Note: Navigate to [https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule] and search for your street name. Use the URL with the ID to replace XXXXXXXX with your specific ID.
 
 ---
 
