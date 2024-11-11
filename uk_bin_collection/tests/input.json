@@ -12,6 +12,12 @@
         "wiki_name": "Adur and Worthing Councils",
         "wiki_note": "Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
+    "AntrimAndNewtonabbeyCouncil": {
+        "url": "https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=643",
+        "wiki_command_url_override": "https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=XXXX",
+        "wiki_name": "Antrim & Newtonabbey Council",
+        "wiki_note": "Navigate to [https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule] and search for your street name. Use the URL with the ID to replace XXXXXXXX with your specific ID."
+    },
     "ArdsAndNorthDownCouncil": {
         "url": "https://www.ardsandnorthdown.gov.uk",
         "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
@@ -228,6 +234,13 @@
         "wiki_command_url_override": "https://www.bromsgrove.gov.uk",
         "uprn": "100120584652",
         "wiki_name": "Bromsgrove District Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
+    "BroxbourneCouncil": {
+        "url": "https://www.broxbourne.gov.uk",
+        "uprn": "148048608",
+        "postcode": "EN8 7FL",
+        "wiki_name": "Broxbourne Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BroxtoweBoroughCouncil": {
@@ -735,6 +748,15 @@
         "url": "https://secure.harrogate.gov.uk/inmyarea",
         "wiki_name": "Harrogate Borough Council",
         "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
+    },
+    "HertsmereBoroughCouncil": {
+        "house_number": "1",
+        "postcode": "WD7 9HZ",
+        "skip_get_url": true,
+        "url": "https://www.hertsmere.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Hertsmere Borough Council",
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "HighlandCouncil": {
         "url": "https://www.highland.gov.uk",
@@ -1664,6 +1686,13 @@
         "wiki_name": "Waltham Forest",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
+    "WarringtonBoroughCouncil": {
+        "url": "https://www.warrington.gov.uk",
+        "wiki_command_url_override": "https://www.warrington.gov.uk",
+        "uprn": "10094964379",
+        "wiki_name": "Warrington Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "wiki_command_url_override": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/XXXXXXXX",
@@ -1714,6 +1743,13 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "West Berkshire Council",
         "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
+    },
+    "WestLancashireBoroughCouncil": {
+        "url": "https://www.westlancs.gov.uk",
+        "uprn": "10012343339",
+        "postcode": "WN8 0HR",
+        "wiki_name": "West Lancashire Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WestLindseyDistrictCouncil": {
         "house_number": "PRIVATE ACCOMMODATION",

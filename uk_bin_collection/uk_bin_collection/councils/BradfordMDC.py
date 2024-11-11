@@ -1,3 +1,5 @@
+import re
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -89,12 +91,40 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
                 ).strftime(date_format)
 
-        # Build data dict for each entry
-        dict_data = {
-            "type": bin_type,
-            "collectionDate": bin_date,
-        }
-        data["bins"].append(dict_data)
+            # Build data dict for each entry
+            dict_data = {
+                "type": bin_type,
+                "collectionDate": bin_date,
+            }
+            data["bins"].append(dict_data)
+
+        for bin in soup.find_all(attrs={"id": re.compile(r"CTID-D0TUYGxO-\d+-A")}):
+            dict_data = {
+                "type": "General Waste",
+                "collectionDate": datetime.strptime(
+                    bin.text.strip(),
+                    "%a %b %d %Y",
+                ).strftime(date_format),
+            }
+            data["bins"].append(dict_data)
+        for bin in soup.find_all(attrs={"id": re.compile(r"CTID-d3gapLk-\d+-A")}):
+            dict_data = {
+                "type": "Recycling Waste",
+                "collectionDate": datetime.strptime(
+                    bin.text.strip(),
+                    "%a %b %d %Y",
+                ).strftime(date_format),
+            }
+            data["bins"].append(dict_data)
+        for bin in soup.find_all(attrs={"id": re.compile(r"CTID-L8OidMPA-\d+-A")}):
+            dict_data = {
+                "type": "Garden Waste (Subscription Only)",
+                "collectionDate": datetime.strptime(
+                    bin.text.strip(),
+                    "%a %b %d %Y",
+                ).strftime(date_format),
+            }
+            data["bins"].append(dict_data)
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
