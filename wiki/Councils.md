@@ -17,6 +17,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Argyll and Bute Council](#argyll-and-bute-council)
 - [Armagh Banbridge Craigavon Council](#armagh-banbridge-craigavon-council)
 - [Arun Council](#arun-council)
+- [Ashfield District Council](#ashfield-district-council)
 - [Ashford Borough Council](#ashford-borough-council)
 - [Aylesbury Vale Council (Buckinghamshire)](#aylesbury-vale-council-(buckinghamshire))
 - [Babergh District Council](#babergh-district-council)
@@ -329,6 +330,19 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver.
+
+---
+
+### Ashfield District Council
+```commandline
+python collect_data.py AshfieldDistrictCouncil https://www.ashfield.gov.uk -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver
 
 ---
 
