@@ -1,4 +1,27 @@
 =======
+## 0.116.0 (2024-11-12)
+
+### Feat
+
+- Adding Ashfield District Council
+- Adding Gravesham Borough Council
+- Adding Argyll and Bute Council
+
+### Fix
+
+- #579
+- #991
+- #692
+- CheshireWestAndChesterCouncil
+- #993
+- Milton Keynes
+- #702
+- Adding Babergh and Mid Suffolk District Councils
+- #868
+fix: #919
+- Adding Derby City Council
+- #987
+
 ## 0.115.0 (2024-11-11)
 
 ### Feat
