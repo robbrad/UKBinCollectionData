@@ -81,9 +81,10 @@
     "BaberghDistrictCouncil": {
         "skip_get_url": true,
         "house_number": "Monday",
+        "postcode": "Week 1",
         "url": "https://www.babergh.gov.uk",
         "wiki_name": "Babergh District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
     },
     "BCPCouncil": {
         "skip_get_url": true,
@@ -1005,9 +1006,10 @@
     "MidSuffolkDistrictCouncil": {
         "skip_get_url": true,
         "house_number": "Monday",
+        "postcode": "Week 2",
         "url": "https://www.midsuffolk.gov.uk",
         "wiki_name": "Mid Suffolk District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
     },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
