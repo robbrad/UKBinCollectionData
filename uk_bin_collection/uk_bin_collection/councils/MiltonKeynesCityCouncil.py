@@ -1,4 +1,7 @@
-from bs4 import BeautifulSoup
+import time
+
+import requests
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -12,43 +15,59 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        data = {"bins": []}
 
-        # Get the estate from the UPRN field
-        estate = kwargs.get("uprn")
+        user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
+        bindata = {"bins": []}
 
-        # Parse the council's website
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
+        SESSION_URL = "https://mycouncil.milton-keynes.gov.uk/authapi/isauthenticated?uri=https%253A%252F%252Fmycouncil.milton-keynes.gov.uk%252Fen%252Fservice%252FWaste_Collection_Round_Checker&hostname=mycouncil.milton-keynes.gov.uk&withCredentials=true"
 
-        # Get a list of lists of estates and their collection days, then check for a match on estate name
-        collection_days = [
-            item.text.strip().replace("\xa0", " ").split(" - ")
-            for item in soup.find(
-                "div",
-                {
-                    "class": "field field--name-localgov-paragraphs field--type-entity-reference-revisions field--label-hidden field__items"
-                },
-            ).find_all("li")
-        ]
-        result = [
-            result for result in collection_days if result[0].lower() == estate.lower()
-        ]
+        API_URL = "https://mycouncil.milton-keynes.gov.uk/apibroker/runLookup"
 
-        # If there is a match, we can process it by getting the next eight dates for that day. Else, raise an exception.
-        if result is not None:
-            day_number = days_of_week.get(result[0][1].split()[0])
-            collection_dates = get_weekday_dates_in_period(
-                datetime.now(), day_number, 8
-            )
+        data = {
+            "formValues": {"Section 1": {"uprnCore": {"value": user_uprn}}},
+        }
 
-            for date in collection_dates:
-                dict_data = {
-                    "type": f"Weekly collection",
-                    "collectionDate": date,
-                }
-                data["bins"].append(dict_data)
-        else:
-            raise ValueError("Estate not found on website.")
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": "https://mycouncil.milton-keynes.gov.uk/fillform/?iframe_id=fillform-frame-1&db_id=",
+        }
+        s = requests.session()
+        r = s.get(SESSION_URL)
+        r.raise_for_status()
+        session_data = r.json()
+        sid = session_data["auth-session"]
+        params = {
+            "id": "64d9feda3a507",
+            "repeat_against": "",
+            "noRetry": "false",
+            "getOnlyTokens": "undefined",
+            "log_id": "",
+            "app_name": "AF-Renderer::Self",
+            # unix_timestamp
+            "_": str(int(time.time() * 1000)),
+            "sid": sid,
+        }
 
-        return data
+        r = s.post(API_URL, json=data, headers=headers, params=params)
+        r.raise_for_status()
+
+        data = r.json()
+        rows_data = data["integration"]["transformed"]["rows_data"]
+        if not isinstance(rows_data, dict):
+            raise ValueError("Invalid data returned from API")
+
+        # Extract each service's relevant details for the bin schedule
+        for item in rows_data.values():
+            dict_data = {
+                "type": item["AssetTypeName"],
+                "collectionDate": datetime.strptime(
+                    item["NextInstance"], "%Y-%m-%d"
+                ).strftime(date_format),
+            }
+            bindata["bins"].append(dict_data)
+
+        return bindata
