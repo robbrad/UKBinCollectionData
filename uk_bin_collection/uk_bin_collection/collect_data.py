@@ -2,7 +2,7 @@ import argparse
 import importlib
 import os
 import sys
-import logging, logging.config
+import logging
 from uk_bin_collection.uk_bin_collection.get_bin_data import (
     setup_logging,
     LOGGING_CONFIG,
