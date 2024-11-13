@@ -1,4 +1,10 @@
 =======
+## 0.117.0 (2024-11-13)
+
+### Feat
+
+- Adding South Staffordshire District Council fix: #885
+
 ## 0.116.0 (2024-11-12)
 
 ### Feat
