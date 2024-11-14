@@ -24,7 +24,7 @@ class CouncilClass(AbstractGetBinDataClass):
         uri = "https://www.rother.gov.uk/wp-admin/admin-ajax.php"
         params = {
             "action": "get_address_data",
-            "uprn": "100061937338",
+            "uprn": user_uprn,
             "context": "full-page",
         }
 
