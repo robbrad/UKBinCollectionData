@@ -192,11 +192,13 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Cambridgeshire Council](#south-cambridgeshire-council)
 - [South Derbyshire District Council](#south-derbyshire-district-council)
 - [South Gloucestershire Council](#south-gloucestershire-council)
+- [South Hams District Council](#south-hams-district-council)
 - [South Kesteven District Council](#south-kesteven-district-council)
 - [South Lanarkshire Council](#south-lanarkshire-council)
 - [South Norfolk Council](#south-norfolk-council)
 - [South Oxfordshire Council](#south-oxfordshire-council)
 - [South Ribble Council](#south-ribble-council)
+- [South Staffordshire District Council](#south-staffordshire-district-council)
 - [South Tyneside Council](#south-tyneside-council)
 - [Southwark Council](#southwark-council)
 - [St Albans City and District Council](#st-albans-city-and-district-council)
@@ -2450,6 +2452,17 @@ Note: Provide your UPRN. You can find it using [FindMyAddress](https://www.findm
 
 ---
 
+### South Hams District Council
+```commandline
+python collect_data.py SouthHamsDistrictCouncil https://www.southhams.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
 ### South Kesteven District Council
 ```commandline
 python collect_data.py SouthKestevenDistrictCouncil https://pre.southkesteven.gov.uk/BinSearch.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -2505,6 +2518,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### South Staffordshire District Council
+```commandline
+python collect_data.py SouthStaffordshireDistrictCouncil https://www.sstaffs.gov.uk/where-i-live?uprn=200004523954 -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?uprn=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN.
 
 ---
 

@@ -1420,6 +1420,12 @@
         "wiki_name": "South Gloucestershire Council",
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "SouthHamsDistrictCouncil": {
+        "uprn": "10004742851",
+        "url": "https://www.southhams.gov.uk",
+        "wiki_name": "South Hams District Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "SouthKestevenDistrictCouncil": {
         "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",
         "postcode": "PE68BL",
