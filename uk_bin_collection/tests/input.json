@@ -398,6 +398,12 @@
         "wiki_name": "Conwy County Borough Council",
         "wiki_note": "Conwy County Borough Council uses a straight UPRN in the URL, e.g., `&uprn=XXXXXXXXXXXXX`."
     },
+    "CopelandBoroughCouncil": {
+        "uprn": "100110734613",
+        "url": "https://www.copeland.gov.uk",
+        "wiki_name": "Copeland Borough Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "CornwallCouncil": {
         "skip_get_url": true,
         "uprn": "100040128734",

@@ -61,6 +61,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Chorley Council](#chorley-council)
 - [Colchester City Council](#colchester-city-council)
 - [Conwy County Borough Council](#conwy-county-borough-council)
+- [Copeland Borough Council](#copeland-borough-council)
 - [Cornwall Council](#cornwall-council)
 - [Coventry City Council](#coventry-city-council)
 - [Cotswold District Council](#cotswold-district-council)
@@ -881,6 +882,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Conwy County Borough Council uses a straight UPRN in the URL, e.g., `&uprn=XXXXXXXXXXXXX`.
+
+---
+
+### Copeland Borough Council
+```commandline
+python collect_data.py CopelandBoroughCouncil https://www.copeland.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
