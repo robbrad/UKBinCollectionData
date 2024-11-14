@@ -31,9 +31,11 @@ body:
         label: Verification
         description: 'Please verify that you''ve followed these steps:'
         options:
-          - label: I searched for similar issues at https://github.com/robbrad/UKBinCollectionData/issues?q=is:issue and found no duplicates
+          - label: I''ve checked the [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils#contents) and verified that my council has not been added
             required: true
-          - label: I have provided a tested working address/postcode/UPRN with bin collections available
+          - label: I''ve checked that a request for my council does not already exist in the [Issues tracker](https://github.com/robbrad/UKBinCollectionData/issues?q=is%3Aopen+is%3Aissue+label%3A"council+request")
+            required: true
+          - label: I have provided a tested working address/postcode/UPRN with bin collections available, as well as a link to the council''s website
             required: true
           - label: I understand that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get a script
             required: true
