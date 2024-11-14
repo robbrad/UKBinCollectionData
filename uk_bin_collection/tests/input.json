@@ -1305,6 +1305,12 @@
         "wiki_name": "Rochford Council",
         "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'."
     },
+    "RotherDistrictCouncil": {
+        "uprn": "100061937338",
+        "url": "https://www.rother.gov.uk",
+        "wiki_name": "Rother District Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "RotherhamCouncil": {
         "url": "https://www.rotherham.gov.uk/bin-collections?address=100050866000&submit=Submit",
         "uprn": "100050866000",

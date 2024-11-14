@@ -176,6 +176,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Rhondda Cynon Taff Council](#rhondda-cynon-taff-council)
 - [Rochdale Council](#rochdale-council)
 - [Rochford Council](#rochford-council)
+- [Rother District Council](#rother-district-council)
 - [Rotherham Council](#rotherham-council)
 - [Rugby Borough Council](#rugby-borough-council)
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
@@ -372,13 +373,14 @@ Note: To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.u
 
 ### Babergh District Council
 ```commandline
-python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -n XX
+python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday
+Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
 
 ---
 
@@ -1798,13 +1800,14 @@ Note: Pass the house name/number wrapped in double quotes along with the postcod
 
 ### Mid Suffolk District Council
 ```commandline
-python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -n XX
+python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday
+Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
 
 ---
 
@@ -2259,6 +2262,17 @@ python collect_data.py RochfordCouncil https://www.rochford.gov.uk/online-bin-co
 ```
 
 Note: No extra parameters are required. Dates presented should be read as 'week commencing'.
+
+---
+
+### Rother District Council
+```commandline
+python collect_data.py RotherDistrictCouncil https://www.rother.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
