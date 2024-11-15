@@ -203,6 +203,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Tyneside Council](#south-tyneside-council)
 - [Southwark Council](#southwark-council)
 - [St Albans City and District Council](#st-albans-city-and-district-council)
+- [Stevenage Borough Council](#stevenage-borough-council)
 - [St Helens Borough Council](#st-helens-borough-council)
 - [Stafford Borough Council](#stafford-borough-council)
 - [Staffordshire Moorlands District Council](#staffordshire-moorlands-district-council)
@@ -2578,6 +2579,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Stevenage Borough Council
+```commandline
+python collect_data.py StevenageBoroughCouncil https://www.stevenage.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 

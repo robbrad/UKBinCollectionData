@@ -1496,6 +1496,12 @@
         "wiki_name": "St Albans City and District Council",
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "StevenageBoroughCouncil": {
+        "uprn": "100080878852",
+        "url": "https://www.stevenage.gov.uk",
+        "wiki_name": "Stevenage Borough Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "StHelensBC": {
         "house_number": "15",
         "postcode": "L34 2GA",
