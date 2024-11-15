@@ -1650,6 +1650,12 @@
         "wiki_name": "Test Valley Borough Council",
         "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
+    "ThanetDistrictCouncil": {
+        "uprn": "100061111858",
+        "url": "https://www.thanet.gov.uk",
+        "wiki_name": "Thanet District Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "ThreeRiversDistrictCouncil": {
         "postcode": "WD3 7AZ",
         "skip_get_url": true,

@@ -221,6 +221,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Telford and Wrekin Council](#telford-and-wrekin-council)
 - [Tendring District Council](#tendring-district-council)
 - [Test Valley Borough Council](#test-valley-borough-council)
+- [Thanet District Council](#thanet-district-council)
 - [Three Rivers District Council](#three-rivers-district-council)
 - [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
 - [Torbay Council](#torbay-council)
@@ -2797,6 +2798,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Thanet District Council
+```commandline
+python collect_data.py ThanetDistrictCouncil https://www.thanet.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
