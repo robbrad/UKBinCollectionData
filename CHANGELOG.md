@@ -1,4 +1,29 @@
 =======
+## 0.118.0 (2024-11-15)
+
+### Feat
+
+- Adding Wolverhampton City Council
+- Adding Stevenage Borough Council
+- Adding Thanet District Council
+- Adding Copeland Borough Council
+- Adding South Hams District Council
+- Adding Rother District Council
+
+### Fix
+
+- #966
+- #989
+- #1004
+- #1006
+- #1008
+- Rother District Council
+- #1009
+- CrawleyBoroughCouncil
+- #1005
+- Adding Garden collection to Babergh and MidSuffolk Council
+- #995
+
 ## 0.117.0 (2024-11-13)
 
 ### Feat
