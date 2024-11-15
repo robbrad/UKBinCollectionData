@@ -256,6 +256,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Woking Borough Council / Joint Waste Solutions](#woking-borough-council-/-joint-waste-solutions)
 - [Wokingham Borough Council](#wokingham-borough-council)
 - [Worcester City Council](#worcester-city-council)
+- [Wolverhampton City Council](#wolverhampton-city-council)
 - [Wychavon District Council](#wychavon-district-council)
 - [Wyre Council](#wyre-council)
 - [York Council](#york-council)
@@ -3233,6 +3234,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Wolverhampton City Council
+```commandline
+python collect_data.py WolverhamptonCityCouncil https://www.wolverhampton.gov.uk -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
