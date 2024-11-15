@@ -23,6 +23,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         collection_day = kwargs.get("paon")
+        garden_collection_week = kwargs.get("postcode")
         bindata = {"bins": []}
 
         days_of_week = [
@@ -35,10 +36,14 @@ class CouncilClass(AbstractGetBinDataClass):
             "Sunday",
         ]
 
+        garden_week = ["Week 1", "Week 2"]
+
         refusestartDate = datetime(2024, 11, 11)
         recyclingstartDate = datetime(2024, 11, 4)
 
         offset_days = days_of_week.index(collection_day)
+        if garden_collection_week:
+            garden_collection = garden_week.index(garden_collection_week)
 
         refuse_dates = get_dates_every_x_days(refusestartDate, 14, 28)
         recycling_dates = get_dates_every_x_days(recyclingstartDate, 14, 28)
@@ -124,6 +129,63 @@ class CouncilClass(AbstractGetBinDataClass):
                 "collectionDate": collection_date,
             }
             bindata["bins"].append(dict_data)
+
+        if garden_collection_week:
+            if garden_collection == 0:
+                gardenstartDate = datetime(2024, 11, 11)
+            elif garden_collection == 1:
+                gardenstartDate = datetime(2024, 11, 4)
+
+            garden_dates = get_dates_every_x_days(gardenstartDate, 14, 28)
+
+            garden_bank_holidays = [
+                ("23/12/2024", 1),
+                ("24/12/2024", 1),
+                ("25/12/2024", 1),
+                ("26/12/2024", 1),
+                ("27/12/2024", 1),
+                ("30/12/2024", 1),
+                ("31/12/2024", 1),
+                ("01/01/2025", 1),
+                ("02/01/2025", 1),
+                ("03/01/2025", 1),
+            ]
+
+            for gardenDate in garden_dates:
+
+                collection_date = (
+                    datetime.strptime(gardenDate, "%d/%m/%Y")
+                    + timedelta(days=offset_days)
+                ).strftime("%d/%m/%Y")
+
+                garden_holiday = next(
+                    (
+                        value
+                        for date, value in garden_bank_holidays
+                        if date == collection_date
+                    ),
+                    0,
+                )
+
+                if garden_holiday > 0:
+                    continue
+
+                holiday_offset = next(
+                    (value for date, value in bank_holidays if date == collection_date),
+                    0,
+                )
+
+                if holiday_offset > 0:
+                    collection_date = (
+                        datetime.strptime(collection_date, "%d/%m/%Y")
+                        + timedelta(days=holiday_offset)
+                    ).strftime("%d/%m/%Y")
+
+                dict_data = {
+                    "type": "Garden Bin",
+                    "collectionDate": collection_date,
+                }
+                bindata["bins"].append(dict_data)
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")

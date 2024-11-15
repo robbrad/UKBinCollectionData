@@ -81,9 +81,10 @@
     "BaberghDistrictCouncil": {
         "skip_get_url": true,
         "house_number": "Monday",
+        "postcode": "Week 1",
         "url": "https://www.babergh.gov.uk",
         "wiki_name": "Babergh District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
     },
     "BCPCouncil": {
         "skip_get_url": true,
@@ -396,6 +397,12 @@
         "url": "https://www.conwy.gov.uk/Contensis-Forms/erf/collection-result-soap-xmas.asp?ilangid=1&uprn=100100429249",
         "wiki_name": "Conwy County Borough Council",
         "wiki_note": "Conwy County Borough Council uses a straight UPRN in the URL, e.g., `&uprn=XXXXXXXXXXXXX`."
+    },
+    "CopelandBoroughCouncil": {
+        "uprn": "100110734613",
+        "url": "https://www.copeland.gov.uk",
+        "wiki_name": "Copeland Borough Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "CornwallCouncil": {
         "skip_get_url": true,
@@ -1005,9 +1012,10 @@
     "MidSuffolkDistrictCouncil": {
         "skip_get_url": true,
         "house_number": "Monday",
+        "postcode": "Week 2",
         "url": "https://www.midsuffolk.gov.uk",
         "wiki_name": "Mid Suffolk District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
     },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
@@ -1303,6 +1311,12 @@
         "wiki_name": "Rochford Council",
         "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'."
     },
+    "RotherDistrictCouncil": {
+        "uprn": "100061937338",
+        "url": "https://www.rother.gov.uk",
+        "wiki_name": "Rother District Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "RotherhamCouncil": {
         "url": "https://www.rotherham.gov.uk/bin-collections?address=100050866000&submit=Submit",
         "uprn": "100050866000",
@@ -1412,6 +1426,12 @@
         "wiki_name": "South Gloucestershire Council",
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "SouthHamsDistrictCouncil": {
+        "uprn": "10004742851",
+        "url": "https://www.southhams.gov.uk",
+        "wiki_name": "South Hams District Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "SouthKestevenDistrictCouncil": {
         "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",
         "postcode": "PE68BL",
@@ -1475,6 +1495,12 @@
         "url": "https://gis.stalbans.gov.uk/NoticeBoard9/VeoliaProxy.NoticeBoard.asmx/GetServicesByUprnAndNoticeBoard",
         "wiki_name": "St Albans City and District Council",
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
+    "StevenageBoroughCouncil": {
+        "uprn": "100080878852",
+        "url": "https://www.stevenage.gov.uk",
+        "wiki_name": "Stevenage Borough Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "StHelensBC": {
         "house_number": "15",
@@ -1629,6 +1655,12 @@
         "url": "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected",
         "wiki_name": "Test Valley Borough Council",
         "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
+    "ThanetDistrictCouncil": {
+        "uprn": "100061111858",
+        "url": "https://www.thanet.gov.uk",
+        "wiki_name": "Thanet District Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "ThreeRiversDistrictCouncil": {
         "postcode": "WD3 7AZ",
@@ -1896,6 +1928,13 @@
         "uprn": "100120650345",
         "wiki_name": "Worcester City Council",
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
+    "WolverhamptonCityCouncil": {
+        "uprn": "100071205205",
+        "postcode": "WV3 9NZ",
+        "url": "https://www.wolverhampton.gov.uk",
+        "wiki_name": "Wolverhampton City Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "WorcesterCityCouncil": {
         "url": "https://www.Worcester.gov.uk",

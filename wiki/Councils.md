@@ -61,6 +61,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Chorley Council](#chorley-council)
 - [Colchester City Council](#colchester-city-council)
 - [Conwy County Borough Council](#conwy-county-borough-council)
+- [Copeland Borough Council](#copeland-borough-council)
 - [Cornwall Council](#cornwall-council)
 - [Coventry City Council](#coventry-city-council)
 - [Cotswold District Council](#cotswold-district-council)
@@ -176,6 +177,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Rhondda Cynon Taff Council](#rhondda-cynon-taff-council)
 - [Rochdale Council](#rochdale-council)
 - [Rochford Council](#rochford-council)
+- [Rother District Council](#rother-district-council)
 - [Rotherham Council](#rotherham-council)
 - [Rugby Borough Council](#rugby-borough-council)
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
@@ -191,14 +193,17 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Cambridgeshire Council](#south-cambridgeshire-council)
 - [South Derbyshire District Council](#south-derbyshire-district-council)
 - [South Gloucestershire Council](#south-gloucestershire-council)
+- [South Hams District Council](#south-hams-district-council)
 - [South Kesteven District Council](#south-kesteven-district-council)
 - [South Lanarkshire Council](#south-lanarkshire-council)
 - [South Norfolk Council](#south-norfolk-council)
 - [South Oxfordshire Council](#south-oxfordshire-council)
 - [South Ribble Council](#south-ribble-council)
+- [South Staffordshire District Council](#south-staffordshire-district-council)
 - [South Tyneside Council](#south-tyneside-council)
 - [Southwark Council](#southwark-council)
 - [St Albans City and District Council](#st-albans-city-and-district-council)
+- [Stevenage Borough Council](#stevenage-borough-council)
 - [St Helens Borough Council](#st-helens-borough-council)
 - [Stafford Borough Council](#stafford-borough-council)
 - [Staffordshire Moorlands District Council](#staffordshire-moorlands-district-council)
@@ -217,6 +222,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Telford and Wrekin Council](#telford-and-wrekin-council)
 - [Tendring District Council](#tendring-district-council)
 - [Test Valley Borough Council](#test-valley-borough-council)
+- [Thanet District Council](#thanet-district-council)
 - [Three Rivers District Council](#three-rivers-district-council)
 - [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
 - [Torbay Council](#torbay-council)
@@ -250,6 +256,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Woking Borough Council / Joint Waste Solutions](#woking-borough-council-/-joint-waste-solutions)
 - [Wokingham Borough Council](#wokingham-borough-council)
 - [Worcester City Council](#worcester-city-council)
+- [Wolverhampton City Council](#wolverhampton-city-council)
 - [Wychavon District Council](#wychavon-district-council)
 - [Wyre Council](#wyre-council)
 - [York Council](#york-council)
@@ -372,13 +379,14 @@ Note: To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.u
 
 ### Babergh District Council
 ```commandline
-python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -n XX
+python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday
+Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
 
 ---
 
@@ -877,6 +885,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Conwy County Borough Council uses a straight UPRN in the URL, e.g., `&uprn=XXXXXXXXXXXXX`.
+
+---
+
+### Copeland Borough Council
+```commandline
+python collect_data.py CopelandBoroughCouncil https://www.copeland.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
@@ -1798,13 +1817,14 @@ Note: Pass the house name/number wrapped in double quotes along with the postcod
 
 ### Mid Suffolk District Council
 ```commandline
-python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -n XX
+python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday
+Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
 
 ---
 
@@ -2262,6 +2282,17 @@ Note: No extra parameters are required. Dates presented should be read as 'week 
 
 ---
 
+### Rother District Council
+```commandline
+python collect_data.py RotherDistrictCouncil https://www.rother.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
 ### Rotherham Council
 ```commandline
 python collect_data.py RotherhamCouncil https://www.rotherham.gov.uk/bin-collections?address=XXXXXXXXX&submit=Submit -u XXXXXXXX
@@ -2436,6 +2467,17 @@ Note: Provide your UPRN. You can find it using [FindMyAddress](https://www.findm
 
 ---
 
+### South Hams District Council
+```commandline
+python collect_data.py SouthHamsDistrictCouncil https://www.southhams.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
 ### South Kesteven District Council
 ```commandline
 python collect_data.py SouthKestevenDistrictCouncil https://pre.southkesteven.gov.uk/BinSearch.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -2494,6 +2536,17 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ---
 
+### South Staffordshire District Council
+```commandline
+python collect_data.py SouthStaffordshireDistrictCouncil https://www.sstaffs.gov.uk/where-i-live?uprn=200004523954 -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?uprn=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN.
+
+---
+
 ### South Tyneside Council
 ```commandline
 python collect_data.py SouthTynesideCouncil https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates -s -p "XXXX XXX" -n XX
@@ -2527,6 +2580,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Stevenage Borough Council
+```commandline
+python collect_data.py StevenageBoroughCouncil https://www.stevenage.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
@@ -2747,6 +2811,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Thanet District Council
+```commandline
+python collect_data.py ThanetDistrictCouncil https://www.thanet.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
@@ -3159,6 +3234,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Wolverhampton City Council
+```commandline
+python collect_data.py WolverhamptonCityCouncil https://www.wolverhampton.gov.uk -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
