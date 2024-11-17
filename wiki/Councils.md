@@ -93,6 +93,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Environment First](#environment-first)
 - [Epping Forest District Council](#epping-forest-district-council)
 - [Erewash Borough Council](#erewash-borough-council)
+- [Exeter City Council](#exeter-city-council)
 - [Falkirk Council](#falkirk-council)
 - [Fareham Borough Council](#fareham-borough-council)
 - [Fenland District Council](#fenland-district-council)
@@ -1266,6 +1267,17 @@ python collect_data.py ErewashBoroughCouncil https://map.erewash.gov.uk/ishareli
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Exeter City Council
+```commandline
+python collect_data.py ExeterCityCouncil https://www.exeter.gov.uk -u XXXXXXXX
+```
+Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).

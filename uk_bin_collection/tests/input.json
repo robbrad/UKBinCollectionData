@@ -646,6 +646,12 @@
         "wiki_name": "Erewash Borough Council",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "ExeterCityCouncil": {
+        "uprn": "100040212270",
+        "url": "https://www.exeter.gov.uk",
+        "wiki_name": "Exeter City Council",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "FalkirkCouncil": {
         "url": "https://www.falkirk.gov.uk",
         "wiki_command_url_override": "https://www.falkirk.gov.uk",
