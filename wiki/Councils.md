@@ -38,6 +38,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Bolton Council](#bolton-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
 - [Bradford MDC](#bradford-mdc)
+- [Braintree District Council](#braintree-district-council)
 - [Breckland Council](#breckland-council)
 - [Brighton and Hove City Council](#brighton-and-hove-city-council)
 - [Bristol City Council](#bristol-city-council)
@@ -605,6 +606,19 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Postcode isn't parsed by this script, but you can pass it in double quotes.
+
+---
+
+### Braintree District Council
+```commandline
+python collect_data.py BraintreeDistrictCouncil https://www.braintree.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
