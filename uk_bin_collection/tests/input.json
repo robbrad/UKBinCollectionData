@@ -603,6 +603,14 @@
         "wiki_name": "Eastleigh Borough Council",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "EdinburghCityCouncil": {
+        "skip_get_url": true,
+        "house_number": "Tuesday",
+        "postcode": "Week 1",
+        "url": "https://www.edinburgh.gov.uk",
+        "wiki_name": "Edinburgh City Council",
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. Use the 'postcode' field to pass the WEEK for your collection. [Week 1/Week 2]"
+    },
     "ElmbridgeBoroughCouncil": {
         "url": "https://www.elmbridge.gov.uk",
         "wiki_command_url_override": "https://www.elmbridge.gov.uk",

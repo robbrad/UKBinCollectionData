@@ -87,6 +87,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [East Riding Council](#east-riding-council)
 - [East Suffolk Council](#east-suffolk-council)
 - [Eastleigh Borough Council](#eastleigh-borough-council)
+- [Edinburgh City Council](#edinburgh-city-council)
 - [Elmbridge Borough Council](#elmbridge-borough-council)
 - [Enfield Council](#enfield-council)
 - [Environment First](#environment-first)
@@ -1198,6 +1199,19 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Edinburgh City Council
+```commandline
+python collect_data.py EdinburghCityCouncil https://www.edinburgh.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. Use the 'postcode' field to pass the WEEK for your collection. [Week 1/Week 2]
 
 ---
 
