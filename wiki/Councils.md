@@ -11,6 +11,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 
 ## Contents
 - [Aberdeenshire Council](#aberdeenshire-council)
+- [Aberdeen City Council](#aberdeen-city-council)
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
 - [Antrim & Newtonabbey Council](#antrim-&-newtonabbey-council)
 - [Ards and North Down Council](#ards-and-north-down-council)
@@ -266,6 +267,17 @@ This document is still a work in progress, don't worry if your council isn't lis
 ### Aberdeenshire Council
 ```commandline
 python collect_data.py AberdeenshireCouncil https://online.aberdeenshire.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Aberdeen City Council
+```commandline
+python collect_data.py AberdeenCityCouncil https://www.aberdeencity.gov.uk -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
