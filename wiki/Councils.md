@@ -46,6 +46,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Broxbourne Council](#broxbourne-council)
 - [Broxtowe Borough Council](#broxtowe-borough-council)
 - [Buckinghamshire Council (Chiltern, South Bucks, Wycombe)](#buckinghamshire-council-(chiltern,-south-bucks,-wycombe))
+- [Burnley Borough Council](#burnley-borough-council)
 - [Bury Council](#bury-council)
 - [Calderdale Council](#calderdale-council)
 - [Cannock Chase District Council](#cannock-chase-district-council)
@@ -704,6 +705,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house name/number and postcode in their respective arguments, both wrapped in quotes.
+
+---
+
+### Burnley Borough Council
+```commandline
+python collect_data.py BurnleyBoroughCouncil https://www.burnley.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

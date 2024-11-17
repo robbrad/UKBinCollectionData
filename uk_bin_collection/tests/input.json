@@ -282,6 +282,12 @@
         "wiki_name": "Buckinghamshire Council (Chiltern, South Bucks, Wycombe)",
         "wiki_note": "Pass the house name/number and postcode in their respective arguments, both wrapped in quotes."
     },
+    "BurnleyBoroughCouncil": {
+        "uprn": "100010347165",
+        "url": "https://www.burnley.gov.uk",
+        "wiki_name": "Burnley Borough Council",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "BuryCouncil": {
         "house_number": "3",
         "postcode": "M26 3XY",
