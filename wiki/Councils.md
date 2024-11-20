@@ -131,6 +131,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Liverpool City Council](#liverpool-city-council)
 - [London Borough Ealing](#london-borough-ealing)
 - [London Borough Harrow](#london-borough-harrow)
+- [London Borough Havering](#london-borough-havering)
 - [London Borough Hounslow](#london-borough-hounslow)
 - [London Borough Lambeth](#london-borough-lambeth)
 - [London Borough Redbridge](#london-borough-redbridge)
@@ -1738,6 +1739,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### London Borough Havering
+```commandline
+python collect_data.py LondonBoroughHavering https://www.havering.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

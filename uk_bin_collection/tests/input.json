@@ -958,6 +958,12 @@
         "wiki_name": "London Borough Harrow",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "LondonBoroughHavering": {
+        "url": "https://www.havering.gov.uk",
+        "uprn": "100021380730",
+        "wiki_name": "London Borough Havering",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "LondonBoroughHounslow": {
         "skip_get_url": true,
         "uprn": "100021577765",
