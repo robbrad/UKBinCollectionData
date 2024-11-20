@@ -88,9 +88,10 @@
         "skip_get_url": true,
         "house_number": "Monday",
         "postcode": "Week 1",
+        "uprn": "Tuesday",
         "url": "https://www.babergh.gov.uk",
         "wiki_name": "Babergh District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]"
     },
     "BCPCouncil": {
         "skip_get_url": true,
@@ -468,6 +469,13 @@
         "wiki_name": "Croydon Council",
         "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
+    "CumberlandAllerdaleCouncil": {
+        "house_number": "2",
+        "postcode": "CA13 0DE",
+        "url": "https://www.allerdale.gov.uk",
+        "wiki_name": "Cumberland Council - Allerdale District",
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
+    },
     "DacorumBoroughCouncil": {
         "house_number": "13",
         "postcode": "HP3 9JY",
@@ -810,6 +818,12 @@
         "wiki_name": "Harrogate Borough Council",
         "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
     },
+    "HartlepoolBoroughCouncil": {
+        "url": "https://www.hartlepool.gov.uk",
+        "uprn": "100110019551",
+        "wiki_name": "Hartlepool Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "HertsmereBoroughCouncil": {
         "house_number": "1",
         "postcode": "WD7 9HZ",
@@ -950,6 +964,12 @@
         "wiki_name": "London Borough Harrow",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "LondonBoroughHavering": {
+        "url": "https://www.havering.gov.uk",
+        "uprn": "100021380730",
+        "wiki_name": "London Borough Havering",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "LondonBoroughHounslow": {
         "skip_get_url": true,
         "uprn": "100021577765",
@@ -1047,9 +1067,10 @@
         "skip_get_url": true,
         "house_number": "Monday",
         "postcode": "Week 2",
+        "uprn": "Monday",
         "url": "https://www.midsuffolk.gov.uk",
         "wiki_name": "Mid Suffolk District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]"
     },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
@@ -1104,6 +1125,12 @@
         "wiki_name": "Newcastle City Council",
         "wiki_note": "Replace XXXXXXXX with your UPRN."
     },
+    "NewcastleUnderLymeCouncil": {
+        "url": "https://www.newcastle-staffs.gov.uk",
+        "uprn": "100031725433",
+        "wiki_name": "Newcastle Under Lyme Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "NewhamCouncil": {
         "skip_get_url": true,
         "url": "https://bincollection.newham.gov.uk/Details/Index/000046029461",
@@ -1141,6 +1168,13 @@
         "wiki_command_url_override": "https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=XXXXXXXX",
         "wiki_name": "North East Lincolnshire Council",
         "wiki_note": "Replace XXXXXXXX with your UPRN."
+    },
+    "NorthHertfordshireDistrictCouncil": {
+        "house_number": "2",
+        "postcode": "SG6 4BJ",
+        "url": "https://www.north-herts.gov.uk",
+        "wiki_name": "North Hertfordshire District Council",
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "NorthKestevenDistrictCouncil": {
         "url": "https://www.n-kesteven.org.uk/bins/display?uprn=100030869513",

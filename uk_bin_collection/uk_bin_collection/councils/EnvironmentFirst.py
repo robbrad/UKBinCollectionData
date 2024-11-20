@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -44,5 +45,18 @@ class CouncilClass(AbstractGetBinDataClass):
             "collectionDate": recycling_day,
         }
         data["bins"].append(dict_data)
+
+        if len(page_text) > 5:
+            garden_day = datetime.strptime(
+                remove_ordinal_indicator_from_date_string(
+                    page_text[6].find_next("strong").text
+                ),
+                "%d %B %Y",
+            ).strftime(date_format)
+            dict_data = {
+                "type": "Garden",
+                "collectionDate": garden_day,
+            }
+            data["bins"].append(dict_data)
 
         return data

@@ -70,6 +70,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Cotswold District Council](#cotswold-district-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
+- [Cumberland Council - Allerdale District](#cumberland-council---allerdale-district)
 - [Dacorum Borough Council](#dacorum-borough-council)
 - [Dartford Borough Council](#dartford-borough-council)
 - [Derby City Council](#derby-city-council)
@@ -112,6 +113,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Harborough District Council](#harborough-district-council)
 - [Haringey Council](#haringey-council)
 - [Harrogate Borough Council](#harrogate-borough-council)
+- [Hartlepool Borough Council](#hartlepool-borough-council)
 - [Hertsmere Borough Council](#hertsmere-borough-council)
 - [Highland Council](#highland-council)
 - [High Peak Council](#high-peak-council)
@@ -130,6 +132,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Liverpool City Council](#liverpool-city-council)
 - [London Borough Ealing](#london-borough-ealing)
 - [London Borough Harrow](#london-borough-harrow)
+- [London Borough Havering](#london-borough-havering)
 - [London Borough Hounslow](#london-borough-hounslow)
 - [London Borough Lambeth](#london-borough-lambeth)
 - [London Borough Redbridge](#london-borough-redbridge)
@@ -151,11 +154,13 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [New Forest Council](#new-forest-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
+- [Newcastle Under Lyme Council](#newcastle-under-lyme-council)
 - [Newham Council](#newham-council)
 - [Newport City Council](#newport-city-council)
 - [North Ayrshire Council](#north-ayrshire-council)
 - [North East Derbyshire District Council](#north-east-derbyshire-district-council)
 - [North East Lincolnshire Council](#north-east-lincolnshire-council)
+- [North Hertfordshire District Council](#north-hertfordshire-district-council)
 - [North Kesteven District Council](#north-kesteven-district-council)
 - [North Lanarkshire Council](#north-lanarkshire-council)
 - [North Lincolnshire Council](#north-lincolnshire-council)
@@ -395,14 +400,15 @@ Note: To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.u
 
 ### Babergh District Council
 ```commandline
-python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -p "XXXX XXX" -n XX
+python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-u` - UPRN
 - `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
+Note: Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]
 
 ---
 
@@ -1000,6 +1006,18 @@ Note: Pass the house number and postcode in their respective parameters.
 
 ---
 
+### Cumberland Council - Allerdale District
+```commandline
+python collect_data.py CumberlandAllerdaleCouncil https://www.allerdale.gov.uk -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house number and postcode in their respective parameters.
+
+---
+
 ### Dacorum Borough Council
 ```commandline
 python collect_data.py DacorumBoroughCouncil https://webapps.dacorum.gov.uk/bincollections/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -1507,6 +1525,17 @@ Note: Pass the UPRN, which can be found at [this site](https://secure.harrogate.
 
 ---
 
+### Hartlepool Borough Council
+```commandline
+python collect_data.py HartlepoolBoroughCouncil https://www.hartlepool.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
 ### Hertsmere Borough Council
 ```commandline
 python collect_data.py HertsmereBoroughCouncil https://www.hertsmere.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -1726,6 +1755,17 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ---
 
+### London Borough Havering
+```commandline
+python collect_data.py LondonBoroughHavering https://www.havering.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
 ### London Borough Hounslow
 ```commandline
 python collect_data.py LondonBoroughHounslow https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder -s -u XXXXXXXX
@@ -1881,14 +1921,15 @@ Note: Pass the house name/number wrapped in double quotes along with the postcod
 
 ### Mid Suffolk District Council
 ```commandline
-python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -p "XXXX XXX" -n XX
+python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-u` - UPRN
 - `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
+Note: Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]
 
 ---
 
@@ -1976,6 +2017,17 @@ Note: Replace XXXXXXXX with your UPRN.
 
 ---
 
+### Newcastle Under Lyme Council
+```commandline
+python collect_data.py NewcastleUnderLymeCouncil https://www.newcastle-staffs.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
 ### Newham Council
 ```commandline
 python collect_data.py NewhamCouncil https://bincollection.newham.gov.uk/Details/Index/XXXXXXXXXXX -s
@@ -2033,6 +2085,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Replace XXXXXXXX with your UPRN.
+
+---
+
+### North Hertfordshire District Council
+```commandline
+python collect_data.py NorthHertfordshireDistrictCouncil https://www.north-herts.gov.uk -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house number and postcode in their respective parameters.
 
 ---
 
