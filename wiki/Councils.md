@@ -153,6 +153,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [New Forest Council](#new-forest-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
 - [Newcastle City Council](#newcastle-city-council)
+- [Newcastle Under Lyme Council](#newcastle-under-lyme-council)
 - [Newham Council](#newham-council)
 - [Newport City Council](#newport-city-council)
 - [North Ayrshire Council](#north-ayrshire-council)
@@ -2001,6 +2002,17 @@ python collect_data.py NewcastleCityCouncil https://community.newcastle.gov.uk/m
 ```
 
 Note: Replace XXXXXXXX with your UPRN.
+
+---
+
+### Newcastle Under Lyme Council
+```commandline
+python collect_data.py NewcastleUnderLymeCouncil https://www.newcastle-staffs.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
