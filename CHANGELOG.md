@@ -1,4 +1,22 @@
 =======
+## 0.119.0 (2024-11-20)
+
+### Feat
+
+- Adding Braintree District Council
+- Adding Burnley Borough Council
+- Adding Exeter City Council
+- Adding Edinburgh City Council
+- Adding Aberdeen City Council
+
+### Fix
+
+- #699
+- #1015
+- #1017
+- #894
+- #1019
+
 ## 0.118.0 (2024-11-15)
 
 ### Feat
