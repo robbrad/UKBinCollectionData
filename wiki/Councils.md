@@ -397,14 +397,15 @@ Note: To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.u
 
 ### Babergh District Council
 ```commandline
-python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -p "XXXX XXX" -n XX
+python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-u` - UPRN
 - `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
+Note: Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]
 
 ---
 
@@ -1895,14 +1896,15 @@ Note: Pass the house name/number wrapped in double quotes along with the postcod
 
 ### Mid Suffolk District Council
 ```commandline
-python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -p "XXXX XXX" -n XX
+python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-u` - UPRN
 - `-p` - postcode
 - `-n` - house number
 
-Note: Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]
+Note: Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]
 
 ---
 

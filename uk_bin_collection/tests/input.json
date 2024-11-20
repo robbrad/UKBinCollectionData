@@ -88,9 +88,10 @@
         "skip_get_url": true,
         "house_number": "Monday",
         "postcode": "Week 1",
+        "uprn": "Tuesday",
         "url": "https://www.babergh.gov.uk",
         "wiki_name": "Babergh District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]"
     },
     "BCPCouncil": {
         "skip_get_url": true,
@@ -1054,9 +1055,10 @@
         "skip_get_url": true,
         "house_number": "Monday",
         "postcode": "Week 2",
+        "uprn": "Monday",
         "url": "https://www.midsuffolk.gov.uk",
         "wiki_name": "Mid Suffolk District Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]"
     },
     "MidSussexDistrictCouncil": {
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",

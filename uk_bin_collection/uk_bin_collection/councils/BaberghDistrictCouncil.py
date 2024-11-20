@@ -24,6 +24,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         collection_day = kwargs.get("paon")
         garden_collection_week = kwargs.get("postcode")
+        garden_collection_day = kwargs.get("uprn")
         bindata = {"bins": []}
 
         days_of_week = [
@@ -42,6 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
         recyclingstartDate = datetime(2024, 11, 11)
 
         offset_days = days_of_week.index(collection_day)
+        offset_days_garden = days_of_week.index(garden_collection_day)
         if garden_collection_week:
             garden_collection = garden_week.index(garden_collection_week)
 
@@ -155,7 +157,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 collection_date = (
                     datetime.strptime(gardenDate, "%d/%m/%Y")
-                    + timedelta(days=offset_days)
+                    + timedelta(days=offset_days_garden)
                 ).strftime("%d/%m/%Y")
 
                 garden_holiday = next(
