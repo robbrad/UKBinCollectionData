@@ -70,6 +70,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Cotswold District Council](#cotswold-district-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
+- [Cumberland Council - Allerdale District](#cumberland-council---allerdale-district)
 - [Dacorum Borough Council](#dacorum-borough-council)
 - [Dartford Borough Council](#dartford-borough-council)
 - [Derby City Council](#derby-city-council)
@@ -994,6 +995,18 @@ python collect_data.py CroydonCouncil https://service.croydon.gov.uk/wasteservic
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house number and postcode in their respective parameters.
+
+---
+
+### Cumberland Council - Allerdale District
+```commandline
+python collect_data.py CumberlandAllerdaleCouncil https://www.allerdale.gov.uk -p "XXXX XXX" -n XX
+```
+Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 

@@ -468,6 +468,13 @@
         "wiki_name": "Croydon Council",
         "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
+    "CumberlandAllerdaleCouncil": {
+        "house_number": "2",
+        "postcode": "CA13 0DE",
+        "url": "https://www.allerdale.gov.uk",
+        "wiki_name": "Cumberland Council - Allerdale District",
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
+    },
     "DacorumBoroughCouncil": {
         "house_number": "13",
         "postcode": "HP3 9JY",
