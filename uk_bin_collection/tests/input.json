@@ -6,6 +6,12 @@
         "wiki_name": "Aberdeenshire Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "AberdeenCityCouncil": {
+        "url": "https://www.aberdeencity.gov.uk",
+        "uprn": "9051156186",
+        "wiki_name": "Aberdeen City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "AdurAndWorthingCouncils": {
         "url": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=100061878829",
         "wiki_command_url_override": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=XXXXXXXX",
@@ -213,6 +219,14 @@
         "wiki_name": "Bradford MDC",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Postcode isn't parsed by this script, but you can pass it in double quotes."
     },
+    "BraintreeDistrictCouncil": {
+        "postcode": "CO5 9BD",
+        "skip_get_url": true,
+        "uprn": "10006930172",
+        "url": "https://www.braintree.gov.uk/",
+        "wiki_name": "Braintree District Council",
+        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "BrecklandCouncil": {
         "url": "https://www.breckland.gov.uk",
         "wiki_command_url_override": "https://www.breckland.gov.uk",
@@ -275,6 +289,12 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Buckinghamshire Council (Chiltern, South Bucks, Wycombe)",
         "wiki_note": "Pass the house name/number and postcode in their respective arguments, both wrapped in quotes."
+    },
+    "BurnleyBoroughCouncil": {
+        "uprn": "100010347165",
+        "url": "https://www.burnley.gov.uk",
+        "wiki_name": "Burnley Borough Council",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "BuryCouncil": {
         "house_number": "3",
@@ -597,6 +617,14 @@
         "wiki_name": "Eastleigh Borough Council",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "EdinburghCityCouncil": {
+        "skip_get_url": true,
+        "house_number": "Tuesday",
+        "postcode": "Week 1",
+        "url": "https://www.edinburgh.gov.uk",
+        "wiki_name": "Edinburgh City Council",
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. Use the 'postcode' field to pass the WEEK for your collection. [Week 1/Week 2]"
+    },
     "ElmbridgeBoroughCouncil": {
         "url": "https://www.elmbridge.gov.uk",
         "wiki_command_url_override": "https://www.elmbridge.gov.uk",
@@ -630,6 +658,12 @@
         "uprn": "10003582028",
         "url": "https://map.erewash.gov.uk/isharelive.web/myerewash.aspx",
         "wiki_name": "Erewash Borough Council",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
+    "ExeterCityCouncil": {
+        "uprn": "100040212270",
+        "url": "https://www.exeter.gov.uk",
+        "wiki_name": "Exeter City Council",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "FalkirkCouncil": {
