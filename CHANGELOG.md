@@ -1,4 +1,27 @@
 =======
+## 0.120.0 (2024-11-20)
+
+### Feat
+
+- Adding Hartlepool Borough Council
+- Adding Newcastle Under Lyme Council
+- Adding London Borough of Havering
+- Add Garden collection to EnvironmentFirst
+- Adding Cumberland Council (Allerdale District)
+- Adding North Hertfordshire District Council
+
+### Fix
+
+- #844
+- #778
+- #769
+- #1025
+- Mid Siffolk and Babergh Garden Collection Day
+- #1026
+This will require the use of a DAY to be added to the UPRN field
+- #1029
+- #1028
+
 ## 0.119.0 (2024-11-20)
 
 ### Feat
