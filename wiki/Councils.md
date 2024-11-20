@@ -156,6 +156,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North Ayrshire Council](#north-ayrshire-council)
 - [North East Derbyshire District Council](#north-east-derbyshire-district-council)
 - [North East Lincolnshire Council](#north-east-lincolnshire-council)
+- [North Hertfordshire District Council](#north-hertfordshire-district-council)
 - [North Kesteven District Council](#north-kesteven-district-council)
 - [North Lanarkshire Council](#north-lanarkshire-council)
 - [North Lincolnshire Council](#north-lincolnshire-council)
@@ -2033,6 +2034,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Replace XXXXXXXX with your UPRN.
+
+---
+
+### North Hertfordshire District Council
+```commandline
+python collect_data.py NorthHertfordshireDistrictCouncil https://www.north-herts.gov.uk -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house number and postcode in their respective parameters.
 
 ---
 
