@@ -234,6 +234,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Test Valley Borough Council](#test-valley-borough-council)
 - [Thanet District Council](#thanet-district-council)
 - [Three Rivers District Council](#three-rivers-district-council)
+- [Thurrock Council](#thurrock-council)
 - [Tonbridge and Malling Borough Council](#tonbridge-and-malling-borough-council)
 - [Torbay Council](#torbay-council)
 - [Torridge District Council](#torridge-district-council)
@@ -2964,6 +2965,19 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Thurrock Council
+```commandline
+python collect_data.py ThurrockCouncil https://www.thurrock.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. Use the 'postcode' field to pass the ROUND (wrapped in quotes) for your collections. [Round A/Round B].
 
 ---
 

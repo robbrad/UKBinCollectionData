@@ -1739,6 +1739,14 @@
         "wiki_name": "Three Rivers District Council",
         "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "ThurrockCouncil": {
+        "skip_get_url": true,
+        "house_number": "Monday",
+        "postcode": "Round A",
+        "url": "https://www.thurrock.gov.uk",
+        "wiki_name": "Thurrock Council",
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. Use the 'postcode' field to pass the ROUND (wrapped in quotes) for your collections. [Round A/Round B]."
+    },
     "TonbridgeAndMallingBC": {
         "postcode": "ME19 4JS",
         "skip_get_url": true,
