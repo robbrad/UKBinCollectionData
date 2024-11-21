@@ -103,6 +103,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Fenland District Council](#fenland-district-council)
 - [Fife Council](#fife-council)
 - [Flintshire County Council](#flintshire-county-council)
+- [Folkstone and Hythe District Council](#folkstone-and-hythe-district-council)
 - [Forest of Dean District Council](#forest-of-dean-district-council)
 - [Gateshead Council](#gateshead-council)
 - [Gedling Borough Council](#gedling-borough-council)
@@ -1397,6 +1398,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Folkstone and Hythe District Council
+```commandline
+python collect_data.py FolkstoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 

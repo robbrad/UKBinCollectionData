@@ -731,6 +731,13 @@
         "wiki_name": "Flintshire County Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "FolkstoneandHytheDistrictCouncil": {
+        "skip_get_url": true,
+        "uprn": "50032097",
+        "url": "https://www.folkestone-hythe.gov.uk",
+        "wiki_name": "Folkstone and Hythe District Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "ForestOfDeanDistrictCouncil": {
         "house_number": "ELMOGAL, PARKEND ROAD, BREAM, LYDNEY",
         "postcode": "GL15 6JT",
