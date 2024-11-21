@@ -123,6 +123,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Hull City Council](#hull-city-council)
 - [Huntingdon District Council](#huntingdon-district-council)
 - [Islington Council](#islington-council)
+- [Kings Lynn and West Norfolk Borough Council](#kings-lynn-and-west-norfolk-borough-council)
 - [Kingston Upon Thames Council](#kingston-upon-thames-council)
 - [Kirklees Council](#kirklees-council)
 - [Knowsley Metropolitan Borough Council](#knowsley-metropolitan-borough-council)
@@ -1648,6 +1649,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Replace XXXXXXXX with your UPRN.
+
+---
+
+### Kings Lynn and West Norfolk Borough Council
+```commandline
+python collect_data.py KingsLynnandWestNorfolkBC https://www.west-norfolk.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
