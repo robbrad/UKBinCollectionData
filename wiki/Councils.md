@@ -272,6 +272,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Wolverhampton City Council](#wolverhampton-city-council)
 - [Wychavon District Council](#wychavon-district-council)
 - [Wyre Council](#wyre-council)
+- [Wyre Forest District Council](#wyre-forest-district-council)
 - [York Council](#york-council)
 
 ---
@@ -3442,6 +3443,18 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search). The postcode should be wrapped in double quotes with a space in the middle.
+
+---
+
+### Wyre Forest District Council
+```commandline
+python collect_data.py WyreForestDistrictCouncil https://www.wyreforestdc.gov.uk -s -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-n` - house number
+
+Note: Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday].
 
 ---
 
