@@ -153,6 +153,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
 - [Mole Valley District Council](#mole-valley-district-council)
+- [Moray Council](#moray-council)
 - [Neath Port Talbot Council](#neath-port-talbot-council)
 - [New Forest Council](#new-forest-council)
 - [Newark and Sherwood District Council](#newark-and-sherwood-district-council)
@@ -2009,6 +2010,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: UPRN can only be parsed with a valid postcode.
+
+---
+
+### Moray Council
+```commandline
+python collect_data.py MorayCouncil https://bindayfinder.moray.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Find your property ID by going to (https://bindayfinder.moray.gov.uk), search for your property and extracting the ID from the URL. i.e. (https://bindayfinder.moray.gov.uk/disp_bins.php?id=00028841)
 
 ---
 
