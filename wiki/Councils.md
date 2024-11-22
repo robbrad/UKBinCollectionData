@@ -197,6 +197,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
 - [Rushmoor Council](#rushmoor-council)
 - [Salford City Council](#salford-city-council)
+- [Sandwell Borough Council](#sandwell-borough-council)
 - [Sefton Council](#sefton-council)
 - [Sevenoaks District Council](#sevenoaks-district-council)
 - [Sheffield City Council](#sheffield-city-council)
@@ -2530,6 +2531,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Sandwell Borough Council
+```commandline
+python collect_data.py SandwellBoroughCouncil https://www.sandwell.gov.uk -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

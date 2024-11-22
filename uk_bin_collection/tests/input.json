@@ -1449,6 +1449,13 @@
         "wiki_name": "Salford City Council",
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "SandwellBoroughCouncil": {
+        "uprn": "10008755549",
+        "skip_get_url": true,
+        "url": "https://www.sandwell.gov.uk",
+        "wiki_name": "Sandwell Borough Council",
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "SeftonCouncil": {
         "house_number": "1",
         "postcode": "L20 6GG",
@@ -1564,10 +1571,10 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "SouthStaffordshireDistrictCouncil": {
-      "uprn": "200004523954",
-      "url": "https://www.sstaffs.gov.uk/where-i-live?uprn=200004523954",
-      "wiki_name": "South Staffordshire District Council",
-      "wiki_note": "The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?uprn=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN."
+        "uprn": "200004523954",
+        "url": "https://www.sstaffs.gov.uk/where-i-live?uprn=200004523954",
+        "wiki_name": "South Staffordshire District Council",
+        "wiki_note": "The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?uprn=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN."
     },
     "SouthTynesideCouncil": {
         "house_number": "1",
