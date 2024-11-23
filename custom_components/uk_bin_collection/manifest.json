@@ -5,10 +5,10 @@
     "codeowners": ["@robbrad"],
     "config_flow": true,
     "dependencies": [],
-    "documentation": "https://github.com/robbrad/UKBinCollectionData/wiki",
+    "documentation": "https://github.com/jones-d/UKBinCollectionData/wiki",
     "integration_type": "service",
     "iot_class": "cloud_polling",
-    "issue_tracker": "https://github.com/robbrad/UKBinCollectionData/issues",
+    "issue_tracker": "https://github.com/jones-d/UKBinCollectionData/issues",
     "requirements": ["uk-bin-collection>=0.120.0"],
     "version": "0.120.0",
     "zeroconf": []
