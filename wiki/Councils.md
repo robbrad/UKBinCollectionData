@@ -3333,13 +3333,13 @@ Note: Provide your UPRN. You can find your UPRN using [FindMyAddress](https://ww
 
 ### West Northamptonshire Council
 ```commandline
-python collect_data.py WestNorthamptonshireCouncil https://www.northampton.gov.uk/info/200084/bins-waste-and-recycling/1602/check-your-collection-day -s -p "XXXX XXX"
+python collect_data.py WestNorthamptonshireCouncil https://www.westnorthants.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-p` - postcode
+- `-u` - UPRN
 
-Note: Provide your postcode in the `postcode` parameter.
+Note: Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

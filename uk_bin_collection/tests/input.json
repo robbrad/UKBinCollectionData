@@ -1967,11 +1967,11 @@
         "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WestNorthamptonshireCouncil": {
-        "postcode": "NN3 2JB",
+        "uprn": "28056796",
         "skip_get_url": true,
-        "url": "https://www.northampton.gov.uk/info/200084/bins-waste-and-recycling/1602/check-your-collection-day",
+        "url": "https://www.westnorthants.gov.uk",
         "wiki_name": "West Northamptonshire Council",
-        "wiki_note": "Provide your postcode in the `postcode` parameter."
+        "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WestOxfordshireDistrictCouncil": {
         "house_number": "24",
