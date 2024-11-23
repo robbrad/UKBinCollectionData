@@ -30,14 +30,17 @@ class CouncilClass(AbstractGetBinDataClass):
         # Find each <time> element in the schedule
         for entry in soup.find_all("time"):
 
-            dict_data = {
-                "type": entry.find(class_="ScheduleItem").text.strip(),
-                "collectionDate": datetime.strptime(
-                    entry["datetime"],
-                    "%Y-%m-%d",
-                ).strftime("%d/%m/%Y"),
-            }
-            bindata["bins"].append(dict_data)
+            ScheduleItems = entry.find_all(class_="ScheduleItem")
+
+            for ScheduleItem in ScheduleItems:
+                dict_data = {
+                    "type": ScheduleItem.text.strip(),
+                    "collectionDate": datetime.strptime(
+                        entry["datetime"],
+                        "%Y-%m-%d",
+                    ).strftime("%d/%m/%Y"),
+                }
+                bindata["bins"].append(dict_data)
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
