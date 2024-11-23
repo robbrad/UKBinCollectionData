@@ -219,7 +219,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def get_councils_json(self) -> Dict[str, Any]:
         """Fetch and return the supported councils data."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.120.0/uk_bin_collection/tests/input.json"
+        url = "https://raw.githubusercontent.com/jones-d/UKBinCollectionData/0.120.0/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as response:
@@ -503,7 +503,7 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def get_councils_json(self) -> Dict[str, Any]:
         """Fetch and return the supported councils data."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.111.0/uk_bin_collection/tests/input.json"
+        url = "https://raw.githubusercontent.com/jones-d/UKBinCollectionData/0.111.0/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as response:
