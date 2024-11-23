@@ -1435,6 +1435,14 @@
         "wiki_command_url_override": "https://www.rotherham.gov.uk/bin-collections?address=XXXXXXXXX&submit=Submit",
         "wiki_note": "Replace `XXXXXXXXX` with your UPRN in the URL. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "RoyalBoroughofGreenwich": {
+        "house_number": "57",
+        "postcode": "BR7 6DN",
+        "skip_get_url": true,
+        "url": "https://www.royalgreenwich.gov.uk",
+        "wiki_name": "Royal Borough of Greenwich",
+        "wiki_note": "Provide your house number in the `house_number` parameter and your postcode in the `postcode` parameter."
+    },
     "RugbyBoroughCouncil": {
         "postcode": "CV22 6LA",
         "skip_get_url": true,

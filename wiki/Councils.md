@@ -195,6 +195,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Rochford Council](#rochford-council)
 - [Rother District Council](#rother-district-council)
 - [Rotherham Council](#rotherham-council)
+- [Royal Borough of Greenwich](#royal-borough-of-greenwich)
 - [Rugby Borough Council](#rugby-borough-council)
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
 - [Rushmoor Council](#rushmoor-council)
@@ -2511,6 +2512,19 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Replace `XXXXXXXXX` with your UPRN in the URL. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Royal Borough of Greenwich
+```commandline
+python collect_data.py RoyalBoroughofGreenwich https://www.royalgreenwich.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Provide your house number in the `house_number` parameter and your postcode in the `postcode` parameter.
 
 ---
 
