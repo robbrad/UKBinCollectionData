@@ -139,6 +139,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [London Borough Havering](#london-borough-havering)
 - [London Borough Hounslow](#london-borough-hounslow)
 - [London Borough Lambeth](#london-borough-lambeth)
+- [London Borough Lewisham](#london-borough-lewisham)
 - [London Borough Redbridge](#london-borough-redbridge)
 - [London Borough Sutton](#london-borough-sutton)
 - [Luton Borough Council](#luton-borough-council)
@@ -1843,6 +1844,20 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### London Borough Lewisham
+```commandline
+python collect_data.py LondonBoroughLewisham https://www.lewisham.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

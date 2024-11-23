@@ -1012,6 +1012,15 @@
         "wiki_name": "London Borough Lambeth",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "LondonBoroughLewisham": {
+        "postcode": "SE12 9QF",
+        "skip_get_url": true,
+        "uprn": "100021954849",
+        "url": "https://www.lewisham.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "London Borough Lewisham",
+        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "LondonBoroughRedbridge": {
         "postcode": "IG2 6LQ",
         "uprn": "10023770353",
