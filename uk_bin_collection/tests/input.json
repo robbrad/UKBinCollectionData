@@ -796,6 +796,13 @@
         "wiki_name": "Guildford Council",
         "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7 AM; else the date will be in 'previousCollectionDate'. To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "HackneyCouncil": {
+        "house_number": "101",
+        "postcode": "N16 9AS",
+        "url": "https://www.hackney.gov.uk",
+        "wiki_name": "Hackney Council",
+        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
+    },
     "HaltonBoroughCouncil": {
         "house_number": "12",
         "postcode": "WA7 4HA",
