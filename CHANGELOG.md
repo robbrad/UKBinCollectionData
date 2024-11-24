@@ -1,4 +1,25 @@
 =======
+## 0.121.0 (2024-11-24)
+
+### Feat
+
+- Royal Borough of Greenwich
+- Adding London Borough of Lewisham
+- Adding Hackney Council
+- Adding Sandwell Borough Council
+- Adding Moray Council
+- Adding Kings Lynn and West Norfolk Borough Council
+- Adding Wyre Forest District Council
+- Adding Folkstone and Hythe District Council
+- Adding Cheltenham Borough Council
+- Adding Thurrock Council
+
+### Fix
+
+- West Northamptonshire Council
+- East Ayrshire Council
+- Cotswold District Council
+
 ## 0.120.0 (2024-11-20)
 
 ### Feat
