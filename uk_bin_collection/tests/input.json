@@ -871,6 +871,12 @@
         "wiki_name": "High Peak Council",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
     },
+    "HinckleyandBosworthBoroughCouncil": {
+        "url": "https://www.hinckley-bosworth.gov.uk",
+        "uprn": "100030533512",
+        "wiki_name": "Hinckley and Bosworth Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HounslowCouncil": {
         "house_number": "17A LAMPTON PARK ROAD, HOUNSLOW",
         "postcode": "TW3 4HS",

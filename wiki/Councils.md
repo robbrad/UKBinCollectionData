@@ -120,6 +120,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Hertsmere Borough Council](#hertsmere-borough-council)
 - [Highland Council](#highland-council)
 - [High Peak Council](#high-peak-council)
+- [Hinckley and Bosworth Borough Council](#hinckley-and-bosworth-borough-council)
 - [Hounslow Council](#hounslow-council)
 - [Hull City Council](#hull-city-council)
 - [Huntingdon District Council](#huntingdon-district-council)
@@ -1619,6 +1620,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver.
+
+---
+
+### Hinckley and Bosworth Borough Council
+```commandline
+python collect_data.py HinckleyandBosworthBoroughCouncil https://www.hinckley-bosworth.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
