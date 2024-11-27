@@ -156,6 +156,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
 - [Mole Valley District Council](#mole-valley-district-council)
+- [Monmouthshire County Council](#monmouthshire-county-council)
 - [Moray Council](#moray-council)
 - [Neath Port Talbot Council](#neath-port-talbot-council)
 - [New Forest Council](#new-forest-council)
@@ -2052,6 +2053,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: UPRN can only be parsed with a valid postcode.
+
+---
+
+### Monmouthshire County Council
+```commandline
+python collect_data.py MonmouthshireCountyCouncil https://maps.monmouthshire.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

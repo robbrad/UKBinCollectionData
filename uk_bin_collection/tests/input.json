@@ -1138,6 +1138,12 @@
         "wiki_name": "Mole Valley District Council",
         "wiki_note": "UPRN can only be parsed with a valid postcode."
     },
+    "MonmouthshireCountyCouncil": {
+        "url": "https://maps.monmouthshire.gov.uk",
+        "uprn": "100100266220",
+        "wiki_name": "Monmouthshire County Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "MorayCouncil": {
         "uprn": "28841",
         "url": "https://bindayfinder.moray.gov.uk/",
