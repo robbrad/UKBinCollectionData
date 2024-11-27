@@ -31,11 +31,14 @@ class CouncilClass(AbstractGetBinDataClass):
         for container in soup.find_all(class_="box-item"):
 
             # Get the next collection dates from the <p> tag containing <strong>
-            dates_tag = (
-                container.find("p", string=lambda text: "Next" in text)
-                .find_next("p")
-                .find("strong")
-            )
+            try:
+                dates_tag = (
+                    container.find("p", string=lambda text: "Next" in text)
+                    .find_next("p")
+                    .find("strong")
+                )
+            except:
+                continue
             collection_dates = (
                 dates_tag.text.strip().split(", and then ")
                 if dates_tag
