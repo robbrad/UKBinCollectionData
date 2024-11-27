@@ -32,9 +32,6 @@ class CouncilClass(AbstractGetBinDataClass):
             # Get the bin type based on the class (e.g., Blue, Black, Garden, Nappy)
             bin_type = container.get("class")[1]  # Second class represents the bin type
 
-            if bin_type == "Garden":
-                continue
-
             # Find the next collection date
             date_tag = container.find(class_="font11 text-center")
             if date_tag:
