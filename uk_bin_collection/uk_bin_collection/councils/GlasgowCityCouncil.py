@@ -27,6 +27,23 @@ class CouncilClass(AbstractGetBinDataClass):
             "../Images/Bins/ashBin.gif": "Ash bin",
         }
 
+        fieldset = soup.find("fieldset")
+        ps = fieldset.find_all("p")
+        for p in ps:
+            collection = p.text.strip().replace("Your next ", "").split(".")[0]
+            bin_type = collection.split(" day is")[0]
+            collection_date = datetime.strptime(
+                remove_ordinal_indicator_from_date_string(collection).split("day is ")[
+                    1
+                ],
+                "%A %d %B %Y",
+            )
+            dict_data = {
+                "type": bin_type,
+                "collectionDate": collection_date.strftime(date_format),
+            }
+            data["bins"].append(dict_data)
+
         # Find the page body with all the calendars
         body = soup.find("div", {"id": "Application_ctl00"})
         calendars = body.find_all_next("table", {"title": "Calendar"})
