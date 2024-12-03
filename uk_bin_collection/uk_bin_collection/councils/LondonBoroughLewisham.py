@@ -1,3 +1,4 @@
+import re
 import time
 
 from bs4 import BeautifulSoup
@@ -27,106 +28,113 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata = {"bins": []}
 
         # Initialize the WebDriver (Chrome in this case)
-        driver = create_webdriver(
+        with create_webdriver(
             web_driver,
             headless,
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
             __name__,
-        )
+        ) as driver:
 
-        # Step 1: Navigate to the form page
-        driver.get(
-            "https://lewisham.gov.uk/myservices/recycling-and-rubbish/your-bins/collection"
-        )
+            # Step 1: Navigate to the form page
+            driver.get(
+                "https://lewisham.gov.uk/myservices/recycling-and-rubbish/your-bins/collection"
+            )
 
-        try:
-            cookie_accept_button = WebDriverWait(driver, 5).until(
+            try:
+                cookie_accept_button = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable(
+                        (By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
+                    )
+                )
+                cookie_accept_button.click()
+            except Exception:
+                print("No cookie consent banner found or already dismissed.")
+
+            # Wait for the form to load
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "address-finder"))
+            )
+
+            # Step 2: Locate the input field for the postcode
+            postcode_input = driver.find_element(
+                By.CLASS_NAME, "js-address-finder-input"
+            )
+
+            # Enter the postcode
+            postcode_input.send_keys(
+                user_postcode
+            )  # Replace with your desired postcode
+            time.sleep(1)  # Optional: Wait for the UI to react
+
+            # Step 4: Click the "Find address" button with retry logic
+            find_button = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
-                    (By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
+                    (By.CLASS_NAME, "js-address-finder-step-address")
                 )
             )
-            cookie_accept_button.click()
-        except Exception:
-            print("No cookie consent banner found or already dismissed.")
+            find_button.click()
 
-        # Wait for the form to load
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "address-finder"))
-        )
-
-        # Step 2: Locate the input field for the postcode
-        postcode_input = driver.find_element(By.CLASS_NAME, "js-address-finder-input")
-
-        # Enter the postcode
-        postcode_input.send_keys(user_postcode)  # Replace with your desired postcode
-        time.sleep(1)  # Optional: Wait for the UI to react
-
-        # Step 4: Click the "Find address" button with retry logic
-        find_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (By.CLASS_NAME, "js-address-finder-step-address")
-            )
-        )
-        find_button.click()
-
-        # Wait for the address selector to appear and options to load
-        WebDriverWait(driver, 10).until(
-            lambda d: len(
-                d.find_element(By.ID, "address-selector").find_elements(
-                    By.TAG_NAME, "option"
+            # Wait for the address selector to appear and options to load
+            WebDriverWait(driver, 10).until(
+                lambda d: len(
+                    d.find_element(By.ID, "address-selector").find_elements(
+                        By.TAG_NAME, "option"
+                    )
                 )
+                > 1
             )
-            > 1
-        )
 
-        # Select the dropdown and print available options
-        address_selector = driver.find_element(By.ID, "address-selector")
+            # Select the dropdown and print available options
+            address_selector = driver.find_element(By.ID, "address-selector")
 
-        # Use Select class to interact with the dropdown
-        select = Select(address_selector)
-        if len(select.options) > 1:
-            select.select_by_value(user_uprn)
-        else:
-            print("No additional addresses available to select")
-
-        # Wait until the URL contains the expected substring
-        WebDriverWait(driver, 10).until(
-            EC.url_contains("/find-your-collection-day-result")
-        )
-
-        # Parse the HTML
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-
-        # Extract the main container
-        collection_result = soup.find("div", class_="js-find-collection-result")
-
-        # Extract each collection type and its frequency/day
-        for strong_tag in collection_result.find_all("strong"):
-            bin_type = strong_tag.text.strip()  # e.g., "Food waste"
-            # Extract day from the sibling text
-            schedule_text = (
-                strong_tag.next_sibling.next_sibling.next_sibling.text.strip()
-                .split("on\n")[-1]
-                .replace("\n", "")
-                .replace("\t", "")
-            )
-            day = schedule_text.strip().split(".")[0]
-
-            # Extract the next collection date
-            if "Your next collection date is" in schedule_text:
-                start_index = schedule_text.index("Your next collection date is") + len(
-                    "Your next collection date is"
-                )
-                next_collection_date = (
-                    schedule_text[start_index:].strip().split("\n")[0].strip()
-                )
+            # Use Select class to interact with the dropdown
+            select = Select(address_selector)
+            if len(select.options) > 1:
+                select.select_by_value(user_uprn)
             else:
-                next_collection_date = get_next_day_of_week(day, date_format)
+                print("No additional addresses available to select")
 
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": next_collection_date,
-            }
-            bindata["bins"].append(dict_data)
+            # Wait until the URL contains the expected substring
+            WebDriverWait(driver, 10).until(
+                EC.url_contains("/find-your-collection-day-result")
+            )
 
-        return bindata
+            # Parse the HTML
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+
+            # Extract the main container
+            collection_result = soup.find("div", class_="js-find-collection-result")
+
+            # Extract each collection type and its frequency/day
+            for strong_tag in collection_result.find_all("strong"):
+                bin_type = strong_tag.text.strip()  # e.g., "Food waste"
+                # Extract the sibling text
+                schedule_text = (
+                    strong_tag.next_sibling.next_sibling.next_sibling.text.strip()
+                    .replace("\n", " ")
+                    .replace("\t", " ")
+                )
+
+                # Extract the day using regex
+                print(schedule_text)
+                day_match = re.search(r"on\s*(\w+day)", schedule_text)
+                print(day_match)
+                day = day_match.group(1) if day_match else None
+
+                # Extract the next collection date using regex
+                date_match = re.search(
+                    r"Your next collection date is\s*(\d{2}/\d{2}/\d{4})(.?)",
+                    schedule_text,
+                )
+                if date_match:
+                    next_collection_date = date_match.group(1)
+                else:
+                    next_collection_date = get_next_day_of_week(day, date_format)
+
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": next_collection_date,
+                }
+                bindata["bins"].append(dict_data)
+
+            return bindata
