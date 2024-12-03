@@ -1,4 +1,10 @@
 =======
+## 0.121.1 (2024-12-03)
+
+### Fix
+
+- London Borough of Lewisham to have more reliable parsing of dates
+
 ## 0.121.0 (2024-11-24)
 
 ### Feat
