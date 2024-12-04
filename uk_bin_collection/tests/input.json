@@ -871,6 +871,12 @@
         "wiki_name": "High Peak Council",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
     },
+    "HinckleyandBosworthBoroughCouncil": {
+        "url": "https://www.hinckley-bosworth.gov.uk",
+        "uprn": "100030533512",
+        "wiki_name": "Hinckley and Bosworth Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HounslowCouncil": {
         "house_number": "17A LAMPTON PARK ROAD, HOUNSLOW",
         "postcode": "TW3 4HS",
@@ -1072,7 +1078,7 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MertonCouncil": {
-        "url": "https://myneighbourhood.merton.gov.uk/wasteservices/WasteServices.aspx?ID=25851371",
+        "url": "https://myneighbourhood.merton.gov.uk/wasteservices/WasteServices.aspx?ID=25936129",
         "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
         "wiki_name": "Merton Council",
         "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page, then copy the URL and replace the URL in the command."
@@ -1131,6 +1137,12 @@
         "url": "https://myproperty.molevalley.gov.uk/molevalley/",
         "wiki_name": "Mole Valley District Council",
         "wiki_note": "UPRN can only be parsed with a valid postcode."
+    },
+    "MonmouthshireCountyCouncil": {
+        "url": "https://maps.monmouthshire.gov.uk",
+        "uprn": "100100266220",
+        "wiki_name": "Monmouthshire County Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MorayCouncil": {
         "uprn": "28841",

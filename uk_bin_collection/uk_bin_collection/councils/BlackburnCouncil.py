@@ -67,11 +67,19 @@ class CouncilClass(AbstractGetBinDataClass):
                 for collection in bin_collections:
                     if collection is not None:
                         bin_type = collection[0].get("BinType")
+                        current_collection_date = collection[0].get("CollectionDate")
+                        if current_collection_date is None:
+                            continue
                         current_collection_date = datetime.strptime(
-                            collection[0].get("CollectionDate"), "%Y-%m-%d"
+                            current_collection_date, "%Y-%m-%d"
                         )
+                        next_collection_date = collection[0].get(
+                            "NextScheduledCollectionDate"
+                        )
+                        if next_collection_date is None:
+                            continue
                         next_collection_date = datetime.strptime(
-                            collection[0].get("NextScheduledCollectionDate"), "%Y-%m-%d"
+                            next_collection_date, "%Y-%m-%d"
                         )
 
                         # Work out the most recent collection date to display

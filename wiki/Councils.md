@@ -120,6 +120,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Hertsmere Borough Council](#hertsmere-borough-council)
 - [Highland Council](#highland-council)
 - [High Peak Council](#high-peak-council)
+- [Hinckley and Bosworth Borough Council](#hinckley-and-bosworth-borough-council)
 - [Hounslow Council](#hounslow-council)
 - [Hull City Council](#hull-city-council)
 - [Huntingdon District Council](#huntingdon-district-council)
@@ -155,6 +156,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Milton Keynes City Council](#milton-keynes-city-council)
 - [Mole Valley District Council](#mole-valley-district-council)
+- [Monmouthshire County Council](#monmouthshire-county-council)
 - [Moray Council](#moray-council)
 - [Neath Port Talbot Council](#neath-port-talbot-council)
 - [New Forest Council](#new-forest-council)
@@ -1622,6 +1624,17 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ---
 
+### Hinckley and Bosworth Borough Council
+```commandline
+python collect_data.py HinckleyandBosworthBoroughCouncil https://www.hinckley-bosworth.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Hounslow Council
 ```commandline
 python collect_data.py HounslowCouncil https://www.hounslow.gov.uk/info/20272/recycling_and_waste_collection_day_finder -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -2040,6 +2053,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: UPRN can only be parsed with a valid postcode.
+
+---
+
+### Monmouthshire County Council
+```commandline
+python collect_data.py MonmouthshireCountyCouncil https://maps.monmouthshire.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
