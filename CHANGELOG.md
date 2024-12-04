@@ -1,4 +1,22 @@
 =======
+## 0.122.0 (2024-12-04)
+
+### Feat
+
+- Adding Monmouthshire County Council
+- Adding Hinckley and Bosworth Borough Council
+
+### Fix
+
+- Glasgow City Council
+- Merton Council
+- Blaby District Council
+- Warwick District Council
+- Blackburn Council
+- Carmarthenshire County Council
+- High Peak Council
+- CarmarthenshireCountyCouncil
+
 ## 0.121.1 (2024-12-03)
 
 ### Fix
