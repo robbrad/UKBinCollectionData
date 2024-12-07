@@ -877,6 +877,14 @@
         "wiki_name": "Hinckley and Bosworth Borough Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "HorshamDistrictCouncil": {
+        "house_number": "Horsham District Council, RH12 1HQ",
+        "skip_get_url": true,
+        "uprn": "200004781462",
+        "url": "https://horsham.moderngov.co.uk/",
+        "wiki_name": "Horsham District Council",
+        "wiki_note": "Horsham needs to be passed both a UPRN and a USRN to work. Find these on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map)."
+    },
     "HounslowCouncil": {
         "house_number": "17A LAMPTON PARK ROAD, HOUNSLOW",
         "postcode": "TW3 4HS",
