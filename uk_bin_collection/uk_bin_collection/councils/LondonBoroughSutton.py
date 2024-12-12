@@ -42,14 +42,18 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_type = service.get_text(
                 strip=True
             )  # Bin type name (e.g., 'Food waste', 'Mixed recycling')
-            if bin_type == "Bulky waste":
+            if bin_type == "Bulky Waste":
                 continue
             service_details = service.find_next("div", class_="govuk-grid-row")
 
             next_collection = (
-                service_details.find("dt", string="Next collection")
-                .find_next_sibling("dd")
-                .get_text(strip=True)
+                (
+                    service_details.find("dt", string="Next collection")
+                    .find_next_sibling("dd")
+                    .get_text(strip=True)
+                )
+                .replace("(this collection has been adjusted from its usual time)", "")
+                .strip()
             )
 
             next_collection = datetime.strptime(
