@@ -255,6 +255,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Wakefield City Council](#wakefield-city-council)
 - [Walsall Council](#walsall-council)
 - [Waltham Forest](#waltham-forest)
+- [Wandsworth Council](#wandsworth-council)
 - [Warrington Borough Council](#warrington-borough-council)
 - [Warwick District Council](#warwick-district-council)
 - [Watford Borough Council](#watford-borough-council)
@@ -3234,6 +3235,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Wandsworth Council
+```commandline
+python collect_data.py WandsworthCouncil https://www.wandsworth.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
