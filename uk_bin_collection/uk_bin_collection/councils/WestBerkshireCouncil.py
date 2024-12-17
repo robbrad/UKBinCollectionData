@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -99,7 +100,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 ).replace(year=datetime.now().year)
 
             food_div = soup.find(
-                "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
+                "div", {"id": "FINDYOURBINDAYS_FOODWASTEDATE_OUTERDIV"}
             )
             food_date = food_div.find_all("div")[2]
             if food_date.text == "Today":
