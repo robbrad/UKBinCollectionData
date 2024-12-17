@@ -257,12 +257,38 @@ jobs:
       # Untar Full Reports
       - name: Untar Full Reports
         if: github.event_name == 'schedule' || github.event_name == 'push'
-        run: for i in allure-history/tars/full/*.tar; do tar -xvf "$i" -C allure-history/full; done
+        run: |
+          shopt -s nullglob
+          for i in allure-history/tars/full/*.tar; do
+            tar -xvf "$i" -C allure-history/full
+          done
   
       # Untar Partial Reports
       - name: Untar Partial Reports
         if: github.event_name == 'pull_request'
-        run: for i in allure-history/tars/partial/*.tar; do tar -xvf "$i" -C allure-history/partial; done
+        run: |
+          shopt -s nullglob
+          for i in allure-history/tars/partial/*.tar; do
+            tar -xvf "$i" -C allure-history/partial
+          done
+  
+      # Create placeholder if full directory is empty (for schedule/push)
+      - name: Ensure Full Directory not empty
+        if: github.event_name == 'schedule' || github.event_name == 'push'
+        run: |
+          if [ ! "$(ls -A allure-history/full)" ]; then
+            echo "No files extracted, creating a placeholder file."
+            touch allure-history/full/.placeholder
+          fi
+  
+      # Create placeholder if partial directory is empty (for pull_request)
+      - name: Ensure Partial Directory not empty
+        if: github.event_name == 'pull_request'
+        run: |
+          if [ ! "$(ls -A allure-history/partial)" ]; then
+            echo "No files extracted, creating a placeholder file."
+            touch allure-history/partial/.placeholder
+          fi
   
       # Remove the Tar Files
       - name: Remove Tar Reports
