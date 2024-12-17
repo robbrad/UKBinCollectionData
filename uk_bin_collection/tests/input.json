@@ -1963,8 +1963,8 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WestLindseyDistrictCouncil": {
-        "house_number": "PRIVATE ACCOMMODATION",
-        "postcode": "LN8 2AR",
+        "house_number": "35",
+        "postcode": "LN8 3AX",
         "skip_get_url": true,
         "url": "https://www.west-lindsey.gov.uk/",
         "wiki_name": "West Lindsey District Council",
