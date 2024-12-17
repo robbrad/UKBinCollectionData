@@ -92,13 +92,14 @@ class CouncilClass(AbstractGetBinDataClass):
             for bin_date in bin_dates:
                 # Split the bin date into day and month and build a full date with the current year
                 split_date = bin_date.split("/")
+                if len(split_date[0]) < 1:
+                    raise ValueError("Error parsing dates retrieved from website")
                 full_date = datetime(
                     datetime.now().year, int(split_date[1]), int(split_date[0])
                 )
-
                 # If the current month is December and one of the next collections is in January, increment the year
-                if datetime.now().month == 12 and int(split_date[1]) == 1:
-                    full_date = bin_date + relativedelta(years=1)
+                if datetime.now().month == 12 and int(split_date[1]) < 12:
+                    full_date = datetime(year=datetime.now().year + 1, month=int(split_date[1]), day=int(split_date[0]))
 
                 # Since data in unordered, add to a tuple
                 collections.append((bin_type.title(), full_date))
