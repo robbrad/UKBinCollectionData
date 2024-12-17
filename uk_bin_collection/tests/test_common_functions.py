@@ -134,6 +134,32 @@ def test_is_holiday_different_region(mock_holidays_func):
     assert is_holiday(datetime(2023, 11, 30), Region.ENG) is False
 
 
+def test_is_weekend_when_true():
+    weekend_date = datetime(2024, 12, 7)
+    assert is_weekend(weekend_date) is True
+
+
+def test_is_weekend_when_false():
+    weekend_date = datetime(2024, 12, 6)
+    assert is_weekend(weekend_date) is False
+
+
+def test_is_working_day_when_true():
+    working_day_date = datetime(2024, 12, 6)
+    assert is_working_day(working_day_date) is True
+
+
+def test_is_working_day_when_false():
+    working_day_date = datetime(2024, 12, 7)
+    assert is_working_day(working_day_date) is False
+
+
+def test_get_next_working_day():
+    sample_date = datetime(2024, 12, 7)
+    next_working_day = get_next_working_day(sample_date)
+    assert next_working_day == datetime(2024, 12, 9)
+
+
 def test_remove_alpha_characters():
     test_string = "12345abc12345"
     result = remove_alpha_characters(test_string)

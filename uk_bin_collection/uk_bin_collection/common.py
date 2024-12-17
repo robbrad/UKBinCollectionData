@@ -10,7 +10,6 @@ import pandas as pd
 import requests
 from dateutil.parser import parse
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.service import Service as ChromeService
 from urllib3.exceptions import MaxRetryError
 from webdriver_manager.chrome import ChromeDriverManager
@@ -162,6 +161,31 @@ def is_holiday(date_to_check: datetime, region: Region = Region.ENG) -> bool:
         return False
 
 
+def is_weekend(date_to_check: datetime) -> bool:
+    """
+    Checks if a given date is a weekend
+    :param date_to_check: Date to check if it falls on a weekend
+    :return: Bool - true if a weekend day, false if not
+    """
+    return True if date_to_check.date().weekday() >= 5 else False
+
+
+def is_working_day(date_to_check: datetime, region: Region = Region.ENG) -> bool:
+    """
+    Wraps is_holiday() and is_weekend() into one function
+    :param date_to_check: Date to check if holiday
+    :param region: The UK nation to check. Defaults to ENG.
+    :return: Bool - true if a working day (non-holiday, Mon-Fri).
+    """
+    return False if is_holiday(date_to_check, region) or is_weekend(date_to_check) else True
+
+
+def get_next_working_day(date: datetime, region: Region = Region.ENG) -> datetime:
+    while not is_working_day(date, region):
+        date += timedelta(days=1)
+    return date
+
+
 def get_weekday_dates_in_period(start: datetime, day_of_week: int, amount=8) -> list:
     """
     Returns a list of dates of a given weekday from a start date for the given amount of weeks
@@ -208,7 +232,7 @@ def get_next_occurrence_from_day_month(date: datetime) -> datetime:
 
     # Check if the target date has already occurred this year
     if (target_month < current_month) or (
-        target_month == current_month and target_day < current_day
+            target_month == current_month and target_day < current_day
     ):
         date = pd.to_datetime(date) + pd.DateOffset(years=1)
 
@@ -291,10 +315,10 @@ def contains_date(string, fuzzy=False) -> bool:
 
 
 def create_webdriver(
-    web_driver: str = None,
-    headless: bool = True,
-    user_agent: str = None,
-    session_name: str = None,
+        web_driver: str = None,
+        headless: bool = True,
+        user_agent: str = None,
+        session_name: str = None,
 ) -> webdriver.Chrome:
     """
     Create and return a Chrome WebDriver configured for optional headless operation.
