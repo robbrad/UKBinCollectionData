@@ -6,8 +6,18 @@ from selenium.webdriver.support.wait import WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-# import the wonderful Beautiful Soup and the URL grabber
 
+def parse_collection_date(date_string) -> datetime:
+    now = datetime.now()
+    if date_string == "is due today":
+        return now
+
+    parsed_date = datetime.strptime(date_string, "%A, %d %B").replace(year=now.year)
+
+    if now.month == 12 and parsed_date.month < 12:
+        parsed_date = parsed_date.replace(year=(now.year + 1))
+
+    return parsed_date
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -79,7 +89,7 @@ class CouncilClass(AbstractGetBinDataClass):
         ).text.strip()
 
         # Extract bins for the next collection
-        next_bins = [li.text.strip() for li in soup.select("#SBCFirstBins ul li")]
+        next_bins = [li.text.strip().capitalize() for li in soup.select("#SBCFirstBins ul li")]
 
         # Extract future collection details
         future_collection_date_tag = soup.find(
@@ -91,23 +101,19 @@ class CouncilClass(AbstractGetBinDataClass):
             else "No future date found"
         )
 
-        future_bins = [li.text.strip() for li in soup.select("#FirstFutureBins li")]
+        future_bins = [li.text.strip().capitalize() for li in soup.select("#FirstFutureBins li")]
 
         for bin in next_bins:
             dict_data = {
                 "type": bin,
-                "collectionDate": datetime.strptime(
-                    next_collection_date, "%A, %d %B"
-                ).strftime(date_format),
+                "collectionDate": parse_collection_date(next_collection_date).strftime(date_format),
             }
             data["bins"].append(dict_data)
 
         for bin in future_bins:
             dict_data = {
                 "type": bin,
-                "collectionDate": datetime.strptime(
-                    future_collection_date, "%A, %d %B"
-                ).strftime(date_format),
+                "collectionDate": parse_collection_date(future_collection_date).strftime(date_format),
             }
             data["bins"].append(dict_data)
 
