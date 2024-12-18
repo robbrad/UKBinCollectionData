@@ -48,15 +48,13 @@ class CouncilClass(AbstractGetBinDataClass):
             alternateCheck = False
 
         strong = soup.find_all("strong")
+        collections = []
 
         if alternateCheck:
             bin_types = strong[2].text.strip().replace(".", "").split(" and ")
             for bin in bin_types:
-                dict_data = {
-                    "type": bin,
-                    "collectionDate": strong[1].text.strip(),
-                }
-                bindata["bins"].append(dict_data)
+                collections.append((bin.capitalize(), datetime.strptime(strong[1].text.strip(), date_format)))
+
         else:
             p_tag = soup.find_all("p")
             i = 1
@@ -65,11 +63,18 @@ class CouncilClass(AbstractGetBinDataClass):
                     p.text.split("Your ")[1].split(" is collected")[0].split(" and ")
                 )
                 for bin in bin_types:
-                    dict_data = {
-                        "type": bin,
-                        "collectionDate": strong[i].text.strip(),
-                    }
-                    bindata["bins"].append(dict_data)
+                    collections.append((bin.capitalize(), datetime.strptime(strong[1].text.strip(), date_format)))
                 i += 2
+
+        if len(strong) > 3:
+            collections.append(("Garden", datetime.strptime(strong[4].text.strip(), date_format)))
+
+        ordered_data = sorted(collections, key=lambda x: x[1])
+        for item in ordered_data:
+            dict_data = {
+                "type": item[0] + " bin",
+                "collectionDate": item[1].strftime(date_format),
+            }
+            bindata["bins"].append(dict_data)
 
         return bindata
