@@ -1,4 +1,11 @@
 =======
+## 0.123.1 (2024-12-18)
+
+### Fix
+
+- Update AberdeenCityCouncil.py
+- Update behave.yml
+
 ## 0.123.0 (2024-12-17)
 
 ## 0.122.0 (2024-12-04)
