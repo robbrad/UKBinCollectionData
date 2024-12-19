@@ -32,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Strip data and parse the JSON
         address_data = json.loads(
-            re.sub("getAddressesCallback\d+\(", "", address_data)[:-2]
+            re.sub(r"getAddressesCallback\d+\(", "", address_data)[:-2]
         )
 
         if address_data["TotalHits"] == 0:
@@ -48,9 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
         address_x = address_data["Locations"][0]["X"]
         address_y = address_data["Locations"][0]["Y"]
 
-        stage2_url = "https://wlnk.statmap.co.uk/map/Cluster.svc/getpage?script=\Cluster\Cluster.AuroraScript$&taskId=bins&format=js&updateOnly=true&query=x%3D{}%3By%3D{}%3Bid%3D{}".format(
-            address_x, address_y, address_id
-        )
+        stage2_url = fr"https://wlnk.statmap.co.uk/map/Cluster.svc/getpage?script=\Cluster\Cluster.AuroraScript$&taskId=bins&format=js&updateOnly=true&query=x%3D{address_x}%3By%3D{address_y}%3Bid%3D{address_id}"
 
         bin_query = requests.get(stage2_url).text
 
@@ -61,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         # Return only the HTML contained within the Javascript function payload.
-        pattern = 'document\.getElementById\("DR1"\)\.innerHTML="(.+)";'
+        pattern = r'document\.getElementById\("DR1"\)\.innerHTML="(.+)";'
 
         bin_html = re.findall(pattern, bin_query)
 
@@ -86,7 +84,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Get bin date
             bin_date_text = row.text
-            pattern = "\d+\/\d+"
+            pattern = r"\d+\/\d+"
             bin_dates = re.findall(pattern, bin_date_text)
 
             for bin_date in bin_dates:
