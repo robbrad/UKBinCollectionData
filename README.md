@@ -92,7 +92,7 @@ If you miss this on the first setup you can reconfigure it.
     "color": "blue"     
   }
 }
-
+```
 ---
 
 ## Standalone Usage

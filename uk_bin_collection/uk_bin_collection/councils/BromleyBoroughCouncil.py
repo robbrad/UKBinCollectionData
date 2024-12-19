@@ -21,7 +21,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Make a BS4 object
         driver = None
         try:
             bin_data_dict = {"bins": []}
@@ -76,12 +75,13 @@ class CouncilClass(AbstractGetBinDataClass):
                     # Get the current year
                     current_year = datetime.now().year
 
+                    # Append the year to the date
+                    date_with_year = date_object.replace(year=current_year)
+
                     # Check if the parsed date is in the past compared to the current date
                     if date_object < datetime.now():
                         # If the parsed date is in the past, assume it's for the next year
                         current_year += 1
-                    # Append the year to the date
-                    date_with_year = date_object.replace(year=current_year)
 
                     # Format the date with the year
                     date_with_year_formatted = date_with_year.strftime(
