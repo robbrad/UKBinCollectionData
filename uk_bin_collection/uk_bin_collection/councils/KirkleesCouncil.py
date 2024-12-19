@@ -1,12 +1,17 @@
+import time
 from datetime import datetime
 from typing import Optional
 
+from bs4 import BeautifulSoup
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.drivers.chrome import ChromeDriver
+
+from selenium import webdriver
 
 from uk_bin_collection.uk_bin_collection.common import create_webdriver
 from uk_bin_collection.uk_bin_collection.common import date_format
@@ -55,78 +60,84 @@ class CouncilClass(AbstractGetBinDataClass):
 
         - Extract info from the 'alt' attribute of the images on that page
         """
-        bins = []
+        data = {"bins": []}
+        collections = []
 
         user_paon = kwargs["paon"]
         user_postcode = kwargs["postcode"]
 
-        self._driver = driver = create_webdriver(
-            web_driver=kwargs["web_driver"],
-            headless=kwargs.get("headless", True),
-            session_name=__name__,
-        )
+        self._driver = driver = webdriver.Chrome()
+        # self._driver = driver = create_webdriver(
+        #     web_driver=kwargs["web_driver"],
+        #     headless=kwargs.get("headless", True),
+        #     session_name=__name__,
+        # )
         driver.implicitly_wait(1)
 
         driver.get(
-            "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins/default.aspx"
+            "https://my.kirklees.gov.uk/service/Bins_and_recycling___Manage_your_bins"
         )
+
+        time.sleep(5)
+
+        # Switch to iframe
+        iframe = driver.find_element(By.CSS_SELECTOR, "#fillform-frame-1")
+        driver.switch_to.frame(iframe)
 
         wait_for_element(
-            driver, By.ID, "cphPageBody_cphContent_thisGeoSearch_txtGeoPremises"
+            driver, By.ID, "mandatory_Postcode", timeout=10
         )
-
-        house_input = driver.find_element(
-            By.ID, "cphPageBody_cphContent_thisGeoSearch_txtGeoPremises"
-        )
-        house_input.send_keys(user_paon)
 
         postcode_input = driver.find_element(
-            By.ID, "cphPageBody_cphContent_thisGeoSearch_txtGeoSearch"
+            By.ID, "Postcode"
         )
         postcode_input.send_keys(user_postcode)
 
-        # submit address search
-        driver.find_element(By.ID, "butGeoSearch").send_keys(Keys.RETURN)
+        wait_for_element(driver, By.ID, "List")
+        time.sleep(2)
 
-        wait_for_element(
-            driver,
-            By.ID,
-            "cphPageBody_cphContent_wtcDomestic240__lnkAccordionAnchor",
-            # submitting can be slow
-            timeout=30,
-        )
-
-        # Open the panel
-        driver.find_element(
-            By.ID, "cphPageBody_cphContent_wtcDomestic240__lnkAccordionAnchor"
+        WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//select[@name='List']//option[contains(., '"
+                    + user_paon
+                    + "')]",
+                )
+            )
         ).click()
 
-        # Domestic waste calendar
-        wait_for_element(
-            driver, By.ID, "cphPageBody_cphContent_wtcDomestic240__LnkCalendar"
-        )
-        calendar_link = driver.find_element(
-            By.ID, "cphPageBody_cphContent_wtcDomestic240__LnkCalendar"
-        )
-        driver.execute_script("arguments[0].click();", calendar_link)
+        time.sleep(10)
 
-        # <img alt="Recycling                      collection date 14 March 2024"
-        # <img alt="Domestic                       collection date 21 March 2024
-        date_strings = driver.find_elements(
-            By.CSS_SELECTOR, 'img[alt*="collection date"]'
-        )
+        # For whatever reason, the page sometimes automatically goes to the next step
+        next_button = driver.find_element(By.XPATH, '/html/body/div/div/section/form/div/nav/div[2]/button')
+        if next_button.is_displayed():
+            next_button.click()
 
-        for date in date_strings:
-            bin_type, _, _, day, month, year = date.get_attribute("alt").split()
-            collection_date = datetime.strptime(
-                f"{day} {month} {year}", "%d %B %Y"
-            ).strftime(date_format)
 
-            bins.append(
-                {
-                    "type": bin_type,
-                    "collectionDate": collection_date,
-                }
-            )
+        time.sleep(5)
 
-        return {"bins": bins}
+        soup = BeautifulSoup(self._driver.page_source, features="html.parser")
+        soup.prettify()
+
+        radio_button_text = soup.find_all("label", {"class": "radio-label"})
+        for label in radio_button_text:
+            parsed_text = label.text.split("x ")
+            row = parsed_text[1].lower().split("collection date: ")
+            bin_type = row[0].split("(")[0].strip()
+            date_text = row[1].strip().replace(")", "")
+            if date_text == "today":
+                bin_date = datetime.now()
+            else:
+                bin_date = datetime.strptime(date_text, "%A %d %B %Y")
+            collections.append((bin_type, bin_date))
+
+        ordered_data = sorted(collections, key=lambda x: x[1])
+        for item in ordered_data:
+            dict_data = {
+                "type": item[0].replace("standard ", "").capitalize(),
+                "collectionDate": item[1].strftime(date_format),
+            }
+            data["bins"].append(dict_data)
+
+        return data
