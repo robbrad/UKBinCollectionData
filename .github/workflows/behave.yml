@@ -182,7 +182,6 @@ jobs:
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
-          subfolder: ${{ matrix.python-version }}
           allure_history: allure-history/full
           keep_reports: 20
 
@@ -192,19 +191,18 @@ jobs:
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
-          subfolder: ${{ matrix.python-version }}
           allure_history: allure-history/partial
           keep_reports: 20
 
       # Archive Full Reports
       - name: Tar full report
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/master'
-        run: tar -cvf allure_full_history_${{ matrix.python-version }}.tar allure-history/full/${{ matrix.python-version }}
+        run: tar -cvf allure_full_history_${{ matrix.python-version }}.tar allure-history/full
 
       # Archive Partial Reports
       - name: Tar partial report
         if: github.event_name == 'pull_request'
-        run: tar -cvf allure_partial_history_${{ matrix.python-version }}.tar allure-history/partial/${{ matrix.python-version }}
+        run: tar -cvf allure_partial_history_${{ matrix.python-version }}.tar allure-history/partial
 
       # Upload artifacts
       - name: Upload artifact for Full Report
