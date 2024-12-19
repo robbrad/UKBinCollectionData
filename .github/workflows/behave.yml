@@ -182,7 +182,6 @@ jobs:
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
-          subfolder: ${{ matrix.python-version }}
           allure_history: allure-history/full
           keep_reports: 20
 
@@ -192,7 +191,6 @@ jobs:
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
-          subfolder: ${{ matrix.python-version }}
           allure_history: allure-history/partial
           keep_reports: 20
 
