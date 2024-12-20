@@ -121,6 +121,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Highland Council](#highland-council)
 - [High Peak Council](#high-peak-council)
 - [Hinckley and Bosworth Borough Council](#hinckley-and-bosworth-borough-council)
+- [Horsham District Council](#horsham-district-council)
 - [Hounslow Council](#hounslow-council)
 - [Hull City Council](#hull-city-council)
 - [Huntingdon District Council](#huntingdon-district-council)
@@ -1632,6 +1633,19 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Horsham District Council
+```commandline
+python collect_data.py HorshamDistrictCouncil https://horsham.moderngov.co.uk/ -s -u XXXXXXXX -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-n` - house number
+
+Note: Horsham needs to be passed both a UPRN and a USRN to work. Find these on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map).
 
 ---
 
