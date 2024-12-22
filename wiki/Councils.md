@@ -191,6 +191,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Powys Council](#powys-council)
 - [Preston City Council](#preston-city-council)
 - [Reading Borough Council](#reading-borough-council)
+- [Redditch Borough Council](#redditch-borough-council)
 - [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
 - [Renfrewshire Council](#renfrewshire-council)
 - [Rhondda Cynon Taff Council](#rhondda-cynon-taff-council)
@@ -2469,6 +2470,17 @@ python collect_data.py ReadingBoroughCouncil https://api.reading.gov.uk/api/coll
 ```
 
 Note: Replace XXXXXXXX with your property's UPRN.
+
+---
+
+### Redditch Borough Council
+```commandline
+python collect_data.py RedditchBoroughCouncil https://redditchbc.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
