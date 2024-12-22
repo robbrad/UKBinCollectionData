@@ -25,6 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
+        user_uprn = str(user_uprn).zfill(12)
 
         # Some data for the request
         cookies = {
