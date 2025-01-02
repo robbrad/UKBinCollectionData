@@ -840,6 +840,13 @@
         "wiki_name": "Harrogate Borough Council",
         "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
     },
+    "HartDistrictCouncil": {
+        "skip_get_url": true,
+        "uprn": "100062349291",
+        "url": "https://www.hart.gov.uk/",
+        "wiki_name": "Hart District Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HartlepoolBoroughCouncil": {
         "url": "https://www.hartlepool.gov.uk",
         "uprn": "100110019551",
