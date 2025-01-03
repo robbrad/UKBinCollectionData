@@ -265,7 +265,7 @@ jobs:
         run: rm -rf allure-history/tars
 
       # Ensure not empty
-      - name: Ensure not empty
+      - name: Ensure allure-history is not empty
         run: |
           if [ ! "$(ls -A allure-history)" ]; then
             touch allure-history/.placeholder
