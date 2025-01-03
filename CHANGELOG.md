@@ -1,4 +1,10 @@
 =======
+## 0.124.1 (2025-01-03)
+
+### Fix
+
+- avoid crashing on unexpected string value
+
 ## 0.124.0 (2025-01-02)
 
 ### Feat
