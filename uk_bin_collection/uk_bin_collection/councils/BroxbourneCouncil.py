@@ -47,24 +47,31 @@ class CouncilClass(AbstractGetBinDataClass):
         # Process each row into a list of dictionaries
         for row in rows[1:]:  # Skip the header row
             columns = row.find_all("td")
-            collection_date = (
+            collection_date_text = (
                 columns[0].get_text(separator=" ").replace("\xa0", " ").strip()
             )
             service = columns[1].get_text(separator=" ").replace("\xa0", " ").strip()
 
-            collection_date = datetime.strptime(collection_date, "%a %d %b")
+            # Safely try to parse collection date
+            if collection_date_text:
+                try:
+                    collection_date = datetime.strptime(collection_date_text, "%a %d %b")
+                    if collection_date.month == 1:
+                        collection_date = collection_date.replace(year=current_year + 1)
+                    else:
+                        collection_date = collection_date.replace(year=current_year)
 
-            if collection_date.month == 1:
-                collection_date = collection_date.replace(year=current_year + 1)
-            else:
-                collection_date = collection_date.replace(year=current_year)
+                    formatted_collection_date = collection_date.strftime("%d/%m/%Y")  # Use your desired date format
+                    dict_data = {
+                        "type": service,
+                        "collectionDate": formatted_collection_date,
+                    }
+                    bindata["bins"].append(dict_data)
+                except ValueError:
+                    # Skip invalid collection_date
+                    continue
 
-            dict_data = {
-                "type": service,
-                "collectionDate": (collection_date).strftime(date_format),
-            }
-            bindata["bins"].append(dict_data)
-
+        # Sort valid bins by collectionDate
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
         )
