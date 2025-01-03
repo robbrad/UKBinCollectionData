@@ -1,5 +1,6 @@
 # This script pulls (in one hit) the data from Merton Council Bins Data
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -33,6 +34,11 @@ class CouncilClass(AbstractGetBinDataClass):
             ),
         )
 
+        possible_formats = [
+            "%d %B %Y",
+            "%A %d %B %Y",
+        ]
+
         # Loops the Rows
         for row in rows:
             # Get all the cells
@@ -40,9 +46,15 @@ class CouncilClass(AbstractGetBinDataClass):
             # First cell is the bin_type
             bin_type = cells[0].get_text().strip()
             # Date is on the second cell, second paragraph, wrapped in p
-            collectionDate = datetime.strptime(
-                cells[1].select("p > b")[2].get_text(strip=True), "%d %B %Y"
-            )
+            collectionDate = None
+            for date_format in possible_formats:
+                try:
+                    collectionDate = datetime.strptime(
+                        cells[1].select("p > b")[2].get_text(strip=True), date_format
+                    )
+                    break  # Exit the loop if parsing is successful
+                except ValueError:
+                    continue
 
             # Add each collection to the list as a tuple
             collections.append((bin_type, collectionDate))
