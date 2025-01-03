@@ -43,7 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Extract collection date (e.g., "Monday 9th December")
             date_tag = panel.find("p")
-            if date_tag and "Your next collection date is" in date_tag.text:
+            if date_tag and "Your next collection date is" in date_tag.text.strip().replace("\r", "").replace("\n", ""):
                 collection_date = date_tag.find("strong").text.strip()
             else:
                 continue
