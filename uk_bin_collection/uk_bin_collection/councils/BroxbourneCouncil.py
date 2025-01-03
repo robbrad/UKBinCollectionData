@@ -43,6 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
         rows = table.find_all("tr")
 
         current_year = datetime.now().year
+        current_month = datetime.now().month 
 
         # Process each row into a list of dictionaries
         for row in rows[1:]:  # Skip the header row
@@ -56,7 +57,7 @@ class CouncilClass(AbstractGetBinDataClass):
             if collection_date_text:
                 try:
                     collection_date = datetime.strptime(collection_date_text, "%a %d %b")
-                    if collection_date.month == 1:
+                    if collection_date.month == 1 and current_month != 1:
                         collection_date = collection_date.replace(year=current_year + 1)
                     else:
                         collection_date = collection_date.replace(year=current_year)
