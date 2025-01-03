@@ -1904,6 +1904,13 @@
         "wiki_name": "Waltham Forest",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
+    "WandsworthCouncil": {
+        "url": "https://www.wandsworth.gov.uk",
+        "wiki_command_url_override": "https://www.wandsworth.gov.uk",
+        "uprn": "100022684035",
+        "wiki_name": "Wandsworth Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "WarringtonBoroughCouncil": {
         "url": "https://www.warrington.gov.uk",
         "wiki_command_url_override": "https://www.warrington.gov.uk",
@@ -1970,8 +1977,8 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WestLindseyDistrictCouncil": {
-        "house_number": "PRIVATE ACCOMMODATION",
-        "postcode": "LN8 2AR",
+        "house_number": "35",
+        "postcode": "LN8 3AX",
         "skip_get_url": true,
         "url": "https://www.west-lindsey.gov.uk/",
         "wiki_name": "West Lindsey District Council",

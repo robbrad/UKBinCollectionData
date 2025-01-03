@@ -28,21 +28,25 @@ class CouncilClass(AbstractGetBinDataClass):
         response = requests.get(URI, headers=headers)
 
         soup = BeautifulSoup(response.text, "html.parser")
-        # Extract links to collection shedule pages and iterate through the pages
-        schedule_links = soup.findAll("a", {"class": "nav-link"}, href=True)
+        # Extract links to collection schedule pages and iterate through the pages
+        schedule_links = soup.findAll("td")
+
         for item in schedule_links:
-            if "roundname" in item["href"]:
+            if "roundname" in item.contents[1]["href"]:
                 # get bin colour
-                bincolour = item["href"].split("=")[-1].split("%")[0].upper()
-                binURL = "https://cag.walsall.gov.uk" + item["href"]
-                r = requests.get(binURL, headers=headers)
+                bin_colour = item.contents[1]["href"].split("=")[-1].split("%")[0].upper()
+                bin_url = "https://cag.walsall.gov.uk" + item.contents[1]["href"]
+                r = requests.get(bin_url, headers=headers)
+                if r.status_code != 200:
+                    print(f"Collection details for {bin_colour.lower()} bin could not be retrieved.")
+                    break
                 soup = BeautifulSoup(r.text, "html.parser")
                 table = soup.findAll("tr")
                 for tr in table:
                     td = tr.findAll("td")
                     if td:
                         dict_data = {
-                            "type": bincolour,
+                            "type": bin_colour.capitalize() + " bin",
                             "collectionDate": datetime.strptime(
                                 td[1].text.strip(), "%d/%m/%Y"
                             ).strftime("%d/%m/%Y"),
@@ -50,7 +54,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         bindata["bins"].append(dict_data)
 
         bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
 
         return bindata
