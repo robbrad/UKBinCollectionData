@@ -13,11 +13,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         data = {"bins": []}
-        bin_types = {
-            "240L RUBBISH BIN": "Black bin",
-            "240L GARDEN BIN": "Green bin",
-            "180L RECYCLING BIN": "Blue lid bin",
-        }
         collections = []
 
         user_postcode = kwargs.get("postcode")
@@ -73,7 +68,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for row in table_rows:
             row_text = row.text.strip().split("\n")
-            bin_type = bin_types.get(row_text[0])
+            bin_text = row_text[0].split(" ")
+            bin_type = ' '.join(bin_text[1:]).capitalize()
             collections.append(
                 (bin_type, datetime.strptime(row_text[1], "%A %d %b %Y"))
             )

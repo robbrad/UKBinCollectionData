@@ -6,8 +6,18 @@ from selenium.webdriver.support.wait import WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-# import the wonderful Beautiful Soup and the URL grabber
 
+def parse_collection_date(date_string) -> datetime:
+    now = datetime.now()
+    if date_string == "is due today":
+        return now
+
+    parsed_date = datetime.strptime(date_string, "%A, %d %B").replace(year=now.year)
+
+    if now.month == 12 and parsed_date.month < 12:
+        parsed_date = parsed_date.replace(year=(now.year + 1))
+
+    return parsed_date
 
 class CouncilClass(AbstractGetBinDataClass):
     """

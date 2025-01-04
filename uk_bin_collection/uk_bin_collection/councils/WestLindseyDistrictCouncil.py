@@ -32,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Strip data and parse the JSON
         address_data = json.loads(
-            re.sub("getAddressesCallback\d+\(", "", address_data)[:-2]
+            re.sub(r"getAddressesCallback\d+\(", "", address_data)[:-2]
         )
 
         if address_data["TotalHits"] == 0:
@@ -48,9 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
         address_x = address_data["Locations"][0]["X"]
         address_y = address_data["Locations"][0]["Y"]
 
-        stage2_url = "https://wlnk.statmap.co.uk/map/Cluster.svc/getpage?script=\Cluster\Cluster.AuroraScript$&taskId=bins&format=js&updateOnly=true&query=x%3D{}%3By%3D{}%3Bid%3D{}".format(
-            address_x, address_y, address_id
-        )
+        stage2_url = fr"https://wlnk.statmap.co.uk/map/Cluster.svc/getpage?script=\Cluster\Cluster.AuroraScript$&taskId=bins&format=js&updateOnly=true&query=x%3D{address_x}%3By%3D{address_y}%3Bid%3D{address_id}"
 
         bin_query = requests.get(stage2_url).text
 
@@ -61,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         # Return only the HTML contained within the Javascript function payload.
-        pattern = 'document\.getElementById\("DR1"\)\.innerHTML="(.+)";'
+        pattern = r'document\.getElementById\("DR1"\)\.innerHTML="(.+)";'
 
         bin_html = re.findall(pattern, bin_query)
 
@@ -86,19 +84,20 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Get bin date
             bin_date_text = row.text
-            pattern = "\d+\/\d+"
+            pattern = r"\d+\/\d+"
             bin_dates = re.findall(pattern, bin_date_text)
 
             for bin_date in bin_dates:
                 # Split the bin date into day and month and build a full date with the current year
                 split_date = bin_date.split("/")
+                if len(split_date[0]) < 1:
+                    raise ValueError("Error parsing dates retrieved from website")
                 full_date = datetime(
                     datetime.now().year, int(split_date[1]), int(split_date[0])
                 )
-
                 # If the current month is December and one of the next collections is in January, increment the year
-                if datetime.now().month == 12 and int(split_date[1]) == 1:
-                    full_date = bin_date + relativedelta(years=1)
+                if datetime.now().month == 12 and int(split_date[1]) < 12:
+                    full_date = datetime(year=datetime.now().year + 1, month=int(split_date[1]), day=int(split_date[0]))
 
                 # Since data in unordered, add to a tuple
                 collections.append((bin_type.title(), full_date))
@@ -116,3 +115,4 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         return data
+

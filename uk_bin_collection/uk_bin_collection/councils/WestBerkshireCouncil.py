@@ -99,7 +99,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 ).replace(year=datetime.now().year)
 
             food_div = soup.find(
-                "div", {"id": "FINDYOURBINDAYS_RECYCLINGDATE_OUTERDIV"}
+                "div", {"id": "FINDYOURBINDAYS_FOODWASTEDATE_OUTERDIV"}
             )
             food_date = food_div.find_all("div")[2]
             if food_date.text == "Today":
