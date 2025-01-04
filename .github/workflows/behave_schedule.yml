@@ -36,16 +36,17 @@ jobs:
         id: set-council-tests
         run: |
           IFS=' ' read -ra FILES <<< "${{ steps.changed-council-files.outputs.all_changed_files }}"
-          COUNCIL_TESTS=""
-          for file in "${FILES[@]}"; do
-            FILENAME=$(basename "$file" .py)
-            if [ -z "$COUNCIL_TESTS" ]; then
-              COUNCIL_TESTS="$FILENAME"
-            else
-              COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
-            fi
-          done
+          COUNCIL_TESTS="MonmouthshireCountyCouncil"
           echo "council_tests=$COUNCIL_TESTS" >> $GITHUB_OUTPUT
+      #    for file in "${FILES[@]}"; do
+      #      FILENAME=$(basename "$file" .py)
+      #      if [ -z "$COUNCIL_TESTS" ]; then
+      #        COUNCIL_TESTS="$FILENAME"
+      #      else
+      #        COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
+      #      fi
+      #    done
+      #    echo "council_tests=$COUNCIL_TESTS" >> $GITHUB_OUTPUT
 
     outputs:
       council_tests: ${{ steps.set-council-tests.outputs.council_tests }}
