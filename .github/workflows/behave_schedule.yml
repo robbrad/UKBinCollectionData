@@ -143,6 +143,12 @@ jobs:
         run: make matrix=${{ matrix.python-version }} councils="${{ env.COUNCIL_TESTS }}" integration-tests
         continue-on-error: true
 
+      - name: Archive Integration Tests Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-tests-results-${{ matrix.python-version }}
+          path: build/${{ matrix.python-version }}/allure-results
+        
   # Only generate and upload Allure reports on schedule
   report:
     name: Generate and Upload Reports
@@ -152,7 +158,12 @@ jobs:
       matrix:
         python-version: [3.12]
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Download Allure Results
+        uses: actions/download-artifact@v4
+        with:
+          name: integration-tests-results-${{ matrix.python-version }}
+          path: build/${{ matrix.python-version }}/allure-results
 
       # Fetch Allure history for the full report (optional)
       - name: Get Allure history - Full Report
