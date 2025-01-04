@@ -203,7 +203,7 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.GH_PAGES_PAT }}
           publish_branch: gh-pages
-          publish_dir: allure-history-full
+          publish_dir: allure-history-partial
           keep_files: true
