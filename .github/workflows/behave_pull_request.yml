@@ -1,6 +1,7 @@
 name: Test Councils (Pull Request Only)
 
 on:
+  workflow_dispatch:
   pull_request:
     branches: [ "master" ]
     paths-ignore:
@@ -194,7 +195,7 @@ jobs:
       - uses: actions/download-artifact@v4
         name: Download Full Artifacts
         with:
-          name: allure_full_history_3.12
+          name: allure_partial_history_3.12
           path: allure-history/tars
 
       - name: Untar reports

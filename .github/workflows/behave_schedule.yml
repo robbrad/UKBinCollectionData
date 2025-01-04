@@ -2,18 +2,6 @@ name: Test Councils
 
 on:
   workflow_dispatch:
-  push:
-    paths-ignore:
-      - "wiki/**"
-      - "**/*.md"
-      - "uk_bin_collection_api_server/**"
-    branches: [ "master" ]
-  pull_request:
-    paths-ignore:
-      - "wiki/**"
-      - "**/*.md"
-      - "uk_bin_collection_api_server/**"
-    branches: [ "master" ]
   schedule:
     - cron: '0 0 * * *' # Nightly schedule for full test run
 
