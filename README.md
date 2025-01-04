@@ -267,7 +267,11 @@ docker pull selenium/standalone-chrome docker run -d -p 4444:4444 --name seleniu
 
 ## Reports
 
-- [3.12](https://robbrad.github.io/UKBinCollectionData/3.12/)
+### Nightly Full Integration Test Reports:
+- [3.12 Full](https://robbrad.github.io/UKBinCollectionData/3.12/full)
+
+### Partial Pull Request Test Reports
+- [3.12 Partial](https://robbrad.github.io/UKBinCollectionData/3.12/partial)
 
 ---
 ## Docker API Server
