@@ -115,3 +115,4 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         return data
+
