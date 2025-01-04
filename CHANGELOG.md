@@ -1,4 +1,71 @@
 =======
+## 0.126.0 (2025-01-04)
+
+### Feat
+
+- #1063 - rewrite Kirklees Council parser for new website
+- #1067 - Add garden bin collections where available for Norwich City Council
+- Adding Wandsworth Council
+
+### Fix
+
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update README.md to have links to Full and Partial Integration Test Reports
+- Swale Borough Council
+- #1080
+(cherry picked from commit 6f580b39fb68b8079990221e050ae8dd6d2b7285)
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update ArdsAndNorthDownCouncil.py
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update README.md to have links to Full and Partial Integration Test Reports
+- Update WestLindseyDistrictCouncil.py
+- #1101 - Fix table parsing for Walsall Council
+- Remove invalid escape sequence warnings from West Lindsey District Council
+- #1073 - change method of generating bin types to avoid manual mapping for Rugby Borough Council
+- add missing backticks to separate colour config and standard usage instructions
+- #1078
+(cherry picked from commit 89d93666bb659010d1c130b98c1d81c6ff80cf7c)
+- change date format to project default for Merton Council
+- correct date logic for Swale Borough Council
+- Merton Council
+- London Borough Sutton
+- #1076
+(cherry picked from commit 1eab20c9a57c9c4438ea343f374202bb2e9b98ca)
+- Swale Borough Council
+- #1080
+(cherry picked from commit 6f580b39fb68b8079990221e050ae8dd6d2b7285)
+- correct date/year logic for West Lindsey District Council
+- replace West Lindsey's input with working address
+- #1089 - Correct shifted dates in Bromley Borough Council
+- remove WDM import
+- #1087 - Food waste date incorrect for West Berkshire Council
+
 ## 0.125.2 (2025-01-04)
 
 ### Fix
