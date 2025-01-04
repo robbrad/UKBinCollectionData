@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -14,20 +15,20 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        api_url = "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections"
         user_uprn = kwargs.get("uprn")
-
         # Check the UPRN is valid
         check_uprn(user_uprn)
 
-        # Create the form data
-        params = {
-            "UPRN": user_uprn,
+        api_url = f"https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections/?UPRN={user_uprn}"
+
+        headers = {
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/",
         }
 
         # Make a request to the API
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(api_url, params=params)
+        response = requests.get(api_url, headers=headers)
 
         # Make a BS4 object
         soup = BeautifulSoup(response.text, features="html.parser")
