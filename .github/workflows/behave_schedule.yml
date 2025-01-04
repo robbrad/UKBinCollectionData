@@ -2,18 +2,6 @@ name: Test Councils
 
 on:
   workflow_dispatch:
-  push:
-    paths-ignore:
-      - "wiki/**"
-      - "**/*.md"
-      - "uk_bin_collection_api_server/**"
-    branches: [ "master" ]
-  pull_request:
-    paths-ignore:
-      - "wiki/**"
-      - "**/*.md"
-      - "uk_bin_collection_api_server/**"
-    branches: [ "master" ]
   schedule:
     - cron: '0 0 * * *' # Nightly schedule for full test run
 
@@ -179,20 +167,20 @@ jobs:
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
-          subfolder: ${{ matrix.python-version }}
-          allure_history: allure-history
+          subfolder: ${{ matrix.python-version }}/full
+          allure_history: allure-history-full
           keep_reports: 20
 
       # Archive the Full Report
       - name: Tar full report
-        run: tar -cvf allure_full_history_${{ matrix.python-version }}.tar allure-history/${{ matrix.python-version }}
+        run: tar -cvf allure_full_history_${{ matrix.python-version }}.tar allure-history-full/${{ matrix.python-version }}/full
 
       # Upload the Full Report artifact
       - name: Upload artifact for Full Report
         uses: actions/upload-artifact@v4
         with:
-          name: allure_history_${{ matrix.python-version }}
-          path: allure_history_${{ matrix.python-version }}.tar
+          name: allure_full_history_${{ matrix.python-version }}
+          path: allure_full_history_${{ matrix.python-version }}.tar
 
   # Deploy only on schedule + master branch
   deploy:
@@ -209,7 +197,7 @@ jobs:
           path: allure-history/tars
 
       - name: Untar reports
-        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history ;done
+        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history-full ;done
 
       - name: Remove tar reports
         run: rm -rf allure-history/tars
