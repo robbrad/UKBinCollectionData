@@ -182,6 +182,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
+      pages: write
+      pull-requests: write
     needs: report
     steps:
       # Download Full Artifacts
