@@ -47,10 +47,10 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_type = cells[0].get_text().strip()
             # Date is on the second cell, second paragraph, wrapped in p
             collectionDate = None
-            for format in possible_formats:
+            for date_format in possible_formats:
                 try:
                     collectionDate = datetime.strptime(
-                        cells[1].select("p > b")[2].get_text(strip=True), format
+                        cells[1].select("p > b")[2].get_text(strip=True), date_format
                     )
                     break  # Exit the loop if parsing is successful
                 except ValueError:

@@ -1,4 +1,80 @@
 =======
+## 0.125.1 (2025-01-04)
+
+### Fix
+
+- correctly handle year increment for January dates
+
+## 0.125.0 (2025-01-04)
+
+### Feat
+
+- Adding Redditch Borough Council
+- Adding Blaenau Gwent County Borough Council
+- Adding Wandsworth Council
+
+### Fix
+
+- #1068
+- #1098
+- Wiltshire Council
+- #1094
+- Salford City Council
+- #1097
+- #1078
+- Merton Council
+- Swale Borough Council
+- #1080
+- London Borough Sutton
+- #1076
+- Update behave_schedule.yml
+- Update bump.yml
+
+## 0.124.4 (2025-01-04)
+
+### Fix
+
+- Update behave_schedule.yml
+
+## 0.124.3 (2025-01-04)
+
+### Fix
+
+- allure reporting
+- allure reporting
+- allure reporting
+
+## 0.124.2 (2025-01-03)
+
+### Fix
+
+- Update behave.yml
+
+## 0.124.1 (2025-01-03)
+
+### Fix
+
+- avoid crashing on unexpected string value
+
+## 0.124.0 (2025-01-02)
+
+### Feat
+
+- Hart District Council
+
+## 0.123.2 (2024-12-19)
+
+### Fix
+
+- Update behave.yml
+
+## 0.123.1 (2024-12-18)
+
+### Fix
+
+- Update AberdeenCityCouncil.py
+- Update behave.yml
+
 ## 0.123.0 (2024-12-17)
 
 ## 0.122.0 (2024-12-04)

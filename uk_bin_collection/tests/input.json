@@ -194,6 +194,15 @@
         "wiki_name": "Blackburn Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "BlaenauGwentCountyBoroughCouncil": {
+        "uprn": "100100471367",
+        "postcode": "NP23 7TE",
+        "skip_get_url": false,
+        "url": "https://www.blaenau-gwent.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Blaenau Gwent County Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "BoltonCouncil": {
         "postcode": "BL1 5PQ",
         "skip_get_url": true,
@@ -840,6 +849,13 @@
         "wiki_name": "Harrogate Borough Council",
         "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
     },
+    "HartDistrictCouncil": {
+        "skip_get_url": true,
+        "uprn": "100062349291",
+        "url": "https://www.hart.gov.uk/",
+        "wiki_name": "Hart District Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HartlepoolBoroughCouncil": {
         "url": "https://www.hartlepool.gov.uk",
         "uprn": "100110019551",
@@ -1395,6 +1411,13 @@
         "wiki_command_url_override": "https://api.reading.gov.uk/api/collections/XXXXXXXX",
         "wiki_name": "Reading Borough Council",
         "wiki_note": "Replace XXXXXXXX with your property's UPRN."
+    },
+    "RedditchBoroughCouncil": {
+        "url": "https://redditchbc.gov.uk",
+        "wiki_command_url_override": "https://redditchbc.gov.uk",
+        "uprn": "10094557691",
+        "wiki_name": "Redditch Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "ReigateAndBansteadBoroughCouncil": {
         "skip_get_url": true,

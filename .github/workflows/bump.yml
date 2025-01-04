@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
+      - ".github/workflows/**"
     branches: [ "master" ]
 
 jobs:

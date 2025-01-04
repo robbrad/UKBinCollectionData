@@ -35,6 +35,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Birmingham City Council](#birmingham-city-council)
 - [Blaby District Council](#blaby-district-council)
 - [Blackburn Council](#blackburn-council)
+- [Blaenau Gwent County Borough Council](#blaenau-gwent-county-borough-council)
 - [Bolton Council](#bolton-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
 - [Bradford MDC](#bradford-mdc)
@@ -190,6 +191,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Powys Council](#powys-council)
 - [Preston City Council](#preston-city-council)
 - [Reading Borough Council](#reading-borough-council)
+- [Redditch Borough Council](#redditch-borough-council)
 - [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
 - [Renfrewshire Council](#renfrewshire-council)
 - [Rhondda Cynon Taff Council](#rhondda-cynon-taff-council)
@@ -583,6 +585,20 @@ python collect_data.py BlackburnCouncil https://www.blackburn.gov.uk -s -u XXXXX
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Blaenau Gwent County Borough Council
+```commandline
+python collect_data.py BlaenauGwentCountyBoroughCouncil https://www.blaenau-gwent.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
@@ -2454,6 +2470,17 @@ python collect_data.py ReadingBoroughCouncil https://api.reading.gov.uk/api/coll
 ```
 
 Note: Replace XXXXXXXX with your property's UPRN.
+
+---
+
+### Redditch Borough Council
+```commandline
+python collect_data.py RedditchBoroughCouncil https://redditchbc.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
