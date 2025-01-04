@@ -25,17 +25,9 @@ jobs:
       - name: Lint JSON
         run: jq empty uk_bin_collection/tests/input.json
 
-      - name: Get All Council Files That Have Changed
-        id: changed-council-files
-        uses: tj-actions/changed-files@v45
-        with:
-          files: |
-            uk_bin_collection/uk_bin_collection/councils/**.py
-
       - name: Set Council Tests Environment Variable
         id: set-council-tests
         run: |
-          IFS=' ' read -ra FILES <<< "${{ steps.changed-council-files.outputs.all_changed_files }}"
           COUNCIL_TESTS=""
           echo "council_tests=$COUNCIL_TESTS" >> $GITHUB_OUTPUT
 
