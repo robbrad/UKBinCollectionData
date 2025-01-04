@@ -1,4 +1,4 @@
-name: Test Councils
+name: Test Councils (Nightly Full Run)
 
 on:
   workflow_dispatch:
