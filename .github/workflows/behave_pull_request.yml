@@ -35,7 +35,6 @@ jobs:
         with:
           files: |
             uk_bin_collection/uk_bin_collection/councils/**.py
-
       - name: Set Council Tests Environment Variable
         id: set-council-tests
         run: |
@@ -50,7 +49,6 @@ jobs:
             fi
           done
           echo "council_tests=$COUNCIL_TESTS" >> $GITHUB_OUTPUT
-
     outputs:
       council_tests: ${{ steps.set-council-tests.outputs.council_tests }}
 
@@ -111,7 +109,6 @@ jobs:
           repo=${{ github.event.pull_request.head.repo.full_name || 'robbrad/UKBinCollectionData' }}
           branch=${{ github.event.pull_request.head.ref || 'master' }}
           make parity-check repo=$repo branch=$branch
-
   integration-tests:
     name: Run Integration Tests
     needs: setup
@@ -199,6 +196,7 @@ jobs:
     name: Deploy Reports
     runs-on: ubuntu-latest
     permissions: write-all
+
     needs: report
     steps:
       # Download Full Artifacts
