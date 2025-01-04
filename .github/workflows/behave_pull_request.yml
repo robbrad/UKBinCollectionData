@@ -198,6 +198,8 @@ jobs:
   deploy:
     name: Deploy Reports
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs: report
     steps:
       # Download Full Artifacts
