@@ -49,7 +49,6 @@ jobs:
               COUNCIL_TESTS="$COUNCIL_TESTS or $FILENAME"
             fi
           done
-          COUNCIL_TESTS="MonmouthshireCountyCouncil"
           echo "council_tests=$COUNCIL_TESTS" >> $GITHUB_OUTPUT
 
     outputs:
