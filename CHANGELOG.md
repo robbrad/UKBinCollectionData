@@ -1,4 +1,10 @@
 =======
+## 0.125.1 (2025-01-04)
+
+### Fix
+
+- correctly handle year increment for January dates
+
 ## 0.125.0 (2025-01-04)
 
 ### Feat
