@@ -1,4 +1,12 @@
 =======
+## 0.124.3 (2025-01-04)
+
+### Fix
+
+- allure reporting
+- allure reporting
+- allure reporting
+
 ## 0.124.2 (2025-01-03)
 
 ### Fix
