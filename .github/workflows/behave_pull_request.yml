@@ -157,16 +157,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Fetch Allure history for the full report (optional)
-      - name: Get Allure history - Full Report
+      - name: Get Allure history - Partial Report
         uses: actions/checkout@v4
         continue-on-error: true
         with:
           ref: gh-pages
           path: gh-pages
 
-      # Generate Allure Reports (Full)
-      - name: Allure report action for Full Run
+      - name: Allure report action for Partial Run
         uses: simple-elf/allure-report-action@master
         with:
           allure_results: build/${{ matrix.python-version }}/allure-results
@@ -199,7 +197,7 @@ jobs:
           path: allure-history/tars
 
       - name: Untar reports
-        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history ;done
+        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history-partial ;done
 
       - name: Remove tar reports
         run: rm -rf allure-history/tars
