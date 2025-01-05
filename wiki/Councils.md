@@ -41,6 +41,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Bradford MDC](#bradford-mdc)
 - [Braintree District Council](#braintree-district-council)
 - [Breckland Council](#breckland-council)
+- [Brent Council](#brent-council)
 - [Brighton and Hove City Council](#brighton-and-hove-city-council)
 - [Bristol City Council](#bristol-city-council)
 - [Bromley Borough Council](#bromley-borough-council)
@@ -668,6 +669,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Brent Council
+```commandline
+python collect_data.py BrentCouncil https://recyclingservices.brent.gov.uk/waste -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house number and postcode in their respective parameters.
 
 ---
 

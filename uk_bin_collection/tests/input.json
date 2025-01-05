@@ -244,6 +244,13 @@
         "wiki_name": "Breckland Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "BrentCouncil": {
+        "house_number": "25",
+        "postcode": "HA3 0QU",
+        "url": "https://recyclingservices.brent.gov.uk/waste",
+        "wiki_name": "Brent Council",
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
+    },
     "BrightonandHoveCityCouncil": {
         "house_number": "44 Carden Avenue, Brighton, BN1 8NE",
         "postcode": "BN1 8NE",
