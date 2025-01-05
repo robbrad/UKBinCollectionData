@@ -72,6 +72,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Cotswold District Council](#cotswold-district-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
+- [Cumberland Borough Council](#cumberland-borough-council)
 - [Cumberland Council - Allerdale District](#cumberland-council---allerdale-district)
 - [Dacorum Borough Council](#dacorum-borough-council)
 - [Dartford Borough Council](#dartford-borough-council)
@@ -984,7 +985,7 @@ python collect_data.py CopelandBoroughCouncil https://www.copeland.gov.uk -u XXX
 Additional parameters:
 - `-u` - UPRN
 
-Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+Note: *****This has now been replaced by Cumberland Council****
 
 ---
 
@@ -1046,6 +1047,17 @@ Additional parameters:
 - `-n` - house number
 
 Note: Pass the house number and postcode in their respective parameters.
+
+---
+
+### Cumberland Borough Council
+```commandline
+python collect_data.py CumberlandCouncil https://waste.cumberland.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
