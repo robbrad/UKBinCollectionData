@@ -936,13 +936,11 @@
         "wiki_note": "Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the \"Your bin days\" page, then copy the URL and replace the URL in the command."
     },
     "KirkleesCouncil": {
-        "house_number": "24",
-        "postcode": "HD7 5DX",
+        "uprn": "83002937",
         "skip_get_url": true,
         "url": "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Kirklees Council",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "KnowsleyMBCouncil": {
         "house_number": "22",
