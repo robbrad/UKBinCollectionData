@@ -117,6 +117,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Harborough District Council](#harborough-district-council)
 - [Haringey Council](#haringey-council)
 - [Harrogate Borough Council](#harrogate-borough-council)
+- [Hart District Council](#hart-district-council)
 - [Hartlepool Borough Council](#hartlepool-borough-council)
 - [Hertsmere Borough Council](#hertsmere-borough-council)
 - [Highland Council](#highland-council)
@@ -1588,6 +1589,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed.
+
+---
+
+### Hart District Council
+```commandline
+python collect_data.py HartDistrictCouncil https://www.hart.gov.uk/ -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
