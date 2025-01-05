@@ -267,6 +267,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Wealden District Council](#wealden-district-council)
 - [Welhat Council](#welhat-council)
 - [West Berkshire Council](#west-berkshire-council)
+- [West Dunbartonshire Council](#west-dunbartonshire-council)
 - [West Lancashire Borough Council](#west-lancashire-borough-council)
 - [West Lindsey District Council](#west-lindsey-district-council)
 - [West Lothian Council](#west-lothian-council)
@@ -3378,6 +3379,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.
+
+---
+
+### West Dunbartonshire Council
+```commandline
+python collect_data.py WestDunbartonshireCouncil https://www.west-dunbarton.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
