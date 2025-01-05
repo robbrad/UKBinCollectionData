@@ -2368,7 +2368,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Northumberland Council
 ```commandline
-python collect_data.py NorthumberlandCouncil https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py NorthumberlandCouncil https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL

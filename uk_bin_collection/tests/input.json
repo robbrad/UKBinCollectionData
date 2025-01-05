@@ -1329,7 +1329,7 @@
         "house_number": "22",
         "postcode": "NE46 1UQ",
         "skip_get_url": true,
-        "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
+        "url": "https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland Council",
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
