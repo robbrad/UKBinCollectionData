@@ -1734,15 +1734,13 @@ Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/wast
 
 ### Kirklees Council
 ```commandline
-python collect_data.py KirkleesCouncil https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py KirkleesCouncil https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
+- `-u` - UPRN
 
-Note: Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.
+Note: Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
