@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from dateutil.relativedelta import relativedelta
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -52,9 +53,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for item in soup.find_all("div", class_="collection text-center service"):
             bin_type = item.contents[1].text + " bin"
-            collection_date = datetime.strptime(item.contents[5].text, "%d %b").replace(
-                year=curr_date.year
-            )
+            try:
+                collection_date = datetime.strptime(
+                    item.contents[5].text, "%d %b"
+                ).replace(year=curr_date.year)
+            except:
+                continue
+
             if curr_date.month == 12 and collection_date.month == 1:
                 collection_date = collection_date + relativedelta(years=1)
             collections.append((bin_type, collection_date))
