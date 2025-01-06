@@ -521,6 +521,12 @@
         "wiki_name": "Dartford Borough Council",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
+    "DenbighshireCouncil": {
+        "url": "https://www.denbighshire.gov.uk/",
+        "uprn": "200004299351",
+        "wiki_name": "Denbighshire Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "DerbyCityCouncil": {
         "url": "https://www.derby.gov.uk",
         "uprn": "10010684240",

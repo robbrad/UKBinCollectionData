@@ -77,6 +77,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Cumberland Council - Allerdale District](#cumberland-council---allerdale-district)
 - [Dacorum Borough Council](#dacorum-borough-council)
 - [Dartford Borough Council](#dartford-borough-council)
+- [Denbighshire Council](#denbighshire-council)
 - [Derby City Council](#derby-city-council)
 - [Derbyshire Dales District Council](#derbyshire-dales-district-council)
 - [Doncaster Council](#doncaster-council)
@@ -1110,6 +1111,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Denbighshire Council
+```commandline
+python collect_data.py DenbighshireCouncil https://www.denbighshire.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
