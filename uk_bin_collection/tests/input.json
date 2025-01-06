@@ -563,6 +563,12 @@
         "wiki_name": "Dudley Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "DundeeCityCouncil": {
+        "url": "https://www.dundeecity.gov.uk/",
+        "uprn": "9059043390",
+        "wiki_name": "Dundee City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "DurhamCouncil": {
         "skip_get_url": true,
         "uprn": "200003218818",
