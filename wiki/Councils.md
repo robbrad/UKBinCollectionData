@@ -116,6 +116,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Gloucester City Council](#gloucester-city-council)
 - [Gravesham Borough Council](#gravesham-borough-council)
 - [Guildford Council](#guildford-council)
+- [Gwynedd Council](#gwynedd-council)
 - [Hackney Council](#hackney-council)
 - [Halton Borough Council](#halton-borough-council)
 - [Harborough District Council](#harborough-district-council)
@@ -1578,6 +1579,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: If the bin day is 'today' then the collectionDate will only show today's date if before 7 AM; else the date will be in 'previousCollectionDate'. To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Gwynedd Council
+```commandline
+python collect_data.py GwyneddCouncil https://diogel.gwynedd.llyw.cymru -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
