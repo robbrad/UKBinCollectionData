@@ -1,4 +1,36 @@
 =======
+## 0.127.0 (2025-01-07)
+
+### Feat
+
+- Adding Oadby And Wigston Borough Council
+- Add Gwynedd Council
+- Adding Denbighshire Council
+- Adding Dundee City Council
+- Adding Brent Council
+- Adding West Dunbartonshire Council
+- Adding Cumberland Council
+
+### Fix
+
+- #929
+- Cornwall Council
+- #1137
+- #1125
+- #1106
+- #1108
+- #1109
+- #1134
+- Northumberland Council
+- #1082
+- #1110
+- Waltham Forest
+- #1126
+- London Borough Sutton
+- #1131
+- Kirklees Council
+- #1129 - Breaking Change. UPRN required
+
 ## 0.126.2 (2025-01-07)
 
 ### Fix
