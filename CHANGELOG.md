@@ -1,4 +1,12 @@
 =======
+## 0.126.2 (2025-01-07)
+
+### Fix
+
+- **tests**: updates test case url for coventry city council
+- **tests**: removes duplicate key for coventry city council
+- updates coventry city council button text
+
 ## 0.126.1 (2025-01-06)
 
 ### Fix
