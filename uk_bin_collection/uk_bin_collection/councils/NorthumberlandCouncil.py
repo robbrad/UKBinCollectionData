@@ -27,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            page = "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx"
+            page = "https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx"
 
             data = {"bins": []}
 
@@ -74,7 +74,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         "span",
                         id="p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_spanRouteSummary",
                     )
-                    .string.replace("Routes found: ", "")
+                    .text.replace("Routes found: ", "")
                     .split(","),
                 )
             )
@@ -82,6 +82,8 @@ class CouncilClass(AbstractGetBinDataClass):
             # Get the background colour for each of them...
             bins_by_colours = dict()
             for bin in bins_collected:
+                if "(but no dates found)" in bin:
+                    continue
                 style_str = soup.find("span", string=bin)["style"]
                 bin_colour = self.extract_styles(style_str)["background-color"].upper()
                 bins_by_colours[bin_colour] = bin

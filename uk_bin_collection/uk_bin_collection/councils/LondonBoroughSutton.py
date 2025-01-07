@@ -61,7 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "%A, %d %B",
             )
 
-            if next_collection.month == 1:
+            if (datetime.now().month == 12) and (next_collection.month == 1):
                 next_collection = next_collection.replace(year=next_year)
             else:
                 next_collection = next_collection.replace(year=current_year)

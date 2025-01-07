@@ -244,6 +244,13 @@
         "wiki_name": "Breckland Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "BrentCouncil": {
+        "house_number": "25",
+        "postcode": "HA3 0QU",
+        "url": "https://recyclingservices.brent.gov.uk/waste",
+        "wiki_name": "Brent Council",
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
+    },
     "BrightonandHoveCityCouncil": {
         "house_number": "44 Carden Avenue, Brighton, BN1 8NE",
         "postcode": "BN1 8NE",
@@ -440,7 +447,7 @@
         "uprn": "100110734613",
         "url": "https://www.copeland.gov.uk",
         "wiki_name": "Copeland Borough Council",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+        "wiki_note": "*****This has now been replaced by Cumberland Council****"
     },
     "CornwallCouncil": {
         "skip_get_url": true,
@@ -480,6 +487,12 @@
         "wiki_name": "Croydon Council",
         "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
+    "CumberlandCouncil": {
+        "uprn": "100110734613",
+        "url": "https://waste.cumberland.gov.uk",
+        "wiki_name": "Cumberland Borough Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "CumberlandAllerdaleCouncil": {
         "house_number": "2",
         "postcode": "CA13 0DE",
@@ -501,6 +514,12 @@
         "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
         "wiki_name": "Dartford Borough Council",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
+    "DenbighshireCouncil": {
+        "url": "https://www.denbighshire.gov.uk/",
+        "uprn": "200004299351",
+        "wiki_name": "Denbighshire Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "DerbyCityCouncil": {
         "url": "https://www.derby.gov.uk",
@@ -542,6 +561,12 @@
         "wiki_command_url_override": "https://my.dudley.gov.uk",
         "uprn": "90014244",
         "wiki_name": "Dudley Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
+    "DundeeCityCouncil": {
+        "url": "https://www.dundeecity.gov.uk/",
+        "uprn": "9059043390",
+        "wiki_name": "Dundee City Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "DurhamCouncil": {
@@ -799,6 +824,12 @@
         "wiki_name": "Guildford Council",
         "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7 AM; else the date will be in 'previousCollectionDate'. To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "GwyneddCouncil": {
+        "url": "https://diogel.gwynedd.llyw.cymru",
+        "uprn": "10070350463",
+        "wiki_name": "Gwynedd Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "HackneyCouncil": {
         "house_number": "101",
         "postcode": "N16 9AS",
@@ -930,13 +961,11 @@
         "wiki_note": "Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the \"Your bin days\" page, then copy the URL and replace the URL in the command."
     },
     "KirkleesCouncil": {
-        "house_number": "24",
-        "postcode": "HD7 5DX",
+        "uprn": "83002937",
         "skip_get_url": true,
         "url": "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Kirklees Council",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "KnowsleyMBCouncil": {
         "house_number": "22",
@@ -1319,7 +1348,7 @@
         "house_number": "22",
         "postcode": "NE46 1UQ",
         "skip_get_url": true,
-        "url": "https://www.northumberland.gov.uk/Waste/Bins/Bin-Calendars.aspx",
+        "url": "https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland Council",
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
@@ -1337,6 +1366,12 @@
         "skip_get_url": true,
         "house_number": "Newdigate Road",
         "wiki_note": "Pass the name of the street ONLY in the house number parameter, wrapped in double quotes. Street name must match exactly as it appears on the council's website."
+    },
+    "OadbyAndWigstonBoroughCouncil": {
+        "url": "https://my.oadby-wigston.gov.uk",
+        "uprn": "10010149102",
+        "wiki_name": "Oadby & Wigston Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "OldhamCouncil": {
         "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
@@ -1978,6 +2013,12 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "West Berkshire Council",
         "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
+    },
+    "WestDunbartonshireCouncil": {
+        "url": "https://www.west-dunbarton.gov.uk/",
+        "uprn": "129001383",
+        "wiki_name": "West Dunbartonshire Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WestLancashireBoroughCouncil": {
         "url": "https://www.westlancs.gov.uk",

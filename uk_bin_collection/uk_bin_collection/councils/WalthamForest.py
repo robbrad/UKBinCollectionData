@@ -3,10 +3,10 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -73,7 +73,7 @@ class CouncilClass(AbstractGetBinDataClass):
             find_ac_button.send_keys(Keys.RETURN)
             h4_element = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//h4[contains(text(), 'Your Collections')]")
+                    (By.XPATH, "//h4[contains(text(), 'Next Collections')]")
                 )
             )
 
