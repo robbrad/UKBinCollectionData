@@ -20,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         curr_date = datetime.today()
 
         soup = BeautifulSoup(page.content, features="html.parser")
-        button = soup.find("a", text="Find out which bin will be collected when.")
+        button = soup.find("a", text="Find out which bin will be collected when and sign up for a free email reminder.")
 
         if button["href"]:
             URI = button["href"]

@@ -449,12 +449,6 @@
         "wiki_name": "Cornwall Council",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
-    "CoventryCityCouncil": {
-        "url": "https://www.coventry.gov.uk/directory-record/56384/abberton-way-",
-        "wiki_command_url_override": "https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX",
-        "wiki_name": "Coventry City Council",
-        "wiki_note": "Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address, then copy the URL and replace the URL in the command."
-    },
     "CotswoldDistrictCouncil": {
         "house_number": "19",
         "postcode": "GL56 0GB",
@@ -465,7 +459,7 @@
         "wiki_note": "Pass the full address in the house number and postcode in"
     },
     "CoventryCityCouncil": {
-        "url": "https://www.coventry.gov.uk/directory-record/56384/abberton-way-",
+        "url": "https://www.coventry.gov.uk/directory-record/62310/abberton-way-",
         "wiki_command_url_override": "https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX",
         "wiki_name": "Coventry City Council",
         "wiki_note": "Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command."
