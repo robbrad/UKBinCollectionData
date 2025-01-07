@@ -189,6 +189,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Northumberland Council](#northumberland-council)
 - [Nottingham City Council](#nottingham-city-council)
 - [Nuneaton and Bedworth Borough Council](#nuneaton-and-bedworth-borough-council)
+- [Oadby & Wigston Borough Council](#oadby-&-wigston-borough-council)
 - [Oldham Council](#oldham-council)
 - [Oxford City Council](#oxford-city-council)
 - [Perth and Kinross Council](#perth-and-kinross-council)
@@ -2451,6 +2452,17 @@ Additional parameters:
 - `-n` - house number
 
 Note: Pass the name of the street ONLY in the house number parameter, wrapped in double quotes. Street name must match exactly as it appears on the council's website.
+
+---
+
+### Oadby & Wigston Borough Council
+```commandline
+python collect_data.py OadbyAndWigstonBoroughCouncil https://my.oadby-wigston.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 

@@ -1373,6 +1373,12 @@
         "house_number": "Newdigate Road",
         "wiki_note": "Pass the name of the street ONLY in the house number parameter, wrapped in double quotes. Street name must match exactly as it appears on the council's website."
     },
+    "OadbyAndWigstonBoroughCouncil": {
+        "url": "https://my.oadby-wigston.gov.uk",
+        "uprn": "10010149102",
+        "wiki_name": "Oadby & Wigston Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "OldhamCouncil": {
         "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
         "wiki_name": "Oldham Council",
