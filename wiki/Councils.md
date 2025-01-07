@@ -69,8 +69,8 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Conwy County Borough Council](#conwy-county-borough-council)
 - [Copeland Borough Council](#copeland-borough-council)
 - [Cornwall Council](#cornwall-council)
-- [Coventry City Council](#coventry-city-council)
 - [Cotswold District Council](#cotswold-district-council)
+- [Coventry City Council](#coventry-city-council)
 - [Crawley Borough Council](#crawley-borough-council)
 - [Croydon Council](#croydon-council)
 - [Cumberland Borough Council](#cumberland-borough-council)
@@ -1019,15 +1019,6 @@ Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your U
 
 ---
 
-### Coventry City Council
-```commandline
-python collect_data.py CoventryCityCouncil https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX
-```
-
-Note: Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command.
-
----
-
 ### Cotswold District Council
 ```commandline
 python collect_data.py CotswoldDistrictCouncil https://community.cotswold.gov.uk/s/waste-collection-enquiry -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -1039,6 +1030,15 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the full address in the house number and postcode in
+
+---
+
+### Coventry City Council
+```commandline
+python collect_data.py CoventryCityCouncil https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX
+```
+
+Note: Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command.
 
 ---
 
