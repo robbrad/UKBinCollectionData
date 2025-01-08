@@ -1418,14 +1418,6 @@
         "wiki_name": "Powys Council",
         "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
-    "PowysCouncil": {
-        "house_number": "LANE COTTAGE",
-        "postcode": "HR3 5JS",
-        "skip_get_url": true,
-        "url": "https://www.powys.gov.uk",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "Powys Council"
-    },
     "PrestonCityCouncil": {
         "house_number": "Town Hall",
         "postcode": "PR1 2RL",
