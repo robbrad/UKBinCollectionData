@@ -30,12 +30,12 @@ class CouncilClass(AbstractGetBinDataClass):
         driver.get("https://www.staffsmoorlands.gov.uk/findyourbinday")
 
         # Close cookies banner
-        cookieAccept = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, ".cookiemessage__link--close")
-            )
-        )
-        cookieAccept.click()
+        # cookieAccept = WebDriverWait(driver, 10).until(
+        #    EC.presence_of_element_located(
+        #        (By.CSS_SELECTOR, ".cookiemessage__link--close")
+        #    )
+        # )
+        # cookieAccept.click()
 
         # Wait for the postcode field to appear then populate it
         inputElement_postcode = WebDriverWait(driver, 30).until(
