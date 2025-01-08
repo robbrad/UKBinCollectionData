@@ -127,12 +127,15 @@ class CouncilClass(AbstractGetBinDataClass):
             li.text for li in garden_waste_section.find_next("ul").find_all("li")
         ]
         for date in garden_waste_dates:
-            dict_data = {
-                "type": "Garden Waste",
-                "collectionDate": datetime.strptime(
-                    remove_ordinal_indicator_from_date_string(date), "%d %B %Y"
-                ).strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+            try:
+                dict_data = {
+                    "type": "Garden Waste",
+                    "collectionDate": datetime.strptime(
+                        remove_ordinal_indicator_from_date_string(date), "%d %B %Y"
+                    ).strftime(date_format),
+                }
+                data["bins"].append(dict_data)
+            except:
+                continue
 
         return data
