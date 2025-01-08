@@ -2533,6 +2533,8 @@ Additional parameters:
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
+Note: Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver.
+
 ---
 
 ### Preston City Council
