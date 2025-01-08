@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
+from typing import Any, Dict
+
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from datetime import datetime, timedelta
-from typing import Dict, Any
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -78,7 +80,10 @@ class CouncilClass(AbstractGetBinDataClass):
                     formatted_date = self.get_next_weekday(day_name)
                 else:
                     # Convert date format from "Tuesday 28 May 2024" to "28/05/2024"
-                    date_obj = datetime.strptime(value, "%A %d %B %Y")
+                    try:
+                        date_obj = datetime.strptime(value, "%A %d %B %Y")
+                    except:
+                        continue
                     formatted_date = date_obj.strftime("%d/%m/%Y")
 
                 bin_entry = {
