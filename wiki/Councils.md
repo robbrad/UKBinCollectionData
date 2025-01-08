@@ -2199,7 +2199,7 @@ Note: Pass the postcode and UPRN. This parser requires a Selenium webdriver.
 
 ### Newark and Sherwood District Council
 ```commandline
-python collect_data.py NewarkAndSherwoodDC http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX&nc=1
+python collect_data.py NewarkAndSherwoodDC http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX
 ```
 
 Note: Replace XXXXXXXX with your UPRN.
