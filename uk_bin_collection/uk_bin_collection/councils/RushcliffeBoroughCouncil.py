@@ -48,12 +48,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 "FF3518-find",
             ).click()
 
-            # Wait for the 'Select address' dropdown to appear and select option matching UPRN
+            # Wait for the 'Select address' dropdown to be visible and select option matching UPRN
             dropdown = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
+                EC.visibility_of_element_located(
                     (By.ID, "FF3518-list")
                 )
             )
+
             # Create a 'Select' for it, then select the matching URPN option
             dropdownSelect = Select(dropdown)
             found_uprn = False
@@ -67,11 +68,10 @@ class CouncilClass(AbstractGetBinDataClass):
             if not found_uprn:
                 raise Exception("could not find UPRN " + user_uprn + " in list")
 
-            # Wait for the submit button to appear, then click it to get the collection dates
-            submit = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "submit-button")
-                )
+            # Click submit button
+            driver.find_element(
+                By.ID,
+                "submit-button",
             ).click()
 
             # Wait for the confirmation panel to appear
