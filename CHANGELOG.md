@@ -1,4 +1,11 @@
 =======
+## 0.127.1 (2025-01-10)
+
+### Fix
+
+- Use visibility of list rather than existence
+- Update Rushcliffe Borough Council input elements and flow
+
 ## 0.127.0 (2025-01-07)
 
 ### Feat
