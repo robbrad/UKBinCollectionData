@@ -233,7 +233,6 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
     ```bash
     docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome
     ```
-    
 
 #### Step 3: Test the Selenium Server
 
@@ -262,6 +261,71 @@ docker pull selenium/standalone-chrome docker run -d -p 4444:4444 --name seleniu
 **Selenium Server URL:**
 
 *   `http://localhost:4444/wd/hub`
+
+---
+
+### Instructions for Home Assistant OS
+
+If you're running Home Assistant Supervised, it's possible to host the Selenium instance on the same system.
+
+This guide is based on a Raspberry Pi 4. Instructions for other systems may vary.
+
+#### Prerequisites
+1. Install **Portainer** from Alex Belgium's add-on repository:
+   [github.com/alexbelgium/hassio-addons](https://github.com/alexbelgium/hassio-addons)
+
+---
+
+#### Step 1: Pull and Run Docker Image
+
+Since the Raspberry Pi 4 uses an ARM64-based architecture, use the `seleniarm/standalone-chromium:latest` Docker image.
+
+1. Open **Portainer** and navigate to the **Images** tab.
+2. In the **Image** text box, enter:
+
+   ```
+   seleniarm/standalone-chromium:latest
+   ```
+
+3. Click **Pull the image**.
+
+4. Once the image is pulled, navigate to the **Containers** tab and click **Add container**.
+
+5. Configure the container:
+   - **Name:** Give it a clear and descriptive name (e.g., `selenium-chromium`).
+   - **Image:** Enter:
+
+     ```
+     seleniarm/standalone-chromium
+     ```
+
+     Make sure to uncheck **Always pull the image**.
+
+   - **Network ports configuration:**
+     - Click **Map additional port**.
+     - Set both the **Host** and **Container** ports to `4444`.
+
+6. Click **Deploy the container**.
+
+---
+
+#### Step 2: Configure UKBinCollectionData Integration
+
+1. **Add the integration** in Home Assistant.
+
+2. On the second stage of the integration setup wizard:
+   - Ensure that `http://localhost:4444` shows as accessible.
+     - If not, verify that the Selenium container is running in Portainer.
+
+3. Enter the required information for the integration.
+
+4. In the **Remote Selenium Server** text box, enter:
+
+   ```
+   http://<HA IP address>:4444
+   ```
+
+   Replace `<HA IP address>` with the IP address of your Home Assistant system.
 
 ---
 
