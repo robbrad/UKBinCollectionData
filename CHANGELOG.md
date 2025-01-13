@@ -1,4 +1,10 @@
 =======
+## 0.127.2 (2025-01-13)
+
+### Fix
+
+- Update bin type to be the full string
+
 ## 0.127.1 (2025-01-10)
 
 ### Fix
