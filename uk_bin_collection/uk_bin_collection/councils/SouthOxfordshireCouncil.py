@@ -66,7 +66,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             "%A %d %B - %Y",
                         )
                     ).strftime(date_format)
-                    bin_type = str.capitalize(bin_info[1])
+                    bin_type = str.capitalize(' '.join(bin_info[1:]))
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
                     bin_date = get_next_occurrence_from_day_month(
@@ -75,7 +75,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             "%A %d %B - %Y",
                         )
                     ).strftime(date_format)
-                    bin_type = str.capitalize(bin_info[2])
+                    str.capitalize(' '.join(bin_info[2:]))
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
 
