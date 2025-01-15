@@ -1,3 +1,5 @@
+import datetime
+
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -32,15 +34,24 @@ class CouncilClass(AbstractGetBinDataClass):
         for p in ps:
             collection = p.text.strip().replace("Your next ", "").split(".")[0]
             bin_type = collection.split(" day is")[0]
-            collection_date = datetime.strptime(
-                remove_ordinal_indicator_from_date_string(collection).split("day is ")[
-                    1
-                ],
-                "%A %d %B %Y",
-            )
+            collection_date = remove_ordinal_indicator_from_date_string(
+                collection
+            ).split("day is ")[1]
+            if collection_date == "Today":
+                collection_date = datetime.today().strftime(date_format)
+            elif collection_date == "Tomorrow":
+                collection_date = (datetime.today() + timedelta(days=1)).strftime(
+                    date_format
+                )
+                print(collection_date)
+            else:
+                collection_date = datetime.strptime(
+                    collection_date,
+                    "%A %d %B %Y",
+                ).strftime(date_format)
             dict_data = {
                 "type": bin_type,
-                "collectionDate": collection_date.strftime(date_format),
+                "collectionDate": collection_date,
             }
             data["bins"].append(dict_data)
 
