@@ -37,52 +37,37 @@ class CouncilClass(AbstractGetBinDataClass):
             # Populate postcode field
             inputElement_postcode = driver.find_element(
                 By.ID,
-                "FF3518-text",
+                "ctl00_ContentPlaceHolder1_FF3518TB",
             )
             inputElement_postcode.send_keys(user_postcode)
 
             # Click search button
             driver.find_element(
                 By.ID,
-                "FF3518-find",
+                "ctl00_ContentPlaceHolder1_FF3518BTN",
             ).click()
 
             # Wait for the 'Select address' dropdown to appear and select option matching UPRN
             dropdown = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "FF3518-list"))
-            )
-
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        f"//select[@id='FF3518-list']/option[starts-with(@value, 'U{user_uprn}')]",
-                    )
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF3518DDL")
                 )
-            ).click()
-
-            """# Create a 'Select' for it, then select the matching URPN option
+            )
+            # Create a 'Select' for it, then select the matching URPN option
             dropdownSelect = Select(dropdown)
-            target_prefix = "U" + user_uprn
-            for option in dropdownSelect.options:
-                option_value = option.get_attribute("value")
-                if option_value.startswith(target_prefix):  # Search by visible text
-                    dropdownSelect.select_by_visible_text(option.text)
-            # dropdownSelect.select_by_value("U" + user_uprn)"""
+            dropdownSelect.select_by_value("U" + user_uprn)
 
             # Wait for the submit button to appear, then click it to get the collection dates
             submit = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "submit-button"))
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
+                )
             )
             submit.click()
 
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "ss_confPanel"))
-            )
-
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            bins_text = soup.find("div", id="body-content")
+            bins_text = soup.find("div", id="ctl00_ContentPlaceHolder1_pnlConfirmation")
 
             if bins_text:
                 results = re.findall(
