@@ -1768,6 +1768,14 @@
         "wiki_name": "Sunderland City Council",
         "wiki_note": "Provide your house number (without quotes) and postcode (wrapped in double quotes with a space)."
     },
+      "SurreyHeathBoroughCouncil": {
+        "house_number": "36",
+        "postcode": "GU20 6PN",
+        "skip_get_url": true,
+        "url": "https://asjwsw-wrpsurreyheathmunicipal-live.whitespacews.com/",
+        "wiki_name": "Surrey Heath Borough Council / Joint Waste Solutions",
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
+    },
     "SwaleBoroughCouncil": {
         "postcode": "ME12 2NQ",
         "skip_get_url": true,
