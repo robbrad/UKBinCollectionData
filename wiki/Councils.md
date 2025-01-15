@@ -242,6 +242,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Stratford Upon Avon Council](#stratford-upon-avon-council)
 - [Stroud District Council](#stroud-district-council)
 - [Sunderland City Council](#sunderland-city-council)
+- [Surrey Heath Borough Council / Joint Waste Solutions](#surrey-heath-borough-council-/-joint-waste-solutions)
 - [Swale Borough Council](#swale-borough-council)
 - [Swansea Council](#swansea-council)
 - [Swindon Borough Council](#swindon-borough-council)
@@ -3071,6 +3072,19 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Provide your house number (without quotes) and postcode (wrapped in double quotes with a space).
+
+---
+
+### Surrey Heath Borough Council / Joint Waste Solutions
+```commandline
+python collect_data.py SurreyHeathBoroughCouncil https://asjwsw-wrpsurreyheathmunicipal-live.whitespacews.com/ -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.
 
 ---
 
