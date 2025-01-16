@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -31,12 +32,12 @@ class CouncilClass(AbstractGetBinDataClass):
         params = {
             "RequestType": "LocalInfo",
             "ms": "ValeOfGlamorgan/AllMaps",
-            "group": "Community and Living|Refuse HIDE2",
-            "type": "json",
+            "group": "Waste|new_refuse",
+            "type": "jsonp",
             "callback": "AddressInfoCallback",
             "uid": user_uprn,
-            "import": "jQuery35108514154283927682_1673022974838",
-            "_": "1673022974840",
+            "import": "jQuery35107288886041176057_1736292844067",
+            "_": "1736292844068",
         }
 
         # Get a response from the council
@@ -46,13 +47,15 @@ class CouncilClass(AbstractGetBinDataClass):
             headers=headers,
         ).text
 
+        response = response.replace("AddressInfoCallback(", "").rstrip(");")
+
         # Load the JSON and seek out the bin week text, then add it to the calendar URL. Also take the weekly
         # collection type and generate dates for it. Then make a GET request for the calendar
         bin_week = str(
-            json.loads(response)["Results"]["Refuse_HIDE2"]["Your_Refuse_round_is"]
+            json.loads(response)["Results"]["waste"]["roundday_residual"]
         ).replace(" ", "-")
         weekly_collection = str(
-            json.loads(response)["Results"]["Refuse_HIDE2"]["Recycling__type"]
+            json.loads(response)["Results"]["waste"]["recycling_code"]
         ).capitalize()
         weekly_dates = get_weekday_dates_in_period(
             datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48

@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -54,6 +55,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
+        current_year = datetime.now().year
+        next_year = current_year + 1
+
         # Page has slider info side by side, which are two instances of this class
         for bin in soup.find_all("div", {"class": "binextra"}):
             bin_info = list(bin.stripped_strings)
@@ -62,27 +66,32 @@ class CouncilClass(AbstractGetBinDataClass):
                 if contains_date(bin_info[0]):
                     bin_date = get_next_occurrence_from_day_month(
                         datetime.strptime(
-                            bin_info[0] + " " + datetime.today().strftime("%Y"),
-                            "%A %d %B - %Y",
+                            bin_info[0],
+                            "%A %d %B -",
                         )
-                    ).strftime(date_format)
-                    bin_type = str.capitalize(' '.join(bin_info[1:]))
+                    )
+                    bin_type = str.capitalize(" ".join(bin_info[1:]))
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
                     bin_date = get_next_occurrence_from_day_month(
                         datetime.strptime(
-                            bin_info[1] + " " + datetime.today().strftime("%Y"),
-                            "%A %d %B - %Y",
+                            bin_info[1],
+                            "%A %d %B -",
                         )
-                    ).strftime(date_format)
-                    str.capitalize(' '.join(bin_info[2:]))
-            except Exception as ex:
-                raise ValueError(f"Error parsing bin data: {ex}")
+                    )
+                    str.capitalize(" ".join(bin_info[2:]))
+            except:
+                continue
+
+            if (datetime.now().month == 12) and (bin_date.month == 1):
+                bin_date = bin_date.replace(year=next_year)
+            else:
+                bin_date = bin_date.replace(year=current_year)
 
             # Build data dict for each entry
             dict_data = {
                 "type": bin_type,
-                "collectionDate": bin_date,
+                "collectionDate": bin_date.strftime(date_format),
             }
             data["bins"].append(dict_data)
 

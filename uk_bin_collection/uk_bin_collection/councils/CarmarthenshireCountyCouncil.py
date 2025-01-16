@@ -34,10 +34,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Find the next collection date
             date_tag = container.find(class_="font11 text-center")
-            if date_tag.text.strip() == "":
-                continue
-            else:
+            if date_tag:
                 collection_date = date_tag.text.strip()
+            else:
+                continue
 
             dict_data = {
                 "type": bin_type,
