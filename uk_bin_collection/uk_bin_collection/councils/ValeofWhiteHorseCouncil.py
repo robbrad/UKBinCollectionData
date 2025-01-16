@@ -53,6 +53,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
+        current_year = datetime.now().year
+        next_year = current_year + 1
+
         # Page has slider info side by side, which are two instances of this class
         for bin in soup.find_all("div", {"class": "bintxt"}):
             try:
@@ -74,23 +77,31 @@ class CouncilClass(AbstractGetBinDataClass):
                 if contains_date(bin_date_info[0]):
                     bin_date = get_next_occurrence_from_day_month(
                         datetime.strptime(
-                            bin_date_info[0] + " " + datetime.today().strftime("%Y"),
-                            "%A %d %B - %Y",
+                            bin_date_info[0],
+                            "%A %d %B -",
                         )
-                    ).strftime(date_format)
+                    )
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
                     bin_date = get_next_occurrence_from_day_month(
                         datetime.strptime(
-                            bin_date_info[1] + " " + datetime.today().strftime("%Y"),
-                            "%A %d %B - %Y",
+                            bin_date_info[1],
+                            "%A %d %B -",
                         )
-                    ).strftime(date_format)
+                    )
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
 
+            if (datetime.now().month == 12) and (bin_date.month == 1):
+                bin_date = bin_date.replace(year=next_year)
+            else:
+                bin_date = bin_date.replace(year=current_year)
+
             # Build data dict for each entry
-            dict_data = {"type": bin_type, "collectionDate": bin_date}
+            dict_data = {
+                "type": bin_type,
+                "collectionDate": bin_date.strftime(date_format),
+            }
             data["bins"].append(dict_data)
 
         data["bins"].sort(
