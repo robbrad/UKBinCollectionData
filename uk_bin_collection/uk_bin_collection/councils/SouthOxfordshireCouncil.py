@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -66,7 +67,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             "%A %d %B - %Y",
                         )
                     ).strftime(date_format)
-                    bin_type = str.capitalize(' '.join(bin_info[1:]))
+                    bin_type = str.capitalize(" ".join(bin_info[1:]))
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
                     bin_date = get_next_occurrence_from_day_month(
@@ -75,9 +76,9 @@ class CouncilClass(AbstractGetBinDataClass):
                             "%A %d %B - %Y",
                         )
                     ).strftime(date_format)
-                    str.capitalize(' '.join(bin_info[2:]))
-            except Exception as ex:
-                raise ValueError(f"Error parsing bin data: {ex}")
+                    str.capitalize(" ".join(bin_info[2:]))
+            except:
+                continue
 
             # Build data dict for each entry
             dict_data = {
