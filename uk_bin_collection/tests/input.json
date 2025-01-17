@@ -1034,7 +1034,8 @@
         "house_number": "March Road",
         "skip_get_url": true,
         "url": "https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/",
-        "wiki_name": "London Borough Of Richmond Upon Thames"
+        "wiki_name": "London Borough Of Richmond Upon Thames",
+        "wiki_note": "Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. "
     },
     "LondonBoroughHarrow": {
         "url": "https://www.harrow.gov.uk",
