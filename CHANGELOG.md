@@ -1,4 +1,27 @@
 =======
+## 0.127.3 (2025-01-16)
+
+### Fix
+
+- Vale of White Horse
+- #1156
+- South Oxfordshire Council
+- #1158
+- Surrey Heath Borough Council
+- #1164
+- Carmarthenshire County Council
+- #1167
+- Glasgow City Council
+- #1166
+- Merton Council
+- NewarkAndSherwoodDC
+- Rushcliffe Borough Council
+- Powys Council
+- Staffordshire Moorlands District Council
+- Stroud District Council
+- Vale of Glamorgan Council
+- West Oxfordshire District Council
+
 ## 0.127.2 (2025-01-13)
 
 ### Fix
