@@ -1124,6 +1124,7 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MedwayCouncil": {
+        "skip_get_url": true,
         "uprn": "200000907059",
         "url": "https://www.medway.gov.uk/homepage/45/check_your_waste_collection_day",
         "wiki_name": "MedwayCouncil",
