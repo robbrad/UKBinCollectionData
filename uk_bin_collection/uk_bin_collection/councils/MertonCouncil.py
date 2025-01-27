@@ -31,6 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "rubbish-wheelie",
                 "textiles",
                 "batteries",
+                "garden",
             ),
         )
 
@@ -45,6 +46,15 @@ class CouncilClass(AbstractGetBinDataClass):
             cells = row.find_all("td")
             # First cell is the bin_type
             bin_type = cells[0].get_text().strip()
+
+            # Garden waste is optional, so skip if none scheduled - causes an error if it gets into the date parsing below.
+            if bin_type == "Garden waste":
+                if (
+                    "There are no garden waste collections scheduled for this address."
+                    in cells[1].select("p")[0].get_text().strip()
+                ):
+                    continue
+
             # Date is on the second cell, second paragraph, wrapped in p
             collectionDate = None
             for format in possible_formats:
