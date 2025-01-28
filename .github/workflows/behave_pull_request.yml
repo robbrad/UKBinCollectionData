@@ -191,7 +191,6 @@ jobs:
           name: allure_partial_history_${{ matrix.python-version }}
           path: allure_partial_history_${{ matrix.python-version }}.tar
 
-  # Deploy only on schedule + master branch
   deploy:
     name: Deploy Reports
     runs-on: ubuntu-latest
@@ -217,10 +216,10 @@ jobs:
       - name: Display directory
         run: pwd
   
-      # Untar reports after the checkout
-      - name: Untar reports
+      # Untar reports directly to the root of the repository
+      - name: Untar reports to root
         run: |
-          for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history-partial ;done
+          for i in allure-history/tars/*.tar; do tar -xvf "$i" -C ./; done
   
       - name: Remove tar reports
         run: rm -rf allure-history/tars
@@ -240,24 +239,13 @@ jobs:
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git
     
-      # Pull the latest changes from gh-pages
+      # Pull the latest changes from gh-pages and switch to the gh-pages branch
       - name: Pull latest changes from gh-pages
         run: |
-          git fetch origin gh-pages
+          git fetch origin
           git checkout gh-pages
           git pull origin gh-pages
   
-      # Clean up the extra directories
-      - name: Remove unnecessary directories
-        run: |
-          rm -rf allure-history  # Remove the entire allure-history folder if not needed
-          rm -rf allure-history-partial  # Remove the allure-history-partial folder after copying its contents
-  
-      # Copy the contents of allure-history-partial to the root
-      - name: Copy reports to gh-pages
-        run: |
-          cp -r allure-history-partial/* ./  # Copy the reports to the root of the repository
-    
       # Commit and push changes to gh-pages
       - name: Commit and push changes to gh-pages
         run: |
