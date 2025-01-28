@@ -14,7 +14,7 @@ from datetime import datetime
 
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN, LOG_PREFIX, PLATFORMS
+from .const import DOMAIN, LOG_PREFIX, PLATFORMS, EXCLUDED_ARG_KEYS
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
 
 _LOGGER = logging.getLogger(__name__)
@@ -24,6 +24,19 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the UK Bin Collection component."""
     hass.data.setdefault(DOMAIN, {})
     _LOGGER.debug(f"{LOG_PREFIX} async_setup called with config: {config}")
+
+    async def handle_manual_refresh(call):
+        """Refresh all bin sensors for a given config entry."""
+        entry_id = call.data["entry_id"]
+        coordinator = hass.data[DOMAIN][entry_id]["coordinator"]
+        await coordinator.async_request_refresh()
+
+    # Register a service named `uk_bin_collection.manual_refresh`
+    hass.services.async_register(
+        DOMAIN,
+        "manual_refresh",  # The service name
+        handle_manual_refresh
+    )
     return True
 
 
@@ -68,6 +81,7 @@ async def async_setup_entry(
         raise ConfigEntryNotReady("Missing 'name' in configuration.")
 
     timeout = config_entry.data.get("timeout", 60)
+    manual_refresh = config_entry.data.get("manual_refresh_only", False)
     icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")
     update_interval_hours = config_entry.data.get("update_interval", 12)
 
@@ -92,19 +106,22 @@ async def async_setup_entry(
         )
         timeout = 60
 
-    # Validate 'update_interval_hours'
-    try:
-        update_interval_hours = int(update_interval_hours)
-        if update_interval_hours < 1:
-            _LOGGER.warning(
-                f"{LOG_PREFIX} update_interval {update_interval_hours} is less than 1. Using default 12 hours."
-            )
+    if not manual_refresh:
+        update_interval = None
+        _LOGGER.info("%s Manual refresh only: no automatic updates scheduled.", LOG_PREFIX)
+    else:
+        try:
+            update_interval_hours = int(update_interval_hours)
+            if update_interval_hours < 1:
+                update_interval_hours = 12
+        except (ValueError, TypeError):
             update_interval_hours = 12
-    except (ValueError, TypeError):
-        _LOGGER.warning(
-            f"{LOG_PREFIX} Invalid update_interval value: {update_interval_hours}. Using default 12 hours."
+        update_interval = timedelta(hours=update_interval_hours)
+        _LOGGER.info(
+            "%s Automatic refresh every %s hour(s).",
+            LOG_PREFIX,
+            update_interval_hours,
         )
-        update_interval_hours = 12
 
     # Prepare arguments for UKBinCollectionApp
     args = build_ukbcd_args(config_entry.data)
@@ -122,11 +139,11 @@ async def async_setup_entry(
         ukbcd,
         name,
         timeout=timeout,
-        update_interval=timedelta(hours=update_interval_hours),
+        update_interval=update_interval,
     )
 
     _LOGGER.debug(
-        f"{LOG_PREFIX} HouseholdBinCoordinator initialized with update_interval={update_interval_hours} hours."
+        f"{LOG_PREFIX} HouseholdBinCoordinator initialized with update_interval={update_interval} hours."
     )
 
     try:
@@ -187,24 +204,11 @@ async def async_unload_entry(
 
 
 def build_ukbcd_args(config_data: dict) -> list:
-    """Build arguments list for UKBinCollectionApp."""
-    excluded_keys = {
-        "name",
-        "council",
-        "url",
-        "skip_get_url",
-        "headless",
-        "local_browser",
-        "timeout",
-        "icon_color_mapping",
-        "update_interval",
-    }
-
     args = [config_data.get("council", ""), config_data.get("url", "")]
 
     # Add other arguments
     for key, value in config_data.items():
-        if key in excluded_keys:
+        if key in EXCLUDED_ARG_KEYS:
             continue
         if key == "web_driver":
             value = value.rstrip("/")
