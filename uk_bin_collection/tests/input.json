@@ -212,6 +212,15 @@
         "wiki_name": "Bolton Council",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields."
     },
+    "BostonBoroughCouncil": {
+        "postcode": "PE20 1AY",
+        "skip_get_url": true,
+        "house_number": "CEDAR",
+        "web_driver": "http://selenium:4444",
+        "url": "https://www.boston.gov.uk/findwastecollections",
+        "wiki_name": "Boston Borough Council",
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
+    },
     "BracknellForestCouncil": {
         "house_number": "57",
         "paon": "57",

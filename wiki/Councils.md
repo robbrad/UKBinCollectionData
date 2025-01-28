@@ -37,6 +37,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Blackburn Council](#blackburn-council)
 - [Blaenau Gwent County Borough Council](#blaenau-gwent-county-borough-council)
 - [Bolton Council](#bolton-council)
+- [Boston Borough Council](#boston-borough-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
 - [Bradford MDC](#bradford-mdc)
 - [Braintree District Council](#braintree-district-council)
@@ -627,6 +628,20 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields.
+
+---
+
+### Boston Borough Council
+```commandline
+python collect_data.py BostonBoroughCouncil https://www.boston.gov.uk/findwastecollections -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.
 
 ---
 
