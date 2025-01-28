@@ -223,3 +223,4 @@ jobs:
           publish_branch: gh-pages
           publish_dir: allure-history-partial
           keep_files: true
+          personal_token: ${{ secrets.GH_PAGES_TOKEN }}
