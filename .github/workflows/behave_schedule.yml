@@ -180,7 +180,8 @@ jobs:
   deploy:
     name: Deploy Reports
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
 
     needs: report
     steps:
@@ -205,5 +206,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-history-partial
+          publish_dir: allure-history-full
           keep_files: true
+          personal_token: ${{ secrets.GH_PAGES_TOKEN }}
