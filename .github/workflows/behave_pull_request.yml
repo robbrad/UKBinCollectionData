@@ -216,6 +216,10 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
 
+      # Checkout the repository to work with the git history
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       # Set up Git for pushing changes
       - name: Set up Git
         run: |
