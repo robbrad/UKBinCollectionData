@@ -10,6 +10,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
     A class to fetch and parse bin collection data for Cheshire East Council.
     """
+    
     def parse_data(self, page: Any, **kwargs: Any) -> Dict[str, Any]:
         soup = BeautifulSoup(page.text, features="html.parser")
 
@@ -18,6 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
         table: Optional[Tag | NavigableString] = soup.find(
             "table", {"class": "job-details"}
         )
+
         if isinstance(table, Tag):  # Ensure we only proceed if 'table' is a Tag
             rows = table.find_all("tr", {"class": "data-row"})
 
