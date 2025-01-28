@@ -1003,6 +1003,12 @@
         "wiki_name": "Leeds City Council",
         "wiki_note": "Pass the house number, postcode, and UPRN. This parser requires a Selenium webdriver."
     },
+    "LeicesterCityCouncil": {
+        "url": "https://biffaleicester.co.uk",
+        "uprn": "2465027976",
+        "wiki_name": "Leicester City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "LichfieldDistrictCouncil": {
         "url": "https://www.lichfielddc.gov.uk",
         "wiki_command_url_override": "https://www.lichfielddc.gov.uk",

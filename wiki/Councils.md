@@ -139,6 +139,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Knowsley Metropolitan Borough Council](#knowsley-metropolitan-borough-council)
 - [Lancaster City Council](#lancaster-city-council)
 - [Leeds City Council](#leeds-city-council)
+- [Leicester City Council](#leicester-city-council)
 - [Lichfield District Council](#lichfield-district-council)
 - [Lincoln Council](#lincoln-council)
 - [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
@@ -1864,6 +1865,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house number, postcode, and UPRN. This parser requires a Selenium webdriver.
+
+---
+
+### Leicester City Council
+```commandline
+python collect_data.py LeicesterCityCouncil https://biffaleicester.co.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
