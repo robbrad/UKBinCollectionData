@@ -216,10 +216,32 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
 
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          personal_token: ${{ secrets.GH_PAGES_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./allure-history-partial
-          keep_files: true
+      # Set up Git for pushing changes
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+  
+      # Authenticate using the personal access token (GH_PAGES_TOKEN)
+      - name: Authenticate with GH_PAGES_TOKEN
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git
+  
+      # Pull the latest changes from gh-pages
+      - name: Pull latest changes from gh-pages
+        run: |
+          git fetch origin gh-pages
+          git checkout gh-pages
+          git pull origin gh-pages
+  
+      # Add new content (reports) to gh-pages
+      - name: Copy reports to gh-pages
+        run: |
+          cp -r allure-history-partial/* ./  # copy the reports to the root of the repository
+  
+      # Commit and push changes to gh-pages
+      - name: Commit and push changes to gh-pages
+        run: |
+          git add .
+          git commit -m "Deploy reports to gh-pages"
+          git push origin gh-pages
