@@ -5,7 +5,7 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
+# Council class for Merton Council
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -31,6 +31,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 "rubbish-wheelie",
                 "textiles",
                 "batteries",
+                "garden",
+                "communal-recycling",
+                "rubbish-communal",
             ),
         )
 
@@ -45,6 +48,15 @@ class CouncilClass(AbstractGetBinDataClass):
             cells = row.find_all("td")
             # First cell is the bin_type
             bin_type = cells[0].get_text().strip()
+
+            # Garden waste is optional, so skip if none scheduled - causes an error if it gets into the date parsing below.
+            if bin_type == "Garden waste":
+                if (
+                    "There are no garden waste collections scheduled for this address."
+                    in cells[1].select("p")[0].get_text().strip()
+                ):
+                    continue
+
             # Date is on the second cell, second paragraph, wrapped in p
             collectionDate = None
             for format in possible_formats:
