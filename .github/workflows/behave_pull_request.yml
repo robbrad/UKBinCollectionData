@@ -197,58 +197,67 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+  
     needs: report
     steps:
+      # Checkout the repository to work with the git history
+      - name: Checkout repository
+        uses: actions/checkout@v4
+  
       # Download Full Artifacts
       - uses: actions/download-artifact@v4
         name: Download Full Artifacts
         with:
           name: allure_partial_history_3.12
           path: allure-history/tars
-
-      - name: Untar reports
-        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history-partial ;done
-
-      - name: Remove tar reports
-        run: rm -rf allure-history/tars
-
+  
       - name: Display structure of downloaded files
         run: ls -R
+  
       - name: Display directory
         run: pwd
-      # Checkout the repository to work with the git history
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+  
+      # Untar reports after the checkout
+      - name: Untar reports
+        run: |
+          for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history-partial ;done
+  
+      - name: Remove tar reports
+        run: rm -rf allure-history/tars
+  
+      # Display structure after untarring
+      - name: Display structure of untarred files
+        run: ls -R
+  
       # Set up Git for pushing changes
       - name: Set up Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-  
+    
       # Authenticate using the personal access token (GH_PAGES_TOKEN)
       - name: Authenticate with GH_PAGES_TOKEN
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git
-  
+    
       # Pull the latest changes from gh-pages
       - name: Pull latest changes from gh-pages
         run: |
           git fetch origin gh-pages
           git checkout gh-pages
           git pull origin gh-pages
-    
-      - name: Display structure of downloaded files
-        run: ls -R
-      - name: Display directory
-        run: pwd  
-
-      # Add new content (reports) to gh-pages
+  
+      # Clean up the extra directories
+      - name: Remove unnecessary directories
+        run: |
+          rm -rf allure-history  # Remove the entire allure-history folder if not needed
+          rm -rf allure-history-partial  # Remove the allure-history-partial folder after copying its contents
+  
+      # Copy the contents of allure-history-partial to the root
       - name: Copy reports to gh-pages
         run: |
-          cp -r allure-history-partial/* ./  # copy the reports to the root of the repository
-  
+          cp -r allure-history-partial/* ./  # Copy the reports to the root of the repository
+    
       # Commit and push changes to gh-pages
       - name: Commit and push changes to gh-pages
         run: |
