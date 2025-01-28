@@ -32,6 +32,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 "textiles",
                 "batteries",
                 "garden",
+                "communal-recycling",
+                "rubbish-communal",
             ),
         )
 
