@@ -55,6 +55,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     "There are no garden waste collections scheduled for this address."
                     in cells[1].select("p")[0].get_text().strip()
                 ):
+                    # Skip this row
                     continue
 
             # Date is on the second cell, second paragraph, wrapped in p
