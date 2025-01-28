@@ -1,4 +1,45 @@
 =======
+## 0.128.3 (2025-01-28)
+
+### Fix
+
+- Update CheshireEastCouncil.py
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+
+## 0.128.2 (2025-01-28)
+
+### Fix
+
+- Add communal recycling and communal rubbish
+- Add garden waste to Merton Council
+
+## 0.128.1 (2025-01-28)
+
+### Fix
+
+- Update AberdeenshireCouncil.py
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+- Update behave_schedule.yml
+- Update behave_pull_request.yml
+
+## 0.128.0 (2025-01-28)
+
+### Feat
+
+- implement Medway Council (#1021)
+
+### Fix
+
+- Forgot to include skip_get_url
+
+## 0.127.4 (2025-01-25)
+
+### Fix
+
+- NewForestCouncil
+
 ## 0.127.3 (2025-01-16)
 
 ### Fix

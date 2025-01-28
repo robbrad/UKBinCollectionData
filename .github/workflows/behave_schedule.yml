@@ -180,7 +180,8 @@ jobs:
   deploy:
     name: Deploy Reports
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
 
     needs: report
     steps:
@@ -203,7 +204,7 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.GH_PAGES_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-history-partial
+          publish_dir: ./allure-history-full
           keep_files: true

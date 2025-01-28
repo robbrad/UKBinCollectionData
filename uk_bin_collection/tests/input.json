@@ -1030,6 +1030,13 @@
         "wiki_name": "London Borough Ealing",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "LondonBoroughOfRichmondUponThames": {
+        "house_number": "March Road",
+        "skip_get_url": true,
+        "url": "https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/",
+        "wiki_name": "London Borough Of Richmond Upon Thames",
+        "wiki_note": "Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. "
+    },
     "LondonBoroughHarrow": {
         "url": "https://www.harrow.gov.uk",
         "wiki_command_url_override": "https://www.harrow.gov.uk",
@@ -1114,6 +1121,13 @@
         "uprn": "100031396580",
         "url": "https://www.mansfield.gov.uk/xfp/form/1327",
         "wiki_name": "Mansfield District Council",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
+    "MedwayCouncil": {
+        "skip_get_url": true,
+        "uprn": "200000907059",
+        "url": "https://www.medway.gov.uk/homepage/45/check_your_waste_collection_day",
+        "wiki_name": "MedwayCouncil",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MertonCouncil": {

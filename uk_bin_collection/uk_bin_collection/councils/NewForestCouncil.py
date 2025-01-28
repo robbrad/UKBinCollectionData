@@ -125,10 +125,10 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
 
             # Garden waste
-            garden_waste = soup.find("span", class_="CTID-17-_ eb-17-textControl")
+            garden_waste = soup.find("div", class_="eb-2HIpCnWC-Override-EditorInput")
             if garden_waste:
                 match = re.search(
-                    r"next collection is\s+(\d{2}/\d{2}/\d{4})", garden_waste.text
+                    r"(\d{2}/\d{2}/\d{4})", garden_waste.text
                 )
                 if match:
                     bins.append(
