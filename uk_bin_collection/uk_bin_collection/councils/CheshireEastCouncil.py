@@ -19,6 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
         table: Optional[Tag | NavigableString] = soup.find(
             "table", {"class": "job-details"}
         )
+
         if isinstance(table, Tag):  # Ensure we only proceed if 'table' is a Tag
             rows = table.find_all("tr", {"class": "data-row"})
 
