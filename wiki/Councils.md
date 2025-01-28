@@ -859,7 +859,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Cardiff Council
 ```commandline
-python collect_data.py CardiffCouncil https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx -s -u XXXXXXXX
+python collect_data.py CardiffCouncil https://www.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
