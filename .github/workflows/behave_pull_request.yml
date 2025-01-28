@@ -215,7 +215,8 @@ jobs:
 
       - name: Display structure of downloaded files
         run: ls -R
-
+      - name: Display directory
+        run: pwd
       # Checkout the repository to work with the git history
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -237,7 +238,12 @@ jobs:
           git fetch origin gh-pages
           git checkout gh-pages
           git pull origin gh-pages
-  
+    
+      - name: Display structure of downloaded files
+        run: ls -R
+      - name: Display directory
+        run: pwd  
+
       # Add new content (reports) to gh-pages
       - name: Copy reports to gh-pages
         run: |
