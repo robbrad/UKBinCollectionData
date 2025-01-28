@@ -143,6 +143,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
 - [Liverpool City Council](#liverpool-city-council)
 - [London Borough Ealing](#london-borough-ealing)
+- [London Borough Of Richmond Upon Thames](#london-borough-of-richmond-upon-thames)
 - [London Borough Harrow](#london-borough-harrow)
 - [London Borough Havering](#london-borough-havering)
 - [London Borough Hounslow](#london-borough-hounslow)
@@ -155,6 +156,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Malvern Hills District Council](#malvern-hills-district-council)
 - [Manchester City Council](#manchester-city-council)
 - [Mansfield District Council](#mansfield-district-council)
+- [MedwayCouncil](#medwaycouncil)
 - [Merton Council](#merton-council)
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
 - [Mid Devon Council](#mid-devon-council)
@@ -1907,6 +1909,18 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ---
 
+### London Borough Of Richmond Upon Thames
+```commandline
+python collect_data.py LondonBoroughOfRichmondUponThames https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/ -s -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-n` - house number
+
+Note: Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. 
+
+---
+
 ### London Borough Harrow
 ```commandline
 python collect_data.py LondonBoroughHarrow https://www.harrow.gov.uk -u XXXXXXXX
@@ -2041,6 +2055,18 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 ### Mansfield District Council
 ```commandline
 python collect_data.py MansfieldDistrictCouncil https://www.mansfield.gov.uk/xfp/form/1327 -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### MedwayCouncil
+```commandline
+python collect_data.py MedwayCouncil https://www.medway.gov.uk/homepage/45/check_your_waste_collection_day -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
