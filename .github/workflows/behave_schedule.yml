@@ -182,29 +182,70 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+  
     needs: report
     steps:
+      # Checkout the repository to work with the git history
+      - name: Checkout repository
+        uses: actions/checkout@v4
+  
       # Download Full Artifacts
       - uses: actions/download-artifact@v4
         name: Download Full Artifacts
         with:
           name: allure_full_history_3.12
           path: allure-history/tars
-
-      - name: Untar reports
-        run: for i in allure-history/tars/*.tar; do tar -xvf "$i" allure-history-full ;done
-
-      - name: Remove tar reports
-        run: rm -rf allure-history/tars
-
+  
       - name: Display structure of downloaded files
         run: ls -R
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          personal_token: ${{ secrets.GH_PAGES_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./allure-history-full
-          keep_files: true
+  
+      - name: Display directory
+        run: pwd
+  
+      # Untar reports into a temporary directory
+      - name: Untar reports to temporary directory
+        run: |
+          mkdir -p temp_extracted  # Create a temporary directory for untarring
+          for i in allure-history/tars/*.tar; do
+            tar -xvf "$i" -C temp_extracted  # Untar into the temporary directory
+          done
+  
+      # Move the files from the correct location and delete unnecessary folders
+      - name: Move files to the correct location
+        run: |
+          mkdir -p 3.12/full  # Ensure the target directory exists
+          mv temp_extracted/allure-history-full/3.12/full/* 3.12/full/  # Move files to the target directory
+          rm -rf temp_extracted  # Clean up the temporary extraction folder
+  
+      # Remove the tar reports
+      - name: Remove tar reports
+        run: rm -rf allure-history/tars
+  
+      # Display structure after untarring and moving
+      - name: Display structure of moved files
+        run: ls -R
+  
+      # Set up Git for pushing changes
+      - name: Set up Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      # Authenticate using the personal access token (GH_PAGES_TOKEN)
+      - name: Authenticate with GH_PAGES_TOKEN
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git
+      
+      # Pull the latest changes from gh-pages and switch to the gh-pages branch
+      - name: Pull latest changes from gh-pages
+        run: |
+          git fetch origin
+          git checkout gh-pages
+          git pull origin gh-pages
+    
+      # Commit and push changes to gh-pages
+      - name: Commit and push changes to gh-pages
+        run: |
+          git add .
+          git commit -m "Deploy reports to gh-pages"
+          git push origin gh-pages
