@@ -23,3 +23,16 @@ PLATFORMS = ["sensor", "calendar"]
 SELENIUM_SERVER_URLS = ["http://localhost:4444", "http://selenium:4444"]
 
 BROWSER_BINARIES = ["chromium", "chromium-browser", "google-chrome"]
+
+EXCLUDED_ARG_KEYS = {
+    "name",
+    "council",
+    "url",
+    "skip_get_url",
+    "headless",
+    "local_browser",
+    "timeout",
+    "icon_color_mapping",
+    "update_interval",
+    "manual_refresh_only",
+}

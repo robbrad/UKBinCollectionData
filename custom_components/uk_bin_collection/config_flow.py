@@ -87,6 +87,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("name"): cv.string,
                     vol.Required("council"): vol.In(self.council_options),
+                    vol.Optional("manual_refresh_only", default=False): bool,
                     vol.Optional("icon_color_mapping", default=""): cv.string,
                 }
             ),
@@ -275,6 +276,10 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             vol.Required("council", default=council_wiki_name): vol.In(
                 self.council_options
             ),
+            vol.Optional(
+                "manual_refresh_only",
+                default=existing_data.get("manual_refresh_only", False)
+            ): bool,
             vol.Required("update_interval", default=existing_data.get("update_interval", 12)): vol.All(
                 cv.positive_int, vol.Range(min=1)
             ),
@@ -475,6 +480,9 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
                 if not UkBinCollectionConfigFlow.is_valid_json(user_input["icon_color_mapping"]):
                     errors["icon_color_mapping"] = "Invalid JSON format."
 
+            if user_input.get("manual_refresh_only"):
+                user_input["update_interval"] = None
+
             if not errors:
                 # Merge the user input with existing data
                 data = {**existing_data, **user_input}
@@ -531,6 +539,7 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("council", default=council_current_wiki): vol.In(
                 self.council_options
             ),
+            vol.Optional("manual_refresh_only", default=False): bool,
             vol.Required("update_interval", default=existing_data.get("update_interval", 12)): vol.All(
                 cv.positive_int, vol.Range(min=1)
             ),
