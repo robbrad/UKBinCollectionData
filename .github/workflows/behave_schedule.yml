@@ -180,7 +180,8 @@ jobs:
   deploy:
     name: Deploy Reports
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
 
     needs: report
     steps:
