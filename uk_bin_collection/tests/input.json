@@ -1240,7 +1240,7 @@
         "url": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=004510730634",
         "wiki_command_url_override": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX",
         "wiki_name": "Newcastle City Council",
-        "wiki_note": "Replace XXXXXXXX with your UPRN."
+        "wiki_note": "Replace XXXXXXXX with your UPRN. UPRNs need to be 12 digits long so please pad the left hand side with 0s if your UPRN is not long enough"
     },
     "NewcastleUnderLymeCouncil": {
         "url": "https://www.newcastle-staffs.gov.uk",

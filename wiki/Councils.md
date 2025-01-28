@@ -2253,7 +2253,7 @@ Note: Replace XXXXXXXX with your UPRN.
 python collect_data.py NewcastleCityCouncil https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX
 ```
 
-Note: Replace XXXXXXXX with your UPRN.
+Note: Replace XXXXXXXX with your UPRN. UPRNs need to be 12 digits long so please pad the left hand side with 0s if your UPRN is not long enough
 
 ---
 
