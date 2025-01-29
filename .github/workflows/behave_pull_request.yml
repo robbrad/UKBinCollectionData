@@ -196,7 +196,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-  
+    
     needs: report
     steps:
       # Checkout the repository to work with the git history
@@ -256,10 +256,10 @@ jobs:
           git fetch origin
           git checkout gh-pages
           git pull origin gh-pages
-    
+  
       # Commit and push changes to gh-pages
       - name: Commit and push changes to gh-pages
         run: |
           git add .
           git commit -m "Deploy reports to gh-pages"
-          git push origin gh-pages
+          git push https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
