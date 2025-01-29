@@ -890,7 +890,7 @@
     "HerefordshireCouncil": {
         "url": "https://www.herefordshire.gov.uk/rubbish-recycling/check-bin-collection-day?blpu_uprn=10096232662",
         "wiki_command_url_override": "https://www.herefordshire.gov.uk/rubbish-recycling/check-bin-collection-day?blpu_uprn=XXXXXXXXXXXX",
-        "wiki_name": "HerefordshireCouncil",
+        "wiki_name": "Herefordshire Council",
         "wiki_note": "Replace 'XXXXXXXXXX' with your property's UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "HertsmereBoroughCouncil": {
