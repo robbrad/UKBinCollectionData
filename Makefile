@@ -25,12 +25,33 @@ pycodestyle:
 	poetry run pycodestyle --statistics -qq uk_bin_collection
 
 ## @Testing runs unit tests
-integration-tests: ## runs tests for the project
+integration-tests:
+	# Ensure directory exists
+	mkdir -p build/$(matrix)/integration-test-results
+
+	# Turn off "exit on error" so we can capture the code
+	set +e; \
 	if [ -z "$(councils)" ]; then \
-		poetry run pytest uk_bin_collection/tests/step_defs/ -n logical --junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
+		poetry run pytest uk_bin_collection/tests/step_defs/ \
+			-n logical \
+			--junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
 	else \
-		poetry run pytest uk_bin_collection/tests/step_defs/ -k "$(councils)" -n logical --junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
-	fi
+		poetry run pytest uk_bin_collection/tests/step_defs/ \
+			-k "$(councils)" \
+			-n logical \
+			--junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
+	fi; \
+	RESULT=$$?; \
+	set -e; \
+	
+	# Double-check that the file exists (in case of a really early crash)
+	if [ ! -f build/$(matrix)/integration-test-results/junit.xml ]; then \
+		echo "<testsuite tests='0'></testsuite>" \
+		     > build/$(matrix)/integration-test-results/junit.xml; \
+	fi; \
+	
+	exit $$RESULT
+
 
 parity-check:
 	poetry run python uk_bin_collection/tests/council_feature_input_parity.py $(repo) $(branch)
