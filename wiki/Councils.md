@@ -93,6 +93,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [East Devon District Council](#east-devon-district-council)
 - [East Herts Council](#east-herts-council)
 - [East Lindsey District Council](#east-lindsey-district-council)
+- [East Lothian Council](#east-lothian-council)
 - [East Renfrewshire Council](#east-renfrewshire-council)
 - [East Riding Council](#east-riding-council)
 - [East Staffordshire Borough Council](#east-staffordshire-borough-council)
@@ -1305,6 +1306,19 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver.
+
+---
+
+### East Lothian Council
+```commandline
+python collect_data.py EastLothianCouncil https://eastlothian.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house number and postcode in their respective parameters
 
 ---
 

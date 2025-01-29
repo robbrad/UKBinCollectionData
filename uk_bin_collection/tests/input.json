@@ -636,6 +636,14 @@
         "wiki_name": "East Lindsey District Council",
         "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
+    "EastLothianCouncil": {
+        "house_number": "Flat 1",
+        "postcode": "EH21 6QA",
+        "skip_get_url": true,
+        "url": "https://eastlothian.gov.uk",
+        "wiki_name": "East Lothian Council",
+        "wiki_note": "Pass the house number and postcode in their respective parameters"
+    },
     "EastRenfrewshireCouncil": {
         "house_number": "23",
         "postcode": "G46 6RG",
