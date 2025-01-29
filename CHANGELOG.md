@@ -1,4 +1,16 @@
 =======
+## 0.128.6 (2025-01-29)
+
+### Fix
+
+- moving away from broken Allure reporting
+- moving away from broken Allure reporting
+- moving away from broken Allure reporting
+- moving away from broken Allure reporting
+- moving away from broken Allure reporting
+- moving away from broken Allure reporting
+- moving away from broken Allure reporting
+
 ## 0.128.5 (2025-01-29)
 
 ### Fix
