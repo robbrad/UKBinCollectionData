@@ -27,9 +27,9 @@ pycodestyle:
 ## @Testing runs unit tests
 integration-tests: ## runs tests for the project
 	if [ -z "$(councils)" ]; then \
-		poetry run pytest uk_bin_collection/tests/step_defs/ -n logical --alluredir=build/$(matrix)/allure-results; \
+		poetry run pytest uk_bin_collection/tests/step_defs/ -n logical --junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
 	else \
-		poetry run pytest uk_bin_collection/tests/step_defs/ -k "$(councils)" -n logical --alluredir=build/$(matrix)/allure-results; \
+		poetry run pytest uk_bin_collection/tests/step_defs/ -k "$(councils)" -n logical --junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
 	fi
 
 parity-check:
