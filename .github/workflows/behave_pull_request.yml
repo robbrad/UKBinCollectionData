@@ -233,8 +233,8 @@ jobs:
       # Move the files from the correct location and delete unnecessary folders
       - name: Move files to the correct location
         run: |
-          mkdir -p 3.12/partial  # Ensure the target directory exists
-          mv temp_extracted/allure-history-partial/* allure-history-partial/  # Move files to the target directory
+          mkdir -p allure-history-partial/3.12  # Ensure the target directory exists
+          mv temp_extracted/allure-history-partial/* allure-history-partial/3.12/  # Move files to the target directory
           rm -rf temp_extracted  # Clean up the temporary extraction folder
   
       # Remove the tar reports
