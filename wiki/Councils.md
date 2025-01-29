@@ -1293,6 +1293,8 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 
+Note: Pass the house number and postcode in their respective parameters.
+
 ---
 
 ### East Lindsey District Council
