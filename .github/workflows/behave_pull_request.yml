@@ -2,7 +2,7 @@ name: Test Councils (Pull Request Only)
 
 on:
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
     branches: [ "master" ]
     paths-ignore:
       - "wiki/**"
@@ -239,27 +239,10 @@ jobs:
       - name: Display structure of moved files
         run: ls -R
   
-      # Set up Git for pushing changes
-      - name: Set up Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-      
-      # Authenticate using the personal access token (GH_PAGES_TOKEN)
-      - name: Authenticate with GH_PAGES_TOKEN
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git
-      
-      # Pull the latest changes from gh-pages and switch to the gh-pages branch
-      - name: Pull latest changes from gh-pages
-        run: |
-          git fetch origin
-          git checkout gh-pages
-          git pull origin gh-pages
-  
-      # Commit and push changes to gh-pages
-      - name: Commit and push changes to gh-pages
-        run: |
-          git add .
-          git commit -m "Deploy reports to gh-pages"
-          git push https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git gh-pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./
+          keep_files: true
