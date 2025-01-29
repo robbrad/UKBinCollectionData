@@ -8,12 +8,6 @@ on:
       - "wiki/**"
       - "**/*.md"
       - "uk_bin_collection_api_server/**"
-  pull_request_target:
-    branches: [ "master" ]
-    paths-ignore:
-      - "wiki/**"
-      - "**/*.md"
-      - "uk_bin_collection_api_server/**"
 
 jobs:
   setup:
