@@ -1,4 +1,31 @@
 =======
+## 0.129.0 (2025-01-29)
+
+### Feat
+
+- Adding East Staffordshire Borough Council
+- Adding Boston Borough Council
+
+### Fix
+
+- input.json
+- input.json
+- Adding East Lothian Council
+- #1171
+- #1052
+fix: #1083
+- Leicester City Council
+- #1178
+- Cardiff Council
+- #1175
+- Newcastle City Council
+- #1179
+- #1180
+- Midlothian Council
+- #1192 - Adding Next Page support
+- Swale Borough Council
+- #1139
+
 ## 0.128.6 (2025-01-29)
 
 ### Fix
