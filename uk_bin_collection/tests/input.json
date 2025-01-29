@@ -754,20 +754,6 @@
         "wiki_name": "Flintshire County Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
-    "FifeCouncil": {
-        "url": "https://www.fife.gov.uk",
-        "wiki_command_url_override": "https://www.fife.gov.uk",
-        "uprn": "320203521",
-        "wiki_name": "Fife Council",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
-    },
-    "FlintshireCountyCouncil": {
-        "url": "https://digital.flintshire.gov.uk",
-        "wiki_command_url_override": "https://digital.flintshire.gov.uk",
-        "uprn": "100100213710",
-        "wiki_name": "Flintshire County Council",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
-    },
     "FolkstoneandHytheDistrictCouncil": {
         "skip_get_url": true,
         "uprn": "50032097",
