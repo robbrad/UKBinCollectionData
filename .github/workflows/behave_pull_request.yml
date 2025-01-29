@@ -200,6 +200,9 @@ jobs:
   deploy:
     name: Deploy Reports
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.12]
     permissions:
       contents: write
     
@@ -213,7 +216,7 @@ jobs:
       - uses: actions/download-artifact@v4
         name: Download Full Artifacts
         with:
-          name: allure_partial_history_3.12
+          name: allure_partial_history_${{ matrix.python-version }}
           path: allure-history/tars
   
       - name: Display structure of downloaded files
@@ -233,8 +236,8 @@ jobs:
       # Move the files from the correct location and delete unnecessary folders
       - name: Move files to the correct location
         run: |
-          mkdir -p allure-history-partial/3.12  # Ensure the target directory exists
-          mv temp_extracted/allure-history-partial/* allure-history-partial/3.12/  # Move files to the target directory
+          mkdir -p allure-history-partial/  # Ensure the target directory exists
+          mv temp_extracted/allure-history-partial/* allure-history-partial/  # Move files to the target directory
           rm -rf temp_extracted  # Clean up the temporary extraction folder
   
       # Remove the tar reports
