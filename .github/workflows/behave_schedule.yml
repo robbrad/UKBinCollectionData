@@ -131,7 +131,7 @@ jobs:
         with:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
-          report_type: testing
+          report_type: test_results
           file: build/${{ matrix.python-version }}/integration-test-results/junit.xml
           flags: integrationtestsfullnightly
           name: integration-tests-full-nightly
