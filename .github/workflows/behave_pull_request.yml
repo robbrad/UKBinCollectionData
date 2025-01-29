@@ -243,15 +243,13 @@ jobs:
       # Remove the tar reports
       - name: Remove tar reports
         run: rm -rf allure-history/tars
-  
-      # Display structure after untarring and moving
-      - name: Display structure of moved files
-        run: ls -R
-  
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./allure-history-partial
-          keep_files: true
+          path: './allure-history-partial'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
