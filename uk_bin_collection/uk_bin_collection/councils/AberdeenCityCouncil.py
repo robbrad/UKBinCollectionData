@@ -12,7 +12,6 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
-
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_uprn = kwargs.get("uprn")
