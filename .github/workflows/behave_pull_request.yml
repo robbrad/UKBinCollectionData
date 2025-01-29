@@ -234,7 +234,7 @@ jobs:
       - name: Move files to the correct location
         run: |
           mkdir -p 3.12/partial  # Ensure the target directory exists
-          mv temp_extracted/allure-history-partial/3.12/partial/* 3.12/partial/  # Move files to the target directory
+          mv temp_extracted/allure-history-partial/* allure-history-partial/  # Move files to the target directory
           rm -rf temp_extracted  # Clean up the temporary extraction folder
   
       # Remove the tar reports
@@ -250,5 +250,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./
+          publish_dir: ./allure-history-partial
           keep_files: true
