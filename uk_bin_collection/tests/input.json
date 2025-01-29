@@ -654,6 +654,12 @@
         "wiki_name": "East Riding Council",
         "wiki_note": "Put the full address as it displays on the council website dropdown when you do the check manually."
     },
+    "EastStaffordshireBoroughCouncil": {
+        "url": "https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/68382",
+        "wiki_command_url_override": "https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/XXXXX",
+        "wiki_name": "East Staffordshire Borough Council",
+        "wiki_note": "Replace `XXXXX` with your property's ID when selecting from https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates."
+    },
     "EastSuffolkCouncil": {
         "postcode": "IP11 9FJ",
         "skip_get_url": true,

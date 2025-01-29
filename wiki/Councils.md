@@ -95,6 +95,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [East Lindsey District Council](#east-lindsey-district-council)
 - [East Renfrewshire Council](#east-renfrewshire-council)
 - [East Riding Council](#east-riding-council)
+- [East Staffordshire Borough Council](#east-staffordshire-borough-council)
 - [East Suffolk Council](#east-suffolk-council)
 - [Eastleigh Borough Council](#eastleigh-borough-council)
 - [Edinburgh City Council](#edinburgh-city-council)
@@ -1332,6 +1333,15 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Put the full address as it displays on the council website dropdown when you do the check manually.
+
+---
+
+### East Staffordshire Borough Council
+```commandline
+python collect_data.py EastStaffordshireBoroughCouncil https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/XXXXX
+```
+
+Note: Replace `XXXXX` with your property's ID when selecting from https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates.
 
 ---
 
