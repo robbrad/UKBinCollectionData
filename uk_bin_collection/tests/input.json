@@ -31,13 +31,6 @@
         "wiki_name": "Ards and North Down Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
-    "ArdsAndNorthDownCouncil": {
-        "url": "https://www.ardsandnorthdown.gov.uk",
-        "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
-        "uprn": "187136177",
-        "wiki_name": "Ards and North Down Council",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
-    },
     "ArgyllandButeCouncil": {
         "uprn": "125061759",
         "skip_get_url": true,
