@@ -16,7 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
-        bindata = {"bins": []}
+        bindata = {"bins": []}.
 
         SESSION_URL = "https://integration.aberdeencity.gov.uk/authapi/isauthenticated?uri=https%253A%252F%252Fintegration.aberdeencity.gov.uk%252Fservice%252Fbin_collection_calendar___view&hostname=integration.aberdeencity.gov.uk&withCredentials=true"
 
