@@ -10,7 +10,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
     A class to fetch and parse bin collection data for Cheshire East Council.
     """
-    
     def parse_data(self, page: Any, **kwargs: Any) -> Dict[str, Any]:
         soup = BeautifulSoup(page.text, features="html.parser")
 

@@ -8,6 +8,12 @@ on:
       - "wiki/**"
       - "**/*.md"
       - "uk_bin_collection_api_server/**"
+  pull_request_target:
+    branches: [ "master" ]
+    paths-ignore:
+      - "wiki/**"
+      - "**/*.md"
+      - "uk_bin_collection_api_server/**"
 
 jobs:
   setup:
@@ -194,9 +200,12 @@ jobs:
   deploy:
     name: Deploy Reports
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.12]
     permissions:
       contents: write
-  
+    
     needs: report
     steps:
       # Checkout the repository to work with the git history
@@ -207,7 +216,7 @@ jobs:
       - uses: actions/download-artifact@v4
         name: Download Full Artifacts
         with:
-          name: allure_partial_history_3.12
+          name: allure_partial_history_${{ matrix.python-version }}
           path: allure-history/tars
   
       - name: Display structure of downloaded files
@@ -227,8 +236,8 @@ jobs:
       # Move the files from the correct location and delete unnecessary folders
       - name: Move files to the correct location
         run: |
-          mkdir -p 3.12/partial  # Ensure the target directory exists
-          mv temp_extracted/allure-history-partial/3.12/partial/* 3.12/partial/  # Move files to the target directory
+          mkdir -p allure-history-partial/  # Ensure the target directory exists
+          mv temp_extracted/allure-history-partial/* allure-history-partial/  # Move files to the target directory
           rm -rf temp_extracted  # Clean up the temporary extraction folder
   
       # Remove the tar reports
@@ -239,27 +248,10 @@ jobs:
       - name: Display structure of moved files
         run: ls -R
   
-      # Set up Git for pushing changes
-      - name: Set up Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-      
-      # Authenticate using the personal access token (GH_PAGES_TOKEN)
-      - name: Authenticate with GH_PAGES_TOKEN
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git
-      
-      # Pull the latest changes from gh-pages and switch to the gh-pages branch
-      - name: Pull latest changes from gh-pages
-        run: |
-          git fetch origin
-          git checkout gh-pages
-          git pull origin gh-pages
-    
-      # Commit and push changes to gh-pages
-      - name: Commit and push changes to gh-pages
-        run: |
-          git add .
-          git commit -m "Deploy reports to gh-pages"
-          git push origin gh-pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./allure-history-partial
+          keep_files: true
