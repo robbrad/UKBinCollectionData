@@ -8,12 +8,6 @@ on:
       - "wiki/**"
       - "**/*.md"
       - "uk_bin_collection_api_server/**"
-  pull_request_target:
-    branches: [ "master" ]
-    paths-ignore:
-      - "wiki/**"
-      - "**/*.md"
-      - "uk_bin_collection_api_server/**"
 
 jobs:
   setup:
@@ -148,110 +142,13 @@ jobs:
           COUNCIL_TESTS: ${{ needs.setup.outputs.council_tests }}
         run: make matrix=${{ matrix.python-version }} councils="${{ env.COUNCIL_TESTS }}" integration-tests
         continue-on-error: true
-      
-      - name: Archive Integration Tests Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: integration-tests-results-${{ matrix.python-version }}
-          path: build/${{ matrix.python-version }}/allure-results
-          
-  # Only generate and upload Allure reports on schedule
-  report:
-    name: Generate and Upload Reports
-    needs: [unit-tests, parity-check, integration-tests]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.12]
-    steps:
 
-      - name: Download Allure Results
-        uses: actions/download-artifact@v4
+      - name: Upload Integration Test Results to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          name: integration-tests-results-${{ matrix.python-version }}
-          path: build/${{ matrix.python-version }}/allure-results
-
-      - name: Get Allure history - Partial Report
-        uses: actions/checkout@v4
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: gh-pages
-
-      - name: Allure report action for Partial Run
-        uses: simple-elf/allure-report-action@master
-        with:
-          allure_results: build/${{ matrix.python-version }}/allure-results
-          subfolder: ${{ matrix.python-version }}/partial
-          allure_history: allure-history-partial
-          keep_reports: 20
-
-      # Archive the Full Report
-      - name: Tar full report
-        run: tar -cvf allure_partial_history_${{ matrix.python-version }}.tar allure-history-partial/${{ matrix.python-version }}/partial
-
-      # Upload the Full Report artifact
-      - name: Upload artifact for Full Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure_partial_history_${{ matrix.python-version }}
-          path: allure_partial_history_${{ matrix.python-version }}.tar
-
-  deploy:
-    name: Deploy Reports
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.12]
-    permissions:
-      contents: write
-    
-    needs: report
-    steps:
-      # Checkout the repository to work with the git history
-      - name: Checkout repository
-        uses: actions/checkout@v4
-  
-      # Download Full Artifacts
-      - uses: actions/download-artifact@v4
-        name: Download Full Artifacts
-        with:
-          name: allure_partial_history_${{ matrix.python-version }}
-          path: allure-history/tars
-  
-      - name: Display structure of downloaded files
-        run: ls -R
-  
-      - name: Display directory
-        run: pwd
-  
-      # Untar reports into a temporary directory
-      - name: Untar reports to temporary directory
-        run: |
-          mkdir -p temp_extracted  # Create a temporary directory for untarring
-          for i in allure-history/tars/*.tar; do
-            tar -xvf "$i" -C temp_extracted  # Untar into the temporary directory
-          done
-  
-      # Move the files from the correct location and delete unnecessary folders
-      - name: Move files to the correct location
-        run: |
-          mkdir -p allure-history-partial/  # Ensure the target directory exists
-          mv temp_extracted/allure-history-partial/* allure-history-partial/  # Move files to the target directory
-          rm -rf temp_extracted  # Clean up the temporary extraction folder
-  
-      # Remove the tar reports
-      - name: Remove tar reports
-        run: rm -rf allure-history/tars
-  
-      # Display structure after untarring and moving
-      - name: Display structure of moved files
-        run: ls -R
-  
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./allure-history-partial
-          keep_files: true
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+          report_type: test_results
+          file: build/${{ matrix.python-version }}/integration-test-results/junit.xml
+          flags: integrationtestspr
+          name: integration-tests-pr
