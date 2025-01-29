@@ -19,6 +19,7 @@ def parse_collection_date(date_string) -> datetime:
 
     return parsed_date
 
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -84,6 +85,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
+        current_year = datetime.now().year
+        next_year = current_year + 1
+
         next_collection_date = soup.find(
             "strong", id="SBC-YBD-collectionDate"
         ).text.strip()
@@ -104,20 +108,27 @@ class CouncilClass(AbstractGetBinDataClass):
         future_bins = [li.text.strip() for li in soup.select("#FirstFutureBins li")]
 
         for bin in next_bins:
+            collection_date = datetime.strptime(next_collection_date, "%A, %d %B")
+            if (datetime.now().month == 12) and (collection_date.month == 1):
+                collection_date = collection_date.replace(year=next_year)
+            else:
+                collection_date = collection_date.replace(year=current_year)
+
             dict_data = {
                 "type": bin,
-                "collectionDate": datetime.strptime(
-                    next_collection_date, "%A, %d %B"
-                ).strftime(date_format),
+                "collectionDate": collection_date.strftime(date_format),
             }
             data["bins"].append(dict_data)
 
         for bin in future_bins:
+            collection_date = datetime.strptime(future_collection_date, "%A, %d %B")
+            if (datetime.now().month == 12) and (collection_date.month == 1):
+                collection_date = collection_date.replace(year=next_year)
+            else:
+                collection_date = collection_date.replace(year=current_year)
             dict_data = {
                 "type": bin,
-                "collectionDate": datetime.strptime(
-                    future_collection_date, "%A, %d %B"
-                ).strftime(date_format),
+                "collectionDate": collection_date.strftime(date_format),
             }
             data["bins"].append(dict_data)
 

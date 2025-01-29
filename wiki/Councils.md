@@ -37,6 +37,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Blackburn Council](#blackburn-council)
 - [Blaenau Gwent County Borough Council](#blaenau-gwent-county-borough-council)
 - [Bolton Council](#bolton-council)
+- [Boston Borough Council](#boston-borough-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
 - [Bradford MDC](#bradford-mdc)
 - [Braintree District Council](#braintree-district-council)
@@ -92,8 +93,10 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [East Devon District Council](#east-devon-district-council)
 - [East Herts Council](#east-herts-council)
 - [East Lindsey District Council](#east-lindsey-district-council)
+- [East Lothian Council](#east-lothian-council)
 - [East Renfrewshire Council](#east-renfrewshire-council)
 - [East Riding Council](#east-riding-council)
+- [East Staffordshire Borough Council](#east-staffordshire-borough-council)
 - [East Suffolk Council](#east-suffolk-council)
 - [Eastleigh Borough Council](#eastleigh-borough-council)
 - [Edinburgh City Council](#edinburgh-city-council)
@@ -138,11 +141,13 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Knowsley Metropolitan Borough Council](#knowsley-metropolitan-borough-council)
 - [Lancaster City Council](#lancaster-city-council)
 - [Leeds City Council](#leeds-city-council)
+- [Leicester City Council](#leicester-city-council)
 - [Lichfield District Council](#lichfield-district-council)
 - [Lincoln Council](#lincoln-council)
 - [Lisburn and Castlereagh City Council](#lisburn-and-castlereagh-city-council)
 - [Liverpool City Council](#liverpool-city-council)
 - [London Borough Ealing](#london-borough-ealing)
+- [London Borough Of Richmond Upon Thames](#london-borough-of-richmond-upon-thames)
 - [London Borough Harrow](#london-borough-harrow)
 - [London Borough Havering](#london-borough-havering)
 - [London Borough Hounslow](#london-borough-hounslow)
@@ -155,6 +160,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Malvern Hills District Council](#malvern-hills-district-council)
 - [Manchester City Council](#manchester-city-council)
 - [Mansfield District Council](#mansfield-district-council)
+- [MedwayCouncil](#medwaycouncil)
 - [Merton Council](#merton-council)
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
 - [Mid Devon Council](#mid-devon-council)
@@ -628,6 +634,20 @@ Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyad
 
 ---
 
+### Boston Borough Council
+```commandline
+python collect_data.py BostonBoroughCouncil https://www.boston.gov.uk/findwastecollections -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.
+
+---
+
 ### Bracknell Forest Council
 ```commandline
 python collect_data.py BracknellForestCouncil https://selfservice.mybfc.bracknell-forest.gov.uk/w/webpage/waste-collection-days -s -p "XXXX XXX" -n XX
@@ -842,7 +862,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Cardiff Council
 ```commandline
-python collect_data.py CardiffCouncil https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx -s -u XXXXXXXX
+python collect_data.py CardiffCouncil https://www.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -1273,6 +1293,8 @@ Additional parameters:
 - `-p` - postcode
 - `-n` - house number
 
+Note: Pass the house number and postcode in their respective parameters.
+
 ---
 
 ### East Lindsey District Council
@@ -1286,6 +1308,19 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver.
+
+---
+
+### East Lothian Council
+```commandline
+python collect_data.py EastLothianCouncil https://eastlothian.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house number and postcode in their respective parameters
 
 ---
 
@@ -1314,6 +1349,15 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Put the full address as it displays on the council website dropdown when you do the check manually.
+
+---
+
+### East Staffordshire Borough Council
+```commandline
+python collect_data.py EastStaffordshireBoroughCouncil https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/XXXXX
+```
+
+Note: Replace `XXXXX` with your property's ID when selecting from https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates.
 
 ---
 
@@ -1850,6 +1894,17 @@ Note: Pass the house number, postcode, and UPRN. This parser requires a Selenium
 
 ---
 
+### Leicester City Council
+```commandline
+python collect_data.py LeicesterCityCouncil https://biffaleicester.co.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Lichfield District Council
 ```commandline
 python collect_data.py LichfieldDistrictCouncil https://www.lichfielddc.gov.uk -u XXXXXXXX
@@ -1904,6 +1959,18 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### London Borough Of Richmond Upon Thames
+```commandline
+python collect_data.py LondonBoroughOfRichmondUponThames https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/ -s -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-n` - house number
+
+Note: Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. 
 
 ---
 
@@ -2041,6 +2108,18 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 ### Mansfield District Council
 ```commandline
 python collect_data.py MansfieldDistrictCouncil https://www.mansfield.gov.uk/xfp/form/1327 -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### MedwayCouncil
+```commandline
+python collect_data.py MedwayCouncil https://www.medway.gov.uk/homepage/45/check_your_waste_collection_day -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -2212,7 +2291,7 @@ Note: Replace XXXXXXXX with your UPRN.
 python collect_data.py NewcastleCityCouncil https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX
 ```
 
-Note: Replace XXXXXXXX with your UPRN.
+Note: Replace XXXXXXXX with your UPRN. UPRNs need to be 12 digits long so please pad the left hand side with 0s if your UPRN is not long enough
 
 ---
 

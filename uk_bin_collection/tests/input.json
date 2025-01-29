@@ -31,13 +31,6 @@
         "wiki_name": "Ards and North Down Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
-    "ArdsAndNorthDownCouncil": {
-        "url": "https://www.ardsandnorthdown.gov.uk",
-        "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
-        "uprn": "187136177",
-        "wiki_name": "Ards and North Down Council",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
-    },
     "ArgyllandButeCouncil": {
         "uprn": "125061759",
         "skip_get_url": true,
@@ -212,6 +205,15 @@
         "wiki_name": "Bolton Council",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields."
     },
+    "BostonBoroughCouncil": {
+        "postcode": "PE20 1AY",
+        "skip_get_url": true,
+        "house_number": "CEDAR",
+        "web_driver": "http://selenium:4444",
+        "url": "https://www.boston.gov.uk/findwastecollections",
+        "wiki_name": "Boston Borough Council",
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
+    },
     "BracknellForestCouncil": {
         "house_number": "57",
         "paon": "57",
@@ -348,7 +350,7 @@
     "CardiffCouncil": {
         "skip_get_url": true,
         "uprn": "100100112419",
-        "url": "https://www.cardiff.gov.uk/ENG/resident/Rubbish-and-recycling/When-are-my-bins-collected/Pages/default.aspx",
+        "url": "https://www.gov.uk",
         "wiki_name": "Cardiff Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
@@ -611,13 +613,6 @@
         "wiki_name": "East Herts Council",
         "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
-    "EastHertsCouncil": {
-        "house_number": "1",
-        "postcode": "CM20 2FZ",
-        "skip_get_url": true,
-        "url": "https://www.eastherts.gov.uk",
-        "wiki_name": "East Herts Council"
-    },
     "EastLindseyDistrictCouncil": {
         "house_number": "1",
         "postcode": "PE22 0YD",
@@ -626,6 +621,14 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Lindsey District Council",
         "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
+    },
+    "EastLothianCouncil": {
+        "house_number": "Flat 1",
+        "postcode": "EH21 6QA",
+        "skip_get_url": true,
+        "url": "https://eastlothian.gov.uk",
+        "wiki_name": "East Lothian Council",
+        "wiki_note": "Pass the house number and postcode in their respective parameters"
     },
     "EastRenfrewshireCouncil": {
         "house_number": "23",
@@ -644,6 +647,12 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Riding Council",
         "wiki_note": "Put the full address as it displays on the council website dropdown when you do the check manually."
+    },
+    "EastStaffordshireBoroughCouncil": {
+        "url": "https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/68382",
+        "wiki_command_url_override": "https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/XXXXX",
+        "wiki_name": "East Staffordshire Borough Council",
+        "wiki_note": "Replace `XXXXX` with your property's ID when selecting from https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates."
     },
     "EastSuffolkCouncil": {
         "postcode": "IP11 9FJ",
@@ -730,20 +739,6 @@
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland District Council",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
-    },
-    "FifeCouncil": {
-        "url": "https://www.fife.gov.uk",
-        "wiki_command_url_override": "https://www.fife.gov.uk",
-        "uprn": "320203521",
-        "wiki_name": "Fife Council",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
-    },
-    "FlintshireCountyCouncil": {
-        "url": "https://digital.flintshire.gov.uk",
-        "wiki_command_url_override": "https://digital.flintshire.gov.uk",
-        "uprn": "100100213710",
-        "wiki_name": "Flintshire County Council",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "FifeCouncil": {
         "url": "https://www.fife.gov.uk",
@@ -994,6 +989,12 @@
         "wiki_name": "Leeds City Council",
         "wiki_note": "Pass the house number, postcode, and UPRN. This parser requires a Selenium webdriver."
     },
+    "LeicesterCityCouncil": {
+        "url": "https://biffaleicester.co.uk",
+        "uprn": "2465027976",
+        "wiki_name": "Leicester City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "LichfieldDistrictCouncil": {
         "url": "https://www.lichfielddc.gov.uk",
         "wiki_command_url_override": "https://www.lichfielddc.gov.uk",
@@ -1231,7 +1232,7 @@
         "url": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=004510730634",
         "wiki_command_url_override": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX",
         "wiki_name": "Newcastle City Council",
-        "wiki_note": "Replace XXXXXXXX with your UPRN."
+        "wiki_note": "Replace XXXXXXXX with your UPRN. UPRNs need to be 12 digits long so please pad the left hand side with 0s if your UPRN is not long enough"
     },
     "NewcastleUnderLymeCouncil": {
         "url": "https://www.newcastle-staffs.gov.uk",

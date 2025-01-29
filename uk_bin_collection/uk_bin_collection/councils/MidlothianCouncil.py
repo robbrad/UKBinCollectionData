@@ -82,6 +82,30 @@ class CouncilClass(AbstractGetBinDataClass):
                     if pattern.match(link_text):
                         return address_link
 
+            try:
+                print("Finding next page link not found.")
+                # Find the 'Next page' link
+                next_page_link = soup.find("a", class_="button float-right")
+
+                # Ensure the link exists
+                if next_page_link:
+                    # Extract the href attribute
+                    next_page_url = next_page_link["href"]
+
+                    # Send a GET request to the next page
+                    next_response = requests.get(next_page_url)
+                    next_response.raise_for_status()  # Raise an exception for HTTP errors
+
+                    # Parse the HTML content of the next page
+                    soup = BeautifulSoup(next_response.text, "html.parser")
+                    address_link = self._get_result_by_identifier(soup, identifier)
+                    return address_link
+                else:
+                    print("Next page link not found.")
+            except AttributeError as e:
+                print(f"Warning: Could not find the search results. Error: {e}")
+                return None  # Return None if no result found
+
             print(f"Warning: No results found for identifier '{identifier}'.")
             return None  # Return None if no match is found
 
