@@ -1,4 +1,14 @@
 =======
+## 0.130.0 (2025-01-29)
+
+### Feat
+
+- Add Herefordshire Council (closes: #1011)
+
+### Fix
+
+- Fix spacing in wiki name
+
 ## 0.129.0 (2025-01-29)
 
 ### Feat
