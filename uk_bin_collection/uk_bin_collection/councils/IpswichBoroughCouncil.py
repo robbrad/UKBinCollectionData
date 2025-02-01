@@ -20,40 +20,35 @@ class CouncilClass(AbstractGetBinDataClass):
         r"\b(?:on\s+)?([A-Za-z]+ \d{1,2}(?:st|nd|rd|th)? [A-Za-z]+ \d{4})\b"
     )
 
-    IBC_SUPPORTED_BINS_METADATA = {
+    IBC_SUPPORTED_BINS_DICT = {
         "black": "General Waste",
         "blue": "Recycling Waste",
         "brown": "Garden Waste",
     }
 
-            IBC_ENDPOINT = "https://app.ipswich.gov.uk/bin-collection/"
+    IBC_DIV_MARKER = "ibc-page-content-section"
 
-    
+    IBC_ENDPOINT = "https://app.ipswich.gov.uk/bin-collection/"
 
     def transform_date(self, date_str):
         date_str = re.sub(r"(st|nd|rd|th)", "", date_str)  # Remove ordinal suffixes
         date_obj = datetime.strptime(date_str, "%A %d %B %Y")
-        return date_obj.strftime("%d/%m/%Y")
-
-    def valid_poan(self, poan):
-        # TODO the existing args from users don't encourage just street name as required; therefore may need a new OR manipulate an existing such as POAN
-        return True
+        return date_obj.strftime(date_format)
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
-        # user_paon = kwargs.get("paon") # TODO is the poan valid i.e. it appears to just be a street name?
-        user_paon = "Ashdown Way"  # TODO test date, to be removed
+        user_paon = kwargs.get("paon")
+        check_paon(user_paon)
+
+        # Make the request
         form_data = {"street-input": user_paon}
-
         response = requests.post(self.IBC_ENDPOINT, data=form_data, timeout=10)
-
-        # Make a BS4 object
         soup = BeautifulSoup(response.content, features="html.parser")
-        soup.prettify()
 
         data = {"bins": []}
 
-        div_section = soup.find("div", class_="ibc-page-content-section")
+        # Start scarping
+        div_section = soup.find("div", class_=self.IBC_DIV_MARKER)
 
         if div_section:
             li_elements = div_section.find_all(
@@ -69,7 +64,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 if date_match:
                     date = date_match.group(1)
 
-                    for supported_bin in self.IBC_SUPPORTED_BINS_METADATA:
+                    for supported_bin in self.IBC_SUPPORTED_BINS_DICT:
                         if supported_bin in distinct_collection_info:
                             # Transform the date from council format to expected UKBCD format
                             date_transformed = self.transform_date(date)
@@ -77,7 +72,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             dict_data = {
                                 "type": supported_bin.capitalize()
                                 + " - "
-                                + self.IBC_SUPPORTED_BINS_METADATA[supported_bin],
+                                + self.IBC_SUPPORTED_BINS_DICT[supported_bin],
                                 "collectionDate": date_transformed,
                             }
 
