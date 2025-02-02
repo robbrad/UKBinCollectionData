@@ -13,6 +13,7 @@ This integration allows you to configure the collection details for your local U
     - [Selenium \& Chromium Checks](#selenium--chromium-checks)
   - [Reconfiguration / Options Flow](#reconfiguration--options-flow)
   - [Validation Requirements](#validation-requirements)
+  - [Icon Color Mapping JSON Example](#icon-color-mapping-json-example)
 
 ---
 
@@ -35,18 +36,18 @@ In the initial configuration step you must provide the following:
 
 After you provide the basic details, the next step requests council-specific information. The fields displayed depend on the selected council’s requirements. Below is a summary of possible fields:
 
-| Field Name    | Requirement                  | Type    | Description |
-|---------------|------------------------------|---------|-------------|
-| **url**       | Required (if applicable)     | String  | The URL to access the bin collection data. Some councils require this field; however, if the council’s configuration has `skip_get_url` enabled, this field may be pre-filled or skipped. |
-| **uprn**      | Required (if applicable)     | String  | The Unique Property Reference Number, if the council supports it. |
-| **postcode**  | Required (if applicable)     | String  | The postcode for the address in question. |
-| **number**    | Required (if applicable)     | String  | The house number. (This corresponds to the `"house_number"` key in the council configuration.) |
-| **usrn**      | Required (if applicable)     | String  | The Unique Street Reference Number, if required by the council. |
-| **web_driver**| Optional (if applicable)     | String  | If the council requires Selenium for data fetching, you may provide the web driver command. |
-| **headless**  | Optional (if applicable)     | Boolean | Indicates whether to run the browser in headless mode (default is `True`). Only shown if `web_driver` is applicable. |
-| **local_browser** | Optional (if applicable)  | Boolean | Choose whether to use a local browser instance (default is `False`). Only shown if `web_driver` is applicable. |
-| **timeout**   | Optional                     | Integer | Sets the request timeout in seconds. Defaults to `60` seconds and must be at least `10`. |
-| **update_interval** | Optional                | Integer | The refresh frequency in hours. Defaults to `12` hours and must be at least `1`. |
+| Field Name         | Requirement                  | Type    | Description |
+|--------------------|------------------------------|---------|-------------|
+| **url**            | Required (if applicable)     | String  | The URL to access the bin collection data. Some councils require this field; however, if the council’s configuration has `skip_get_url` enabled, this field may be pre-filled or skipped. |
+| **uprn**           | Required (if applicable)     | String  | The Unique Property Reference Number, if the council supports it. |
+| **postcode**       | Required (if applicable)     | String  | The postcode for the address in question. |
+| **number**         | Required (if applicable)     | String  | The house number. (This corresponds to the `"house_number"` key in the council configuration.) |
+| **usrn**           | Required (if applicable)     | String  | The Unique Street Reference Number, if required by the council. |
+| **web_driver**     | Optional (if applicable)     | String  | If the council requires Selenium for data fetching, you may provide the web driver command. |
+| **headless**       | Optional (if applicable)     | Boolean | Indicates whether to run the browser in headless mode (default is `True`). Only shown if `web_driver` is applicable. |
+| **local_browser**  | Optional (if applicable)     | Boolean | Choose whether to use a local browser instance (default is `False`). Only shown if `web_driver` is applicable. |
+| **timeout**        | Optional                     | Integer | Sets the request timeout in seconds. Defaults to `60` seconds and must be at least `10`. |
+| **update_interval**| Optional                     | Integer | The refresh frequency in hours. Defaults to `12` hours and must be at least `1`. |
 
 ### Selenium & Chromium Checks
 
@@ -98,6 +99,26 @@ Once you submit the updated options, the integration will reload the configurati
 
 ---
 
-By following the above guidelines, you can successfully set up and configure the UK Bin Collection integration for your local council. If you encounter any errors or require adjustments, refer to the validation messages provided in the configuration flow.
+## Icon Color Mapping JSON Example
 
-Happy configuring!
+Below is an example of a valid JSON configuration for the **icon_color_mapping** field. This mapping allows you to customize the icons and colors for different bin types in the sensor platform. The bin name must match the name of the bin returned from the council.
+
+```json
+{
+  "general": {
+    "icon": "mdi:trash-can",
+    "color": "green"
+  },
+  "recycling": {
+    "icon": "mdi:recycle",
+    "color": "blue"
+  },
+  "food": {
+    "icon": "mdi:food",
+    "color": "red"
+  },
+  "garden": {
+    "icon": "mdi:leaf",
+    "color": "brown"
+  }
+}
