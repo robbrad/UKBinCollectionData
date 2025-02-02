@@ -18,7 +18,7 @@ _LOGGER = logging.getLogger(__name__)
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UkBinCollection."""
 
-    VERSION = 2  # Incremented version for config flow changes
+    VERSION = 3  # Incremented version for config flow changes
 
     def __init__(self):
         self.councils_data: Optional[Dict[str, Any]] = None
@@ -30,6 +30,21 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.selenium_results: list = []
         self.chromium_checked: bool = False
         self.chromium_installed: bool = False
+
+    async def async_migrate_entry(self, config_entry: config_entries.ConfigEntry) -> bool:
+        """Migrate old entry to the new version with manual refresh ticked."""
+        _LOGGER.info("Migrating config entry from version %s", config_entry.version)
+        data = dict(config_entry.data)
+
+        # If the manual_refresh_only key is not present, add it and set to True.
+        if "manual_refresh_only" not in data:
+            _LOGGER.info("Setting 'manual_refresh_only' to True in the migration")
+            data["manual_refresh_only"] = True
+
+        self.hass.config_entries.async_update_entry(config_entry, data=data)
+        _LOGGER.info("Migration to version %s successful", self.VERSION)
+        return True
+
 
     async def async_step_user(self, user_input: Optional[Dict[str, Any]] = None):
         """Handle the initial step."""
@@ -87,7 +102,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("name"): cv.string,
                     vol.Required("council"): vol.In(self.council_options),
-                    vol.Optional("manual_refresh_only", default=False): bool,
+                    vol.Optional("manual_refresh_only", default=True): bool,
                     vol.Optional("icon_color_mapping", default=""): cv.string,
                 }
             ),
