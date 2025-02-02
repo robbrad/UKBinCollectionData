@@ -36,13 +36,14 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         _LOGGER.info("Migrating config entry from version %s", config_entry.version)
         data = dict(config_entry.data)
 
-        # If the manual_refresh_only key is not present, add it and set to True.
-        if "manual_refresh_only" not in data:
-            _LOGGER.info("Setting 'manual_refresh_only' to True in the migration")
-            data["manual_refresh_only"] = True
+        if config_entry.version < 3:
+            # If the manual_refresh_only key is not present, add it and set to True.
+            if "manual_refresh_only" not in data:
+                _LOGGER.info("Setting 'manual_refresh_only' to True in the migration")
+                data["manual_refresh_only"] = True
 
-        self.hass.config_entries.async_update_entry(config_entry, data=data)
-        _LOGGER.info("Migration to version %s successful", self.VERSION)
+            self.hass.config_entries.async_update_entry(config_entry, data=data)
+            _LOGGER.info("Migration to version %s successful", self.VERSION)
         return True
 
 
