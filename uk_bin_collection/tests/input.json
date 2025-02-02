@@ -936,8 +936,7 @@
         "wiki_note": "Replace XXXXXXXX with your UPRN."
     },
     "IpswichBoroughCouncil": {
-        "house_number": "Ashdown Way",
-        "skip_get_url": true,
+        "house_number": "Siloam Place",
         "url": "https://app.ipswich.gov.uk/bin-collection/",
         "wiki_name": "Ipswich Borough Council",
         "wiki_note": "Provide only the street name (no house number) as the PAON"
