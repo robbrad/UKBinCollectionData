@@ -1,4 +1,23 @@
 =======
+## 0.131.0 (2025-02-02)
+
+### Feat
+
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding manual refresh
+- adding unit tests for the new manual refresh
+- adding manual refresh control
+
 ## 0.130.1 (2025-01-30)
 
 ### Fix
