@@ -331,11 +331,10 @@ Since the Raspberry Pi 4 uses an ARM64-based architecture, use the `seleniarm/st
 
 ## Reports
 
-### Nightly Full Integration Test Reports:
-- [3.12 Full](https://robbrad.github.io/UKBinCollectionData/3.12/full)
+All integration tests results are in [CodeCov](https://app.codecov.io/gh/robbrad/UKBinCollectionData/)
 
-### Partial Pull Request Test Reports
-- [3.12 Partial](https://robbrad.github.io/UKBinCollectionData/3.12/partial)
+### Nightly Full Integration Test Reports:
+- [Nightly Council Test](https://app.codecov.io/gh/robbrad/UKBinCollectionData/tests/master)
 
 ---
 ## Docker API Server

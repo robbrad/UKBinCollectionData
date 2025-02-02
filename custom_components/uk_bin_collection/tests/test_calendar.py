@@ -28,6 +28,7 @@ MOCK_COORDINATOR_DATA = {
     "Garden Waste": date(2024, 4, 27),
 }
 
+
 @pytest.fixture
 def mock_coordinator():
     """Fixture to create a mock DataUpdateCoordinator with sample data."""
@@ -36,6 +37,7 @@ def mock_coordinator():
     coordinator.name = "Test Council"
     coordinator.last_update_success = True
     return coordinator
+
 
 @pytest.fixture
 def mock_config_entry():
@@ -54,6 +56,7 @@ def mock_config_entry():
         unique_id="test_unique_id",
     )
 
+
 @pytest.fixture
 def hass_instance() -> HomeAssistant:
     """Return a fake HomeAssistant instance with a data attribute."""
@@ -62,7 +65,9 @@ def hass_instance() -> HomeAssistant:
     hass.data = {DOMAIN: {}}
     return hass
 
+
 # Tests
+
 
 def test_calendar_entity_initialization(hass_instance, mock_coordinator):
     """Test that the calendar entity initializes correctly."""
@@ -82,6 +87,7 @@ def test_calendar_entity_initialization(hass_instance, mock_coordinator):
         "model": "Bin Collection Calendar",
         "sw_version": "1.0",
     }
+
 
 def test_calendar_event_property(hass_instance, mock_coordinator):
     """Test that the event property returns the correct CalendarEvent."""
@@ -104,6 +110,7 @@ def test_calendar_event_property(hass_instance, mock_coordinator):
 
     assert calendar.event == expected_event
 
+
 def test_calendar_event_property_no_data(hass_instance, mock_coordinator):
     """Test that the event property returns None when there's no collection date."""
     mock_coordinator.data["Recycling"] = None
@@ -116,6 +123,7 @@ def test_calendar_event_property_no_data(hass_instance, mock_coordinator):
     )
 
     assert calendar.event is None
+
 
 @pytest.mark.asyncio
 async def test_async_get_events(hass_instance, mock_coordinator):
@@ -145,6 +153,7 @@ async def test_async_get_events(hass_instance, mock_coordinator):
     events = await calendar.async_get_events(hass_instance, start_date, end_date)
     assert events == [expected_event]
 
+
 @pytest.mark.asyncio
 async def test_async_get_events_no_events_in_range(hass_instance, mock_coordinator):
     """Test that async_get_events returns empty list when no events are in the range."""
@@ -164,6 +173,7 @@ async def test_async_get_events_no_events_in_range(hass_instance, mock_coordinat
 
     events = await calendar.async_get_events(hass_instance, start_date, end_date)
     assert events == []
+
 
 def test_calendar_update_on_coordinator_change(hass_instance, mock_coordinator):
     """Test that the calendar entity updates when the coordinator's data changes."""
@@ -205,8 +215,11 @@ def test_calendar_update_on_coordinator_change(hass_instance, mock_coordinator):
     assert calendar.event == expected_event_updated
     mock_write.assert_called_once()
 
+
 @pytest.mark.asyncio
-async def test_async_setup_entry_creates_calendar_entities(hass_instance, mock_coordinator, mock_config_entry):
+async def test_async_setup_entry_creates_calendar_entities(
+    hass_instance, mock_coordinator, mock_config_entry
+):
     """Test that async_setup_entry creates calendar entities based on coordinator data."""
     # Mock the data in the coordinator
     mock_coordinator.data = {
@@ -219,7 +232,10 @@ async def test_async_setup_entry_creates_calendar_entities(hass_instance, mock_c
         "coordinator": mock_coordinator,
     }
 
-    with patch("custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar", autospec=True) as mock_calendar_cls:
+    with patch(
+        "custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar",
+        autospec=True,
+    ) as mock_calendar_cls:
         mock_calendar_instance_recycling = MagicMock()
         mock_calendar_instance_general_waste = MagicMock()
         mock_calendar_cls.side_effect = [
@@ -246,6 +262,7 @@ async def test_async_setup_entry_creates_calendar_entities(hass_instance, mock_c
             name="Test Council General Waste Calendar",
         )
 
+
 @pytest.mark.asyncio
 async def test_async_setup_entry_handles_empty_data(hass_instance, mock_config_entry):
     """Test that async_setup_entry handles empty coordinator data gracefully."""
@@ -260,17 +277,25 @@ async def test_async_setup_entry_handles_empty_data(hass_instance, mock_config_e
         "coordinator": mock_coordinator,
     }
 
-    with patch("custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar", autospec=True) as mock_calendar_cls:
+    with patch(
+        "custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar",
+        autospec=True,
+    ) as mock_calendar_cls:
         await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
 
         # No calendar entities should be created since there's no data
         mock_calendar_cls.assert_not_called()
 
+
 @pytest.mark.asyncio
-async def test_async_setup_entry_handles_coordinator_failure(hass_instance, mock_config_entry):
+async def test_async_setup_entry_handles_coordinator_failure(
+    hass_instance, mock_config_entry
+):
     """Test that async_setup_entry raises ConfigEntryNotReady on coordinator failure."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
-    mock_coordinator.async_config_entry_first_refresh.side_effect = Exception("Update failed")
+    mock_coordinator.async_config_entry_first_refresh.side_effect = Exception(
+        "Update failed"
+    )
     mock_coordinator.name = "Test Council"
 
     # Patch the hass.data to include the coordinator
@@ -281,16 +306,20 @@ async def test_async_setup_entry_handles_coordinator_failure(hass_instance, mock
     with pytest.raises(Exception, match="Update failed"):
         await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
 
+
 @pytest.mark.asyncio
 async def test_async_unload_entry(hass_instance, mock_coordinator, mock_config_entry):
     """Test that async_unload_entry unloads calendar entities correctly."""
     # Prepare the coordinator data
     mock_coordinator.data = {"Recycling": date(2024, 4, 25)}
     mock_coordinator.name = "Test Council"
-    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {"coordinator": mock_coordinator}
+    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {
+        "coordinator": mock_coordinator
+    }
 
     result = await async_unload_entry(hass_instance, mock_config_entry, None)
     assert result is True
+
 
 def test_calendar_entity_available_property(hass_instance, mock_coordinator):
     """Test the available property of the calendar entity."""
@@ -316,8 +345,11 @@ def test_calendar_entity_available_property(hass_instance, mock_coordinator):
     calendar._state = "Unknown"  # Assuming state is set to "Unknown" when unavailable
     assert calendar.available is False
 
+
 @pytest.mark.asyncio
-async def test_async_setup_entry_creates_no_calendar_entities_on_empty_data(hass_instance, mock_config_entry):
+async def test_async_setup_entry_creates_no_calendar_entities_on_empty_data(
+    hass_instance, mock_config_entry
+):
     """Test that async_setup_entry does not create calendar entities when coordinator data is empty."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
     mock_coordinator.data = {}
@@ -329,17 +361,25 @@ async def test_async_setup_entry_creates_no_calendar_entities_on_empty_data(hass
         "coordinator": mock_coordinator,
     }
 
-    with patch("custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar", autospec=True) as mock_calendar_cls:
+    with patch(
+        "custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar",
+        autospec=True,
+    ) as mock_calendar_cls:
         await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
 
         # No calendar entities should be created
         mock_calendar_cls.assert_not_called()
 
+
 @pytest.mark.asyncio
-async def test_async_setup_entry_with_coordinator_failure(hass_instance, mock_config_entry):
+async def test_async_setup_entry_with_coordinator_failure(
+    hass_instance, mock_config_entry
+):
     """Test that async_setup_entry handles coordinator failures gracefully."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
-    mock_coordinator.async_config_entry_first_refresh.side_effect = Exception("Update failed")
+    mock_coordinator.async_config_entry_first_refresh.side_effect = Exception(
+        "Update failed"
+    )
     mock_coordinator.name = "Test Council"
 
     # Patch the hass.data to include the coordinator
@@ -350,24 +390,33 @@ async def test_async_setup_entry_with_coordinator_failure(hass_instance, mock_co
     with pytest.raises(Exception, match="Update failed"):
         await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
 
+
 @pytest.mark.asyncio
-async def test_async_setup_entry_handles_coordinator_failure(hass_instance, mock_config_entry):
+async def test_async_setup_entry_handles_coordinator_failure(
+    hass_instance, mock_config_entry
+):
     """Test that async_setup_entry raises an exception when coordinator refresh fails."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
     # Provide an empty data dictionary so that accessing .data does not fail immediately.
     mock_coordinator.data = {}
     mock_coordinator.name = "Test Council"
     # Make the refresh raise an exception.
-    mock_coordinator.async_config_entry_first_refresh = AsyncMock(side_effect=Exception("Update failed"))
+    mock_coordinator.async_config_entry_first_refresh = AsyncMock(
+        side_effect=Exception("Update failed")
+    )
 
-    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {"coordinator": mock_coordinator}
+    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {
+        "coordinator": mock_coordinator
+    }
 
     with pytest.raises(Exception, match="Update failed"):
         await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
 
 
 @pytest.mark.asyncio
-async def test_async_get_events_multiple_events_same_day(hass_instance, mock_coordinator):
+async def test_async_get_events_multiple_events_same_day(
+    hass_instance, mock_coordinator
+):
     """Test async_get_events when multiple bin types have the same collection date."""
     mock_coordinator.data = {
         "Recycling": date(2024, 4, 25),
@@ -405,11 +454,16 @@ async def test_async_get_events_multiple_events_same_day(hass_instance, mock_coo
         uid="test_entry_id_General Waste_calendar_2024-04-25",
     )
 
-    events_recycling = await calendar_recycling.async_get_events(hass_instance, start_date, end_date)
-    events_general_waste = await calendar_general_waste.async_get_events(hass_instance, start_date, end_date)
+    events_recycling = await calendar_recycling.async_get_events(
+        hass_instance, start_date, end_date
+    )
+    events_general_waste = await calendar_general_waste.async_get_events(
+        hass_instance, start_date, end_date
+    )
 
     assert events_recycling == [expected_event_recycling]
     assert events_general_waste == [expected_event_general_waste]
+
 
 @pytest.mark.asyncio
 async def test_async_get_events_no_coordinator_data(hass_instance, mock_coordinator):
@@ -428,6 +482,7 @@ async def test_async_get_events_no_coordinator_data(hass_instance, mock_coordina
     events = await calendar.async_get_events(hass_instance, start_date, end_date)
     assert events == []
 
+
 def test_calendar_entity_available_property_no_data(hass_instance, mock_coordinator):
     """Test that the calendar's available property is False when there's no data."""
     mock_coordinator.data["Recycling"] = None
@@ -440,6 +495,7 @@ def test_calendar_entity_available_property_no_data(hass_instance, mock_coordina
     )
 
     assert calendar.available is False
+
 
 @pytest.mark.asyncio
 async def test_calendar_entity_extra_state_attributes(hass_instance, mock_coordinator):
@@ -462,8 +518,11 @@ async def test_calendar_entity_extra_state_attributes(hass_instance, mock_coordi
     # To handle this, you can set it to return an empty dict if not implemented
     assert calendar.extra_state_attributes == {}
 
+
 @pytest.mark.asyncio
-async def test_async_setup_entry_handles_coordinator_partial_data(hass_instance, mock_config_entry):
+async def test_async_setup_entry_handles_coordinator_partial_data(
+    hass_instance, mock_config_entry
+):
     """Test that async_setup_entry creates calendar entities only for available data."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
     mock_coordinator.data = {
@@ -474,12 +533,20 @@ async def test_async_setup_entry_handles_coordinator_partial_data(hass_instance,
     mock_coordinator.name = "Test Council"
     mock_coordinator.async_config_entry_first_refresh = AsyncMock(return_value=None)
 
-    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {"coordinator": mock_coordinator}
+    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {
+        "coordinator": mock_coordinator
+    }
 
-    with patch("custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar", autospec=True) as mock_calendar_cls:
+    with patch(
+        "custom_components.uk_bin_collection.calendar.UKBinCollectionCalendar",
+        autospec=True,
+    ) as mock_calendar_cls:
         mock_calendar_instance_recycling = MagicMock()
         mock_calendar_instance_garden_waste = MagicMock()
-        mock_calendar_cls.side_effect = [mock_calendar_instance_recycling, mock_calendar_instance_garden_waste]
+        mock_calendar_cls.side_effect = [
+            mock_calendar_instance_recycling,
+            mock_calendar_instance_garden_waste,
+        ]
 
         await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
 
@@ -490,12 +557,16 @@ async def test_async_setup_entry_handles_coordinator_partial_data(hass_instance,
         mock_calendar_cls.assert_any_call(
             coordinator=mock_coordinator,
             bin_type="Recycling",
-            unique_id="{}_{bin}_calendar".format(mock_config_entry.entry_id, bin="Recycling"),
+            unique_id="{}_{bin}_calendar".format(
+                mock_config_entry.entry_id, bin="Recycling"
+            ),
             name="Test Council Recycling Calendar",
         )
         mock_calendar_cls.assert_any_call(
             coordinator=mock_coordinator,
             bin_type="Garden Waste",
-            unique_id="{}_{bin}_calendar".format(mock_config_entry.entry_id, bin="Garden Waste"),
+            unique_id="{}_{bin}_calendar".format(
+                mock_config_entry.entry_id, bin="Garden Waste"
+            ),
             name="Test Council Garden Waste Calendar",
         )

@@ -12,10 +12,20 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.util import dt as dt_util
 from homeassistant.core import ServiceCall
-from custom_components.uk_bin_collection import async_setup_entry as async_setup_entry_domain
-from custom_components.uk_bin_collection.sensor import async_setup_entry as async_setup_entry_sensor
+from custom_components.uk_bin_collection import (
+    async_setup_entry as async_setup_entry_domain,
+)
+from custom_components.uk_bin_collection.sensor import (
+    async_setup_entry as async_setup_entry_sensor,
+)
 
-from custom_components.uk_bin_collection.const import DOMAIN, LOG_PREFIX, STATE_ATTR_COLOUR, STATE_ATTR_NEXT_COLLECTION, STATE_ATTR_DAYS
+from custom_components.uk_bin_collection.const import (
+    DOMAIN,
+    LOG_PREFIX,
+    STATE_ATTR_COLOUR,
+    STATE_ATTR_NEXT_COLLECTION,
+    STATE_ATTR_DAYS,
+)
 from custom_components.uk_bin_collection.sensor import (
     UKBinCollectionAttributeSensor,
     UKBinCollectionDataSensor,
@@ -137,7 +147,7 @@ async def test_async_setup_entry(hass, mock_config_entry):
     # 1) We need to fake the coordinator in hass.data
     hass.data = {}
     hass.data.setdefault(DOMAIN, {})
-    
+
     # Create a mock coordinator (or real if you like)
     mock_coordinator = MagicMock()
     # Store it under the entry_id as normal domain code would do
@@ -147,12 +157,15 @@ async def test_async_setup_entry(hass, mock_config_entry):
     async_add_entities = Mock()
 
     # 3) Patch sensor’s UKBinCollectionApp calls if needed
-    with patch("custom_components.uk_bin_collection.sensor.UKBinCollectionApp") as mock_app:
+    with patch(
+        "custom_components.uk_bin_collection.sensor.UKBinCollectionApp"
+    ) as mock_app:
         mock_app_instance = mock_app.return_value
         mock_app_instance.run.return_value = json.dumps({"bins": []})
 
         with patch.object(
-            hass, "async_add_executor_job",
+            hass,
+            "async_add_executor_job",
             new_callable=AsyncMock,
             return_value=mock_app_instance.run.return_value,
         ):
@@ -1167,6 +1180,7 @@ async def test_sensor_available_property(hass, mock_config_entry):
 
     assert sensor_valid.available is True
 
+
 @pytest.mark.asyncio
 async def test_coordinator_empty_data(hass, mock_config_entry):
     """Test coordinator handles empty data correctly."""
@@ -1216,9 +1230,7 @@ async def test_async_setup_entry_missing_required_fields(hass):
         entry_id="test_missing_name",
     )
 
-    with patch(
-        "custom_components.uk_bin_collection.UKBinCollectionApp"
-    ) as mock_app:
+    with patch("custom_components.uk_bin_collection.UKBinCollectionApp") as mock_app:
         mock_app_instance = mock_app.return_value
         mock_app_instance.run.return_value = "{}"
         hass.async_add_executor_job = AsyncMock(return_value="{}")
@@ -1228,6 +1240,7 @@ async def test_async_setup_entry_missing_required_fields(hass):
             await async_setup_entry_domain(hass, mock_config_entry)
 
     assert "Missing 'name' in configuration." in str(exc_info.value)
+
 
 @pytest.mark.asyncio
 async def test_data_sensor_device_info(hass, mock_config_entry):
@@ -1314,6 +1327,7 @@ def test_coordinator_update_interval(hass, mock_config_entry):
     coordinator = HouseholdBinCoordinator(hass, MagicMock(), "Test Name", timeout=60)
     assert coordinator.update_interval == timedelta(hours=12)
 
+
 @pytest.mark.asyncio
 async def test_manual_refresh_service(hass, mock_config_entry):
     """Test that calling manual_refresh logic triggers coordinator.async_request_refresh."""
@@ -1323,13 +1337,19 @@ async def test_manual_refresh_service(hass, mock_config_entry):
     hass.data.setdefault(DOMAIN, {})
 
     # Create a coordinator
-    with patch("custom_components.uk_bin_collection.sensor.UKBinCollectionApp") as mock_app:
+    with patch(
+        "custom_components.uk_bin_collection.sensor.UKBinCollectionApp"
+    ) as mock_app:
         mock_app_instance = mock_app.return_value
         mock_app_instance.run.return_value = json.dumps({"bins": []})
 
-        hass.async_add_executor_job = AsyncMock(return_value=mock_app_instance.run.return_value)
+        hass.async_add_executor_job = AsyncMock(
+            return_value=mock_app_instance.run.return_value
+        )
 
-        coordinator = HouseholdBinCoordinator(hass, mock_app_instance, "Test Name", timeout=60)
+        coordinator = HouseholdBinCoordinator(
+            hass, mock_app_instance, "Test Name", timeout=60
+        )
         await coordinator.async_config_entry_first_refresh()
 
     # Store coordinator in hass.data
@@ -1347,7 +1367,9 @@ async def test_manual_refresh_service(hass, mock_config_entry):
             await c.async_request_refresh()
 
     # 3) Patch coordinator.async_request_refresh to confirm it gets called
-    with patch.object(coordinator, "async_request_refresh", new_callable=AsyncMock) as mock_refresh:
+    with patch.object(
+        coordinator, "async_request_refresh", new_callable=AsyncMock
+    ) as mock_refresh:
         # Construct a mock ServiceCall that includes the entry_id
         fake_call = ServiceCall(
             domain=DOMAIN,
@@ -1358,10 +1380,13 @@ async def test_manual_refresh_service(hass, mock_config_entry):
 
         mock_refresh.assert_awaited_once()
 
+
 def test_load_icon_color_mapping_invalid_json():
     from custom_components.uk_bin_collection.sensor import load_icon_color_mapping
 
-    invalid_json = '{"icon":"mdi:trash" "no_comma":true}'  # invalid JSON (missing comma)
+    invalid_json = (
+        '{"icon":"mdi:trash" "no_comma":true}'  # invalid JSON (missing comma)
+    )
     with patch("logging.Logger.warning") as mock_warn:
         result = load_icon_color_mapping(invalid_json)
         # The function should return {}
@@ -1369,14 +1394,15 @@ def test_load_icon_color_mapping_invalid_json():
         # Note the double space after the prefix – adjust to match the actual log message.
         mock_warn.assert_called_once_with(
             "[UKBinCollection] Invalid icon_color_mapping JSON: "
-            f'{invalid_json}. Using default settings.'
+            f"{invalid_json}. Using default settings."
         )
+
 
 @pytest.mark.asyncio
 async def test_bin_sensor_missing_bin_type(hass, mock_config_entry):
     """Test that we log a warning and set state to Unknown when the bin type is missing."""
     # Suppose your coordinator’s data only has "Recycling"
-    data = {"Recycling": datetime(2025, 2, 1).date()} 
+    data = {"Recycling": datetime(2025, 2, 1).date()}
     # but the sensor is for "General Waste"
 
     # Create the coordinator
@@ -1397,6 +1423,7 @@ async def test_bin_sensor_missing_bin_type(hass, mock_config_entry):
     mock_warn.assert_called_once_with(
         "[UKBinCollection] Data for bin type 'General Waste' is missing."
     )
+
 
 @pytest.mark.asyncio
 async def test_attribute_sensor_undefined_attribute_type(hass, mock_config_entry):
@@ -1420,11 +1447,12 @@ async def test_attribute_sensor_undefined_attribute_type(hass, mock_config_entry
         "[UKBinCollection] Undefined attribute type: Bogus Attribute"
     )
 
+
 @pytest.mark.asyncio
 async def test_bin_sensor_in_x_days(hass, freezer, mock_config_entry):
     freezer.move_to("2023-10-14")
     # next_collection is 5 days away
-    future_date = (dt_util.now().date() + timedelta(days=5))
+    future_date = dt_util.now().date() + timedelta(days=5)
 
     coordinator = MagicMock()
     coordinator.data = {"General Waste": future_date}
@@ -1435,29 +1463,27 @@ async def test_bin_sensor_in_x_days(hass, freezer, mock_config_entry):
     )
     assert sensor.state == "In 5 days"
 
+
 def test_data_sensor_default_icon_unknown_type():
     coordinator = MagicMock()
     coordinator.data = {"Some Custom Bin": datetime(2025, 1, 1).date()}
     coordinator.name = "Test Name"
 
-    sensor = UKBinCollectionDataSensor(
-        coordinator, "Unknown Type", "test_unknown", {}
-    )
+    sensor = UKBinCollectionDataSensor(coordinator, "Unknown Type", "test_unknown", {})
     assert sensor.icon == "mdi:delete"
+
 
 def test_raw_json_sensor_partial_data():
     coordinator = MagicMock()
     # Only some bins have dates, e.g., "General Waste" is None
-    coordinator.data = {
-        "General Waste": None,
-        "Recycling": datetime(2025, 1, 1).date()
-    }
+    coordinator.data = {"General Waste": None, "Recycling": datetime(2025, 1, 1).date()}
     coordinator.last_update_success = True
     sensor = UKBinCollectionRawJSONSensor(coordinator, "test_raw_json", "Test Name")
 
     state = sensor.state
     # Should JSON encode the 'None' bin
     assert state == '{"General Waste": null, "Recycling": "01/01/2025"}'
+
 
 def test_data_sensor_unavailable_if_unknown_state():
     coordinator = MagicMock()
@@ -1468,9 +1494,10 @@ def test_data_sensor_unavailable_if_unknown_state():
     sensor.update_state()  # triggers "Unknown"
     assert sensor.available is False
 
+
 def test_attribute_sensor_unavailable_if_coordinator_failed():
     coordinator = MagicMock()
-    coordinator.data = {"Recycling": datetime(2025,1,1).date()}
+    coordinator.data = {"Recycling": datetime(2025, 1, 1).date()}
     coordinator.last_update_success = False
     coordinator.name = "Test Coordinator"
 
@@ -1479,15 +1506,17 @@ def test_attribute_sensor_unavailable_if_coordinator_failed():
     )
     assert attr_sensor.available is False
 
+
 import pytest
 from unittest.mock import MagicMock
 from datetime import datetime
 from custom_components.uk_bin_collection.sensor import (
-    create_sensor_entities, 
+    create_sensor_entities,
     UKBinCollectionDataSensor,
     UKBinCollectionAttributeSensor,
-    UKBinCollectionRawJSONSensor
+    UKBinCollectionRawJSONSensor,
 )
+
 
 @pytest.mark.asyncio
 def test_create_sensor_entities_coordinator_data():
@@ -1495,8 +1524,8 @@ def test_create_sensor_entities_coordinator_data():
     coordinator = MagicMock()
     # For example, suppose today is 2025-02-08:
     coordinator.data = {
-        "General Waste": date(2025, 2, 8),         # Today
-        "Recycling": date(2025, 2, 9),             # Tomorrow
+        "General Waste": date(2025, 2, 8),  # Today
+        "Recycling": date(2025, 2, 9),  # Tomorrow
     }
     coordinator.name = "Test Coordinator"
 
@@ -1512,10 +1541,19 @@ def test_create_sensor_entities_coordinator_data():
     assert len(entities) == 13
 
     # Check that for "General Waste", the icon from the mapping is used.
-    gw_sensor = next(e for e in entities if isinstance(e, UKBinCollectionDataSensor) and "General Waste" in e.name)
+    gw_sensor = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionDataSensor) and "General Waste" in e.name
+    )
     assert gw_sensor.icon == "mdi:trash-can"
     # And its attribute sensors (e.g., "Days Until Collection") can be tested:
-    gw_attr_sensor = next(e for e in entities if isinstance(e, UKBinCollectionAttributeSensor) and "Days Until Collection" in e.name)
+    gw_attr_sensor = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionAttributeSensor)
+        and "Days Until Collection" in e.name
+    )
     # Trigger the state logic (which calls calculate_days_until)
     days_until = gw_attr_sensor.state
     # In our example, if today is 2025-02-08 and collection is today for General Waste,
@@ -1524,10 +1562,13 @@ def test_create_sensor_entities_coordinator_data():
     assert days_until is not None
 
     # Also, verify that a raw JSON sensor exists.
-    raw_sensor = next(e for e in entities if isinstance(e, UKBinCollectionRawJSONSensor))
+    raw_sensor = next(
+        e for e in entities if isinstance(e, UKBinCollectionRawJSONSensor)
+    )
     # Its state should be a JSON string containing keys for each bin type.
     raw_state = json.loads(raw_sensor.state)
     assert "General Waste" in raw_state and "Recycling" in raw_state
+
 
 def test_create_sensor_entities_invalid_icon_json():
     coordinator = MagicMock()
@@ -1545,24 +1586,31 @@ def test_create_sensor_entities_invalid_icon_json():
     mock_warn.assert_called_once()
     # e.g. "... Invalid icon_color_mapping JSON: ... Using default settings."
 
+
 @pytest.mark.asyncio
 @freeze_time("2025-02-8")  # let's say "today" is 2025-02-8
 def test_attribute_sensor_days_and_human_readable():
     coordinator = MagicMock()
     # Pretend "Food Waste" is 2 days away
-    in_2_days = (datetime(2025, 2, 10).date())
+    in_2_days = datetime(2025, 2, 10).date()
     coordinator.data = {"Food Waste": in_2_days}
     coordinator.name = "Coordinator Name"
 
     # Create sensors for that bin
-    entities = create_sensor_entities(coordinator, "entry_id_days", '{}')
+    entities = create_sensor_entities(coordinator, "entry_id_days", "{}")
     # Find the attribute sensors for "Days Until Collection" & "Next Collection Human Readable"
-    days_sensor = next(e for e in entities 
-                       if isinstance(e, UKBinCollectionAttributeSensor)
-                       and "Days Until Collection" in e.name)
-    human_sensor = next(e for e in entities
-                        if isinstance(e, UKBinCollectionAttributeSensor)
-                        and "Next Collection Human Readable" in e.name)
+    days_sensor = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionAttributeSensor)
+        and "Days Until Collection" in e.name
+    )
+    human_sensor = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionAttributeSensor)
+        and "Next Collection Human Readable" in e.name
+    )
 
     # The .state property triggers the logic
     days_state = days_sensor.state
@@ -1574,20 +1622,21 @@ def test_attribute_sensor_days_and_human_readable():
     assert days_state == 2
     assert human_state == "In 2 days"
 
+
 def test_data_sensor_coordinator_update():
     coordinator = MagicMock()
     coordinator.data = {"General Waste": datetime(2025, 2, 10).date()}
     coordinator.name = "Coordinator Name"
 
-    sensor = UKBinCollectionDataSensor(
-        coordinator, "General Waste", "device_id", {}
-    )
-    with patch.object(sensor, "update_state") as mock_update, \
-         patch.object(sensor, "async_write_ha_state") as mock_write:
+    sensor = UKBinCollectionDataSensor(coordinator, "General Waste", "device_id", {})
+    with patch.object(sensor, "update_state") as mock_update, patch.object(
+        sensor, "async_write_ha_state"
+    ) as mock_write:
         sensor._handle_coordinator_update()
 
     mock_update.assert_called_once()
     mock_write.assert_called_once()
+
 
 @freeze_time("2025-02-10")  # let's say "today" is 2025-02-10
 def test_data_sensor_today_tomorrow():
@@ -1600,31 +1649,38 @@ def test_data_sensor_today_tomorrow():
     coordinator.name = "Coord"
 
     # create sensors
-    entities = create_sensor_entities(coordinator, "entry_id", '{}')
-    tdy_sensor = next(e for e in entities 
-                      if isinstance(e, UKBinCollectionDataSensor) 
-                      and "Waste Today" in e.name)
-    tmw_sensor = next(e for e in entities 
-                      if isinstance(e, UKBinCollectionDataSensor)
-                      and "Waste Tomorrow" in e.name)
+    entities = create_sensor_entities(coordinator, "entry_id", "{}")
+    tdy_sensor = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionDataSensor) and "Waste Today" in e.name
+    )
+    tmw_sensor = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionDataSensor) and "Waste Tomorrow" in e.name
+    )
 
     assert tdy_sensor.state == "Today"
     assert tmw_sensor.state == "Tomorrow"
+
 
 @freeze_time("2025-02-08")
 def test_create_sensor_entities_full_coverage(hass):
     coordinator = MagicMock()
     coordinator.data = {
-        "General Waste": datetime(2025, 2, 8).date(),   # Today
-        "Recycling": datetime(2025, 2, 9).date(),       # Tomorrow
-        "Garden": datetime(2025, 2, 10).date(),         # 2 days
+        "General Waste": datetime(2025, 2, 8).date(),  # Today
+        "Recycling": datetime(2025, 2, 9).date(),  # Tomorrow
+        "Garden": datetime(2025, 2, 10).date(),  # 2 days
     }
     coordinator.name = "Full Coverage Coord"
 
     # Intentionally pass an invalid JSON to load_icon_color_mapping
     invalid_icon_json = '{"General Waste": {"icon":"mdi:trash-can"}, "broken"'
     with patch("logging.Logger.warning") as mock_warn:
-        entities = create_sensor_entities(coordinator, "entry_id_abc", invalid_icon_json)
+        entities = create_sensor_entities(
+            coordinator, "entry_id_abc", invalid_icon_json
+        )
 
     # We get main sensors for 3 bins => 3
     # Each bin has 5 attribute sensors => 15
@@ -1643,23 +1699,31 @@ def test_create_sensor_entities_full_coverage(hass):
     assert days_val == 2  # Because 2025-02-10 is 2 days from 2025-02-08
 
     # Similarly, the raw JSON sensor
-    raw_sensor = next(e for e in entities if isinstance(e, UKBinCollectionRawJSONSensor))
+    raw_sensor = next(
+        e for e in entities if isinstance(e, UKBinCollectionRawJSONSensor)
+    )
     raw_state = raw_sensor.state
     # Should be a JSON with 3 keys, etc.
     # This triggers lines in raw-sensor code
 
     # Also test `_handle_coordinator_update` on the main sensor
-    main_sensor = next(e for e in entities if "General Waste" in e.name and 
-                       isinstance(e, UKBinCollectionDataSensor))
-    with patch.object(main_sensor, "update_state") as mock_up, \
-         patch.object(main_sensor, "async_write_ha_state") as mock_aw:
+    main_sensor = next(
+        e
+        for e in entities
+        if "General Waste" in e.name and isinstance(e, UKBinCollectionDataSensor)
+    )
+    with patch.object(main_sensor, "update_state") as mock_up, patch.object(
+        main_sensor, "async_write_ha_state"
+    ) as mock_aw:
         main_sensor._handle_coordinator_update()
     mock_up.assert_called_once()
     mock_aw.assert_called_once()
 
+
 ###############################################################################
 # Tests for UKBinCollectionAttributeSensor's state and helper methods
 ###############################################################################
+
 
 def test_attribute_sensor_state_colour():
     """Test that if attribute type is 'Colour', state returns _color."""
@@ -1777,6 +1841,7 @@ def test_attribute_sensor_state_days_until_collection_no_data():
 # Tests for extra_state_attributes, device_info, and unique_id properties
 ###############################################################################
 
+
 def test_data_sensor_extra_state_attributes():
     """Test that extra_state_attributes returns the correct dictionary."""
     coordinator = MagicMock()
@@ -1810,7 +1875,9 @@ def test_data_sensor_device_info_property():
 def test_data_sensor_unique_id_property():
     """Test that unique_id property returns the correct value."""
     coordinator = MagicMock()
-    sensor = UKBinCollectionDataSensor(coordinator, "General Waste", "unique_id_123", {})
+    sensor = UKBinCollectionDataSensor(
+        coordinator, "General Waste", "unique_id_123", {}
+    )
     assert sensor.unique_id == "unique_id_123"
 
 
@@ -1818,13 +1885,14 @@ def test_data_sensor_unique_id_property():
 # Tests for create_sensor_entities() helper function
 ###############################################################################
 
+
 def test_create_sensor_entities_coordinator_data():
     """Test that create_sensor_entities returns the correct sensor entities."""
     coordinator = MagicMock()
     # Suppose we have two bin types.
     coordinator.data = {
         "General Waste": date(2025, 2, 8),  # Today
-        "Recycling": date(2025, 2, 9),      # Tomorrow
+        "Recycling": date(2025, 2, 9),  # Tomorrow
     }
     coordinator.name = "Test Coordinator"
 
@@ -1840,14 +1908,25 @@ def test_create_sensor_entities_coordinator_data():
     assert len(entities) == 13
 
     # Verify that the General Waste sensor uses the icon mapping.
-    gw_sensor = next(e for e in entities if isinstance(e, UKBinCollectionDataSensor) and "General Waste" in e.name)
+    gw_sensor = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionDataSensor) and "General Waste" in e.name
+    )
     assert gw_sensor.icon == "mdi:trash-can"
     # Check that one of the attribute sensors exists (e.g. Days Until Collection)
-    gw_attr = next(e for e in entities if isinstance(e, UKBinCollectionAttributeSensor) and "Days Until Collection" in e.name)
+    gw_attr = next(
+        e
+        for e in entities
+        if isinstance(e, UKBinCollectionAttributeSensor)
+        and "Days Until Collection" in e.name
+    )
     assert gw_attr is not None
 
     # Verify that a raw JSON sensor is present.
-    raw_sensor = next(e for e in entities if isinstance(e, UKBinCollectionRawJSONSensor))
+    raw_sensor = next(
+        e for e in entities if isinstance(e, UKBinCollectionRawJSONSensor)
+    )
     raw_state = json.loads(raw_sensor.state)
     assert "General Waste" in raw_state and "Recycling" in raw_state
 
@@ -1873,6 +1952,7 @@ def test_create_sensor_entities_invalid_icon_json():
 # Additional tests for the attribute sensor calculation methods
 ###############################################################################
 
+
 @freeze_time("2025-02-08")
 def test_attribute_sensor_days_and_human_readable():
     """Test that the attribute sensor returns correct human‐readable and days until collection."""
@@ -1883,7 +1963,12 @@ def test_attribute_sensor_days_and_human_readable():
     coordinator.name = "Coordinator Name"
 
     sensor = UKBinCollectionAttributeSensor(
-        coordinator, "Food Waste", "uid_full", "Next Collection Human Readable", "dev_full", {}
+        coordinator,
+        "Food Waste",
+        "uid_full",
+        "Next Collection Human Readable",
+        "dev_full",
+        {},
     )
     # When there is data, the human-readable text should be "In 2 days"
     assert sensor.calculate_human_readable() == "In 2 days"
@@ -1895,14 +1980,12 @@ def test_attribute_sensor_days_and_human_readable():
 # Tests for the Raw JSON Sensor behavior
 ###############################################################################
 
+
 def test_raw_json_sensor_partial_data():
     """Test that the raw JSON sensor correctly encodes None values."""
     coordinator = MagicMock()
     # Only some bins have dates; for example, "General Waste" is None.
-    coordinator.data = {
-        "General Waste": None,
-        "Recycling": datetime(2025, 1, 1).date()
-    }
+    coordinator.data = {"General Waste": None, "Recycling": datetime(2025, 1, 1).date()}
     coordinator.last_update_success = True
     sensor = UKBinCollectionRawJSONSensor(coordinator, "raw_uid", "Test Name")
     state = sensor.state
@@ -1932,7 +2015,9 @@ def test_attribute_sensor_unavailable_if_coordinator_failed():
     )
     assert sensor.available is False
 
+
 # --- Additional tests for uncovered lines ---
+
 
 def test_data_sensor_state_unknown_and_extra_attributes():
     """Test that if no bin data is provided the state is 'Unknown' and extra_state_attributes are set correctly."""
@@ -1941,12 +2026,14 @@ def test_data_sensor_state_unknown_and_extra_attributes():
     coordinator.data = {}  # No data available.
     coordinator.name = "Test Coord"
     # Create a data sensor for a bin type that is not in the coordinator data.
-    sensor = UKBinCollectionDataSensor(coordinator, "Nonexistent Bin", "device_unknown", {})
+    sensor = UKBinCollectionDataSensor(
+        coordinator, "Nonexistent Bin", "device_unknown", {}
+    )
     sensor.update_state()  # This should set the state to "Unknown"
-    
+
     # Verify the state fallback
     assert sensor.state == "Unknown"
-    
+
     # Verify extra_state_attributes returns default values:
     # The colour is determined by get_color()—with no mapping it returns "black"
     extra = sensor.extra_state_attributes
@@ -1960,8 +2047,10 @@ def test_data_sensor_device_info_and_unique_id():
     coordinator = MagicMock()
     coordinator.name = "Test Coord"
     # Create a sensor with a given device ID.
-    sensor = UKBinCollectionDataSensor(coordinator, "General Waste", "unique_id_test", {})
-    
+    sensor = UKBinCollectionDataSensor(
+        coordinator, "General Waste", "unique_id_test", {}
+    )
+
     expected_device_info = {
         "identifiers": {(DOMAIN, "unique_id_test")},
         "name": f"{coordinator.name} General Waste",
@@ -1971,12 +2060,13 @@ def test_data_sensor_device_info_and_unique_id():
     }
     # Test device_info property
     assert sensor.device_info == expected_device_info
-    
+
     # Test unique_id property
     assert sensor.unique_id == "unique_id_test"
 
 
 # --- Additional tests for the Attribute Sensor helper methods ---
+
 
 @freeze_time("2025-02-08")
 def test_attribute_sensor_calculate_human_readable_and_days_until():
@@ -1986,20 +2076,26 @@ def test_attribute_sensor_calculate_human_readable_and_days_until():
     coordinator = MagicMock()
     coordinator.data = {"Food Waste": future_date}
     coordinator.name = "Test Coord"
-    
+
     sensor = UKBinCollectionAttributeSensor(
-        coordinator, "Food Waste", "attr_uid", "Next Collection Human Readable", "dev_uid", {}
+        coordinator,
+        "Food Waste",
+        "attr_uid",
+        "Next Collection Human Readable",
+        "dev_uid",
+        {},
     )
     # Manually call the helper methods:
     human_readable = sensor.calculate_human_readable()
     days_until = sensor.calculate_days_until()
-    
+
     # From 2025-02-08 to 2025-02-11 is 3 days away.
     assert human_readable == "In 3 days"
     assert days_until == 3
 
 
 # --- Additional tests for create_sensor_entities helper function ---
+
 
 def test_create_sensor_entities_with_no_data():
     """Test create_sensor_entities returns sensors even when coordinator data is empty."""
@@ -2016,14 +2112,17 @@ def test_create_sensor_entities_with_no_data():
 
 # --- Additional tests for load_icon_color_mapping default return ---
 
+
 def test_load_icon_color_mapping_empty_string():
     """Test that load_icon_color_mapping returns an empty dict if an empty string is provided."""
     result = load_icon_color_mapping("")
     assert result == {}
 
+
 # (The test for invalid JSON is already present; see test_load_icon_color_mapping_invalid_json)
 
 # --- Additional test for UKBinCollectionRawJSONSensor property behavior ---
+
 
 def test_raw_json_sensor_with_no_data():
     """Test that the Raw JSON sensor returns '{}' when no coordinator data is available."""
