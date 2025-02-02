@@ -1,0 +1,7 @@
+manual_refresh:
+  name: "Manual Refresh"
+  description: "Manually refresh bin data for a specific config entry."
+  fields:
+    entry_id:
+      description: "Config Entry ID for the UK Bin Collection integration instance to refresh."
+      example: "1234567890abcdef"
