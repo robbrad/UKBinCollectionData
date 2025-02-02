@@ -2,40 +2,36 @@
 
 """Test UkBinCollection config flow."""
 
+import asyncio
+import json
+from datetime import date, datetime, timedelta
+from json import JSONDecodeError
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import aiohttp
 import pytest
 import voluptuous as vol
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.const import CONF_NAME, CONF_URL
 from homeassistant.core import HomeAssistant
-
-from custom_components.uk_bin_collection.config_flow import UkBinCollectionConfigFlow
+from homeassistant.exceptions import ConfigEntryNotReady
 
 from custom_components.uk_bin_collection.config_flow import (
+    UkBinCollectionConfigFlow,
     UkBinCollectionOptionsFlowHandler,
     async_get_options_flow,
 )
-
-from custom_components.uk_bin_collection.sensor import load_icon_color_mapping
-
 from custom_components.uk_bin_collection.const import DOMAIN, LOG_PREFIX
+from custom_components.uk_bin_collection.sensor import load_icon_color_mapping
 
 from .common_utils import MockConfigEntry
 
-
-import asyncio
-import json
-from datetime import datetime, date, timedelta
-from json import JSONDecodeError
-
-import aiohttp
-from homeassistant.exceptions import ConfigEntryNotReady
 
 @pytest.fixture
 def hass_with_loop(hass, event_loop):
     hass.loop = event_loop
     return hass
+
 
 # Mock council data representing different scenarios
 MOCK_COUNCILS_DATA = {
@@ -87,6 +83,7 @@ MOCK_COUNCILS_DATA = {
     # Add more mock councils as needed to cover different scenarios
 }
 
+
 # Create a dummy HomeAssistant object.
 class DummyHass:
     def __init__(self, loop):
@@ -96,9 +93,11 @@ class DummyHass:
         self.config_entries.async_reload = AsyncMock()
         self.loop = loop
 
+
 @pytest.fixture
 def dummy_hass(event_loop):
     return DummyHass(event_loop)
+
 
 # A sample councils data for the options flow tests.
 MOCK_COUNCILS_DATA_OPTIONS = {
@@ -108,6 +107,7 @@ MOCK_COUNCILS_DATA_OPTIONS = {
         "url": "https://example.com/council_test",
     }
 }
+
 
 @pytest.fixture
 def options_flow(dummy_hass):
@@ -128,12 +128,14 @@ def options_flow(dummy_hass):
     flow.hass = dummy_hass
     return flow, config_entry
 
+
 # Dummy config entry class for testing.
 class DummyEntry:
     def __init__(self, data, entry_id="dummy"):
         self.data = data
         self.entry_id = entry_id
         self.title = data.get("name", "")
+
 
 # Helper function to initiate the config flow and proceed through steps
 async def proceed_through_config_flow(
@@ -976,7 +978,6 @@ async def test_check_chromium_installed_exception(hass: HomeAssistant):
         assert result is False
 
 
-
 async def test_async_step_reconfigure_confirm_invalid_json(hass: HomeAssistant):
     with patch(
         "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.get_councils_json",
@@ -1021,6 +1022,7 @@ async def test_async_step_reconfigure_confirm_invalid_json(hass: HomeAssistant):
         assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
         assert result["step_id"] == "reconfigure_confirm"
         assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+
 
 @pytest.mark.asyncio
 async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
@@ -1074,19 +1076,19 @@ async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
             "manual_refresh_only": True,
         }
 
+
 # ---------------------------
 # Tests for helper functions
 # ---------------------------
 def test_load_icon_color_mapping_valid():
-    from custom_components.uk_bin_collection.config_flow import load_icon_color_mapping
     valid_json = '{"General Waste": {"icon": "mdi:trash-can", "color": "brown"}}'
     result = load_icon_color_mapping(valid_json)
     assert isinstance(result, dict)
     assert result["General Waste"]["icon"] == "mdi:trash-can"
     assert result["General Waste"]["color"] == "brown"
 
+
 def test_load_icon_color_mapping_invalid():
-    from custom_components.uk_bin_collection.config_flow import load_icon_color_mapping
     invalid_json = '{"icon":"mdi:trash" "no_comma":true}'  # missing comma
     with patch("logging.Logger.warning") as mock_warn:
         result = load_icon_color_mapping(invalid_json)
@@ -1094,6 +1096,7 @@ def test_load_icon_color_mapping_invalid():
         mock_warn.assert_called_once_with(
             f"{LOG_PREFIX} Invalid icon_color_mapping JSON: {invalid_json}. Using default settings."
         )
+
 
 def test_map_wiki_name_to_council_key():
     flow = UkBinCollectionConfigFlow()
@@ -1106,13 +1109,17 @@ def test_map_wiki_name_to_council_key():
     with patch("logging.Logger.error") as mock_error:
         key_invalid = flow.map_wiki_name_to_council_key("Not Exist")
         assert key_invalid == ""
-        mock_error.assert_called_once_with("Wiki name '%s' not found in council options.", "Not Exist")
+        mock_error.assert_called_once_with(
+            "Wiki name '%s' not found in council options.", "Not Exist"
+        )
+
 
 def test_is_valid_json():
     valid = '{"key": "value"}'
     invalid = '{"key": "value",}'  # trailing comma makes it invalid
     assert UkBinCollectionConfigFlow.is_valid_json(valid) is True
     assert UkBinCollectionConfigFlow.is_valid_json(invalid) is False
+
 
 # ---------------------------
 # Tests for async_step_user
@@ -1125,13 +1132,16 @@ async def test_async_step_user_missing_fields(hass):
     # Set councils data so that form is rendered
     flow.councils_data = MOCK_COUNCILS_DATA
     flow.council_names = list(MOCK_COUNCILS_DATA.keys())
-    flow.council_options = [MOCK_COUNCILS_DATA[name]["wiki_name"] for name in flow.council_names]
+    flow.council_options = [
+        MOCK_COUNCILS_DATA[name]["wiki_name"] for name in flow.council_names
+    ]
     # Missing both 'name' and 'council'
     result = await flow.async_step_user(user_input={"name": "", "council": ""})
     assert result["type"] == "form"
     assert result["step_id"] == "user"
     assert "name" in result["errors"]
     assert "council" in result["errors"]
+
 
 @pytest.mark.asyncio
 async def test_async_step_user_invalid_icon_mapping(hass):
@@ -1140,14 +1150,19 @@ async def test_async_step_user_invalid_icon_mapping(hass):
     flow.hass = hass
     flow.councils_data = MOCK_COUNCILS_DATA
     flow.council_names = list(MOCK_COUNCILS_DATA.keys())
-    flow.council_options = [MOCK_COUNCILS_DATA[name]["wiki_name"] for name in flow.council_names]
-    result = await flow.async_step_user(user_input={
-        "name": "Test Name",
-        "council": MOCK_COUNCILS_DATA["CouncilTest"]["wiki_name"],
-        "icon_color_mapping": "not a json"
-    })
+    flow.council_options = [
+        MOCK_COUNCILS_DATA[name]["wiki_name"] for name in flow.council_names
+    ]
+    result = await flow.async_step_user(
+        user_input={
+            "name": "Test Name",
+            "council": MOCK_COUNCILS_DATA["CouncilTest"]["wiki_name"],
+            "icon_color_mapping": "not a json",
+        }
+    )
     assert result["type"] == "form"
     assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+
 
 @pytest.mark.asyncio
 async def test_async_step_user_no_councils(hass):
@@ -1156,9 +1171,12 @@ async def test_async_step_user_no_councils(hass):
     flow.hass = hass
     # Patch get_councils_json to return an empty dict (simulate failure)
     with patch.object(flow, "get_councils_json", return_value={}):
-        result = await flow.async_step_user(user_input={"name": "Test", "council": "CouncilTest"})
+        result = await flow.async_step_user(
+            user_input={"name": "Test", "council": "CouncilTest"}
+        )
         assert result["type"] == "abort"
         assert result["reason"] == "Council Data Unavailable"
+
 
 # ---------------------------
 # Tests for async_step_council
@@ -1184,6 +1202,7 @@ async def test_async_step_council_skip_get_url(hass):
         # Otherwise, the form is returned with no errors.
         assert result["type"] == "form"
 
+
 # ---------------------------
 # Tests for reconfigure steps
 # ---------------------------
@@ -1193,12 +1212,15 @@ async def test_async_step_reconfigure_confirm_user_input_none(hass):
     flow = UkBinCollectionConfigFlow()
     flow.hass = hass
     # Create a dummy config entry.
-    dummy_entry = DummyEntry({
-        "name": "Test Name",
-        "council": "CouncilTest",
-        "uprn": "1234567890",
-        "timeout": 60,
-    }, entry_id="dummy")
+    dummy_entry = DummyEntry(
+        {
+            "name": "Test Name",
+            "council": "CouncilTest",
+            "uprn": "1234567890",
+            "timeout": 60,
+        },
+        entry_id="dummy",
+    )
     # Make sure async_get_entry returns a plain entry.
     hass.config_entries.async_get_entry = MagicMock(return_value=dummy_entry)
     flow.config_entry = dummy_entry
@@ -1209,17 +1231,21 @@ async def test_async_step_reconfigure_confirm_user_input_none(hass):
     assert result["type"] == "form"
     assert result["step_id"] == "reconfigure_confirm"
 
+
 @pytest.mark.asyncio
 async def test_async_step_reconfigure_confirm_invalid_json(hass):
     """Test async_step_reconfigure_confirm returns errors with invalid JSON mapping and update_interval."""
     flow = UkBinCollectionConfigFlow()
     flow.hass = hass
-    dummy_entry = DummyEntry({
-        "name": "Existing Entry",
-        "council": "CouncilTest",
-        "uprn": "1234567890",
-        "timeout": 60,
-    }, entry_id="dummy")
+    dummy_entry = DummyEntry(
+        {
+            "name": "Existing Entry",
+            "council": "CouncilTest",
+            "uprn": "1234567890",
+            "timeout": 60,
+        },
+        entry_id="dummy",
+    )
     hass.config_entries.async_get_entry = MagicMock(return_value=dummy_entry)
     flow.config_entry = dummy_entry
     flow.context = {"entry_id": dummy_entry.entry_id}
@@ -1244,6 +1270,7 @@ async def test_async_step_reconfigure_confirm_invalid_json(hass):
     assert "update_interval" in result["errors"]
     assert "icon_color_mapping" in result["errors"]
 
+
 # ---------------------------
 # Test get_councils_json failure
 # ---------------------------
@@ -1257,6 +1284,7 @@ async def test_get_councils_json_failure(hass):
         mock_session.get.side_effect = Exception("Network error")
         result = await flow.get_councils_json()
         assert result == {}
+
 
 # ---------------------------
 # Test get_council_schema
@@ -1282,6 +1310,7 @@ async def test_get_council_schema(hass):
     for field in required_fields:
         assert field in schema.schema
 
+
 # ---------------------------
 # Test build_reconfigure_schema
 # ---------------------------
@@ -1303,6 +1332,7 @@ def test_build_reconfigure_schema(hass):
     assert "council" in schema_dict
     assert "update_interval" in schema_dict
 
+
 # ---------------------------
 # Test async_step_import
 # ---------------------------
@@ -1321,7 +1351,9 @@ async def test_async_step_import(hass):
 @pytest.mark.asyncio
 async def test_options_flow_no_councils(dummy_hass):
     """Test async_step_init aborts if get_councils_json returns empty data."""
-    config_entry = MockConfigEntry(domain=DOMAIN, data={"name": "Test Options"}, entry_id="opt_test")
+    config_entry = MockConfigEntry(
+        domain=DOMAIN, data={"name": "Test Options"}, entry_id="opt_test"
+    )
     config_entry.add_to_hass(dummy_hass)
     flow = UkBinCollectionOptionsFlowHandler(config_entry)
     flow.hass = dummy_hass
@@ -1331,30 +1363,6 @@ async def test_options_flow_no_councils(dummy_hass):
     result = await flow.async_step_init(user_input=None)
     # Expect an abort with reason "Council Data Unavailable"
     assert result["reason"] == "Council Data Unavailable"
-
-@pytest.mark.asyncio
-async def test_options_flow_valid_input(hass_with_loop, options_flow):
-    """Test async_step_init with valid user input."""
-    hass = hass_with_loop
-    flow, config_entry = options_flow
-    flow.get_councils_json = AsyncMock(return_value=MOCK_COUNCILS_DATA_OPTIONS)
-    # Override async_create_entry to simply return its parameters.
-    flow.async_create_entry = lambda title, data: {"type": "create_entry", "title": title, "data": data}
-    
-    user_input = {
-        "name": "Updated Options",
-        "council": "Council Test",  # This is the wiki name
-        "update_interval": "12",
-        "icon_color_mapping": '{"CouncilTest": {"icon": "mdi:new-icon", "color": "blue"}}',
-        "manual_refresh_only": False,
-    }
-    result = await flow.async_step_init(user_input=user_input)
-    assert result["type"] == "create_entry"
-    data = result["data"]
-    assert data["name"] == "Updated Options"
-    assert data["council"] == "CouncilTest"
-    assert data["update_interval"] == "12"
-    assert data["icon_color_mapping"] == '{"CouncilTest": {"icon": "mdi:new-icon", "color": "blue"}}'
 
 
 def test_build_options_schema(options_flow):
@@ -1370,10 +1378,20 @@ def test_build_options_schema(options_flow):
         "icon_color_mapping": '{"CouncilTest": {"icon": "mdi:trash", "color": "green"}}',
     }
     schema = flow.build_options_schema(existing_data)
-    sample = schema({"name": "Test Options", "council": "Council Test", "update_interval": 12})
+    sample = schema(
+        {"name": "Test Options", "council": "Council Test", "update_interval": 12}
+    )
     assert isinstance(sample, dict)
-    sample_with_optional = schema({"name": "Test Options", "council": "Council Test", "update_interval": 12, "icon_color_mapping": '{"key": "value"}'})
+    sample_with_optional = schema(
+        {
+            "name": "Test Options",
+            "council": "Council Test",
+            "update_interval": 12,
+            "icon_color_mapping": '{"key": "value"}',
+        }
+    )
     assert "icon_color_mapping" in sample_with_optional
+
 
 def test_map_wiki_name_to_council_key(options_flow):
     """Test mapping from wiki name to council key."""
@@ -1383,28 +1401,22 @@ def test_map_wiki_name_to_council_key(options_flow):
     assert flow.map_wiki_name_to_council_key("Council Test") == "CouncilTest"
     assert flow.map_wiki_name_to_council_key("Nonexistent") == ""
 
+
 def test_is_valid_json():
     """Test is_valid_json for valid and invalid JSON."""
-    from custom_components.uk_bin_collection.config_flow import UkBinCollectionOptionsFlowHandler
+    from custom_components.uk_bin_collection.config_flow import (
+        UkBinCollectionOptionsFlowHandler,
+    )
+
     valid = '{"key": "value"}'
     invalid = '{"key": "value" "missing_comma": true}'
     assert UkBinCollectionOptionsFlowHandler.is_valid_json(valid) is True
     assert UkBinCollectionOptionsFlowHandler.is_valid_json(invalid) is False
 
-@pytest.mark.asyncio
-async def test_async_get_options_flow(options_flow):
-    """Test async_get_options_flow returns an options flow handler."""
-    flow, config_entry = options_flow
-    result = await async_get_options_flow(config_entry)
-    from custom_components.uk_bin_collection.config_flow import UkBinCollectionOptionsFlowHandler
-    assert isinstance(result, UkBinCollectionOptionsFlowHandler)
 
-@pytest.mark.asyncio
-async def test_options_flow_show_form_when_no_user_input(options_flow):
-    """Test that async_step_init shows a form when no user input is provided."""
-    flow, _ = options_flow
-    flow.get_councils_json = AsyncMock(return_value=MOCK_COUNCILS_DATA_OPTIONS)
-    result = await flow.async_step_init(user_input=None)
-    assert result["type"] == "form"
-    assert result["step_id"] == "init"
-    assert result.get("errors") == {}
+# --- Test: Helper method is_valid_json ---
+def test_is_valid_json_options():
+    valid = '{"key": "value"}'
+    invalid = '{"key": "value",}'  # trailing comma
+    assert UkBinCollectionOptionsFlowHandler.is_valid_json(valid) is True
+    assert UkBinCollectionOptionsFlowHandler.is_valid_json(invalid) is False

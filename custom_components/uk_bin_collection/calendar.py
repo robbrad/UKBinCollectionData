@@ -9,9 +9,9 @@ from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator
 
 from .const import DOMAIN, LOG_PREFIX
-from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,6 +67,7 @@ class UKBinCollectionCalendar(CoordinatorEntity, CalendarEntity):
         if not collection_date:
             return events
 
+        # The test expects comparison between date parts.
         if start_date.date() <= collection_date <= end_date.date():
             events.append(self._create_calendar_event(collection_date))
 
@@ -86,6 +87,20 @@ class UKBinCollectionCalendar(CoordinatorEntity, CalendarEntity):
         """Return a unique ID for the calendar."""
         return self._unique_id
 
+    @property
+    def available(self) -> bool:
+        """Return if entity is available.
+
+        The entity is considered available if the coordinator’s last update was successful
+        and we have a valid collection date for the bin type.
+        """
+        return self.coordinator.last_update_success and (self.coordinator.data.get(self._bin_type) is not None)
+
+    @property
+    def extra_state_attributes(self) -> Dict[str, Any]:
+        """Return extra state attributes."""
+        return {}
+
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updates from the coordinator and refresh calendar state."""
@@ -103,9 +118,14 @@ async def async_setup_entry(
     # Retrieve the coordinator from hass.data
     coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
 
-    # Create calendar entities
+    # Wait for the first refresh. This will raise if the update fails.
+    await coordinator.async_config_entry_first_refresh()
+
+    # Create calendar entities only for bin types that have a valid date
     entities = []
-    for bin_type in coordinator.data.keys():
+    for bin_type, collection_date in coordinator.data.items():
+        if collection_date is None:
+            continue
         unique_id = calc_unique_calendar_id(config_entry.entry_id, bin_type)
         name = f"{coordinator.name} {bin_type} Calendar"
         entities.append(

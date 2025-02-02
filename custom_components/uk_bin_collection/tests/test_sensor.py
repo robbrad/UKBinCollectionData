@@ -1574,7 +1574,6 @@ def test_attribute_sensor_days_and_human_readable():
     assert days_state == 2
     assert human_state == "In 2 days"
 
-@pytest.mark.asyncio
 def test_data_sensor_coordinator_update():
     coordinator = MagicMock()
     coordinator.data = {"General Waste": datetime(2025, 2, 10).date()}
@@ -1590,7 +1589,6 @@ def test_data_sensor_coordinator_update():
     mock_update.assert_called_once()
     mock_write.assert_called_once()
 
-@pytest.mark.asyncio
 @freeze_time("2025-02-10")  # let's say "today" is 2025-02-10
 def test_data_sensor_today_tomorrow():
     coordinator = MagicMock()
@@ -1613,7 +1611,6 @@ def test_data_sensor_today_tomorrow():
     assert tdy_sensor.state == "Today"
     assert tmw_sensor.state == "Tomorrow"
 
-@pytest.mark.asyncio
 @freeze_time("2025-02-08")
 def test_create_sensor_entities_full_coverage(hass):
     coordinator = MagicMock()
