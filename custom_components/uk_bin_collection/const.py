@@ -8,7 +8,7 @@ DEFAULT_NAME = "UK Bin Collection Data"
 
 DOMAIN = "uk_bin_collection"
 
-LOG_PREFIX = "[UKBinCollection] "
+LOG_PREFIX = "[UKBinCollection]"
 
 PLATFORMS = [Platform.SENSOR]
 
