@@ -37,6 +37,7 @@
 !wiki/**/*
 !custom_components
 !custom_components/**/*/
+!custom_components/services.yaml
 __pycache__
 !TO_BE_CONVERTED
 !.devcontainer
