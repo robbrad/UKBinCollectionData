@@ -198,9 +198,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
         # Forward the setup to all platforms (sensor and calendar)
         _LOGGER.debug(f"{LOG_PREFIX} Forwarding setup to platforms: {PLATFORMS}")
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
-        )
+        await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
         _LOGGER.info(f"{LOG_PREFIX} async_setup_entry finished for entry_id={config_entry.entry_id}")
         return True
