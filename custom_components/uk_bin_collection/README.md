@@ -101,7 +101,7 @@ Once you submit the updated options, the integration will reload the configurati
 
 ## Icon Color Mapping JSON Example
 
-Below is an example of a valid JSON configuration for the **icon_color_mapping** field. This mapping allows you to customize the icons and colors for different bin types in the sensor platform. The bin name must match the name of the bin returned from the council.
+Below is an example of a valid JSON configuration for the **icon_color_mapping** field. This mapping allows you to customize the icons and colors for different bin types in the sensor platform. The bin name **must match** the name of the bin returned from the council.
 
 ```json
 {
