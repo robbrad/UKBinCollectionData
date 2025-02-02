@@ -57,6 +57,8 @@ This integration can be installed directly via HACS. To install:
 * [Add the repository](https://my.home-assistant.io/redirect/hacs_repository/?owner=robbrad&repository=UKBinCollectionData&category=integration) to your HACS installation
 * Click `Download`
 
+For details how setup the custom component integration see the [this documentation](https://github.com/robbrad/UKBinCollectionData/tree/master/custom_components/uk_bin_collection).
+
 #### Manual
 1. Ensure you have [HACS](https://hacs.xyz/) installed
 1. In the Home Assistant UI go to `HACS` > `Integrations` > `⋮` > `Custom repositories`.
@@ -331,11 +333,10 @@ Since the Raspberry Pi 4 uses an ARM64-based architecture, use the `seleniarm/st
 
 ## Reports
 
-### Nightly Full Integration Test Reports:
-- [3.12 Full](https://robbrad.github.io/UKBinCollectionData/3.12/full)
+All integration tests results are in [CodeCov](https://app.codecov.io/gh/robbrad/UKBinCollectionData/)
 
-### Partial Pull Request Test Reports
-- [3.12 Partial](https://robbrad.github.io/UKBinCollectionData/3.12/partial)
+### Nightly Full Integration Test Reports:
+- [Nightly Council Test](https://app.codecov.io/gh/robbrad/UKBinCollectionData/tests/master)
 
 ---
 ## Docker API Server

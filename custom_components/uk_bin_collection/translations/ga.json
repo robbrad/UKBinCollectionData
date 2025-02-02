@@ -7,6 +7,7 @@
                 "data": {
                     "name": "Ainm Suíomh",
                     "council": "Comhairle",
+                    "manual_refresh_only": "Athnuaigh an braiteoir go huathoibríoch",
                     "icon_color_mapping": "JSON chun Cineál Bin a mhapáil do Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData"
                 },
                 "description": "Féach [anseo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura bhfuil do chomhairle liostaithe"
@@ -41,6 +42,7 @@
                     "web_driver": "Chun rith ar Fhreastalaí Iargúlta Selenium cuir isteach URL an Fhreastalaí Selenium",
                     "headless": "Rith Selenium i mód gan cheann (molta)",
                     "local_browser": "Ná rith ar fhreastalaí iargúlta Selenium, úsáid suiteáil áitiúil de Chrome ina ionad",
+                    "manual_refresh_only": "Athnuaigh an braiteoir go huathoibríoch",
                     "icon_color_mapping": "JSON chun Cineál Bin a mhapáil do Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir isteach"
                 },

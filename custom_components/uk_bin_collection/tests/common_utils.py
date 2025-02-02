@@ -5,6 +5,7 @@ from unittest.mock import Mock, AsyncMock  # Import AsyncMock
 from homeassistant import config_entries
 import asyncio
 
+
 class MockConfigEntry:
     """Mock for Home Assistant ConfigEntry."""
 
@@ -49,4 +50,6 @@ class MockConfigEntry:
                 self.state = config_entries.ConfigEntryState.SETUP_ERROR
 
         # Assign the coroutine as a side effect to create_task
-        hass.loop.create_task = AsyncMock(side_effect=lambda coro: asyncio.create_task(run_setup(self.entry_id)))
+        hass.loop.create_task = AsyncMock(
+            side_effect=lambda coro: asyncio.create_task(run_setup(self.entry_id))
+        )

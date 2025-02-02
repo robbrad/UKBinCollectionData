@@ -7,6 +7,8 @@
                 "data": {
                     "name": "Ainm Àite",
                     "council": "Comhairle",
+                    "manual_refresh_only": "Ùraich an sensor gu fèin-obrachail",                    
+                    "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData"
                 },
                 "description": "Feuch an toir thu sùil [an seo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura h-eil do chomhairle air a liostadh"
@@ -40,6 +42,7 @@
                     "usrn": "USRN (Àireamh Iomraidh Sràid Aonraic)",
                     "web_driver": "Gus ruith air Frithealaiche Selenium iomallach cuir a-steach an URL Frithealaiche Selenium",
                     "headless": "Ruith Selenium ann am modh gun cheann (air a mholadh)",
+                    "manual_refresh_only": "Ùraich an sensor gu fèin-obrachail",
                     "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir a-steach"
