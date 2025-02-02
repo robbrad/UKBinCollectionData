@@ -14,6 +14,10 @@ This integration allows you to configure the collection details for your local U
   - [Reconfiguration / Options Flow](#reconfiguration--options-flow)
   - [Validation Requirements](#validation-requirements)
   - [Icon Color Mapping JSON Example](#icon-color-mapping-json-example)
+  - [Service: `uk_bin_collection.manual_refresh`](#service-uk_bin_collectionmanual_refresh)
+    - [Service Data](#service-data)
+    - [How the Service Works](#how-the-service-works)
+  - [Example Automation to Refresh Bin Data (Manual Refresh Mode)](#example-automation-to-refresh-bin-data-manual-refresh-mode)
 
 ---
 
@@ -122,3 +126,50 @@ Below is an example of a valid JSON configuration for the **icon_color_mapping**
     "color": "brown"
   }
 }
+```
+
+## Service: `uk_bin_collection.manual_refresh`
+
+This service triggers a manual refresh of the bin collection data for a specific configuration entry. It is particularly useful when your integration is set to **manual refresh only** (i.e., when the `manual_refresh_only` option is enabled in your configuration). When called, the service will instruct the data coordinator to fetch the latest bin collection data immediately.
+
+### Service Data
+
+| Field     | Type   | Description |
+|-----------|--------|-------------|
+| `entry_id` | String | **Required.** The unique identifier of the configuration entry. You can find this value in the integration details or in Home Assistant's configuration registry. |
+
+### How the Service Works
+
+1. **Input Verification:**  
+   The service checks whether the `entry_id` is provided in the service call data.
+
+2. **Configuration Entry Lookup:**  
+   It verifies that a configuration entry exists for the provided `entry_id` in Home Assistant's data storage.
+
+3. **Coordinator Check:**  
+   It ensures that the corresponding data coordinator (which is responsible for fetching bin collection data) is available.
+
+4. **Data Refresh:**  
+   The service calls `async_request_refresh()` on the coordinator to fetch the latest data.
+
+If any of these steps fail, error messages will be logged to help diagnose the issue.
+
+---
+
+## Example Automation to Refresh Bin Data (Manual Refresh Mode)
+
+Below is an example automation that triggers a manual refresh of the bin collection data every day at 7:00 AM. This is useful if your integration is configured for manual refresh only. Be sure to replace `"YOUR_CONFIG_ENTRY_ID"` with the actual entry ID of your configuration.
+
+```yaml
+automation:
+  - alias: "Daily Manual Refresh for UK Bin Collection"
+    description: "Triggers a manual refresh of the bin collection data every day at 7 AM for integrations set to manual refresh only."
+    trigger:
+      - platform: time
+        at: "07:00:00"
+    action:
+      - service: uk_bin_collection.manual_refresh
+        data:
+          entry_id: "YOUR_CONFIG_ENTRY_ID"
+    mode: single
+```
