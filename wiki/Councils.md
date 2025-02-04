@@ -36,6 +36,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Blaby District Council](#blaby-district-council)
 - [Blackburn Council](#blackburn-council)
 - [Blaenau Gwent County Borough Council](#blaenau-gwent-county-borough-council)
+- [Bolsover Council](#bolsover-council)
 - [Bolton Council](#bolton-council)
 - [Boston Borough Council](#boston-borough-council)
 - [Bracknell Forest Council](#bracknell-forest-council)
@@ -616,6 +617,17 @@ Additional parameters:
 - `-u` - UPRN
 - `-p` - postcode
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Bolsover Council
+```commandline
+python collect_data.py BolsoverCouncil https://bolsover.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 

@@ -196,6 +196,12 @@
         "wiki_name": "Blaenau Gwent County Borough Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "BolsoverCouncil": {
+        "url": "https://bolsover.gov.uk",
+        "uprn": "100030066827",
+        "wiki_name": "Bolsover Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "BoltonCouncil": {
         "postcode": "BL1 5PQ",
         "skip_get_url": true,
@@ -1485,7 +1491,7 @@
         "wiki_name": "Rhondda Cynon Taff Council",
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
-"RochdaleCouncil": {
+    "RochdaleCouncil": {
         "postcode": "OL11 5BE",
         "skip_get_url": true,
         "uprn": "23049922",
