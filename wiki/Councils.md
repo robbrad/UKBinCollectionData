@@ -127,6 +127,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Harrogate Borough Council](#harrogate-borough-council)
 - [Hart District Council](#hart-district-council)
 - [Hartlepool Borough Council](#hartlepool-borough-council)
+- [Herefordshire Council](#herefordshire-council)
 - [Hertsmere Borough Council](#hertsmere-borough-council)
 - [Highland Council](#highland-council)
 - [High Peak Council](#high-peak-council)
@@ -1720,6 +1721,15 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Herefordshire Council
+```commandline
+python collect_data.py HerefordshireCouncil https://www.herefordshire.gov.uk/rubbish-recycling/check-bin-collection-day?blpu_uprn=XXXXXXXXXXXX
+```
+
+Note: Replace 'XXXXXXXXXX' with your property's UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
