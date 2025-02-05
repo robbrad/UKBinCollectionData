@@ -13,6 +13,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Aberdeenshire Council](#aberdeenshire-council)
 - [Aberdeen City Council](#aberdeen-city-council)
 - [Adur and Worthing Councils](#adur-and-worthing-councils)
+- [Amber Valley Borough Council](#amber-valley-borough-council)
 - [Antrim & Newtonabbey Council](#antrim-&-newtonabbey-council)
 - [Ards and North Down Council](#ards-and-north-down-council)
 - [Argyll and Bute Council](#argyll-and-bute-council)
@@ -333,6 +334,17 @@ python collect_data.py AdurAndWorthingCouncils https://www.adur-worthing.gov.uk/
 ```
 
 Note: Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.
+
+---
+
+### Amber Valley Borough Council
+```commandline
+python collect_data.py AmberValleyBoroughCouncil https://ambervalley.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
