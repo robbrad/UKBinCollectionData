@@ -718,6 +718,12 @@
         "wiki_name": "Epping Forest District Council",
         "wiki_note": "Replace the postcode in the URL with your own."
     },
+    "EpsomandEwellBoroughCouncil": {
+        "uprn": "100061349083",
+        "url": "https://www.epsom-ewell.gov.uk",
+        "wiki_name": "Epsom and Ewell Borough Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
     "ErewashBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "10003582028",

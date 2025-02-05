@@ -106,6 +106,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Enfield Council](#enfield-council)
 - [Environment First](#environment-first)
 - [Epping Forest District Council](#epping-forest-district-council)
+- [Epsom and Ewell Borough Council](#epsom-and-ewell-borough-council)
 - [Erewash Borough Council](#erewash-borough-council)
 - [Exeter City Council](#exeter-city-council)
 - [Falkirk Council](#falkirk-council)
@@ -1468,6 +1469,17 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Replace the postcode in the URL with your own.
+
+---
+
+### Epsom and Ewell Borough Council
+```commandline
+python collect_data.py EpsomandEwellBoroughCouncil https://www.epsom-ewell.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
