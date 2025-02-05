@@ -1465,6 +1465,14 @@
         "wiki_name": "Reading Borough Council",
         "wiki_note": "Replace XXXXXXXX with your property's UPRN."
     },
+    "RedcarandClevelandCouncil": {
+        "house_number": "11",
+        "postcode": "TS10 2RE",
+        "skip_get_url": true,
+        "url": "https://www.redcar-cleveland.gov.uk",
+        "wiki_name": "Redcar and Cleveland Council",
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters"
+    },
     "RedditchBoroughCouncil": {
         "url": "https://redditchbc.gov.uk",
         "wiki_command_url_override": "https://redditchbc.gov.uk",

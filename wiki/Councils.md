@@ -207,6 +207,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Powys Council](#powys-council)
 - [Preston City Council](#preston-city-council)
 - [Reading Borough Council](#reading-borough-council)
+- [Redcar and Cleveland Council](#redcar-and-cleveland-council)
 - [Redditch Borough Council](#redditch-borough-council)
 - [Reigate and Banstead Borough Council](#reigate-and-banstead-borough-council)
 - [Renfrewshire Council](#renfrewshire-council)
@@ -2669,6 +2670,19 @@ python collect_data.py ReadingBoroughCouncil https://api.reading.gov.uk/api/coll
 ```
 
 Note: Replace XXXXXXXX with your property's UPRN.
+
+---
+
+### Redcar and Cleveland Council
+```commandline
+python collect_data.py RedcarandClevelandCouncil https://www.redcar-cleveland.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
+
+Note: Pass the house name/number and postcode in their respective parameters
 
 ---
 
