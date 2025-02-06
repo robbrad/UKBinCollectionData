@@ -1559,6 +1559,13 @@
         "wiki_name": "Rugby Borough Council",
         "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "RunnymedeBoroughCouncil": {
+        "skip_get_url": true,
+        "uprn": "100061483636",
+        "url": "https://www.runnymede.gov.uk/",
+        "wiki_name": "Runnymede Borough Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "RushcliffeBoroughCouncil": {
         "postcode": "NG13 8TZ",
         "skip_get_url": true,

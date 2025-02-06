@@ -220,6 +220,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Rotherham Council](#rotherham-council)
 - [Royal Borough of Greenwich](#royal-borough-of-greenwich)
 - [Rugby Borough Council](#rugby-borough-council)
+- [Runnymede Borough Council](#runnymede-borough-council)
 - [Rushcliffe Borough Council](#rushcliffe-borough-council)
 - [Rushmoor Council](#rushmoor-council)
 - [Salford City Council](#salford-city-council)
@@ -2827,6 +2828,18 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Runnymede Borough Council
+```commandline
+python collect_data.py RunnymedeBoroughCouncil https://www.runnymede.gov.uk/ -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
