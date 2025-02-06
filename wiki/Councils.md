@@ -63,6 +63,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Charnwood Borough Council](#charnwood-borough-council)
 - [Chelmsford City Council](#chelmsford-city-council)
 - [Cheltenham Borough Council](#cheltenham-borough-council)
+- [Cherwell District Council](#cherwell-district-council)
 - [Cheshire East Council](#cheshire-east-council)
 - [Cheshire West and Chester Council](#cheshire-west-and-chester-council)
 - [Chesterfield Borough Council](#chesterfield-borough-council)
@@ -954,6 +955,17 @@ Additional parameters:
 - `-n` - house number
 
 Note: Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. Use the 'postcode' field to pass the WEEK (wrapped in quotes) for your collections. [Week 1/Week 2].
+
+---
+
+### Cherwell District Council
+```commandline
+python collect_data.py CherwellDistrictCouncil https://www.cherwell.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
