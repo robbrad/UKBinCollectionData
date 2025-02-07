@@ -1,4 +1,13 @@
 =======
+## 0.134.0 (2025-02-07)
+
+### Feat
+
+- Ipswich Borough Council - trying different address
+- Ipswich Borough Council - correcting param name in input.json
+- Ipswich Borough Council - added input.json values and refactored code
+- Ipswich Borough Council - initial implementation
+
 ## 0.133.0 (2025-02-02)
 
 ### Feat
