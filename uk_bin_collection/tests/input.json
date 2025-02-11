@@ -457,11 +457,10 @@
         "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes."
     },
     "ConwyCountyBorough": {
-        "postcode": "LL30 2DF",
         "uprn": "100100429249",
-        "url": "https://www.conwy.gov.uk/Contensis-Forms/erf/collection-result-soap-xmas.asp?ilangid=1&uprn=100100429249",
+        "url": "https://www.conwy.gov.uk",
         "wiki_name": "Conwy County Borough Council",
-        "wiki_note": "Conwy County Borough Council uses a straight UPRN in the URL, e.g., `&uprn=XXXXXXXXXXXXX`."
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "CopelandBoroughCouncil": {
         "uprn": "100110734613",
