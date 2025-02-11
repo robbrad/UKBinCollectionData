@@ -383,12 +383,12 @@
         "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your address, then copy the entire address text and use that in the house number field."
     },
     "CheltenhamBoroughCouncil": {
-        "house_number": "Monday",
-        "postcode": "Week 1",
+        "uprn": "100120372027",
+        "postcode": "GL51 3NA",
         "skip_get_url": true,
         "url": "https://www.cheltenham.gov.uk",
         "wiki_name": "Cheltenham Borough Council",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. Use the 'postcode' field to pass the WEEK (wrapped in quotes) for your collections. [Week 1/Week 2]."
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "CheshireEastCouncil": {
         "url": "https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn=100012791226&onelineaddress=3%20COBBLERS%20YARD,%20SK9%207DZ&_=1689413260149",
