@@ -551,7 +551,6 @@
         "skip_get_url": true,
         "uprn": "10070102161",
         "url": "https://www.derbyshiredales.gov.uk/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Derbyshire Dales District Council",
         "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },

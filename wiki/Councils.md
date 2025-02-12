@@ -1048,13 +1048,12 @@ Note: Pass the house name/number in the house number parameter, wrapped in doubl
 
 ### Conwy County Borough Council
 ```commandline
-python collect_data.py ConwyCountyBorough https://www.conwy.gov.uk/Contensis-Forms/erf/collection-result-soap-xmas.asp?ilangid=1&uprn=100100429249 -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py ConwyCountyBorough https://www.conwy.gov.uk -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
-- `-p` - postcode
 
-Note: Conwy County Borough Council uses a straight UPRN in the URL, e.g., `&uprn=XXXXXXXXXXXXX`.
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
@@ -1202,13 +1201,12 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Derbyshire Dales District Council
 ```commandline
-python collect_data.py DerbyshireDalesDistrictCouncil https://www.derbyshiredales.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+python collect_data.py DerbyshireDalesDistrictCouncil https://www.derbyshiredales.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
