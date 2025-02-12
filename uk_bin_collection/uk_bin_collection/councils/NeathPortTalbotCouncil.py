@@ -100,6 +100,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"id": "contentInner"},
             )
 
+            soup = soup.find("div", class_="umb-block-grid__layout-item")
+
             # Get the dates
             for date in soup.find_all("h2"):
                 if date.get_text(strip=True) != "Bank Holidays":

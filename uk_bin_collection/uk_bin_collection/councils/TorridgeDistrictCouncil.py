@@ -1,6 +1,7 @@
 from xml.etree import ElementTree
 
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -12,41 +13,6 @@ class CouncilClass(AbstractGetBinDataClass):
     baseclass. They can also override some
     operations with a default implementation.
     """
-
-    def get_data(cls, **kwargs) -> str:
-        """This method makes the request to the council
-
-        Keyword arguments:
-        url -- the url to get the data from
-        """
-        # Set a user agent so we look like a browser ;-)
-        user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
-        headers = {"User-Agent": user_agent, "Content-Type": "text/xml"}
-
-        uprn = kwargs.get("uprn")
-        try:
-            if uprn is None or uprn == "":
-                raise ValueError("Invalid UPRN")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided UPRN. If this error continues, please first trying setting the "
-                "UPRN manually on line 115 before raising an issue."
-            )
-
-        # Make the Request - change the URL - find out your property number
-        # URL
-        url = "https://collections-torridge.azurewebsites.net/WebService2.asmx"
-        # Post data
-        post_data = (
-            '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getRoundCalendarForUPRN xmlns="http://tempuri2.org/"><council>TOR</council><UPRN>'
-            + uprn
-            + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
-        )
-        requests.packages.urllib3.disable_warnings()
-        full_page = requests.post(url, headers=headers, data=post_data)
-
-        return full_page
 
     def parse_data(self, page, **kwargs) -> dict:
         """This method makes the request to the council
