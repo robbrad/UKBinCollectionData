@@ -1,4 +1,10 @@
 =======
+## 0.134.2 (2025-02-15)
+
+### Fix
+
+- 1232 East herts missing Selenium url in input.json
+
 ## 0.134.1 (2025-02-11)
 
 ### Fix
