@@ -84,7 +84,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 if bin:
                     if bin[1].get_text(strip=True) != "":
                         bin_date = datetime.strptime(
-                            bin[1].get_text(strip=True), "%d/%m/%Y"
+                            bin[1].get_text(strip=True), "%d/%m/%Y %H:%M:%S"
                         )
                         dict_data = {
                             "type": re.sub(

@@ -62,21 +62,27 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             soup.prettify()
 
-            household_bin_date = datetime.strptime(
-                soup.find("span", {"id": "ContentPlaceHolder1_LabelHouse"}).get_text(
-                    strip=True
-                ),
-                "%A %d %B %Y",
-            )
-            collections.append(("Household bin", household_bin_date))
+            try:
+                household_bin_date = datetime.strptime(
+                    soup.find(
+                        "span", {"id": "ContentPlaceHolder1_LabelHouse"}
+                    ).get_text(strip=True),
+                    "%A %d %B %Y",
+                )
+                collections.append(("Household bin", household_bin_date))
+            except AttributeError:
+                pass
 
-            recycling_bin_date = datetime.strptime(
-                soup.find("span", {"id": "ContentPlaceHolder1_LabelRecycle"}).get_text(
-                    strip=True
-                ),
-                "%A %d %B %Y",
-            )
-            collections.append(("Recycling bin", recycling_bin_date))
+            try:
+                recycling_bin_date = datetime.strptime(
+                    soup.find(
+                        "span", {"id": "ContentPlaceHolder1_LabelRecycle"}
+                    ).get_text(strip=True),
+                    "%A %d %B %Y",
+                )
+                collections.append(("Recycling bin", recycling_bin_date))
+            except AttributeError:
+                pass
 
             ordered_data = sorted(collections, key=lambda x: x[1])
             for item in ordered_data:
