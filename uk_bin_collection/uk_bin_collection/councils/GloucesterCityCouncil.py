@@ -113,7 +113,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_data["bins"].append(dict_data)
 
             bin_data["bins"].sort(
-                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
             )
 
         except Exception as e:
