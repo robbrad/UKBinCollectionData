@@ -104,7 +104,8 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_types = soup.find_all("ul", class_="binCollectionTimesList")
 
             for bin_collection_dates in bin_types:
-                bin_collection_list = bin_collection_dates.find_all("li", class_="")
+
+                bin_collection_list = bin_collection_dates.find_all("li")
 
                 if bin_collection_list:
                     collection_dates = [
