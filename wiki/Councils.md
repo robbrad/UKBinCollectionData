@@ -425,11 +425,12 @@ Note: Pass the house name/number and postcode in their respective parameters, bo
 
 ### Ashford Borough Council
 ```commandline
-python collect_data.py AshfordBoroughCouncil https://ashford.gov.uk -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py AshfordBoroughCouncil https://ashford.gov.uk -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-u` - UPRN
 - `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
@@ -1325,12 +1326,13 @@ Note: Replace XXXXXXXX with your UPRN.
 
 ### East Herts Council
 ```commandline
-python collect_data.py EastHertsCouncil https://www.eastherts.gov.uk -s -p "XXXX XXX" -n XX
+python collect_data.py EastHertsCouncil https://www.eastherts.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house number and postcode in their respective parameters.
 
@@ -1475,10 +1477,11 @@ Note: For properties with collections managed by Environment First, such as Lewe
 
 ### Epping Forest District Council
 ```commandline
-python collect_data.py EppingForestDistrictCouncil https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP -p "XXXX XXX"
+python collect_data.py EppingForestDistrictCouncil https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Replace the postcode in the URL with your own.
 
@@ -1903,8 +1906,10 @@ Note: Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmy
 
 ### Kingston Upon Thames Council
 ```commandline
-python collect_data.py KingstonUponThamesCouncil https://waste-services.kingston.gov.uk/waste/XXXXXXX
+python collect_data.py KingstonUponThamesCouncil https://waste-services.kingston.gov.uk/waste/XXXXXXX -w http://HOST:PORT/
 ```
+Additional parameters:
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the "Your bin days" page, then copy the URL and replace the URL in the command.
 
@@ -2094,11 +2099,12 @@ Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](h
 
 ### London Borough Of Richmond Upon Thames
 ```commandline
-python collect_data.py LondonBoroughOfRichmondUponThames https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/ -s -n XX
+python collect_data.py LondonBoroughOfRichmondUponThames https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/ -s -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. 
 
