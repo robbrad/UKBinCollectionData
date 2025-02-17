@@ -1184,6 +1184,14 @@
         "wiki_name": "Mid Devon Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "MiddlesbroughCouncil": {
+        "house_number": "12 Constantine Court Park Road North, Middlesbrough",
+        "skip_get_url": true,
+        "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Middlesbrough Council",
+        "wiki_note": "Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver."
+    },
     "MidSuffolkDistrictCouncil": {
         "house_number": "Monday",
         "postcode": "Week 2",
