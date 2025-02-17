@@ -71,6 +71,7 @@
     "AshfordBoroughCouncil": {
         "postcode": "TN23 7SP",
         "uprn": "100060777899",
+        "web_driver": "http://selenium:4444",
         "url": "https://ashford.gov.uk",
         "wiki_command_url_override": "https://ashford.gov.uk",
         "wiki_name": "Ashford Borough Council",
@@ -625,6 +626,7 @@
         "house_number": "1",
         "postcode": "CM20 2FZ",
         "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
         "url": "https://www.eastherts.gov.uk",
         "wiki_name": "East Herts Council",
         "wiki_note": "Pass the house number and postcode in their respective parameters."
@@ -718,6 +720,7 @@
     },
     "EppingForestDistrictCouncil": {
         "postcode": "IG9 6EP",
+        "web_driver": "http://selenium:4444",
         "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
         "wiki_name": "Epping Forest District Council",
         "wiki_note": "Replace the postcode in the URL with your own."
@@ -978,6 +981,7 @@
     },
     "KingstonUponThamesCouncil": {
         "url": "https://waste-services.kingston.gov.uk/waste/2701097",
+        "web_driver": "http://selenium:4444",
         "wiki_command_url_override": "https://waste-services.kingston.gov.uk/waste/XXXXXXX",
         "wiki_name": "Kingston Upon Thames Council",
         "wiki_note": "Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the \"Your bin days\" page, then copy the URL and replace the URL in the command."
@@ -1097,6 +1101,7 @@
     "LondonBoroughOfRichmondUponThames": {
         "house_number": "March Road",
         "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
         "url": "https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/",
         "wiki_name": "London Borough Of Richmond Upon Thames",
         "wiki_note": "Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. "

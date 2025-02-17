@@ -1,4 +1,17 @@
 =======
+## 0.134.3 (2025-02-15)
+
+### Fix
+
+- Update input.json
+- 1235 Councils missing Selenium in input.json
+
+## 0.134.2 (2025-02-15)
+
+### Fix
+
+- 1232 East herts missing Selenium url in input.json
+
 ## 0.134.1 (2025-02-11)
 
 ### Fix
