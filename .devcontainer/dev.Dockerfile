@@ -4,24 +4,59 @@ FROM mcr.microsoft.com/devcontainers/python:${VARIANT} AS ukbc-dev-base
 USER root
 
 # Install dependencies for Google Chrome
-RUN apt-get update && \
-    apt-get install -y \
+RUN dpkg --add-architecture amd64 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
     wget \
-    gnupg \
-    unzip
+    gnupg2 \
+    software-properties-common \
+    apt-transport-https \
+    ca-certificates \
+    unzip \
+    libasound2 \
+    libatk-bridge2.0-0 \
+    libatk1.0-0 \
+    libatspi2.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libgbm1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libudev1 \
+    libvulkan1 \
+    libx11-6 \
+    libxcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxkbcommon0 \
+    libxrandr2 \
+    libcurl4 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Add Google's public key and the Chrome repository to your system
+# Add Google Chrome repository
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get update
 
-# Install Google Chrome
-RUN apt-get update && apt-get install -y google-chrome-stable
+# Install Chrome
+RUN apt-get install -y google-chrome-stable && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install ChromeDriver
-RUN CHROMEDRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
-    wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    rm /tmp/chromedriver.zip && \
+RUN CHROME_VERSION=$(google-chrome --version | sed 's/Google Chrome //' | tr -d ' ') && \
+    wget -O /tmp/chromedriver.zip "https://storage.googleapis.com/chrome-for-testing-public/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" && \
+    unzip /tmp/chromedriver.zip -d /tmp && \
+    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/ && \
+    rm -rf /tmp/chromedriver* && \
     chmod +x /usr/local/bin/chromedriver
 
 USER vscode
