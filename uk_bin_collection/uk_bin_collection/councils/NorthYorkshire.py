@@ -1,22 +1,19 @@
+from datetime import datetime
+
+import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
         # Figure bin data URL from UPRN
         url = "https://www.northyorks.gov.uk/bin-calendar/lookup"
-
         payload = {
             "selected_address": uprn,
             "submit": "Continue",
@@ -42,17 +39,22 @@ class CouncilClass(AbstractGetBinDataClass):
         rows = table.find_all("tr")
 
         data = {"bins": []}
+
         for row in rows:
             cols = row.find_all("td")
             # First column is date
             bin_date = datetime.strptime(cols[0].text.strip(), "%d %B %Y")
-            # Third column is type
-            bin_type = cols[2].text.strip()
-            # This bin
-            this_bin = {
-                "type": bin_type,
-                "collectionDate": bin_date.strftime(date_format),
-            }
-            data["bins"].append(this_bin)
+
+            # Third column may contain multiple bin types separated by line breaks
+            # .stripped_strings yields a generator over all non-whitespace text segments
+            bin_types = [txt for txt in cols[2].stripped_strings]
+
+            for sub_bin in bin_types:
+                data["bins"].append(
+                    {
+                        "type": sub_bin,
+                        "collectionDate": bin_date.strftime(date_format),
+                    }
+                )
 
         return data
