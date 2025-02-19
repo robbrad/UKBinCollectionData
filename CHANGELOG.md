@@ -1,4 +1,10 @@
 =======
+## 0.135.2 (2025-02-19)
+
+### Fix
+
+- North Yorkshire - multiple bins on a day
+
 ## 0.135.1 (2025-02-18)
 
 ### Fix
