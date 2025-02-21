@@ -41,17 +41,8 @@ class CouncilClass(AbstractGetBinDataClass):
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.186 Safari/537.36",
             "x-requested-with": "XMLHttpRequest",
         }
-        postcode_api = f"https://www.wyre.gov.uk/singlepoint_ajax/{urllib.parse.quote(user_postcode)}"
-        addr_res = requests.post(postcode_api, headers=headers)
-        json_data = addr_res.json()
 
-        for v in json_data.values():
-            v_uprn = v.get("uprn")
-            if v_uprn == user_uprn:
-                addr_line = v.get("label")
-                break
-
-        api_url = f"https://www.wyre.gov.uk/bincollections?uprn={user_uprn}&address={urllib.parse.quote(addr_line)}&submit="
+        api_url = f"https://www.wyre.gov.uk/bincollections?uprn={user_uprn}"
         res = requests.get(api_url, headers=headers)
 
         soup = BeautifulSoup(res.text, features="html.parser")
