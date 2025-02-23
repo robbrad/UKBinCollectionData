@@ -2202,12 +2202,11 @@
         "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WyreCouncil": {
-        "postcode": "FY6 8HG",
         "skip_get_url": true,
         "uprn": "10003519994",
         "url": "https://www.wyre.gov.uk/bins-rubbish-recycling",
         "wiki_name": "Wyre Council",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search). The postcode should be wrapped in double quotes with a space in the middle."
+        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WyreForestDistrictCouncil": {
         "house_number": "Monday",
