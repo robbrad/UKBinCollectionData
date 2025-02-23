@@ -19,9 +19,6 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        user_postcode = kwargs.get("postcode")
-        check_postcode(user_postcode)
-
         data = {"bins": []}
         collections = []
 
