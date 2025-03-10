@@ -54,7 +54,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             dropdown_options = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, f'//option[contains(text(), "{user_paon}")]')
+                    (By.XPATH, f'//option[contains(text(), "{postcode}")]')
                 )
             )
             parent_element = dropdown_options.find_element(
@@ -64,7 +64,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create a 'Select' for it, then select the first address in the list
             # (Index 0 is "Make a selection from the list")
             dropdownSelect = Select(parent_element)
-            dropdownSelect.select_by_visible_text(str(user_paon))
+            dropdownSelect.select_by_visible_text(str(postcode))
 
             submit_btn = wait.until(
                 EC.presence_of_element_located(
