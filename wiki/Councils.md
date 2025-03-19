@@ -170,6 +170,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Merton Council](#merton-council)
 - [Mid and East Antrim Borough Council](#mid-and-east-antrim-borough-council)
 - [Mid Devon Council](#mid-devon-council)
+- [Middlesbrough Council](#middlesbrough-council)
 - [Mid Suffolk District Council](#mid-suffolk-district-council)
 - [Mid Sussex District Council](#mid-sussex-district-council)
 - [Midlothian Council](#midlothian-council)
@@ -2238,6 +2239,19 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ---
 
+### Middlesbrough Council
+```commandline
+python collect_data.py MiddlesbroughCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -s -n XX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver.
+
+---
+
 ### Mid Suffolk District Council
 ```commandline
 python collect_data.py MidSuffolkDistrictCouncil https://www.midsuffolk.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -n XX
@@ -3867,14 +3881,13 @@ Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https
 
 ### Wyre Council
 ```commandline
-python collect_data.py WyreCouncil https://www.wyre.gov.uk/bins-rubbish-recycling -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py WyreCouncil https://www.wyre.gov.uk/bins-rubbish-recycling -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-p` - postcode
 
-Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search). The postcode should be wrapped in double quotes with a space in the middle.
+Note: Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
