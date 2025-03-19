@@ -16,6 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_uprn = kwargs.get("uprn")
+        user_uprn = str(user_uprn).zfill(12)
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
