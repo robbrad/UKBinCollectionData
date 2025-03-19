@@ -578,11 +578,10 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Bexley Council
 ```commandline
-python collect_data.py BexleyCouncil https://mybexley.bexley.gov.uk/service/When_is_my_collection_day -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BexleyCouncil https://waste.bexley.gov.uk/waste -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
 - `-p` - postcode
 - `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)

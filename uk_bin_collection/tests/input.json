@@ -162,11 +162,10 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BexleyCouncil": {
-        "house_number": "1 Dorchester Avenue, Bexley",
+        "house_number": "1",
         "postcode": "DA5 3AH",
         "skip_get_url": true,
-        "uprn": "100020196143",
-        "url": "https://mybexley.bexley.gov.uk/service/When_is_my_collection_day",
+        "url": "https://waste.bexley.gov.uk/waste",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Bexley Council",
         "wiki_note": "In order to use this parser, you will need to sign up to [Bexley's @Home app](https://www.bexley.gov.uk/services/rubbish-and-recycling/bexley-home-recycling-app/about-app). Complete the setup by entering your email and setting your address with postcode and address line. Once you can see the calendar, you should be good to run the parser. Just pass the email you used in quotes in the UPRN parameter."
