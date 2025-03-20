@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from datetime import datetime
 
 
 class CouncilClass(AbstractGetBinDataClass):
