@@ -344,6 +344,12 @@
         "wiki_name": "Calderdale Council",
         "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "CambridgeCityCouncil": {
+        "uprn": "200004159750",
+        "url": "https://www.cambridge.gov.uk/",
+        "wiki_name": "Cambridge City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+    },
     "CannockChaseDistrictCouncil": {
         "postcode": "WS15 1JA",
         "skip_get_url": true,

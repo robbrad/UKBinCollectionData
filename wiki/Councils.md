@@ -55,6 +55,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Burnley Borough Council](#burnley-borough-council)
 - [Bury Council](#bury-council)
 - [Calderdale Council](#calderdale-council)
+- [Cambridge City Council](#cambridge-city-council)
 - [Cannock Chase District Council](#cannock-chase-district-council)
 - [Canterbury City Council](#canterbury-city-council)
 - [Cardiff Council](#cardiff-council)
@@ -246,6 +247,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Staffordshire District Council](#south-staffordshire-district-council)
 - [South Tyneside Council](#south-tyneside-council)
 - [Southwark Council](#southwark-council)
+- [Spelthorne Borough Council](#spelthorne-borough-council)
 - [St Albans City and District Council](#st-albans-city-and-district-council)
 - [St Helens Borough Council](#st-helens-borough-council)
 - [Stafford Borough Council](#stafford-borough-council)
@@ -864,6 +866,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Cambridge City Council
+```commandline
+python collect_data.py CambridgeCityCouncil https://www.cambridge.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
@@ -3135,6 +3148,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Replace `XXXXXXXX` with your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Spelthorne Borough Council
+```commandline
+python collect_data.py SpelthorneBoroughCouncil https://www.spelthorne.gov.uk -s -p "XXXX XXX" -n XX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
 
 ---
 
