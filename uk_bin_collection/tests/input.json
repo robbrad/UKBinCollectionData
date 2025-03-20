@@ -162,11 +162,10 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BexleyCouncil": {
-        "house_number": "1 Dorchester Avenue, Bexley",
+        "house_number": "1",
         "postcode": "DA5 3AH",
         "skip_get_url": true,
-        "uprn": "100020196143",
-        "url": "https://mybexley.bexley.gov.uk/service/When_is_my_collection_day",
+        "url": "https://waste.bexley.gov.uk/waste",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Bexley Council",
         "wiki_note": "In order to use this parser, you will need to sign up to [Bexley's @Home app](https://www.bexley.gov.uk/services/rubbish-and-recycling/bexley-home-recycling-app/about-app). Complete the setup by entering your email and setting your address with postcode and address line. Once you can see the calendar, you should be good to run the parser. Just pass the email you used in quotes in the UPRN parameter."
@@ -344,6 +343,12 @@
         "web_driver": "http://selenium:4444",
         "wiki_name": "Calderdale Council",
         "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
+    "CambridgeCityCouncil": {
+        "uprn": "200004159750",
+        "url": "https://www.cambridge.gov.uk/",
+        "wiki_name": "Cambridge City Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "CannockChaseDistrictCouncil": {
         "postcode": "WS15 1JA",
@@ -1647,6 +1652,13 @@
         "wiki_name": "Somerset Council",
         "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "SouthamptonCityCouncil": {
+        "skip_get_url": true,
+        "uprn": "100060731893",
+        "url": "https://www.southampton.gov.uk",
+        "wiki_name": "Southampton City Council",
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "SouthAyrshireCouncil": {
         "postcode": "KA19 7BN",
         "skip_get_url": true,
@@ -1739,6 +1751,13 @@
         "wiki_command_url_override": "https://services.southwark.gov.uk/bins/lookup/XXXXXXXX",
         "wiki_name": "Southwark Council",
         "wiki_note": "Replace `XXXXXXXX` with your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
+    "SpelthorneBoroughCouncil": {
+        "house_number": "1",
+        "postcode": "TW18 2PR",
+        "skip_get_url": true,
+        "url": "https://www.spelthorne.gov.uk",
+        "wiki_name": "Spelthorne Borough Council"
     },
     "StAlbansCityAndDistrictCouncil": {
         "skip_get_url": true,

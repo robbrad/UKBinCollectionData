@@ -59,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 response = requests.get(URI)
                 getcollection = response.json()
 
-                collectionID = getcollection["scheduleCodeWorkflowID"]
+                collectionID = getcollection["scheduleCodeWorkflowIDs"][0]
 
                 URI = f"https://waste-api-hackney-live.ieg4.net/f806d91c-e133-43a6-ba9a-c0ae4f4cccf6/alloywastepages/getworkflow/{collectionID}"
                 response = requests.get(URI)

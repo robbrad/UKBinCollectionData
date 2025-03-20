@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -25,7 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
-        post_url = "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar.displayDetails"
+        post_url = "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=myStreet.displayDetails"
         post_header_str = (
             "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,"
             "image/apng,"
@@ -41,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         post_headers = parse_header(post_header_str)
-        form_data = {"roadID": uprn}
+        form_data = {"USRN": uprn}
         post_response = requests.post(
             post_url, headers=post_headers, data=form_data, verify=False
         )
@@ -53,36 +54,28 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         collection_tuple = []
 
-        for i in range(1, 3):
-            calendar = soup.select(
-                f"#wasteCalendarContainer > div:nth-child(2) > div:nth-child({i}) > div"
-            )[0]
-            month = datetime.strptime(
-                calendar.find_next("h2").get_text(), "%B %Y"
-            ).strftime("%m")
-            year = datetime.strptime(
-                calendar.find_next("h2").get_text(), "%B %Y"
-            ).strftime("%Y")
+        calendar = soup.find("table", class_="calendar")
+        month = datetime.strptime(
+            soup.find("div", class_="calMonthCurrent").get_text(), "[%b]"
+        ).strftime("%m")
+        year = datetime.strptime(
+            soup.find("h1").get_text(), "About my Street - %B %Y"
+        ).strftime("%Y")
 
-            pink_days = [
-                day.get_text().strip() for day in calendar.find_all("td", class_="pink")
-            ]
-            black_days = [
-                day.get_text().strip()
-                for day in calendar.find_all("td", class_="normal")
-            ]
+        pink_days = [
+            day.get_text().strip() for day in calendar.find_all("td", class_="pink")
+        ]
+        black_days = [
+            day.get_text().strip() for day in calendar.find_all("td", class_="normal")
+        ]
 
-            for day in pink_days:
-                collection_date = datetime(
-                    year=int(year), month=int(month), day=int(day)
-                )
-                collection_tuple.append(("Pink collection", collection_date))
+        for day in pink_days:
+            collection_date = datetime(year=int(year), month=int(month), day=int(day))
+            collection_tuple.append(("Pink collection", collection_date))
 
-            for day in black_days:
-                collection_date = datetime(
-                    year=int(year), month=int(month), day=int(day)
-                )
-                collection_tuple.append(("Normal collection", collection_date))
+        for day in black_days:
+            collection_date = datetime(year=int(year), month=int(month), day=int(day))
+            collection_tuple.append(("Normal collection", collection_date))
 
         ordered_data = sorted(collection_tuple, key=lambda x: x[1])
 

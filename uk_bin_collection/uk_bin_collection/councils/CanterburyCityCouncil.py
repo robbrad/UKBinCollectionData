@@ -22,12 +22,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"uprn": user_uprn, "usrn": "1"}
 
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+            "Accept": "application/json",
+        }
+
         URI = (
             "https://zbr7r13ke2.execute-api.eu-west-2.amazonaws.com/Beta/get-bin-dates"
         )
 
         # Make the GET request
-        response = requests.post(URI, json=data)
+        response = requests.post(URI, json=data, headers=headers)
         response.raise_for_status()
 
         # Parse the JSON response
