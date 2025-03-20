@@ -1652,6 +1652,13 @@
         "wiki_name": "Somerset Council",
         "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "SouthamptonCityCouncil": {
+        "skip_get_url": true,
+        "uprn": "100060731893",
+        "url": "https://www.southampton.gov.uk",
+        "wiki_name": "Southampton City Council",
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "SouthAyrshireCouncil": {
         "postcode": "KA19 7BN",
         "skip_get_url": true,

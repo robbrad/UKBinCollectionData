@@ -234,6 +234,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Shropshire Council](#shropshire-council)
 - [Solihull Council](#solihull-council)
 - [Somerset Council](#somerset-council)
+- [Southampton City Council](#southampton-city-council)
 - [South Ayrshire Council](#south-ayrshire-council)
 - [South Cambridgeshire Council](#south-cambridgeshire-council)
 - [South Derbyshire District Council](#south-derbyshire-district-council)
@@ -2995,6 +2996,18 @@ Additional parameters:
 - `-p` - postcode
 
 Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Southampton City Council
+```commandline
+python collect_data.py SouthamptonCityCouncil https://www.southampton.gov.uk -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
