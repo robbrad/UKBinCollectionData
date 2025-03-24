@@ -1,4 +1,10 @@
 =======
+## 0.135.4 (2025-03-24)
+
+### Fix
+
+- parse scheduleCodeWorkflowIDs instead of scheduleCodeWorkflowID for Hackney Council
+
 ## 0.135.3 (2025-02-23)
 
 ## 0.135.2 (2025-02-19)
