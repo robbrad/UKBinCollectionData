@@ -1,4 +1,28 @@
 =======
+## 0.136.0 (2025-03-24)
+
+### Feat
+
+- Adding Southampton City Council
+- Adding Cambridge City Council
+- Adding Spelthorne Borough Council
+
+### Fix
+
+- #1057
+- #1264
+- #1270
+- Bexley Council
+- #1256
+- HinckleyandBosworthBoroughCouncil
+- #1207
+- Hackney Council
+- #1230
+- Castlepoint District Council
+- #1252
+- Canterbury City Council
+- #1254
+
 ## 0.135.4 (2025-03-24)
 
 ### Fix
