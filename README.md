@@ -18,10 +18,10 @@
 # UK Bin Collection Data (UKBCD)
 This project aims to provide a neat and standard way of providing bin collection data in JSON format from UK councils that have no API to do so.
 
-Why do this?
-You might want to use this in a Home Automation - for example say you had an LED bar that lit up on the day of bin collection to the colour of the bin you want to take out, then this repo provides the data for that. 
+Why would you want to do this?
+You might want to use this in Home Automation—for example, say you had an LED bar that lit up on the day of bin collection to the colour of the bin you want to take out; then this repo provides the data for that. 
 
-**PLEASE respect a councils infrastructure / usage policy and only collect data for your own personal use on a suitable frequency to your collection schedule.**
+**PLEASE respect a councils' infrastructure / usage policy and only collect data for your own personal use on a suitable frequency to your collection schedule.**
 
 Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulsoup4/) to scrape data, although others use different approaches, such as emulating web browser behaviour, or reading data from CSV files.
 
@@ -36,12 +36,12 @@ Most scripts make use of [Beautiful Soup 4](https://pypi.org/project/beautifulso
 If an issue already exists, please comment on that issue to express your interest. Please do not open a new issue, as it will be closed as a duplicate.
 
 If an issue does not already exist, please fill in a new [Council Request](https://github.com/robbrad/UKBinCollectionData/issues/new/choose) form, including as much information as possible, including:
-- Name of the council
-- URL to bin collections
-- An example postcode and/or UPRN (whichever is relevant)
-- Any further information
+- Name of the council.
+- URL to bin collections.
+- An example postcode and/or [UPRN](https://uprn.uk/) (whichever is relevant).
+- Any further information.
 
-Please be aware that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council will get added.
+Please be aware that this project is run by volunteer contributors and completion depends on numerous factors - even with a request, we cannot guarantee if/when your council is added to this integration.
 
 ---
 
@@ -57,7 +57,7 @@ This integration can be installed directly via HACS. To install:
 * [Add the repository](https://my.home-assistant.io/redirect/hacs_repository/?owner=robbrad&repository=UKBinCollectionData&category=integration) to your HACS installation
 * Click `Download`
 
-For details how setup the custom component integration see the [this documentation](https://github.com/robbrad/UKBinCollectionData/tree/master/custom_components/uk_bin_collection).
+For details on how to setup the custom component integration, see the [documentation](https://github.com/robbrad/UKBinCollectionData/tree/master/custom_components/uk_bin_collection).
 
 #### Manual
 1. Ensure you have [HACS](https://hacs.xyz/) installed
@@ -67,7 +67,7 @@ For details how setup the custom component integration see the [this documentati
 1. Click `+ Add Integration` and search for and select `UK Bin Collection Data` then click `Download`.
 1. Restart your Home Assistant.
 1. In the Home Assistant UI go to `Settings` > `Devices & Services` click `+ Add Integration` and search for `UK Bin Collection Data`.
-1. If your see a "URL of the remote Selenium web driver to use" field when setting up your council, you'll need to provide the URL to a web driver you've set up seperately such as [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome).
+1. If you see a "URL of the remote Selenium web driver to use" field when setting up your council, you'll need to provide the URL to a web driver you've set up separately such as [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome).
 
 ### Install manually
 
@@ -78,15 +78,15 @@ For details how setup the custom component integration see the [this documentati
 1. In the Home Assistant UI go to `Settings` > `Devices & Services` click `+ Add Integration` and search for `UK Bin Collection Data`.
 
 ### Overriding the Bin Icon and Bin Colour
-We realise it is difficult to set a colour from the councils text for the Bin Type and to keep the integration generic we dont capture colour from a council(not all councils supply this as a field), only bin type and next collection date.
+We realise it is difficult to set a colour from the councils text for the Bin Type and to keep the integration generic, we don't capture colour from a council (not all councils supply this as a field), only bin type and next collection date.
 
-When you configure the componenent on the first screen you can set a JSON string to map the bin type to the colour and icon
+When you configure the component on the first screen, you can set a JSON string to map the bin type to the colour and icon
 
 Here is an example to set the colour and icon for the type `Empty Standard General Waste`. This type is the type returned from the council for the bin. You can do this for multiple bins.
 
-If you miss this on the first setup you can reconfigure it.
+If you miss this on the first setup, you can reconfigure it.
 
-```
+```json
 {     
   "Empty Standard General Waste": 
   {         
@@ -124,7 +124,7 @@ where ```council_name``` is the name of the council's .py script (without the .p
 The help documentation refers to these as "module" and "URL", respectively. Supported council scripts can be found in the `uk_bin_collection/uk_bin_collection/councils` folder.
 
 Some scripts require additional parameters, for example, when a UPRN is not passed in a URL, or when the script is not scraping a web page.
-For example, the Leeds City Council script needs two additional parameters - a postcode, and a house number. This is done like so:
+For example, the Leeds City Council script needs two additional parameters—a postcode, and a house number. This is done like so:
 
 ```commandline
 python collect_data.py LeedsCityCouncil https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day -p "LS1 2JG" -n 41
@@ -138,9 +138,8 @@ To check the parameters needed for your council's script, please check the [proj
 
 
 ### Project dependencies
-Some scripts rely on external packages to function. A list of required scripts for both development and execution can be found in the project's [PROJECT_TOML](https://github.com/robbrad/UKBinCollectionData/blob/feature/%2353_integration_tests/pyproject.toml) 
-Install can be done via 
-`poetry install` from within the root of the repo.
+Some scripts rely on external packages to function. A list of required scripts for both development and execution can be found in the project's [PROJECT_TOML](https://github.com/robbrad/UKBinCollectionData/blob/feature/%2353_integration_tests/pyproject.toml).
+Install can be done via  `poetry install` from within the root of the repo.
 
 ---
 
@@ -149,7 +148,7 @@ Some councils make use of the UPRN (Unique property reference number) to identif
 
 ---
 ## Selenium
-Some councils need Selenium to run the scrape on behalf of Home Assistant. The easiest way to do this is run Selenium as in a Docker container. However you do this the Home Assistant server must be able to reach the Selenium server
+Some councils need Selenium to run the scrape on behalf of Home Assistant. The easiest way to do this is run Selenium as in a Docker container. However that you do this, the Home Assistant server must be able to reach the Selenium server.
 
 ### Instructions for Windows, Linux, and Mac
 
@@ -159,7 +158,7 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
 
 1.  **Download Docker Desktop for Windows:**
     
-    *   Go to the Docker website: Docker Desktop for Windows
+    *   Go to the Docker website: Docker Desktop for Windows.
     *   Download and install Docker Desktop.
 2.  **Run Docker Desktop:**
     
@@ -212,7 +211,7 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
 
 1.  **Download Docker Desktop for Mac:**
     
-    *   Go to the Docker website: Docker Desktop for Mac
+    *   Go to the Docker website: Docker Desktop for Mac.
     *   Download and install Docker Desktop.
 2.  **Run Docker Desktop:**
     
@@ -230,7 +229,7 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
     docker pull selenium/standalone-chrome
     ```
     
-4.  **Run the Selenium Standalone Chrome container:**
+3.  **Run the Selenium Standalone Chrome container:**
         
     ```bash
     docker run -d -p 4444:4444 --name selenium-chrome selenium/standalone-chrome
@@ -239,17 +238,17 @@ Some councils need Selenium to run the scrape on behalf of Home Assistant. The e
 #### Step 3: Test the Selenium Server
 
 1.  **Navigate to the Selenium server URL in your web browser:**
-    *   Open a web browser and go to `http://localhost:4444`
+    *   Open a web browser and go to `http://localhost:4444`.
     *   You should see the Selenium Grid console.
 
 #### Step 4: Supply the Selenium Server URL to UKBinCollectionData
 
 1.  **Find the `UKBinCollectionData` project:**
     
-    *   Go to the GitHub repository: [UKBinCollectionData](https://github.com/robbrad/UKBinCollectionData)
+    *   Go to the GitHub repository: [UKBinCollectionData](https://github.com/robbrad/UKBinCollectionData).
 2.  **Supply the Selenium Server URL:**
     
-    *   Typically, the URL will be `http://localhost:4444/wd/hub`
+    *   Typically, the URL will be `http://localhost:4444/wd/hub`.
     *   You might need to update a configuration file or environment variable in the project to use this URL. Check the project's documentation for specific instructions.
 
 ### Summary of Commands
@@ -274,7 +273,7 @@ This guide is based on a Raspberry Pi 4. Instructions for other systems may vary
 
 #### Prerequisites
 1. Install **Portainer** from Alex Belgium's add-on repository:
-   [github.com/alexbelgium/hassio-addons](https://github.com/alexbelgium/hassio-addons)
+   [alexbelgium/hassio-addons](https://github.com/alexbelgium/hassio-addons)
 
 ---
 
@@ -344,13 +343,13 @@ We have created an API for this located under [uk_bin_collection_api_server](htt
 
 ### Prerequisites
 
-- Docker installed on your machine
-- Python (if you plan to run the API locally without Docker)
+- Docker installed on your machine.
+- Python (if you plan to run the API locally without Docker).
 
 ### Running the API with Docker
 
 1. Clone this repository.
-2. Navigate to the uk_bin_collection_api_server directory of the project.
+2. Navigate to the `uk_bin_collection_api_server` directory of the project.
 
 #### Build the Docker Container
 
@@ -378,7 +377,7 @@ The API documentation can be accessed via the Swagger UI. Use the Swagger UI to 
 #### API Endpoints
 `GET /bin_collection/{council}`
 
-Description: Retrieves information about bin collection for the specified council.
+Description: Retrieves information about bin collections for the specified council.
 
 Parameters:
 
@@ -392,9 +391,9 @@ curl -X GET "http://localhost:8080/api/bin_collection/{council}" -H "accept: app
 ```
 
 ## Docker Compose
-This includes the Selenium standalone-chrome for Selenium based councils
+This includes the Selenium standalone-chrome for Selenium-based councils.
 
-```
+```yaml
 version: '3'
 
 services:
@@ -424,8 +423,8 @@ docker-compose up
 ---
 
 ## FAQ
-#### I've got an issue/support question - what do I do?
-Please post in the [HomeAssistant thread](https://community.home-assistant.io/t/bin-waste-collection/55451) or raise a new (non council request) [issue](https://github.com/robbrad/UKBinCollectionData/issues/new).
+#### I've got an issue/support question—what do I do?
+Please post in the [HomeAssistant thread](https://community.home-assistant.io/t/bin-waste-collection/55451) or raise a new (non-council request) [issue](https://github.com/robbrad/UKBinCollectionData/issues/new).
 
 #### I'd like to contribute, where do I start?
 Contributions are always welcome! See ```CONTRIBUTING.md``` to get started. Please adhere to the project's [code of conduct](https://github.com/robbrad/UKBinCollectionData/blob/master/CODE_OF_CONDUCT.md).
@@ -437,4 +436,3 @@ Contributions are always welcome! See ```CONTRIBUTING.md``` to get started. Plea
 <a href="https://github.com/robbrad/UKBinCollectionData/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=robbrad/UKBinCollectionData"  alt="Image of contributors"/>
 </a>
-
