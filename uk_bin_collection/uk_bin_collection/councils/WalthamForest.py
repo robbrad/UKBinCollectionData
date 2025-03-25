@@ -73,7 +73,7 @@ class CouncilClass(AbstractGetBinDataClass):
             find_ac_button.send_keys(Keys.RETURN)
             h4_element = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//h4[contains(text(), 'Next Collections')]")
+                    (By.XPATH, "//h4[contains(text(), 'Your upcoming collections')]")
                 )
             )
 
@@ -81,7 +81,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
-                        '//div[contains(@class, "fieldContent")]',
+                        '//div[contains(@class, "repeatable-table-wrapper")]',
                     )
                 )
             )
@@ -90,16 +90,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
             data = {"bins": []}
 
-            collection_divs = soup.find_all("div", {"style": "text-align: center;"})
+            collection_divs = soup.find_all("tr", {"class": "repeatable-value"})
 
             for collection_div in collection_divs:
-                h5_tag = collection_div.find("h5")
-                p_tag = collection_div.find("p")
+                td_list = collection_div.find_all("td")
+                bin_type = td_list[1].get_text(strip=True)
+                collection_date_text = td_list[2].get_text(strip=True)
 
-                if h5_tag and p_tag:
-                    bin_type = h5_tag.get_text(strip=True)
-                    collection_date_text = p_tag.find("b").get_text(strip=True)
-
+                # if collection_date_text is not 'NaN'
+                if collection_date_text != "NaN":
                     # Extract and format the date
                     date_match = re.search(r"(\d+ \w+)", collection_date_text)
                     if date_match:
