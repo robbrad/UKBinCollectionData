@@ -133,6 +133,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Harrogate Borough Council](#harrogate-borough-council)
 - [Hart District Council](#hart-district-council)
 - [Hartlepool Borough Council](#hartlepool-borough-council)
+- [Hastings Borough Council](#hastings-borough-council)
 - [Herefordshire Council](#herefordshire-council)
 - [Hertsmere Borough Council](#hertsmere-borough-council)
 - [High Peak Council](#high-peak-council)
@@ -1799,6 +1800,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Hastings Borough Council
+```commandline
+python collect_data.py HastingsBoroughCouncil https://www.hastings.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
