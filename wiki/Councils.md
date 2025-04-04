@@ -118,6 +118,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Flintshire County Council](#flintshire-county-council)
 - [Folkstone and Hythe District Council](#folkstone-and-hythe-district-council)
 - [Forest of Dean District Council](#forest-of-dean-district-council)
+- [Fylde Council](#fylde-council)
 - [Gateshead Council](#gateshead-council)
 - [Gedling Borough Council](#gedling-borough-council)
 - [Glasgow City Council](#glasgow-city-council)
@@ -1615,6 +1616,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the full address in the house number and postcode parameters. This parser requires a Selenium webdriver.
+
+---
+
+### Fylde Council
+```commandline
+python collect_data.py FyldeCouncil https://www.fylde.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
