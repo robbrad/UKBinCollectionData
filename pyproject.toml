@@ -62,6 +62,7 @@ lxml = "*"
 urllib3 = "*"
 webdriver-manager = "^4.0.1"
 tabulate = "^0.9.0"
+ics = "^0.7.2"
 
 [tool.commitizen]
 major_version_zero = true

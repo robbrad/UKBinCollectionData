@@ -832,7 +832,13 @@
         "wiki_name": "Gloucester City Council",
         "wiki_note": "Pass the house number, postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
     },
-    "GraveshamBoroughCouncil": {
+    "GooglePublicCalendarCouncil": {
+        "wiki_name": "Google Calendar (Public)",
+        "url": "https://calendar.google.com/calendar/ical/c_bca6c975545213622b3958bddab567e1e7398709c63e377b6fe9a9140bd1caf8%40group.calendar.google.com/public/basic.ics",
+        "skip_get_url": true,
+        "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU. Councils that currently need this are Trafford."
+    },
+        "GraveshamBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "100060927046",
         "url": "https://www.gravesham.gov.uk",
