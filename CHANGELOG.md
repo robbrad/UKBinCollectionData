@@ -1,4 +1,26 @@
 =======
+## 0.138.0 (2025-04-05)
+
+### Feat
+
+- Adding Hastings Borough Council
+- Adding Fylde Council
+
+### Fix
+
+- #1249
+- #1039
+fix: #1181
+fix: #1266
+fix: #1274
+- Gloucester City Council
+- #1282
+- Mid Devon Council
+- #1277
+fix: #1287
+- West Oxfordshire Council
+- #1290
+
 ## 0.137.0 (2025-04-05)
 
 ### Feat
