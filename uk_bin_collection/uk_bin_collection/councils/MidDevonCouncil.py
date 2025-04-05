@@ -18,6 +18,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
+        user_uprn = str(user_uprn).zfill(12)
         bindata = {"bins": []}
 
         SESSION_URL = "https://my.middevon.gov.uk/authapi/isauthenticated?uri=https%253A%252F%252Fmy.middevon.gov.uk%252Fen%252FAchieveForms%252F%253Fform_uri%253Dsandbox-publish%253A%252F%252FAF-Process-2289dd06-9a12-4202-ba09-857fe756f6bd%252FAF-Stage-eb382015-001c-415d-beda-84f796dbb167%252Fdefinition.json%2526redirectlink%253D%25252Fen%2526cancelRedirectLink%253D%25252Fen%2526consentMessage%253Dyes&hostname=my.middevon.gov.uk&withCredentials=true"

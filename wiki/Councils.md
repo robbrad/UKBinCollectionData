@@ -118,6 +118,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Flintshire County Council](#flintshire-county-council)
 - [Folkstone and Hythe District Council](#folkstone-and-hythe-district-council)
 - [Forest of Dean District Council](#forest-of-dean-district-council)
+- [Fylde Council](#fylde-council)
 - [Gateshead Council](#gateshead-council)
 - [Gedling Borough Council](#gedling-borough-council)
 - [Glasgow City Council](#glasgow-city-council)
@@ -132,6 +133,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Harrogate Borough Council](#harrogate-borough-council)
 - [Hart District Council](#hart-district-council)
 - [Hartlepool Borough Council](#hartlepool-borough-council)
+- [Hastings Borough Council](#hastings-borough-council)
 - [Herefordshire Council](#herefordshire-council)
 - [Hertsmere Borough Council](#hertsmere-borough-council)
 - [High Peak Council](#high-peak-council)
@@ -1616,6 +1618,17 @@ Note: Pass the full address in the house number and postcode parameters. This pa
 
 ---
 
+### Fylde Council
+```commandline
+python collect_data.py FyldeCouncil https://www.fylde.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### Gateshead Council
 ```commandline
 python collect_data.py GatesheadCouncil https://www.gateshead.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
@@ -1785,6 +1798,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+
+---
+
+### Hastings Borough Council
+```commandline
+python collect_data.py HastingsBoroughCouncil https://www.hastings.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
