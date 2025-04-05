@@ -745,16 +745,14 @@ Note: Pass the house number and postcode in their respective parameters.
 
 ### Brighton and Hove City Council
 ```commandline
-python collect_data.py BrightonandHoveCityCouncil https://cityclean.brighton-hove.gov.uk/link/collections -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BrightonandHoveCityCouncil https://cityclean.brighton-hove.gov.uk/link/collections -n "XXXXXX XXXX XXXX" -p "XXXX XXX" -w http://HOST:PORT/wd/hub
 ```
 Additional parameters:
-- `-s` - skip get URL
-- `-u` - UPRN
-- `-p` - postcode
 - `-n` - house number
+- `-p` - postcode
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Use the full address as it appears on the drop-down on the site when you search by postcode.
+Note: Use the full address as it appears on the drop-down on the site when you search by house number.
 
 ---
 
