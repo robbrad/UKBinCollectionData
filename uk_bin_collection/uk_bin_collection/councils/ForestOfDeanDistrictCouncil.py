@@ -12,6 +12,7 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 # import the wonderful Beautiful Soup and the URL grabber
+import re
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -42,72 +43,82 @@ class CouncilClass(AbstractGetBinDataClass):
             wait = WebDriverWait(driver, 60)
             address_entry_field = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="combobox-input-19"]')
+                    (By.XPATH, '//*[@placeholder="Search Properties..."]')
                 )
             )
 
             address_entry_field.send_keys(str(full_address))
 
             address_entry_field = wait.until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="combobox-input-19"]'))
+                EC.element_to_be_clickable((By.XPATH, f'//*[@title="{full_address}"]'))
             )
             address_entry_field.click()
-            address_entry_field.send_keys(Keys.BACKSPACE)
-            address_entry_field.send_keys(str(full_address[len(full_address) - 1]))
 
-            first_found_address = wait.until(
+            next_button = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, '//*[@id="dropdown-element-19"]/ul')
+                    (By.XPATH, "//lightning-button/button[contains(text(), 'Next')]")
                 )
             )
+            next_button.click()
 
-            first_found_address.click()
-            # Wait for the 'Select your property' dropdown to appear and select the first result
-            next_btn = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//lightning-button/button"))
-            )
-            next_btn.click()
-            bin_data = wait.until(
+            result = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//span[contains(text(), 'Container')]")
+                    (
+                        By.XPATH,
+                        '//table[@class="slds-table slds-table_header-fixed slds-table_bordered slds-table_edit slds-table_resizable-cols"]',
+                    )
                 )
             )
 
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
+            # Make a BS4 object
+            soup = BeautifulSoup(
+                result.get_attribute("innerHTML"), features="html.parser"
+            )  # Wait for the 'Select your property' dropdown to appear and select the first result
 
+            data = {"bins": []}
+            today = datetime.now()
+            current_year = today.year
+
+            # Find all bin rows in the table
             rows = soup.find_all("tr", class_="slds-hint-parent")
-            current_year = datetime.now().year
 
             for row in rows:
-                columns = row.find_all("td")
-                if columns:
-                    container_type = row.find("th").text.strip()
-                    if columns[0].get_text() == "Today":
-                        collection_day = datetime.now().strftime("%a, %d %B")
-                    elif columns[0].get_text() == "Tomorrow":
-                        collection_day = (datetime.now() + timedelta(days=1)).strftime(
-                            "%a, %d %B"
-                        )
-                    else:
-                        collection_day = re.sub(
-                            r"[^a-zA-Z0-9,\s]", "", columns[0].get_text()
-                        ).strip()
+                try:
+                    bin_type_cell = row.find("th")
+                    date_cell = row.find("td")
 
-                    # Parse the date from the string
-                    parsed_date = datetime.strptime(collection_day, "%a, %d %B")
-                    if parsed_date < datetime(
-                        parsed_date.year, parsed_date.month, parsed_date.day
-                    ):
-                        parsed_date = parsed_date.replace(year=current_year + 1)
-                    else:
-                        parsed_date = parsed_date.replace(year=current_year)
-                    # Format the date as %d/%m/%Y
-                    formatted_date = parsed_date.strftime("%d/%m/%Y")
+                    if not bin_type_cell or not date_cell:
+                        continue
 
-                    # Add the bin type and collection date to the 'data' dictionary
+                    container_type = bin_type_cell.get("data-cell-value", "").strip()
+                    raw_date_text = date_cell.get("data-cell-value", "").strip()
+
+                    # Handle relative values like "Today" or "Tomorrow"
+                    if "today" in raw_date_text.lower():
+                        parsed_date = today
+                    elif "tomorrow" in raw_date_text.lower():
+                        parsed_date = today + timedelta(days=1)
+                    else:
+                        # Expected format: "Thu, 10 April"
+                        # Strip any rogue characters and try parsing
+                        cleaned_date = re.sub(r"[^\w\s,]", "", raw_date_text)
+                        try:
+                            parsed_date = datetime.strptime(cleaned_date, "%a, %d %B")
+                            parsed_date = parsed_date.replace(year=current_year)
+                            if parsed_date < today:
+                                # Date has passed this year, must be next year
+                                parsed_date = parsed_date.replace(year=current_year + 1)
+                        except Exception as e:
+                            print(f"Could not parse date '{cleaned_date}': {e}")
+                            continue
+
+                    formatted_date = parsed_date.strftime(date_format)
                     data["bins"].append(
                         {"type": container_type, "collectionDate": formatted_date}
                     )
+
+                except Exception as e:
+                    print(f"Error processing row: {e}")
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
