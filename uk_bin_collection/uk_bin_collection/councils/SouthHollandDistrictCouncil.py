@@ -12,6 +12,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 import re
 from datetime import datetime
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -36,31 +37,42 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(page)
 
             find_address_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "SHDCWASTECOLLECTIONS_PAGE1_FINDADDRESSBUTTON"))
+                EC.presence_of_element_located(
+                    (By.ID, "SHDCWASTECOLLECTIONS_PAGE1_FINDADDRESSBUTTON")
+                )
             )
             # Wait for the postcode field to appear then populate it
             postcode_input = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "SHDCWASTECOLLECTIONS_PAGE1_POSTCODENEW"))
+                EC.presence_of_element_located(
+                    (By.ID, "SHDCWASTECOLLECTIONS_PAGE1_POSTCODENEW")
+                )
             )
-            
+
             postcode_input.send_keys(user_postcode)
 
             find_address_button.click()
 
             # Wait until the address list contains an option with the target UPRN
             WebDriverWait(driver, timeout=20).until(
-                lambda d: str(user_uprn) in [
+                lambda d: str(user_uprn)
+                in [
                     option.get_attribute("value")
-                    for option in Select(d.find_element(By.ID, "SHDCWASTECOLLECTIONS_PAGE1_ADDRESSLIST")).options
+                    for option in Select(
+                        d.find_element(By.ID, "SHDCWASTECOLLECTIONS_PAGE1_ADDRESSLIST")
+                    ).options
                 ]
             )
 
             # Now select the UPRN
-            address_selection_menu = Select(driver.find_element(By.ID, "SHDCWASTECOLLECTIONS_PAGE1_ADDRESSLIST"))
+            address_selection_menu = Select(
+                driver.find_element(By.ID, "SHDCWASTECOLLECTIONS_PAGE1_ADDRESSLIST")
+            )
             address_selection_menu.select_by_value(str(user_uprn))
 
             next_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "SHDCWASTECOLLECTIONS_PAGE1_CONTINUEBUTTON_NEXT"))
+                EC.presence_of_element_located(
+                    (By.ID, "SHDCWASTECOLLECTIONS_PAGE1_CONTINUEBUTTON_NEXT")
+                )
             )
 
             next_button.click()
@@ -91,20 +103,23 @@ class CouncilClass(AbstractGetBinDataClass):
                     text = next_coll_div.get_text(" ", strip=True)
 
                     # Extract date using regex, e.g. 'Wednesday 9th April 2025'
-                    match = re.search(r'\b(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})\b', text)
+                    match = re.search(
+                        r"\b(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})\b", text
+                    )
                     if match:
                         day, month_str, year = match.groups()
 
                         # Convert to datetime to format as dd/mm/yyyy
-                        date_obj = datetime.strptime(f"{day} {month_str} {year}", "%d %B %Y")
+                        date_obj = datetime.strptime(
+                            f"{day} {month_str} {year}", "%d %B %Y"
+                        )
                         formatted_date = date_obj.strftime("%d/%m/%Y")
                     else:
                         formatted_date = "Unknown"
 
-                    data["bins"].append({
-                        "type": bin_type,
-                        "collectionDate": formatted_date
-                    })
+                    data["bins"].append(
+                        {"type": bin_type, "collectionDate": formatted_date}
+                    )
 
                 except Exception as parse_error:
                     print(f"Error parsing bin data: {parse_error}")

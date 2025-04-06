@@ -5,6 +5,7 @@ import requests
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -12,7 +13,7 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
-    
+
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_uprn = kwargs.get("uprn")

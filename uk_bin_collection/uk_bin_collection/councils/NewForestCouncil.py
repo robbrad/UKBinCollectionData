@@ -127,9 +127,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Garden waste
             garden_waste = soup.find("div", class_="eb-2HIpCnWC-Override-EditorInput")
             if garden_waste:
-                match = re.search(
-                    r"(\d{2}/\d{2}/\d{4})", garden_waste.text
-                )
+                match = re.search(r"(\d{2}/\d{2}/\d{4})", garden_waste.text)
                 if match:
                     bins.append(
                         {"type": "Garden waste", "collectionDate": match.group(1)}

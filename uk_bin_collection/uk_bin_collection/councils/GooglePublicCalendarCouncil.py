@@ -30,9 +30,8 @@ class CouncilClass(AbstractGetBinDataClass):
             except Exception:
                 continue
 
-            bindata["bins"].append({
-                "type": event.name,
-                "collectionDate": collection_date
-            })
+            bindata["bins"].append(
+                {"type": event.name, "collectionDate": collection_date}
+            )
 
         return bindata

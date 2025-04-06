@@ -50,12 +50,18 @@ class CouncilClass(AbstractGetBinDataClass):
         for index, bin_type in enumerate(bin_types):
             # currently only handled weekly and garden collection, special collections like Christmas Day need to be added
             if index == WEEKLY_COLLECTION:
-                next_collection_date = get_next_day_of_week(collection_days[index].text.strip(), date_format)
+                next_collection_date = get_next_day_of_week(
+                    collection_days[index].text.strip(), date_format
+                )
             elif index == GARDEN_COLLECTION:
                 split_date_part = collection_days[index].text.split("More dates")[0]
-                next_collection_date = datetime.strptime(split_date_part.strip(), "%d %B %Y").strftime(date_format)
+                next_collection_date = datetime.strptime(
+                    split_date_part.strip(), "%d %B %Y"
+                ).strftime(date_format)
             else:
-                next_collection_date = datetime.strptime(collection_days[index].text.strip(), "%d %B %Y").strftime(date_format)
+                next_collection_date = datetime.strptime(
+                    collection_days[index].text.strip(), "%d %B %Y"
+                ).strftime(date_format)
 
             dict_data = {
                 "type": bin_type.text.strip(),
@@ -83,16 +89,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def input_street_name(self, street_name, wait):
         input_element_postcodesearch = wait.until(
-            EC.visibility_of_element_located(
-                (By.ID, "Street")
-            )
+            EC.visibility_of_element_located((By.ID, "Street"))
         )
         input_element_postcodesearch.send_keys(street_name)
 
     def dismiss_cookie_banner(self, wait):
         cookie_banner = wait.until(
-            EC.visibility_of_element_located(
-                (By.ID, "ccc-dismiss-button")
-            )
+            EC.visibility_of_element_located((By.ID, "ccc-dismiss-button"))
         )
         cookie_banner.send_keys(Keys.ENTER)

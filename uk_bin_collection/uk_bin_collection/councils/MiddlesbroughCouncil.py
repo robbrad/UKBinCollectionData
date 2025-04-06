@@ -12,6 +12,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 import re
 
+
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         try:
@@ -63,19 +64,27 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 # **Regex to match "Wednesday, February 19" format**
                 match = re.match(r"([A-Za-z]+), ([A-Za-z]+) (\d{1,2})", raw_date)
-                
+
                 if match:
-                    day_name, month_name, day_number = match.groups()  # Extract components
+                    day_name, month_name, day_number = (
+                        match.groups()
+                    )  # Extract components
                     extracted_month = datetime.strptime(month_name, "%B").month
                     extracted_day = int(day_number)
 
                     # Handle Dec-Jan rollover: If month is before the current month, assume next year
-                    inferred_year = current_year + 1 if extracted_month < current_month else current_year
+                    inferred_year = (
+                        current_year + 1
+                        if extracted_month < current_month
+                        else current_year
+                    )
 
                     # **Correct the raw_date format before parsing**
                     raw_date = f"{day_name}, {month_name} {day_number}, {inferred_year}"
 
-                print(f"DEBUG: Final raw_date before parsing -> {raw_date}")  # Debugging output
+                print(
+                    f"DEBUG: Final raw_date before parsing -> {raw_date}"
+                )  # Debugging output
 
                 # Convert to required format (%d/%m/%Y)
                 try:

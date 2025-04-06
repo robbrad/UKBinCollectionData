@@ -48,7 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
         address_x = address_data["Locations"][0]["X"]
         address_y = address_data["Locations"][0]["Y"]
 
-        stage2_url = fr"https://wlnk.statmap.co.uk/map/Cluster.svc/getpage?script=\Cluster\Cluster.AuroraScript$&taskId=bins&format=js&updateOnly=true&query=x%3D{address_x}%3By%3D{address_y}%3Bid%3D{address_id}"
+        stage2_url = rf"https://wlnk.statmap.co.uk/map/Cluster.svc/getpage?script=\Cluster\Cluster.AuroraScript$&taskId=bins&format=js&updateOnly=true&query=x%3D{address_x}%3By%3D{address_y}%3Bid%3D{address_id}"
 
         bin_query = requests.get(stage2_url).text
 
@@ -97,7 +97,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
                 # If the current month is December and one of the next collections is in January, increment the year
                 if datetime.now().month == 12 and int(split_date[1]) < 12:
-                    full_date = datetime(year=datetime.now().year + 1, month=int(split_date[1]), day=int(split_date[0]))
+                    full_date = datetime(
+                        year=datetime.now().year + 1,
+                        month=int(split_date[1]),
+                        day=int(split_date[0]),
+                    )
 
                 # Since data in unordered, add to a tuple
                 collections.append((bin_type.title(), full_date))
@@ -115,4 +119,3 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         return data
-

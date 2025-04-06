@@ -69,7 +69,7 @@ class CouncilClass(AbstractGetBinDataClass):
         for row in table_rows:
             row_text = row.text.strip().split("\n")
             bin_text = row_text[0].split(" ")
-            bin_type = ' '.join(bin_text[1:]).capitalize()
+            bin_type = " ".join(bin_text[1:]).capitalize()
             collections.append(
                 (bin_type, datetime.strptime(row_text[1], "%A %d %b %Y"))
             )
