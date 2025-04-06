@@ -386,6 +386,14 @@
         "wiki_name": "Castlepoint District Council",
         "wiki_note": "For this council, 'uprn' is actually a 4-digit code for your street. Go [here](https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar) and inspect the source of the dropdown box to find the 4-digit number for your street."
     },
+    "CeredigionCountyCouncil":{
+        "house_number":"BLAEN CWMMAGWR, TRISANT, CEREDIGION, SY23 4RQ",
+        "postcode":"SY23 4RQ",
+        "url":"https://www.ceredigion.gov.uk/resident/bins-recycling/",
+        "web_driver":"http://selenium:4444",
+        "wiki_name":"Ceredigion County Council",
+        "wiki_note":"House Number is the full address as it appears on the drop-down on the site when you search by postcode. This parser requires a Selenium webdriver."
+    },
     "CharnwoodBoroughCouncil": {
         "url": "https://my.charnwood.gov.uk/location?put=cbc10070067259&rememberme=0&redirect=%2F",
         "wiki_command_url_override": "https://my.charnwood.gov.uk/location?put=cbcXXXXXXXX&rememberme=0&redirect=%2F",
