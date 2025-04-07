@@ -386,6 +386,14 @@
         "wiki_name": "Castlepoint District Council",
         "wiki_note": "For this council, 'uprn' is actually a 4-digit code for your street. Go [here](https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar) and inspect the source of the dropdown box to find the 4-digit number for your street."
     },
+    "CeredigionCountyCouncil":{
+        "house_number":"BLAEN CWMMAGWR, TRISANT, CEREDIGION, SY23 4RQ",
+        "postcode":"SY23 4RQ",
+        "url":"https://www.ceredigion.gov.uk/resident/bins-recycling/",
+        "web_driver":"http://selenium:4444",
+        "wiki_name":"Ceredigion County Council",
+        "wiki_note":"House Number is the full address as it appears on the drop-down on the site when you search by postcode. This parser requires a Selenium webdriver."
+    },
     "CharnwoodBoroughCouncil": {
         "url": "https://my.charnwood.gov.uk/location?put=cbc10070067259&rememberme=0&redirect=%2F",
         "wiki_command_url_override": "https://my.charnwood.gov.uk/location?put=cbcXXXXXXXX&rememberme=0&redirect=%2F",
@@ -1327,6 +1335,16 @@
         "wiki_name": "North Ayrshire Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
+    "NorthDevonCountyCouncil":{
+        "house_number": "1",
+        "uprn": "100040249471",
+        "postcode": "EX31 2LE",
+        "skip_get_url": true,
+        "url": "https://my.northdevon.gov.uk/service/WasteRecyclingCollectionCalendar",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "North Devon County Council",
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
+    },
     "NorthEastDerbyshireDistrictCouncil": {
         "postcode": "S42 5RB",
         "skip_get_url": true,
@@ -1714,6 +1732,16 @@
         "url": "https://www.southhams.gov.uk",
         "wiki_name": "South Hams District Council",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+    },
+    "SouthHollandDistrictCouncil": {
+        "house_number": "1",
+        "postcode": "PE6 0HE",
+        "uprn": "100030872493",
+        "skip_get_url": true,
+        "url": "https://www.sholland.gov.uk/mycollections",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "South Holland District Council",
+        "wiki_note": "Pass the UPRN and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "SouthKestevenDistrictCouncil": {
         "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",

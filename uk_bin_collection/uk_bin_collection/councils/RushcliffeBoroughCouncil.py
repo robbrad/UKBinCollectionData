@@ -9,6 +9,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 import string
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -50,9 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for the 'Select address' dropdown to be visible and select option matching UPRN
             dropdown = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located(
-                    (By.ID, "FF3518-list")
-                )
+                EC.visibility_of_element_located((By.ID, "FF3518-list"))
             )
 
             # Create a 'Select' for it, then select the matching URPN option
@@ -76,9 +75,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for the confirmation panel to appear
             conf_div = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "ss_confPanel")
-                )
+                EC.presence_of_element_located((By.CLASS_NAME, "ss_confPanel"))
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")

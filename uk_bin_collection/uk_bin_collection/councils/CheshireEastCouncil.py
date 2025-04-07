@@ -6,6 +6,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 This module provides bin collection data for Cheshire East Council.
 """
 
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     A class to fetch and parse bin collection data for Cheshire East Council.
