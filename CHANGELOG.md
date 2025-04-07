@@ -1,4 +1,16 @@
 =======
+## 0.139.0 (2025-04-07)
+
+### Feat
+
+- adding #1037
+- adding #1032 North Devon Count Council
+
+### Fix
+
+- #1296 Forest of dean
+- 939 adding South Holland District Council - Lincolnshire UK
+
 ## 0.138.1 (2025-04-05)
 
 ### Fix
