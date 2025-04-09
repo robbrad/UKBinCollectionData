@@ -1,31 +1,33 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Python Debugger: Current File",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
-            "args": [
-                "CouncilModule",
-                "URL",
-                "-p",
-                "POSTCODE",
-                "-w",
-                "http://localhost:4444",
-            ]
-        },
-        {
-            "name": "Python Debugger: Integ Tests",
-            "type": "debugpy",
-            "request": "launch",
-            "purpose": [
-                "debug-test"
-            ],
-            "env": {
-                "PYTEST_ADDOPTS": "--headless=False --local_browser=False"
-            },
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": [
+        "BroadlandDistrictCouncil",
+        "https://area.southnorfolkandbroadland.gov.uk/FindAddress",
+        "-p",
+        "NR10 3FD",
+        "-n",
+        "1 Park View, Horsford, Norfolk, NR10 3FD",
+        "-w",
+        "http://localhost:4444",
+      ],
+    },
+    {
+      "name": "Python Debugger: Integ Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "purpose": [
+        "debug-test"
+      ],
+      "env": {
+        "PYTEST_ADDOPTS": "--headless=False --local_browser=True"
+      }
+    }
+  ]
 }
