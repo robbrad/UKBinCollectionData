@@ -1,4 +1,6 @@
 # This script pulls (in one hit) the data from Broadland District Council Bins Data
+# Working command line:
+# python collect_data.py BroadlandDistrictCouncil "https://area.southnorfolkandbroadland.gov.uk/FindAddress" -p "NR10 3FD" -n "1 Park View, Horsford, Norfolk, NR10 3FD"
 import re
 import time
 from datetime import datetime
@@ -10,7 +12,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import (
+    contains_date,
+    create_webdriver,
+    remove_ordinal_indicator_from_date_string,
+)
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -27,10 +33,6 @@ class CouncilClass(AbstractGetBinDataClass):
             print(
                 f"Starting parse_data with parameters: postcode={kwargs.get('postcode')}, paon={kwargs.get('paon')}"
             )
-            user_paon = kwargs.get("paon")
-            postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
 
             # Use a realistic user agent to avoid detection
             user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
@@ -48,6 +50,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 print("Successfully loaded the page")
                 # Add a delay to ensure the page is fully loaded
                 time.sleep(2)
+
+                # Handle cookie confirmation dialog
+                self._handle_cookie_confirmation(driver)
+
             except Exception as e:
                 print(f"Error loading the page: {e}")
                 raise
@@ -81,8 +87,15 @@ class CouncilClass(AbstractGetBinDataClass):
                         )
                     )
                 )
-                print("Found 'Find address' button, clicking it...")
-                submit_btn.click()
+                print("Found 'Find address' button, scrolling to it...")
+                # Scroll the button into view
+                driver.execute_script("arguments[0].scrollIntoView(true);", submit_btn)
+                time.sleep(1)
+
+                # Use Keys.ENTER as requested
+                print("Clicking button using Keys.ENTER...")
+                submit_btn.send_keys(Keys.ENTER)
+
                 # Add a delay after clicking the button
                 time.sleep(3)
             except Exception as e:
@@ -109,76 +122,17 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create a Select object for the dropdown
             dropdown_select = Select(address_dropdown)
 
-            # Simplified approach: Try to find the address directly by partial text match
-            print(f"Looking for address containing: {user_paon}")
+            # Search for the exact address as defined in the JSON
+            print(f"Looking for address: {user_paon}")
 
-            # Get the first part of the address (usually the house number)
-            house_number = user_paon.split()[0]
-            print(f"House number to match: {house_number}")
-
-            # Try to find an option with the house number
             try:
-                # First, try to find by the full address
-                for i, option in enumerate(dropdown_select.options):
-                    if i == 0:  # Skip the first option which is usually a placeholder
-                        continue
-
-                    if user_paon in option.text:
-                        print(f"Found matching address: {option.text}")
-                        dropdown_select.select_by_index(i)
-                        break
-                else:
-                    # If not found, try to find by house number
-                    for i, option in enumerate(dropdown_select.options):
-                        if i == 0:  # Skip the first option
-                            continue
-
-                        if option.text.startswith(house_number):
-                            print(f"Found address by house number: {option.text}")
-                            dropdown_select.select_by_index(i)
-                            break
-                    else:
-                        # If still not found, just select the first non-placeholder option
-                        print("No exact match found, selecting the first valid option")
-                        if len(dropdown_select.options) > 1:
-                            dropdown_select.select_by_index(1)
-                        else:
-                            raise ValueError("No valid addresses found in dropdown")
+                # Select the address by visible text
+                dropdown_select.select_by_visible_text(user_paon)
+                print(f"Selected address: {user_paon}")
             except Exception as e:
-                print(f"Error selecting address: {e}")
-                # Try a different approach if the above fails
-                try:
-                    # Try using JavaScript to select the option
-                    print("Trying to select address using JavaScript")
-                    for i, option in enumerate(dropdown_select.options):
-                        if i == 0:  # Skip the first option
-                            continue
-
-                        if user_paon in option.text or option.text.startswith(
-                            house_number
-                        ):
-                            driver.execute_script(
-                                f"document.getElementById('UprnAddress').selectedIndex = {i};"
-                            )
-                            driver.execute_script(
-                                "document.getElementById('UprnAddress').dispatchEvent(new Event('change'));"
-                            )
-                            print(f"Selected address using JavaScript: {option.text}")
-                            break
-                    else:
-                        # If still not found, select the first non-placeholder option
-                        if len(dropdown_select.options) > 1:
-                            driver.execute_script(
-                                "document.getElementById('UprnAddress').selectedIndex = 1;"
-                            )
-                            driver.execute_script(
-                                "document.getElementById('UprnAddress').dispatchEvent(new Event('change'));"
-                            )
-                        else:
-                            raise ValueError("No valid addresses found in dropdown")
-                except Exception as e2:
-                    print(f"JavaScript selection failed: {e2}")
-                    raise
+                print(f"Error selecting address by visible text: {e}")
+                # If we can't find the exact address, raise an error
+                raise ValueError(f"Could not find address '{user_paon}' in dropdown")
 
             # Add a delay after selecting the address
             time.sleep(2)
@@ -203,14 +157,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 print(f"Page source length: {len(driver.page_source)}")
                 raise
 
-            # Try to click using JavaScript
+            # Use Keys.ENTER as requested
             try:
-                print("Clicking button using JavaScript")
-                driver.execute_script("arguments[0].click();", next_btn)
+                print("Clicking button using Keys.ENTER")
+                next_btn.send_keys(Keys.ENTER)
                 # Add a delay after clicking the button
                 time.sleep(3)
             except Exception as e:
-                print(f"JavaScript click failed: {e}")
+                print(f"Keys.ENTER click failed: {e}")
                 try:
                     # Try regular click as fallback
                     print("Trying regular click")
@@ -224,7 +178,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         confirm_btn = driver.find_element(
                             By.CSS_SELECTOR, "input.button.button--primary"
                         )
-                        driver.execute_script("arguments[0].click();", confirm_btn)
+                        confirm_btn.send_keys(Keys.ENTER)
                         time.sleep(3)
                     except Exception as e3:
                         print(f"Alternative selector failed: {e3}")
@@ -235,7 +189,10 @@ class CouncilClass(AbstractGetBinDataClass):
             try:
                 wait.until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//div[contains(@class, 'collection-details')]")
+                        (
+                            By.XPATH,
+                            "//div[contains(@class, 'card-body')]//h4[contains(text(), 'Your next collections')]",
+                        )
                     )
                 )
                 print("Found collection details")
@@ -255,66 +212,103 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Process collection details
             print("Looking for collection details in the page...")
-            collection_details = soup.find_all(class_="collection-details")
 
-            if not collection_details:
-                collection_details = soup.find_all(class_="collection-type")
+            # Find the card-body div that contains the bin collection information
+            card_body = soup.find("div", class_="card-body")
 
-            for collection in collection_details:
-                bin_type_elem = collection.find(class_="collection-type")
-                bin_type = bin_type_elem.text.strip() if bin_type_elem else "Unknown"
+            if card_body:
+                # Find the "Your next collections" heading
+                next_collections_heading = card_body.find(
+                    "h4", string="Your next collections"
+                )
 
-                date_elem = collection.find(class_="collection-date")
-                bin_date = None
-                if date_elem:
-                    date_text = date_elem.text.strip()
-                    bin_date = self._parse_date(date_text)
+                if next_collections_heading:
+                    # Find all bin collection divs (each with class "my-2")
+                    bin_divs = next_collections_heading.find_next_siblings(
+                        "div", class_="my-2"
+                    )
 
-                if bin_type and bin_date:
-                    dict_data = {"type": bin_type, "collectionDate": bin_date}
-                    data["bins"].append(dict_data)
+                    if not bin_divs:
+                        # If we can't find them as siblings, look within the card-body
+                        bin_divs = card_body.find_all("div", class_="my-2")
+
+                    print(f"Found {len(bin_divs)} bin collection divs")
+
+                    for bin_div in bin_divs:
+                        # Find the bin type (in a strong tag)
+                        bin_type_elem = bin_div.find("strong")
+                        if bin_type_elem:
+                            bin_type = bin_type_elem.text.strip()
+
+                            # Get the parent element that contains both the bin type and date
+                            text_container = bin_type_elem.parent
+                            if text_container:
+                                # Extract the full text and remove the bin type to get the date part
+                                full_text = text_container.get_text(strip=True)
+                                date_text = full_text.replace(bin_type, "").strip()
+
+                                # Parse the date
+                                bin_date = self._parse_date(date_text)
+
+                                if bin_type and bin_date:
+                                    dict_data = {
+                                        "type": bin_type,
+                                        "collectionDate": bin_date,
+                                    }
+                                    data["bins"].append(dict_data)
+                                    print(f"Added bin data: {dict_data}")
 
             # If we still don't have any bin data, try a more generic approach
             if not data["bins"]:
                 print(
-                    "No bin data found with specific selectors, trying generic text extraction"
+                    "No bin data found with specific selectors, trying alternative approach"
                 )
-                bin_types = [
-                    "Recycling",
-                    "General Waste",
-                    "Food Waste",
-                    "Garden Waste",
-                    "Black Bin",
-                    "Green Bin",
-                    "Brown Bin",
-                    "Blue Bin",
-                ]
 
-                for bin_type in bin_types:
-                    elements = soup.find_all(
-                        string=lambda text: bin_type in text if text else False
+                # Look for all strong tags that might contain bin types
+                strong_tags = soup.find_all("strong")
+                for strong_tag in strong_tags:
+                    bin_type = strong_tag.text.strip()
+
+                    # Skip if not a likely bin type
+                    if not any(
+                        bin_word in bin_type.lower()
+                        for bin_word in [
+                            "food",
+                            "rubbish",
+                            "recycling",
+                            "garden",
+                            "waste",
+                            "bin",
+                        ]
+                    ):
+                        continue
+
+                    # Get the parent element
+                    parent = strong_tag.parent
+                    if parent:
+                        # Get the text after the bin type
+                        full_text = parent.get_text(strip=True)
+                        date_text = full_text.replace(bin_type, "").strip()
+
+                        # Parse the date
+                        bin_date = self._parse_date(date_text)
+
+                        if bin_type and bin_date:
+                            dict_data = {"type": bin_type, "collectionDate": bin_date}
+                            data["bins"].append(dict_data)
+                            print(f"Added bin data: {dict_data}")
+
+                # If we still don't have data, dump the HTML structure for debugging
+                if not data["bins"]:
+                    print(
+                        "Still no bin data found. Dumping HTML structure for debugging:"
                     )
-                    for element in elements:
-                        print(f"Found element containing '{bin_type}': {element}")
-                        parent = element.parent
-                        if parent:
-                            siblings = list(parent.next_siblings) + list(
-                                parent.previous_siblings
-                            )
-                            for sibling in siblings:
-                                if hasattr(sibling, "text"):
-                                    date_pattern = r"(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
-                                    date_match = re.search(date_pattern, sibling.text)
-                                    if date_match:
-                                        bin_date = self._parse_date(sibling.text)
-                                        if bin_date:
-                                            dict_data = {
-                                                "type": bin_type,
-                                                "collectionDate": bin_date,
-                                            }
-                                            data["bins"].append(dict_data)
-                                            print(f"Added bin data: {dict_data}")
-                                            break
+                    card_bodies = soup.find_all("div", class_="card-body")
+                    for i, card in enumerate(card_bodies):
+                        print(f"Card body {i+1}:")
+                        print(
+                            card.prettify()[:500]
+                        )  # Print first 500 chars of each card
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -326,29 +320,68 @@ class CouncilClass(AbstractGetBinDataClass):
 
         return data
 
+    def _handle_cookie_confirmation(self, driver):
+        """
+        Handle the cookie confirmation dialog for Broadland District Council website.
+        """
+        print("Checking for cookie confirmation dialog...")
+        wait = WebDriverWait(driver, 10)
+
+        try:
+            # Try the specific cookie button ID provided
+            print("Looking for the 'Allow all cookies' button...")
+            cookie_button = wait.until(
+                EC.element_to_be_clickable(
+                    (By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
+                )
+            )
+            print("Found 'Allow all cookies' button, clicking...")
+            cookie_button.send_keys(Keys.ENTER)
+            time.sleep(1)
+            print("Cookie confirmation handled successfully")
+            return True
+        except Exception as e:
+            print(f"Could not find or click the specific cookie button: {e}")
+
+            # Try alternative selectors as fallback
+            try:
+                print("Trying alternative selectors...")
+                # Try by class
+                cookie_button = driver.find_element(
+                    By.CLASS_NAME, "CybotCookiebotDialogBodyButton"
+                )
+                cookie_button.send_keys(Keys.ENTER)
+                time.sleep(1)
+                print("Cookie confirmation handled with alternative selector")
+                return True
+            except Exception as e2:
+                print(f"Could not find or click alternative cookie button: {e2}")
+
+                # Try by text content
+                try:
+                    cookie_button = driver.find_element(
+                        By.XPATH, "//button[contains(text(), 'Allow all cookies')]"
+                    )
+                    cookie_button.send_keys(Keys.ENTER)
+                    time.sleep(1)
+                    print("Cookie confirmation handled with text-based selector")
+                    return True
+                except Exception as e3:
+                    print(f"Could not find or click text-based cookie button: {e3}")
+                    print(
+                        "No cookie confirmation dialog found or could not interact with it"
+                    )
+                    return False
+
     def _parse_date(self, date_text):
         """Helper method to parse dates in various formats"""
-        bin_date = None
-        try:
-            # Try common date formats
-            date_formats = [
-                "%d %B %Y",
-                "%d %b %Y",
-                "%A %d %B %Y",
-                "%A %d %b %Y",
-            ]
-            for fmt in date_formats:
-                try:
-                    bin_date = datetime.strptime(date_text, fmt)
-                    bin_date = bin_date.strftime("%d/%m/%Y")
-                    break
-                except ValueError:
-                    continue
-        except Exception:
-            pass
+        # First, remove any ordinal indicators (1st, 2nd, 3rd, etc.)
+        cleaned_date_text = remove_ordinal_indicator_from_date_string(date_text)
 
-        # If we couldn't parse the date, try to extract it with regex
-        if not bin_date:
+        # Check if the string contains a date
+        if not contains_date(cleaned_date_text, fuzzy=True):
+            # If no date is found, try the regex approach
+            bin_date = None
             date_pattern = r"(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
             date_match = re.search(date_pattern, date_text)
             if date_match:
@@ -386,5 +419,29 @@ class CouncilClass(AbstractGetBinDataClass):
                     if month_num < current_date.month:
                         year += 1
                     bin_date = f"{int(day):02d}/{month_num:02d}/{year}"
+            return bin_date
 
-        return bin_date
+        # Try common date formats
+        date_formats = [
+            "%d %B %Y",
+            "%d %b %Y",
+            "%A %d %B %Y",
+            "%A %d %b %Y",
+        ]
+
+        for fmt in date_formats:
+            try:
+                bin_date = datetime.strptime(cleaned_date_text, fmt)
+                return bin_date.strftime("%d/%m/%Y")
+            except ValueError:
+                continue
+
+        # If we get here, we couldn't parse the date with our formats
+        # Try to extract it using dateutil's parser as a last resort
+        try:
+            from dateutil.parser import parse
+
+            parsed_date = parse(cleaned_date_text, fuzzy=True)
+            return parsed_date.strftime("%d/%m/%Y")
+        except Exception:
+            return None

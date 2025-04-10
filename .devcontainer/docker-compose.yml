@@ -8,7 +8,8 @@ services:
       - ../:/workspaces/UKBinCollectionData:rw
     privileged: true
     hostname: devcontainer
-    network_mode: host
+    networks:
+      - devnet
     depends_on:
       - selenium-hub
     command: sleep infinity
@@ -45,56 +46,56 @@ services:
     privileged: true
     restart: always
 
-  chrome2:
-    image: selenium/node-chrome:4.20.0-20240505
-    shm_size: 2gb
-    networks:
-      - devnet
-    depends_on:
-      - selenium-hub
-    ports:
-      - "7902:7900"
-      - "5552:5555"
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-    privileged: true
-    restart: always
+  #chrome2:
+  #  image: selenium/node-chrome:4.20.0-20240505
+  #  shm_size: 2gb
+  #  networks:
+  #    - devnet
+  #  depends_on:
+  #    - selenium-hub
+  #  ports:
+  #    - "7902:7900"
+  #    - "5552:5555"
+  #  environment:
+  #    - SE_EVENT_BUS_HOST=selenium-hub
+  #    - SE_EVENT_BUS_PUBLISH_PORT=4442
+  #    - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  #  privileged: true
+  #  restart: always
 
-  chrome3:
-    image: selenium/node-chrome:4.20.0-20240505
-    shm_size: 2gb
-    networks:
-      - devnet
-    depends_on:
-      - selenium-hub
-    ports:
-      - "7903:7900"
-      - "5553:5555"
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-    privileged: true
-    restart: always
+  #chrome3:
+  #  image: selenium/node-chrome:4.20.0-20240505
+  #  shm_size: 2gb
+  #  networks:
+  #    - devnet
+  #  depends_on:
+  #    - selenium-hub
+  #  ports:
+  #    - "7903:7900"
+  #    - "5553:5555"
+  #  environment:
+  #    - SE_EVENT_BUS_HOST=selenium-hub
+  #    - SE_EVENT_BUS_PUBLISH_PORT=4442
+  #    - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  #  privileged: true
+  #  restart: always
 
-  chrome4:
-    image: selenium/node-chrome:4.20.0-20240505
-    shm_size: 2gb
-    networks:
-      - devnet
-    depends_on:
-      - selenium-hub
-    ports:
-      - "7904:7900"
-      - "5554:5555"
-    environment:
-      - SE_EVENT_BUS_HOST=selenium-hub
-      - SE_EVENT_BUS_PUBLISH_PORT=4442
-      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-    privileged: true
-    restart: always
+  #chrome4:
+  #  image: selenium/node-chrome:4.20.0-20240505
+  #  shm_size: 2gb
+  #  networks:
+  #    - devnet
+  #  depends_on:
+  #    - selenium-hub
+  #  ports:
+  #    - "7904:7900"
+  #    - "5554:5555"
+  #  environment:
+  #    - SE_EVENT_BUS_HOST=selenium-hub
+  #    - SE_EVENT_BUS_PUBLISH_PORT=4442
+  #    - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+  #  privileged: true
+  #  restart: always
 
   chrome_video1:
     image: selenium/video:ffmpeg-6.1.1-20240505
@@ -111,50 +112,50 @@ services:
     privileged: true
     restart: always
 
-  chrome_video2:
-    image: selenium/video:ffmpeg-6.1.1-20240505
-    networks:
-      - devnet
-    volumes:
-      - ../test_videos:/videos/
-    depends_on:
-      - chrome2
-    environment:
-      - DISPLAY_CONTAINER_NAME=chrome2
-      - SE_VIDEO_FILE_NAME=auto
-      - SE_NODE_GRID_URL=http://selenium-hub:4444
-    privileged: true
-    restart: always
+#  chrome_video2:
+#    image: selenium/video:ffmpeg-6.1.1-20240505
+#    networks:
+#      - devnet
+#    volumes:
+#      - ../test_videos:/videos/
+#    depends_on:
+#      - chrome2
+#    environment:
+#      - DISPLAY_CONTAINER_NAME=chrome2
+#      - SE_VIDEO_FILE_NAME=auto
+#      - SE_NODE_GRID_URL=http://selenium-hub:4444
+#    privileged: true
+#    restart: always
 
-  chrome_video3:
-    image: selenium/video:ffmpeg-6.1.1-20240505
-    networks:
-      - devnet
-    volumes:
-      - ../test_videos:/videos/
-    depends_on:
-      - chrome3
-    environment:
-      - DISPLAY_CONTAINER_NAME=chrome3
-      - SE_VIDEO_FILE_NAME=auto
-      - SE_NODE_GRID_URL=http://selenium-hub:4444
-    privileged: true
-    restart: always
+#  chrome_video3:
+#    image: selenium/video:ffmpeg-6.1.1-20240505
+#    networks:
+#      - devnet
+#    volumes:
+#      - ../test_videos:/videos/
+#    depends_on:
+#      - chrome3
+#    environment:
+#      - DISPLAY_CONTAINER_NAME=chrome3
+#      - SE_VIDEO_FILE_NAME=auto
+#      - SE_NODE_GRID_URL=http://selenium-hub:4444
+#    privileged: true
+#    restart: always
 
-  chrome_video4:
-    image: selenium/video:ffmpeg-6.1.1-20240505
-    networks:
-      - devnet
-    volumes:
-      - ../test_videos:/videos/
-    depends_on:
-      - chrome4
-    environment:
-      - DISPLAY_CONTAINER_NAME=chrome4
-      - SE_VIDEO_FILE_NAME=auto
-      - SE_NODE_GRID_URL=http://selenium-hub:4444
-    privileged: true
-    restart: always
+#  chrome_video4:
+#    image: selenium/video:ffmpeg-6.1.1-20240505
+#    networks:
+#      - devnet
+#    volumes:
+#      - ../test_videos:/videos/
+#    depends_on:
+#      - chrome4
+#    environment:
+#      - DISPLAY_CONTAINER_NAME=chrome4
+#      - SE_VIDEO_FILE_NAME=auto
+#      - SE_NODE_GRID_URL=http://selenium-hub:4444
+#    privileged: true
+#    restart: always
 
   selenium-hub:
     image: selenium/hub:4.20.0-20240505
