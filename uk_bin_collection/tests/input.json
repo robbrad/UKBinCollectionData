@@ -283,8 +283,13 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BroadlandDistrictCouncil": {
+        "skip_get_url": true,
+        "house_number": "1 Park View, Horsford, Norfolk, NR10 3FD",
+        "postcode": "NR10 3FD",
         "url": "https://area.southnorfolkandbroadland.gov.uk/FindAddress",
-        "wiki_name": "BroadlandDistrictCouncil"
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Broadland District Council",
+        "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode."
     },
     "BromleyBoroughCouncil": {
         "url": "https://recyclingservices.bromley.gov.uk/waste/6087017",
