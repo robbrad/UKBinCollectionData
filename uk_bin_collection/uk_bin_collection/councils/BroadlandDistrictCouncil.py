@@ -44,7 +44,17 @@ class CouncilClass(AbstractGetBinDataClass):
             print("Successfully loaded the page")
 
             # Handle cookie confirmation dialog
-            self._handle_cookie_confirmation(driver)
+            try:
+                # Adjust the selector depending on the site's button
+                accept_button = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable(
+                        (By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
+                    )
+                )
+                accept_button.click()
+                print("Cookie banner clicked.")
+            except:
+                print("No cookie banner appeared or selector failed.")
 
             wait = WebDriverWait(driver, 60)
             post_code_search = wait.until(
@@ -129,6 +139,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     for bin_div in bin_divs:
                         # Find the bin type (in a strong tag)
                         bin_type_elem = bin_div.find("strong")
+                        bin_type = None
+
                         if bin_type_elem:
                             bin_type = bin_type_elem.text.strip()
 
@@ -140,25 +152,24 @@ class CouncilClass(AbstractGetBinDataClass):
                                 date_text = full_text.replace(bin_type, "").strip()
 
                                 # Parse the date
-                                bin_date = self._parse_date(date_text)
+                                # First, remove any ordinal indicators (1st, 2nd, 3rd, etc.)
+                                cleaned_date_text = (
+                                    remove_ordinal_indicator_from_date_string(date_text)
+                                )
 
-                        if bin_type and bin_date:
-                            dict_data = {"type": bin_type, "collectionDate": bin_date}
-                            data["bins"].append(dict_data)
-                            print(f"Added bin data: {dict_data}")
+                                from dateutil.parser import parse
 
-                # If we don't have data, dump the HTML structure for debugging
-                if not data["bins"]:
-                    print(
-                        "Still no bin data found. Dumping HTML structure for debugging:"
-                    )
-                    card_bodies = soup.find_all("div", class_="card-body")
-                    for i, card in enumerate(card_bodies):
-                        print(f"Card body {i+1}:")
-                        print(
-                            card.prettify()[:500]
-                        )  # Print first 500 chars of each card
+                                parsed_date = parse(cleaned_date_text, fuzzy=True)
+                                bin_date = parsed_date.strftime("%d/%m/%Y")
 
+                                # Only process if we have both bin_type and bin_date
+                                if bin_type and bin_date:
+                                    dict_data = {
+                                        "type": bin_type,
+                                        "collectionDate": bin_date,
+                                    }
+                                    data["bins"].append(dict_data)
+                                    print(f"Added bin data: {dict_data}")
         except Exception as e:
             print(f"An error occurred: {e}")
             raise
@@ -168,129 +179,3 @@ class CouncilClass(AbstractGetBinDataClass):
                 driver.quit()
 
         return data
-
-    def _handle_cookie_confirmation(self, driver):
-        """
-        Handle the cookie confirmation dialog for Broadland District Council website.
-        """
-        print("Checking for cookie confirmation dialog...")
-        wait = WebDriverWait(driver, 10)
-
-        try:
-            # Try the specific cookie button ID provided
-            print("Looking for the 'Allow all cookies' button...")
-            cookie_button = wait.until(
-                EC.element_to_be_clickable(
-                    (By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
-                )
-            )
-            print("Found 'Allow all cookies' button, clicking...")
-            cookie_button.send_keys(Keys.ENTER)
-            time.sleep(1)
-            print("Cookie confirmation handled successfully")
-            return True
-        except Exception as e:
-            print(f"Could not find or click the specific cookie button: {e}")
-
-            # Try alternative selectors as fallback
-            try:
-                print("Trying alternative selectors...")
-                # Try by class
-                cookie_button = driver.find_element(
-                    By.CLASS_NAME, "CybotCookiebotDialogBodyButton"
-                )
-                cookie_button.send_keys(Keys.ENTER)
-                time.sleep(1)
-                print("Cookie confirmation handled with alternative selector")
-                return True
-            except Exception as e2:
-                print(f"Could not find or click alternative cookie button: {e2}")
-
-                # Try by text content
-                try:
-                    cookie_button = driver.find_element(
-                        By.XPATH, "//button[contains(text(), 'Allow all cookies')]"
-                    )
-                    cookie_button.send_keys(Keys.ENTER)
-                    time.sleep(1)
-                    print("Cookie confirmation handled with text-based selector")
-                    return True
-                except Exception as e3:
-                    print(f"Could not find or click text-based cookie button: {e3}")
-                    print(
-                        "No cookie confirmation dialog found or could not interact with it"
-                    )
-                    return False
-
-    def _parse_date(self, date_text):
-        """Helper method to parse dates in various formats"""
-        # First, remove any ordinal indicators (1st, 2nd, 3rd, etc.)
-        cleaned_date_text = remove_ordinal_indicator_from_date_string(date_text)
-
-        # Check if the string contains a date
-        if not contains_date(cleaned_date_text, fuzzy=True):
-            # If no date is found, try the regex approach
-            bin_date = None
-            date_pattern = r"(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
-            date_match = re.search(date_pattern, date_text)
-            if date_match:
-                day = date_match.group(1)
-                month = date_match.group(2)
-                month_dict = {
-                    "January": 1,
-                    "Jan": 1,
-                    "February": 2,
-                    "Feb": 2,
-                    "March": 3,
-                    "Mar": 3,
-                    "April": 4,
-                    "Apr": 4,
-                    "May": 5,
-                    "June": 6,
-                    "Jun": 6,
-                    "July": 7,
-                    "Jul": 7,
-                    "August": 8,
-                    "Aug": 8,
-                    "September": 9,
-                    "Sep": 9,
-                    "October": 10,
-                    "Oct": 10,
-                    "November": 11,
-                    "Nov": 11,
-                    "December": 12,
-                    "Dec": 12,
-                }
-                month_num = month_dict.get(month)
-                if month_num:
-                    current_date = datetime.now()
-                    year = current_date.year
-                    if month_num < current_date.month:
-                        year += 1
-                    bin_date = f"{int(day):02d}/{month_num:02d}/{year}"
-            return bin_date
-
-        # Try common date formats
-        date_formats = [
-            "%d %B %Y",
-            "%d %b %Y",
-            "%A %d %B %Y",
-            "%A %d %b %Y",
-        ]
-
-        for fmt in date_formats:
-            try:
-                bin_date = datetime.strptime(cleaned_date_text, fmt)
-                return bin_date.strftime("%d/%m/%Y")
-            except ValueError:
-                continue
-
-        # If we get here, we couldn't parse the date with our formats
-        # Try to extract it using dateutil's parser as a last resort
-        try:
-            from dateutil.parser import parse
-
-            parsed_date = parse(cleaned_date_text, fuzzy=True)
-            return parsed_date.strftime("%d/%m/%Y")
-        except Exception:
-            return None
