@@ -12,196 +12,92 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import (
-    contains_date,
-    create_webdriver,
-    remove_ordinal_indicator_from_date_string,
-)
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete class for Broadland District Council bin collections
-    """
 
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
             data = {"bins": []}
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
 
-            print(
-                f"Starting parse_data with parameters: postcode={kwargs.get('postcode')}, paon={kwargs.get('paon')}"
-            )
-
-            # Use a realistic user agent to avoid detection
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-
-            print(
-                f"Creating webdriver with: web_driver={web_driver}, headless={headless}, user_agent={user_agent}"
-            )
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+            uprn = kwargs.get("uprn")
+            user_paon = kwargs.get("paon")
+            postcode = kwargs.get("postcode")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
             url = kwargs.get("url")
+
+            print(
+                f"Starting parse_data with parameters: postcode={postcode}, paon={user_paon}"
+            )
+            print(
+                f"Creating webdriver with: web_driver={web_driver}, headless={headless}"
+            )
+
+            driver = create_webdriver(web_driver, headless, None, __name__)
             print(f"Navigating to URL: {url}")
+            driver.get(url)
+            print("Successfully loaded the page")
 
-            # Add a try-except block specifically for the navigation
-            try:
-                driver.get(url)
-                print("Successfully loaded the page")
-                # Add a delay to ensure the page is fully loaded
-                time.sleep(2)
-
-                # Handle cookie confirmation dialog
-                self._handle_cookie_confirmation(driver)
-
-            except Exception as e:
-                print(f"Error loading the page: {e}")
-                raise
+            # Handle cookie confirmation dialog
+            self._handle_cookie_confirmation(driver)
 
             wait = WebDriverWait(driver, 60)
-
-            # Find the postcode input field
-            print("Looking for postcode input field...")
-            try:
-                post_code_search = wait.until(
-                    EC.presence_of_element_located((By.ID, "Postcode"))
-                )
-                print(f"Found postcode input field, entering postcode: {postcode}")
-                post_code_search.send_keys(postcode)
-                # Add a small delay after entering the postcode
-                time.sleep(1)
-            except Exception as e:
-                print(f"Error finding or interacting with postcode field: {e}")
-                print(f"Page title: {driver.title}")
-                print(f"Page source length: {len(driver.page_source)}")
-                raise
+            post_code_search = wait.until(
+                EC.presence_of_element_located((By.ID, "Postcode"))
+            )
+            post_code_search.send_keys(postcode)
 
             # Click the Find address button
             print("Looking for 'Find address' button...")
-            try:
-                submit_btn = wait.until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//input[@type='submit' and @class='button button--secondary']",
-                        )
+            submit_btn = wait.until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//input[@type='submit' and @class='button button--secondary']",
                     )
                 )
-                print("Found 'Find address' button, scrolling to it...")
-                # Scroll the button into view
-                driver.execute_script("arguments[0].scrollIntoView(true);", submit_btn)
-                time.sleep(1)
-
-                # Use Keys.ENTER as requested
-                print("Clicking button using Keys.ENTER...")
-                submit_btn.send_keys(Keys.ENTER)
-
-                # Add a delay after clicking the button
-                time.sleep(3)
-            except Exception as e:
-                print(f"Error finding or clicking 'Find address' button: {e}")
-                print(f"Page title: {driver.title}")
-                print(f"Page source length: {len(driver.page_source)}")
-                raise
+            )
+            print("Clicking button...")
+            submit_btn.send_keys(Keys.ENTER)
 
             # Wait for the address dropdown to appear
             print("Waiting for address dropdown to appear...")
-            try:
-                address_dropdown = wait.until(
-                    EC.presence_of_element_located((By.ID, "UprnAddress"))
-                )
-                print("Found address dropdown")
-                # Add a delay after finding the dropdown
-                time.sleep(2)
-            except Exception as e:
-                print(f"Error finding address dropdown: {e}")
-                print(f"Page title: {driver.title}")
-                print(f"Page source length: {len(driver.page_source)}")
-                raise
+            address_dropdown = wait.until(
+                EC.presence_of_element_located((By.ID, "UprnAddress"))
+            )
+            print("Found address dropdown")
 
             # Create a Select object for the dropdown
             dropdown_select = Select(address_dropdown)
 
-            # Search for the exact address as defined in the JSON
+            # Search for the exact address
             print(f"Looking for address: {user_paon}")
 
-            try:
-                # Select the address by visible text
-                dropdown_select.select_by_visible_text(user_paon)
-                print(f"Selected address: {user_paon}")
-            except Exception as e:
-                print(f"Error selecting address by visible text: {e}")
-                # If we can't find the exact address, raise an error
-                raise ValueError(f"Could not find address '{user_paon}' in dropdown")
+            # Select the address by visible text
+            dropdown_select.select_by_visible_text(user_paon)
+            print(f"Selected address: {user_paon}")
 
-            # Add a delay after selecting the address
-            time.sleep(2)
+            print("Looking for submit button after address selection...")
+            submit_btn = wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']"))
+            )
+            print("Clicking button...")
+            submit_btn.send_keys(Keys.ENTER)
 
-            # Click the confirm selection button
-            print("Looking for 'Confirm selection' button...")
-            try:
-                next_btn = wait.until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//input[@type='submit' and @class='button button--primary' and @value='Confirm selection']",
-                        )
-                    )
-                )
-                print("Found 'Confirm selection' button, scrolling to it")
-                driver.execute_script("arguments[0].scrollIntoView(true);", next_btn)
-                time.sleep(1)
-            except Exception as e:
-                print(f"Error finding 'Confirm selection' button: {e}")
-                print(f"Page title: {driver.title}")
-                print(f"Page source length: {len(driver.page_source)}")
-                raise
-
-            # Use Keys.ENTER as requested
-            try:
-                print("Clicking button using Keys.ENTER")
-                next_btn.send_keys(Keys.ENTER)
-                # Add a delay after clicking the button
-                time.sleep(3)
-            except Exception as e:
-                print(f"Keys.ENTER click failed: {e}")
-                try:
-                    # Try regular click as fallback
-                    print("Trying regular click")
-                    next_btn.click()
-                    time.sleep(3)
-                except Exception as e2:
-                    print(f"Regular click failed: {e2}")
-                    # Try one more approach - find by different selector
-                    try:
-                        print("Trying to find button by different selector")
-                        confirm_btn = driver.find_element(
-                            By.CSS_SELECTOR, "input.button.button--primary"
-                        )
-                        confirm_btn.send_keys(Keys.ENTER)
-                        time.sleep(3)
-                    except Exception as e3:
-                        print(f"Alternative selector failed: {e3}")
-                        raise
-
-            # Wait for collection details to be present in the page
             print("Waiting for collection details to appear...")
-            try:
-                wait.until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//div[contains(@class, 'card-body')]//h4[contains(text(), 'Your next collections')]",
-                        )
+            address_dropdown = wait.until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//div[contains(@class, 'card-body')]//h4[contains(text(), 'Your next collections')]",
                     )
                 )
-                print("Found collection details")
-            except Exception as e:
-                print(f"Error waiting for collection details: {e}")
-                print(f"Page title: {driver.title}")
-                print(f"Page source length: {len(driver.page_source)}")
-                print("Page source preview:")
-                print(driver.page_source[:1000])
+            )
 
             # Make a BS4 object
             print("Parsing page with BeautifulSoup...")
@@ -228,10 +124,6 @@ class CouncilClass(AbstractGetBinDataClass):
                         "div", class_="my-2"
                     )
 
-                    if not bin_divs:
-                        # If we can't find them as siblings, look within the card-body
-                        bin_divs = card_body.find_all("div", class_="my-2")
-
                     print(f"Found {len(bin_divs)} bin collection divs")
 
                     for bin_div in bin_divs:
@@ -250,55 +142,12 @@ class CouncilClass(AbstractGetBinDataClass):
                                 # Parse the date
                                 bin_date = self._parse_date(date_text)
 
-                                if bin_type and bin_date:
-                                    dict_data = {
-                                        "type": bin_type,
-                                        "collectionDate": bin_date,
-                                    }
-                                    data["bins"].append(dict_data)
-                                    print(f"Added bin data: {dict_data}")
-
-            # If we still don't have any bin data, try a more generic approach
-            if not data["bins"]:
-                print(
-                    "No bin data found with specific selectors, trying alternative approach"
-                )
-
-                # Look for all strong tags that might contain bin types
-                strong_tags = soup.find_all("strong")
-                for strong_tag in strong_tags:
-                    bin_type = strong_tag.text.strip()
-
-                    # Skip if not a likely bin type
-                    if not any(
-                        bin_word in bin_type.lower()
-                        for bin_word in [
-                            "food",
-                            "rubbish",
-                            "recycling",
-                            "garden",
-                            "waste",
-                            "bin",
-                        ]
-                    ):
-                        continue
-
-                    # Get the parent element
-                    parent = strong_tag.parent
-                    if parent:
-                        # Get the text after the bin type
-                        full_text = parent.get_text(strip=True)
-                        date_text = full_text.replace(bin_type, "").strip()
-
-                        # Parse the date
-                        bin_date = self._parse_date(date_text)
-
                         if bin_type and bin_date:
                             dict_data = {"type": bin_type, "collectionDate": bin_date}
                             data["bins"].append(dict_data)
                             print(f"Added bin data: {dict_data}")
 
-                # If we still don't have data, dump the HTML structure for debugging
+                # If we don't have data, dump the HTML structure for debugging
                 if not data["bins"]:
                     print(
                         "Still no bin data found. Dumping HTML structure for debugging:"

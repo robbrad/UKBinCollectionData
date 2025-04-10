@@ -10,9 +10,12 @@
       "args": [
         "BroadlandDistrictCouncil",
         "https://area.southnorfolkandbroadland.gov.uk/FindAddress",
+        "-n",
         "1 Park View, Horsford, Norfolk, NR10 3FD",
+        "-p",
         "NR10 3FD",
-        "http://localhost:4444",
+        "-w",
+        "http://selenium-hub:4444",
       ],
     },
     {
