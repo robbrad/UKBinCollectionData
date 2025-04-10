@@ -142,7 +142,9 @@ class CouncilClass(AbstractGetBinDataClass):
                         bin_type = None
 
                         if bin_type_elem:
-                            bin_type = bin_type_elem.text.strip()
+                            bin_type = bin_type_elem.text.strip().replace(
+                                " (if applicable)", ""
+                            )
 
                             # Get the parent element that contains both the bin type and date
                             text_container = bin_type_elem.parent
@@ -150,6 +152,7 @@ class CouncilClass(AbstractGetBinDataClass):
                                 # Extract the full text and remove the bin type to get the date part
                                 full_text = text_container.get_text(strip=True)
                                 date_text = full_text.replace(bin_type, "").strip()
+                                print(f"Unparsed collection date: {date_text}")
 
                                 # Parse the date
                                 # First, remove any ordinal indicators (1st, 2nd, 3rd, etc.)
