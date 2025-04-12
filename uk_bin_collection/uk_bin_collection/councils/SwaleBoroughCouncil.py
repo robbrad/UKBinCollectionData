@@ -28,108 +28,119 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Get postcode and UPRN from kwargs
-        user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_postcode(user_postcode)
-        check_paon(user_paon)
-
-        # Build URL to parse
-        council_url = "https://swale.gov.uk/bins-littering-and-the-environment/bins/check-your-bin-day"
-
-        # Create Selenium webdriver
-        driver = create_webdriver(web_driver, headless, None, __name__)
-        driver.get(council_url)
-
-        # Wait for the postcode field to appear then populate it
+        driver = None
         try:
-            inputElement_postcode = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "q485476_q1"))
-            )
-            inputElement_postcode.send_keys(user_postcode)
-        except Exception:
-            print("Page failed to load. Probably due to Cloudflare robot check!")
+            # Get postcode and UPRN from kwargs
+            user_postcode = kwargs.get("postcode")
+            user_paon = kwargs.get("paon")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            check_postcode(user_postcode)
+            check_paon(user_paon)
 
-        # Click search button
-        findAddress = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "form_email_485465_submit"))
-        )
-        driver.execute_script("arguments[0].click();", findAddress)
+            # Build URL to parse
+            council_url = "https://swale.gov.uk/bins-littering-and-the-environment/bins/check-your-bin-day"
 
-        # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//select[@name='q485480:q1']//option[contains(., '"
-                    + user_paon
-                    + "')]",
+            # Create Selenium webdriver
+            driver = create_webdriver(web_driver, headless, None, __name__)
+            driver.get(council_url)
+
+            # Wait for the postcode field to appear then populate it
+            try:
+                inputElement_postcode = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, "q485476_q1"))
                 )
+                inputElement_postcode.send_keys(user_postcode)
+            except Exception:
+                print("Page failed to load. Probably due to Cloudflare robot check!")
+
+            # Click search button
+            findAddress = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "form_email_485465_submit"))
             )
-        ).click()
+            driver.execute_script("arguments[0].click();", findAddress)
 
-        # Click search button
-        getBins = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, "form_email_485465_submit"))
-        )
-        driver.execute_script("arguments[0].click();", getBins)
+            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        "//select[@name='q485480:q1']//option[contains(., '"
+                        + user_paon
+                        + "')]",
+                    )
+                )
+            ).click()
 
-        BinTable = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located((By.ID, "SBCYBDSummary"))
-        )
+            # Click search button
+            getBins = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "form_email_485465_submit"))
+            )
+            driver.execute_script("arguments[0].click();", getBins)
 
-        soup = BeautifulSoup(driver.page_source, features="html.parser")
-        soup.prettify()
+            BinTable = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.ID, "SBCYBDSummary"))
+            )
 
-        data = {"bins": []}
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
+            soup.prettify()
 
-        current_year = datetime.now().year
-        next_year = current_year + 1
+            data = {"bins": []}
 
-        next_collection_date = soup.find(
-            "strong", id="SBC-YBD-collectionDate"
-        ).text.strip()
+            current_year = datetime.now().year
+            next_year = current_year + 1
 
-        # Extract bins for the next collection
-        next_bins = [li.text.strip() for li in soup.select("#SBCFirstBins ul li")]
+            next_collection_date = soup.find(
+                "strong", id="SBC-YBD-collectionDate"
+            ).text.strip()
 
-        # Extract future collection details
-        future_collection_date_tag = soup.find(
-            "p", text=lambda t: t and "starting from" in t
-        )
-        future_collection_date = (
-            future_collection_date_tag.text.split("starting from")[-1].strip()
-            if future_collection_date_tag
-            else "No future date found"
-        )
+            # Extract bins for the next collection
+            next_bins = [li.text.strip() for li in soup.select("#SBCFirstBins ul li")]
 
-        future_bins = [li.text.strip() for li in soup.select("#FirstFutureBins li")]
+            # Extract future collection details
+            future_collection_date_tag = soup.find(
+                "p", text=lambda t: t and "starting from" in t
+            )
+            future_collection_date = (
+                future_collection_date_tag.text.split("starting from")[-1].strip()
+                if future_collection_date_tag
+                else "No future date found"
+            )
 
-        for bin in next_bins:
-            collection_date = datetime.strptime(next_collection_date, "%A, %d %B")
-            if (datetime.now().month == 12) and (collection_date.month == 1):
-                collection_date = collection_date.replace(year=next_year)
-            else:
-                collection_date = collection_date.replace(year=current_year)
+            future_bins = [li.text.strip() for li in soup.select("#FirstFutureBins li")]
 
-            dict_data = {
-                "type": bin,
-                "collectionDate": collection_date.strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+            for bin in next_bins:
+                collection_date = datetime.strptime(next_collection_date, "%A, %d %B")
+                if (datetime.now().month == 12) and (collection_date.month == 1):
+                    collection_date = collection_date.replace(year=next_year)
+                else:
+                    collection_date = collection_date.replace(year=current_year)
 
-        for bin in future_bins:
-            collection_date = datetime.strptime(future_collection_date, "%A, %d %B")
-            if (datetime.now().month == 12) and (collection_date.month == 1):
-                collection_date = collection_date.replace(year=next_year)
-            else:
-                collection_date = collection_date.replace(year=current_year)
-            dict_data = {
-                "type": bin,
-                "collectionDate": collection_date.strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+                dict_data = {
+                    "type": bin,
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
+            for bin in future_bins:
+                collection_date = datetime.strptime(future_collection_date, "%A, %d %B")
+                if (datetime.now().month == 12) and (collection_date.month == 1):
+                    collection_date = collection_date.replace(year=next_year)
+                else:
+                    collection_date = collection_date.replace(year=current_year)
+                dict_data = {
+                    "type": bin,
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+                data["bins"].append(dict_data)
+
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return data
