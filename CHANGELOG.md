@@ -1,4 +1,10 @@
 =======
+## 0.141.1 (2025-04-12)
+
+### Fix
+
+- missing finally block on selenium tests
+
 ## 0.141.0 (2025-04-12)
 
 ### Feat
