@@ -105,7 +105,7 @@
         "postcode": "RM6 6XH",
         "skip_get_url": true,
         "web_driver": "http://selenium:4444",
-        "url": "https://www.stirling.gov.uk/bins-and-recycling/bin-collection-dates-search/",
+        "url": "https://www.lbbd.gov.uk/rubbish-recycling/household-bin-collection/check-your-bin-collection-days",
         "wiki_name": "BarkingDagenham",
         "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode."
     },
