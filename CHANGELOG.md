@@ -1,4 +1,13 @@
 =======
+## 0.143.0 (2025-04-13)
+
+### Fix
+
+- corrected url in input.json
+- fixed input.json
+- parsed Barking Dagenham collection information
+- selenium navigation Barking
+
 ## 0.142.0 (2025-04-13)
 
 ### Feat
