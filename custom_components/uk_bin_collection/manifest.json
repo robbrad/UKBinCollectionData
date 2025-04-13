@@ -9,7 +9,7 @@
     "integration_type": "service",
     "iot_class": "cloud_polling",
     "issue_tracker": "https://github.com/robbrad/UKBinCollectionData/issues",
-    "requirements": ["uk-bin-collection>=0.141.3"],
-    "version": "0.141.3",
+    "requirements": ["uk-bin-collection>=0.141.4"],
+    "version": "0.141.4",
     "zeroconf": []
 }

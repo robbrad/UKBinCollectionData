@@ -1,4 +1,10 @@
 =======
+## 0.141.4 (2025-04-13)
+
+### Fix
+
+- #1304 - sesnors goes to unknown if the data is blank from councils who are less reliable
+
 ## 0.141.3 (2025-04-13)
 
 ### Fix
