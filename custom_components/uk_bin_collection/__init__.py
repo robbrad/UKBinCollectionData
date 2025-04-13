@@ -293,6 +293,8 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         self.name = name
         self.timeout = timeout
 
+        self._last_good_data = {}
+
         _LOGGER.debug(
             f"{LOG_PREFIX} HouseholdBinCoordinator __init__: name={name}, timeout={timeout}, update_interval={update_interval}"
         )
@@ -313,6 +315,16 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
             _LOGGER.debug(f"{LOG_PREFIX} JSON parsed data: {parsed_data}")
 
             processed_data = self.process_bin_data(parsed_data)
+
+            if not processed_data:
+                _LOGGER.warning(f"{LOG_PREFIX} No bin data found. Using last known good data.")
+                if self._last_good_data:
+                    return self._last_good_data
+                else:
+                    _LOGGER.warning(f"{LOG_PREFIX} No previous data to fall back to.")
+                    return {}
+
+            self._last_good_data = processed_data
             _LOGGER.debug(f"{LOG_PREFIX} Processed data: {processed_data}")
 
             _LOGGER.info(f"{LOG_PREFIX} Bin collection data updated successfully.")
@@ -327,6 +339,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         except Exception as exc:
             _LOGGER.exception(f"{LOG_PREFIX} Unexpected error: {exc}")
             raise UpdateFailed(f"Unexpected error: {exc}") from exc
+
 
     @staticmethod
     def process_bin_data(data: dict) -> dict:
