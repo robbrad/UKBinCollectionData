@@ -112,6 +112,48 @@ def dummy_config_entry():
     return DummyConfigEntry(data)
 
 
+@pytest.mark.asyncio
+async def test_household_bin_coordinator_retains_last_good_data(hass):
+    # Create a dummy app with dynamic run output
+    class DynamicUKBinCollectionApp:
+        def __init__(self):
+            self.call_count = 0
+
+        def set_args(self, args):
+            pass
+
+        def run(self):
+            self.call_count += 1
+            if self.call_count == 1:
+                # First call: valid data
+                return json.dumps({
+                    "bins": [
+                        {"type": "waste", "collectionDate": datetime.now().strftime("%d/%m/%Y")},
+                    ]
+                })
+            else:
+                # Second call: empty bins
+                return json.dumps({"bins": []})
+
+    dummy_app = DynamicUKBinCollectionApp()
+
+    coordinator = HouseholdBinCoordinator(
+        hass,
+        dummy_app,
+        name="Test Bin",
+        timeout=2,
+        update_interval=timedelta(minutes=5)
+    )
+
+    # First fetch - stores valid data
+    first_data = await coordinator._async_update_data()
+    assert "waste" in first_data
+
+    # Second fetch - empty, should fall back to previous data
+    second_data = await coordinator._async_update_data()
+    assert second_data == first_data  # Confirm fallback occurred
+
+
 # --- Test async_setup ---
 @pytest.mark.asyncio
 async def test_async_setup_success(hass):
