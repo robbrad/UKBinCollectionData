@@ -94,7 +94,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             print("Looking for schedule list...")
             schedule_list = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "schedule__list"))
+                EC.presence_of_element_located((By.CLASS_NAME, "bin--container"))
             )
 
             # Make a BS4 object
@@ -104,53 +104,30 @@ class CouncilClass(AbstractGetBinDataClass):
             # Process collection details
             print("Looking for collection details in the page...")
 
-            schedule_items = []
-            selectors = [
-                "li.schedule__item",
-            ]
+            bin_rows = soup.select("div.bin--row:not(:first-child)")  # Skip header row
+            print(f"\nProcessing {len(bin_rows)} bin rows...")
 
-            for selector in selectors:
-                items = soup.select(selector)
-                if items:
-                    print(f"Found {len(items)} items using selector: {selector}")
-                    schedule_items = items
-                    break
-
-            print(f"\nProcessing {len(schedule_items)} schedule items...")
-
-            for item in schedule_items:
+            for row in bin_rows:
                 try:
-                    # Try multiple selectors for bin type
-                    title = item.find("h2", class_="schedule__title")
+                    # Extract bin type from first column
+                    bin_type = row.select_one("div.col-md-3").text.strip()
 
-                    bin_type = title.text.strip()
+                    # Get the collection dates column
+                    collection_dates_div = row.select("div.col-md-3")[1]  # Third column
 
-                    summary = item.find("p", class_="schedule__summary")
-
-                    # Extract date text
-                    summary_text = summary.get_text(strip=True)
-                    print(f"Found summary text: {summary_text}")
-
-                    # Try different date formats
-                    date_text = None
-                    for splitter in ["Then every", "then every", "Every"]:
-                        if splitter in summary_text:
-                            date_text = summary_text.split(splitter)[0].strip()
-                            break
-
-                    if not date_text:
-                        date_text = summary_text  # Use full text if no splitter found
-
-                    print(f"Extracted date text: {date_text}")
+                    # Get only the immediate text content before any <p> tags
+                    next_collection_text = "".join(
+                        collection_dates_div.find_all(text=True, recursive=False)
+                    ).strip()
 
                     # Parse the date
                     cleaned_date_text = remove_ordinal_indicator_from_date_string(
-                        date_text
+                        next_collection_text
                     )
                     parsed_date = parse(cleaned_date_text, fuzzy=True)
                     bin_date = parsed_date.strftime("%d/%m/%Y")
 
-                    # Add only the next collection
+                    # Add to data
                     if bin_type and bin_date:
                         dict_data = {
                             "type": bin_type,
