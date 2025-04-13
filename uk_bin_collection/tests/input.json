@@ -100,6 +100,15 @@
         "wiki_name": "Babergh District Council",
         "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]"
     },
+    "BarkingDagenham": {
+        "house_number": "19 KELLY WAY, CHADWELL HEATH, RM6 6XH",
+        "postcode": "RM6 6XH",
+        "skip_get_url": true,
+        "web_driver": "http://selenium:4444",
+        "url": "https://www.stirling.gov.uk/bins-and-recycling/bin-collection-dates-search/",
+        "wiki_name": "BarkingDagenham",
+        "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode."
+    },
     "BarnetCouncil": {
         "house_number": "HA8 7NA, 2, MANOR PARK GARDENS, EDGWARE, BARNET",
         "postcode": "HA8 7NA",
@@ -1862,10 +1871,10 @@
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "StirlingCouncil": {
-        "url": "https://www.stirling.gov.uk/bins-and-recycling/bin-collection-dates-search/",
         "house_number": "5, SUNNYLAW ROAD, BRIDGE OF ALLAN, STIRLING, FK9 4QA",
         "postcode": "FK9 4QA",
         "skip_get_url": true,
+        "url": "https://www.stirling.gov.uk/bins-and-recycling/bin-collection-dates-search/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Stirling Council",
         "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode."
