@@ -1,4 +1,10 @@
 =======
+## 0.143.1 (2025-04-15)
+
+### Fix
+
+- Set the bin_type when different day
+
 ## 0.143.0 (2025-04-13)
 
 ### Fix
