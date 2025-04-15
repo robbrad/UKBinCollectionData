@@ -57,7 +57,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
                 )
             )
-            postcode_btn_present.click()
+
+            postcode_btn_present.send_keys(Keys.RETURN)
 
             dropdown_present = wait.until(
                 EC.presence_of_element_located(
