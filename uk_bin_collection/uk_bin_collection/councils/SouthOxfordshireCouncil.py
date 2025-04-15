@@ -79,7 +79,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             "%A %d %B -",
                         )
                     )
-                    str.capitalize(" ".join(bin_info[2:]))
+                    bin_type = str.capitalize(" ".join(bin_info[2:]))
             except:
                 continue
 
