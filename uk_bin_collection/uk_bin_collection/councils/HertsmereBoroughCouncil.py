@@ -48,7 +48,11 @@ class CouncilClass(AbstractGetBinDataClass):
             for tag in strong:
                 parent = tag.parent
                 bin_type = (
-                    (parent.text).split("-")[1].strip().replace("\xa0", " ").split(" and ")
+                    (parent.text)
+                    .split("-")[1]
+                    .strip()
+                    .replace("\xa0", " ")
+                    .split(" and ")
                 )
                 for bin in bin_type:
                     dict_data = {
@@ -104,7 +108,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 table_data = []
                 for row in table.find("tbody").find_all("tr"):
                     # Extract cell data from each <td> tag
-                    row_data = [cell.get_text(strip=True) for cell in row.find_all("td")]
+                    row_data = [
+                        cell.get_text(strip=True) for cell in row.find_all("td")
+                    ]
                     table_data.append(row_data)
 
             else:
@@ -112,7 +118,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             collection_day = (table_data[0])[1]
 
-            current_week_bins = [bin for bin in bin_weeks if bin["week"] == current_week]
+            current_week_bins = [
+                bin for bin in bin_weeks if bin["week"] == current_week
+            ]
             next_week_bins = [bin for bin in bin_weeks if bin["week"] != current_week]
 
             days_of_week = [

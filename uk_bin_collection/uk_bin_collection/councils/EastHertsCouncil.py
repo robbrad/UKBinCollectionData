@@ -89,7 +89,9 @@ class CouncilClass(AbstractGetBinDataClass):
             property.click()
 
             upcoming_scheduled_collections = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "upcoming-scheduled-collections"))
+                EC.presence_of_element_located(
+                    (By.ID, "upcoming-scheduled-collections")
+                )
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")

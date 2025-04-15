@@ -43,8 +43,8 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode_box = wait.until(
                 EC.element_to_be_clickable(
                     (
-                        By.ID,
-                        "ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_txtPostCode",
+                        By.XPATH,
+                        "//input[@id='postcode']",
                     )
                 )
             )
@@ -52,79 +52,61 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode_btn_present = wait.until(
                 EC.presence_of_element_located(
                     (
-                        By.ID,
-                        "ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_btnSearchAddress",
-                    )
-                )
-            )
-            postcode_btn = wait.until(
-                EC.element_to_be_clickable(
-                    (
                         By.XPATH,
-                        '//*[@id="ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_btnSearchAddress"]',
+                        "//button[contains(text(),'Look up Address')]",
                     )
                 )
             )
-
-            postcode_btn.send_keys(Keys.ENTER)
+            postcode_btn_present.click()
 
             dropdown_present = wait.until(
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
-                        '//*[@id="ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_ddlAddressList"]/option',
-                    )
-                )
-            )
-            address_dropdown = wait.until(
-                EC.element_to_be_clickable(
-                    (
-                        By.ID,
-                        "ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_ddlAddressList",
+                        '//option[contains(text(),"Select an address")]/parent::select',
                     )
                 )
             )
 
-            dropdown_present.click()
+            dropdown_select = Select(dropdown_present)
 
-            dropdownSelect = Select(address_dropdown)
-            dropdownSelect.select_by_value(str(user_uprn))
-            results = wait.until(
+            dropdown_select.select_by_value(user_uprn)
+
+            result = wait.until(
                 EC.presence_of_element_located(
                     (
-                        By.ID,
-                        "ctl00_ctl48_g_eea1a8ba_4306_488e_96f2_97f22038e29f_ctl00_BinResultsDetails",
+                        By.XPATH,
+                        "//div[@class='lcc-bins']",
                     )
                 )
             )
 
             data = {"bins": []}  # dictionary for data
-            soup = BeautifulSoup(driver.page_source, "html.parser")
+            soup = BeautifulSoup(
+                result.get_attribute("innerHTML"), features="html.parser"
+            )
 
-            bin_types = soup.find_all("ul", class_="binCollectionTimesList")
+            bin_sections = soup.select("div.lcc-bin:not(.lcc-bin--calendar)")
 
-            for bin_collection_dates in bin_types:
+            for section in bin_sections:
+                h3_text = section.find("h3").get_text(strip=True)
+                bin_type = h3_text.split()[0]  # e.g., 'Black', 'Brown', 'Green'
 
-                bin_collection_list = bin_collection_dates.find_all("li")
-
-                if bin_collection_list:
-                    collection_dates = [
-                        date.text.strip() for date in bin_collection_list
-                    ]
-
-                    # Convert the collection dates to the desired format
-                    formatted_dates = [
-                        datetime.strptime(date, "%A %d %b %Y").strftime(date_format)
-                        for date in collection_dates
-                    ]
-
-                    # Extract the type of bin from the header
-                    bin_type = bin_collection_dates.find_previous("h3").text.split()[0]
-
-                    # Adding data to the 'bins' dictionary for each date
-                    for date in formatted_dates:
-                        dict_data = {"type": bin_type, "collectionDate": date}
-                        data["bins"].append(dict_data)
+                # Find all <li> elements inside the bin days list
+                date_elements = section.select("div.lcc-bin__days li")
+                for li in date_elements:
+                    raw_date = li.get_text(strip=True)
+                    if not raw_date:
+                        continue
+                    try:
+                        formatted_date = datetime.strptime(
+                            raw_date, "%A %d %b %Y"
+                        ).strftime(date_format)
+                        data["bins"].append(
+                            {"type": bin_type, "collectionDate": formatted_date}
+                        )
+                    except ValueError:
+                        print(f"Skipping unparseable date: {raw_date}")
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

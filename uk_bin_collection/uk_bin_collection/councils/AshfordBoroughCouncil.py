@@ -21,7 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-        # Get and check UPRN
+            # Get and check UPRN
             user_uprn = kwargs.get("uprn")
             user_postcode = kwargs.get("postcode")
             check_uprn(user_uprn)
@@ -73,7 +73,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Click search button
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "ContentPlaceHolder1_CollectionDayLookup2_Button_SelectAddress")
+                    (
+                        By.ID,
+                        "ContentPlaceHolder1_CollectionDayLookup2_Button_SelectAddress",
+                    )
                 )
             )
             findAddress.click()
@@ -89,7 +92,9 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_tables = soup.find_all("table")
 
             for bin_table in bin_tables:
-                bin_text = bin_table.find("td", id=re.compile("CollectionDayLookup2_td_"))
+                bin_text = bin_table.find(
+                    "td", id=re.compile("CollectionDayLookup2_td_")
+                )
                 if not bin_text:
                     continue
 
@@ -112,7 +117,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     if date_soup.text.strip().lower() == "today":
                         date = datetime.now().date()
                     else:
-                        date = datetime.strptime(date_str.split(" ")[1], "%d/%m/%Y").date()
+                        date = datetime.strptime(
+                            date_str.split(" ")[1], "%d/%m/%Y"
+                        ).date()
 
                 except ValueError:
                     continue

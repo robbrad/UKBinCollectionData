@@ -59,4 +59,3 @@ class CouncilClass(AbstractGetBinDataClass):
             if driver:
                 driver.quit()
         return data
-
