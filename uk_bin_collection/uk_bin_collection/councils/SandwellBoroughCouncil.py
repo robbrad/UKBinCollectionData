@@ -1,9 +1,13 @@
+import logging
 import time
+from datetime import datetime
 
 import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+logger = logging.getLogger(__name__)
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -14,29 +18,51 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
+    SESSION_URL = "https://my.sandwell.gov.uk/authapi/isauthenticated?uri=https%253A%252F%252Fmy.sandwell.gov.uk%252Fen%252F..."
+    API_URL = "https://my.sandwell.gov.uk/apibroker/runLookup"
+    HEADERS = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0",
+        "X-Requested-With": "XMLHttpRequest",
+        "Referer": "https://my.sandwell.gov.uk/fillform/?iframe_id=fillform-frame-1&db_id=",
+    }
+    LOOKUPS = [
+        (
+            "58a1a71694992",
+            "DWDate",
+            [
+                "Recycling (Blue)",
+                "Household Waste (Grey)",
+                "Food Waste (Brown)",
+                "Batteries",
+            ],
+        ),
+        ("56b1cdaf6bb43", "GWDate", ["Garden Waste (Green)"]),
+    ]
 
+    def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse bin collection data for a given UPRN using the Sandwell API.
+
+        Args:
+            page (str): Unused HTML page content.
+            **kwargs: Must include 'uprn'.
+
+        Returns:
+            dict: A dictionary with bin collection types and dates.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        SESSION_URL = "https://my.sandwell.gov.uk/authapi/isauthenticated?uri=https%253A%252F%252Fmy.sandwell.gov.uk%252Fen%252FAchieveForms%252F%253Fform_uri%253Dsandbox-publish%253A%252F%252FAF-Process-ebaa26a2-393c-4a3c-84f5-e61564192a8a%252FAF-Stage-e4c2cb32-db55-4ff5-845c-8b27f87346c4%252Fdefinition.json%2526redirectlink%253D%25252Fen%2526cancelRedirectLink%253D%25252Fen%2526consentMessage%253Dyes&hostname=my.sandwell.gov.uk&withCredentials=true"
-
-        API_URL = "https://my.sandwell.gov.uk/apibroker/runLookup"
-
-        headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "Mozilla/5.0",
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": "https://my.sandwell.gov.uk/fillform/?iframe_id=fillform-frame-1&db_id=",
-        }
-        s = requests.session()
+        session = requests.session()
         # Establish a session and grab the session ID
-        r = s.get(SESSION_URL)
+        r = session.get(self.SESSION_URL)
         r.raise_for_status()
         session_data = r.json()
         sid = session_data["auth-session"]
+        timestamp = str(int(time.time() * 1000))
 
         payload = {
             "formValues": {
@@ -45,7 +71,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         "value": user_uprn,
                     },
                     "NextCollectionFromDate": {
-                        "value": datetime.now().strftime("%Y-%m-%d"),
+                        "value": datetime.today().strftime("%Y-%m-%d")
                     },
                 },
             },
@@ -57,39 +83,46 @@ class CouncilClass(AbstractGetBinDataClass):
             "log_id": "",
             "app_name": "AF-Renderer::Self",
             # unix_timestamp
-            "_": str(int(time.time() * 1000)),
+            "_": timestamp,
             "sid": sid,
         }
         # (request_id, date field to use from response, bin type labels)
-        lookups = [
-            (
-                "58a1a71694992",
-                "DWDate",
-                [
-                    "Recycling (Blue)",
-                    "Household Waste (Grey)",
-                    "Food Waste (Brown)",
-                    "Batteries",
-                ],
-            ),
-            ("56b1cdaf6bb43", "GWDate", ["Garden Waste (Green)"]),
-        ]
 
-        for request_id, date_key, bin_types in lookups:
+        for request_id, date_key, bin_types in self.LOOKUPS:
             params = {"id": request_id, **base_params}
 
-            resp = s.post(API_URL, json=payload, headers=headers, params=params)
-            resp.raise_for_status()
-            result = resp.json()
+            try:
+                resp = session.post(
+                    self.API_URL, json=payload, headers=self.HEADERS, params=params
+                )
+                resp.raise_for_status()
+                result = resp.json()
 
-            rows_data = result["integration"]["transformed"]["rows_data"]
-            if not isinstance(rows_data, dict):
-                # Garden waste for some Uprns returns an empty list
+                rows_data = result["integration"]["transformed"]["rows_data"]
+
+                if not isinstance(rows_data, dict):
+                    logger.warning("Unexpected rows_data format: %s", rows_data)
+                    continue
+
+                for row in rows_data.values():
+                    date = row.get(date_key)
+                    if not date:
+                        logger.warning(
+                            "Date key '%s' missing in row: %s", date_key, row
+                        )
+                        continue
+
+                    for bin_type in bin_types:
+                        bindata["bins"].append(
+                            {"type": bin_type, "collectionDate": date}
+                        )
+
+            except requests.RequestException as e:
+                logger.error("API request failed: %s", e)
+                continue
+            except (KeyError, ValueError, TypeError) as e:
+                logger.warning("Unexpected structure in response: %s", e)
                 continue
 
-            for row in rows_data.values():
-                date = row[date_key]
-                for bin_type in bin_types:
-                    bindata["bins"].append({"type": bin_type, "collectionDate": date})
-
+        logger.info("Parsed bins: %s", bindata["bins"])
         return bindata

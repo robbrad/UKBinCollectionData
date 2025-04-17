@@ -1053,7 +1053,7 @@
         "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "KnowsleyMBCouncil": {
-        "house_number": "22",
+        "house_number": "2 ALTMOOR ROAD HUYTON L36 3UY",
         "postcode": "L36 3UY",
         "skip_get_url": true,
         "url": "https://knowsleytransaction.mendixcloud.com/link/youarebeingredirected?target=bincollectioninformation",
@@ -1276,6 +1276,15 @@
         "url": "https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days",
         "wiki_name": "Midlothian Council",
         "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter."
+    },
+    "MidUlsterDistrictCouncil": {
+        "house_number": "20 HILLHEAD, STEWARTSTOWN, BT71 5HY",
+        "postcode": "BT71 5HY",
+        "skip_get_url": true,
+        "url": "https://www.midulstercouncil.org",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Mid Ulster District Council",
+        "wiki_note": "Pass the full address of the house postcode as displayed on the site. This parser requires a Selenium webdriver."
     },
     "MiltonKeynesCityCouncil": {
         "uprn": "25109551",
