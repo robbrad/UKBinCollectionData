@@ -1668,7 +1668,7 @@
     },
     "SandwellBoroughCouncil": {
         "skip_get_url": true,
-        "uprn": "10008755549",
+        "uprn": "32101971",
         "url": "https://www.sandwell.gov.uk",
         "wiki_name": "Sandwell Borough Council",
         "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
