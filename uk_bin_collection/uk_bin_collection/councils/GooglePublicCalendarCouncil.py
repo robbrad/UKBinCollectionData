@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 import requests
-from ics import Calendar
+from icalevents.icalevents import events
 
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 from uk_bin_collection.uk_bin_collection.common import date_format
@@ -12,26 +12,26 @@ class CouncilClass(AbstractGetBinDataClass):
         ics_url: str = kwargs.get("url")
 
         if not ics_url:
-            raise ValueError("Missing required argument: google_calendar_ics_url")
+            raise ValueError("Missing required argument: url")
 
-        response = requests.get(ics_url)
-        response.raise_for_status()
+        # Get events within the next 90 days
+        now = datetime.now()
+        future = now + timedelta(days=60)
 
-        calendar = Calendar(response.text)
+        try:
+            upcoming_events = events(ics_url, start=now, end=future)
+        except Exception as e:
+            raise ValueError(f"Error parsing ICS feed: {e}")
+
         bindata = {"bins": []}
 
-        for event in calendar.events:
-            if not event.name or not event.begin:
+        for event in sorted(upcoming_events, key=lambda e: e.start):
+            if not event.summary or not event.start:
                 continue
 
-            try:
-                # .begin is a datetime-like object (Arrow)
-                collection_date = event.begin.date().strftime(date_format)
-            except Exception:
-                continue
-
-            bindata["bins"].append(
-                {"type": event.name, "collectionDate": collection_date}
-            )
+            bindata["bins"].append({
+                "type": event.summary,
+                "collectionDate": event.start.date().strftime(date_format)
+            })
 
         return bindata
