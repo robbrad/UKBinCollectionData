@@ -43,7 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     (By.XPATH, "//a[contains(text(), 'Search by postcode to find out when your bins are emptied')]")
                 )
             )
-            search_btn.click()
+            search_btn.send_keys(Keys.RETURN)
             
             postcode_box = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
