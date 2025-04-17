@@ -8,12 +8,14 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "CouncilModule",
-                "URL",
+                "Hillingdon",
+                "https://www.hillingdon.gov.uk/collection-day",
+                "-n",
+                "2, Milverton Drive",
                 "-p",
-                "POSTCODE",
+                "UB10 8PP",
                 "-w",
-                "http://localhost:4444",
+                "http://localhost:4444"
             ]
         },
         {
@@ -25,7 +27,23 @@
             ],
             "env": {
                 "PYTEST_ADDOPTS": "--headless=False --local_browser=False"
-            },
+            }
+        }
+        {
+            "name": "Debug Pytest via Poetry",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "uk_bin_collection/tests/step_defs/",
+                "-k",
+                "hillingdon",
+                "--headless=False",
+                "--selenium_url=http://localhost:4444"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
         }
     ]
 }
+poetry run pytest uk_bin_collection/tests/step_defs/ -k "Council_Name" --headless=False --selenium_url=http://localhost:4444
