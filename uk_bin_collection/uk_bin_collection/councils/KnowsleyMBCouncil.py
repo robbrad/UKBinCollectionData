@@ -30,16 +30,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Dismiss cookie popup if it exists
             try:
-                accept_cookies = WebDriverWait(driver, 5).until(
+                accept_cookies = WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable((By.XPATH, "//a[contains(@class, 'agree-button') and contains(text(), 'Accept all cookies')]"))
                 )
                 accept_cookies.click()
-                time.sleep(0.5)
+                time.sleep(1)
             except:
                 pass  # Cookie popup not shown
 
             # Step 1: Click "Search by postcode"
-            search_btn = WebDriverWait(driver, 20).until(
+            search_btn = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable(
                     (By.XPATH, "//a[contains(text(), 'Search by postcode to find out when your bins are emptied')]")
                 )
@@ -47,14 +47,14 @@ class CouncilClass(AbstractGetBinDataClass):
             search_btn.send_keys(Keys.RETURN)
 
             # Step 2: Enter postcode
-            postcode_box = WebDriverWait(driver, 20).until(
+            postcode_box = WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//label[contains(text(), 'Please enter the post code')]/following-sibling::input")
                 )
             )
             postcode_box.send_keys(user_postcode)
 
-            postcode_search_btn = WebDriverWait(driver, 20).until(
+            postcode_search_btn = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable(
                     (By.XPATH, "//label[contains(text(), 'Please enter the post code')]/parent::div/following-sibling::button")
                 )
@@ -62,7 +62,7 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode_search_btn.send_keys(Keys.RETURN)
 
             # Step 3: Select address from results
-            address_selection_button = WebDriverWait(driver, 30).until(
+            address_selection_button = WebDriverWait(driver, 60).until(
                 EC.element_to_be_clickable(
                     (By.XPATH, f"//span[contains(text(), '{user_paon}')]/ancestor::li//button")
                 )
@@ -70,7 +70,7 @@ class CouncilClass(AbstractGetBinDataClass):
             address_selection_button.send_keys(Keys.RETURN)
 
             # Step 4: Wait until the bin info is present
-            WebDriverWait(driver, 30).until(
+            WebDriverWait(driver, 60).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//label[contains(text(), 'collection')]")
                 )
