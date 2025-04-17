@@ -1,4 +1,15 @@
 =======
+## 0.144.2 (2025-04-17)
+
+### Fix
+
+- knowsley
+- knowsley
+- knowsley
+- knowsley
+- KnowsleyMBCouncil.py
+- #1220 adding Mid Ulster District Council
+
 ## 0.144.1 (2025-04-17)
 
 ### Fix
