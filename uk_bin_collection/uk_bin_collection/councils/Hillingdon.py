@@ -74,22 +74,16 @@ class CouncilClass(AbstractGetBinDataClass):
                 if not options:
                     raise Exception(f"No addresses found for postcode: {user_postcode}")
                 
-                # Normalize the user input
-                normalized_user_paon = "".join(user_paon.split()).lower()
+                # Normalize user input by keeping only alphanumeric characters
+                normalized_user_input = "".join(c for c in user_paon if c.isalnum()).lower()
                 
+                # Find matching address in dropdown
                 for option in options:
-                    try:
-                        option_text = option.text.strip()
-                        normalized_option = "".join(option_text.split()).lower()
-                        if normalized_user_paon == normalized_option or normalized_user_paon in normalized_option:
-                            option.click()
-                            break
-                    except StaleElementReferenceException:
-                        # If element is stale, re-find the options
-                        options = driver.find_elements(By.TAG_NAME, "option")[1:]
-                        continue
-                else:
-                    raise Exception(f"Could not find address matching: {user_paon}")
+                    # Normalize option text by keeping only alphanumeric characters
+                    normalized_option = "".join(c for c in option.text if c.isalnum()).lower()
+                    if normalized_user_input in normalized_option:
+                        option.click()
+                        break
             except TimeoutException:
                 raise Exception("Timeout waiting for address options to populate")
 
