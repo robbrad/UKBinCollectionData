@@ -1,4 +1,14 @@
 =======
+## 0.144.3 (2025-04-17)
+
+### Fix
+
+- better address for input.json
+- bank holiday overrides
+- more robust address searching
+- simple parsing done
+- Selenium navigation
+
 ## 0.144.2 (2025-04-17)
 
 ### Fix
