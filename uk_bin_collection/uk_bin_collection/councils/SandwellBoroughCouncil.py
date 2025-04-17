@@ -32,12 +32,13 @@ class CouncilClass(AbstractGetBinDataClass):
             "Referer": "https://my.sandwell.gov.uk/fillform/?iframe_id=fillform-frame-1&db_id=",
         }
         s = requests.session()
+        # Establish a session and grab the session ID
         r = s.get(SESSION_URL)
         r.raise_for_status()
         session_data = r.json()
         sid = session_data["auth-session"]
 
-        data = {
+        payload = {
             "formValues": {
                 "Property details": {
                     "Uprn": {
@@ -49,9 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 },
             },
         }
-
-        params = {
-            "id": "58a1a71694992",
+        base_params = {
             "repeat_against": "",
             "noRetry": "false",
             "getOnlyTokens": "undefined",
@@ -61,27 +60,36 @@ class CouncilClass(AbstractGetBinDataClass):
             "_": str(int(time.time() * 1000)),
             "sid": sid,
         }
+        # (request_id, date field to use from response, bin type labels)
+        lookups = [
+            (
+                "58a1a71694992",
+                "DWDate",
+                [
+                    "Recycling (Blue)",
+                    "Household Waste (Grey)",
+                    "Food Waste (Brown)",
+                    "Batteries",
+                ],
+            ),
+            ("56b1cdaf6bb43", "GWDate", ["Garden Waste (Green)"]),
+        ]
 
-        r = s.post(API_URL, json=data, headers=headers, params=params)
-        r.raise_for_status()
+        for request_id, date_key, bin_types in lookups:
+            params = {"id": request_id, **base_params}
 
-        data = r.json()
-        rows_data = data["integration"]["transformed"]["rows_data"]
-        if not isinstance(rows_data, dict):
-            raise ValueError("Invalid data returned from API")
-        bin_types = {
-            "Recycling (Blue)",
-            "Household Waste (Grey)",
-            "Food Waste (Brown)",
-            "Garden Waste (Green)",
-        }
-        for row in rows_data.items():
-            date = row[1]["DWDate"]
-            for bin_type in bin_types:
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": date,
-                }
-                bindata["bins"].append(dict_data)
+            resp = s.post(API_URL, json=payload, headers=headers, params=params)
+            resp.raise_for_status()
+            result = resp.json()
+
+            rows_data = result["integration"]["transformed"]["rows_data"]
+            if not isinstance(rows_data, dict):
+                # Garden waste for some Uprns returns an empty list
+                continue
+
+            for row in rows_data.values():
+                date = row[date_key]
+                for bin_type in bin_types:
+                    bindata["bins"].append({"type": bin_type, "collectionDate": date})
 
         return bindata
