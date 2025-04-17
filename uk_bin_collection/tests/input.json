@@ -1053,7 +1053,7 @@
         "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "KnowsleyMBCouncil": {
-        "house_number": "22",
+        "house_number": "2 ALTMOOR ROAD HUYTON L36 3UY",
         "postcode": "L36 3UY",
         "skip_get_url": true,
         "url": "https://knowsleytransaction.mendixcloud.com/link/youarebeingredirected?target=bincollectioninformation",

@@ -24,7 +24,8 @@
                 "debug-test"
             ],
             "env": {
-                "PYTEST_ADDOPTS": "--headless=False --local_browser=False"
+                "PYTEST_ADDOPTS": "--headless=False --local_browser=False",
+                "PYDEVD_WARN_EVALUATION_TIMEOUT": "10"
             },
         }
     ]

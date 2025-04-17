@@ -8,7 +8,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
+#import selenium keys
+from selenium.webdriver.common.keys import Keys
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -33,99 +34,84 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(
-                "https://knowsleytransaction.mendixcloud.com/link/youarebeingredirected?target=bincollectioninformation"
+                "https://www.knowsley.gov.uk/bins-waste-and-recycling/your-household-bins/putting-your-bins-out"
             )
 
             # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.visibility_of_element_located(
-                    (
-                        By.XPATH,
-                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[1]/div/div/input",
-                    )
+            search_btn = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//a[contains(text(), 'Search by postcode to find out when your bins are emptied')]")
                 )
             )
-            inputElement_postcode.send_keys(user_postcode)
-
-            # Wait for address search button, then click it
-            addressSearch_button = WebDriverWait(driver, 10).until(
+            search_btn.click()
+            
+            postcode_box = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[2]/div/button",
-                    )
+                    (By.XPATH, "//label[contains(text(), 'Please enter the post code and click \"Search for address\"')]/following-sibling::input")
+                )
+            )   
+            
+            postcode_box.send_keys(user_postcode)
+
+            postcode_search_btn = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//label[contains(text(), 'Please enter the post code and click \"Search for address\"')]/parent::div/following-sibling::button")
+                )
+            )   
+            postcode_search_btn.send_keys(Keys.RETURN)
+
+            address_selection_button = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, f"//span[contains(text(), '{user_paon}')]/ancestor::li//button")
                 )
             )
-            addressSearch_button.click()
+            address_selection_button.send_keys(Keys.RETURN)
 
-            # Wait until the address list has loaded
             WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[3]/div/div",
-                    )
-                )
+                EC.presence_of_element_located((By.XPATH, "//label[contains(translate(text(), 'COLLECTION', 'collection'), 'collection')]"))
             )
 
-            # Select the correct address from the list
-            addressList_rows = driver.find_elements(By.CLASS_NAME, "row")
-            for row in addressList_rows:
-                option_name = row.text[0 : len(user_paon)]
-                if option_name == user_paon:
-                    break
-            address_to_select = row.find_element(By.LINK_TEXT, "Choose this address")
-            address_to_select.click()
-
-            # Wait for bin dates to load
-            WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "/html/body/div[1]/div/div/div/div/div/div[2]/div/div/div/div/div/div[3]/div/div[1]/div/div[4]/div/div",
-                    )
-                )
+            # Then select the shared parent container
+            bin_info_container = driver.find_element(
+                By.XPATH,
+                "//label[contains(translate(text(), 'COLLECTION', 'collection'), 'collection')]/ancestor::div[contains(@class, 'mx-dataview-content')]"
             )
 
             # Parse the HTML from the WebDriver
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
+            soup = BeautifulSoup(bin_info_container.get_attribute("innerHTML"), features="html.parser")
             soup.prettify()
+            bindata = {"bins": []}
+            # All bin info is in .form-group divs with a <label> and a sibling <div>
+            for group in soup.find_all("div", class_="form-group"):
+                label = group.find("label")
+                value = group.find("div", class_="form-control-static")
 
-            z = soup.find(
-                "div", {"class": "mx-name-textBox5 mx-textbox form-group"}
-            ).find_next("div", {"class": "form-control-static"})
+                if not label or not value:
+                    continue
 
-            maroon_bin_date = datetime.strptime(
-                soup.find("div", {"class": "mx-name-textBox3 mx-textbox form-group"})
-                .find_next("div", {"class": "form-control-static"})
-                .get_text(strip=True),
-                "%A %d/%m/%Y",
+                label_text = label.text.strip()
+                value_text = value.text.strip()
+
+                # Only process labels containing "bin next collection date"
+                if "bin next collection date" in label_text.lower():
+                    bin_type = label_text.split(" bin")[0]  # e.g., "Maroon", "Grey", "Blue"
+                    try:
+                        collection_date = datetime.strptime(
+                            value_text, "%A %d/%m/%Y"
+                        ).strftime("%d/%m/%Y")
+                    except ValueError:
+                        continue
+
+                    dict_data = {
+                        "type": bin_type,
+                        "collectionDate": collection_date,
+                    }
+                    bindata["bins"].append(dict_data)
+
+            # Optional: sort by date
+            bindata["bins"].sort(
+                key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
             )
-            collections.append(("Maroon bin", maroon_bin_date))
-
-            grey_bin_date = datetime.strptime(
-                soup.find("div", {"class": "mx-name-textBox4 mx-textbox form-group"})
-                .find_next("div", {"class": "form-control-static"})
-                .get_text(strip=True),
-                "%A %d/%m/%Y",
-            )
-            collections.append(("Grey bin", grey_bin_date))
-
-            blue_bin_date = datetime.strptime(
-                soup.find("div", {"class": "mx-name-textBox5 mx-textbox form-group"})
-                .find_next("div", {"class": "form-control-static"})
-                .get_text(strip=True),
-                "%A %d/%m/%Y",
-            )
-            collections.append(("Blue bin", blue_bin_date))
-
-            ordered_data = sorted(collections, key=lambda x: x[1])
-            for item in ordered_data:
-                dict_data = {
-                    "type": item[0].capitalize(),
-                    "collectionDate": item[1].strftime(date_format),
-                }
-                data["bins"].append(dict_data)
 
         except Exception as e:
             # Here you can log the exception if needed
@@ -137,4 +123,4 @@ class CouncilClass(AbstractGetBinDataClass):
             if driver:
                 driver.quit()
 
-        return data
+        return bindata
