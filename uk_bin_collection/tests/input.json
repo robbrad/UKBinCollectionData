@@ -877,6 +877,15 @@
         "wiki_name": "Gravesham Borough Council",
         "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
+    "GreatYarmouthBoroughCouncil": {
+        "postcode": "NR31 7EB",
+        "skip_get_url": true,
+        "uprn": "100090834792",
+        "url": "https://myaccount.great-yarmouth.gov.uk/article/6456/Find-my-waste-collection-days",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Great Yarmouth Borough Council",
+        "wiki_note": "Pass the postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
+    },
     "GuildfordCouncil": {
         "house_number": "THE LODGE, PUTTENHAM HILL HOUSE, PUTTENHAM HILL, PUTTENHAM, GUILDFORD, GU3 1AH",
         "postcode": "GU3 1AH",
