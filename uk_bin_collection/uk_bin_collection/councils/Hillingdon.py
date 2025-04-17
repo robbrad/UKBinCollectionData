@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import json
+from typing import Dict, Any
 
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
@@ -7,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -22,11 +25,50 @@ DAYS_OF_WEEK = {
     "Sunday": 6,
 }
 
+# This function checks for bank holiday collection changes, 
+# but the page seems manually written so might break easily
+def get_bank_holiday_changes(driver: WebDriver) -> Dict[str, str]:
+    """Fetch and parse bank holiday collection changes from the council website."""
+    bank_holiday_url = "https://www.hillingdon.gov.uk/bank-holiday-collections"
+    driver.get(bank_holiday_url)
+    
+    # Wait for page to load
+    wait = WebDriverWait(driver, 10)
+    wait.until(EC.presence_of_element_located((By.TAG_NAME, "table")))
+    
+    # Parse the page
+    soup = BeautifulSoup(driver.page_source, features="html.parser")
+    changes: Dict[str, str] = {}
+    
+    # Find all tables with collection changes
+    tables = soup.find_all("table")
+    for table in tables:
+        # Check if this is a collection changes table
+        headers = [th.text.strip() for th in table.find_all("th")]
+        if "Normal collection day" in headers and "Revised collection day" in headers:
+            # Process each row
+            for row in table.find_all("tr")[1:]:  # Skip header row
+                cols = row.find_all("td")
+                if len(cols) >= 2:
+                    normal_date = cols[0].text.strip()
+                    revised_date = cols[1].text.strip()
+                    
+                    # Parse dates
+                    try:
+                        normal_date = parse(normal_date, fuzzy=True).strftime("%d/%m/%Y")
+                        revised_date = parse(revised_date, fuzzy=True).strftime("%d/%m/%Y")
+                        changes[normal_date] = revised_date
+                    except Exception as e:
+                        print(f"Error parsing dates: {e}")
+                        continue
+    
+    return changes
+
 class CouncilClass(AbstractGetBinDataClass):
-    def parse_data(self, page: str, **kwargs) -> dict:
+    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, Any]:
         driver = None
         try:
-            data = {"bins": []}
+            data: Dict[str, Any] = {"bins": []}
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
@@ -150,12 +192,28 @@ class CouncilClass(AbstractGetBinDataClass):
                     print(f"Error processing item: {e}")
                     continue
 
+            # Get bank holiday changes
+            print("\nChecking for bank holiday collection changes...")
+            bank_holiday_changes = get_bank_holiday_changes(driver)
+            
+            # Apply any bank holiday changes to collection dates
+            for bin_data in data["bins"]:
+                original_date = bin_data["collectionDate"]
+                if original_date in bank_holiday_changes:
+                    new_date = bank_holiday_changes[original_date]
+                    print(f"Bank holiday change: {bin_data['type']} collection moved from {original_date} to {new_date}")
+                    bin_data["collectionDate"] = new_date
+
         except Exception as e:
             print(f"An error occurred: {e}")
             raise
         finally:
             if driver:
                 driver.quit()
+
+        # Print the final data dictionary for debugging
+        print("\nFinal data dictionary:")
+        print(json.dumps(data, indent=2))
 
         return data
 
