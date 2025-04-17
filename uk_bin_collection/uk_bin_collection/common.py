@@ -337,7 +337,7 @@ def create_webdriver(
     options.add_argument("--disable-gpu")
     options.add_argument("--start-maximized")
     options.add_argument("--disable-dev-shm-usage")
-    #options.add_argument("--window-size=1920,1080")
+    options.add_argument("--window-size=1920,1080")
     if user_agent:
         options.add_argument(f"--user-agent={user_agent}")
     options.add_experimental_option("excludeSwitches", ["enable-logging"])
