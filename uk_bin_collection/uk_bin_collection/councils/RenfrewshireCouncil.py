@@ -19,6 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
         driver = None
         try:
             data = {"bins": []}
+            url = kwargs.get("url")
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
@@ -28,9 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(
-                "https://www.renfrewshire.gov.uk/article/2320/Check-your-bin-collection-day"
-            )
+            driver.get("https://www.renfrewshire.gov.uk/bin-day")
 
             accept_button = WebDriverWait(driver, timeout=30).until(
                 EC.element_to_be_clickable((By.ID, "ccc-notify-accept"))
