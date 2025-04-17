@@ -1277,6 +1277,15 @@
         "wiki_name": "Midlothian Council",
         "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter."
     },
+    "MidUlsterDistrictCouncil": {
+        "house_number": "20 HILLHEAD, STEWARTSTOWN, BT71 5HY",
+        "postcode": "BT71 5HY",
+        "skip_get_url": true,
+        "url": "https://www.midulstercouncil.org",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Mid Ulster District Council",
+        "wiki_note": "Pass the full address of the house postcode as displayed on the site. This parser requires a Selenium webdriver."
+    },
     "MiltonKeynesCityCouncil": {
         "uprn": "25109551",
         "url": "https://mycouncil.milton-keynes.gov.uk/en/service/Waste_Collection_Round_Checker",
