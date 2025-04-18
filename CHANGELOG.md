@@ -1,4 +1,10 @@
 =======
+## 0.147.2 (2025-04-18)
+
+### Fix
+
+- wait for element to be clickable
+
 ## 0.147.1 (2025-04-18)
 
 ### Fix
