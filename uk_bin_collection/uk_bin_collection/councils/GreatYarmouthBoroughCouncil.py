@@ -1,14 +1,15 @@
 import time
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.webdriver.common.keys import Keys
-from datetime import datetime
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -31,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             driver = create_webdriver(web_driver, headless, None, __name__)
-            
+
             driver.get(url)
 
             wait = WebDriverWait(driver, 10)
@@ -57,7 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(2)
             # Wait for address box to be visible
             select_address_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
+                EC.element_to_be_clickable(
                     (
                         By.ID,
                         "WASTECOLLECTIONCALENDARV2_ADDRESS_ALML",
@@ -78,19 +79,23 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(5)
             # Wait for the specified div to be present
             target_div = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "WASTECOLLECTIONCALENDARV2_LOOKUP_SHOWSCHEDULE"))
+                EC.presence_of_element_located(
+                    (By.ID, "WASTECOLLECTIONCALENDARV2_LOOKUP_SHOWSCHEDULE")
+                )
             )
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
             bin_data = {"bins": []}
-            next_collections = {}  # Dictionary to store the next collection for each bin type
+            next_collections = (
+                {}
+            )  # Dictionary to store the next collection for each bin type
 
             bin_types = {
                 "bulky": "Bulky Collection",
                 "green": "Recycling",
                 "black": "General Waste",
-                "brown": "Garden Waste"
+                "brown": "Garden Waste",
             }
 
             for div in soup.select(".collection-area"):
@@ -108,21 +113,26 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 # Determine bin type from alt or description
                 description = detail.get_text(separator=" ", strip=True).lower()
-                alt_text = img['alt'].lower()
+                alt_text = img["alt"].lower()
 
                 for key, name in bin_types.items():
                     if key in alt_text or key in description:
                         # Format date as dd/mm/yyyy
                         formatted_date = date_obj.strftime("%d/%m/%Y")
-                        bin_entry = {
-                            "type": name,
-                            "collectionDate": formatted_date
-                        }
-                        
+                        bin_entry = {"type": name, "collectionDate": formatted_date}
+
                         # Only keep the earliest date for each bin type
-                        if name not in next_collections or date_obj < datetime.strptime(next_collections[name]["collectionDate"], "%d/%m/%Y"):
+                        if (
+                            name not in next_collections
+                            or date_obj
+                            < datetime.strptime(
+                                next_collections[name]["collectionDate"], "%d/%m/%Y"
+                            )
+                        ):
                             next_collections[name] = bin_entry
-                            print(f"Found next collection for {name}: {formatted_date}")  # Debug output
+                            print(
+                                f"Found next collection for {name}: {formatted_date}"
+                            )  # Debug output
                         break
 
             # Add the next collections to the bin_data
@@ -134,7 +144,7 @@ class CouncilClass(AbstractGetBinDataClass):
         finally:
             if driver:
                 driver.quit()
-                
+
         print("\nFinal bin data:")
         print(bin_data)  # Debug output
         return bin_data
