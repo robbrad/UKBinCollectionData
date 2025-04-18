@@ -983,7 +983,10 @@
     "GooglePublicCalendarCouncil": {
         "url": "https://calendar.google.com/calendar/ical/0d775884b4db6a7bae5204f06dae113c1a36e505b25991ebc27c6bd42edf5b5e%40group.calendar.google.com/public/basic.ics",
         "wiki_name": "Google Calendar (Public)",
-        "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU. Councils that currently need this are Trafford."
+        "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU. Councils that currently need this are Trafford.",
+        "supported_councils": [
+            "TraffordCouncil"
+        ]
     },
     "GraveshamBoroughCouncil": {
         "skip_get_url": true,
