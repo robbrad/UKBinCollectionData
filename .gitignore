@@ -43,3 +43,6 @@ __pycache__
 !.devcontainer
 uk_bin_collection/.DS_Store
 uk_bin_collection/uk_bin_collection/.DS_Store
+.vscode/launch.json
+.vscode/settings.json
+.devcontainer/docker-compose.yml
