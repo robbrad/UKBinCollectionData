@@ -126,11 +126,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
         collections = []
         for bin in collection_data:
+            if not bin["collection"]:
+                continue  # Skip if there are no collection dates
+
             bin_type = bin["containerName"]
             next_collection = datetime.strptime(
                 bin["collection"][0]["nextCollectionDate"], "%Y-%m-%dT%H:%M:%S"
             ).strftime(date_format)
-            # Could work out next date using the roundDescription and the is_holiday function in common.py
+
             collections.append((bin_type, next_collection))
 
         ordered_data = sorted(collections, key=lambda x: x[1])
