@@ -108,19 +108,22 @@ class CouncilClass(AbstractGetBinDataClass):
                     heading = dt.text.strip()
                     content = dd.text.strip()
 
-                    # Debugging: Log the extracted heading and content
-                    print(f"Heading: {heading}, Content: {content}")
-
                     # Use a regular expression to match "<colour> Bin"
-                    match = re.match(r"(\w+)\s+Bin", heading)
+                    match = re.match(r"(\w+)\s+Bin", heading, re.IGNORECASE)
                     if match:
                         bin_type = match.group(
                             0
                         )  # Get the full match (e.g., "Grey Bin")
+
+                        # Remove the bin name from the collection date
+                        cleaned_content = re.sub(
+                            r"\s*-\s*\w+\s+bin.*$", "", content, flags=re.IGNORECASE
+                        )
+
                         bin_data["bins"].append(
                             {
                                 "type": bin_type,
-                                "collectionDate": content,
+                                "collectionDate": cleaned_content,
                             }
                         )
 
