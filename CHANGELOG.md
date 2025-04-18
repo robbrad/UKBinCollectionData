@@ -1,4 +1,10 @@
 =======
+## 0.146.1 (2025-04-18)
+
+### Fix
+
+- more robust bank holiday handling
+
 ## 0.146.0 (2025-04-18)
 
 ### Feat
