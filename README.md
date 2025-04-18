@@ -337,6 +337,42 @@ All integration tests results are in [CodeCov](https://app.codecov.io/gh/robbrad
 ### Nightly Full Integration Test Reports:
 - [Nightly Council Test](https://app.codecov.io/gh/robbrad/UKBinCollectionData/tests/master)
 
+
+🗺️ View Test Coverage Map (in VS Code)
+---------------------------------------
+
+You can generate integration test results and view the interactive UK council coverage map with traffic-light-style statuses for each council.
+
+### 🧪 Step 1: Run Integration Tests
+
+Run: `make integration-tests`
+
+This runs the full BDD test suite and outputs a `junit.xml` report to:
+
+`build/test/integration-test-results/junit.xml`
+
+### 📊 Step 2: Generate Map Test Results JSON
+
+Convert the JUnit XML output to a flat test result JSON: `make generate-test-map-test-results`
+
+This creates: `build/integration-test-results/test_results.json`
+
+This file is used by the map to color each council:
+
+*   ✅ Green: Test passed
+*   🟠 Amber: Test failed
+*   ❌ Red: Not integrated
+
+### 🗺️ Step 3: Open the Map
+
+Open the map viewer in VS Code:
+
+1.  Right-click the `map.html` file in VSCode and choose **Show Preview**
+    
+2.  The map will open in your browser, showing real-time integration coverage and test results.
+
+![Test Results Map](test_results_map.png)
+
 ---
 ## Docker API Server
 We have created an API for this located under [uk_bin_collection_api_server](https://github.com/robbrad/UKBinCollectionData/uk_bin_collection_api_server)
