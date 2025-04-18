@@ -1,11 +1,11 @@
 import time
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.webdriver.common.keys import Keys
-from datetime import datetime
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -58,7 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(2)
             # Wait for address box to be visible
             select_address_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
+                EC.element_to_be_clickable(
                     (
                         By.ID,
                         "WASTECOLLECTIONCALENDARV2_ADDRESS_ALML",
