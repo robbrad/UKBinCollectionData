@@ -35,41 +35,62 @@ DAYS_OF_WEEK = {
 def get_bank_holiday_changes(driver: WebDriver) -> Dict[str, str]:
     """Fetch and parse bank holiday collection changes from the council website."""
     bank_holiday_url = "https://www.hillingdon.gov.uk/bank-holiday-collections"
-    driver.get(bank_holiday_url)
-
-    # Wait for page to load
-    wait = WebDriverWait(driver, 10)
-    wait.until(EC.presence_of_element_located((By.TAG_NAME, "table")))
-
-    # Parse the page
-    soup = BeautifulSoup(driver.page_source, features="html.parser")
     changes: Dict[str, str] = {}
 
-    # Find all tables with collection changes
-    tables = soup.find_all("table")
-    for table in tables:
-        # Check if this is a collection changes table
-        headers = [th.text.strip() for th in table.find_all("th")]
-        if "Normal collection day" in headers and "Revised collection day" in headers:
-            # Process each row
-            for row in table.find_all("tr")[1:]:  # Skip header row
-                cols = row.find_all("td")
-                if len(cols) >= 2:
-                    normal_date = cols[0].text.strip()
-                    revised_date = cols[1].text.strip()
+    try:
+        driver.get(bank_holiday_url)
 
-                    # Parse dates
-                    try:
-                        normal_date = parse(normal_date, fuzzy=True).strftime(
-                            "%d/%m/%Y"
-                        )
-                        revised_date = parse(revised_date, fuzzy=True).strftime(
-                            "%d/%m/%Y"
-                        )
-                        changes[normal_date] = revised_date
-                    except Exception as e:
-                        print(f"Error parsing dates: {e}")
-                        continue
+        # Check if the page is a 404 or has an error
+        if "404" in driver.title or "Page not found" in driver.page_source:
+            print("Bank holiday page not found (404).")
+            return changes
+
+        # Wait for page to load
+        wait = WebDriverWait(driver, 10)
+        try:
+            wait.until(EC.presence_of_element_located((By.TAG_NAME, "table")))
+        except TimeoutException:
+            print("No tables found on the bank holiday page.")
+            return changes
+
+        # Parse the page
+        soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+        # Find all tables with collection changes
+        tables = soup.find_all("table")
+        if not tables:
+            print("No relevant tables found on the bank holiday page.")
+            return changes
+
+        for table in tables:
+            # Check if this is a collection changes table
+            headers = [th.text.strip() for th in table.find_all("th")]
+            if (
+                "Normal collection day" in headers
+                and "Revised collection day" in headers
+            ):
+                # Process each row
+                for row in table.find_all("tr")[1:]:  # Skip header row
+                    cols = row.find_all("td")
+                    if len(cols) >= 2:
+                        normal_date = cols[0].text.strip()
+                        revised_date = cols[1].text.strip()
+
+                        # Parse dates
+                        try:
+                            normal_date = parse(normal_date, fuzzy=True).strftime(
+                                "%d/%m/%Y"
+                            )
+                            revised_date = parse(revised_date, fuzzy=True).strftime(
+                                "%d/%m/%Y"
+                            )
+                            changes[normal_date] = revised_date
+                        except Exception as e:
+                            print(f"Error parsing dates: {e}")
+                            continue
+
+    except Exception as e:
+        print(f"An error occurred while fetching bank holiday changes: {e}")
 
     return changes
 
