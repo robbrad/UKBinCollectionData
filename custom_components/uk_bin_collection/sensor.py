@@ -36,19 +36,25 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the UK Bin Collection Data sensor platform."""
     _LOGGER.info(f"{LOG_PREFIX} Setting up UK Bin Collection Data platform.")
 
     # Retrieve the coordinator from hass.data
-    coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
+    coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
+        "coordinator"
+    ]
 
     # Get icon_color_mapping from config
     icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")
 
     # Create sensor entities
-    entities = create_sensor_entities(coordinator, config_entry.entry_id, icon_color_mapping)
+    entities = create_sensor_entities(
+        coordinator, config_entry.entry_id, icon_color_mapping
+    )
 
     # Register all sensor entities with Home Assistant
     async_add_entities(entities)
@@ -64,13 +70,17 @@ def create_sensor_entities(coordinator, entry_id, icon_color_mapping):
 
         # Main bin sensor
         entities.append(
-            UKBinCollectionDataSensor(
-                coordinator, bin_type, device_id, icon_color_map
-            )
+            UKBinCollectionDataSensor(coordinator, bin_type, device_id, icon_color_map)
         )
 
         # Attribute sensors
-        attributes = ["Colour", "Next Collection Human Readable", "Days Until Collection", "Bin Type", "Next Collection Date"]
+        attributes = [
+            "Colour",
+            "Next Collection Human Readable",
+            "Days Until Collection",
+            "Bin Type",
+            "Next Collection Date",
+        ]
         for attr in attributes:
             unique_id = f"{device_id}_{attr.lower().replace(' ', '_')}"
             entities.append(
@@ -80,7 +90,9 @@ def create_sensor_entities(coordinator, entry_id, icon_color_mapping):
             )
 
     # Add the Raw JSON Sensor
-    entities.append(UKBinCollectionRawJSONSensor(coordinator, f"{entry_id}_raw_json", entry_id))
+    entities.append(
+        UKBinCollectionRawJSONSensor(coordinator, f"{entry_id}_raw_json", entry_id)
+    )
 
     return entities
 
@@ -129,7 +141,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
             "name": f"{self.coordinator.name} {self._bin_type}",
             "manufacturer": "UK Bin Collection",
             "model": "Bin Sensor",
-            'sw_version': '1.0',
+            "sw_version": "1.0",
         }
 
     @callback
@@ -208,9 +220,11 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         """Return extra state attributes for the sensor."""
         return {
             STATE_ATTR_COLOUR: self._color,
-            STATE_ATTR_NEXT_COLLECTION: self._next_collection.strftime("%d/%m/%Y")
-            if self._next_collection
-            else None,
+            STATE_ATTR_NEXT_COLLECTION: (
+                self._next_collection.strftime("%d/%m/%Y")
+                if self._next_collection
+                else None
+            ),
             STATE_ATTR_DAYS: self._days,
         }
 
@@ -336,7 +350,7 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
             "name": f"{self.coordinator.name} {self._bin_type}",
             "manufacturer": "UK Bin Collection",
             "model": "Bin Sensor",
-            'sw_version': '1.0',
+            "sw_version": "1.0",
         }
 
     @property

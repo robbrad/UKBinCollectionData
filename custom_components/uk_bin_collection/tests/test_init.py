@@ -126,11 +126,16 @@ async def test_household_bin_coordinator_retains_last_good_data(hass):
             self.call_count += 1
             if self.call_count == 1:
                 # First call: valid data
-                return json.dumps({
-                    "bins": [
-                        {"type": "waste", "collectionDate": datetime.now().strftime("%d/%m/%Y")},
-                    ]
-                })
+                return json.dumps(
+                    {
+                        "bins": [
+                            {
+                                "type": "waste",
+                                "collectionDate": datetime.now().strftime("%d/%m/%Y"),
+                            },
+                        ]
+                    }
+                )
             else:
                 # Second call: empty bins
                 return json.dumps({"bins": []})
@@ -142,7 +147,7 @@ async def test_household_bin_coordinator_retains_last_good_data(hass):
         dummy_app,
         name="Test Bin",
         timeout=2,
-        update_interval=timedelta(minutes=5)
+        update_interval=timedelta(minutes=5),
     )
 
     # First fetch - stores valid data

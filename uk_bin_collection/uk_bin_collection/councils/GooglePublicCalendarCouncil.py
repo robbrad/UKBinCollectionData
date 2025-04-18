@@ -29,9 +29,11 @@ class CouncilClass(AbstractGetBinDataClass):
             if not event.summary or not event.start:
                 continue
 
-            bindata["bins"].append({
-                "type": event.summary,
-                "collectionDate": event.start.date().strftime(date_format)
-            })
+            bindata["bins"].append(
+                {
+                    "type": event.summary,
+                    "collectionDate": event.start.date().strftime(date_format),
+                }
+            )
 
         return bindata

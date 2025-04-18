@@ -177,7 +177,11 @@ def is_working_day(date_to_check: datetime, region: Region = Region.ENG) -> bool
     :param region: The UK nation to check. Defaults to ENG.
     :return: Bool - true if a working day (non-holiday, Mon-Fri).
     """
-    return False if is_holiday(date_to_check, region) or is_weekend(date_to_check) else True
+    return (
+        False
+        if is_holiday(date_to_check, region) or is_weekend(date_to_check)
+        else True
+    )
 
 
 def get_next_working_day(date: datetime, region: Region = Region.ENG) -> datetime:
@@ -232,7 +236,7 @@ def get_next_occurrence_from_day_month(date: datetime) -> datetime:
 
     # Check if the target date has already occurred this year
     if (target_month < current_month) or (
-            target_month == current_month and target_day < current_day
+        target_month == current_month and target_day < current_day
     ):
         date = pd.to_datetime(date) + pd.DateOffset(years=1)
 
@@ -315,10 +319,10 @@ def contains_date(string, fuzzy=False) -> bool:
 
 
 def create_webdriver(
-        web_driver: str = None,
-        headless: bool = True,
-        user_agent: str = None,
-        session_name: str = None,
+    web_driver: str = None,
+    headless: bool = True,
+    user_agent: str = None,
+    session_name: str = None,
 ) -> webdriver.Chrome:
     """
     Create and return a Chrome WebDriver configured for optional headless operation.
