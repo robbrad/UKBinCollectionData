@@ -33,13 +33,13 @@ pylint = "*"
 pytest = "*"
 setuptools = "*"
 pytest-bdd = "*"
-allure-pytest-bdd = "*"
 pytest-xdist = {extras = ["psutil"], version = "*"}
 pyhamcrest = "*"
 tabulate = "^0.9.0"
 pytest-asyncio = "^0.24.0"
 pytest-freezer = "^0.4.8"
 homeassistant = "^2023.10"
+geopandas = "^1.0.1"
 
 [tool.poetry.scripts]
 uk_bin_collection = "uk_bin_collection.uk_bin_collection.collect_data:run"
@@ -63,7 +63,6 @@ urllib3 = "*"
 webdriver-manager = "^4.0.1"
 tabulate = "^0.9.0"
 icalevents = "^0.2.1"
-geopandas = "^1.0.1"
 
 [tool.commitizen]
 major_version_zero = true
