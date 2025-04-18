@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UK Council Coverage Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([54.5, -2.7], 6); // Centered on UK
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Helper to slugify wiki anchor
+    function slugify(str) {
+      return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    fetch('tests/input.json')
+      .then(res => res.json())
+      .then(integrationData => {
+        console.log("🔍 Loaded integration data:", integrationData);
+
+        const coveredLADs = new Set();
+        const integrationByLAD24CD = {};
+
+        for (const entry of Object.values(integrationData)) {
+          const rawCode = entry.LAD24CD;
+          const code = rawCode?.replace(/[^\x20-\x7E]/g, '').trim();  // Sanitize non-printables
+          if (code) {
+            console.log(`✅ Adding LAD24CD: [${code}] from raw: [${rawCode}]`);
+            coveredLADs.add(code);
+            integrationByLAD24CD[code] = {
+              wiki_name: entry.wiki_name || "Unknown Council",
+              url: `https://github.com/robbrad/UKBinCollectionData/wiki/Councils#${slugify(entry.wiki_name || "unknown-council")}`
+            };
+          } else {
+            console.warn("⚠️ Entry with missing or bad LAD24CD:", entry);
+          }
+        }
+
+        console.log("🧪 Contains E06000065?", coveredLADs.has("E06000065"));
+        console.log("📦 Final set of covered LADs:", [...coveredLADs]);
+
+        return fetch('Local_Authority_Boundaries.geojson')
+          .then(res => res.json())
+          .then(geojson => {
+            L.geoJSON(geojson, {
+              style: feature => {
+                const code = feature.properties.LAD24CD?.trim();
+                const isCovered = coveredLADs.has(code);
+                return {
+                  color: '#333',
+                  weight: 1,
+                  fillColor: isCovered ? 'green' : 'red',
+                  fillOpacity: 0.6
+                };
+              },
+              onEachFeature: (feature, layer) => {
+                const code = feature.properties.LAD24CD?.trim();
+                const name = feature.properties.LAD24NM;
+                const covered = coveredLADs.has(code);
+
+                console.log("🌍 GeoJSON Feature:", code, name);
+                if (!code) console.warn("⚠️ Missing LAD24CD in GeoJSON feature:", feature);
+                if (!covered && code) console.warn("❌ Not covered LAD:", code, name);
+
+                if (covered && integrationByLAD24CD[code]) {
+                  const wiki = integrationByLAD24CD[code];
+                  layer.bindPopup(
+                    `<strong>${name}</strong><br>Status: ✅ Covered<br>` +
+                    `<a href="${wiki.url}" target="_blank">📘 ${wiki.wiki_name}</a>`
+                  );
+                } else {
+                  layer.bindPopup(`<strong>${name}</strong><br>Status: ❌ Not Covered`);
+                }
+              }
+            }).addTo(map);
+
+            // ✅ 🔍 Missing LADs debug block
+            const missing = [];
+            geojson.features.forEach(f => {
+              const code = f.properties.LAD24CD?.trim();
+              if (!coveredLADs.has(code)) {
+                missing.push(`${code} - ${f.properties.LAD24NM}`);
+              }
+            });
+            console.warn("🛠️ Missing LADs in input.json:", missing);
+          });
+      })
+      .catch(err => console.error('❌ Error loading data:', err));
+  </script>
+</body>
+
+</html>

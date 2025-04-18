@@ -1,4 +1,61 @@
 =======
+## 0.144.4 (2025-04-18)
+
+### Fix
+
+- Bristol #1275
+
+## 0.144.3 (2025-04-17)
+
+### Fix
+
+- better address for input.json
+- bank holiday overrides
+- more robust address searching
+- simple parsing done
+- Selenium navigation
+
+## 0.144.2 (2025-04-17)
+
+### Fix
+
+- knowsley
+- knowsley
+- knowsley
+- knowsley
+- KnowsleyMBCouncil.py
+- #1220 adding Mid Ulster District Council
+
+## 0.144.1 (2025-04-17)
+
+### Fix
+
+- fix Sandwell garden waste collection date
+
+## 0.144.0 (2025-04-17)
+
+### Feat
+
+- added great yarmouth
+
+## 0.143.6 (2025-04-17)
+
+### Fix
+
+- Renfrewshire Council
+
+## 0.143.5 (2025-04-17)
+
+### Fix
+
+- Google Cal
+
+## 0.143.4 (2025-04-17)
+
+### Fix
+
+- Google Cal
+
 ## 0.143.3 (2025-04-15)
 
 ### Fix
