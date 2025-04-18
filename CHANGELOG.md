@@ -1,4 +1,14 @@
 =======
+## 0.146.0 (2025-04-18)
+
+### Feat
+
+- #1342 Adding Includes Trafford, Clackmannanshire, Havant, North Warwickshire, Newry Mourne and Down, East Dunbartonshire, Pendle, Torfaen, East Hampshire, Ribble Valley, Brentwood, Isle of Wight, Westmorland and Furness, Derry and Strabane, and Norwich. Google Cal support for PDF councils via ICS file
+
+### Fix
+
+- Black reformatting
+
 ## 0.145.0 (2025-04-18)
 
 ### Feat
