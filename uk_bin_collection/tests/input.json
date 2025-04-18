@@ -985,7 +985,35 @@
         "wiki_name": "Google Calendar (Public)",
         "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU. Councils that currently need this are Trafford.",
         "supported_councils": [
-            "TraffordCouncil"
+            "TraffordCouncil",
+            "ClackmannanshireCouncil",
+            "HavantBoroughCouncil",
+            "NorthWarwickshireBoroughCouncil",
+            "NewryMourneAndDownDistrictCouncil",
+            "EastDunbartonshireCouncil",
+            "PendleBoroughCouncil",
+            "TorfaenCountyBoroughCouncil",
+            "EastHampshireCountyCouncil",
+            "RibbleValleyCouncil",
+            "BrentwoodBoroughCouncil",
+            "IsleOfWightCouncil",
+            "WestmorlAndFurnessCouncil",
+            "DerryAndStrabaneDistrictCouncil",
+            "NorwichCityCouncil"
+        ],
+        "supported_councils_LAD24CD": [
+            "E06000046",
+            "E07000068",
+            "E07000085",
+            "E07000090",
+            "E07000124",
+            "E07000218",
+            "E08000009",
+            "N09000005",
+            "N09000010",
+            "S12000005",
+            "S12000045",
+            "W06000020"
         ]
     },
     "GraveshamBoroughCouncil": {

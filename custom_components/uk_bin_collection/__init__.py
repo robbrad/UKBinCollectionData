@@ -250,24 +250,20 @@ async def async_unload_entry(
 
     return unload_ok
 
-
 def build_ukbcd_args(config_data: dict) -> list:
     """Build the argument list for UKBinCollectionApp from config data."""
-    _LOGGER.debug(f"{LOG_PREFIX} build_ukbcd_args called with config_data={config_data}")
-    args = [config_data.get("council", ""), config_data.get("url", "")]
+    council = config_data.get("original_parser") or config_data.get("council", "")
+    url = config_data.get("url", "")
 
-    # Add other arguments
+    args = [council, url]
+
     for key, value in config_data.items():
         if key in EXCLUDED_ARG_KEYS:
-            _LOGGER.debug(f"{LOG_PREFIX} Skipping excluded key: {key}")
             continue
         if key == "web_driver" and value is not None:
             value = value.rstrip("/")
-        arg_str = f"--{key}={value}"
-        _LOGGER.debug(f"{LOG_PREFIX} Adding argument: {arg_str}")
-        args.append(arg_str)
+        args.append(f"--{key}={value}")
 
-    _LOGGER.debug(f"{LOG_PREFIX} Final arguments list: {args}")
     return args
 
 

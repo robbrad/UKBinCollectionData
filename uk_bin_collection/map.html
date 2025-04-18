@@ -37,23 +37,37 @@
         const coveredLADs = new Set();
         const integrationByLAD24CD = {};
 
-        for (const entry of Object.values(integrationData)) {
-          const rawCode = entry.LAD24CD;
-          const code = rawCode?.replace(/[^\x20-\x7E]/g, '').trim();  // Sanitize non-printables
-          if (code) {
-            console.log(`✅ Adding LAD24CD: [${code}] from raw: [${rawCode}]`);
-            coveredLADs.add(code);
-            integrationByLAD24CD[code] = {
-              wiki_name: entry.wiki_name || "Unknown Council",
-              url: `https://github.com/robbrad/UKBinCollectionData/wiki/Councils#${slugify(entry.wiki_name || "unknown-council")}`
-            };
-          } else {
-            console.warn("⚠️ Entry with missing or bad LAD24CD:", entry);
+        for (const [moduleName, entry] of Object.entries(integrationData)) {
+          const wikiName = entry.wiki_name || moduleName;
+          const wikiUrl = `https://github.com/robbrad/UKBinCollectionData/wiki/Councils#${slugify(wikiName)}`;
+
+          // Case 1: Direct LAD24CD
+          if (entry.LAD24CD) {
+            const code = entry.LAD24CD?.replace(/[^\x20-\x7E]/g, '').trim();
+            if (code) {
+              coveredLADs.add(code);
+              integrationByLAD24CD[code] = { wiki_name: wikiName, url: wikiUrl };
+            } else {
+              console.warn("⚠️ Entry with bad LAD24CD:", moduleName, entry);
+            }
+          }
+
+          // Case 2: Shared modules with multiple LADs
+          if (Array.isArray(entry.supported_councils_LAD24CD)) {
+            for (const codeRaw of entry.supported_councils_LAD24CD) {
+              const code = codeRaw?.replace(/[^\x20-\x7E]/g, '').trim();
+              if (code) {
+                coveredLADs.add(code);
+                // Only overwrite if not already present (prefer specific match)
+                if (!integrationByLAD24CD[code]) {
+                  integrationByLAD24CD[code] = { wiki_name: wikiName, url: wikiUrl };
+                }
+              }
+            }
           }
         }
 
-        console.log("🧪 Contains E06000065?", coveredLADs.has("E06000065"));
-        console.log("📦 Final set of covered LADs:", [...coveredLADs]);
+        console.log("📦 Final covered LADs:", [...coveredLADs]);
 
         return fetch('Local_Authority_Boundaries.geojson')
           .then(res => res.json())
@@ -74,7 +88,6 @@
                 const name = feature.properties.LAD24NM;
                 const covered = coveredLADs.has(code);
 
-                console.log("🌍 GeoJSON Feature:", code, name);
                 if (!code) console.warn("⚠️ Missing LAD24CD in GeoJSON feature:", feature);
                 if (!covered && code) console.warn("❌ Not covered LAD:", code, name);
 
@@ -90,14 +103,11 @@
               }
             }).addTo(map);
 
-            // ✅ 🔍 Missing LADs debug block
-            const missing = [];
-            geojson.features.forEach(f => {
-              const code = f.properties.LAD24CD?.trim();
-              if (!coveredLADs.has(code)) {
-                missing.push(`${code} - ${f.properties.LAD24NM}`);
-              }
-            });
+            // Debug missing LADs
+            const missing = geojson.features
+              .map(f => [f.properties.LAD24CD?.trim(), f.properties.LAD24NM])
+              .filter(([code]) => !coveredLADs.has(code))
+              .map(([code, name]) => `${code} - ${name}`);
             console.warn("🛠️ Missing LADs in input.json:", missing);
           });
       })

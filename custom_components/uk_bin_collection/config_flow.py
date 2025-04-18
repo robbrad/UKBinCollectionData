@@ -10,6 +10,8 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 
+import collections  # At the top with other imports
+
 from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES
 
 _LOGGER = logging.getLogger(__name__)
@@ -88,6 +90,14 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not errors:
                 # Map selected wiki_name back to council key
                 council_key = self.map_wiki_name_to_council_key(user_input["council"])
+                if not council_key:
+                    errors["council"] = "Invalid council selected."
+                    return self.async_show_form(step_id="user", data_schema=..., errors=errors)
+                user_input["council"] = council_key
+
+                # Add original_parser if it's an alias
+                if "original_parser" in self.councils_data[council_key]:
+                    user_input["original_parser"] = self.councils_data[council_key]["original_parser"]
                 user_input["council"] = council_key
                 self.data.update(user_input)
 
@@ -235,21 +245,33 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def get_councils_json(self) -> Dict[str, Any]:
-        """Fetch and return the supported councils data."""
+        """Fetch and return the supported councils data, including aliases and sorted alphabetically."""
         url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.145.0/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as response:
                     response.raise_for_status()
                     data_text = await response.text()
-                    return json.loads(data_text)
-        except aiohttp.ClientError as e:
-            _LOGGER.error("HTTP error while fetching council data: %s", e)
-        except json.JSONDecodeError as e:
-            _LOGGER.error("Error decoding council data JSON: %s", e)
+                    original_data = json.loads(data_text)
+
+                    normalized_data = {}
+                    for key, value in original_data.items():
+                        normalized_data[key] = value
+                        for alias in value.get("supported_councils", []):
+                            alias_data = value.copy()
+                            alias_data["original_parser"] = key
+                            alias_data["wiki_name"] = f"{alias.replace('Council', ' Council')} (via Google Calendar)"
+                            normalized_data[alias] = alias_data
+
+                    # Sort alphabetically by key (council ID)
+                    sorted_data = dict(sorted(normalized_data.items()))
+
+                    _LOGGER.debug("Loaded and sorted %d councils (with aliases)", len(sorted_data))
+                    return sorted_data
+
         except Exception as e:
-            _LOGGER.exception("Unexpected error while fetching council data: %s", e)
-        return {}
+            _LOGGER.exception("Error fetching council data: %s", e)
+            return {}
 
     async def get_council_schema(self, council: str) -> vol.Schema:
         """Generate the form schema based on council requirements."""
