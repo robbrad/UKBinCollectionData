@@ -10,6 +10,8 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 
+import collections  # At the top with other imports
+
 from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES
 
 _LOGGER = logging.getLogger(__name__)
@@ -31,7 +33,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.chromium_checked: bool = False
         self.chromium_installed: bool = False
 
-    async def async_migrate_entry(self, config_entry: config_entries.ConfigEntry) -> bool:
+    async def async_migrate_entry(
+        self, config_entry: config_entries.ConfigEntry
+    ) -> bool:
         """Migrate old entry to the new version with manual refresh ticked."""
         _LOGGER.info("Migrating config entry from version %s", config_entry.version)
         data = dict(config_entry.data)
@@ -45,7 +49,6 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.hass.config_entries.async_update_entry(config_entry, data=data)
             _LOGGER.info("Migration to version %s successful", self.VERSION)
         return True
-
 
     async def async_step_user(self, user_input: Optional[Dict[str, Any]] = None):
         """Handle the initial step."""
@@ -88,6 +91,18 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if not errors:
                 # Map selected wiki_name back to council key
                 council_key = self.map_wiki_name_to_council_key(user_input["council"])
+                if not council_key:
+                    errors["council"] = "Invalid council selected."
+                    return self.async_show_form(
+                        step_id="user", data_schema=..., errors=errors
+                    )
+                user_input["council"] = council_key
+
+                # Add original_parser if it's an alias
+                if "original_parser" in self.councils_data[council_key]:
+                    user_input["original_parser"] = self.councils_data[council_key][
+                        "original_parser"
+                    ]
                 user_input["council"] = council_key
                 self.data.update(user_input)
 
@@ -158,9 +173,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             description_placeholders=description_placeholders,
         )
 
-    async def async_step_reconfigure(
-        self, user_input: Optional[Dict[str, Any]] = None
-    ):
+    async def async_step_reconfigure(self, user_input: Optional[Dict[str, Any]] = None):
         """Handle reconfiguration of the integration."""
         return await self.async_step_reconfigure_confirm()
 
@@ -169,7 +182,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     ):
         """Handle a reconfiguration flow initialized by the user."""
         errors = {}
-        existing_entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
+        existing_entry = self.hass.config_entries.async_get_entry(
+            self.context["entry_id"]
+        )
         if existing_entry is None:
             _LOGGER.error("Reconfiguration failed: Config entry not found.")
             return self.async_abort(reason="Reconfigure Failed")
@@ -219,7 +234,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 )
                 # Trigger a data refresh by reloading the config entry
                 await self.hass.config_entries.async_reload(existing_entry.entry_id)
-                _LOGGER.info("Configuration updated for entry: %s", existing_entry.entry_id)
+                _LOGGER.info(
+                    "Configuration updated for entry: %s", existing_entry.entry_id
+                )
                 return self.async_abort(reason="Reconfigure Successful")
             else:
                 _LOGGER.debug("Errors in reconfiguration: %s", errors)
@@ -235,21 +252,37 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def get_councils_json(self) -> Dict[str, Any]:
-        """Fetch and return the supported councils data."""
+        """Fetch and return the supported councils data, including aliases and sorted alphabetically."""
         url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.145.0/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as response:
                     response.raise_for_status()
                     data_text = await response.text()
-                    return json.loads(data_text)
-        except aiohttp.ClientError as e:
-            _LOGGER.error("HTTP error while fetching council data: %s", e)
-        except json.JSONDecodeError as e:
-            _LOGGER.error("Error decoding council data JSON: %s", e)
+                    original_data = json.loads(data_text)
+
+                    normalized_data = {}
+                    for key, value in original_data.items():
+                        normalized_data[key] = value
+                        for alias in value.get("supported_councils", []):
+                            alias_data = value.copy()
+                            alias_data["original_parser"] = key
+                            alias_data["wiki_name"] = (
+                                f"{alias.replace('Council', ' Council')} (via Google Calendar)"
+                            )
+                            normalized_data[alias] = alias_data
+
+                    # Sort alphabetically by key (council ID)
+                    sorted_data = dict(sorted(normalized_data.items()))
+
+                    _LOGGER.debug(
+                        "Loaded and sorted %d councils (with aliases)", len(sorted_data)
+                    )
+                    return sorted_data
+
         except Exception as e:
-            _LOGGER.exception("Unexpected error while fetching council data: %s", e)
-        return {}
+            _LOGGER.exception("Error fetching council data: %s", e)
+            return {}
 
     async def get_council_schema(self, council: str) -> vol.Schema:
         """Generate the form schema based on council requirements."""
@@ -294,11 +327,11 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             vol.Optional(
                 "manual_refresh_only",
-                default=existing_data.get("manual_refresh_only", False)
+                default=existing_data.get("manual_refresh_only", False),
             ): bool,
-            vol.Required("update_interval", default=existing_data.get("update_interval", 12)): vol.All(
-                cv.positive_int, vol.Range(min=1)
-            ),
+            vol.Required(
+                "update_interval", default=existing_data.get("update_interval", 12)
+            ): vol.All(cv.positive_int, vol.Range(min=1)),
         }
 
         optional_fields = [
@@ -314,9 +347,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         for field_name, validator in optional_fields:
             if field_name in existing_data:
-                fields[
-                    vol.Optional(field_name, default=existing_data[field_name])
-                ] = validator
+                fields[vol.Optional(field_name, default=existing_data[field_name])] = (
+                    validator
+                )
 
         fields[
             vol.Optional(
@@ -351,7 +384,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             messages.append(f"{url}: {status}<br>")
 
         # Chromium installation check
-        chromium_status = "✅ Installed" if self.chromium_installed else "❌ Not installed"
+        chromium_status = (
+            "✅ Installed" if self.chromium_installed else "❌ Not installed"
+        )
         messages.append("<br><b>Local Chromium browser check:</b><br>")
         messages.append(f"Chromium browser is {chromium_status}.")
 
@@ -415,7 +450,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             index = self.council_options.index(wiki_name)
             council_key = self.council_names[index]
-            _LOGGER.debug("Mapped wiki name '%s' to council key '%s'.", wiki_name, council_key)
+            _LOGGER.debug(
+                "Mapped wiki name '%s' to council key '%s'.", wiki_name, council_key
+            )
             return council_key
         except ValueError:
             _LOGGER.error("Wiki name '%s' not found in council options.", wiki_name)
@@ -431,19 +468,22 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.debug("JSON decode error: %s", e)
             return False
 
-    async def _async_entry_exists(self, user_input: Dict[str, Any]) -> Optional[config_entries.ConfigEntry]:
+    async def _async_entry_exists(
+        self, user_input: Dict[str, Any]
+    ) -> Optional[config_entries.ConfigEntry]:
         """Check if a config entry with the same name or data already exists."""
         for entry in self._async_current_entries():
             if entry.data.get("name") == user_input.get("name"):
                 return entry
-            if (
-                entry.data.get("council") == user_input.get("council")
-                and entry.data.get("url") == user_input.get("url")
-            ):
+            if entry.data.get("council") == user_input.get(
+                "council"
+            ) and entry.data.get("url") == user_input.get("url"):
                 return entry
         return None
 
-    async def async_step_import(self, import_config: Dict[str, Any]) -> config_entries.FlowResult:
+    async def async_step_import(
+        self, import_config: Dict[str, Any]
+    ) -> config_entries.FlowResult:
         """Handle import from configuration.yaml."""
         return await self.async_step_user(import_config)
 
@@ -493,7 +533,9 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
 
             # Validate JSON mapping if provided
             if user_input.get("icon_color_mapping"):
-                if not UkBinCollectionConfigFlow.is_valid_json(user_input["icon_color_mapping"]):
+                if not UkBinCollectionConfigFlow.is_valid_json(
+                    user_input["icon_color_mapping"]
+                ):
                     errors["icon_color_mapping"] = "Invalid JSON format."
 
             if user_input.get("manual_refresh_only"):
@@ -535,18 +577,24 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
                     data_text = await response.text()
                     return json.loads(data_text)
         except aiohttp.ClientError as e:
-            _LOGGER.error("HTTP error while fetching council data for options flow: %s", e)
+            _LOGGER.error(
+                "HTTP error while fetching council data for options flow: %s", e
+            )
         except json.JSONDecodeError as e:
             _LOGGER.error("Error decoding council data JSON for options flow: %s", e)
         except Exception as e:
-            _LOGGER.exception("Unexpected error while fetching council data for options flow: %s", e)
+            _LOGGER.exception(
+                "Unexpected error while fetching council data for options flow: %s", e
+            )
         return {}
 
     def build_options_schema(self, existing_data: Dict[str, Any]) -> vol.Schema:
         """Build the schema for the options flow with existing data."""
         council_current_key = existing_data.get("council", "")
         try:
-            council_current_wiki = self.council_options[self.council_names.index(council_current_key)]
+            council_current_wiki = self.council_options[
+                self.council_names.index(council_current_key)
+            ]
         except (ValueError, IndexError):
             council_current_wiki = ""
 
@@ -556,9 +604,9 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
                 self.council_options
             ),
             vol.Optional("manual_refresh_only", default=False): bool,
-            vol.Required("update_interval", default=existing_data.get("update_interval", 12)): vol.All(
-                cv.positive_int, vol.Range(min=1)
-            ),
+            vol.Required(
+                "update_interval", default=existing_data.get("update_interval", 12)
+            ): vol.All(cv.positive_int, vol.Range(min=1)),
         }
 
         optional_fields = [
@@ -568,9 +616,9 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
 
         for field_name, validator in optional_fields:
             if field_name in existing_data:
-                fields[
-                    vol.Optional(field_name, default=existing_data[field_name])
-                ] = validator
+                fields[vol.Optional(field_name, default=existing_data[field_name])] = (
+                    validator
+                )
 
         return vol.Schema(fields)
 
@@ -579,7 +627,9 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
         try:
             index = self.council_options.index(wiki_name)
             council_key = self.council_names[index]
-            _LOGGER.debug("Mapped wiki name '%s' to council key '%s'.", wiki_name, council_key)
+            _LOGGER.debug(
+                "Mapped wiki name '%s' to council key '%s'.", wiki_name, council_key
+            )
             return council_key
         except ValueError:
             _LOGGER.error("Wiki name '%s' not found in council options.", wiki_name)

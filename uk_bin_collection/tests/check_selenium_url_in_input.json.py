@@ -23,10 +23,14 @@ def get_council_files(repo, branch):
                 name = item["name"]
                 if name.endswith(".py"):
                     council_name = name.replace(".py", "")
-                    councils[council_name] = item["url"]  # 'url' gives API-based content URL
+                    councils[council_name] = item[
+                        "url"
+                    ]  # 'url' gives API-based content URL
             return councils
         else:
-            raise ValueError("Expected a list from the GitHub response but got something else.")
+            raise ValueError(
+                "Expected a list from the GitHub response but got something else."
+            )
     else:
         print(f"Failed to fetch councils from files: {response.content}")
         return {}
@@ -39,7 +43,9 @@ def get_council_file_content(api_url):
     We'll use the latter, decode base64, and return the text.
     """
     # Example: https://api.github.com/repos/robbrad/UKBinCollectionData/contents/...
-    response = requests.get(api_url, headers={"Accept": "application/vnd.github.v3+json"})
+    response = requests.get(
+        api_url, headers={"Accept": "application/vnd.github.v3+json"}
+    )
     if response.status_code == 200:
         file_json = response.json()
         # file_json["content"] is base64-encoded
@@ -82,8 +88,8 @@ def council_needs_update(council_name, json_data, council_file_content):
     # If the council isn't in the JSON at all, we can't do the check
     # (or we assume no JSON data => no web_driver?).
     council_data = json_data.get(council_name, {})
-    web_driver_missing = ("web_driver" not in council_data)
-    create_webdriver_present = ("create_webdriver" in council_file_content)
+    web_driver_missing = "web_driver" not in council_data
+    create_webdriver_present = "create_webdriver" in council_file_content
 
     return web_driver_missing and create_webdriver_present
 
@@ -165,20 +171,21 @@ def main(repo="robbrad/UKBinCollectionData", branch="master"):
     # 4) Print results
     table_data = []
     headers = ["Council Name", "In Files", "In JSON", "Needs Update?", "Discrepancies"]
+
     # Sort councils so that ones with the highest discrepancy or update appear first
     # Then alphabetical if tie:
     def sort_key(item):
         # item is (council_name, data_dict)
         return (
-            item[1]["needs_update"],         # sort by needs_update (False < True)
+            item[1]["needs_update"],  # sort by needs_update (False < True)
             item[1]["discrepancies_count"],  # then by discrepancies
-            item[0],                         # then by name
+            item[0],  # then by name
         )
 
     # We'll sort descending for "needs_update", so invert the boolean or reverse later
     sorted_councils = sorted(
         all_councils_data.items(),
-        key=lambda x: (not x[1]["needs_update"], x[1]["discrepancies_count"], x[0])
+        key=lambda x: (not x[1]["needs_update"], x[1]["discrepancies_count"], x[0]),
     )
 
     for council, presence in sorted_councils:

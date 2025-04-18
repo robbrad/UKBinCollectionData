@@ -1339,13 +1339,17 @@ def test_build_reconfigure_schema(hass):
 @pytest.mark.asyncio
 async def test_async_step_import(hass):
     """Test that import flows call async_step_user."""
-    flow = UkBinCollectionConfigFlow()
-    flow.hass = hass
-    import_config = {"name": "Imported", "council": "Council Test", "uprn": "111"}
-    # For import, the flow should delegate to async_step_user.
-    result = await flow.async_step_import(import_config)
-    # We assume that async_step_user would return a form (or create entry)
-    assert result is not None
+    with patch(
+        "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.get_councils_json",
+        return_value=MOCK_COUNCILS_DATA,
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+        import_config = {"name": "Imported", "council": "Council Test", "uprn": "111"}
+
+        result = await flow.async_step_import(import_config)
+
+        assert result is not None
 
 
 @pytest.mark.asyncio

@@ -9,7 +9,10 @@ from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+)
 
 from .const import DOMAIN, LOG_PREFIX
 
@@ -52,7 +55,9 @@ class UKBinCollectionCalendar(CoordinatorEntity, CalendarEntity):
         """Return the next collection event."""
         collection_date = self.coordinator.data.get(self._bin_type)
         if not collection_date:
-            _LOGGER.debug(f"{LOG_PREFIX} No collection date available for '{self._bin_type}'.")
+            _LOGGER.debug(
+                f"{LOG_PREFIX} No collection date available for '{self._bin_type}'."
+            )
             return None
 
         return self._create_calendar_event(collection_date)
@@ -94,7 +99,9 @@ class UKBinCollectionCalendar(CoordinatorEntity, CalendarEntity):
         The entity is considered available if the coordinator’s last update was successful
         and we have a valid collection date for the bin type.
         """
-        return self.coordinator.last_update_success and (self.coordinator.data.get(self._bin_type) is not None)
+        return self.coordinator.last_update_success and (
+            self.coordinator.data.get(self._bin_type) is not None
+        )
 
     @property
     def extra_state_attributes(self) -> Dict[str, Any]:
@@ -116,7 +123,9 @@ async def async_setup_entry(
     _LOGGER.info(f"{LOG_PREFIX} Setting up UK Bin Collection Calendar platform.")
 
     # Retrieve the coordinator from hass.data
-    coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]["coordinator"]
+    coordinator: DataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id][
+        "coordinator"
+    ]
 
     # Wait for the first refresh. This will raise if the update fails.
     await coordinator.async_config_entry_first_refresh()
@@ -139,7 +148,9 @@ async def async_setup_entry(
 
     # Register all calendar entities with Home Assistant
     async_add_entities(entities)
-    _LOGGER.debug(f"{LOG_PREFIX} Calendar entities added: {[entity.name for entity in entities]}")
+    _LOGGER.debug(
+        f"{LOG_PREFIX} Calendar entities added: {[entity.name for entity in entities]}"
+    )
 
 
 async def async_unload_entry(
