@@ -1953,12 +1953,12 @@
     "SloughBoroughCouncil": {
         "postcode": "SL2 2EW",
         "skip_get_url": true,
-        "house_number": "42 Wavell Gardens",
+        "house_number": "Wavell Gardens",
         "url": "https://www.slough.gov.uk/bin-collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Slough Borough Council",
         "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E06000044"
+        "LAD24CD": "E06000039"
     },
     "SolihullCouncil": {
         "url": "https://digital.solihull.gov.uk/BinCollectionCalendar/Calendar.aspx?UPRN=100071005444",
