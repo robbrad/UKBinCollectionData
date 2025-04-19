@@ -45,8 +45,10 @@
     },
     "ArgyllandButeCouncil": {
         "skip_get_url": true,
-        "uprn": "125061759",
-        "url": "https://www.argyll-bute.gov.uk",
+        "postcode": "PA286LJ",
+        "uprn": "000125011723",
+        "url": "https://www.argyll-bute.gov.uk/rubbish-and-recycling/household-waste/bin-collection",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Argyll and Bute Council",
         "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "S12000035"
