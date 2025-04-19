@@ -1,6 +1,7 @@
 import json
 import geopandas as gpd
 
+
 def extract_lad_codes(input_json_path):
     with open(input_json_path, "r") as f:
         data = json.load(f)
@@ -21,6 +22,7 @@ def extract_lad_codes(input_json_path):
 
     return lad_codes, lad_code_to_council_input
 
+
 def compare_with_geojson(input_lad_codes, geojson_path):
     gdf = gpd.read_file(geojson_path)
     geojson_lad_codes = set(gdf["LAD24CD"].dropna().unique())
@@ -37,17 +39,22 @@ def compare_with_geojson(input_lad_codes, geojson_path):
 
     return matching, missing_in_input, extra_in_input, geojson_lad_map
 
+
 # --- Run the comparison ---
 input_json_path = "uk_bin_collection/tests/input.json"
 geojson_path = "uk_bin_collection/Local_Authority_Boundaries.geojson"
 
 input_lad_codes, input_name_map = extract_lad_codes(input_json_path)
-matching, missing, extra, geojson_name_map = compare_with_geojson(input_lad_codes, geojson_path)
+matching, missing, extra, geojson_name_map = compare_with_geojson(
+    input_lad_codes, geojson_path
+)
 
 # --- Print results ---
 print(f"✅ Matching LAD24CDs ({len(matching)}):")
 for code in sorted(matching):
-    print(f"  {code} → input.json: {input_name_map.get(code)} | geojson: {geojson_name_map.get(code)}")
+    print(
+        f"  {code} → input.json: {input_name_map.get(code)} | geojson: {geojson_name_map.get(code)}"
+    )
 
 print(f"\n🟡 LADs in GeoJSON but missing in input.json ({len(missing)}):")
 for code in sorted(missing):

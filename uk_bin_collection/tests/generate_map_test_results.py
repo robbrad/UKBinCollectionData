@@ -4,15 +4,17 @@ import xml.etree.ElementTree as ET
 from collections import defaultdict
 import re
 
+
 def extract_council_name(testname):
     """
     Extracts the council name from the test name.
     E.g. "test_scenario_outline[BarnetCouncil]" => "barnetcouncil"
     """
-    match = re.search(r'\[(.*?)\]', testname)
+    match = re.search(r"\[(.*?)\]", testname)
     if match:
         return match.group(1).strip().lower()
     return None
+
 
 def parse_junit_xml(path):
     tree = ET.parse(path)
@@ -30,6 +32,7 @@ def parse_junit_xml(path):
             results[council] = "fail"
 
     return results
+
 
 def main():
     if len(sys.argv) != 2:
