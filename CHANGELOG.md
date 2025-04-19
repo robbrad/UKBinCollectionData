@@ -1,4 +1,14 @@
 =======
+## 0.148.0 (2025-04-19)
+
+### Feat
+
+- adding Wrexham and #1046 Horsham councils
+
+### Fix
+
+- Argyll and Bute council #1053
+
 ## 0.147.2 (2025-04-18)
 
 ### Fix
