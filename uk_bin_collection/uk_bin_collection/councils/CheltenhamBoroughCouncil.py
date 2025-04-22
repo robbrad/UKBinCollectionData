@@ -242,12 +242,8 @@ class CouncilClass(AbstractGetBinDataClass):
         # Build a dictionary to modify any bank holiday collections
         bh_dict = {}
         for table in tables:
-            # extract headers
-            # headers = [th.text.strip() for th in table.find_all('th')]
-
             # extract table body
             for row in table.find_all("tr")[1:]:
-                # cells = [td.text.strip() for td in row.find_all('td')]
                 if row.find_all("td")[1].text.strip() == "Normal collection day":
                     bh_dict[
                         parse(
