@@ -1,4 +1,11 @@
 =======
+## 0.148.1 (2025-04-22)
+
+### Fix
+
+- added bank holiday offsets.
+- added bank holiday offsets.
+
 ## 0.148.0 (2025-04-19)
 
 ### Feat
