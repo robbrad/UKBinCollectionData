@@ -215,6 +215,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 except Exception as e:
                     print(f"Error processing collection row: {e}")
                     continue
+
+            # Debug: Print the complete dict_data
+            print("\nFinal bin collection data:")
+            print(data)
+
         except Exception as e:
             print(f"An error occurred: {e}")
             raise
