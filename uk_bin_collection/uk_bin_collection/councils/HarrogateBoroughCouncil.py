@@ -37,7 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
         collections = []
 
         # Find section with bins in
-        table = soup.find_all("table", {"class": "hbcRounds"})[0]
+        table = soup.find_all("table", {"class": "hbcRounds"})[-1]
 
         # For each bin section, get the text and the list elements
         for row in table.find_all("tr"):
