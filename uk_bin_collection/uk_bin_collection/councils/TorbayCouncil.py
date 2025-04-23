@@ -144,22 +144,38 @@ class CouncilClass(AbstractGetBinDataClass):
             print("Address selected successfully")
             time.sleep(1)  # Give time for the selection to take effect
 
-            # Find and click the Submit button
-            submit_button = wait.until(
-                EC.element_to_be_clickable(
-                    (By.CSS_SELECTOR, "button.btn.btn-primary[type='submit']")
-                ),
-                message="Submit button not found or not clickable",
+            # Wait for the address selection confirmation to appear
+            print("Waiting for address selection confirmation...")
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "esbAddressSelected"))
+            )
+            print("Address selection confirmed")
+
+            # Click the Submit button
+            print("Clicking Submit button...")
+            submit_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "submit-button"))
             )
             submit_button.click()
-            time.sleep(1)  # Give time for the submission to process
+            time.sleep(1)  # Brief pause to let the navigation start
 
-            print("Clicked Submit button")
-
-            print("Looking for schedule list...")
-            schedule_list = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "bin--container"))
-            )
+            # Wait for the collection details to appear
+            print("Waiting for collection details to load...")
+            try:
+                schedule_list = WebDriverWait(driver, 20).until(
+                    EC.presence_of_element_located((By.ID, "resiCollectionDetails"))
+                )
+                print("Collection details loaded successfully")
+            except TimeoutException:
+                print(
+                    "Timeout waiting for collection details - checking if page needs refresh"
+                )
+                driver.refresh()
+                time.sleep(2)
+                schedule_list = WebDriverWait(driver, 20).until(
+                    EC.presence_of_element_located((By.ID, "resiCollectionDetails"))
+                )
+                print("Collection details loaded after refresh")
 
             # Make a BS4 object
             print("Parsing page with BeautifulSoup...")
@@ -168,28 +184,24 @@ class CouncilClass(AbstractGetBinDataClass):
             # Process collection details
             print("Looking for collection details in the page...")
 
-            bin_rows = soup.select("div.bin--row:not(:first-child)")  # Skip header row
-            print(f"\nProcessing {len(bin_rows)} bin rows...")
+            # Find all collection rows
+            collection_rows = soup.select("#resiCollectionDetails .row.fs-4")
+            print(f"\nProcessing {len(collection_rows)} collection rows...")
 
-            for row in bin_rows:
+            for row in collection_rows:
                 try:
-                    # Extract bin type from first column
-                    bin_type = row.select_one("div.col-md-3").text.strip()
+                    # Get the collection service type (e.g., "Domestic Collection Service")
+                    service_type = row.select_one("div.col:nth-child(3)").text.strip()
 
-                    # Get the collection dates column
-                    collection_dates_div = row.select("div.col-md-3")[1]  # Third column
-
-                    # Get only the immediate text content before any <p> tags
-                    next_collection_text = "".join(
-                        collection_dates_div.find_all(text=True, recursive=False)
-                    ).strip()
+                    # Get the date from the second column
+                    date_text = row.select_one("div[style*='width:360px']").text.strip()
 
                     # Parse the date
-                    cleaned_date_text = remove_ordinal_indicator_from_date_string(
-                        next_collection_text
-                    )
-                    parsed_date = parse(cleaned_date_text, fuzzy=True)
+                    parsed_date = parse(date_text, fuzzy=True)
                     bin_date = parsed_date.strftime("%d/%m/%Y")
+
+                    # Extract just the service type without " Collection Service"
+                    bin_type = service_type.replace(" Collection Service", "")
 
                     # Add to data
                     if bin_type and bin_date:
@@ -201,7 +213,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         print(f"Successfully added collection: {dict_data}")
 
                 except Exception as e:
-                    print(f"Error processing item: {e}")
+                    print(f"Error processing collection row: {e}")
                     continue
         except Exception as e:
             print(f"An error occurred: {e}")
