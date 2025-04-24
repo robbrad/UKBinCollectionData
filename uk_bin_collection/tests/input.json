@@ -1763,6 +1763,13 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000178"
     },
+    "PembrokeshireCountyCouncil": {
+        "url": "https://nearest.pembrokeshire.gov.uk/property/100100278790",
+        "wiki_command_url_override": "https://nearest.pembrokeshire.gov.uk/property/XXXXXXXXXX",
+        "wiki_name": "Pembrokeshire",
+        "wiki_note": "Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.",
+        "LAD24CD": "W06000009"
+    },
     "PeterboroughCityCouncil": {
         "house_number": "7 Arundel Road, Peterborough, PE4 6JJ",
         "postcode": "PE4 6JJ",
