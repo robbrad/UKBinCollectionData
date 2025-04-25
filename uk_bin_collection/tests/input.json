@@ -1196,6 +1196,15 @@
         "wiki_name": "Huntingdon District Council",
         "wiki_note": "Replace XXXXXXXX with your UPRN."
     },
+    "HyndburnBoroughCouncil": {
+        "postcode": "BB1 4DJ",
+        "LAD24CD": "E07000120",
+        "uprn": "10070893507",
+        "url": "https://www.horsham.gov.uk/waste-recycling-and-bins/household-bin-collections/check-your-bin-collection-day",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Hyndburn",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver."
+    },
     "IpswichBoroughCouncil": {
         "house_number": "Siloam Place",
         "url": "https://app.ipswich.gov.uk/bin-collection/",
