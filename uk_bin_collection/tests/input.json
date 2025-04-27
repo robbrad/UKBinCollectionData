@@ -1428,12 +1428,10 @@
         "LAD24CD": "E06000035"
     },
     "MeltonBoroughCouncil": {
-        "house_number": "Stone Cottage, 6A Towns Lane, Goadby Marwood, Melton Mowbray, LE14 4LL",
-        "postcode": "LE14 4LL",
-        "url": "https://www.melton.gov.uk/waste-and-recycling/household-waste/bin-collection-dates/",
-        "web_driver": "http://selenium:4444",
+        "uprn": "100030540956",
+        "url": "https://my.melton.gov.uk/collections",
         "wiki_name": "Melton",
-        "wiki_note": "For house number, use your address as it appears after you've searched for your postcode on the Melton Council website",
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000133"
     },
     "MertonCouncil": {
