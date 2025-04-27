@@ -1935,6 +1935,7 @@
         "skip_get_url": true,
         "uprn": "100070182634",
         "url": "https://www.rugby.gov.uk/check-your-next-bin-day",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Rugby",
         "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000220"
