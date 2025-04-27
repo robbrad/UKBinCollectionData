@@ -1,6 +1,6 @@
-# import re
-
 import requests
+from bs4 import BeautifulSoup
+from dateutil.parser import parse
 
 from uk_bin_collection.uk_bin_collection.common import (
     check_postcode,
@@ -232,11 +232,46 @@ class CouncilClass(AbstractGetBinDataClass):
         )
         garden_dates: list[str] = get_dates_every_x_days(week[garden_week], 14, 28)
 
+        # Build a dictionary of bank holiday changes
+        bank_holiday_bins_url = "https://www.cheltenham.gov.uk/bank-holiday-collections"
+        response = requests.get(bank_holiday_bins_url)
+        soup = BeautifulSoup(response.content, "html.parser")
+        response.close()
+        tables = soup.find_all("table")
+
+        # Build a dictionary to modify any bank holiday collections
+        bh_dict = {}
+        for table in tables:
+            # extract table body
+            for row in table.find_all("tr")[1:]:
+                if row.find_all("td")[1].text.strip() == "Normal collection day":
+                    bh_dict[
+                        parse(
+                            row.find_all("td")[0].text.strip(),
+                            dayfirst=True,
+                            fuzzy=True,
+                        ).date()
+                    ] = parse(
+                        row.find_all("td")[0].text.strip(), dayfirst=True, fuzzy=True
+                    ).date()
+                else:
+                    bh_dict[
+                        parse(
+                            row.find_all("td")[0].text.strip(),
+                            dayfirst=True,
+                            fuzzy=True,
+                        ).date()
+                    ] = parse(
+                        row.find_all("td")[1].text.strip(), dayfirst=True, fuzzy=True
+                    ).date()
+
         for refuse_date in refuse_dates:
-            collection_date = (
-                datetime.strptime(refuse_date, "%d/%m/%Y")
-                + timedelta(days=refuse_day_offset)
-            ).strftime("%d/%m/%Y")
+            collection_date = datetime.strptime(refuse_date, "%d/%m/%Y") + timedelta(
+                days=refuse_day_offset
+            )
+            if collection_date in bh_dict:
+                collection_date = bh_dict[collection_date]
+            collection_date = collection_date.strftime("%d/%m/%Y")
 
             dict_data = {
                 "type": "Refuse Bin",
@@ -246,10 +281,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for recycling_date in recycling_dates:
 
-            collection_date = (
-                datetime.strptime(recycling_date, "%d/%m/%Y")
-                + timedelta(days=recycling_day_offset)
-            ).strftime("%d/%m/%Y")
+            collection_date = datetime.strptime(recycling_date, "%d/%m/%Y") + timedelta(
+                days=recycling_day_offset
+            )
+            if collection_date in bh_dict:
+                collection_date = bh_dict[collection_date]
+            collection_date = collection_date.strftime("%d/%m/%Y")
 
             dict_data = {
                 "type": "Recycling Bin",
@@ -259,10 +296,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for garden_date in garden_dates:
 
-            collection_date = (
-                datetime.strptime(garden_date, "%d/%m/%Y")
-                + timedelta(days=garden_day_offset)
-            ).strftime("%d/%m/%Y")
+            collection_date = datetime.strptime(garden_date, "%d/%m/%Y") + timedelta(
+                days=garden_day_offset
+            )
+            if collection_date in bh_dict:
+                collection_date = bh_dict[collection_date]
+            collection_date = collection_date.strftime("%d/%m/%Y")
 
             dict_data = {
                 "type": "Garden Waste Bin",
@@ -279,10 +318,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             for food_date in food_dates:
 
-                collection_date = (
-                    datetime.strptime(food_date, "%d/%m/%Y")
-                    + timedelta(days=food_day_offset)
-                ).strftime("%d/%m/%Y")
+                collection_date = datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
+                    days=food_day_offset
+                )
+                if collection_date in bh_dict:
+                    collection_date = bh_dict[collection_date]
+                collection_date = collection_date.strftime("%d/%m/%Y")
 
                 dict_data = {
                     "type": "Food Waste Bin",
@@ -313,10 +354,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             for food_date in food_dates_first:
 
-                collection_date = (
-                    datetime.strptime(food_date, "%d/%m/%Y")
-                    + timedelta(days=food_day_offset)
-                ).strftime("%d/%m/%Y")
+                collection_date = datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
+                    days=food_day_offset
+                )
+                if collection_date in bh_dict:
+                    collection_date = bh_dict[collection_date]
+                collection_date = collection_date.strftime("%d/%m/%Y")
 
                 dict_data = {
                     "type": "Food Waste Bin",
@@ -325,10 +368,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 bindata["bins"].append(dict_data)
             for food_date in food_dates_second:
 
-                collection_date = (
-                    datetime.strptime(food_date, "%d/%m/%Y")
-                    + timedelta(days=second_week_offset)
-                ).strftime("%d/%m/%Y")
+                collection_date = datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
+                    days=second_week_offset
+                )
+                if collection_date in bh_dict:
+                    collection_date = bh_dict[collection_date]
+                collection_date = collection_date.strftime("%d/%m/%Y")
 
                 dict_data = {
                     "type": "Food Waste Bin",
