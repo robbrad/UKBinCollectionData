@@ -1,4 +1,13 @@
 =======
+## 0.148.5 (2025-04-27)
+
+### Fix
+
+- output check
+- parsed bin info
+- selenium navigation
+- input.json changes
+
 ## 0.148.4 (2025-04-27)
 
 ### Fix
