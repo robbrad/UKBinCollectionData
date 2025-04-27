@@ -1532,7 +1532,7 @@
         "LAD24CD": "W06000021"
     },
     "MorayCouncil": {
-        "uprn": "28841",
+        "uprn": "45438",
         "url": "https://bindayfinder.moray.gov.uk/",
         "wiki_name": "Moray",
         "wiki_note": "Find your property ID by going to (https://bindayfinder.moray.gov.uk), search for your property and extracting the ID from the URL. i.e. (https://bindayfinder.moray.gov.uk/disp_bins.php?id=00028841)",
