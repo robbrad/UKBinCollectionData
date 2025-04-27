@@ -1,4 +1,15 @@
 =======
+## 0.150.0 (2025-04-27)
+
+### Feat
+
+- added melton
+
+### Fix
+
+- added melton
+- processed all bins for Moray
+
 ## 0.149.0 (2025-04-27)
 
 ### Feat
