@@ -74,42 +74,56 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
 
                     if service_details:
-
-                        # Extract next collection date
+                        # Extract next collection date only
                         next_collection_row = service_details.find(
                             "dt", string="Next collection"
                         )
-                        next_collection = (
-                            next_collection_row.find_next_sibling("dd").get_text(
-                                strip=True
-                            )
-                            if next_collection_row
-                            else "Unknown"
-                        )
+                        if next_collection_row:
+                            next_collection = next_collection_row.find_next_sibling(
+                                "dd"
+                            ).get_text(strip=True)
 
-                        # Parse dates into standard dd/mm/yyyy format
-                        next_collection_date = datetime.strptime(
-                            remove_ordinal_indicator_from_date_string(next_collection),
-                            "%A, %d %B",
-                        )
+                            # Remove the adjusted collection time message
+                            if (
+                                "(this collection has been adjusted from its usual time)"
+                                in next_collection
+                            ):
+                                next_collection = next_collection.replace(
+                                    "(this collection has been adjusted from its usual time)",
+                                    "",
+                                ).strip()
 
-                        if (datetime.now().month == 12) and (
-                            next_collection.month == 1
-                        ):
-                            next_collection_date = next_collection_date.replace(
-                                year=next_year
+                            # Parse date from format like "Wednesday, 7th May"
+                            next_collection = remove_ordinal_indicator_from_date_string(
+                                next_collection
                             )
-                        else:
-                            next_collection_date = next_collection_date.replace(
-                                year=current_year
-                            )
+                            try:
+                                next_collection_date = datetime.strptime(
+                                    next_collection, "%A, %d %B"
+                                )
 
-                        dict_data = {
-                            "type": collection_type.strip(),
-                            "collectionDate": next_collection_date.strftime(
-                                date_format
-                            ),
-                        }
-                        data["bins"].append(dict_data)
+                                # Handle year rollover
+                                if (
+                                    datetime.now().month == 12
+                                    and next_collection_date.month == 1
+                                ):
+                                    next_collection_date = next_collection_date.replace(
+                                        year=next_year
+                                    )
+                                else:
+                                    next_collection_date = next_collection_date.replace(
+                                        year=current_year
+                                    )
+
+                                dict_data = {
+                                    "type": collection_type.strip(),
+                                    "collectionDate": next_collection_date.strftime(
+                                        date_format
+                                    ),
+                                }
+                                data["bins"].append(dict_data)
+                                print(dict_data)
+                            except ValueError as e:
+                                print(f"Error parsing date {next_collection}: {e}")
 
         return data
