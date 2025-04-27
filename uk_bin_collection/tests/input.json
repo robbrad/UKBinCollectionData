@@ -222,12 +222,10 @@
         "LAD24CD": "E07000129"
     },
     "BlackburnCouncil": {
+        "url": "https://www.blaby.gov.uk",
         "LAD24CD": "E06000008",
         "skip_get_url": true,
         "uprn": "100010733027",
-        "url": "https://mybins.blackburn.gov.uk/api/mybins/getbincollectiondays?uprn=100010733027&month=8&year=2022",
-        "web_driver": "http://selenium:4444",
-        "wiki_command_url_override": "https://www.blackburn.gov.uk",
         "wiki_name": "Blackburn Council",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
