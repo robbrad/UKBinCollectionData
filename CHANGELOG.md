@@ -1,4 +1,56 @@
 =======
+## 0.150.0 (2025-04-27)
+
+### Feat
+
+- added melton
+
+### Fix
+
+- added melton
+- processed all bins for Moray
+
+## 0.149.0 (2025-04-27)
+
+### Feat
+
+- added pembrokeshire
+
+## 0.148.6 (2025-04-27)
+
+### Fix
+
+- updated input.json
+- cloudflare fix - switch to selenium method
+
+## 0.148.5 (2025-04-27)
+
+### Fix
+
+- output check
+- parsed bin info
+- selenium navigation
+- input.json changes
+
+## 0.148.4 (2025-04-27)
+
+### Fix
+
+- used canonical 'nice name'
+
+## 0.148.3 (2025-04-25)
+
+### Fix
+
+- working hyndburn
+- hyndburn input.json
+
+## 0.148.2 (2025-04-24)
+
+### Fix
+
+- Update docker-compose.yml
+
 ## 0.148.1 (2025-04-22)
 
 ### Fix
