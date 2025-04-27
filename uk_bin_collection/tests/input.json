@@ -1436,6 +1436,13 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E06000035"
     },
+    "MeltonBoroughCouncil": {
+        "uprn": "100030540956",
+        "url": "https://my.melton.gov.uk/collections",
+        "wiki_name": "Melton",
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "LAD24CD": "E07000133"
+    },
     "MertonCouncil": {
         "url": "https://myneighbourhood.merton.gov.uk/wasteservices/WasteServices.aspx?ID=25936129",
         "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
@@ -1483,7 +1490,7 @@
     "MiddlesbroughCouncil": {
         "house_number": "12 Constantine Court Park Road North, Middlesbrough",
         "skip_get_url": true,
-        "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
+        "url": "https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Middlesbrough",
         "wiki_note": "Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver.",
