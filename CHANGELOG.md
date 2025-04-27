@@ -1,4 +1,17 @@
 =======
+## 0.151.0 (2025-04-27)
+
+### Feat
+
+- version bump
+
+### Fix
+
+- more robust brent date handling
+- input.json requires web_driver
+- Rugby fix
+- simplified blackburn
+
 ## 0.150.0 (2025-04-27)
 
 ### Feat
