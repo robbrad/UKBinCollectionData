@@ -1199,6 +1199,7 @@
         "LAD24CD": "E07000120",
         "uprn": "100010448773",
         "url": "https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FEBA68993831481FD81B2E605364D00A8DC017A4",
+        "skip_get_url": true,
         "web_driver": "http://selenium:4444",
         "wiki_name": "Hyndburn",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver."
