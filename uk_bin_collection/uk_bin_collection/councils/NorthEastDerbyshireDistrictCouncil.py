@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import sleep
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
@@ -8,8 +9,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-# import the wonderful Beautiful Soup and the URL grabber
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -34,11 +33,9 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
             check_uprn(user_uprn)
             check_postcode(user_postcode)
-            # Create Selenium webdriver
+
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
-
-            # If you bang in the house number (or property name) and postcode in the box it should find your property
 
             iframe_presense = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located((By.ID, "fillform-frame-1"))
@@ -46,70 +43,95 @@ class CouncilClass(AbstractGetBinDataClass):
 
             driver.switch_to.frame(iframe_presense)
             wait = WebDriverWait(driver, 60)
+
             inputElement_postcodesearch = wait.until(
                 EC.element_to_be_clickable((By.NAME, "postcode_search"))
             )
-
             inputElement_postcodesearch.send_keys(str(user_postcode))
 
-            # Wait for the 'Select your property' dropdown to appear and select the first result
             dropdown = wait.until(EC.element_to_be_clickable((By.NAME, "selAddress")))
-
             dropdown_options = wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "lookup-option"))
             )
 
-            # Create a 'Select' for it, then select the first address in the list
-            # (Index 0 is "Make a selection from the list")
             drop_down_values = Select(dropdown)
             option_element = wait.until(
                 EC.presence_of_element_located(
                     (By.CSS_SELECTOR, f'option.lookup-option[value="{str(user_uprn)}"]')
                 )
             )
-
             drop_down_values.select_by_value(str(user_uprn))
 
-            # Wait for the 'View more' link to appear, then click it to get the full set of dates
             h3_element = wait.until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//th[contains(text(), 'Waste Collection')]")
                 )
             )
 
+            sleep(10)
+
             soup = BeautifulSoup(driver.page_source, features="html.parser")
+            print("Parsing HTML content...")
 
-            target_h3 = soup.find("h3", string="Collection Details")
-            tables_after_h3 = target_h3.parent.parent.find_next("table")
+            collection_rows = soup.find_all("tr")
 
-            table_rows = tables_after_h3.find_all("tr")
-            for row in table_rows:
-                rowdata = row.find_all("td")
-                if len(rowdata) == 3:
-                    labels = rowdata[0].find_all("label")
-                    # Strip the day (i.e., Monday) out of the collection date string for parsing
-                    if len(labels) >= 2:
-                        date_label = labels[1]
-                        datestring = date_label.text.strip()
+            for row in collection_rows:
+                cells = row.find_all("td")
+                if len(cells) == 3:  # Date, Image, Bin Type
+                    # Extract date carefully
+                    date_labels = cells[0].find_all("label")
+                    collection_date = None
+                    for label in date_labels:
+                        label_text = label.get_text().strip()
+                        if contains_date(label_text):
+                            collection_date = label_text
+                            break
 
-                    # Add the bin type and collection date to the 'data' dictionary
-                    data["bins"].append(
-                        {
-                            "type": rowdata[2].text.strip(),
-                            "collectionDate": datetime.strptime(
-                                datestring, "%d/%m/%Y"
-                            ).strftime(
-                                date_format
-                            ),  # Format the date as needed
-                        }
-                    )
+                    # Extract bin type
+                    bin_label = cells[2].find("label")
+                    bin_types = bin_label.get_text().strip() if bin_label else None
+
+                    if collection_date and bin_types:
+                        print(f"Found collection: {collection_date} - {bin_types}")
+
+                        # Handle combined collections
+                        if "&" in bin_types:
+                            if "Burgundy" in bin_types:
+                                data["bins"].append(
+                                    {
+                                        "type": "Burgundy Bin",
+                                        "collectionDate": datetime.strptime(
+                                            collection_date, "%d/%m/%Y"
+                                        ).strftime(date_format),
+                                    }
+                                )
+                            if "Green" in bin_types:
+                                data["bins"].append(
+                                    {
+                                        "type": "Green Bin",
+                                        "collectionDate": datetime.strptime(
+                                            collection_date, "%d/%m/%Y"
+                                        ).strftime(date_format),
+                                    }
+                                )
+                        else:
+                            if "Black" in bin_types:
+                                data["bins"].append(
+                                    {
+                                        "type": "Black Bin",
+                                        "collectionDate": datetime.strptime(
+                                            collection_date, "%d/%m/%Y"
+                                        ).strftime(date_format),
+                                    }
+                                )
+
+            print(f"Found {len(data['bins'])} collections")
+            print(f"Final data: {data}")
+
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
         return data
