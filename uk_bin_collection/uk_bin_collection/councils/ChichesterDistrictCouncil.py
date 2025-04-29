@@ -1,110 +1,162 @@
 import time
 from datetime import datetime
 
-from selenium.webdriver.support.ui import Select
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+date_format = "%d/%m/%Y"
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            # Make a BS4 object
-
             page = "https://www.chichester.gov.uk/checkyourbinday"
 
             user_postcode = kwargs.get("postcode")
-            user_uprn = kwargs.get("uprn")
+            house_number = kwargs.get("paon")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
-            house_number = kwargs.get("paon")
 
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
             wait = WebDriverWait(driver, 60)
 
-            inputElement_postcodesearch = wait.until(
+            input_postcode = wait.until(
                 EC.visibility_of_element_located(
                     (By.ID, "WASTECOLLECTIONCALENDARV5_CALENDAR_ADDRESSLOOKUPPOSTCODE")
                 )
             )
+            input_postcode.send_keys(user_postcode)
 
-            inputElement_postcodesearch.send_keys(user_postcode)
-
-            inputElement_postcodesearch_btn = wait.until(
-                EC.visibility_of_element_located(
+            search_button = wait.until(
+                EC.element_to_be_clickable(
                     (By.ID, "WASTECOLLECTIONCALENDARV5_CALENDAR_ADDRESSLOOKUPSEARCH")
                 )
             )
-            inputElement_postcodesearch_btn.send_keys(Keys.ENTER)
+            search_button.send_keys(Keys.ENTER)
 
-            inputElement_select_address = wait.until(
-                EC.element_to_be_clickable(
-                    (By.ID, "WASTECOLLECTIONCALENDARV5_CALENDAR_ADDRESSLOOKUPADDRESS")
-                )
-            )
-            dropdown_element = driver.find_element(
-                By.ID, "WASTECOLLECTIONCALENDARV5_CALENDAR_ADDRESSLOOKUPADDRESS"
-            )
+            self.smart_select_address(driver, house_number)
 
-            # Now create a Select object based on the found element
-            dropdown = Select(dropdown_element)
-
-            # Select the option by visible text
-            dropdown.select_by_visible_text(house_number)
-
-            results = wait.until(
-                EC.element_to_be_clickable(
+            wait.until(
+                EC.presence_of_element_located(
                     (By.CLASS_NAME, "bin-collection-dates-container")
                 )
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
+            table = soup.find("table", class_="defaultgeneral bin-collection-dates")
+            rows = table.find_all("tr") if table else []
 
-            # Extract data from the table
             bin_collection_data = []
-            rows = soup.find(
-                "table", class_="defaultgeneral bin-collection-dates"
-            ).find_all("tr")
             for row in rows:
                 cells = row.find_all("td")
                 if cells:
                     date_str = cells[0].text.strip()
                     bin_type = cells[1].text.strip()
-                    # Convert date string to the required format DD/MM/YYYY
                     date_obj = datetime.strptime(date_str, "%d %B %Y")
-                    date_formatted = date_obj.strftime(date_format)
-                    bin_collection_data.append(
-                        {"collectionDate": date_formatted, "type": bin_type}
-                    )
+                    formatted_date = date_obj.strftime(date_format)
+                    bin_collection_data.append({
+                        "collectionDate": formatted_date,
+                        "type": bin_type
+                    })
 
-            # Convert to JSON
-            json_data = {"bins": bin_collection_data}
+            print(bin_collection_data)
+
+            return {"bins": bin_collection_data}
 
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
-        return json_data
+
+    def smart_select_address(self, driver, house_number: str):
+        dropdown_id = "WASTECOLLECTIONCALENDARV5_CALENDAR_ADDRESSLOOKUPADDRESS"
+
+        print("Waiting for address dropdown...")
+
+        def dropdown_has_addresses(d):
+            try:
+                dropdown_el = d.find_element(By.ID, dropdown_id)
+                select = Select(dropdown_el)
+                return len(select.options) > 1
+            except StaleElementReferenceException:
+                return False
+
+        WebDriverWait(driver, 30).until(dropdown_has_addresses)
+
+        dropdown_el = driver.find_element(By.ID, dropdown_id)
+        dropdown = Select(dropdown_el)
+
+        print("Address dropdown options:")
+        for opt in dropdown.options:
+            print(f"- {opt.text.strip()}")
+
+        user_input_clean = house_number.lower().strip()
+        found = False
+
+        for option in dropdown.options:
+            option_text_clean = option.text.lower().strip()
+            print(f"Comparing: {repr(option_text_clean)} == {repr(user_input_clean)}")
+
+            if (
+                option_text_clean == user_input_clean
+                or option_text_clean.startswith(f"{user_input_clean},")
+            ):
+                try:
+                    option.click()
+                    found = True
+                    print(f"Strict match clicked: {option.text.strip()}")
+                    break
+                except StaleElementReferenceException:
+                    print("Stale during click, retrying...")
+                    dropdown_el = driver.find_element(By.ID, dropdown_id)
+                    dropdown = Select(dropdown_el)
+                    for fresh_option in dropdown.options:
+                        if fresh_option.text.lower().strip() == option_text_clean:
+                            fresh_option.click()
+                            found = True
+                            print(f"Strict match clicked after refresh: {fresh_option.text.strip()}")
+                            break
+
+            if found:
+                break
+
+        if not found:
+            print("No strict match found, trying fuzzy match...")
+            for option in dropdown.options:
+                option_text_clean = option.text.lower().strip()
+                if user_input_clean in option_text_clean:
+                    try:
+                        option.click()
+                        found = True
+                        print(f"Fuzzy match clicked: {option.text.strip()}")
+                        break
+                    except StaleElementReferenceException:
+                        print("Stale during fuzzy click, retrying...")
+                        dropdown_el = driver.find_element(By.ID, dropdown_id)
+                        dropdown = Select(dropdown_el)
+                        for fresh_option in dropdown.options:
+                            if fresh_option.text.lower().strip() == option_text_clean:
+                                fresh_option.click()
+                                found = True
+                                print(f"Fuzzy match clicked after refresh: {fresh_option.text.strip()}")
+                                break
+
+                if found:
+                    break
+
+        if not found:
+            all_opts = [opt.text.strip() for opt in dropdown.options]
+            raise Exception(
+                f"Could not find address '{house_number}' in options: {all_opts}"
+            )

@@ -521,7 +521,7 @@
         "LAD24CD": "E07000034"
     },
     "ChichesterDistrictCouncil": {
-        "house_number": "7, Plaistow Road, Kirdford, Billingshurst, West Sussex",
+        "house_number": "7",
         "postcode": "RH14 0JT",
         "skip_get_url": true,
         "url": "https://www.chichester.gov.uk/checkyourbinday",
