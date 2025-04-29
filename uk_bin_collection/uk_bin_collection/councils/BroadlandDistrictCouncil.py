@@ -83,15 +83,30 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             print("Found address dropdown")
 
-            # Create a Select object for the dropdown
             dropdown_select = Select(address_dropdown)
 
-            # Search for the exact address
-            print(f"Looking for address: {user_paon}")
+            print(f"Looking for address containing: {user_paon}")
 
-            # Select the address by visible text
-            dropdown_select.select_by_visible_text(user_paon)
-            print(f"Selected address: {user_paon}")
+            found = False
+            user_paon_clean = user_paon.lower().strip()
+
+            for option in dropdown_select.options:
+                option_text_clean = option.text.lower().strip()
+
+                if (
+                    option_text_clean == user_paon_clean  # Exact match if full address given
+                    or option_text_clean.startswith(f"{user_paon_clean} ")  # Startswith match if just a number
+                ):
+                    option.click()
+                    found = True
+                    print(f"Selected address: {option.text.strip()}")
+                    break
+
+            if not found:
+                all_options = [opt.text for opt in dropdown_select.options]
+                raise Exception(
+                    f"Could not find a matching address for '{user_paon}'. Available options: {all_options}"
+                )
 
             print("Looking for submit button after address selection...")
             submit_btn = wait.until(
