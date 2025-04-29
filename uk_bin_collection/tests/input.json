@@ -28,6 +28,16 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000032"
     },
+    "AngusCouncil": {
+        "uprn": "117053733",
+        "skip_get_url": true,
+        "postcode": "DD7 7LE",
+        "url": "https://www.angus.gov.uk/bins_litter_and_recycling/bin_collection_days",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Angus",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "LAD24CD": "S12000041"
+    },
     "AntrimAndNewtonabbeyCouncil": {
         "LAD24CD": "N09000001",
         "url": "https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=643",
@@ -1622,7 +1632,7 @@
     "NorthEastDerbyshireDistrictCouncil": {
         "postcode": "S42 5RB",
         "skip_get_url": true,
-        "uprn": "010034492221",
+        "uprn": "010034492222",
         "url": "https://myselfservice.ne-derbyshire.gov.uk/service/Check_your_Bin_Day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "North East Derbyshire",
