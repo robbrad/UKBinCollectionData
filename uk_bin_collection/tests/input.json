@@ -2332,6 +2332,14 @@
         "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E06000020"
     },
+    "TewkesburyBoroughCouncil": {
+        "skip_get_url": true,
+        "uprn": "10067626314",
+        "url": "https://tewkesbury.gov.uk/services/waste-and-recycling/",
+        "wiki_name": "Tewkesbury",
+        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "LAD24CD": "E07000083"
+    },
     "TendringDistrictCouncil": {
         "postcode": "CO15 4EU",
         "skip_get_url": true,
