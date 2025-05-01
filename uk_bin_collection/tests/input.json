@@ -911,6 +911,15 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000010"
     },
+    "FermanaghOmaghDistrictCouncil": {
+        "house_number": "20",
+        "postcode": "BT74 6DQ",
+        "skip_get_url": true,
+        "url": "https://www.fermanaghomagh.com/services/environment-and-waste/waste-collection-calendar/",
+        "wiki_name": "Fermanagh and Omagh",
+        "wiki_note": "Pass the house number and postcode in their respective parameters.",
+        "LAD24CD": "N09000006"
+    },
     "FifeCouncil": {
         "uprn": "320203521",
         "url": "https://www.fife.gov.uk",
