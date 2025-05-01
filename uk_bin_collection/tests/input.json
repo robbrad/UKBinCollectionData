@@ -2024,6 +2024,15 @@
         "wiki_note": "Follow the instructions [here](https://bins.shropshire.gov.uk/) until you get the page showing your bin collection dates, then copy the URL and replace the URL in the command.",
         "LAD24CD": "E06000051"
     },
+    "SloughBoroughCouncil": {
+        "postcode": "SL2 2EW",
+        "skip_get_url": true,
+        "url": "https://www.slough.gov.uk/bin-collections",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Slough",
+        "wiki_note": "Pass the UPRN and postcode in their respective parameters. This parser requires a Selenium webdriver.",
+        "LAD24CD": "E06000039"
+    },
     "SolihullCouncil": {
         "url": "https://digital.solihull.gov.uk/BinCollectionCalendar/Calendar.aspx?UPRN=100071005444",
         "wiki_command_url_override": "https://digital.solihull.gov.uk/BinCollectionCalendar/Calendar.aspx?UPRN=XXXXXXXX",
