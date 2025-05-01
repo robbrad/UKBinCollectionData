@@ -321,13 +321,13 @@
         "LAD24CD": "E09000005"
     },
     "BrightonandHoveCityCouncil": {
-        "house_number": "44 Carden Avenue, Brighton, BN1 8NE",
+        "house_number": "44",
         "postcode": "BN1 8NE",
         "skip_get_url": true,
         "url": "https://cityclean.brighton-hove.gov.uk/link/collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Brighton and Hove",
-        "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode.",
+        "wiki_note": "Use house number and postcode. Requires Selenium",
         "LAD24CD": "E06000043"
     },
     "BristolCityCouncil": {

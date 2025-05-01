@@ -63,8 +63,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create a 'Select' for it, then select the first address in the list
             # (Index 0 is "Make a selection from the list")
-            dropdownSelect = Select(parent_element)
-            dropdownSelect.select_by_visible_text(str(user_paon))
+            options = parent_element.find_elements(By.TAG_NAME, "option")
+            found = False
+            for option in options:
+                if user_paon in option.text:
+                    option.click()
+                    found = True
+                    break
+
+            if not found:
+                raise Exception(f"Address containing '{user_paon}' not found in dropdown options")
 
             submit_btn = wait.until(
                 EC.presence_of_element_located(
@@ -125,6 +133,7 @@ class CouncilClass(AbstractGetBinDataClass):
                                 break
                 dict_data = {"type": bin_type, "collectionDate": bin_date}
                 data["bins"].append(dict_data)
+                print(data)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
