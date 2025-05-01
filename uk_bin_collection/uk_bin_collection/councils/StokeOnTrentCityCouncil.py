@@ -54,14 +54,19 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_type = bin_types.get(
                     item.find_next("Bin").text.replace("EMPTY BINS", "").strip()
                 )
-                bin_date = datetime.strptime(
-                    item.find_next("DateTime").text, "%d/%m/%Y %H:%M:%S"
-                )
+                date_text = item.find_next("DateTime").text.strip()
+
+                # Handle inconsistent date formats
+                if " " in date_text:  # Date and time present
+                    bin_date = datetime.strptime(date_text, "%d/%m/%Y %H:%M:%S")
+                else:  # Only date present
+                    bin_date = datetime.strptime(date_text, "%d/%m/%Y")
+
                 if bin_date >= datetime.now():
                     collections.append((bin_type, bin_date))
-            except:
+            except Exception as e:
                 raise SystemError(
-                    "Error has been encountered parsing API. Please try again later and if the issue "
+                    f"Error has been encountered parsing API: {e}. Please try again later and if the issue "
                     "persists, open a GitHub ticket!"
                 )
 
