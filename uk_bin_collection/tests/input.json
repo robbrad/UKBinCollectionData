@@ -127,13 +127,13 @@
         "LAD24CD": "E07000200"
     },
     "BarkingDagenham": {
-        "house_number": "19 KELLY WAY, CHADWELL HEATH, RM6 6XH",
+        "house_number": "19",
         "postcode": "RM6 6XH",
         "skip_get_url": true,
         "web_driver": "http://selenium:4444",
         "url": "https://www.lbbd.gov.uk/rubbish-recycling/household-bin-collection/check-your-bin-collection-days",
         "wiki_name": "Barking and Dagenham",
-        "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode.",
+        "wiki_note": "Use house number and postcode. Requires Selenium.",
         "LAD24CD": "E09000002"
     },
     "BarnetCouncil": {
