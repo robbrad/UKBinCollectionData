@@ -1,4 +1,23 @@
 =======
+## 0.152.0 (2025-05-02)
+
+### Feat
+
+- Added Fermanagh Omagh
+- Added Twekesbury
+- added Slough council
+- Added Argus Council
+- added Angus to input.json
+
+### Fix
+
+- Chichester now only requires postcode and house number
+- Broadland now only requires postcode and house number
+- Barking now only requires postcode and house number
+- Brighton now only requires postcode and house number
+- ensured all bins for this council
+- added skip_get_url to hyndburn
+
 ## 0.151.0 (2025-04-27)
 
 ### Feat
