@@ -84,10 +84,19 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.element_to_be_clickable((By.ID, "address")),
                 message="Address dropdown not found",
             )
+            
             dropdown = Select(address_select)
 
-            dropdown.select_by_visible_text(user_paon)
-            print("Address selected successfully")
+            found = False
+            for option in dropdown.options:
+                if user_paon in option.text:
+                    option.click()
+                    found = True
+                    print("Address selected successfully")
+                    break
+
+            if not found:
+                raise Exception(f"No matching address containing '{user_paon}' found.")
 
             driver.switch_to.active_element.send_keys(Keys.TAB + Keys.ENTER)
             print("Pressed ENTER on Next button")
