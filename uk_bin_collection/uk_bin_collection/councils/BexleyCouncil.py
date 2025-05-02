@@ -24,74 +24,51 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            page = "https://waste.bexley.gov.uk/waste"
-
-            data = {"bins": []}
-
             user_uprn = kwargs.get("uprn")
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
+
+            page = f"https://waste.bexley.gov.uk/waste/{user_uprn}"
+
+            print(f"Trying URL: {page}")  # Debug
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
-            wait = WebDriverWait(driver, 10)
+            # Wait for the main content container to be present
+            wait = WebDriverWait(driver, 30)  # Increased timeout to 30 seconds
 
-            inputElement_postcodesearch = wait.until(
-                EC.element_to_be_clickable((By.ID, "pc"))
-            )
-            inputElement_postcodesearch.send_keys(user_postcode)
-
-            find_address_btn = wait.until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="sub"]'))
-            )
-            find_address_btn.click()
-
-            dropdown_options = wait.until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="address"]'))
-            )
-            time.sleep(2)
-            dropdown_options.click()
-            time.sleep(1)
-
-            # Wait for the element to be clickable
-            address = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, f'//li[contains(text(), "{user_paon}")]')
+            # First wait for container
+            main_content = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div[1]/div/div[2]/div")
                 )
             )
 
-            # Click the element
-            address.click()
+            # Then wait for loading indicator to disappear
+            wait.until(EC.invisibility_of_element_located((By.ID, "loading-indicator")))
 
-            submit_address = wait.until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="go"]'))
-            )
-            time.sleep(2)
-            submit_address.click()
+            # Add after the loading indicator wait
+            time.sleep(3)  # Give extra time for JavaScript to populate the data
 
-            results_found = wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, '//h1[contains(text(), "Your bin days")]')
-                )
+            # Then wait for at least one bin section to appear
+            wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "waste-service-name"))
             )
 
-            final_page = wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "waste__collections"))
-            )
-
+            # Now parse the page content
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            # Find all waste services
-
-            # Initialize the data dictionary
             data = {"bins": []}
             bin_sections = soup.find_all("h3", class_="waste-service-name")
 
-            # Loop through each bin field
+            if not bin_sections:
+                print("No bin sections found after waiting for content")
+                print(f"Page source: {driver.page_source}")
+                return data
+
+            # Rest of your existing bin processing code
             for bin_section in bin_sections:
                 # Extract the bin type (e.g., "Brown Caddy", "Green Wheelie Bin", etc.)
                 bin_type = bin_section.get_text(strip=True).split("\n")[
