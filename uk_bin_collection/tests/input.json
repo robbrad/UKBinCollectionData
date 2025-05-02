@@ -541,11 +541,11 @@
     "ChorleyCouncil": {
         "postcode": "PR6 7PG",
         "skip_get_url": true,
-        "uprn": "UPRN100010382247",
+        "uprn": "100010382247",
         "url": "https://myaccount.chorley.gov.uk/wastecollections.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Chorley",
-        "wiki_note": "Chorley needs to be passed both a Postcode & UPRN in the format of UPRNXXXXXX to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000118"
     },
     "ColchesterCityCouncil": {
