@@ -21,6 +21,9 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             driver.get(kwargs.get("url"))
 
+            # This URL format also works:
+            # https://www.wakefield.gov.uk/where-i-live?a=115%20Elizabeth%20Drive
+
             # Make a BS4 object
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             soup.prettify()
