@@ -1054,14 +1054,13 @@
         "LAD24CD": "E07000145"
     },
     "GuildfordCouncil": {
-        "house_number": "THE LODGE, PUTTENHAM HILL HOUSE, PUTTENHAM HILL, PUTTENHAM, GUILDFORD, GU3 1AH",
+        "house_number": "THE LODGE",
         "postcode": "GU3 1AH",
         "skip_get_url": true,
-        "uprn": "100061372691",
         "url": "https://my.guildford.gov.uk/customers/s/view-bin-collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Guildford",
-        "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7 AM; else the date will be in 'previousCollectionDate'. To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7 AM; else the date will be in 'previousCollectionDate'.",
         "LAD24CD": "E07000209"
     },
     "GwyneddCouncil": {
