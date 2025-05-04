@@ -1,12 +1,26 @@
-from bs4 import BeautifulSoup
-from datetime import datetime
 import re
+from datetime import datetime
+
+from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *  # Consider specific imports
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+
+        try:
+            user_uprn = kwargs.get("uprn")
+            url = f"https://collections.dover.gov.uk/property/{user_uprn}"
+            if not user_uprn:
+                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
+        # Make a BS4 object
+        page = requests.get(url)
         soup = BeautifulSoup(page.text, "html.parser")
 
         bins_data = {"bins": []}

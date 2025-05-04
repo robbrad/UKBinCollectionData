@@ -691,10 +691,11 @@
         "LAD24CD": "E06000059"
     },
     "DoverDistrictCouncil": {
-        "url": "https://collections.dover.gov.uk/property/100060908340",
-        "wiki_command_url_override": "https://collections.dover.gov.uk/property/XXXXXXXXXXX",
+        "uprn": "100060908340",
+        "url": "https://collections.dover.gov.uk/property",
+        "skip_get_url": true,
         "wiki_name": "Dover",
-        "wiki_note": "Replace XXXXXXXXXXX with your UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000108"
     },
     "DudleyCouncil": {
