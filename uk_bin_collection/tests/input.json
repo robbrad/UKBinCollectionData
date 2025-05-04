@@ -871,9 +871,10 @@
     "EppingForestDistrictCouncil": {
         "postcode": "IG9 6EP",
         "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
+        "skip_get_url": true,
         "web_driver": "http://selenium:4444",
         "wiki_name": "Epping Forest",
-        "wiki_note": "Replace the postcode in the URL with your own.",
+        "wiki_note": "Add your postcode.",
         "LAD24CD": "E07000072"
     },
     "EpsomandEwellBoroughCouncil": {
