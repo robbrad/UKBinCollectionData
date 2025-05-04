@@ -737,7 +737,15 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000008"
     },
-    "EastCambridgeshireCouncil": {
+    "EastbourneBoroughCouncil": {
+        "uprn": "100060011258",
+        "url": "https://www.lewes-eastbourne.gov.uk/article/1158/When-is-my-bin-collection-day",
+        "skip_get_url": true,
+        "wiki_name": "Eastbourne",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "LAD24CD": "E07000061"
+    },
+    "EastCambridgeshireCouncil": { 
         "skip_get_url": true,
         "uprn": "10002597178",
         "url": "https://www.eastcambs.gov.uk/",
@@ -1300,6 +1308,14 @@
         "wiki_name": "Leicester",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E06000016"
+    },
+    "LewesDistrictCouncil": {
+        "uprn": "100061930155",
+        "url": "https://www.lewes-eastbourne.gov.uk/article/1158/When-is-my-bin-collection-day",
+        "skip_get_url": true,
+        "wiki_name": "Lewes",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "LAD24CD": "E07000063"
     },
     "LichfieldDistrictCouncil": {
         "uprn": "100031694085",
