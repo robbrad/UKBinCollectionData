@@ -1,9 +1,10 @@
+from datetime import timedelta
+
 from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-from datetime import timedelta
-from dateutil.relativedelta import relativedelta
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -15,7 +16,18 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        try:
+            user_uprn = kwargs.get("uprn")
+            url = f"https://my.charnwood.gov.uk/location?put=cbc{user_uprn}&rememberme=0&redirect=%2F"
+            if not user_uprn:
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
+        print(url)
+
         # Make a BS4 object
+        page = requests.get(url)
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 

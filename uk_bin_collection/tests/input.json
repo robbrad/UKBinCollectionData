@@ -474,6 +474,7 @@
         "LAD24CD": "W06000008"
     },
     "CharnwoodBoroughCouncil": {
+        "skip_get_url": true,
         "url": "https://my.charnwood.gov.uk/location?put=cbc10070067259&rememberme=0&redirect=%2F",
         "wiki_command_url_override": "https://my.charnwood.gov.uk/location?put=cbcXXXXXXXX&rememberme=0&redirect=%2F",
         "wiki_name": "Charnwood",
