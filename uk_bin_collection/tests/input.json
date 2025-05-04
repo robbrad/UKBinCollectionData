@@ -474,11 +474,11 @@
         "LAD24CD": "W06000008"
     },
     "CharnwoodBoroughCouncil": {
+        "uprn": "100030446438",
         "skip_get_url": true,
-        "url": "https://my.charnwood.gov.uk/location?put=cbc10070067259&rememberme=0&redirect=%2F",
-        "wiki_command_url_override": "https://my.charnwood.gov.uk/location?put=cbcXXXXXXXX&rememberme=0&redirect=%2F",
+        "url": "https://www.charnwood.gov.uk/pages/waste_collections_calendars",
         "wiki_name": "Charnwood",
-        "wiki_note": "Replace XXXXXXXX with your UPRN, keeping \"cbc\" before it.",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000130"
     },
     "ChelmsfordCityCouncil": {
