@@ -746,10 +746,11 @@
         "LAD24CD": "E07000009"
     },
     "EastDevonDC": {
-        "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=010090909915",
-        "wiki_command_url_override": "https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN=XXXXXXXX",
+        "uprn": "010090909915",
+        "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/",
+        "skip_get_url": true,
         "wiki_name": "East Devon",
-        "wiki_note": "Replace XXXXXXXX with your UPRN.",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000040"
     },
     "EastHertsCouncil": {
