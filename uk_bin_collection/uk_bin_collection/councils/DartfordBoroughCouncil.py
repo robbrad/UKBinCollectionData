@@ -16,6 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         try:
             user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
             url = f"https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN={user_uprn}"
             if not user_uprn:
                 # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.

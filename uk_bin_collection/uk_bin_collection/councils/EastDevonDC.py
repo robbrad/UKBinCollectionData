@@ -19,6 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         try:
             user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
             url = f"https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN={user_uprn}"
             if not user_uprn:
                 # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.

@@ -12,6 +12,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         try:
             user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
             url = f"https://collections.dover.gov.uk/property/{user_uprn}"
             if not user_uprn:
                 # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
