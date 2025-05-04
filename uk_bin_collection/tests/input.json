@@ -644,8 +644,9 @@
         "LAD24CD": "E07000096"
     },
     "DartfordBoroughCouncil": {
-        "uprn": "010094157511",
-        "url": "https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN=010094157511",
+        "uprn": "100060861698",
+        "url": "https://www.dartford.gov.uk/waste-recycling/collection-day",
+        "skip_get_url": true,
         "wiki_name": "Dartford",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E07000107"

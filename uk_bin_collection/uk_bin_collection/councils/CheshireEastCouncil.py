@@ -21,7 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
             user_uprn = kwargs.get("uprn")
             url = f"https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn={user_uprn}"
             if not user_uprn:
-                # This is a fallback user stored a URL in old system. Ensures backwards compatibility.
+                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
                 url = kwargs.get("url")
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
