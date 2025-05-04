@@ -1,5 +1,8 @@
-from typing import Dict, Any, Optional
-from bs4 import BeautifulSoup, Tag, NavigableString
+from typing import Any, Dict, Optional
+
+from bs4 import BeautifulSoup, NavigableString, Tag
+
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 """
@@ -13,6 +16,24 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: Any, **kwargs: Any) -> Dict[str, Any]:
+
+        try:
+            user_uprn = kwargs.get("uprn")
+            url = f"https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn={user_uprn}"
+            if not user_uprn:
+                # This is a fallback user stored a URL in old system. Ensures backwards compatibility.
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
+        # Add warning suppression for the insecure request
+        import urllib3
+
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+        # Make request with SSL verification disabled
+        page = requests.get(url, verify=False)
+
         soup = BeautifulSoup(page.text, features="html.parser")
 
         bin_data_dict: Dict[str, Any] = {"bins": []}

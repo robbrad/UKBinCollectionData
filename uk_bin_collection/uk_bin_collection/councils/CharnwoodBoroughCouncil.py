@@ -24,8 +24,6 @@ class CouncilClass(AbstractGetBinDataClass):
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
 
-        print(url)
-
         # Make a BS4 object
         page = requests.get(url)
         soup = BeautifulSoup(page.text, features="html.parser")
