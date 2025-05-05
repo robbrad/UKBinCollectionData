@@ -3142,10 +3142,11 @@ Note: Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/sea
 
 ### South Ribble Council
 ```commandline
-python collect_data.py SouthRibbleCouncil https://www.southribble.gov.uk -u XXXXXXXX
+python collect_data.py SouthRibbleCouncil https://forms.chorleysouthribble.gov.uk/xfp/form/70 -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
+- `-p` - postcode
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
