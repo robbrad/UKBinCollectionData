@@ -3,10 +3,6 @@ import importlib
 import os
 import sys
 import logging
-from uk_bin_collection.uk_bin_collection.get_bin_data import (
-    setup_logging,
-    LOGGING_CONFIG,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -123,8 +119,8 @@ class UKBinCollectionApp:
 
 def run():
     """Set up logging and run the application."""
-    global _LOGGER
-    _LOGGER = setup_logging(LOGGING_CONFIG, None)
+    # global _LOGGER
+    # _LOGGER = setup_logging(LOGGING_CONFIG, None)
     app = UKBinCollectionApp()
     app.set_args(sys.argv[1:])
     print(app.run())
