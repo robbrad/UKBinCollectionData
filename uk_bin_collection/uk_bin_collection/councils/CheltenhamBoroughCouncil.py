@@ -266,9 +266,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     ).date()
 
         for refuse_date in refuse_dates:
-            collection_date = datetime.strptime(refuse_date, "%d/%m/%Y") + timedelta(
+            collection_date = (datetime.strptime(refuse_date, "%d/%m/%Y") + timedelta(
                 days=refuse_day_offset
-            )
+            )).date()
             if collection_date in bh_dict:
                 collection_date = bh_dict[collection_date]
             collection_date = collection_date.strftime("%d/%m/%Y")
@@ -281,9 +281,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for recycling_date in recycling_dates:
 
-            collection_date = datetime.strptime(recycling_date, "%d/%m/%Y") + timedelta(
+            collection_date = (datetime.strptime(recycling_date, "%d/%m/%Y") + timedelta(
                 days=recycling_day_offset
-            )
+            )).date()
             if collection_date in bh_dict:
                 collection_date = bh_dict[collection_date]
             collection_date = collection_date.strftime("%d/%m/%Y")
@@ -296,9 +296,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for garden_date in garden_dates:
 
-            collection_date = datetime.strptime(garden_date, "%d/%m/%Y") + timedelta(
+            collection_date = (datetime.strptime(garden_date, "%d/%m/%Y") + timedelta(
                 days=garden_day_offset
-            )
+            )).date()
             if collection_date in bh_dict:
                 collection_date = bh_dict[collection_date]
             collection_date = collection_date.strftime("%d/%m/%Y")
@@ -318,9 +318,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             for food_date in food_dates:
 
-                collection_date = datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
+                collection_date = (datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
                     days=food_day_offset
-                )
+                )).date()
                 if collection_date in bh_dict:
                     collection_date = bh_dict[collection_date]
                 collection_date = collection_date.strftime("%d/%m/%Y")
@@ -354,9 +354,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             for food_date in food_dates_first:
 
-                collection_date = datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
+                collection_date = (datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
                     days=food_day_offset
-                )
+                )).date()
                 if collection_date in bh_dict:
                     collection_date = bh_dict[collection_date]
                 collection_date = collection_date.strftime("%d/%m/%Y")
@@ -368,9 +368,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 bindata["bins"].append(dict_data)
             for food_date in food_dates_second:
 
-                collection_date = datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
+                collection_date = (datetime.strptime(food_date, "%d/%m/%Y") + timedelta(
                     days=second_week_offset
-                )
+                )).date()
                 if collection_date in bh_dict:
                     collection_date = bh_dict[collection_date]
                 collection_date = collection_date.strftime("%d/%m/%Y")
