@@ -1347,10 +1347,11 @@
         "LAD24CD": "N09000007"
     },
     "LiverpoolCityCouncil": {
-        "url": "https://liverpool.gov.uk/Bins/BinDatesTable?UPRN=38164600",
-        "wiki_command_url_override": "https://liverpool.gov.uk/Bins/BinDatesTable?UPRN=XXXXXXXX",
+        "uprn": "38164600",
+        "skip_get_url": true,
+        "url": "https://liverpool.gov.uk/bins-and-recycling/bin-collections/",
         "wiki_name": "Liverpool",
-        "wiki_note": "Replace XXXXXXXX with your property's UPRN.",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E08000012"
     },
     "LondonBoroughEaling": {
