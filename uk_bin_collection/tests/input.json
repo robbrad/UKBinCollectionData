@@ -820,6 +820,7 @@
         "skip_get_url": true,
         "uprn": "100060303535",
         "url": "https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn=",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Eastleigh",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000086"
