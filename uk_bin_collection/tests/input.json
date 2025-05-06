@@ -1616,8 +1616,9 @@
         "LAD24CD": "E07000091"
     },
     "NewarkAndSherwoodDC": {
-        "url": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=200004258529",
-        "wiki_command_url_override": "http://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid=XXXXXXXX",
+        "uprn": "200004258529",
+        "url": "https://app.newark-sherwooddc.gov.uk/bincollection/",
+        "skip_get_url": true,
         "wiki_name": "Newark and Sherwood",
         "wiki_note": "Replace XXXXXXXX with your UPRN.",
         "LAD24CD": "E07000175"
@@ -1637,10 +1638,11 @@
         "LAD24CD": "E07000195"
     },
     "NewhamCouncil": {
-        "url": "https://bincollection.newham.gov.uk/Details/Index/000046002133",
-        "wiki_command_url_override": "https://bincollection.newham.gov.uk/Details/Index/XXXXXXXXXXX",
+        "uprn": "46077811",
+        "url": "https://bincollection.newham.gov.uk/",
+        "skip_get_url": true,
         "wiki_name": "Newham",
-        "wiki_note": "Follow the instructions [here](https://bincollection.newham.gov.uk/) until you get the \"Rubbish and Recycling Collections\" page, then copy the URL and replace the URL in the command.",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E09000025"
     },
     "NewportCityCouncil": {
