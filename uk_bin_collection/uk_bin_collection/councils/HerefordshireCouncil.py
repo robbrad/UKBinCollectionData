@@ -15,9 +15,20 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        try:
+            user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
+            url = f"https://www.herefordshire.gov.uk/rubbish-recycling/check-bin-collection-day?blpu_uprn={user_uprn}"
+            if not user_uprn:
+                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
         # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
+        page = requests.get(url)
+        soup = BeautifulSoup(page.text, "html.parser")
+        soup.prettify
 
         data = {"bins": []}
 

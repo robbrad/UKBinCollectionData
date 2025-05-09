@@ -2,10 +2,12 @@
 
 # This script pulls (in one hit) the data from
 # Huntingdon District Council District Council Bins Data
-from bs4 import BeautifulSoup
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from uk_bin_collection.uk_bin_collection.common import date_format
 from datetime import datetime
+
+from bs4 import BeautifulSoup
+
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -17,9 +19,21 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page, **kwargs) -> None:
+
+        try:
+            user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
+            url = f"http://www.huntingdonshire.gov.uk/refuse-calendar/{user_uprn}"
+            if not user_uprn:
+                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
         # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
+        page = requests.get(url)
+        soup = BeautifulSoup(page.text, "html.parser")
+        soup.prettify
 
         data = {"bins": []}
 
