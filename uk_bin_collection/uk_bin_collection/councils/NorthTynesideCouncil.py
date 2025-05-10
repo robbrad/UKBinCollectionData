@@ -83,7 +83,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # The garden calendar only shows until end of November 2024, work out how many weeks that is
         garden_weeks_total = math.floor(
-            (datetime(2024, 12, 1) - datetime.now()).days / 7
+            (datetime(2025, 12, 1) - datetime.now()).days / 7
         )
 
         regular_collections, garden_collections, special_collections = [], [], []
