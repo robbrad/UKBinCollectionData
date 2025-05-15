@@ -27,9 +27,8 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            uprn = kwargs.get("uprn")
             postcode = kwargs.get("postcode")
-            full_address = kwargs.get("paon")
+            house_number = kwargs.get("paon")
 
             url = "https://my.guildford.gov.uk/customers/s/view-bin-collections"
 
@@ -60,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
-                        f"//lightning-base-formatted-text[contains(text(), '{full_address}')]",
+                        f"//lightning-base-formatted-text[contains(text(), '{house_number}')]",
                     )
                 )
             )

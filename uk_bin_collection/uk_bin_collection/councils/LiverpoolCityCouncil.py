@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from dateutil.relativedelta import relativedelta
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -18,9 +19,20 @@ class CouncilClass(AbstractGetBinDataClass):
         collections = []
         curr_date = datetime.today()
 
-        # Parse the page
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
+        try:
+            user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
+            url = f"https://liverpool.gov.uk/Bins/BinDatesTable?UPRN={user_uprn}"
+            if not user_uprn:
+                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
+        # Make a BS4 object
+        page = requests.get(url)
+        soup = BeautifulSoup(page.text, "html.parser")
+        soup.prettify
 
         # Get all table rows on the page - enumerate gives us an index, which is handy for to keep a row count.
         # In this case, the first (0th) row is headings, so we can skip it, then parse the other data.

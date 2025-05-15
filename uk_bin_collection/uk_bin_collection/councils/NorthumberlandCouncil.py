@@ -1,7 +1,10 @@
 import time
 
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -42,28 +45,61 @@ class CouncilClass(AbstractGetBinDataClass):
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
-            time.sleep(1)
+            # Create wait object
+            wait = WebDriverWait(driver, 20)
 
-            # Press the cookie accept - wait is to let the JS load it up
-            driver.find_element(By.ID, "ccc-notify-accept").click()
-
-            inputElement_hn = driver.find_element(
-                By.ID,
-                "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtHouse",
+            # Wait for and click cookie button
+            cookie_button = wait.until(
+                EC.element_to_be_clickable((By.ID, "ccc-notify-accept"))
             )
-            inputElement_pc = driver.find_element(
-                By.ID,
-                "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtPostcode",
+            cookie_button.click()
+
+            # Wait for and find house number input
+            inputElement_hn = wait.until(
+                EC.presence_of_element_located(
+                    (
+                        By.ID,
+                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtHouse",
+                    )
+                )
             )
 
+            # Wait for and find postcode input
+            inputElement_pc = wait.until(
+                EC.presence_of_element_located(
+                    (
+                        By.ID,
+                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtPostcode",
+                    )
+                )
+            )
+
+            # Enter details
             inputElement_pc.send_keys(user_postcode)
             inputElement_hn.send_keys(user_paon)
 
-            driver.find_element(
-                By.ID,
-                "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_butLookup",
-            ).click()
+            # Click lookup button and wait for results
+            lookup_button = wait.until(
+                EC.element_to_be_clickable(
+                    (
+                        By.ID,
+                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_butLookup",
+                    )
+                )
+            )
+            lookup_button.click()
 
+            # Wait for results to load
+            route_summary = wait.until(
+                EC.presence_of_element_located(
+                    (
+                        By.ID,
+                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_spanRouteSummary",
+                    )
+                )
+            )
+
+            # Get page source after everything has loaded
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
             # Work out which bins can be collected for this address. Glass bins are only on some houses due to pilot programme.

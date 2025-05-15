@@ -1,5 +1,3 @@
-# This script pulls bin collection data from Barking and Dagenham Council
-# Example URL: https://www.lbbd.gov.uk/rubbish-recycling/household-bin-collection/check-your-bin-collection-days
 import time
 
 from bs4 import BeautifulSoup
@@ -39,7 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             driver = create_webdriver(web_driver, headless, None, __name__)
             print(f"Navigating to URL: {url}")
-            driver.get(url)
+            driver.get("https://www.torbay.gov.uk/recycling/bin-collections/")
             print("Successfully loaded the page")
 
             driver.maximize_window()

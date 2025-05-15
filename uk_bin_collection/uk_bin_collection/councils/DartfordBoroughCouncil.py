@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -12,7 +13,19 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+
+        try:
+            user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
+            url = f"https://windmz.dartford.gov.uk/ufs/WS_CHECK_COLLECTIONS.eb?UPRN={user_uprn}"
+            if not user_uprn:
+                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
         # Make a BS4 object
+        page = requests.get(url)
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 

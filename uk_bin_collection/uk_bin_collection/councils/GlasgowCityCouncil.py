@@ -14,7 +14,19 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Parse the page
+
+        try:
+            user_uprn = kwargs.get("uprn")
+            check_uprn(user_uprn)
+            url = f"https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/CollectionsCalendar.aspx?UPRN={user_uprn}"
+            if not user_uprn:
+                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
+                url = kwargs.get("url")
+        except Exception as e:
+            raise ValueError(f"Error getting identifier: {str(e)}")
+
+        # Make a BS4 object
+        page = requests.get(url, verify=False)
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 

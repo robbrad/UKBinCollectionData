@@ -1,12 +1,29 @@
-import time
-
+from typing import Dict, List, Any, Optional
+from bs4 import BeautifulSoup
+from dateutil.relativedelta import relativedelta
 import requests
-
+import logging
+import re
+from datetime import datetime
 from uk_bin_collection.uk_bin_collection.common import *
+from dateutil.parser import parse
+
+from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
+def get_token(page) -> str:
+    """
+    Get a __token to include in the form data
+        :param page: Page html
+        :return: Form __token
+    """
+    soup = BeautifulSoup(page.text, features="html.parser")
+    soup.prettify()
+    token = soup.find("input", {"name": "__token"}).get("value")
+    return token
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -14,70 +31,103 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
+    def get_data(self, url: str) -> str:
+        """This method makes the request to the council
 
-        user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
-        bindata = {"bins": []}
+        Keyword arguments:
+        url -- the url to get the data from
+        """
+        # Set a user agent so we look like a browser ;-)
+        user_agent = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/108.0.0.0 Safari/537.36"
+        )
+        headers = {"User-Agent": user_agent}
+        requests.packages.urllib3.disable_warnings()
 
-        SESSION_URL = "https://southribble-ss.achieveservice.com/authapi/isauthenticated?uri=https%253A%252F%252Fsouthribble-ss.achieveservice.com%252FAchieveForms%252F%253Fmode%253Dfill%2526form_uri%253Dsandbox-publish%25253A%252F%252FAF-Process-d3971054-2e93-4a74-8375-494347dd13fd%252FAF-Stage-2693df73-8a5f-4e24-86b8-456ef81dd4a1%252Fdefinition.json%2526process%253D1%2526process_uri%253Dsandbox-processes%25253A%252F%252FAF-Process-d3971054-2e93-4a74-8375-494347dd13fd%2526process_id%253DAF-Process-d3971054-2e93-4a74-8375-494347dd13fd%2526accept%253Dyes%2526consentMessageIds%25255B%25255D%253D3%2526accept%253Dyes%2526consentMessageIds%255B%255D%253D3&hostname=southribble-ss.achieveservice.com&withCredentials=true"
+        # Make the Request - change the URL - find out your property number
+        try:
+            session = requests.Session()
+            session.headers.update(headers)
+            full_page = session.get(url)
+            return full_page
+        except requests.exceptions.HTTPError as errh:
+            logging.error(f"Http Error: {errh}")
+            raise
+        except requests.exceptions.ConnectionError as errc:
+            logging.error(f"Error Connecting: {errc}")
+            raise
+        except requests.exceptions.Timeout as errt:
+            logging.error(f"Timeout Error: {errt}")
+            raise
+        except requests.exceptions.RequestException as err:
+            logging.error(f"Oops: Something Else {err}")
+            raise
 
-        API_URL = "https://southribble-ss.achieveservice.com/apibroker/runLookup"
+    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
+        uprn: Optional[str] = kwargs.get("uprn")
+        postcode: Optional[str] = kwargs.get("postcode")
 
-        data = {
-            "formValues": {
-                "Your Collections": {
-                    "PickupDate": {"value": datetime.now().strftime("%Y-%m-%d")},
-                },
-                "Your details": {
-                    "LLPGUPRN": {"value": user_uprn},
-                },
-            },
+        if uprn is None:
+            raise ValueError("UPRN is required and must be a non-empty string.")
+        if postcode is None:
+            raise ValueError("Postcode is required and must be a non-empty string.")
+
+        check_uprn(uprn)
+        check_postcode(postcode)
+
+        values = {
+            "__token": get_token(page),
+            "page": "491",
+            "locale": "en_GB",
+            "q1f8ccce1d1e2f58649b4069712be6879a839233f_0_0": postcode,
+            "q1f8ccce1d1e2f58649b4069712be6879a839233f_1_0": uprn,
+            "next": "Next",
         }
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
+        requests.packages.urllib3.disable_warnings()
+        response = requests.request(
+            "POST",
+            "https://forms.chorleysouthribble.gov.uk/xfp/form/70",
+            headers=headers,
+            data=values,
+        )
 
-        headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "Mozilla/5.0",
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": "https://southribble-ss.achieveservice.com/fillform/?iframe_id=fillform-frame-1&db_id=",
-        }
-        s = requests.session()
-        r = s.get(SESSION_URL)
-        r.raise_for_status()
-        session_data = r.json()
-        sid = session_data["auth-session"]
-        params = {
-            "id": "58ab44ef078bd",
-            "repeat_against": "",
-            "noRetry": "false",
-            "getOnlyTokens": "undefined",
-            "log_id": "",
-            "app_name": "AF-Renderer::Self",
-            # unix_timestamp
-            "_": str(int(time.time() * 1000)),
-            "sid": sid,
-        }
-        r = s.post(API_URL, json=data, headers=headers, params=params)
-        r.raise_for_status()
-        data = r.json()
-        rows_data = data["integration"]["transformed"]["rows_data"]["0"]
-        if not isinstance(rows_data, dict):
-            raise ValueError("Invalid data returned from API")
-        BIN_TYPES = [
-            ("RCNextCollectionDate", "Household Waste (Non-Recyclable Waste)"),
-            ("RENextCollectionDate", "Blue/Green Recyclable Waste"),
-            ("GWNextCollectionDate", "Garden Waste Collection"),
-            ("FWNextCollectionDate", "Food Waste"),
-        ]
-        bin_type_dict = dict(BIN_TYPES)
+        soup = BeautifulSoup(response.text, features="html.parser")
 
-        for row in rows_data.items():
-            if row[0].endswith("NextCollectionDate"):
-                if row[1]:
-                    bin_type = bin_type_dict.get(row[0], row[0])
-                    collection_date = row[1]
-                    dict_data = {"type": bin_type, "collectionDate": collection_date}
-                    bindata["bins"].append(dict_data)
+        rows = soup.find("table").find_all("tr")
 
-        return bindata
+        # Form a JSON wrapper
+        data: Dict[str, List[Dict[str, str]]] = {"bins": []}
+
+        # Loops the Rows
+        for row in rows:
+            cells = row.find_all("td")
+            if cells:
+                bin_type = cells[0].get_text(strip=True)
+                collection_next = cells[1].get_text(strip=True)
+
+                collection_date = re.findall(r"\(.*?\)", collection_next)
+
+                if len(collection_date) != 1:
+                    continue
+
+                collection_date_obj = parse(
+                    re.sub(r"[()]", "", collection_date[0])
+                ).date()
+
+                # since we only have the next collection day, if the parsed date is in the past,
+                # assume the day is instead next month
+                if collection_date_obj < datetime.now().date():
+                    collection_date_obj += relativedelta(months=1)
+
+                # Make each Bin element in the JSON
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": collection_date_obj.strftime(date_format),
+                }
+
+                # Add data to the main JSON Wrapper
+                data["bins"].append(dict_data)
+
+        return data

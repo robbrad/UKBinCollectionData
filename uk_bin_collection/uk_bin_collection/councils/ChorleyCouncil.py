@@ -41,6 +41,10 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             check_postcode(user_postcode)
 
+            # Ensure UPRN starts with "UPRN"
+            if not user_uprn.startswith("UPRN"):
+                user_uprn = f"UPRN{user_uprn}"
+
             # Create Selenium webdriver
             user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
