@@ -374,6 +374,184 @@ Open the map viewer in VS Code:
 ![Test Results Map](test_results_map.png)
 
 ---
+## ICS Calendar Generation
+
+You can convert bin collection data to an ICS calendar file that can be imported into calendar applications like Google Calendar, Apple Calendar, Microsoft Outlook, etc.
+
+### Overview
+
+The `bin_to_ics.py` script allows you to:
+- Convert JSON output from bin collection data into ICS calendar events
+- Group multiple bin collections on the same day into a single event
+- Create all-day events (default) or timed events
+- Add optional reminders/alarms to events
+- Customize the calendar name
+
+### Requirements
+
+- Python 3.6 or higher
+- The `icalendar` package, which can be installed with:
+  ```bash
+  pip install icalendar
+  ```
+
+### Basic Usage
+
+```bash
+# Basic usage with stdin input and default output file (bin.ics)
+python bin_to_ics.py < bin_data.json
+
+# Specify input and output files
+python bin_to_ics.py -i bin_data.json -o my_calendar.ics
+
+# Custom calendar name
+python bin_to_ics.py -i bin_data.json -o my_calendar.ics -n "My Bin Collections"
+```
+
+### Options
+
+```
+--input, -i        Input JSON file (if not provided, read from stdin)
+--output, -o       Output ICS file (default: bin.ics)
+--name, -n         Calendar name (default: Bin Collections)
+--alarms, -a       Comma-separated list of alarm times before event (e.g., "1d,2h,30m")
+--no-all-day       Create timed events instead of all-day events
+```
+
+### Examples
+
+#### Adding Reminders (Alarms)
+
+Add reminders 1 day and 2 hours before each collection:
+
+```bash
+python bin_to_ics.py -i bin_data.json -a "1d,2h"
+```
+
+The time format supports:
+- Days: `1d`, `2day`, `3days`
+- Hours: `1h`, `2hour`, `3hours`
+- Minutes: `30m`, `45min`, `60mins`, `90minutes`
+
+#### Creating Timed Events
+
+By default, events are created as all-day events. To create timed events instead (default time: 7:00 AM):
+
+```bash
+python bin_to_ics.py -i bin_data.json --no-all-day
+```
+
+### Integration with Bin Collection Data Retriever
+
+You can pipe the output from the bin collection data retriever directly to the ICS generator. The required parameters (postcode, house number, UPRN, etc.) depend on the specific council implementation - refer to the [Quickstart](#quickstart) section above or check the [project wiki](https://github.com/robbrad/UKBinCollectionData/wiki) for details about your council.
+
+```bash
+python uk_bin_collection/uk_bin_collection/collect_data.py CouncilName "URL" [OPTIONS] | 
+  python bin_to_ics.py [OPTIONS]
+```
+
+#### Complete Example for a Council
+
+```bash
+python uk_bin_collection/uk_bin_collection/collect_data.py CouncilName \
+  "council_url" \
+  -p "YOUR_POSTCODE" \
+  -n "YOUR_HOUSE_NUMBER" \
+  -w "http://localhost:4444/wd/hub" |
+  python bin_to_ics.py \
+    --name "My Bin Collections" \
+    --output my_bins.ics \
+    --alarms "1d,12h"
+```
+
+This will:
+1. Fetch bin collection data for your address from your council's website
+2. Convert it to an ICS file named "my_bins.ics"
+3. Set the calendar name to "My Bin Collections"
+4. Add reminders 1 day and 12 hours before each collection
+
+For postcode lookup and UPRN information, please check the [UPRN Finder](#uprn-finder) section above.
+
+### Using the Calendar
+
+You have two options for using the generated ICS file:
+
+#### 1. Importing the Calendar
+
+You can directly import the ICS file into your calendar application:
+
+- **Google Calendar**: Go to Settings > Import & export > Import
+- **Apple Calendar**: File > Import
+- **Microsoft Outlook**: File > Open & Export > Import/Export > Import an iCalendar (.ics)
+
+Note: Importing creates a static copy of the calendar events. If bin collection dates change, you'll need to re-import the calendar.
+
+#### 2. Subscribing to the Calendar
+
+If you host the ICS file on a publicly accessible web server, you can subscribe to it as an internet calendar:
+
+- **Google Calendar**: Go to "Other calendars" > "+" > "From URL" > Enter the URL of your hosted ICS file
+- **Apple Calendar**: File > New Calendar Subscription > Enter the URL
+- **Microsoft Outlook**: File > Account Settings > Internet Calendars > New > Enter the URL
+
+Benefits of subscribing:
+- Calendar automatically updates when the source file changes
+- No need to manually re-import when bin collection dates change
+- Easily share the calendar with household members
+
+You can set up a cron job or scheduled task to regularly:
+1. Retrieve the latest bin collection data
+2. Generate a fresh ICS file
+3. Publish it to a web-accessible location
+
+### Additional Examples and Use Cases
+
+#### Automation with Cron Jobs
+
+Create a weekly update script on a Linux/Mac system:
+
+```bash
+#!/bin/bash
+# File: update_bin_calendar.sh
+
+# Set variables
+COUNCIL="YourCouncilName"
+COUNCIL_URL="https://your-council-website.gov.uk/bins"
+POSTCODE="YOUR_POSTCODE"
+HOUSE_NUMBER="YOUR_HOUSE_NUMBER"
+OUTPUT_DIR="/var/www/html/calendars"  # Web-accessible directory
+CALENDAR_NAME="Household Bins"
+
+# Ensure output directory exists
+mkdir -p $OUTPUT_DIR
+
+# Run the collector and generate the calendar
+cd /path/to/UKBinCollectionData && \
+python uk_bin_collection/uk_bin_collection/collect_data.py $COUNCIL "$COUNCIL_URL" \
+  -p "$POSTCODE" -n "$HOUSE_NUMBER" | \
+python bin_to_ics.py --name "$CALENDAR_NAME" --output "$OUTPUT_DIR/bins.ics" --alarms "1d,6h"
+
+# Add timestamp to show last update time
+echo "Calendar last updated: $(date)" > "$OUTPUT_DIR/last_update.txt"
+```
+
+Make the script executable:
+```bash
+chmod +x update_bin_calendar.sh
+```
+
+Add to crontab to run weekly (every Monday at 2 AM):
+```bash
+0 2 * * 1 /path/to/update_bin_calendar.sh
+```
+
+**Google Assistant/Alexa Integration**
+
+If you have your calendar connected to Google Calendar or Outlook, you can ask your smart assistant about upcoming bin collections:
+
+- "Hey Google, when is my next bin collection?"
+- "Alexa, what's on my calendar tomorrow?" (will include bin collections)
+
 ## Docker API Server
 We have created an API for this located under [uk_bin_collection_api_server](https://github.com/robbrad/UKBinCollectionData/uk_bin_collection_api_server)
 
