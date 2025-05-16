@@ -106,6 +106,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     "%a %b %d %Y",
                 ).strftime(date_format),
             }
+            print(dict_data)
             data["bins"].append(dict_data)
         for bin in soup.find_all(attrs={"id": re.compile(r"CTID-d3gapLk-\d+-A")}):
             dict_data = {
@@ -129,5 +130,23 @@ class CouncilClass(AbstractGetBinDataClass):
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
+
+        # Deduplicate the bins based on type and collection date
+        # Feels a bit hacky, but fixes
+        # https://github.com/robbrad/UKBinCollectionData/issues/1436
+        unique_bins = []
+        seen = set()
+        for bin_item in data["bins"]:
+            # Create a unique identifier for each bin entry
+            bin_key = (bin_item["type"], bin_item["collectionDate"])
+            if bin_key not in seen:
+                seen.add(bin_key)
+                unique_bins.append(bin_item)
+
+        data["bins"] = unique_bins
 
         return data
