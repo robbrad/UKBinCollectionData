@@ -10,7 +10,6 @@
         "LAD24CD": "S12000034",
         "uprn": "151176430",
         "url": "https://online.aberdeenshire.gov.uk",
-        "wiki_command_url_override": "https://online.aberdeenshire.gov.uk",
         "wiki_name": "Aberdeenshire",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
@@ -48,7 +47,6 @@
     "ArdsAndNorthDownCouncil": {
         "uprn": "187136177",
         "url": "https://www.ardsandnorthdown.gov.uk",
-        "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
         "wiki_name": "Ards and North Down",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "N09000011"
@@ -67,7 +65,6 @@
         "LAD24CD": "N09000002",
         "uprn": "185625284",
         "url": "https://www.armaghbanbridgecraigavon.gov.uk/",
-        "wiki_command_url_override": "https://www.armaghbanbridgecraigavon.gov.uk/",
         "wiki_name": "Armagh City, Banbridge and Craigavon",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
@@ -95,7 +92,6 @@
         "uprn": "100060777899",
         "url": "https://ashford.gov.uk",
         "web_driver": "http://selenium:4444",
-        "wiki_command_url_override": "https://ashford.gov.uk",
         "wiki_name": "Ashford",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000105"
@@ -224,7 +220,6 @@
     "BlabyDistrictCouncil": {
         "uprn": "100030401782",
         "url": "https://www.blaby.gov.uk",
-        "wiki_command_url_override": "https://www.blaby.gov.uk",
         "wiki_name": "Blaby",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000129"
@@ -305,7 +300,6 @@
     "BrecklandCouncil": {
         "uprn": "100091495479",
         "url": "https://www.breckland.gov.uk",
-        "wiki_command_url_override": "https://www.breckland.gov.uk",
         "wiki_name": "Breckland",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000143"
@@ -357,7 +351,6 @@
     "BromsgroveDistrictCouncil": {
         "uprn": "100120584652",
         "url": "https://www.bromsgrove.gov.uk",
-        "wiki_command_url_override": "https://www.bromsgrove.gov.uk",
         "wiki_name": "Bromsgrove",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000234"
@@ -435,7 +428,6 @@
     "CanterburyCityCouncil": {
         "uprn": "10094583181",
         "url": "https://www.canterbury.gov.uk",
-        "wiki_command_url_override": "https://www.canterbury.gov.uk",
         "wiki_name": "Canterbury",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000106"
@@ -451,7 +443,6 @@
     "CarmarthenshireCountyCouncil": {
         "uprn": "10004859302",
         "url": "https://www.carmarthenshire.gov.wales",
-        "wiki_command_url_override": "https://www.carmarthenshire.gov.wales",
         "wiki_name": "Carmarthenshire",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "W06000010"
@@ -701,7 +692,6 @@
     "DudleyCouncil": {
         "uprn": "90014244",
         "url": "https://my.dudley.gov.uk",
-        "wiki_command_url_override": "https://my.dudley.gov.uk",
         "wiki_name": "Dudley",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E08000027"
@@ -732,7 +722,6 @@
     "EastAyrshireCouncil": {
         "uprn": "127074727",
         "url": "https://www.east-ayrshire.gov.uk",
-        "wiki_command_url_override": "https://www.east-ayrshire.gov.uk",
         "wiki_name": "East Ayrshire",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000008"
@@ -745,7 +734,7 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000061"
     },
-    "EastCambridgeshireCouncil": { 
+    "EastCambridgeshireCouncil": {
         "skip_get_url": true,
         "uprn": "10002597178",
         "url": "https://www.eastcambs.gov.uk/",
@@ -848,7 +837,6 @@
     "ElmbridgeBoroughCouncil": {
         "uprn": "10013119164",
         "url": "https://www.elmbridge.gov.uk",
-        "wiki_command_url_override": "https://www.elmbridge.gov.uk",
         "wiki_name": "Elmbridge",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000207"
@@ -903,7 +891,6 @@
     "FalkirkCouncil": {
         "uprn": "136065818",
         "url": "https://www.falkirk.gov.uk",
-        "wiki_command_url_override": "https://www.falkirk.gov.uk",
         "wiki_name": "Falkirk",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000014"
@@ -936,7 +923,6 @@
     "FifeCouncil": {
         "uprn": "320203521",
         "url": "https://www.fife.gov.uk",
-        "wiki_command_url_override": "https://www.fife.gov.uk",
         "wiki_name": "Fife",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000047"
@@ -944,7 +930,6 @@
     "FlintshireCountyCouncil": {
         "uprn": "100100213710",
         "url": "https://digital.flintshire.gov.uk",
-        "wiki_command_url_override": "https://digital.flintshire.gov.uk",
         "wiki_name": "Flintshire",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "W06000005"
@@ -970,7 +955,6 @@
     "FyldeCouncil": {
         "uprn": "100010402452",
         "url": "https://www.fylde.gov.uk",
-        "wiki_command_url_override": "https://www.fylde.gov.uk",
         "wiki_name": "Fylde",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000119"
@@ -1015,7 +999,7 @@
     "GooglePublicCalendarCouncil": {
         "url": "https://calendar.google.com/calendar/ical/0d775884b4db6a7bae5204f06dae113c1a36e505b25991ebc27c6bd42edf5b5e%40group.calendar.google.com/public/basic.ics",
         "wiki_name": "Google Calendar (Public)",
-        "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU. Councils that currently need this are Trafford.",
+        "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See [here](https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU) for more details.",
         "supported_councils": [
             "Trafford",
             "Clackmannanshire",
@@ -1047,7 +1031,8 @@
             "S12000045",
             "W06000020",
             "E07000122"
-        ]
+        ],
+        "wiki_command_url_override": "https://calendar.google.com/calendar/ical/XXXXXgroup.calendar.google.com/public/basic.ics"
     },
     "GraveshamBoroughCouncil": {
         "skip_get_url": true,
@@ -1105,7 +1090,6 @@
     "HarboroughDistrictCouncil": {
         "uprn": "100030489072",
         "url": "https://www.harborough.gov.uk",
-        "wiki_command_url_override": "https://www.harborough.gov.uk",
         "wiki_name": "Harborough",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000131"
@@ -1144,7 +1128,6 @@
     "HastingsBoroughCouncil": {
         "uprn": "100060038877",
         "url": "https://www.hastings.gov.uk",
-        "wiki_command_url_override": "https://www.hastings.gov.uk",
         "wiki_name": "Hastings",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000062"
@@ -1180,7 +1163,6 @@
     "HighlandCouncil": {
         "uprn": "130072429",
         "url": "https://www.highland.gov.uk",
-        "wiki_command_url_override": "https://www.highland.gov.uk",
         "wiki_name": "Highland",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000017"
@@ -1324,7 +1306,6 @@
     "LichfieldDistrictCouncil": {
         "uprn": "100031694085",
         "url": "https://www.lichfielddc.gov.uk",
-        "wiki_command_url_override": "https://www.lichfielddc.gov.uk",
         "wiki_name": "Lichfield",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000194"
@@ -1333,7 +1314,6 @@
         "postcode": "LN5 7SH",
         "uprn": "000235024846",
         "url": "https://lincoln.gov.uk",
-        "wiki_command_url_override": "https://lincoln.gov.uk",
         "wiki_name": "City of Lincoln",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000138"
@@ -1366,7 +1346,6 @@
     "LondonBoroughHarrow": {
         "uprn": "100021298754",
         "url": "https://www.harrow.gov.uk",
-        "wiki_command_url_override": "https://www.harrow.gov.uk",
         "wiki_name": "Harrow",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E09000015"
@@ -1425,7 +1404,6 @@
     "LondonBoroughSutton": {
         "uprn": "4473006",
         "url": "https://waste-services.sutton.gov.uk/waste",
-        "wiki_command_url_override": "https://waste-services.sutton.gov.uk/waste",
         "wiki_name": "Sutton",
         "wiki_note": "You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN",
         "LAD24CD": "E09000029"
@@ -1433,7 +1411,6 @@
     "LutonBoroughCouncil": {
         "uprn": "100080155778",
         "url": "https://myforms.luton.gov.uk",
-        "wiki_command_url_override": "https://myforms.luton.gov.uk",
         "wiki_name": "Luton",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E06000032"
@@ -1513,7 +1490,6 @@
     "MidDevonCouncil": {
         "uprn": "200003997770",
         "url": "https://www.middevon.gov.uk",
-        "wiki_command_url_override": "https://www.middevon.gov.uk",
         "wiki_name": "Mid Devon",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000042"
@@ -1658,7 +1634,6 @@
     "NorthAyrshireCouncil": {
         "uprn": "126045552",
         "url": "https://www.north-ayrshire.gov.uk/",
-        "wiki_command_url_override": "https://www.north-ayrshire.gov.uk/",
         "wiki_name": "North Ayrshire",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000021"
@@ -1789,7 +1764,6 @@
     "NorwichCityCouncil": {
         "uprn": "100090888980",
         "url": "https://www.norwich.gov.uk",
-        "wiki_command_url_override": "https://www.norwich.gov.uk",
         "wiki_name": "Norwich",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000148"
@@ -1827,7 +1801,6 @@
         "postcode": "OX3 7QF",
         "uprn": "100120820551",
         "url": "https://www.oxford.gov.uk",
-        "wiki_command_url_override": "https://www.oxford.gov.uk",
         "wiki_name": "Oxford",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000178"
@@ -1852,7 +1825,6 @@
     "PerthAndKinrossCouncil": {
         "uprn": "124032322",
         "url": "https://www.pkc.gov.uk",
-        "wiki_command_url_override": "https://www.pkc.gov.uk",
         "wiki_name": "Perth and Kinross",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000048"
@@ -1860,7 +1832,6 @@
     "PlymouthCouncil": {
         "uprn": "100040420582",
         "url": "https://www.plymouth.gov.uk",
-        "wiki_command_url_override": "https://www.plymouth.gov.uk",
         "wiki_name": "Plymouth",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E06000026"
@@ -1913,7 +1884,6 @@
     "RedditchBoroughCouncil": {
         "uprn": "10094557691",
         "url": "https://redditchbc.gov.uk",
-        "wiki_command_url_override": "https://redditchbc.gov.uk",
         "wiki_name": "Redditch",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000236"
@@ -2181,7 +2151,6 @@
     "SouthRibbleCouncil": {
         "uprn": "010013246384",
         "url": "https://www.southribble.gov.uk",
-        "wiki_command_url_override": "https://www.southribble.gov.uk",
         "wiki_name": "South Ribble",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E07000126"
@@ -2382,7 +2351,6 @@
         "uprn": "100040338776",
         "url": "https://www.google.co.uk",
         "web_driver": "http://selenium:4444",
-        "wiki_command_url_override": "https://www.google.co.uk",
         "wiki_name": "Teignbridge",
         "wiki_note": "Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000045"
@@ -2478,7 +2446,6 @@
     "TunbridgeWellsCouncil": {
         "uprn": "10090058289",
         "url": "https://tunbridgewells.gov.uk",
-        "wiki_command_url_override": "https://tunbridgewells.gov.uk",
         "wiki_name": "Tunbridge Wells",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E07000116"
@@ -2524,7 +2491,6 @@
     "WalsallCouncil": {
         "uprn": "100071080513",
         "url": "https://cag.walsall.gov.uk/",
-        "wiki_command_url_override": "https://cag.walsall.gov.uk/",
         "wiki_name": "Walsall",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E08000030"
@@ -2543,7 +2509,6 @@
     "WandsworthCouncil": {
         "uprn": "100022684035",
         "url": "https://www.wandsworth.gov.uk",
-        "wiki_command_url_override": "https://www.wandsworth.gov.uk",
         "wiki_name": "Wandsworth",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E09000032"
@@ -2551,7 +2516,6 @@
     "WarringtonBoroughCouncil": {
         "uprn": "10094964379",
         "url": "https://www.warrington.gov.uk",
-        "wiki_command_url_override": "https://www.warrington.gov.uk",
         "wiki_name": "Warrington",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E06000007"
@@ -2566,7 +2530,6 @@
     "WatfordBoroughCouncil": {
         "uprn": "100080942183",
         "url": "https://www.watford.gov.uk",
-        "wiki_command_url_override": "https://www.watford.gov.uk",
         "wiki_name": "Watford",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000103"
@@ -2643,7 +2606,6 @@
     "WestMorlandAndFurness": {
         "uprn": "100110353478",
         "url": "https://www.westmorlandandfurness.gov.uk/",
-        "wiki_command_url_override": "https://www.westmorlandandfurness.gov.uk/",
         "wiki_name": "Westmorland and Furness",
         "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E06000064"
@@ -2716,7 +2678,6 @@
     "WirralCouncil": {
         "uprn": "Vernon Avenue,Seacombe",
         "url": "https://www.wirral.gov.uk",
-        "wiki_command_url_override": "https://www.wirral.gov.uk",
         "wiki_name": "Wirral",
         "wiki_note": "In the `uprn` field, enter your street name and suburb separated by a comma (e.g., 'Vernon Avenue,Seacombe').",
         "LAD24CD": "E08000015"
@@ -2751,7 +2712,6 @@
     "WorcesterCityCouncil": {
         "uprn": "100120650345",
         "url": "https://www.Worcester.gov.uk",
-        "wiki_command_url_override": "https://www.Worcester.gov.uk",
         "wiki_name": "Worcester",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000237"
