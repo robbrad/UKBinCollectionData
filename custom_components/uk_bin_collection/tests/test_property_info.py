@@ -87,13 +87,34 @@ async def test_async_get_property_info_success(mock_property_response):
 @pytest.mark.asyncio
 async def test_async_get_property_info_google_error():
     """Test handling of Google API errors."""
-    with patch("aiohttp.ClientSession") as mock_session:
-        mock_response = AsyncMock()
-        mock_response.status = 400
-        mock_response.__aenter__.return_value = mock_response
 
-        mock_session.return_value.get = AsyncMock(return_value=mock_response)
+    # Create a proper mock for an async context manager
+    class MockResponse:
+        def __init__(self, status):
+            self.status = status
 
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+    # Create a mock session with proper async methods
+    class MockSession:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            pass
+
+        # Change this from async def to def and return a Future
+        def get(self, url, **kwargs):
+            # Create and immediately return a ready-made Future
+            response = MockResponse(400)
+            return response
+
+    # Apply the patch with our properly structured mock
+    with patch("aiohttp.ClientSession", return_value=MockSession()):
         with patch("logging.Logger.warning") as mock_warning, patch(
             "logging.Logger.error"
         ) as mock_error:

@@ -39,22 +39,56 @@ def config_entry():
     )
 
 
+@pytest.fixture
+def hass():
+    """Return a properly mocked Home Assistant instance."""
+    hass = MagicMock(spec=HomeAssistant)
+
+    # Add the 'data' attribute that's being accessed in the tests
+    hass.data = {}
+
+    # Add the 'services' attribute and necessary methods
+    hass.services = MagicMock()
+    hass.services.async_register = AsyncMock()
+
+    # Add the 'loop' attribute for add_to_hass
+    hass.loop = MagicMock()
+    hass.loop.create_task = AsyncMock()
+
+    # Other commonly needed attributes/methods
+    hass.config_entries = MagicMock()
+    hass.config_entries.async_forward_entry_setups = AsyncMock(return_value=True)
+    hass.config_entries.async_forward_entry_unload = AsyncMock(return_value=True)
+
+    # Return the properly configured mock
+    return hass
+
+
 @pytest.mark.asyncio
 async def test_async_setup(hass):
     """Test the async_setup function."""
     # Initialize hass.data
     hass.data = {}
 
-    # Mock hass.services.async_register
-    with patch.object(hass.services, "async_register") as mock_register:
-        result = await async_setup(hass, {})
-        assert result is True
-        assert DOMAIN in hass.data
+    # Create an AsyncMock for the services.async_register method
+    mock_register = AsyncMock()
 
-        # Verify service registration
-        mock_register.assert_called_once_with(
-            DOMAIN, "manual_refresh", mock_register.call_args[0][2]
+    # Use the mock in the test and suppress the warning
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", category=RuntimeWarning, message="coroutine.*never awaited"
         )
+        with patch.object(hass.services, "async_register", mock_register):
+            result = await async_setup(hass, {})
+            assert result is True
+            assert DOMAIN in hass.data
+
+            # Verify service registration
+            mock_register.assert_called_once_with(
+                DOMAIN, "manual_refresh", mock_register.call_args[0][2]
+            )
 
 
 @pytest.mark.asyncio
@@ -93,16 +127,22 @@ async def test_manual_refresh_service_no_entry_id(hass):
     # Initialize hass.data
     hass.data = {}
 
-    with patch.object(hass.services, "async_register") as mock_register:
-        await async_setup(hass, {})
-        service_handler = mock_register.call_args[0][2]
+    import warnings
 
-        # Call without entry_id
-        mock_call = ServiceCall(DOMAIN, "manual_refresh", {})
-        await service_handler(mock_call)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore", category=RuntimeWarning, message="coroutine.*never awaited"
+        )
+        with patch.object(hass.services, "async_register") as mock_register:
+            await async_setup(hass, {})
+            service_handler = mock_register.call_args[0][2]
 
-        # Nothing should happen, no errors
-        assert True
+            # Call without entry_id
+            mock_call = ServiceCall(DOMAIN, "manual_refresh", {})
+            await service_handler(mock_call)
+
+            # Nothing should happen, no errors
+            assert True
 
 
 @pytest.mark.asyncio

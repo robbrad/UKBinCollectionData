@@ -3,44 +3,43 @@ import json
 import logging
 from datetime import date, datetime, timedelta
 from json import JSONDecodeError
-from unittest.mock import AsyncMock, MagicMock, patch, Mock
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 from freezegun import freeze_time
 from homeassistant.config_entries import ConfigEntryState
+from homeassistant.core import ServiceCall
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.util import dt as dt_util
-from homeassistant.core import ServiceCall
+
+from custom_components.uk_bin_collection import HouseholdBinCoordinator
 from custom_components.uk_bin_collection import (
     async_setup_entry as async_setup_entry_domain,
 )
-from custom_components.uk_bin_collection.sensor import (
-    async_setup_entry as async_setup_entry_sensor,
-)
-
 from custom_components.uk_bin_collection.const import (
     DOMAIN,
     LOG_PREFIX,
     STATE_ATTR_COLOUR,
-    STATE_ATTR_NEXT_COLLECTION,
     STATE_ATTR_DAYS,
+    STATE_ATTR_NEXT_COLLECTION,
 )
 from custom_components.uk_bin_collection.sensor import (
     UKBinCollectionAttributeSensor,
     UKBinCollectionDataSensor,
     UKBinCollectionRawJSONSensor,
+)
+from custom_components.uk_bin_collection.sensor import (
+    async_setup_entry as async_setup_entry_sensor,
+)
+from custom_components.uk_bin_collection.sensor import (
     create_sensor_entities,
     load_icon_color_mapping,
 )
 
-from custom_components.uk_bin_collection import HouseholdBinCoordinator
-
 logging.basicConfig(level=logging.DEBUG)
 
 from .common_utils import MockConfigEntry
-
-pytest_plugins = ["freezegun"]
 
 # Mock Data
 MOCK_BIN_COLLECTION_DATA = {
@@ -227,13 +226,15 @@ async def test_bin_sensor(hass, mock_config_entry):
                 return func(*args, **kwargs)
 
             hass.async_add_executor_job = mock_async_add_executor_job
-            
+
             coordinator = HouseholdBinCoordinator(
                 hass, mock_app_instance, "Test Name", timeout=60
             )
 
             # Use our async mock instead of calling the real refresh method
-            with patch.object(coordinator, "async_config_entry_first_refresh", new=AsyncMock()):
+            with patch.object(
+                coordinator, "async_config_entry_first_refresh", new=AsyncMock()
+            ):
                 # Set the coordinator data manually instead of refreshing
                 coordinator.data = {
                     "General Waste": datetime.strptime("15/10/2023", "%d/%m/%Y").date(),
@@ -315,10 +316,10 @@ async def test_bin_sensor_today_collection(hass, freezer, mock_config_entry):
     """Test bin sensor when collection is today."""
     freezer.move_to("2023-10-14")
     today_date = dt_util.now().strftime("%d/%m/%Y")
-    
+
     # Initialize hass.data
     hass.data = {}
-    
+
     # Create a coordinator directly with mocked properties instead of calling async_config_entry_first_refresh
     coordinator = MagicMock()
     coordinator.data = {
@@ -326,12 +327,12 @@ async def test_bin_sensor_today_collection(hass, freezer, mock_config_entry):
     }
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create a bin sensor with this data
     sensor = UKBinCollectionDataSensor(
         coordinator, "General Waste", "test_general_waste", {}
     )
-    
+
     # Access properties
     assert sensor.state == "Today"
     assert sensor.available is True
@@ -343,10 +344,10 @@ async def test_bin_sensor_tomorrow_collection(hass, freezer, mock_config_entry):
     """Test bin sensor when collection is tomorrow."""
     freezer.move_to("2023-10-14")
     tomorrow_date = (dt_util.now() + timedelta(days=1)).strftime("%d/%m/%Y")
-    
+
     # Initialize hass.data
     hass.data = {}
-    
+
     # Create a coordinator directly with mocked properties instead of calling async_config_entry_first_refresh
     coordinator = MagicMock()
     coordinator.data = {
@@ -354,12 +355,10 @@ async def test_bin_sensor_tomorrow_collection(hass, freezer, mock_config_entry):
     }
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create a bin sensor with this data
-    sensor = UKBinCollectionDataSensor(
-        coordinator, "Recycling", "test_recycling", {}
-    )
-    
+    sensor = UKBinCollectionDataSensor(coordinator, "Recycling", "test_recycling", {})
+
     # Access properties
     assert sensor.state == "Tomorrow"
     assert sensor.available is True
@@ -382,7 +381,7 @@ async def test_bin_sensor_partial_custom_icon_color(hass, mock_config_entry):
     }
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create sensors for both bin types
     sensor_general = UKBinCollectionDataSensor(
         coordinator, "General Waste", "test_general_waste", icon_color_mapping
@@ -458,7 +457,9 @@ def test_process_bin_data_duplicate_bin_types_2(freezer):
         ]
     }
     expected = {
-        "General Waste": datetime.strptime("15/10/2023", "%d/%m/%Y").date(),  # Should take the earliest future date
+        "General Waste": datetime.strptime(
+            "15/10/2023", "%d/%m/%Y"
+        ).date(),  # Should take the earliest future date
     }
     processed_data = HouseholdBinCoordinator.process_bin_data(data)
     assert processed_data == expected
@@ -482,12 +483,12 @@ async def test_coordinator_timeout_error(hass, mock_config_entry):
         coordinator = HouseholdBinCoordinator(
             hass, mock_app_instance, "Test Name", timeout=1
         )
-        
+
         # Instead of calling async_config_entry_first_refresh, directly call _async_update_data
         # and verify it raises UpdateFailed with the correct message
         with pytest.raises(UpdateFailed) as exc_info:
             await coordinator._async_update_data()
-        
+
         assert "Timeout while updating data" in str(exc_info.value)
 
 
@@ -504,18 +505,18 @@ async def test_coordinator_json_decode_error(hass, mock_config_entry):
         # Mock async_add_executor_job to raise JSONDecodeError when called
         async def mock_async_add_executor_job(*args, **kwargs):
             raise JSONDecodeError("Expecting value", "Invalid JSON String", 0)
-        
+
         hass.async_add_executor_job = mock_async_add_executor_job
 
         coordinator = HouseholdBinCoordinator(
             hass, mock_app_instance, "Test Name", timeout=60
         )
-        
+
         # Instead of calling async_config_entry_first_refresh, directly call _async_update_data
         # and verify it raises UpdateFailed with the correct message
         with pytest.raises(UpdateFailed) as exc_info:
             await coordinator._async_update_data()
-        
+
         assert "JSON decode error" in str(exc_info.value)
 
 
@@ -558,7 +559,9 @@ def test_process_bin_data_duplicate_bin_types_different_dates(freezer):
         ]
     }
     expected = {
-        "General Waste": datetime.strptime("14/10/2023", "%d/%m/%Y").date(),  # Should take the earliest future date
+        "General Waste": datetime.strptime(
+            "14/10/2023", "%d/%m/%Y"
+        ).date(),  # Should take the earliest future date
     }
     processed_data = HouseholdBinCoordinator.process_bin_data(data)
     assert processed_data == expected
@@ -616,10 +619,10 @@ async def test_bin_sensor_state_today(hass, mock_config_entry, freezer):
     """Test bin sensor when collection is today."""
     freezer.move_to("2023-10-14")
     today_date = dt_util.now().strftime("%d/%m/%Y")
-    
+
     # Initialize hass.data
     hass.data = {}
-    
+
     # Create a coordinator directly with mocked properties instead of calling async_config_entry_first_refresh
     coordinator = MagicMock()
     coordinator.data = {
@@ -627,12 +630,12 @@ async def test_bin_sensor_state_today(hass, mock_config_entry, freezer):
     }
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create a bin sensor with this data
     sensor = UKBinCollectionDataSensor(
         coordinator, "General Waste", "test_general_waste", {}
     )
-    
+
     # Access properties
     assert sensor.state == "Today"
     assert sensor.available is True
@@ -644,10 +647,10 @@ async def test_bin_sensor_state_tomorrow(hass, mock_config_entry, freezer):
     """Test bin sensor when collection is tomorrow."""
     freezer.move_to("2023-10-14")
     tomorrow_date = (dt_util.now() + timedelta(days=1)).strftime("%d/%m/%Y")
-    
+
     # Initialize hass.data
     hass.data = {}
-    
+
     # Create a coordinator directly with mocked properties instead of calling async_config_entry_first_refresh
     coordinator = MagicMock()
     coordinator.data = {
@@ -655,12 +658,10 @@ async def test_bin_sensor_state_tomorrow(hass, mock_config_entry, freezer):
     }
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create a bin sensor with this data
-    sensor = UKBinCollectionDataSensor(
-        coordinator, "Recycling", "test_recycling", {}
-    )
-    
+    sensor = UKBinCollectionDataSensor(coordinator, "Recycling", "test_recycling", {})
+
     # Access properties
     assert sensor.state == "Tomorrow"
     assert sensor.available is True
@@ -672,10 +673,10 @@ async def test_bin_sensor_state_in_days(hass, mock_config_entry, freezer):
     """Test bin sensor when collection is in multiple days."""
     freezer.move_to("2023-10-14")
     future_date = (dt_util.now() + timedelta(days=5)).strftime("%d/%m/%Y")
-    
+
     # Initialize hass.data
     hass.data = {}
-    
+
     # Create a coordinator directly with mocked properties instead of calling async_config_entry_first_refresh
     coordinator = MagicMock()
     coordinator.data = {
@@ -683,12 +684,12 @@ async def test_bin_sensor_state_in_days(hass, mock_config_entry, freezer):
     }
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create a bin sensor with this data
     sensor = UKBinCollectionDataSensor(
         coordinator, "Garden Waste", "test_garden_waste", {}
     )
-    
+
     # Access properties
     assert sensor.state == "In 5 days"
     assert sensor.available is True
@@ -700,18 +701,18 @@ async def test_bin_sensor_missing_data(hass, mock_config_entry):
     """Test bin sensor when bin data is missing."""
     # Initialize hass.data
     hass.data = {}
-    
+
     # Create a coordinator with empty data
     coordinator = MagicMock()
     coordinator.data = {}  # No bins data
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create a bin sensor for a non-existent bin type
     sensor = UKBinCollectionDataSensor(
         coordinator, "Non-Existent Bin", "test_non_existent_bin", {}
     )
-    
+
     # Access properties - sensor should be unavailable with unknown state
     assert sensor.state == "Unknown"
     assert sensor.available is False
@@ -728,12 +729,12 @@ async def test_raw_json_sensor_invalid_data_2(hass, mock_config_entry):
     coordinator.data = {}  # Empty data
     coordinator.name = "Test Name"
     coordinator.last_update_success = False
-    
+
     # Create the raw JSON sensor
     raw_json_sensor = UKBinCollectionRawJSONSensor(
         coordinator, "test_raw_json", "Test Name"
     )
-    
+
     # Check properties
     assert raw_json_sensor.state == "{}"
     assert raw_json_sensor.extra_state_attributes == {"raw_data": {}}
@@ -745,17 +746,15 @@ async def test_sensor_available_property(hass, mock_config_entry):
     """Test that sensor's available property reflects its state."""
     # Create a coordinator with valid data
     coordinator = MagicMock()
-    coordinator.data = {
-        "Recycling": datetime.strptime("16/10/2023", "%d/%m/%Y").date()
-    }
+    coordinator.data = {"Recycling": datetime.strptime("16/10/2023", "%d/%m/%Y").date()}
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Create a sensor
     sensor_valid = UKBinCollectionDataSensor(
         coordinator, "Recycling", "test_recycling_available", {}
     )
-    
+
     # Check availability
     assert sensor_valid.available is True
 
@@ -768,6 +767,6 @@ async def test_coordinator_empty_data(hass, mock_config_entry):
     coordinator.data = {}  # Empty data
     coordinator.name = "Test Name"
     coordinator.last_update_success = True
-    
+
     # Verify data is empty but update was successful
     assert coordinator.data == {}
