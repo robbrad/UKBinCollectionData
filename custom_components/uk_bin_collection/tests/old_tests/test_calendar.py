@@ -2,20 +2,20 @@
 
 """Unit tests for the UK Bin Collection Calendar platform."""
 
-from datetime import date, datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
-
 import pytest
-from homeassistant.components.calendar import CalendarEvent
+from unittest.mock import MagicMock, AsyncMock, patch
+from datetime import datetime, date, timedelta
+
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
+from custom_components.uk_bin_collection.const import DOMAIN
 from custom_components.uk_bin_collection.calendar import (
     UKBinCollectionCalendar,
     async_setup_entry,
     async_unload_entry,
 )
-from custom_components.uk_bin_collection.const import DOMAIN
+from homeassistant.components.calendar import CalendarEvent
 
 from .common_utils import MockConfigEntry
 
@@ -372,6 +372,48 @@ async def test_async_setup_entry_creates_no_calendar_entities_on_empty_data(
 
 
 @pytest.mark.asyncio
+async def test_async_setup_entry_with_coordinator_failure(
+    hass_instance, mock_config_entry
+):
+    """Test that async_setup_entry handles coordinator failures gracefully."""
+    mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
+    mock_coordinator.async_config_entry_first_refresh.side_effect = Exception(
+        "Update failed"
+    )
+    mock_coordinator.name = "Test Council"
+
+    # Patch the hass.data to include the coordinator
+    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {
+        "coordinator": mock_coordinator,
+    }
+
+    with pytest.raises(Exception, match="Update failed"):
+        await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+
+
+@pytest.mark.asyncio
+async def test_async_setup_entry_handles_coordinator_failure(
+    hass_instance, mock_config_entry
+):
+    """Test that async_setup_entry raises an exception when coordinator refresh fails."""
+    mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
+    # Provide an empty data dictionary so that accessing .data does not fail immediately.
+    mock_coordinator.data = {}
+    mock_coordinator.name = "Test Council"
+    # Make the refresh raise an exception.
+    mock_coordinator.async_config_entry_first_refresh = AsyncMock(
+        side_effect=Exception("Update failed")
+    )
+
+    hass_instance.data[DOMAIN][mock_config_entry.entry_id] = {
+        "coordinator": mock_coordinator
+    }
+
+    with pytest.raises(Exception, match="Update failed"):
+        await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+
+
+@pytest.mark.asyncio
 async def test_async_get_events_multiple_events_same_day(
     hass_instance, mock_coordinator
 ):
@@ -467,7 +509,13 @@ async def test_calendar_entity_extra_state_attributes(hass_instance, mock_coordi
         name="Test Council Recycling Calendar",
     )
 
-    # Check the extra_state_attributes, assuming it returns an empty dict
+    # Assuming extra_state_attributes includes more data if implemented
+    # Adjust this part based on your actual calendar.py implementation
+    # For example, you might include 'next_collection_date' and 'days_until_collection'
+    # Here, we'll assume no additional attributes as per the initial calendar.py
+
+    # If extra_state_attributes is not implemented, it defaults to None
+    # To handle this, you can set it to return an empty dict if not implemented
     assert calendar.extra_state_attributes == {}
 
 

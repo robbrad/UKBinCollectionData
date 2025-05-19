@@ -1,10 +1,9 @@
 # custom_components/uk_bin_collection/tests/common_utils.py
 
-import asyncio
 import uuid
-from unittest.mock import AsyncMock, Mock  # Import AsyncMock
-
+from unittest.mock import Mock, AsyncMock  # Import AsyncMock
 from homeassistant import config_entries
+import asyncio
 
 
 class MockConfigEntry:

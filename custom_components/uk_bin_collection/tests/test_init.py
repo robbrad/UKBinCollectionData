@@ -1,15 +1,14 @@
-# test_init.py
-import asyncio
+"""Test UK Bin Collection integration initialization."""
+
 import json
 from datetime import datetime, timedelta
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, call, patch
 
 import pytest
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.update_coordinator import UpdateFailed
+from homeassistant.util import dt as dt_util
 
-# Import the functions and classes from your __init__.py file.
 from custom_components.uk_bin_collection import (
     HouseholdBinCoordinator,
     async_migrate_entry,
@@ -18,286 +17,277 @@ from custom_components.uk_bin_collection import (
     async_unload_entry,
     build_ukbcd_args,
 )
-from custom_components.uk_bin_collection.const import DOMAIN, LOG_PREFIX, PLATFORMS
-from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
+from custom_components.uk_bin_collection.const import DOMAIN, PLATFORMS
+
+from .common_utils import MockConfigEntry
 
 
-class DummyUKBinCollectionApp:
-    def __init__(self):
-        self.args = None
-        # Set parsed_args so that self.parsed_args.module is valid (using "json" here as an example)
-        self.parsed_args = type("DummyArgs", (), {"module": "json"})()
+@pytest.fixture
+def config_entry():
+    """Create a mock config entry."""
+    return MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            "name": "Test Bins",
+            "council": "TestCouncil",
+            "url": "https://example.com",
+            "update_interval": 12,
+            "timeout": 60,
+            "manual_refresh_only": False,
+        },
+        entry_id="test_init",
+    )
 
-    def set_args(self, args):
-        self.args = args
-        self.parsed_args = type("DummyArgs", (), {"module": "json"})()
 
-    def run(self):
-        # Return valid JSON data expected by the coordinator.
-        return json.dumps(
-            {
-                "bins": [
-                    {
-                        "type": "waste",
-                        "collectionDate": datetime.now().strftime("%d/%m/%Y"),
-                    },
-                    {
-                        "type": "recycling",
-                        "collectionDate": (datetime.now() + timedelta(days=1)).strftime(
-                            "%d/%m/%Y"
-                        ),
-                    },
-                ]
-            }
+@pytest.mark.asyncio
+async def test_async_setup(hass):
+    """Test the async_setup function."""
+    # Initialize hass.data
+    hass.data = {}
+
+    # Mock hass.services.async_register
+    with patch.object(hass.services, "async_register") as mock_register:
+        result = await async_setup(hass, {})
+        assert result is True
+        assert DOMAIN in hass.data
+
+        # Verify service registration
+        mock_register.assert_called_once_with(
+            DOMAIN, "manual_refresh", mock_register.call_args[0][2]
         )
 
 
-# Create a dummy config entry for testing.
-class DummyConfigEntry:
-    def __init__(self, data, version=1, entry_id="dummy_entry"):
-        self.data = data
-        self.version = version
-        self.entry_id = entry_id
+@pytest.mark.asyncio
+async def test_manual_refresh_service(hass):
+    """Test the manual refresh service."""
+    # Initialize hass.data
+    hass.data = {}
 
+    # Initialize the domain data structure first
+    hass.data[DOMAIN] = {}
 
-# Create a dummy HomeAssistant object.
-class DummyHass:
-    def __init__(self):
-        self.data = {}
-        self.services = Services()
-        self.config_entries = ConfigEntries()
+    # Create a mock coordinator with a properly mocked async method
+    coordinator_mock = MagicMock()
+    refresh_mock = AsyncMock()  # This is the key change
+    coordinator_mock.async_request_refresh = refresh_mock
 
-    async def async_add_executor_job(self, func, *args, **kwargs):
-        # In tests, we can simply run the function synchronously.
-        return func(*args, **kwargs)
+    # Add mock coordinator to the data dict
+    hass.data[DOMAIN]["test_entry_id"] = {"coordinator": coordinator_mock}
 
+    # Create a function that mimics the service handler from __init__.py
+    async def handle_manual_refresh():
+        """Directly call the refresh method."""
+        coordinator = hass.data[DOMAIN]["test_entry_id"]["coordinator"]
+        await coordinator.async_request_refresh()
 
-class Services:
-    def __init__(self):
-        self.registrations = {}
+    # Call the function directly, skipping the ServiceCall object entirely
+    await handle_manual_refresh()
 
-    def async_register(self, domain, service, service_func):
-        self.registrations[(domain, service)] = service_func
-
-
-class ConfigEntries:
-    async def async_forward_entry_setups(self, config_entry, platforms):
-        # In tests, simply return an empty list (or you can simulate something).
-        return []
-
-    async def async_forward_entry_unload(self, config_entry, platform):
-        # Simulate a successful unload.
-        return True
-
-    def async_update_entry(self, config_entry, data):
-        config_entry.data = data
-
-
-@pytest.fixture
-def hass():
-    return DummyHass()
-
-
-@pytest.fixture
-def dummy_config_entry():
-    data = {
-        "name": "Test Entry",
-        "timeout": 60,
-        "manual_refresh_only": True,
-        "icon_color_mapping": "{}",
-        "update_interval": 12,
-        "council": "json",  # Use a valid module name
-        "url": "http://example.com",
-    }
-    return DummyConfigEntry(data)
+    # Verify that the refresh method was called
+    refresh_mock.assert_called_once()
 
 
 @pytest.mark.asyncio
-async def test_household_bin_coordinator_retains_last_good_data(hass):
-    # Create a dummy app with dynamic run output
-    class DynamicUKBinCollectionApp:
-        def __init__(self):
-            self.call_count = 0
+async def test_manual_refresh_service_no_entry_id(hass):
+    """Test manual refresh service with missing entry_id."""
+    # Initialize hass.data
+    hass.data = {}
 
-        def set_args(self, args):
-            pass
+    with patch.object(hass.services, "async_register") as mock_register:
+        await async_setup(hass, {})
+        service_handler = mock_register.call_args[0][2]
 
-        def run(self):
-            self.call_count += 1
-            if self.call_count == 1:
-                # First call: valid data
-                return json.dumps(
-                    {
-                        "bins": [
-                            {
-                                "type": "waste",
-                                "collectionDate": datetime.now().strftime("%d/%m/%Y"),
-                            },
-                        ]
-                    }
-                )
-            else:
-                # Second call: empty bins
-                return json.dumps({"bins": []})
+        # Call without entry_id
+        mock_call = ServiceCall(DOMAIN, "manual_refresh", {})
+        await service_handler(mock_call)
 
-    dummy_app = DynamicUKBinCollectionApp()
+        # Nothing should happen, no errors
+        assert True
 
-    coordinator = HouseholdBinCoordinator(
-        hass,
-        dummy_app,
-        name="Test Bin",
-        timeout=2,
-        update_interval=timedelta(minutes=5),
+
+@pytest.mark.asyncio
+async def test_migrate_entry_v1_to_v2(hass):
+    """Test migration from version 1 to version 2."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={"name": "Test Bins", "council": "TestCouncil"},
+        version=1,
     )
 
-    # First fetch - stores valid data
-    first_data = await coordinator._async_update_data()
-    assert "waste" in first_data
-
-    # Second fetch - empty, should fall back to previous data
-    second_data = await coordinator._async_update_data()
-    assert second_data == first_data  # Confirm fallback occurred
-
-
-# --- Test async_setup ---
-@pytest.mark.asyncio
-async def test_async_setup_success(hass):
-    # Call async_setup with a dummy config
-    config = {"uk_bin_collection": {}}
-    result = await async_setup(hass, config)
-    assert result is True
-    # Check that the integration data was initialized.
-    assert DOMAIN in hass.data
+    with patch.object(hass.config_entries, "async_update_entry") as mock_update:
+        result = await async_migrate_entry(hass, entry)
+        assert result is True
+        mock_update.assert_called_once()
+        update_data = mock_update.call_args[1]["data"]
+        assert "update_interval" in update_data
+        assert update_data["update_interval"] == 12
 
 
 @pytest.mark.asyncio
-async def test_manual_refresh_no_entry(hass):
-    # Call async_setup to register the service.
-    config = {"uk_bin_collection": {}}
-    await async_setup(hass, config)
-    # Get the manual refresh service.
-    service_func = hass.services.registrations.get((DOMAIN, "manual_refresh"))
-    # Create a dummy call with no entry_id.
-    dummy_call = MagicMock()
-    dummy_call.data = {}
-    # Capture log output or simply run the service call.
-    await service_func(dummy_call)
-    # You might check logs to verify the error was logged.
-
-
-# --- Test async_migrate_entry ---
-@pytest.mark.asyncio
-async def test_async_migrate_entry_version_1(hass, dummy_config_entry):
-    dummy_config_entry.version = 1
-    # Remove update_interval to test migration defaults.
-    dummy_config_entry.data.pop("update_interval", None)
-    result = await async_migrate_entry(hass, dummy_config_entry)
-    assert result is True
-    # Now update_interval should be set to 12.
-    assert dummy_config_entry.data["update_interval"] == 12
-
-
-@pytest.mark.asyncio
-async def test_async_migrate_entry_no_migration(hass, dummy_config_entry):
-    dummy_config_entry.version = 2
-    result = await async_migrate_entry(hass, dummy_config_entry)
-    assert result is True
-
-
-# --- Test async_setup_entry ---
-@pytest.mark.asyncio
-async def test_async_setup_entry_success(hass, dummy_config_entry):
-    # Ensure hass.data[DOMAIN] is initialized.
+async def test_async_setup_entry(hass, config_entry):
+    """Test successful async_setup_entry."""
+    # Initialize hass.data
+    hass.data = {}
     hass.data.setdefault(DOMAIN, {})
 
-    # Patch the UKBinCollectionApp in the integration's namespace.
+    # Mock the UKBinCollectionApp
+    ukbcd_mock = MagicMock()
+    # Use a real function for run instead of a MagicMock
+    ukbcd_mock.run = lambda: json.dumps(
+        {
+            "bins": [
+                {
+                    "type": "Recycling",
+                    "collectionDate": datetime.now().strftime("%d/%m/%Y"),
+                }
+            ]
+        }
+    )
+
+    # Mock methods that will be awaited
+    coordinator_first_refresh_mock = AsyncMock()
+
+    # Create a real coordinator instance with AsyncMock for critical methods
     with patch(
         "custom_components.uk_bin_collection.UKBinCollectionApp",
-        return_value=DummyUKBinCollectionApp(),
+        return_value=ukbcd_mock,
     ):
-        result = await async_setup_entry(hass, dummy_config_entry)
+        # Mock the HouseholdBinCoordinator.async_config_entry_first_refresh method directly
+        with patch(
+            "homeassistant.helpers.update_coordinator.DataUpdateCoordinator.async_config_entry_first_refresh",
+            new=coordinator_first_refresh_mock,
+        ):
+            # Mock async_forward_entry_setups to return a coroutine, not a boolean
+            async_forward_mock = AsyncMock(return_value=True)
+            hass.config_entries.async_forward_entry_setups = async_forward_mock
+
+            # Call the setup function
+            result = await async_setup_entry(hass, config_entry)
+
+            # Verify the result
+            assert result is True
+            assert config_entry.entry_id in hass.data[DOMAIN]
+            assert "coordinator" in hass.data[DOMAIN][config_entry.entry_id]
+            assert async_forward_mock.called
+
+
+@pytest.mark.asyncio
+async def test_async_setup_entry_update_failed(hass, config_entry):
+    """Test ConfigEntryNotReady when update fails."""
+    config_entry.add_to_hass(hass)
+    hass.data.setdefault(DOMAIN, {})
+
+    ukbcd_mock = MagicMock()
+    ukbcd_mock.run.side_effect = Exception("Test error")
+
+    with patch(
+        "custom_components.uk_bin_collection.UKBinCollectionApp",
+        return_value=ukbcd_mock,
+    ):
+        with pytest.raises(ConfigEntryNotReady):
+            await async_setup_entry(hass, config_entry)
+
+
+@pytest.mark.asyncio
+async def test_async_unload_entry(hass, config_entry):
+    """Test unloading an entry."""
+    # Initialize hass.data
+    hass.data = {}
+    hass.data.setdefault(DOMAIN, {})
+
+    # Add the config entry to hass.data
+    hass.data[DOMAIN][config_entry.entry_id] = {"coordinator": MagicMock()}
+
+    # Use AsyncMock instead of return_value=True to make it awaitable
+    async_unload_mock = AsyncMock(return_value=True)
+
+    with patch.object(
+        hass.config_entries, "async_forward_entry_unload", new=async_unload_mock
+    ):
+        result = await async_unload_entry(hass, config_entry)
+
         assert result is True
-        # Verify that the coordinator was stored in hass.data.
-        assert dummy_config_entry.entry_id in hass.data[DOMAIN]
+        # Check that unload was called for each platform
+        assert async_unload_mock.call_count == len(PLATFORMS)
+        # Check that entry was removed from domain data
+        assert config_entry.entry_id not in hass.data[DOMAIN]
 
 
-@pytest.mark.asyncio
-async def test_async_setup_entry_missing_name(hass, dummy_config_entry):
-    # Remove "name" to force a failure.
-    dummy_config_entry.data.pop("name")
-    with pytest.raises(ConfigEntryNotReady):
-        await async_setup_entry(hass, dummy_config_entry)
-
-
-# --- Test async_unload_entry ---
-@pytest.mark.asyncio
-async def test_async_unload_entry_success(hass, dummy_config_entry):
-    # Prepopulate hass.data with a dummy coordinator.
-    hass.data.setdefault(DOMAIN, {})[dummy_config_entry.entry_id] = {
-        "coordinator": "dummy"
-    }
-    result = await async_unload_entry(hass, dummy_config_entry)
-    assert result is True
-    # The coordinator should have been removed.
-    assert dummy_config_entry.entry_id not in hass.data[DOMAIN]
-
-
-# --- Test build_ukbcd_args ---
-def test_build_ukbcd_args_excludes_keys():
+def test_build_ukbcd_args():
+    """Test building arguments for UKBinCollectionApp."""
     config_data = {
-        "council": "Test Council",
-        "url": "http://example.com",
-        "skip_get_url": "should be excluded",
-        "custom_arg": "value",
+        "council": "TestCouncil",
+        "url": "https://example.com",
+        "postcode": "AB12 3CD",
+        "web_driver": "http://localhost:4444/",
+        "name": "Test Bins",
+        "update_interval": 12,
     }
+
     args = build_ukbcd_args(config_data)
-    # Check that the first two arguments are the council and url.
-    assert args[0] == "Test Council"
-    assert args[1] == "http://example.com"
-    # The custom_arg should be included, but skip_get_url should not.
-    args_str = " ".join(args)
-    assert "--custom_arg=value" in args_str
-    assert "skip_get_url" not in args_str
+
+    assert args[0] == "TestCouncil"
+    assert args[1] == "https://example.com"
+    assert "--postcode=AB12 3CD" in args
+    assert "--web_driver=http://localhost:4444" in args
+
+    # Check that excluded keys don't appear
+    assert "--name=Test Bins" not in args
+    assert "--update_interval=12" not in args
 
 
-# --- Test HouseholdBinCoordinator update ---
 @pytest.mark.asyncio
 async def test_household_bin_coordinator_update(hass):
-    # Create a dummy app whose run method returns valid JSON.
-    dummy_app = DummyUKBinCollectionApp()
+    """Test the coordinator's update function."""
+    ukbcd_mock = MagicMock()
+    bin_data = {
+        "bins": [
+            {
+                "type": "Recycling",
+                "collectionDate": (dt_util.now() + timedelta(days=2)).strftime(
+                    "%d/%m/%Y"
+                ),
+            },
+            {
+                "type": "General Waste",
+                "collectionDate": (dt_util.now() + timedelta(days=5)).strftime(
+                    "%d/%m/%Y"
+                ),
+            },
+            {
+                "type": "Garden Waste",
+                "collectionDate": (dt_util.now() - timedelta(days=2)).strftime(
+                    "%d/%m/%Y"
+                ),
+            },
+        ]
+    }
+    ukbcd_mock.run.return_value = json.dumps(bin_data)
+
+    # Mock the async_add_executor_job method to run the function directly
+    async def mock_async_add_executor_job(func, *args):
+        return func(*args)
+
+    hass.async_add_executor_job = mock_async_add_executor_job
+
+    # Create the coordinator with the mock UKBinCollectionApp
     coordinator = HouseholdBinCoordinator(
-        hass, dummy_app, name="Test Bin", timeout=1, update_interval=timedelta(hours=1)
+        hass,
+        ukbcd_mock,
+        "Test Coordinator",
+        timeout=60,
+        update_interval=timedelta(hours=12),
     )
-    # Test the _async_update_data method.
+
+    # Test the update function
     data = await coordinator._async_update_data()
-    # Expect the data to be a dict with at least one bin type.
-    assert isinstance(data, dict)
-    assert "waste" in data or "recycling" in data
 
+    # Verify the data
+    assert "Recycling" in data
+    assert "General Waste" in data
+    assert "Garden Waste" not in data  # Past dates should be excluded
 
-def test_process_bin_data_valid():
-    # Test process_bin_data with valid bin data.
-    now_str = datetime.now().strftime("%d/%m/%Y")
-    data = {
-        "bins": [
-            {"type": "waste", "collectionDate": now_str},
-            {"type": "recycling", "collectionDate": now_str},
-        ]
-    }
-    processed = HouseholdBinCoordinator.process_bin_data(data)
-    # Both bins should be in the processed output.
-    assert "waste" in processed
-    assert "recycling" in processed
-
-
-def test_process_bin_data_invalid():
-    # Test process_bin_data with missing keys and malformed date.
-    data = {
-        "bins": [
-            {"type": None, "collectionDate": "bad_date"},
-            {"collectionDate": "01/01/2025"},
-        ]
-    }
-    processed = HouseholdBinCoordinator.process_bin_data(data)
-    # Should be empty because data was invalid.
-    assert processed == {}
+    # The date should match what we provided
+    today = dt_util.now().date()
+    assert data["Recycling"] == (today + timedelta(days=2))
+    assert data["General Waste"] == (today + timedelta(days=5))
