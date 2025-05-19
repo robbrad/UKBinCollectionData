@@ -3,57 +3,111 @@
     "config": {
         "step": {
             "user": {
-                "title": "Select the council",
+                "title": "UK Bin Collection",
+                "description": "{step_user_description}",
                 "data": {
-                    "name": "Location name",
-                    "council": "Council",
-                    "manual_refresh_only":"Automatically refresh the sensor",
+                    "name": "Name",
+                    "selected_council": "Council"
+                }
+            },
+            "council_info": {
+                "title": "Council Information",
+                "description": "{step_council_info_description}",
+                "data": {
+                    "url": "URL to fetch bin collection data",
+                    "uprn": "UPRN (Unique Property Reference Number)",
+                    "postcode": "Postcode of the address",
+                    "number": "House number of the address",
+                    "usrn": "USRN (Unique Street Reference Number)",
+                    "house_number": "House number of the address",
+                    "no_config_required": "No additional configuration required"
+                }
+            },
+            "selenium": {
+                "title": "Selenium Configuration",
+                "description": "This council requires [Selenium](https://github.com/robbrad/UKBinCollectionData?tab=readme-ov-file#selenium) or Chromium to run",
+                "data": {
+                    "web_driver": "Selenium server URL",
+                    "local_browser": "Use local Chromium browser instead of Selenium",
+                    "headless_mode": "Run in headless mode (recommended)"
+                }            
+            },
+            "advanced": {
+                "title": "Advanced Configuration",
+                "data": {
+                    "automatically_refresh": "Automatically refresh the sensor",
+                    "update_interval": "Time in hours between updates",
+                    "timeout": "The time in seconds for how long the sensor should wait for data",
                     "icon_color_mapping": "JSON to map Bin Type for Colour and Icon see: https://github.com/robbrad/UKBinCollectionData"
                 },
-                "description": "Please see [here](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) if your council isn't listed"
-            },
-            "council": {
-                "title": "Provide council details",
-                "data": {
-                    "url": "URL to fetch bin collection data",
-                    "timeout": "The time in seconds for how long the sensor should wait for data",
-                    "update_interval": "Time in hours between updates",
-                    "uprn": "UPRN (Unique Property Reference Number)",
-                    "postcode": "Postcode of the address",
-                    "number": "House number of the address",
-                    "usrn": "USRN (Unique Street Reference Number)",
-                    "web_driver": "To run on a remote Selenium Server add the Selenium Server URL",
-                    "headless": "Run Selenium in headless mode (recommended)",
-                    "local_browser": "Don't run on remote Selenium server, use local install of Chrome instead",
-                    "submit": "Submit"
-                },
-                "description": "Please refer to your council's [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) entry for details on what to enter.\n{selenium_message}"
-                        },
-            "reconfigure_confirm": {
-                "title": "Update council details",
-                "data": {
-                    "url": "URL to fetch bin collection data",
-                    "timeout": "The time in seconds for how long the sensor should wait for data",
-                    "update_interval": "Time in hours between updates",
-                    "uprn": "UPRN (Unique Property Reference Number)",
-                    "postcode": "Postcode of the address",
-                    "number": "House number of the address",
-                    "usrn": "USRN (Unique Street Reference Number)",
-                    "web_driver": "To run on a remote Selenium Server add the Selenium Server URL",
-                    "headless": "Run Selenium in headless mode (recommended)",
-                    "local_browser": "Don't run on remote Selenium server, use local install of Chrome instead",
-                    "manual_refresh_only":"Automatically refresh the sensor",
-                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon see: https://github.com/robbrad/UKBinCollectionData",
-                    "submit": "Submit"
-                },
-                "description": "Please refer to your council's [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) entry for details on what to enter."
+                "description": "Configure advanced settings for this integration"
             }
         },
         "error": {
             "name": "Please enter a location name",
             "council": "Please select a council",
-            "selenium_unavailable": "❌ Selenium server is not accessible. Please ensure it is running at http://localhost:4444 or http://selenium:4444. [Setup Guide](https://example.com/selenium-setup)",
-            "chromium_not_found": "❌ Chromium browser is not installed. Please install Chromium or Google Chrome. [Installation Guide](https://example.com/chromium-install)"
+            "selenium_unavailable": "Selenium URL is not available",
+            "chromium_unavailable": "Chromium not installed",
+            "duplicate_entry": "An entry with the same name or data already exists",
+            "invalid_json": "Invalid JSON format",
+            "url_not_modified": "URL must be modified"
+        },
+        "abort": {
+            "council_data_unavailable": "Council data is unavailable. Please try again later."
+        }
+    },
+    "options": {
+        "step": {
+            "user": {
+                "title": "Modify UK Bin Collection",
+                "description": "Update your bin collection configuration",
+                "data": {
+                    "name": "Name",
+                    "selected_council": "Council",
+                    "use_test_data": "Replace your council settings with test settings"
+                }
+            },
+            "council_info": {
+                "title": "Update Council Information",
+                "description": "{step_council_info_description}",
+                "data": {
+                    "url": "URL to fetch bin collection data",
+                    "uprn": "UPRN (Unique Property Reference Number)",
+                    "postcode": "Postcode of the address",
+                    "number": "House number of the address",
+                    "usrn": "USRN (Unique Street Reference Number)",
+                    "house_number": "House number of the address", 
+                    "no_config_required": "No additional configuration required"
+                }
+            },
+            "selenium": {
+                "title": "Update Selenium Configuration",
+                "description": "This council requires [Selenium](https://github.com/robbrad/UKBinCollectionData?tab=readme-ov-file#selenium) or Chromium to run",
+                "data": {
+                    "web_driver": "Selenium server URL",
+                    "local_browser": "Use local Chromium browser instead of Selenium",
+                    "headless_mode": "Run in headless mode (recommended)"
+                }            
+            },
+            "advanced": {
+                "title": "Update Advanced Configuration",
+                "data": {
+                    "automatically_refresh": "Automatically refresh the sensor",
+                    "update_interval": "Time in hours between updates",
+                    "timeout": "The time in seconds for how long the sensor should wait for data",
+                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon see: https://github.com/robbrad/UKBinCollectionData"
+                },
+                "description": "Modify advanced settings for this integration"
+            }
+        },
+        "error": {
+            "name": "Please enter a location name",
+            "council": "Please select a council",
+            "selenium_unavailable": "Selenium URL is not available",
+            "chromium_unavailable": "Chromium not installed",
+            "invalid_json": "Invalid JSON format",
+            "url_not_modified": "URL must be modified",
+            "update_failed": "Failed to update configuration"
         }
     }
 }

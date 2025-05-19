@@ -1,16 +1,18 @@
-# UK Bin Collection Integration Configuration
+# UK Bin Collection Integration for Home Assistant
 
-This integration allows you to configure the collection details for your local UK council. The configuration flow is divided into several steps, and some fields are dynamically shown based on your selected council’s requirements.
+The UK Bin Collection Integration for Home Assistant collects and presents information about forthcoming bin collections for your property. It achieves this by querying your council's website.
 
 ---
 
 ## Table of Contents
 
-- [UK Bin Collection Integration Configuration](#uk-bin-collection-integration-configuration)
+- [UK Bin Collection Integration for Home Assistant](#uk-bin-collection-integration-for-home-assistant)
   - [Table of Contents](#table-of-contents)
-  - [Step 1: Basic Setup](#step-1-basic-setup)
+  - [Setup Process](#setup-process)
+  - [Step 1: Name and Council](#step-1-name-and-council)
   - [Step 2: Council-Specific Details](#step-2-council-specific-details)
-    - [Selenium \& Chromium Checks](#selenium--chromium-checks)
+  - [Step 3: Selenium Configuration (if required)](#step-3-selenium-configuration-if-required)
+  - [Step 4: Advanced Settings](#step-4-advanced-settings)
   - [Reconfiguration / Options Flow](#reconfiguration--options-flow)
   - [Validation Requirements](#validation-requirements)
   - [Icon Color Mapping JSON Example](#icon-color-mapping-json-example)
@@ -21,68 +23,92 @@ This integration allows you to configure the collection details for your local U
 
 ---
 
-## Step 1: Basic Setup
+## Setup Process
 
-In the initial configuration step you must provide the following:
+The configuration flow is divided into four steps, with some steps being skipped based on your selected council's requirements:
+
+1. Name and Council
+2. Information specific to your council
+3. Selenium configuration (if required)
+4. Advanced settings
+
+---
+
+## Step 1: Name and Council
+
+In the initial configuration step you must provide:
 
 | Field Name              | Requirement | Type    | Description |
 |-------------------------|-------------|---------|-------------|
 | **name**                | Required    | String  | A unique identifier for your configuration entry. This is used to distinguish different configurations. |
 | **council**             | Required    | Select  | A drop-down selection that displays available councils by their *wiki name*. Your selection will later be mapped to the corresponding council key. |
-| **manual_refresh_only** | Optional    | Boolean | If checked, only manual refreshes will be performed. Defaults to `False`. |
-| **icon_color_mapping**  | Optional    | String  | A text field for entering a JSON-formatted mapping for icon colors. If provided, the JSON must be valid. |
 
-> **Note:** The list of available councils is dynamically loaded from an external data source.
+> **Note:** The list of available councils is dynamically loaded, and fields may be pre-populated based on your location. We have coverage for over 300 councils. If your council is missing or malfunctioning, please contact us.
 
 ---
 
 ## Step 2: Council-Specific Details
 
-After you provide the basic details, the next step requests council-specific information. The fields displayed depend on the selected council’s requirements. Below is a summary of possible fields:
+This step requests information specific to your selected council. The fields displayed depend on the council's requirements:
 
 | Field Name         | Requirement                  | Type    | Description |
 |--------------------|------------------------------|---------|-------------|
-| **url**            | Required (if applicable)     | String  | The URL to access the bin collection data. Some councils require this field; however, if the council’s configuration has `skip_get_url` enabled, this field may be pre-filled or skipped. |
+| **url**            | Required (if applicable)     | String  | The URL to access the bin collection data. Some councils require this field; however, if the council's configuration has `skip_get_url` enabled, this field may be pre-filled or skipped. |
 | **uprn**           | Required (if applicable)     | String  | The Unique Property Reference Number, if the council supports it. |
 | **postcode**       | Required (if applicable)     | String  | The postcode for the address in question. |
 | **number**         | Required (if applicable)     | String  | The house number. (This corresponds to the `"house_number"` key in the council configuration.) |
 | **usrn**           | Required (if applicable)     | String  | The Unique Street Reference Number, if required by the council. |
-| **web_driver**     | Optional (if applicable)     | String  | If the council requires Selenium for data fetching, you may provide the web driver command. |
-| **headless**       | Optional (if applicable)     | Boolean | Indicates whether to run the browser in headless mode (default is `True`). Only shown if `web_driver` is applicable. |
-| **local_browser**  | Optional (if applicable)     | Boolean | Choose whether to use a local browser instance (default is `False`). Only shown if `web_driver` is applicable. |
-| **timeout**        | Optional                     | Integer | Sets the request timeout in seconds. Defaults to `60` seconds and must be at least `10`. |
-| **update_interval**| Optional                     | Integer | The refresh frequency in hours. Defaults to `12` hours and must be at least `1`. |
-
-### Selenium & Chromium Checks
-
-For councils that require Selenium (i.e. if the council configuration contains a `"web_driver"` key):
-
-- **Selenium Server Check:**  
-  The integration checks several remote Selenium server URLs (and an optional custom URL, if provided) to determine if they are accessible. The results are displayed as part of the informational message.
-
-- **Chromium Installation Check:**  
-  A check is performed to ensure that a local Chromium browser is installed. The result is shown to help troubleshoot if Selenium is required.
-
-The combined status of these checks is presented as an HTML-formatted message in the council-specific form.
 
 ---
 
-## Reconfiguration / Options Flow
+## Step 3: Selenium Configuration (if required)
 
-If you need to update your configuration later, you can do so via the options (or reconfiguration) flow. The following fields are available for editing:
+This step is skipped if your council doesn't require Selenium.
+
+Selenium is a system for scraping websites which we use for councils where a direct API is unavailable. It can be installed in a Docker container ([selenium/standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome)), either on the same device as Home Assistant or another computer.
+
+| Field Name         | Requirement                  | Type    | Description |
+|--------------------|------------------------------|---------|-------------|
+| **web_driver**     | Optional (if applicable)     | String  | If the council requires Selenium for data fetching, you may provide the web driver command. |
+| **headless**       | Optional (if applicable)     | Boolean | Indicates whether to run the browser in headless mode (default is `True`). Only shown if `web_driver` is applicable. |
+| **local_browser**  | Optional (if applicable)     | Boolean | Choose whether to use a local browser instance (default is `False`). Only shown if `web_driver` is applicable. |
+
+### Selenium & Chromium Checks
+
+For councils that require Selenium:
+
+- **Selenium Server Check:**  
+  The integration checks some typical Selenium server URLs. If it doesn't find a working one, it will prompt to provide a working URL.
+
+- **Chromium Installation Check:**  
+  A check is performed to ensure that a local Chromium browser is installed.
+
+---
+
+## Step 4: Advanced Settings
+
+The final step allows you to configure advanced options:
 
 | Field Name              | Requirement | Type    | Description |
 |-------------------------|-------------|---------|-------------|
-| **name**                | Required    | String  | The identifier for the configuration entry. |
-| **council**             | Required    | Select  | A drop-down list to select your council (displayed by its *wiki name*). |
-| **manual_refresh_only** | Optional    | Boolean | If enabled, the system will perform only manual refreshes. |
-| **update_interval**     | Required    | Integer | The refresh frequency in hours (must be at least 1). If manual refresh is enabled, this will be set to `None`. |
-| **icon_color_mapping**  | Optional    | String  | A JSON-formatted string for mapping icon colors. Must be valid JSON if provided. |
+| **manual_refresh_only** | Optional    | Boolean | If checked, only manual refreshes will be performed. Defaults to `False`. |
+| **icon_color_mapping**  | Optional    | String  | A text field for entering a JSON-formatted mapping for icon colors. If provided, the JSON must be valid. |
+| **timeout**             | Optional    | Integer | Sets the request timeout in seconds. Defaults to `60` seconds and must be at least `10`. |
+| **update_interval**     | Optional    | Integer | The refresh frequency in hours. Defaults to `12` hours and must be at least `1`. |
 
-> **Additional Fields:**  
-Depending on your initial configuration and the council selected, you may also be able to update fields such as **url**, **uprn**, **postcode**, **number**, **web_driver**, **headless**, **local_browser**, and **timeout**.
+---
 
-Once you submit the updated options, the integration will reload the configuration with the new settings.
+## Reconfiguration
+
+If you need to update your configuration later, you can do so via the "Configure" button in the UI. 
+
+When reconfiguring a council, you'll find a new checkbox option:
+
+| Field Name                                     | Requirement | Type    | Description |
+|------------------------------------------------|-------------|---------|-------------|
+| **Replace your council settings with test settings** | Optional    | Boolean | This is helpful when you want to establish whether the council is working with known working data. |
+
+The remaining configuration fields will follow the same four-step process as the initial setup, allowing you to make adjustments as needed.
 
 ---
 
@@ -99,7 +125,7 @@ Once you submit the updated options, the integration will reload the configurati
   - **Update Interval:** Must be an integer and at least `1` hour.
 
 - **Council-Specific Fields:**  
-  The required fields in the council-specific step (such as `url`, `uprn`, `postcode`, etc.) depend on the selected council's configuration. Only the fields relevant to the chosen council will be presented.
+  The required fields in the council-specific step depend on the selected council's configuration. Only the fields relevant to the chosen council will be presented.
 
 ---
 
