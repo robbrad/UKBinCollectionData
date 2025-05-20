@@ -106,7 +106,6 @@ class CouncilClass(AbstractGetBinDataClass):
                     "%a %b %d %Y",
                 ).strftime(date_format),
             }
-            print(dict_data)
             data["bins"].append(dict_data)
         for bin in soup.find_all(attrs={"id": re.compile(r"CTID-d3gapLk-\d+-A")}):
             dict_data = {
