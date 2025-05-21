@@ -37,38 +37,55 @@ class CouncilClass(AbstractGetBinDataClass):
                 paragraphs = bin_row.find_all("p")
 
                 for p in paragraphs:
-                    if p.get_text() and "Next collection:" in p.get_text():
-                        date_str = p.get_text().replace("Next collection:", "").strip()
-                        # Extract day number from date string (e.g. "2" from "Friday 2nd May")
-                        day_number = int("".join(filter(str.isdigit, date_str)))
-                        # Replace ordinal in date string with plain number
-                        date_str = date_str.replace(
-                            get_date_with_ordinal(day_number), str(day_number)
+                    # Check for both singular and plural "Next collection(s):"
+                    if p.get_text() and (
+                        "Next collection:" in p.get_text()
+                        or "Next collections:" in p.get_text()
+                    ):
+                        # Extract collection dates
+                        date_text = (
+                            p.get_text()
+                            .replace("Next collection:", "")
+                            .replace("Next collections:", "")
+                            .strip()
                         )
 
-                        try:
-                            # Parse date with full format
-                            bin_date = datetime.strptime(date_str, "%A %d %B")
+                        # Split multiple dates if comma-separated
+                        date_strings = [date.strip() for date in date_text.split(",")]
 
-                            # Add current year since it's not in the date string
-                            current_year = datetime.now().year
-                            bin_date = bin_date.replace(year=current_year)
+                        for date_str in date_strings:
+                            try:
+                                # Extract day number from date string (e.g. "2" from "Tuesday 27th May")
+                                day_number = int("".join(filter(str.isdigit, date_str)))
+                                # Replace ordinal in date string with plain number
+                                date_str = date_str.replace(
+                                    get_date_with_ordinal(day_number), str(day_number)
+                                )
 
-                            # If the date is in the past, it's probably for next year
-                            if bin_date < datetime.now():
-                                bin_date = bin_date.replace(year=current_year + 1)
+                                # Parse date with full format
+                                bin_date = datetime.strptime(date_str, "%A %d %B")
 
-                            collections.append((bin_type, bin_date))
-                            print(
-                                f"Successfully parsed date for {bin_type}: {bin_date}"
-                            )
-                            break
+                                # Add current year since it's not in the date string
+                                current_year = datetime.now().year
+                                bin_date = bin_date.replace(year=current_year)
 
-                        except ValueError as e:
-                            print(
-                                f"Failed to parse date '{date_str}' for {bin_type}: {e}"
-                            )
-                            continue
+                                # If the date is in the past, it's probably for next year
+                                if bin_date < datetime.now():
+                                    bin_date = bin_date.replace(year=current_year + 1)
+
+                                collections.append((bin_type, bin_date))
+                                print(
+                                    f"Successfully parsed date for {bin_type}: {bin_date}"
+                                )
+
+                            except ValueError as e:
+                                print(
+                                    f"Failed to parse date '{date_str}' for {bin_type}: {e}"
+                                )
+                                continue
+
+                        # Found and processed the collection dates, so break the loop
+                        break
 
             except Exception as e:
                 print(f"Error processing bin row: {e}")

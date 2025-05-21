@@ -1693,9 +1693,10 @@
         "LAD24CD": "E06000012"
     },
     "NorthHertfordshireDistrictCouncil": {
-        "house_number": "2",
+        "house_number": "22",
         "postcode": "SG6 4BJ",
         "url": "https://www.north-herts.gov.uk",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "North Hertfordshire",
         "wiki_note": "Pass the house number and postcode in their respective parameters.",
         "LAD24CD": "E07000099"
@@ -2180,6 +2181,7 @@
     },
     "SouthRibbleCouncil": {
         "uprn": "010013246384",
+        "postcode": "PR5 6DT",
         "url": "https://www.southribble.gov.uk",
         "wiki_command_url_override": "https://www.southribble.gov.uk",
         "wiki_name": "South Ribble",
