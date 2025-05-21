@@ -2,8 +2,10 @@
 
 import asyncio
 import logging
-from datetime import timedelta
 import json
+
+from datetime import timedelta
+from . import options_flow
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -31,7 +33,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     try:
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.debug(
-            f"{LOG_PREFIX} hass.data[DOMAIN] initialized: {hass.data[DOMAIN]}"
+            f"{LOG_PREFIX} hass.data[DOMAIN] initialised: {hass.data[DOMAIN]}"  
         )
 
         async def handle_manual_refresh(call):
@@ -190,12 +192,12 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         args = build_ukbcd_args(config_entry.data)
         _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
 
-        # Initialize the UK Bin Collection Data application
+        # Initialise the UK Bin Collection Data application
         ukbcd = UKBinCollectionApp()
         ukbcd.set_args(args)
-        _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp initialized and arguments set.")
+        _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp initialised and arguments set.") 
 
-        # Initialize the data coordinator
+        # Initialise the data coordinator
         coordinator = HouseholdBinCoordinator(
             hass,
             ukbcd,
@@ -205,7 +207,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         )
 
         _LOGGER.debug(
-            f"{LOG_PREFIX} HouseholdBinCoordinator initialized with update_interval={update_interval}."
+            f"{LOG_PREFIX} HouseholdBinCoordinator initialised with update_interval={update_interval}."  
         )
 
         # Perform first refresh
@@ -281,18 +283,38 @@ async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> 
 
 def build_ukbcd_args(config_data: dict) -> list:
     """Build the argument list for UKBinCollectionApp from config data."""
+    # Extract required values
     council = config_data.get("original_parser") or config_data.get("council", "")
     url = config_data.get("url", "")
-
+    
+    _LOGGER.debug(f"{LOG_PREFIX} Building args with council: {council}, url: {url}")
+    
+    # Ensure module name is set correctly - if both council and original_parser are empty,
+    # we need to handle this to prevent the "Empty module name" error
+    if not council:
+        _LOGGER.error(f"{LOG_PREFIX} No council or original_parser specified in configuration")
+        raise ConfigEntryNotReady("Missing council specification in configuration. Please reconfigure this integration.")
+        
+    # Start with positional arguments
     args = [council, url]
-
+    
+    # Add optional arguments in the format expected by argparse (--key=value)
     for key, value in config_data.items():
         if key in EXCLUDED_ARG_KEYS:
             continue
+        if value is None:
+            continue
+            
+        # Special handling for web_driver URLs
         if key == "web_driver" and value is not None:
             value = value.rstrip("/")
+            
+        # Use the format that was working before (--key=value)
         args.append(f"--{key}={value}")
 
+    # Log the arguments for debugging
+    _LOGGER.debug(f"{LOG_PREFIX} Generated args: {args}")
+    
     return args
 
 
@@ -307,7 +329,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         timeout: int = 60,
         update_interval: timedelta = timedelta(hours=12),
     ) -> None:
-        """Initialize the data coordinator."""
+        """Initialise the data coordinator.""" 
         super().__init__(
             hass,
             _LOGGER,
