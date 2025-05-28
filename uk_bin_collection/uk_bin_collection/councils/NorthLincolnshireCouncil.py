@@ -46,7 +46,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     "type": bin_type,
                     "collectionDate": get_next_occurrence_from_day_month(
                         datetime.strptime(
-                            c["BinCollectionDate"].replace(" (*)", "").strip()
+                            remove_ordinal_indicator_from_date_string(
+                                c["BinCollectionDate"].replace(" (*)", "").strip())
                             + " "
                             + datetime.now().strftime("%Y"),
                             "%A %d %B %Y",
