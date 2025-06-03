@@ -2,7 +2,6 @@ from typing import Dict, List, Any, Optional
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 import requests
-import logging
 import re
 from datetime import datetime
 from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode, date_format
@@ -13,7 +12,6 @@ from dateutil.parser import parse
 class CouncilClass(AbstractGetBinDataClass):
     def get_data(self, url: str) -> str:
         # This method is not used in the current implementation
-        # The parse_data method handles all the requests
         return ""
 
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
@@ -44,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
         page_id = soup.find("input", {"name": "page"})["value"]
         postcode_field = soup.find("input", {"type": "text", "name": re.compile(".*_0_0")})["name"]
 
-        # Step 2: Submit postcode (simulate clicking "Next" after postcode)
+        # Step 2: Submit postcode
         post_resp = session.post(
             initial_url,
             data={
@@ -85,68 +83,48 @@ class CouncilClass(AbstractGetBinDataClass):
         rows = table.find("tbody").find_all("tr")
         data: Dict[str, List[Dict[str, str]]] = {"bins": []}
 
-        # Try to extract bin type mapping from JavaScript
+        # Extract bin type mapping from JavaScript
         bin_type_map = {}
         scripts = soup.find_all("script", type="text/javascript")
         for script in scripts:
             if script.string and "const bintype = {" in script.string:
-                # Extract the bintype object using regex
                 match = re.search(r'const bintype = \{([^}]+)\}', script.string, re.DOTALL)
                 if match:
                     bintype_content = match.group(1)
-                    # Parse each line of the mapping
                     for line in bintype_content.split('\n'):
                         line = line.strip()
                         if '"' in line and ':' in line:
-                            # Extract key and value from lines like: "Refuse Collection Service": "Grey bin",
                             parts = line.split(':', 1)
                             if len(parts) == 2:
                                 key = parts[0].strip().strip('"').strip("'")
                                 value = parts[1].strip().rstrip(',').strip().strip('"').strip("'")
                                 bin_type_map[key] = value
                     break
-        
-        if not bin_type_map:
-            logging.info("Could not extract bin type mapping from JavaScript, using original names")
 
         for row in rows:
             cells = row.find_all("td")
             if len(cells) >= 2:
-                # Extract bin type (remove any image tags)
                 bin_type_cell = cells[0]
                 bin_type = bin_type_cell.get_text(strip=True)
-                
-                # Apply mapping if available, otherwise use original name
-                if bin_type_map:
-                    bin_type = bin_type_map.get(bin_type, bin_type)
-                
-                # Extract collection date
+                bin_type = bin_type_map.get(bin_type, bin_type)
+
                 date_text = cells[1].get_text(strip=True)
-                
-                # Parse the date - format is "Thursday, 05/06/25"
-                # Remove the day name if present
                 date_parts = date_text.split(", ")
-                if len(date_parts) == 2:
-                    date_str = date_parts[1]
-                else:
-                    date_str = date_text
-                
-                # Parse date in DD/MM/YY format
+                date_str = date_parts[1] if len(date_parts) == 2 else date_text
+
                 try:
                     day, month, year = date_str.split('/')
                     year = int(year)
-                    # Handle 2-digit year
                     if year < 100:
                         year = 2000 + year
-                    
+
                     date_obj = datetime(year, int(month), int(day)).date()
-                    
+
                     data["bins"].append({
                         "type": bin_type,
                         "collectionDate": date_obj.strftime(date_format)
                     })
-                except Exception as e:
-                    logging.error(f"Failed to parse date '{date_str}': {e}")
+                except Exception:
                     continue
 
         return data
