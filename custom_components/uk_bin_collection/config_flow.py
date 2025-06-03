@@ -2,9 +2,9 @@ import json
 import logging
 import shutil
 import asyncio
+import os
 from typing import Any, Dict, Optional
 
-import aiohttp
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant import config_entries
@@ -252,37 +252,61 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def get_councils_json(self) -> Dict[str, Any]:
-        """Fetch and return the supported councils data, including aliases and sorted alphabetically."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.152.1/uk_bin_collection/tests/input.json"
+        """Load and return the supported councils data from local input.json file."""
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    response.raise_for_status()
-                    data_text = await response.text()
-                    original_data = json.loads(data_text)
+            # Get the directory where this file is located
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            input_file_path = os.path.join(current_dir, 'input.json')
+            
+            # Check if the file exists
+            if not os.path.exists(input_file_path):
+                _LOGGER.error("Local input.json file not found at: %s", input_file_path)
+                return {}
+            
+            # Read the file asynchronously
+            loop = asyncio.get_event_loop()
+            data_text = await loop.run_in_executor(None, self._read_file_sync, input_file_path)
+            
+            if not data_text:
+                _LOGGER.error("Failed to read local input.json file")
+                return {}
+                
+            original_data = json.loads(data_text)
 
-                    normalized_data = {}
-                    for key, value in original_data.items():
-                        normalized_data[key] = value
-                        for alias in value.get("supported_councils", []):
-                            alias_data = value.copy()
-                            alias_data["original_parser"] = key
-                            alias_data["wiki_name"] = (
-                                f"{alias.replace('Council', ' Council')} (via Google Calendar)"
-                            )
-                            normalized_data[alias] = alias_data
-
-                    # Sort alphabetically by key (council ID)
-                    sorted_data = dict(sorted(normalized_data.items()))
-
-                    _LOGGER.debug(
-                        "Loaded and sorted %d councils (with aliases)", len(sorted_data)
+            normalized_data = {}
+            for key, value in original_data.items():
+                normalized_data[key] = value
+                for alias in value.get("supported_councils", []):
+                    alias_data = value.copy()
+                    alias_data["original_parser"] = key
+                    alias_data["wiki_name"] = (
+                        f"{alias.replace('Council', ' Council')} (via Google Calendar)"
                     )
-                    return sorted_data
+                    normalized_data[alias] = alias_data
 
-        except Exception as e:
-            _LOGGER.exception("Error fetching council data: %s", e)
+            # Sort alphabetically by key (council ID)
+            sorted_data = dict(sorted(normalized_data.items()))
+
+            _LOGGER.debug(
+                "Loaded and sorted %d councils (with aliases) from local file", len(sorted_data)
+            )
+            return sorted_data
+
+        except json.JSONDecodeError as e:
+            _LOGGER.error("Error decoding council data JSON from local file: %s", e)
             return {}
+        except Exception as e:
+            _LOGGER.exception("Error loading council data from local file: %s", e)
+            return {}
+
+    def _read_file_sync(self, file_path: str) -> str:
+        """Synchronously read the input.json file."""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            _LOGGER.error("Error reading file %s: %s", file_path, e)
+            return ""
 
     async def get_council_schema(self, council: str) -> vol.Schema:
         """Generate the form schema based on council requirements."""
@@ -400,24 +424,32 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             urls.insert(0, custom_url)
 
         results = []
-        async with aiohttp.ClientSession() as session:
+        # Since we removed aiohttp dependency, we'll need to import it here or use an alternative
+        try:
+            import aiohttp
+            async with aiohttp.ClientSession() as session:
+                for url in urls:
+                    try:
+                        async with session.get(url, timeout=5) as response:
+                            response.raise_for_status()
+                            accessible = response.status == 200
+                            results.append((url, accessible))
+                            _LOGGER.debug("Selenium server %s is accessible.", url)
+                    except aiohttp.ClientError as e:
+                        _LOGGER.warning(
+                            "Failed to connect to Selenium server at %s: %s", url, e
+                        )
+                        results.append((url, False))
+                    except Exception as e:
+                        _LOGGER.exception(
+                            "Unexpected error checking Selenium server at %s: %s", url, e
+                        )
+                        results.append((url, False))
+        except ImportError:
+            _LOGGER.error("aiohttp not available for Selenium server checks")
             for url in urls:
-                try:
-                    async with session.get(url, timeout=5) as response:
-                        response.raise_for_status()
-                        accessible = response.status == 200
-                        results.append((url, accessible))
-                        _LOGGER.debug("Selenium server %s is accessible.", url)
-                except aiohttp.ClientError as e:
-                    _LOGGER.warning(
-                        "Failed to connect to Selenium server at %s: %s", url, e
-                    )
-                    results.append((url, False))
-                except Exception as e:
-                    _LOGGER.exception(
-                        "Unexpected error checking Selenium server at %s: %s", url, e
-                    )
-                    results.append((url, False))
+                results.append((url, False))
+        
         return results
 
     async def check_chromium_installed(self) -> bool:
@@ -568,25 +600,42 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
         )
 
     async def get_councils_json(self) -> Dict[str, Any]:
-        """Fetch and return the supported councils data."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.111.0/uk_bin_collection/tests/input.json"
+        """Load and return the supported councils data from local input.json file."""
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    response.raise_for_status()
-                    data_text = await response.text()
-                    return json.loads(data_text)
-        except aiohttp.ClientError as e:
-            _LOGGER.error(
-                "HTTP error while fetching council data for options flow: %s", e
-            )
+            # Get the directory where this file is located
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            input_file_path = os.path.join(current_dir, 'input.json')
+            
+            # Check if the file exists
+            if not os.path.exists(input_file_path):
+                _LOGGER.error("Local input.json file not found at: %s", input_file_path)
+                return {}
+            
+            # Read the file asynchronously
+            loop = asyncio.get_event_loop()
+            data_text = await loop.run_in_executor(None, self._read_file_sync, input_file_path)
+            
+            if not data_text:
+                _LOGGER.error("Failed to read local input.json file")
+                return {}
+                
+            return json.loads(data_text)
+
         except json.JSONDecodeError as e:
-            _LOGGER.error("Error decoding council data JSON for options flow: %s", e)
+            _LOGGER.error("Error decoding council data JSON from local file: %s", e)
+            return {}
         except Exception as e:
-            _LOGGER.exception(
-                "Unexpected error while fetching council data for options flow: %s", e
-            )
-        return {}
+            _LOGGER.exception("Error loading council data from local file: %s", e)
+            return {}
+
+    def _read_file_sync(self, file_path: str) -> str:
+        """Synchronously read the input.json file."""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            _LOGGER.error("Error reading file %s: %s", file_path, e)
+            return ""
 
     def build_options_schema(self, existing_data: Dict[str, Any]) -> vol.Schema:
         """Build the schema for the options flow with existing data."""
