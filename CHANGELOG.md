@@ -1,4 +1,13 @@
 =======
+## 0.152.3 (2025-06-04)
+
+### Fix
+
+- NorthHertfordshire selenium script
+- Adur council
+- Eastleigh date fix
+- removed duplicates in BradfordMDC
+
 ## 0.152.2 (2025-06-04)
 
 ### Fix
