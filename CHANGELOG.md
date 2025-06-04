@@ -1,4 +1,12 @@
 =======
+## 0.152.2 (2025-06-04)
+
+### Fix
+
+- Update Makefile
+- Update CheshireEastCouncil.py
+- Github action to handle branch name with parentheses
+
 ## 0.152.1 (2025-05-15)
 
 ### Fix
