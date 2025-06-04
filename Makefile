@@ -56,7 +56,7 @@ generate-test-map-test-results:
 	poetry run python uk_bin_collection/tests/generate_map_test_results.py build/integration-test-results/junit.xml > build/integration-test-results/test_results.json
 
 parity-check:
-	poetry run python uk_bin_collection/tests/council_feature_input_parity.py $(repo) $(branch)
+	poetry run python uk_bin_collection/tests/council_feature_input_parity.py "$(repo)" "$(branch)"
 
 unit-tests:
 	poetry run coverage erase
