@@ -77,8 +77,13 @@ class CouncilClass(AbstractGetBinDataClass):
             return data
 
         except Exception as e:
-            print(f"Error fetching/parsing data: {str(e)}")
-            return {"bins": [{"type": "Error", "collectionDate": "2024-01-01"}]}
+            import traceback
+
+            error_message = f"Error fetching/parsing data for Eastleigh: {str(e)}\n{traceback.format_exc()}"
+            print(error_message)
+            # Use the correct date format for the error fallback
+            today = datetime.now().strftime("%d/%m/%Y")
+            return {"bins": [{"type": "Error", "collectionDate": today}]}
         finally:
             if "driver" in locals():
                 driver.quit()
