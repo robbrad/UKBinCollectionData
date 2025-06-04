@@ -103,12 +103,13 @@ jobs:
 
       - name: Install Dependencies
         run: make install-dev
-
+      
       - name: Check Parity of Councils / input.json / Feature file
-        run: |
-          repo=${{ github.event.pull_request.head.repo.full_name || 'robbrad/UKBinCollectionData' }}
-          branch=${{ github.event.pull_request.head.ref || 'master' }}
-          make parity-check repo=$repo branch=$branch
+        env:
+          repo: ${{ github.event.pull_request.head.repo.full_name || 'robbrad/UKBinCollectionData' }}
+          branch: ${{ github.event.pull_request.head.ref || 'master' }}
+        run: make parity-check repo="$repo" branch="$branch"
+
   integration-tests:
     name: Run Integration Tests
     needs: setup
