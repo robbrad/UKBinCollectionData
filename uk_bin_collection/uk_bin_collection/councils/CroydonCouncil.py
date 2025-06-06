@@ -79,12 +79,9 @@ class CouncilClass(AbstractGetBinDataClass):
             next_button.click()
 
             # Wait for the bin collection content to load
-            collection_content = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        '//*[@id="mats_content_wrapper"]/div[2]/div[2]/div[2]/div/div[1]/div/div[3]/div/div/div/div',
-                    )
+            listing_records = WebDriverWait(driver, 10).until(
+                EC.presence_of_all_elements_located(
+                    (By.CSS_SELECTOR, "#mats_content_wrapper .listing_template_record")
                 )
             )
 
