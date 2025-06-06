@@ -59,11 +59,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_type = cells[0].get_text(strip=True)
                 collection_next = cells[1].get_text(strip=True)
 
-                print(bin_type)
-                print(len(collection_next))
-
                 if len(collection_next) != 1:
-                    collection_date_obj = parse(collection_next).date()
+                    collection_date_obj = datetime.strptime(collection_next, "%d/%m/%y").date()
                     # since we only have the next collection day, if the parsed date is in the past,
                     # assume the day is instead next month
                     if collection_date_obj < datetime.now().date():
@@ -71,7 +68,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     # Make each Bin element in the JSON
                     dict_data = {
                         "type": bin_type,
-                        "collectionDate": collection_date_obj.strftime(date_format),
+                        "collectionDate": collection_date_obj.strftime("%d/%m/%Y"),
                     }
                     # Add data to the main JSON Wrapper
                     data["bins"].append(dict_data)
