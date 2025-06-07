@@ -12,10 +12,9 @@ from homeassistant.core import callback
 
 import collections  # At the top with other imports
 
-from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES
+from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES, INPUT_JSON_URL
 
 _LOGGER = logging.getLogger(__name__)
-
 
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UkBinCollection."""
@@ -253,10 +252,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def get_councils_json(self) -> Dict[str, Any]:
         """Fetch and return the supported councils data, including aliases and sorted alphabetically."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.152.4/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
+                async with session.get(INPUT_JSON_URL) as response:
                     response.raise_for_status()
                     data_text = await response.text()
                     original_data = json.loads(data_text)
@@ -569,10 +567,9 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def get_councils_json(self) -> Dict[str, Any]:
         """Fetch and return the supported councils data."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.111.0/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
+                async with session.get(INPUT_JSON_URL) as response:
                     response.raise_for_status()
                     data_text = await response.text()
                     return json.loads(data_text)
