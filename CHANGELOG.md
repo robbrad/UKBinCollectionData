@@ -1,4 +1,10 @@
 =======
+## 0.152.5 (2025-06-07)
+
+### Fix
+
+- South Ribble and version pinning issues for input.json
+
 ## 0.152.4 (2025-06-07)
 
 ### Fix
