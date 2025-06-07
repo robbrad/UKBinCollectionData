@@ -1,4 +1,11 @@
 =======
+## 0.152.4 (2025-06-07)
+
+### Fix
+
+- **SouthRibble**: Corrected Date formatting issue
+- **SouthRibble**: Resolved South Ribble without selenium
+
 ## 0.152.3 (2025-06-04)
 
 ### Fix

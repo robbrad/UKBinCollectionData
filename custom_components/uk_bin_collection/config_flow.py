@@ -253,7 +253,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def get_councils_json(self) -> Dict[str, Any]:
         """Fetch and return the supported councils data, including aliases and sorted alphabetically."""
-        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.152.3/uk_bin_collection/tests/input.json"
+        url = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.152.4/uk_bin_collection/tests/input.json"
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as response:
