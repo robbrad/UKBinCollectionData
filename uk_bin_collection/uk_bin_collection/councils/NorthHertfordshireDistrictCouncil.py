@@ -151,7 +151,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Looking for bin types in the exact HTML structure
             bin_type_elements = soup.select(
-                "div.formatting_bold.formatting_size_bigger.formatting span.value-as-text"
+                "div.page_cell.contains_widget:first-of-type div.formatting_bold.formatting_size_bigger.formatting span.value-as-text"
             )
             # print(f"Found {len(bin_type_elements)} bin type elements")
 
