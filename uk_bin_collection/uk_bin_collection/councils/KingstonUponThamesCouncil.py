@@ -51,7 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     if row.find("dt").get_text().strip().lower() == "next collection":
                         collection_date = remove_ordinal_indicator_from_date_string(
                             row.find("dd").get_text()
-                        ).strip()
+                        ).strip().replace(" (In progress)", "")
                         # strip out any text inside of the date string
                         collection_date = re.sub(
                             r"\n\s*\(this.*?\)", "", collection_date
