@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
+from datetime import datetime
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -18,6 +19,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
+        wait_time = 10  # seconds
+
         try:
             page = "https://selfservice.broxtowe.gov.uk/renderform.aspx?t=217&k=9D2EF214E144EE796430597FB475C3892C43C528"
 
@@ -34,21 +37,29 @@ class CouncilClass(AbstractGetBinDataClass):
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
 
+            # Wait for form to be loaded
+            WebDriverWait(driver, wait_time).until(
+                EC.presence_of_element_located((By.ID, "selfservice-page"))
+            )
+
             # Populate postcode field
-            inputElement_postcode = driver.find_element(
-                By.ID,
-                "ctl00_ContentPlaceHolder1_FF5683TB",
+            inputElement_postcode = WebDriverWait(driver, wait_time).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF5683TB")
+                )
             )
             inputElement_postcode.send_keys(user_postcode)
 
             # Click search button
-            driver.find_element(
-                By.ID,
-                "ctl00_ContentPlaceHolder1_FF5683BTN",
-            ).click()
+            search_button = WebDriverWait(driver, wait_time).until(
+                EC.element_to_be_clickable(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF5683BTN")
+                )
+            )
+            search_button.click()
 
             # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-            dropdown = WebDriverWait(driver, 10).until(
+            dropdown = WebDriverWait(driver, wait_time).until(
                 EC.presence_of_element_located(
                     (By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL")
                 )
@@ -58,43 +69,68 @@ class CouncilClass(AbstractGetBinDataClass):
             dropdownSelect.select_by_value("U" + user_uprn)
 
             # Wait for the submit button to appear, then click it to get the collection dates
-            submit = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
+            submit = WebDriverWait(driver, wait_time).until(
+                EC.element_to_be_clickable(
                     (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
                 )
             )
             submit.click()
 
+            # Wait for the results to load
+            WebDriverWait(driver, wait_time).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF5686FormGroup")
+                )
+            )
+
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
             bins_div = soup.find("div", id="ctl00_ContentPlaceHolder1_FF5686FormGroup")
-            if bins_div:
-                bins_table = bins_div.find("table")
-                if bins_table:
-                    # Get table rows
-                    for row in bins_table.find_all("tr"):
-                        # Get the rows cells
-                        cells = row.find_all("td")
-                        bin_type = cells[0].get_text(strip=True)
-                        # Skip header row
-                        if bin_type and cells[3] and bin_type != "Bin Type":
-                            if len(cells[3].get_text(strip=True)) > 0:
-                                collection_date = datetime.strptime(
-                                    cells[3].get_text(strip=True), "%A, %d %B %Y"
-                                )
-                                dict_data = {
-                                    "type": bin_type,
-                                    "collectionDate": collection_date.strftime(
-                                        date_format
-                                    ),
-                                }
-                                data["bins"].append(dict_data)
+            if not bins_div:
+                return data
 
-                            data["bins"].sort(
-                                key=lambda x: datetime.strptime(
-                                    x.get("collectionDate"), "%d/%m/%Y"
-                                )
-                            )
+            bins_table = bins_div.find("table")
+            if not bins_table:
+                return data
+
+            COLUMN_BIN_TYPE = 0
+            # COLUMN_COLLECTION_DAY = 1
+            # COLUMN_LAST_COLLECTION = 2
+            COLUMN_NEXT_COLLECTION = 3
+
+            # Get table rows, skip the header row
+            for row in bins_table.find_all("tr")[1:]:
+                try:
+                    # Get the rows cells
+                    cells = row.find_all("td")
+                    if len(cells) < 4:
+                        continue
+
+                    # Example: GREEN 240L
+                    bin_type = cells[COLUMN_BIN_TYPE].get_text(strip=True)
+                    if not bin_type:
+                        continue
+
+                    next_collection = cells[COLUMN_NEXT_COLLECTION].get_text(strip=True)
+                    if not next_collection:
+                        continue
+
+                    # Example: Wednesday, 02 July 2025
+                    collection_date = datetime.strptime(
+                        cells[COLUMN_NEXT_COLLECTION].get_text(strip=True), "%A, %d %B %Y"
+                    )
+                    dict_data = {
+                        "type": bin_type,
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
+                    data["bins"].append(dict_data)
+                except Exception as e:
+                    continue
+
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            )
+
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
@@ -104,4 +140,5 @@ class CouncilClass(AbstractGetBinDataClass):
             # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
+
         return data
