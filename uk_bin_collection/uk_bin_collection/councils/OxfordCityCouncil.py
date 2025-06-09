@@ -21,8 +21,8 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
         bindata = {"bins": []}
 
-        session_uri = "https://www.oxford.gov.uk/mybinday"
-        URI = "https://www.oxford.gov.uk/xfp/form/142"
+        session_uri = "https://www.oxford.gov.uk/xfp/form/142"
+        URI = "https://www.oxford.gov.uk/xfp/form/142#q6ad4e3bf432c83230a0347a6eea6c805c672efeb_0"
 
         session = requests.Session()
         token_response = session.get(session_uri)
@@ -40,15 +40,18 @@ class CouncilClass(AbstractGetBinDataClass):
 
         collection_response = session.post(URI, data=form_data)
 
-        collection_soup = BeautifulSoup(collection_response.text, "html.parser")
-        for paragraph in collection_soup.find("div", class_="editor").find_all("p"):
-            matches = re.match(r"^(\w+) Next Collection: (.*)", paragraph.text)
+        soup = BeautifulSoup(collection_response.text, "html.parser")
+        #print(soup)
+
+        for paragraph in soup.find("div", class_="editor").find_all("p"):
+            matches = re.match(r"^Your next (\w+) collections: (.*)", paragraph.text)
             if matches:
                 collection_type, date_string = matches.groups()
+                parts = date_string.split(', ', 1)
                 try:
-                    date = datetime.strptime(date_string, "%A %d %B %Y").date()
+                    date = datetime.strptime(parts[0], "%A %d %B %Y").date()
                 except ValueError:
-                    date = datetime.strptime(date_string, "%A %d %b %Y").date()
+                    date = datetime.strptime(parts[0], "%A %d %b %Y").date()
 
                 dict_data = {
                     "type": collection_type,
@@ -61,3 +64,5 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         return bindata
+
+
