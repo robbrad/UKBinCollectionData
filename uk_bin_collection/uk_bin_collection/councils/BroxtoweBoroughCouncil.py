@@ -94,8 +94,6 @@ class CouncilClass(AbstractGetBinDataClass):
                 return data
 
             COLUMN_BIN_TYPE = 0
-            # COLUMN_COLLECTION_DAY = 1
-            # COLUMN_LAST_COLLECTION = 2
             COLUMN_NEXT_COLLECTION = 3
 
             # Get table rows, skip the header row
