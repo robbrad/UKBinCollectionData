@@ -132,7 +132,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
             )
 
-            print(bin_data)
+            #print(bin_data)
 
         except Exception as e:
             # Here you can log the exception if needed
