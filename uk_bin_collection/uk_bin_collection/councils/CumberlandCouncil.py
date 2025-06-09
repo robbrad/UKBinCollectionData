@@ -16,6 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_uprn = kwargs.get("uprn")
+        postcode = kwargs.get("postcode")
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
@@ -57,6 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "TriggerCtl": "",
             "FF265": f"U{user_uprn}",
             "FF265lbltxt": "Please select your address",
+            "FF265-text": postcode
         }
 
         # print(payload)
