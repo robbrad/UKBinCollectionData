@@ -113,7 +113,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             try:
                                 # Convert date from "Friday 09 May 2025" format
                                 parsed_date = datetime.strptime(
-                                    collection_date, "%A %d %B %Y"
+                                    collection_date, "%A %d %b %Y"
                                 )
                                 formatted_date = parsed_date.strftime("%d/%m/%Y")
 
