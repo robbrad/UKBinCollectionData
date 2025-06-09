@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
-        wait_time = 10  # seconds
+        WAIT_TIME = 10  # seconds
 
         try:
             page = "https://selfservice.broxtowe.gov.uk/renderform.aspx?t=217&k=9D2EF214E144EE796430597FB475C3892C43C528"
@@ -38,12 +38,12 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(page)
 
             # Wait for form to be loaded
-            WebDriverWait(driver, wait_time).until(
+            WebDriverWait(driver, WAIT_TIME).until(
                 EC.presence_of_element_located((By.ID, "selfservice-page"))
             )
 
             # Populate postcode field
-            inputElement_postcode = WebDriverWait(driver, wait_time).until(
+            inputElement_postcode = WebDriverWait(driver, WAIT_TIME).until(
                 EC.presence_of_element_located(
                     (By.ID, "ctl00_ContentPlaceHolder1_FF5683TB")
                 )
@@ -51,7 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
             inputElement_postcode.send_keys(user_postcode)
 
             # Click search button
-            search_button = WebDriverWait(driver, wait_time).until(
+            search_button = WebDriverWait(driver, WAIT_TIME).until(
                 EC.element_to_be_clickable(
                     (By.ID, "ctl00_ContentPlaceHolder1_FF5683BTN")
                 )
@@ -59,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
             search_button.click()
 
             # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-            dropdown = WebDriverWait(driver, wait_time).until(
+            dropdown = WebDriverWait(driver, WAIT_TIME).until(
                 EC.presence_of_element_located(
                     (By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL")
                 )
@@ -69,7 +69,7 @@ class CouncilClass(AbstractGetBinDataClass):
             dropdownSelect.select_by_value("U" + user_uprn)
 
             # Wait for the submit button to appear, then click it to get the collection dates
-            submit = WebDriverWait(driver, wait_time).until(
+            submit = WebDriverWait(driver, WAIT_TIME).until(
                 EC.element_to_be_clickable(
                     (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
                 )
@@ -77,7 +77,7 @@ class CouncilClass(AbstractGetBinDataClass):
             submit.click()
 
             # Wait for the results to load
-            WebDriverWait(driver, wait_time).until(
+            WebDriverWait(driver, WAIT_TIME).until(
                 EC.presence_of_element_located(
                     (By.ID, "ctl00_ContentPlaceHolder1_FF5686FormGroup")
                 )
@@ -115,7 +115,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     if not next_collection:
                         continue
 
-                    # Example: Wednesday, 02 July 2025
+                    # Format: Wednesday, 02 July 2025
                     collection_date = datetime.strptime(
                         cells[COLUMN_NEXT_COLLECTION].get_text(strip=True), "%A, %d %B %Y"
                     )
