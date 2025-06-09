@@ -1158,9 +1158,10 @@ Note: Pass the house number and postcode in their respective parameters.
 
 ### Cumberland Borough Council
 ```commandline
-python collect_data.py CumberlandCouncil https://waste.cumberland.gov.uk -u XXXXXXXX
+python collect_data.py CumberlandCouncil https://waste.cumberland.gov.uk -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
+- `-p` - postcode
 - `-u` - UPRN
 
 Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.

@@ -628,8 +628,9 @@
         "LAD24CD": "E06000063"
     },
     "CumberlandCouncil": {
-        "uprn": "100110734613",
-        "url": "https://waste.cumberland.gov.uk",
+        "postcode": "CA6 5PH",
+        "uprn": "10009457328",
+        "url": "https://waste.cumberland.gov.uk/renderform?t=25&k=E43CEB1FB59F859833EF2D52B16F3F4EBE1CAB6A",
         "wiki_name": "Cumberland",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E06000063"
