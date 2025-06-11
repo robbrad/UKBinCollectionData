@@ -104,7 +104,7 @@
         "skip_get_url": true,
         "uprn": "766252532",
         "url": "http://avdcbins.web-labs.co.uk/RefuseApi.asmx",
-        "wiki_name": "Buckinghamshire",
+        "wiki_name": "Buckinghamshire (Aylesbury Vale)",
         "wiki_note": "To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.uk/search). Returns all published collections in the past, present, future.",
         "LAD24CD": "E06000060"
     },
@@ -623,7 +623,7 @@
         "house_number": "2",
         "postcode": "CA13 0DE",
         "url": "https://www.allerdale.gov.uk",
-        "wiki_name": "Cumberland",
+        "wiki_name": "Cumberland (Allerdale)",
         "wiki_note": "Pass the house number and postcode in their respective parameters.",
         "LAD24CD": "E06000063"
     },
@@ -1360,7 +1360,7 @@
         "skip_get_url": true,
         "uprn": "12081498",
         "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
-        "wiki_name": "Ealing",
+        "wiki_name": "Ealing (London Borough)",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E09000009"
     },
