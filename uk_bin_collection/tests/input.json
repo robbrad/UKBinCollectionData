@@ -628,8 +628,9 @@
         "LAD24CD": "E06000063"
     },
     "CumberlandCouncil": {
-        "uprn": "100110734613",
-        "url": "https://waste.cumberland.gov.uk",
+        "postcode": "CA6 5PH",
+        "uprn": "10009457328",
+        "url": "https://waste.cumberland.gov.uk/renderform?t=25&k=E43CEB1FB59F859833EF2D52B16F3F4EBE1CAB6A",
         "wiki_name": "Cumberland",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E06000063"
@@ -1828,8 +1829,8 @@
     "OxfordCityCouncil": {
         "postcode": "OX3 7QF",
         "uprn": "100120820551",
-        "url": "https://www.oxford.gov.uk",
-        "wiki_command_url_override": "https://www.oxford.gov.uk",
+        "url": "https://www.oxford.gov.uk/xfp/form/142",
+        "wiki_command_url_override": "https://www.oxford.gov.uk/xfp/form/142",
         "wiki_name": "Oxford",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000178"
