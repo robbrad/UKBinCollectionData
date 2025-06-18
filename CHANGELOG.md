@@ -1,4 +1,15 @@
 =======
+## 0.152.6 (2025-06-18)
+
+### Fix
+
+- removed In Progress from date
+- removed a degub print statement
+- **RugbyBoroughCouncil**: Amended parsed date from full to abbreviated month date, may worked but jun and jul did not
+- **RugbyBoroughCouncil**: Amended parsed date
+- Reworked Cumberland Council to cater for postcode addition
+- **OxfordCityCouncil**: Fixed Oxford City Council parsing dues to changes in output from the website
+
 ## 0.152.5 (2025-06-07)
 
 ### Fix
