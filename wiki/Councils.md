@@ -2682,7 +2682,7 @@ Note: Replace UPRN in URL with your own UPRN.
 
 ### Oxford City Council
 ```commandline
-python collect_data.py OxfordCityCouncil https://www.oxford.gov.uk -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py OxfordCityCouncil https://www.oxford.gov.uk/xfp/form/142 -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
