@@ -1443,6 +1443,7 @@
         "house_number": "71",
         "postcode": "ME16 8BT",
         "url": "https://my.maidstone.gov.uk/service/Find-your-bin-day",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Maidstone",
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000110"
