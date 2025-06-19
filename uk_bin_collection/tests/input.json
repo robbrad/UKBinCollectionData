@@ -614,8 +614,9 @@
         "postcode": "SE25 5DW",
         "skip_get_url": true,
         "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Croydon",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E09000008"
     },
     "CumberlandAllerdaleCouncil": {
@@ -627,8 +628,9 @@
         "LAD24CD": "E06000063"
     },
     "CumberlandCouncil": {
-        "uprn": "100110734613",
-        "url": "https://waste.cumberland.gov.uk",
+        "postcode": "CA6 5PH",
+        "uprn": "10009457328",
+        "url": "https://waste.cumberland.gov.uk/renderform?t=25&k=E43CEB1FB59F859833EF2D52B16F3F4EBE1CAB6A",
         "wiki_name": "Cumberland",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E06000063"
@@ -745,7 +747,7 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000061"
     },
-    "EastCambridgeshireCouncil": { 
+    "EastCambridgeshireCouncil": {
         "skip_get_url": true,
         "uprn": "10002597178",
         "url": "https://www.eastcambs.gov.uk/",
@@ -1443,7 +1445,7 @@
         "house_number": "71",
         "postcode": "ME16 8BT",
         "url": "https://my.maidstone.gov.uk/service/Find-your-bin-day",
-        "web_driver": "http://selenium:4444",
+        "web_driver": "http://selenium:4444", 
         "wiki_name": "Maidstone",
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000110"
@@ -1828,8 +1830,8 @@
     "OxfordCityCouncil": {
         "postcode": "OX3 7QF",
         "uprn": "100120820551",
-        "url": "https://www.oxford.gov.uk",
-        "wiki_command_url_override": "https://www.oxford.gov.uk",
+        "url": "https://www.oxford.gov.uk/xfp/form/142",
+        "wiki_command_url_override": "https://www.oxford.gov.uk/xfp/form/142",
         "wiki_name": "Oxford",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000178"
@@ -2181,10 +2183,10 @@
         "LAD24CD": "E07000179"
     },
     "SouthRibbleCouncil": {
-        "uprn": "010013246384",
-        "postcode": "PR5 6DT",
-        "url": "https://www.southribble.gov.uk",
-        "wiki_command_url_override": "https://www.southribble.gov.uk",
+        "uprn": "10013243496",
+        "postcode": "PR266QW",
+        "url": "https://forms.chorleysouthribble.gov.uk/xfp/form/70",
+        "wiki_command_url_override": "https://forms.chorleysouthribble.gov.uk/xfp/form/70",
         "wiki_name": "South Ribble",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "E07000126"

@@ -2,132 +2,129 @@ from typing import Dict, List, Any, Optional
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
 import requests
-import logging
 import re
 from datetime import datetime
-from uk_bin_collection.uk_bin_collection.common import *
-from dateutil.parser import parse
-
-from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
+from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-
-def get_token(page) -> str:
-    """
-    Get a __token to include in the form data
-        :param page: Page html
-        :return: Form __token
-    """
-    soup = BeautifulSoup(page.text, features="html.parser")
-    soup.prettify()
-    token = soup.find("input", {"name": "__token"}).get("value")
-    return token
+from dateutil.parser import parse
 
 
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def get_data(self, url: str) -> str:
-        """This method makes the request to the council
-
-        Keyword arguments:
-        url -- the url to get the data from
-        """
-        # Set a user agent so we look like a browser ;-)
-        user_agent = (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/108.0.0.0 Safari/537.36"
-        )
-        headers = {"User-Agent": user_agent}
-        requests.packages.urllib3.disable_warnings()
-
-        # Make the Request - change the URL - find out your property number
-        try:
-            session = requests.Session()
-            session.headers.update(headers)
-            full_page = session.get(url)
-            return full_page
-        except requests.exceptions.HTTPError as errh:
-            logging.error(f"Http Error: {errh}")
-            raise
-        except requests.exceptions.ConnectionError as errc:
-            logging.error(f"Error Connecting: {errc}")
-            raise
-        except requests.exceptions.Timeout as errt:
-            logging.error(f"Timeout Error: {errt}")
-            raise
-        except requests.exceptions.RequestException as err:
-            logging.error(f"Oops: Something Else {err}")
-            raise
+        # This method is not used in the current implementation
+        return ""
 
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
-        uprn: Optional[str] = kwargs.get("uprn")
         postcode: Optional[str] = kwargs.get("postcode")
+        uprn: Optional[str] = kwargs.get("uprn")
 
-        if uprn is None:
-            raise ValueError("UPRN is required and must be a non-empty string.")
-        if postcode is None:
-            raise ValueError("Postcode is required and must be a non-empty string.")
+        if postcode is None or uprn is None:
+            raise ValueError("Both postcode and UPRN are required.")
 
-        check_uprn(uprn)
         check_postcode(postcode)
+        check_uprn(uprn)
 
-        values = {
-            "__token": get_token(page),
-            "page": "491",
-            "locale": "en_GB",
-            "q1f8ccce1d1e2f58649b4069712be6879a839233f_0_0": postcode,
-            "q1f8ccce1d1e2f58649b4069712be6879a839233f_1_0": uprn,
-            "next": "Next",
+        session = requests.Session()
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36"
+            )
         }
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
-        requests.packages.urllib3.disable_warnings()
-        response = requests.request(
-            "POST",
-            "https://forms.chorleysouthribble.gov.uk/xfp/form/70",
-            headers=headers,
-            data=values,
+        session.headers.update(headers)
+
+        # Step 1: Load form and get token + field names
+        initial_url = "https://forms.chorleysouthribble.gov.uk/xfp/form/70"
+        get_resp = session.get(initial_url)
+        soup = BeautifulSoup(get_resp.text, "html.parser")
+
+        token = soup.find("input", {"name": "__token"})["value"]
+        page_id = soup.find("input", {"name": "page"})["value"]
+        postcode_field = soup.find("input", {"type": "text", "name": re.compile(".*_0_0")})["name"]
+
+        # Step 2: Submit postcode
+        post_resp = session.post(
+            initial_url,
+            data={
+                "__token": token,
+                "page": page_id,
+                "locale": "en_GB",
+                postcode_field: postcode,
+                "next": "Next",
+            },
         )
 
-        soup = BeautifulSoup(response.text, features="html.parser")
+        soup = BeautifulSoup(post_resp.text, "html.parser")
+        token = soup.find("input", {"name": "__token"})["value"]
+        address_field_el = soup.find("select", {"name": re.compile(".*_1_0")})
+        if not address_field_el:
+            raise ValueError("Failed to find address dropdown after postcode submission.")
 
-        rows = soup.find("table").find_all("tr")
+        address_field = address_field_el["name"]
 
-        # Form a JSON wrapper
+        # Step 3: Submit UPRN and retrieve bin data
+        final_resp = session.post(
+            initial_url,
+            data={
+                "__token": token,
+                "page": page_id,
+                "locale": "en_GB",
+                postcode_field: postcode,
+                address_field: uprn,
+                "next": "Next",
+            },
+        )
+
+        soup = BeautifulSoup(final_resp.text, "html.parser")
+        table = soup.find("table", class_="data-table")
+        if not table:
+            raise ValueError("Could not find bin collection table.")
+
+        rows = table.find("tbody").find_all("tr")
         data: Dict[str, List[Dict[str, str]]] = {"bins": []}
 
-        # Loops the Rows
+        # Extract bin type mapping from JavaScript
+        bin_type_map = {}
+        scripts = soup.find_all("script", type="text/javascript")
+        for script in scripts:
+            if script.string and "const bintype = {" in script.string:
+                match = re.search(r'const bintype = \{([^}]+)\}', script.string, re.DOTALL)
+                if match:
+                    bintype_content = match.group(1)
+                    for line in bintype_content.split('\n'):
+                        line = line.strip()
+                        if '"' in line and ':' in line:
+                            parts = line.split(':', 1)
+                            if len(parts) == 2:
+                                key = parts[0].strip().strip('"').strip("'")
+                                value = parts[1].strip().rstrip(',').strip().strip('"').strip("'")
+                                bin_type_map[key] = value
+                    break
+
         for row in rows:
             cells = row.find_all("td")
-            if cells:
-                bin_type = cells[0].get_text(strip=True)
-                collection_next = cells[1].get_text(strip=True)
+            if len(cells) >= 2:
+                bin_type_cell = cells[0]
+                bin_type = bin_type_cell.get_text(strip=True)
+                bin_type = bin_type_map.get(bin_type, bin_type)
 
-                collection_date = re.findall(r"\(.*?\)", collection_next)
+                date_text = cells[1].get_text(strip=True)
+                date_parts = date_text.split(", ")
+                date_str = date_parts[1] if len(date_parts) == 2 else date_text
 
-                if len(collection_date) != 1:
+                try:
+                    day, month, year = date_str.split('/')
+                    year = int(year)
+                    if year < 100:
+                        year = 2000 + year
+
+                    date_obj = datetime(year, int(month), int(day)).date()
+
+                    data["bins"].append({
+                        "type": bin_type,
+                        "collectionDate": date_obj.strftime(date_format)
+                    })
+                except Exception:
                     continue
-
-                collection_date_obj = parse(
-                    re.sub(r"[()]", "", collection_date[0])
-                ).date()
-
-                # since we only have the next collection day, if the parsed date is in the past,
-                # assume the day is instead next month
-                if collection_date_obj < datetime.now().date():
-                    collection_date_obj += relativedelta(months=1)
-
-                # Make each Bin element in the JSON
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": collection_date_obj.strftime(date_format),
-                }
-
-                # Add data to the main JSON Wrapper
-                data["bins"].append(dict_data)
 
         return data

@@ -82,7 +82,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get the dates.
         for bins in soup.find_all("div", {"class": "BinsRecycling"}):
             bin_type = bins.find("h2").text
-            binCollection = bins.find("div", {"class": "dateWrapper-next"}).get_text(
+            binCollection = bins.find("div", {"class": "dateWrap-next"}).get_text(
                 strip=True
             )
             binData = datetime.strptime(
