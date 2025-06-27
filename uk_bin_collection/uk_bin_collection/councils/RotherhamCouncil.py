@@ -15,11 +15,15 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
 
         check_uprn(user_uprn)
-
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
+        }
         response = requests.post(
             "https://www.rotherham.gov.uk/bin-collections?address={}&submit=Submit".format(
                 user_uprn
-            )
+            ), 
+            headers=headers
         )
         # Make a BS4 object
         soup = BeautifulSoup(response.text, features="html.parser")
