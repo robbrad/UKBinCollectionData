@@ -95,6 +95,28 @@ class CouncilClass(AbstractGetBinDataClass):
             }
             data["bins"].append(dict_data)
 
+        # Extract communal food waste collection information
+        comfood_section = soup.find(
+            "div", {"aria-labelledby": "communalFoodCollectionTitle"}
+        )
+        if comfood_section:
+            comfood_title = comfood_section.find(
+                "p", {"id": "communalFoodCollectionTitle"}
+            ).text
+            comfood_next_collection = (
+                comfood_section.find(text=lambda text: "Next collection" in text)
+                .strip()
+                .split(": ")[1]
+            )
+
+            dict_data = {
+                "type": comfood_title,
+                "collectionDate": datetime.strptime(
+                    comfood_next_collection, "%a, %d %B %Y"
+                ).strftime("%d/%m/%Y),
+            }
+            data["bins"].append(dict_data)
+
         comrec_section = soup.find(
             "div", {"aria-labelledby": "recyclingCommunalCollectionTitle"}
         )
