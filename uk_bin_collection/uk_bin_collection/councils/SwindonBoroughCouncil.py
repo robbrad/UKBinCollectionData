@@ -22,9 +22,10 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata = {"bins": []}
 
         URI = f"https://www.swindon.gov.uk/info/20122/rubbish_and_recycling_collection_days?addressList={user_uprn}&uprnSubmit=Yes"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
 
         # Make the GET request
-        response = requests.get(URI)
+        response = requests.get(URI, headers=headers)
 
         # Parse the JSON response
         soup = BeautifulSoup(response.text, "html.parser")
