@@ -42,12 +42,12 @@ class CouncilClass(AbstractGetBinDataClass):
             wait = WebDriverWait(driver, 60)
             address_entry_field = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="combobox-input-22"]')
+                    (By.XPATH, '//*[@id="combobox-input-23"]')
                 )
             )
 
             address_entry_field = wait.until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="combobox-input-22"]'))
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="combobox-input-23"]'))
             )
             address_entry_field.click()
             address_entry_field.send_keys(str(full_address))
@@ -56,7 +56,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             first_found_address = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, '//*[@id="dropdown-element-22"]/ul')
+                    (By.XPATH, '//*[@id="dropdown-element-23"]/ul')
                 )
             )
 
