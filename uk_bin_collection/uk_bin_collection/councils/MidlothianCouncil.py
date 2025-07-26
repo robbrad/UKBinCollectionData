@@ -22,6 +22,15 @@ class CouncilClass(AbstractGetBinDataClass):
         "Next brown bin collection": "Brown Bin",
         "Next food bin collection": "Food Bin",
     }
+    HEADERS = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "en-GB,en;q=0.9",
+        "Connection": "keep-alive",
+        "Host": "www.midlothian.gov.uk",
+        "Referer": "https://www.midlothian.gov.uk/info/200284/bins_and_recycling",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    }
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
@@ -46,7 +55,7 @@ class CouncilClass(AbstractGetBinDataClass):
         search_url = self.DIRECTORY_URL.format(quote(postcode))
 
         try:
-            search_results_html = requests.get(search_url)
+            search_results_html = requests.get(search_url, headers=self.HEADERS)
             search_results_html.raise_for_status()
 
             soup = BeautifulSoup(search_results_html.text, "html.parser")
@@ -93,7 +102,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     next_page_url = next_page_link["href"]
 
                     # Send a GET request to the next page
-                    next_response = requests.get(next_page_url)
+                    next_response = requests.get(next_page_url, headers=self.HEADERS)
                     next_response.raise_for_status()  # Raise an exception for HTTP errors
 
                     # Parse the HTML content of the next page
@@ -116,7 +125,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def _fetch_bin_collection_data(self, url: str) -> list:
         """Fetch and parse bin collection data from the given URL."""
         try:
-            bin_collection_html = requests.get(url)
+            bin_collection_html = requests.get(url, headers=self.HEADERS)
             bin_collection_html.raise_for_status()
 
             soup = BeautifulSoup(bin_collection_html.text, "html.parser")
