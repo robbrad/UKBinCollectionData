@@ -1,4 +1,12 @@
 =======
+## 0.152.8 (2025-07-26)
+
+### Fix
+
+- Add headers to request for Swindon Borough Council
+- Add headers to requests for Royal Borough of Greenwich Fixes #1496 by ensuring that the requests are not rejected due to lack of headers.
+- **MidlothianCouncil**: add request headers to resolve 403 Forbidden
+
 ## 0.152.7 (2025-07-01)
 
 ### Fix
