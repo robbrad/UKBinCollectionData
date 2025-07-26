@@ -28,6 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
         headers = {
             "Origin": "https://www.centralbedfordshire.gov.uk",
             "Referer": "https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day",
+
             "User-Agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.7968.1811 Mobile Safari/537.36",
         }
 
