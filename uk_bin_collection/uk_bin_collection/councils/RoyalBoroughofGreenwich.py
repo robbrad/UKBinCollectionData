@@ -22,12 +22,18 @@ class CouncilClass(AbstractGetBinDataClass):
         check_paon(user_paon)
         bindata = {"bins": []}
 
+        headers = {
+            "Origin": "https://www.royalgreenwich.gov.uk/",
+            "Referer": "https://www.royalgreenwich.gov.uk/info/200171/recycling_and_rubbish/100/bin_collection_days",
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)",
+        }
+
         user_postcode = user_postcode.replace(" ", "+")
 
         URI = f"https://www.royalgreenwich.gov.uk/site/custom_scripts/apps/waste-collection/new2023/source.php?term={user_postcode}"
 
         # Make the GET request
-        response = requests.get(URI)
+        response = requests.get(URI, headers=headers)
 
         for address in response.json():
             if user_paon in address:
@@ -38,7 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"address": collection_address}
 
-        response = requests.post(URI, data=data)
+        response = requests.post(URI, data=data, headers=headers)
 
         response = response.json()
 
