@@ -1,5 +1,5 @@
 {
-    "domain": "uk_bin_collection",
+    "domain": "uk_bin_collection_custom",
     "name": "UK Bin Collection Data",
     "after_dependencies": [],
     "codeowners": ["@robbrad"],
