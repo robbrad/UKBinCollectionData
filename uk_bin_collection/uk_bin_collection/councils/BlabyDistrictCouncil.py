@@ -1,8 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
+import urllib3
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+# Disable SSL warnings
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -22,7 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
         URI = f"https://my.blaby.gov.uk/set-location.php?ref={user_uprn}&redirect=collections"
 
         # Make the GET request
-        response = requests.get(URI)
+        response = requests.get(URI, verify=False)
 
         # Parse the HTML
         soup = BeautifulSoup(response.content, "html.parser")
