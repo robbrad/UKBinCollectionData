@@ -1,5 +1,5 @@
 import time
-import urllib.parse
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
@@ -11,18 +11,6 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-def format_bin_type(bin_colour: str):
-    bin_types = {
-        "grey": "Garden waste (Grey Bin)",
-        "brown": "Paper and card (Brown Bin)",
-        "blue": "Bottles and cans (Blue Bin)",
-        "green": "General waste (Green Bin)",
-    }
-    bin_colour = urllib.parse.unquote(bin_colour).split(" ")[0].lower()
-    return bin_types[bin_colour]
-
-
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -41,99 +29,120 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             check_postcode(user_postcode)
 
-            # Ensure UPRN starts with "UPRN"
-            if not user_uprn.startswith("UPRN"):
-                user_uprn = f"UPRN{user_uprn}"
-
             # Create Selenium webdriver
-            user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get("https://myaccount.chorley.gov.uk/wastecollections.aspx")
-
-            # Accept cookies banner
-            cookieBanner = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "PrivacyPolicyNotification"))
+            
+            # Navigate to the start page
+            driver.get("https://chorley.gov.uk/bincollectiondays")
+            
+            # Click the "Check your collection day" button
+            check_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//a[@class='button' and @href='https://forms.chorleysouthribble.gov.uk/chorley-bincollectiondays']")
+            ))
+            check_button.click()
+            
+            # Wait for the form to load and enter postcode
+            postcode_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//input[@type='text'][1]")
+            ))
+            postcode_input.clear()
+            postcode_input.send_keys(user_postcode)
+            
+            # Click the Lookup button
+            lookup_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(@class, 'btn--lookup')]")
+            ))
+            lookup_button.click()
+            
+            # Wait for the property dropdown to be populated
+            property_dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//select[@class='form__select']")
+            ))
+            
+            # Wait a moment for the dropdown to be fully populated
+            time.sleep(2)
+            
+            # Find the property that matches the UPRN or select the first available property
+            select = Select(property_dropdown)
+            options = select.options
+            
+            # Skip the "Please choose..." option and select based on UPRN or first available
+            selected = False
+            for option in options[1:]:  # Skip first "Please choose..." option
+                if user_uprn in option.get_attribute("value") or not selected:
+                    select.select_by_visible_text(option.text)
+                    selected = True
+                    break
+            
+            if not selected and len(options) > 1:
+                # If no UPRN match, select the first available property
+                select.select_by_index(1)
+            
+            # Click the Next button
+            next_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit'][value='Next']"))
             )
-            cookieClose = cookieBanner.find_element(
-                By.CSS_SELECTOR, "span.ui-icon-circle-close"
+            next_button.click()
+            
+            # Wait for the results page to load
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//th[text()='Collection']"))
             )
-            cookieClose.click()
-
-            # Populate postcode field
-            inputElement_postcode = driver.find_element(
-                By.ID,
-                "MainContent_addressSearch_txtPostCodeLookup",
-            )
-            inputElement_postcode.send_keys(user_postcode)
-
-            # Click search button
-            findAddress = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.ID,
-                        "MainContent_addressSearch_btnFindAddress",
-                    )
-                )
-            )
-            findAddress.click()
-
-            time.sleep(1)
-
-            # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-            dropdown = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.ID,
-                        "MainContent_addressSearch_ddlAddress",
-                    )
-                )
-            )
-            # Create a 'Select' for it, then select the matching URPN option
-            dropdownSelect = Select(dropdown)
-            dropdownSelect.select_by_value(user_uprn)
-
-            # Wait for the submit button to appear, then click it to get the collection dates
-            submit = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "MainContent_btnSearch"))
-            )
-            submit.click()
-
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Get the property details
-            property_details = soup.find(
-                "table",
-                {"class": "WasteCollection"},
-            )
-
-            # Get the dates
-            for row in property_details.tbody.find_all("tr", recursive=False):
-                month_col = row.td
-                month = month_col.get_text(strip=True)
-
-                for date_col in month_col.find_next_siblings("td"):
-                    day = date_col.p.contents[0].strip()
-
-                    if day == "":
-                        continue
-
-                    for bin_type in date_col.find_all("img"):
-                        bin_colour = bin_type.get("src").split("/")[-1].split(".")[0]
-                        date_object = datetime.strptime(f"{day} {month}", "%d %B %Y")
-                        date_formatted = date_object.strftime("%d/%m/%Y")
-
-                        dict_data = {
-                            "type": format_bin_type(bin_colour),
-                            "collectionDate": date_formatted,
-                        }
-                        data["bins"].append(dict_data)
+            
+            # Parse the results
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+            
+            # Find the table with collection data
+            table = soup.find("table")
+            
+            if table:
+                rows = table.find_all("tr")
+                
+                for i, row in enumerate(rows):
+                    cells = row.find_all(["td", "th"])
+                    
+                    if i > 0 and len(cells) >= 2:  # Skip header row
+                        collection_type = cells[0].get_text(strip=True)
+                        collection_date = cells[1].get_text(strip=True)
+                        
+                        if collection_type and collection_date and collection_date != "Collection":
+                            # Try to parse the date
+                            try:
+                                # Handle the format "Tuesday, 05/08/25"
+                                if ", " in collection_date and "/" in collection_date:
+                                    # Remove the day name and parse the date
+                                    date_part = collection_date.split(", ")[1]
+                                    # Handle 2-digit year format
+                                    if len(date_part.split("/")[2]) == 2:
+                                        date_obj = datetime.strptime(date_part, "%d/%m/%y")
+                                    else:
+                                        date_obj = datetime.strptime(date_part, "%d/%m/%Y")
+                                elif "/" in collection_date:
+                                    date_obj = datetime.strptime(collection_date, "%d/%m/%Y")
+                                elif "-" in collection_date:
+                                    date_obj = datetime.strptime(collection_date, "%Y-%m-%d")
+                                else:
+                                    # Try to parse other formats
+                                    date_obj = datetime.strptime(collection_date, "%d %B %Y")
+                                
+                                formatted_date = date_obj.strftime("%d/%m/%Y")
+                                
+                                dict_data = {
+                                    "type": collection_type,
+                                    "collectionDate": formatted_date,
+                                }
+                                data["bins"].append(dict_data)
+                            except ValueError:
+                                # If date parsing fails, skip this entry
+                                continue
+            
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
         return data
