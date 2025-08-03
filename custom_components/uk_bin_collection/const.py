@@ -4,7 +4,7 @@ from datetime import timedelta
 
 from homeassistant.const import Platform
 
-INPUT_JSON_URL = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.152.8/uk_bin_collection/tests/input.json"
+INPUT_JSON_URL = "https://raw.githubusercontent.com/robbrad/UKBinCollectionData/0.152.9/uk_bin_collection/tests/input.json"
 
 DEFAULT_NAME = "UK Bin Collection Data"
 
