@@ -22,10 +22,25 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
         
         bindata = {"bins": []}
-        driver = create_webdriver(web_driver, headless, None, __name__)
+        # Use a realistic user agent to help bypass Cloudflare
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        driver = create_webdriver(web_driver, headless, user_agent, __name__)
         
         try:
             driver.get("https://www.broxbourne.gov.uk/bin-collection-date")
+            
+            # Wait for Cloudflare challenge to complete
+            print("Waiting for page to load (Cloudflare check)...")
+            try:
+                WebDriverWait(driver, 45).until(
+                    lambda d: "Just a moment" not in d.title and d.title != "" and len(d.find_elements(By.TAG_NAME, "input")) > 0
+                )
+                print(f"Page loaded: {driver.title}")
+            except:
+                print(f"Timeout waiting for page load. Current title: {driver.title}")
+                # Try to continue anyway
+                pass
+            
             time.sleep(8)
             
             # Handle cookie banner with multiple attempts
