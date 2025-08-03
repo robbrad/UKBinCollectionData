@@ -23,8 +23,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
         URI = f"https://www.cherwell.gov.uk/homepage/129/bin-collection-search?uprn={user_uprn}"
 
-        # Make the GET request
-        response = requests.get(URI)
+        # Make the GET request with proper headers
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        response = requests.get(URI, headers=headers)
 
         soup = BeautifulSoup(response.text, "html.parser")
 
@@ -45,22 +48,38 @@ class CouncilClass(AbstractGetBinDataClass):
 
             return date_obj.strftime(date_format)  # Return in YYYY-MM-DD format
 
-        # print(soup)
+        # Find the bin collection results section
+        results_div = soup.find("div", class_="bin-collection-results")
+        if not results_div:
+            return bindata
 
-        div = soup.find("div", class_="bin-collection-results__tasks")
+        tasks_div = results_div.find("div", class_="bin-collection-results__tasks")
+        if not tasks_div:
+            return bindata
 
-        for item in div.find_all("li", class_="list__item"):
-            # Extract bin type
-            bin_type_tag = item.find("h3", class_="bin-collection-tasks__heading")
-            bin_type = (
-                "".join(bin_type_tag.find_all(text=True, recursive=False)).strip()
-                if bin_type_tag
-                else "Unknown Bin"
-            )
+        # Find all bin collection items
+        for item in tasks_div.find_all("li", class_="list__item"):
+            # Extract bin type from heading
+            heading = item.find("h3", class_="bin-collection-tasks__heading")
+            if not heading:
+                continue
+                
+            # Get the bin type text, excluding visually hidden spans
+            bin_type = ""
+            for text_node in heading.find_all(text=True):
+                parent = text_node.parent
+                if not (parent.name == "span" and "visually-hidden" in parent.get("class", [])):
+                    bin_type += text_node.strip()
+            
+            if not bin_type:
+                continue
 
             # Extract collection date
             date_tag = item.find("p", class_="bin-collection-tasks__date")
-            collection_date = date_tag.text.strip() if date_tag else "Unknown Date"
+            if not date_tag:
+                continue
+                
+            collection_date = date_tag.text.strip()
 
             dict_data = {
                 "type": bin_type,
@@ -68,8 +87,10 @@ class CouncilClass(AbstractGetBinDataClass):
             }
             bindata["bins"].append(dict_data)
 
-        bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
-        )
+        # Sort bins by collection date
+        if bindata["bins"]:
+            bindata["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+            )
 
         return bindata

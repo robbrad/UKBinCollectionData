@@ -36,7 +36,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 if s.get_text(strip=True).lower() == "bin collections":
                     rows = s.find_next_sibling(
                         "div", {"class": "c-content-section_body"}
-                    ).find_all("div", class_="tablet:l-col-fb-4 u-mt-10")
+                    ).find_all(
+                        "div",
+                        class_=lambda x: x and "tablet:l-col-fb-4" in x and "u-mt-10" in x
+                    )
 
                     for row in rows:
                         title_elem = row.find("div", class_="u-mb-4")

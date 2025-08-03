@@ -18,6 +18,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
         bindata = {"bins": []}
         curr_date = datetime.today()
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
 
         soup = BeautifulSoup(page.content, features="html.parser")
         button = soup.find(
@@ -25,10 +29,10 @@ class CouncilClass(AbstractGetBinDataClass):
             text="Find out which bin will be collected when and sign up for a free email reminder.",
         )
 
-        if button["href"]:
+        if button and button.get("href"):
             URI = button["href"]
             # Make the GET request
-            response = requests.get(URI)
+            response = requests.get(URI, headers=headers)
             soup = BeautifulSoup(response.content, features="html.parser")
             divs = soup.find_all("div", {"class": "editor"})
             for div in divs:

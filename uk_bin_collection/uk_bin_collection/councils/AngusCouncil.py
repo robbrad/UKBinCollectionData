@@ -1,4 +1,3 @@
-import time
 import re
 from datetime import datetime
 
@@ -7,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -27,56 +27,95 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
             web_driver = kwargs.get("web_driver")
             driver = create_webdriver(web_driver, headless, None, __name__)
-            page = "https://www.angus.gov.uk/bins_litter_and_recycling/bin_collection_days"
+            
+            driver.get("https://www.angus.gov.uk/bins_litter_and_recycling/bin_collection_days")
 
-            driver.get(page)
+            wait = WebDriverWait(driver, 20)
+            
+            # Accept cookies if present
+            try:
+                accept_cookies_button = wait.until(
+                    EC.element_to_be_clickable((By.ID, "ccc-recommended-settings"))
+                )
+                accept_cookies_button.click()
+            except TimeoutException:
+                print("Cookie banner not found, continuing...")
 
-            wait = WebDriverWait(driver, 10)
-            accept_cookies_button = wait.until(
-                EC.element_to_be_clickable((By.ID, "ccc-recommended-settings"))
-            )
-            accept_cookies_button.click()
-
+            # Click on "Find bin collection days" link
             find_your_collection_button = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, "/html/body/div[2]/div[2]/div/div/section/div[2]/div/article/div/div/p[2]/a")
+                    (By.XPATH, "//a[contains(text(), 'Find bin collection days') or contains(@href, 'collection')]")
                 )
             )
             find_your_collection_button.click()
 
+            # Wait for iframe to be present and switch to it
             iframe = wait.until(EC.presence_of_element_located((By.ID, "fillform-frame-1")))
             driver.switch_to.frame(iframe)
 
-            postcode_input = wait.until(EC.presence_of_element_located((By.ID, "searchString")))
-            postcode_input.send_keys(user_postcode + Keys.TAB + Keys.ENTER)
+            # Handle banner/modal if present
+            try:
+                close_button = wait.until(EC.element_to_be_clickable((By.TAG_NAME, "button")))
+                if close_button.text.strip().lower() in ['close', 'dismiss', 'ok']:
+                    close_button.click()
+            except TimeoutException:
+                pass
 
-            time.sleep(15)
+            # Wait for postcode input to be clickable
+            postcode_input = wait.until(EC.element_to_be_clickable((By.ID, "searchString")))
+            postcode_input.clear()
+            postcode_input.send_keys(user_postcode)
+            
+            # Find and click the search button
+            try:
+                submit_btn = driver.find_element(By.XPATH, "//button[contains(text(), 'Search')]")
+                submit_btn.click()
+            except:
+                try:
+                    submit_btn = driver.find_element(By.XPATH, "//input[@type='submit']")
+                    submit_btn.click()
+                except:
+                    postcode_input.send_keys(Keys.TAB)
+                    postcode_input.send_keys(Keys.ENTER)
 
-            select_elem = wait.until(EC.presence_of_element_located((By.ID, "customerAddress")))
-            WebDriverWait(driver, 10).until(
-                lambda d: len(select_elem.find_elements(By.TAG_NAME, "option")) > 1
-            )
-            dropdown = Select(select_elem)
+            # Wait for address dropdown to be present
+            address_dropdown = wait.until(EC.presence_of_element_located((By.ID, "customerAddress")))
+            
+            # Wait for dropdown options to populate with extended timeout
+            try:
+                WebDriverWait(driver, 30).until(
+                    lambda d: len(d.find_element(By.ID, "customerAddress").find_elements(By.TAG_NAME, "option")) > 1
+                )
+            except TimeoutException:
+                options = address_dropdown.find_elements(By.TAG_NAME, "option")
+                raise ValueError(f"Dropdown only has {len(options)} options after 30s wait")
+            
+            # Select the UPRN from dropdown
+            dropdown = Select(address_dropdown)
             dropdown.select_by_value(user_uprn)
 
-            time.sleep(10)
-
+            # Wait for results to appear
             wait.until(
                 EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "span.fieldInput.content.html.non-input"))
+                    (By.CSS_SELECTOR, "span.fieldInput.content.html.non-input")
+                )
             )
+            
+            # Wait additional time for JavaScript to populate the data
+            import time
+            time.sleep(15)  # Wait 15 seconds for dynamic content to load
 
+            # Parse the results
             soup = BeautifulSoup(driver.page_source, "html.parser")
             bin_data = {"bins": []}
             current_date = datetime.now()
             current_formatted_date = None
 
             spans = soup.select("span.fieldInput.content.html.non-input")
-            print(f"Found {len(spans)} bin info spans.")
 
             for i, span in enumerate(spans):
                 try:
-                    # Look for any non-empty <u> tag recursively
+                    # Look for date in <u> tags
                     date_tag = next(
                         (u for u in span.find_all("u") if u and u.text.strip()),
                         None
@@ -93,22 +132,15 @@ class CouncilClass(AbstractGetBinDataClass):
                             if parsed_date.date() < current_date.date():
                                 parsed_date = parsed_date.replace(year=current_date.year + 1)
                             current_formatted_date = parsed_date.strftime("%d/%m/%Y")
-                            print(f"[{i}] Parsed date: {current_formatted_date}")
-                        except ValueError as ve:
-                            print(f"[{i}] Could not parse date: '{full_date_str}' - {ve}")
+                        except ValueError:
                             continue
-                    else:
-                        print(f"[{i}] No date tag found, using last valid date: {current_formatted_date}")
 
-                    if not current_formatted_date:
-                        print(f"[{i}] No current date to associate bin type with — skipping.")
-                        continue
-
-                    if not bin_type_tag or not bin_type_tag.text.strip():
-                        print(f"[{i}] No bin type found — skipping.")
+                    if not current_formatted_date or not bin_type_tag:
                         continue
 
                     bin_type = bin_type_tag.text.strip()
+                    if not bin_type:
+                        continue
 
                     # Optional seasonal override
                     try:
@@ -118,25 +150,16 @@ class CouncilClass(AbstractGetBinDataClass):
                     except Exception:
                         pass
 
-                    print(f"[{i}] Found bin: {bin_type} on {current_formatted_date}")
-
                     bin_data["bins"].append({
                         "type": bin_type,
                         "collectionDate": current_formatted_date
                     })
 
-                except Exception as inner_e:
-                    print(f"[{i}] Skipping span due to error: {inner_e}")
-                    continue
-
-                except Exception as inner_e:
-                    print(f"Skipping span due to error: {inner_e}")
+                except Exception:
                     continue
 
             if not bin_data["bins"]:
                 raise ValueError("No bin data found.")
-
-            print(bin_data)
             
             return bin_data
 

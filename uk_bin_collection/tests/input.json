@@ -100,16 +100,11 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000105"
     },
-    "AylesburyValeCouncil": {
-        "skip_get_url": true,
-        "uprn": "766252532",
-        "url": "http://avdcbins.web-labs.co.uk/RefuseApi.asmx",
-        "wiki_name": "Buckinghamshire",
-        "wiki_note": "To get the UPRN, please use [FindMyAddress](https://www.findmyaddress.co.uk/search). Returns all published collections in the past, present, future.",
-        "LAD24CD": "E06000060"
-    },
     "BCPCouncil": {
         "LAD24CD": "E06000058",
+        "house_number": "3 HARBOUR VIEW ROAD, POOLE, BH14 0PD",
+        "postcode": "BH14 0PD",
+        "web_driver": "http://selenium:4444",
         "skip_get_url": true,
         "uprn": "100040810214",
         "url": "https://online.bcpcouncil.gov.uk/bindaylookup/",
@@ -137,8 +132,8 @@
         "LAD24CD": "E09000002"
     },
     "BarnetCouncil": {
-        "house_number": "HA8 7NA, 2, MANOR PARK GARDENS, EDGWARE, BARNET",
-        "postcode": "HA8 7NA",
+        "house_number": "26A",
+        "postcode": "EN4 8TB",
         "skip_get_url": true,
         "url": "https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day",
         "web_driver": "http://selenium:4444",
@@ -158,7 +153,7 @@
     "BasildonCouncil": {
         "skip_get_url": true,
         "uprn": "10013350430",
-        "url": "https://basildonportal.azurewebsites.net/api/getPropertyRefuseInformation",
+        "url": "https://mybasildon.powerappsportals.com/check/where_i_live/",
         "wiki_name": "Basildon",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000066"
@@ -366,6 +361,7 @@
         "postcode": "EN8 7FL",
         "uprn": "148048608",
         "url": "https://www.broxbourne.gov.uk",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Broxbourne",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E07000095"
@@ -381,10 +377,10 @@
         "LAD24CD": "E07000172"
     },
     "BuckinghamshireCouncil": {
-        "house_number": "2",
+        "house_number": "The Ridings, Magpie Lane, Loudwater, High Wycombe, HP13 7BA",
         "postcode": "HP13 7BA",
-        "skip_get_url": true,
-        "url": "https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FA353FC74600CBE61BE409534D00A8EC09BDA3AC&lang=en",
+        "uprn": "100081093078",
+        "url": "https://www.buckinghamshire.gov.uk/waste-and-recycling/find-out-when-its-your-bin-collection/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Buckinghamshire",
         "wiki_note": "Pass the house name/number and postcode in their respective arguments, both wrapped in quotes.",
@@ -584,7 +580,7 @@
         "LAD24CD": "E06000052"
     },
     "CotswoldDistrictCouncil": {
-        "house_number": "19",
+        "house_number": "19 SUMMERS WAY, MORETON-IN-MARSH, GL56 0GB",
         "postcode": "GL56 0GB",
         "skip_get_url": true,
         "url": "https://community.cotswold.gov.uk/s/waste-collection-enquiry",

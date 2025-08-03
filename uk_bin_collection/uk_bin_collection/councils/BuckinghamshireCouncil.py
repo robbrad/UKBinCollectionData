@@ -20,6 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
+            user_uprn = kwargs.get("uprn")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
             check_paon(user_paon)
@@ -27,9 +28,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(
-                "https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FA353FC74600CBE61BE409534D00A8EC09BDA3AC&lang=en"
+            driver.get(kwargs.get("url"))
+
+            # Click "Check now" button
+            check_now_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'Check now')]"))
             )
+            check_now_button.click()
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 10).until(
@@ -37,71 +42,77 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             inputElement_postcode.send_keys(user_postcode)
 
-            # Click search button
-            findAddress = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//button[@class="govuk-button mt-4"]')
-                )
+            # Click Find button
+            find_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Find')]"))
             )
-            findAddress.click()
+            find_button.click()
 
-            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        "//select[@id='addressSelect']//option[contains(., '"
-                        + user_paon
-                        + "')]",
+            # Wait for the address dropdown and select by UPRN
+            if user_uprn:
+                address_option = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, f"//option[@value='{user_uprn}']"))
+                )
+                address_option.click()
+            else:
+                # Fallback to selecting by address text
+                address_option = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, f"//select[@id='addressSelect']//option[contains(., '{user_paon}')]")
                     )
                 )
-            ).click()
+                address_option.click()
 
-            # Wait for the collections table to appear
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        '//div[@class="ant-row d-flex justify-content-between mb-4 mt-2 css-2rgkd4"]',
-                    )
+            # Wait a moment for the page to update after address selection
+            import time
+            time.sleep(2)
+
+            # Wait for collection information to appear - try multiple possible selectors
+            try:
+                WebDriverWait(driver, 15).until(
+                    EC.presence_of_element_located((By.XPATH, "//h2[contains(text(), 'Your next collections')]"))
                 )
-            )
+            except:
+                # Alternative wait for collection data structure
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'ant-row') and contains(@class, 'd-flex')]//h3[@class='text-white']"))
+                )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            recyclingcalendar = soup.find(
-                "div",
-                {
-                    "class": "ant-row d-flex justify-content-between mb-4 mt-2 css-2rgkd4"
-                },
-            )
-
-            rows = recyclingcalendar.find_all(
-                "div",
-                {
-                    "class": "ant-col ant-col-xs-12 ant-col-sm-12 ant-col-md-12 ant-col-lg-12 ant-col-xl-12 css-2rgkd4"
-                },
-            )
-
+            
+            # Find all collection items with the specific structure - try multiple class patterns
+            collection_items = soup.find_all("div", class_=lambda x: x and "ant-col" in x and "ant-col-xs-12" in x)
+            if not collection_items:
+                # Fallback to finding items by structure
+                collection_items = soup.find_all("div", class_=lambda x: x and "p-2" in x and "d-flex" in x and "flex-column" in x)
+            
             current_year = datetime.now().year
             current_month = datetime.now().month
 
-            for row in rows:
-                BinType = row.find("h3").text
-                collectiondate = datetime.strptime(
-                    row.find("div", {"class": "text-white fw-bold"}).text,
-                    "%A %d %B",
-                )
-                if (current_month > 10) and (collectiondate.month < 3):
-                    collectiondate = collectiondate.replace(year=(current_year + 1))
-                else:
-                    collectiondate = collectiondate.replace(year=current_year)
+            for item in collection_items:
+                # Extract bin type from h3 element
+                bin_type_elem = item.find("h3", class_="text-white")
+                # Extract date from div with specific classes
+                date_elem = item.find("div", class_="text-white fw-bold")
+                
+                if bin_type_elem and date_elem:
+                    bin_type = bin_type_elem.get_text().strip()
+                    date_text = date_elem.get_text().strip()
+                    
+                    try:
+                        collection_date = datetime.strptime(date_text, "%A %d %B")
+                        if (current_month > 10) and (collection_date.month < 3):
+                            collection_date = collection_date.replace(year=(current_year + 1))
+                        else:
+                            collection_date = collection_date.replace(year=current_year)
 
-                dict_data = {
-                    "type": BinType,
-                    "collectionDate": collectiondate.strftime("%d/%m/%Y"),
-                }
-                data["bins"].append(dict_data)
+                        dict_data = {
+                            "type": bin_type,
+                            "collectionDate": collection_date.strftime("%d/%m/%Y"),
+                        }
+                        data["bins"].append(dict_data)
+                    except ValueError:
+                        continue
 
         except Exception as e:
             # Here you can log the exception if needed
