@@ -121,7 +121,7 @@ class AbstractGetBinDataClass(ABC):
         urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
         try:
-            full_page = requests.get(url, headers, verify=False, timeout=120)
+            full_page = requests.get(url, headers=headers, verify=False, timeout=120)
             return full_page
         except requests.exceptions.RequestException as err:
             _LOGGER.error(f"Request Error: {err}")

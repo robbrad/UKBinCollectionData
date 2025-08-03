@@ -580,7 +580,7 @@
         "LAD24CD": "E06000052"
     },
     "CotswoldDistrictCouncil": {
-        "house_number": "19",
+        "house_number": "19 SUMMERS WAY, MORETON-IN-MARSH, GL56 0GB",
         "postcode": "GL56 0GB",
         "skip_get_url": true,
         "url": "https://community.cotswold.gov.uk/s/waste-collection-enquiry",
