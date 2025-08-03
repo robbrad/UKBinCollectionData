@@ -16,7 +16,7 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    base_url = "https://fermanaghomagh.isl-fusion.com/"
+    base_url = "https://fermanaghomagh.isl-fusion.com"
 
     def parse_data(self, page: str, **kwargs) -> dict:
         """
