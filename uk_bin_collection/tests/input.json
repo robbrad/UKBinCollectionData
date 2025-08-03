@@ -761,13 +761,11 @@
     },
     "EastHertsCouncil": {
         "LAD24CD": "E07000097",
-        "house_number": "1",
-        "postcode": "CM20 2FZ",
         "skip_get_url": true,
-        "url": "https://www.eastherts.gov.uk",
-        "web_driver": "http://selenium:4444",
+        "uprn": "10023088183",
+        "url": "https://east-herts.co.uk/api/services/",
         "wiki_name": "East Herts Council",
-        "wiki_note": "Pass the house number and postcode in their respective parameters."
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastLindseyDistrictCouncil": {
         "house_number": "1",
