@@ -1,4 +1,15 @@
 =======
+## 0.152.10 (2025-08-04)
+
+### Fix
+
+- Gateshead and East Lothian
+- Enfield and Broxbourne
+- East Herts
+- FermanaghOmaghDistrictCouncil
+- Enfield and Broxbourne
+- East Herts
+
 ## 0.152.9 (2025-08-03)
 
 ### Fix
