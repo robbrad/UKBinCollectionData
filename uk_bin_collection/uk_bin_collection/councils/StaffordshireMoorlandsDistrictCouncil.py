@@ -77,6 +77,10 @@ class CouncilClass(AbstractGetBinDataClass):
         )
         submit.click()
 
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "bin-collection__month"))
+        )
+
         soup = BeautifulSoup(driver.page_source, features="html.parser")
 
         # Quit Selenium webdriver to release session
