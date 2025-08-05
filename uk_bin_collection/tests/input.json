@@ -641,6 +641,13 @@
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000096"
     },
+    "DarlingtonBoroughCouncil": {
+        "uprn": "10003076924",
+        "url": "https://www.darlington.gov.uk/bins-waste-and-recycling/collection-day-lookup/",
+        "wiki_name": "Darlington Borough Council",
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
+        "LAD24CD": "E06000005"
+    },
     "DartfordBoroughCouncil": {
         "uprn": "100060861698",
         "url": "https://www.dartford.gov.uk/waste-recycling/collection-day",
