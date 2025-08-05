@@ -1,11 +1,11 @@
+import re
+import urllib.parse
+
+import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-from bs4 import BeautifulSoup
-import urllib.parse
-import requests
-import re
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -13,11 +13,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
+        headers = {
+            "Origin": "https://www.nuneatonandbedworth.gov.uk/",
+            "Referer": "https://www.nuneatonandbedworth.gov.uk/",
+            "User-Agent": "Mozilla/5.0",
+        }
+
         street = urllib.parse.quote_plus(kwargs.get("paon"))
         base_url = "https://www.nuneatonandbedworth.gov.uk/"
         search_query = f"directory/search?directoryID=3&showInMap=&keywords={street}&search=Search+directory"
 
-        search_response = requests.get(base_url + search_query)
+        search_response = requests.get(base_url + search_query, headers=headers)
 
         if search_response.status_code == 200:
             soup = BeautifulSoup(search_response.content, "html.parser")
@@ -56,7 +62,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def get_bin_data(self, url) -> dict:
 
-        bin_day_response = requests.get(url)
+        headers = {
+            "Origin": "https://www.nuneatonandbedworth.gov.uk/",
+            "Referer": "https://www.nuneatonandbedworth.gov.uk/",
+            "User-Agent": "Mozilla/5.0",
+        }
+
+        bin_day_response = requests.get(url, headers=headers)
 
         if bin_day_response.status_code == 200:
 
