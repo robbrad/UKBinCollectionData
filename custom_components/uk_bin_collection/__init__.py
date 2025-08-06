@@ -291,7 +291,15 @@ def build_ukbcd_args(config_data: dict) -> list:
             continue
         if key == "web_driver" and value is not None:
             value = value.rstrip("/")
-        args.append(f"--{key}={value}")
+            args.append(f"--{key}={value}")
+        elif key == "headless":
+            # Handle boolean headless argument correctly
+            if value:
+                args.append("--headless")
+            else:
+                args.append("--not-headless")
+        else:
+            args.append(f"--{key}={value}")
 
     return args
 
