@@ -31,7 +31,9 @@ class CouncilClass(AbstractGetBinDataClass):
     IBC_ENDPOINT = "https://app.ipswich.gov.uk/bin-collection/"
 
     def transform_date(self, date_str):
-        date_str = re.sub(r"(st|nd|rd|th)", "", date_str)  # Remove ordinal suffixes
+        date_str = re.sub(
+            r"(\d{1,2})(st|nd|rd|th)", r"\1", date_str
+        )  # Remove ordinal suffixes
         date_obj = datetime.strptime(date_str, "%A %d %B %Y")
         return date_obj.strftime(date_format)
 
