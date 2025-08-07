@@ -245,25 +245,39 @@ class CouncilClass(AbstractGetBinDataClass):
             # extract table body
             for row in table.find_all("tr")[1:]:
                 if row.find_all("td")[1].text.strip() == "Normal collection day":
-                    bh_dict[
-                        parse(
-                            row.find_all("td")[0].text.strip(),
-                            dayfirst=True,
-                            fuzzy=True,
-                        ).date()
-                    ] = parse(
-                        row.find_all("td")[0].text.strip(), dayfirst=True, fuzzy=True
-                    ).date()
+                    try:
+                        # Check for normal collection day (no change)
+                        if row.find_all("td")[0].text.strip() == "Normal collection":
+                            continue
+                        else:
+                            bh_dict[
+                                parse(
+                                    row.find_all("td")[0].text.strip(),
+                                    dayfirst=True,
+                                    fuzzy=True,
+                                ).date()
+                            ] = parse(
+                                row.find_all("td")[0].text.strip(), dayfirst=True, fuzzy=True
+                            ).date()
+                    except:
+                        continue
                 else:
-                    bh_dict[
-                        parse(
-                            row.find_all("td")[0].text.strip(),
-                            dayfirst=True,
-                            fuzzy=True,
-                        ).date()
-                    ] = parse(
-                        row.find_all("td")[1].text.strip(), dayfirst=True, fuzzy=True
-                    ).date()
+                    try:
+                        # Check for normal collection day (no change)
+                        if row.find_all("td")[1].text.strip() == "Normal collection":
+                            continue
+                        else:
+                            bh_dict[
+                                parse(
+                                    row.find_all("td")[0].text.strip(),
+                                    dayfirst=True,
+                                    fuzzy=True,
+                                ).date()
+                            ] = parse(
+                                row.find_all("td")[1].text.strip(), dayfirst=True, fuzzy=True
+                            ).date()
+                    except:
+                        continue
 
         for refuse_date in refuse_dates:
             collection_date = (datetime.strptime(refuse_date, "%d/%m/%Y") + timedelta(
