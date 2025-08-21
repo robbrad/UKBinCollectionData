@@ -283,21 +283,26 @@ def build_ukbcd_args(config_data: dict) -> list:
     """Build the argument list for UKBinCollectionApp from config data."""
     council = config_data.get("original_parser") or config_data.get("council", "")
     url = config_data.get("url", "")
-
     args = [council, url]
+
+    # Per-key formatters: return a list of CLI args for that key
+    def _format_headless(v):
+        return ["--headless"] if v else ["--not-headless"]
+
+    def _format_web_driver(v):
+        return [f"--web_driver={v.rstrip('/')}"] if v is not None else []
+
+    formatters = {
+        "headless": _format_headless,
+        "web_driver": _format_web_driver,
+    }
 
     for key, value in config_data.items():
         if key in EXCLUDED_ARG_KEYS:
             continue
-        if key == "web_driver" and value is not None:
-            value = value.rstrip("/")
-            args.append(f"--{key}={value}")
-        elif key == "headless":
-            # Handle boolean headless argument correctly
-            if value:
-                args.append("--headless")
-            else:
-                args.append("--not-headless")
+        fmt = formatters.get(key)
+        if fmt:
+            args.extend(fmt(value))
         else:
             args.append(f"--{key}={value}")
 
