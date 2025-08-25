@@ -31,7 +31,6 @@ EXCLUDED_ARG_KEYS = {
     "council",
     "url",
     "skip_get_url",
-    "headless",
     "local_browser",
     "timeout",
     "icon_color_mapping",

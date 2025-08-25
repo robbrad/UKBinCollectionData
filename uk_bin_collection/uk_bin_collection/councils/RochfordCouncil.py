@@ -33,10 +33,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     "tr", {"class": "govuk-table__row"}
                 ):
                     week_text = week.get_text().strip().split("\n")
+                    date_str = week_text[0].split(" - ")[0].split("–")[0].strip()
                     collection_date = datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(
-                            week_text[0].split(" - ")[0]
-                        ).strip(),
+                        remove_ordinal_indicator_from_date_string(date_str),
                         "%A %d %B",
                     )
                     next_collection = collection_date.replace(year=datetime.now().year)
