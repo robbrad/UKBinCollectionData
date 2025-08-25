@@ -21,10 +21,16 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
+        headers = {
+            "Origin": "https://www.runnymede.gov.uk",
+            "Referer": "https://www.runnymede.gov.uk",
+            "User-Agent": "Mozilla/5.0",
+        }
+
         URI = f"https://www.runnymede.gov.uk/homepage/150/check-your-bin-collection-day?address={user_uprn}"
 
         # Make the GET request
-        response = requests.get(URI)
+        response = requests.get(URI, headers=headers)
 
         soup = BeautifulSoup(response.text, "html.parser")
 

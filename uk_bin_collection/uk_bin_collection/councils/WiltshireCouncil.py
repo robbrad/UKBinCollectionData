@@ -1,3 +1,5 @@
+import re
+
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -91,40 +93,56 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(response.text, features="html.parser")
             soup.prettify()
-
+            # print(soup)
             # Find all the bits of the current calendar that contain an event
-            events = soup.find_all("div", {"class": "rc-event-container"})
+            resultscontainer = soup.find_all("div", {"class": "results-container"})
 
-            for event in events:
-                # Get the date and type of each bin collection
-                bin_date = datetime.strptime(
-                    event.find_next("a").attrs.get("data-original-datetext"),
-                    "%A %d %B, %Y",
+            for result in resultscontainer:
+                rows = result.find_all(
+                    "div", {"class": "col-12 col-sm-6 col-md-4 col-lg-4 mb-4"}
                 )
-                bin_type = event.find_next("a").attrs.get("data-original-title")
-                # Only process it if it's today or in the future
-                if bin_date.date() >= datetime.now().date():
-                    # Split the really long type up into two separate bins
-                    if (
-                        bin_type
-                        == "Mixed dry recycling (blue lidded bin) and glass (black box or basket)"
-                    ):
-                        collections.append(
-                            (
-                                "Mixed dry recycling (blue lidded bin)",
-                                datetime.strftime(bin_date, date_format),
+                for row in rows:
+                    cardcollectionday = row.find(
+                        "span", {"class": "card-collection-day"}
+                    )
+                    cardcollectiondate = row.find(
+                        "span", {"class": "card-collection-date"}
+                    )
+                    cardcollectionmonth = row.find(
+                        "span", {"class": "card-collection-month"}
+                    )
+                    bin_type = row.find(
+                        "li", {"class": re.compile(r"collection-type-...$")}
+                    ).text
+
+                    collection_date = f"{cardcollectionday.text}{cardcollectiondate.text}{cardcollectionmonth.text}"
+                    bin_date = datetime.strptime(
+                        collection_date,
+                        "%A %d %B %Y",
+                    )
+
+                    if bin_date.date() >= datetime.now().date():
+                        # Split the really long type up into two separate bins
+                        if (
+                            bin_type
+                            == "Mixed dry recycling (blue lidded bin) and glass (black box or basket)"
+                        ):
+                            collections.append(
+                                (
+                                    "Mixed dry recycling (blue lidded bin)",
+                                    datetime.strftime(bin_date, date_format),
+                                )
                             )
-                        )
-                        collections.append(
-                            (
-                                "Glass (black box or basket)",
-                                datetime.strftime(bin_date, date_format),
+                            collections.append(
+                                (
+                                    "Glass (black box or basket)",
+                                    datetime.strftime(bin_date, date_format),
+                                )
                             )
-                        )
-                    else:
-                        collections.append(
-                            (bin_type, datetime.strftime(bin_date, date_format))
-                        )
+                        else:
+                            collections.append(
+                                (bin_type, datetime.strftime(bin_date, date_format))
+                            )
 
         data = {"bins": []}
 

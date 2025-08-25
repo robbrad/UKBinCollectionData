@@ -1,5 +1,7 @@
 import pandas as pd
+import requests
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -12,15 +14,26 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
+        user_url = kwargs.get("url")
+
+        headers = {
+            "Origin": "https://www.nelincs.gov.uk",
+            "Referer": "https://www.nelincs.gov.uk",
+            "User-Agent": "Mozilla/5.0",
+        }
+
+        # Make the GET request
+        response = requests.get(user_url, headers=headers)
+
+        # Parse the HTML
+        soup = BeautifulSoup(response.content, "html.parser")
         soup.prettify()
 
         data = {"bins": []}
 
         # Get list items that can be seen on page
         for element in soup.find_all(
-            "li", {"class": "list-group-item p-0 p-3 bin-collection-item"}
+            "li", {"class": "border-0 list-group-item p-3 bg-light rounded p-2"}
         ):
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]
@@ -35,9 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(dict_data)
 
         # Get hidden list items too
-        for element in soup.find_all(
-            "li", {"class": "list-group-item p-0 p-3 bin-collection-item d-none"}
-        ):
+        for element in soup.find_all("li", {"class": "border-0 list-group-item p-3"}):
             element_text = element.text.strip().split("\n\n")
             element_text = [x.strip() for x in element_text]
 

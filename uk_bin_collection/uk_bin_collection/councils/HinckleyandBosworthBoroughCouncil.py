@@ -20,10 +20,16 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
+        headers = {
+            "Origin": "https://www.hinckley-bosworth.gov.uk",
+            "Referer": "https://www.hinckley-bosworth.gov.uk",
+            "User-Agent": "Mozilla/5.0",
+        }
+
         URI = f"https://www.hinckley-bosworth.gov.uk/set-location?id={user_uprn}&redirect=refuse&rememberloc="
 
         # Make the GET request
-        response = requests.get(URI)
+        response = requests.get(URI, headers=headers)
 
         # Parse the HTML
         soup = BeautifulSoup(response.content, "html.parser")
