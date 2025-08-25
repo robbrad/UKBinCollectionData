@@ -1,4 +1,16 @@
 =======
+## 0.152.11 (2025-08-25)
+
+### Fix
+
+- date extraction in RochfordCouncil data parsing
+- parsing error in BH selenium
+- **hacs**: respect the headless option
+
+### Refactor
+
+- **hacs**: improve build_ukbcd_args with formatter functions
+
 ## 0.152.10 (2025-08-04)
 
 ### Fix
