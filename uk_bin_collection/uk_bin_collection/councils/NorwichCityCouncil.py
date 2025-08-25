@@ -1,5 +1,3 @@
-import time
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -17,76 +15,79 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
-        user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        check_postcode(user_postcode)
+        check_paon(user_paon)
         bindata = {"bins": []}
 
-        API_URL = "https://maps.norwich.gov.uk/arcgis/rest/services/MyNorwich/PropertyDetails/FeatureServer/2/query"
+        URI = "https://bnr-wrp.whitespacews.com/"
 
-        params = {
-            "f": "json",
-            "where": f"UPRN='{user_uprn}' or UPRN='0{user_uprn}'",
-            "returnGeometry": "true",
-            "spatialRel": "esriSpatialRelIntersects",
-            "geometryType": "esriGeometryPolygon",
-            "inSR": "4326",
-            "outFields": "*",
-            "outSR": "4326",
-            "resultRecordCount": "1000",
+        session = requests.Session()
+
+        # get link from first page as has some kind of unique hash
+        r = session.get(
+            URI,
+        )
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, features="html.parser")
+
+        alink = soup.find("a", text="View my collections")
+
+        if alink is None:
+            raise Exception("Initial page did not load correctly")
+
+        # greplace 'seq' query string to skip next step
+        nextpageurl = alink["href"].replace("seq=1", "seq=2")
+
+        data = {
+            "address_name_number": user_paon,
+            "address_postcode": user_postcode,
         }
 
-        r = requests.get(API_URL, params=params)
+        # get list of addresses
+        r = session.post(nextpageurl, data)
+        r.raise_for_status()
 
-        data = r.json()
-        data = data["features"][0]["attributes"]["WasteCollectionHtml"]
-        soup = BeautifulSoup(data, "html.parser")
+        soup = BeautifulSoup(r.text, features="html.parser")
 
-        alternateCheck = soup.find("p")
-        if alternateCheck.text.__contains__("alternate"):
-            alternateCheck = True
-        else:
-            alternateCheck = False
+        # get first address (if you don't enter enough argument values this won't find the right address)
+        alink = soup.find("div", id="property_list").find("a")
 
-        strong = soup.find_all("strong")
-        collections = []
+        if alink is None:
+            raise Exception("Address not found")
 
-        if alternateCheck:
-            bin_types = strong[2].text.strip().replace(".", "").split(" and ")
-            for bin in bin_types:
-                collections.append(
-                    (
-                        bin.capitalize(),
-                        datetime.strptime(strong[1].text.strip(), date_format),
-                    )
-                )
+        nextpageurl = URI + alink["href"]
 
-        else:
-            p_tag = soup.find_all("p")
-            i = 1
-            for p in p_tag:
-                bin_types = (
-                    p.text.split("Your ")[1].split(" is collected")[0].split(" and ")
-                )
-                for bin in bin_types:
-                    collections.append(
-                        (
-                            bin.capitalize(),
-                            datetime.strptime(strong[1].text.strip(), date_format),
-                        )
-                    )
-                i += 2
+        # get collection page
+        r = session.get(
+            nextpageurl,
+        )
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, features="html.parser")
 
-        if len(strong) > 3:
-            collections.append(
-                ("Garden", datetime.strptime(strong[4].text.strip(), date_format))
-            )
+        if soup.find("span", id="waste-hint"):
+            raise Exception("No scheduled services at this address")
 
-        ordered_data = sorted(collections, key=lambda x: x[1])
-        for item in ordered_data:
+        u1s = soup.find("section", id="scheduled-collections").find_all("u1")
+
+        for u1 in u1s:
+            lis = u1.find_all("li", recursive=False)
+
+            date = lis[1].text.replace("\n", "")
+            bin_type = lis[2].text.replace("\n", "")
+
             dict_data = {
-                "type": item[0] + " bin",
-                "collectionDate": item[1].strftime(date_format),
+                "type": bin_type,
+                "collectionDate": datetime.strptime(
+                    date,
+                    "%d/%m/%Y",
+                ).strftime(date_format),
             }
             bindata["bins"].append(dict_data)
+
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
         return bindata
