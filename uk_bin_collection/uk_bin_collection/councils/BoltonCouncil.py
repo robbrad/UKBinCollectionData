@@ -1,6 +1,5 @@
-import time
 import re
-
+import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
@@ -35,7 +34,7 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             # Get our initial session running
-            page = "https://carehomes.bolton.gov.uk/bins.aspx"
+            page = "https://web.bolton.gov.uk/bins.aspx"
 
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
