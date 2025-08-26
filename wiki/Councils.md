@@ -658,7 +658,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Bolton Council
 ```commandline
-python collect_data.py BoltonCouncil https://carehomes.bolton.gov.uk/bins.aspx -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+python collect_data.py BoltonCouncil https://web.bolton.gov.uk/bins.aspx -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
