@@ -820,13 +820,12 @@ Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](h
 
 ### Buckinghamshire Council (Chiltern, South Bucks, Wycombe)
 ```commandline
-python collect_data.py BuckinghamshireCouncil https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FA353FC74600CBE61BE409534D00A8EC09BDA3AC&lang=en -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BuckinghamshireCouncil https://iapp.itouchvision.com/iappcollectionday/collection-dayP -u XXXXXXXX
 ```
 Additional parameters:
-- `-s` - skip get URL
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
+- `-u` - UPRN
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 Note: Pass the house name/number and postcode in their respective arguments, both wrapped in quotes.
 
