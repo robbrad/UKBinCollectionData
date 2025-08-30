@@ -820,7 +820,7 @@ Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](h
 
 ### Buckinghamshire Council (Chiltern, South Bucks, Wycombe)
 ```commandline
-python collect_data.py BuckinghamshireCouncil https://iapp.itouchvision.com/iappcollectionday/collection-dayP -u XXXXXXXX
+python collect_data.py BuckinghamshireCouncil https://iapp.itouchvision.com/iappcollectionday/collection-day -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
