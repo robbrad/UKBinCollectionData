@@ -377,13 +377,10 @@
         "LAD24CD": "E07000172"
     },
     "BuckinghamshireCouncil": {
-        "house_number": "The Ridings, Magpie Lane, Loudwater, High Wycombe, HP13 7BA",
-        "postcode": "HP13 7BA",
         "uprn": "100081093078",
         "url": "https://www.buckinghamshire.gov.uk/waste-and-recycling/find-out-when-its-your-bin-collection/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Buckinghamshire",
-        "wiki_note": "Pass the house name/number and postcode in their respective arguments, both wrapped in quotes.",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E06000060"
     },
     "BurnleyBoroughCouncil": {
@@ -1446,7 +1443,7 @@
         "house_number": "71",
         "postcode": "ME16 8BT",
         "url": "https://my.maidstone.gov.uk/service/Find-your-bin-day",
-        "web_driver": "http://selenium:4444", 
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Maidstone",
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000110"

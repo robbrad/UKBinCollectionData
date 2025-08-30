@@ -15,7 +15,7 @@ iv_hex = "2CBF4FC35C69B82362D393A4F0B9971A"
 
 
 @dataclass
-class BuckInput:
+class BucksInput:
     P_CLIENT_ID: Literal[152]
     P_COUNCIL_ID: Literal[34505]
     P_LANG_CODE: Literal["EN"]
@@ -29,11 +29,11 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def encode_body(self, buck_input: BuckInput):
+    def encode_body(self, bucks_input: BucksInput):
         key = bytes.fromhex(key_hex)
         iv = bytes.fromhex(iv_hex)
 
-        json_data = json.dumps(asdict(buck_input))
+        json_data = json.dumps(asdict(bucks_input))
         data_bytes = json_data.encode("utf-8")
 
         padder = padding.PKCS7(128).padder()
@@ -67,11 +67,11 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             user_uprn: str = kwargs.get("uprn") or ""
             check_uprn(user_uprn)
-            buck_input = BuckInput(
+            bucks_input = BucksInput(
                 P_CLIENT_ID=152, P_COUNCIL_ID=34505, P_LANG_CODE="EN", P_UPRN=user_uprn
             )
 
-            encoded_input = self.encode_body(buck_input)
+            encoded_input = self.encode_body(bucks_input)
 
             session = requests.Session()
             response = session.post(
