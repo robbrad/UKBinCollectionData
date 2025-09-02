@@ -24,10 +24,16 @@ class CouncilClass(AbstractGetBinDataClass):
         def solve(s):
             return re.sub(r"(\d)(st|nd|rd|th)", r"\1", s)
 
+        headers = {
+            "Origin": "https://www.lichfielddc.gov.uk",
+            "Referer": "https://www.lichfielddc.gov.uk",
+            "User-Agent": "Mozilla/5.0",
+        }
+
         URI = f"https://www.lichfielddc.gov.uk/homepage/6/bin-collection-dates?uprn={user_uprn}"
 
         # Make the GET request
-        response = requests.get(URI)
+        response = requests.get(URI, headers=headers)
 
         soup = BeautifulSoup(response.text, "html.parser")
 
