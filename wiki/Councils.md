@@ -2880,12 +2880,13 @@ Note: Pass the house number and postcode in their respective parameters. This pa
 
 ### Norwich
 ```commandline
-python collect_data.py NorwichCityCouncil https://www.norwich.gov.uk -u XXXXXXXX
+python collect_data.py NorwichCityCouncil https://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
 ```
 Additional parameters:
-- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
 
-Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+Note: Pass the house number and postcode in their respective parameters.
 
 ---
 
