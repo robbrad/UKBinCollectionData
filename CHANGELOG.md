@@ -1,4 +1,30 @@
 =======
+## 0.153.0 (2025-09-02)
+
+### Feat
+
+- Change buckinghamshire council to get data from endpoint
+
+### Fix
+
+- 1573 Update Bolton council URL
+- East Herts Council
+- #1575
+- Runnymede Borough Council
+- #1513
+- Wiltshire Council
+- #1533
+- Staffordshire Moorlands District Council
+- #1535
+- Ipswich Borough Council
+- #1548
+- North East Lincs
+- Hinckley and Bosworth Borough Council
+- Nuneaton Bedworth Borough Council
+- #1514
+- Lichfield District Council
+- 1549
+
 ## 0.152.11 (2025-08-25)
 
 ### Fix
