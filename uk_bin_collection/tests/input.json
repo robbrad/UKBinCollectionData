@@ -253,7 +253,7 @@
         "postcode": "BL1 5PQ",
         "skip_get_url": true,
         "uprn": "100010886936",
-        "url": "https://carehomes.bolton.gov.uk/bins.aspx",
+        "url": "https://web.bolton.gov.uk/bins.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Bolton",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields.",
