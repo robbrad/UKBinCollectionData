@@ -1789,11 +1789,12 @@
         "LAD24CD": "E06000057"
     },
     "NorwichCityCouncil": {
-        "uprn": "100090888980",
-        "url": "https://www.norwich.gov.uk",
-        "wiki_command_url_override": "https://www.norwich.gov.uk",
+        "house_number": "2",
+        "postcode": "NR2 3TT",
+        "url": "https://bnr-wrp.whitespacews.com",
+        "wiki_command_url_override": "hhttps://bnr-wrp.whitespacews.com",
         "wiki_name": "Norwich",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "wiki_note": "Pass the house number and postcode in their respective parameters.",
         "LAD24CD": "E07000148"
     },
     "NottinghamCityCouncil": {
