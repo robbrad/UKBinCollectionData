@@ -995,7 +995,7 @@
     },
     "GlasgowCityCouncil": {
         "uprn": "906700034497",
-        "url": "https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/AddressSearch.aspx",
+        "url": "https://onlineservices.glasgow.gov.uk/forms/refuseandrecyclingcalendar/AddressSearch.aspx",
         "skip_get_url": true,
         "wiki_name": "Glasgow City",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
