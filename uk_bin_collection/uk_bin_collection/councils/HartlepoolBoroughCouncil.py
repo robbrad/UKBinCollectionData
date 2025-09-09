@@ -73,7 +73,9 @@ class CouncilClass(AbstractGetBinDataClass):
         for div in soup.find_all("div"):
             # Extract bin type and date from the span tag
             text = div.find("span").text.strip()
-            bin_type, date = text.split(" ", 1)
+            parts = text.split(" ")
+            date = parts[-1]  # assume the last token is the date
+            bin_type = " ".join(parts[:-1])
             dict_data = {
                 "type": bin_type,
                 "collectionDate": date,
