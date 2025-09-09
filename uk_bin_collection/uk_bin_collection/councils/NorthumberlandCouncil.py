@@ -75,17 +75,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Click submit button and wait for results
             submit_button = wait.until(
-                EC.element_to_be_clickable(
-                    (By.CLASS_NAME, "govuk-button")
-                )
+                EC.element_to_be_clickable(By.CLASS_NAME, "govuk-button")
             )
             submit_button.click()
 
             # Wait for results to load
             route_summary = wait.until(
-                EC.presence_of_element_located(
-                    (By.CLASS_NAME, "govuk-table")
-                )
+                EC.presence_of_element_located(By.CLASS_NAME, "govuk-table")
             )
 
             now = datetime.now()
