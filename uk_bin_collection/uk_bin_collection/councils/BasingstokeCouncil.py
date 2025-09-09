@@ -1,6 +1,8 @@
-from bs4 import BeautifulSoup
 from datetime import datetime
+
 import requests
+from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -10,6 +12,7 @@ COLLECTION_KINDS = {
     "glass": "rteelem_ctl03_pnlCollections_Glass",
     # Garden waste data is only returned if the property is subscribed to the Garden Waste service
     "garden": "rteelem_ctl03_pnlCollections_GardenWaste",
+    "food": "rteelem_ctl03_pnlCollections_Food",
 }
 
 
