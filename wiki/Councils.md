@@ -1774,7 +1774,7 @@ Note: Use [this site](https://www.gbcbincalendars.co.uk/) to find the collection
 
 ### Glasgow City
 ```commandline
-python collect_data.py GlasgowCityCouncil https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/AddressSearch.aspx -s -u XXXXXXXX
+python collect_data.py GlasgowCityCouncil https://onlineservices.glasgow.gov.uk/forms/refuseandrecyclingcalendar/AddressSearch.aspx -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
