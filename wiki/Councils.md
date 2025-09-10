@@ -876,16 +876,12 @@ Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](h
 
 ### Buckinghamshire
 ```commandline
-python collect_data.py BuckinghamshireCouncil https://iapp.itouchvision.com/iappcollectionday/collection-day -u XXXXXXXX
+python collect_data.py BuckinghamshireCouncil https://www.buckinghamshire.gov.uk/waste-and-recycling/find-out-when-its-your-bin-collection/ -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
-```
-
-
-Note: Pass the house name/number and postcode in their respective arguments, both wrapped in quotes.
 
 ---
 
@@ -2866,21 +2862,21 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ### Northumberland
 ```commandline
-python collect_data.py NorthumberlandCouncil https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py NorthumberlandCouncil https://bincollection.northumberland.gov.uk/postcode -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-u` - UPRN
 - `-p` - postcode
-- `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
 ### Norwich
 ```commandline
-python collect_data.py NorwichCityCouncil https://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
+python collect_data.py NorwichCityCouncil hhttps://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
