@@ -52,13 +52,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for and click cookie button
             cookie_button = wait.until(
-                EC.element_to_be_clickable(By.CLASS_NAME, "accept-all")
+                EC.element_to_be_clickable(
+                    (By.CLASS_NAME, "accept-all")
+                )
             )
             cookie_button.click()
 
             # Wait for and find postcode input
             inputElement_pc = wait.until(
-                EC.presence_of_element_located((By.ID, "postcode")
+                EC.presence_of_element_located(
+                    (By.ID, "postcode")
+                )
             )
 
             # Enter postcode and submit
@@ -67,7 +71,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for and find house number input
             selectElement_address = wait.until(
-                EC.presence_of_element_located(By.ID, "address")
+                EC.presence_of_element_located(
+                    (By.ID, "address")
+                )
             )
 
             dropdown = Select(selectElement_address)
@@ -99,7 +105,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # - cell 1 is the date in format eg. 9 September (so no year value 🥲)
             # - cell 2 is the day name, not useful
             # - cell 3 is the bin type eg. "General waste", "Recycling", "Garden waste"
-            rows = soup.find_all("tr", class_="govuk-table__row")
+            rows = soup.find("tbody", class_="govuk-table__body").find_all("tr", class_="govuk-table__row")
 
             for row in rows:
                 bin_type=row.find_all("td")[-1].text.strip()
@@ -107,8 +113,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_date_string = row.find('th').text.strip()
 
                 # sometimes but not always the day is written "22nd" instead of 22 so make sure we get a proper int
-                collection_date_day = [int(i) for i in collection_date_string.split(' ').split() if i.isdigit()]
-                collection_date_month_name = collection_date_string.split(' ')[1]
+                collection_date_day = "".join([i for i in list(collection_date_string.split(" ")[0]) if i.isdigit()])
+                collection_date_month_name = collection_date_string.split(" ")[1]
 
                 # if we are currently in Oct, Nov, or Dec and the collection month is Jan, Feb, or Mar, let's assume its next year
                 if (current_month >= 10) and (collection_date_month_name in ["January", "February", "March"]):
@@ -117,7 +123,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     collection_date_year = current_year
 
                 collection_date = time.strptime(
-                    f"{collection_date_day[0]} {collection_date_month_name} {collection_date_year}", "%d %B %Y"
+                    f"{collection_date_day} {collection_date_month_name} {collection_date_year}", "%d %B %Y"
                 )
 
                 # Add it to the data

@@ -1779,8 +1779,8 @@
         "LAD24CD": "E06000065"
     },
     "NorthumberlandCouncil": {
-        "uprn": "10093091235",
-        "postcode": "NE46 1UQ",
+        "uprn": "010096302588",
+        "postcode": "NE65 0ZP",
         "skip_get_url": true,
         "url": "https://bincollection.northumberland.gov.uk/postcode",
         "web_driver": "http://selenium:4444",
