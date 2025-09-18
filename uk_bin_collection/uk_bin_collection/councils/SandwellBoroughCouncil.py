@@ -28,17 +28,10 @@ class CouncilClass(AbstractGetBinDataClass):
         "Referer": "https://my.sandwell.gov.uk/fillform/?iframe_id=fillform-frame-1&db_id=",
     }
     LOOKUPS = [
-        (
-            "58a1a71694992",
-            "DWDate",
-            [
-                "Recycling (Blue)",
-                "Household Waste (Grey)",
-                "Food Waste (Brown)",
-                "Batteries",
-            ],
-        ),
-        ("56b1cdaf6bb43", "GWDate", ["Garden Waste (Green)"]),
+        ("686295a88a750", "GWDate", ["Garden Waste (Green)"]),
+        ("686294de50729", "DWDate", ["Household Waste (Grey)"]),
+        ("6863a78a1dd8e", "FWDate", ["Food Waste (Brown)"]),
+        ("68629dd642423", "MDRDate", ["Recycling (Blue)"]),
     ]
 
     def parse_data(self, page: str, **kwargs) -> dict:
