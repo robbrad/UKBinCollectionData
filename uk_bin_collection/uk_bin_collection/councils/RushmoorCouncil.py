@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
+from lxml import etree
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-from lxml import etree
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -20,7 +21,8 @@ class CouncilClass(AbstractGetBinDataClass):
         collections = []
 
         # Convert the XML to JSON and load the next collection data
-        result = soup.find("p").contents[0].text.replace("\\", "")[1:-1]
+        result = soup.find("p").contents[0]
+
         json_data = json.loads(result)["NextCollection"]
 
         # Get general waste data

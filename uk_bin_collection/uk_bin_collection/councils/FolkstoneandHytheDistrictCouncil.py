@@ -74,6 +74,28 @@ class CouncilClass(AbstractGetBinDataClass):
                     }
                     bindata["bins"].append(dict_data)
 
+        # Extract the Garden Waste schedule
+        garden_waste_section = soup.find(
+            "span", text=lambda x: x and "Garden Waste" in x
+        )
+        if garden_waste_section:
+            bin_types = garden_waste_section.text.replace("Garden Waste: ", "").split(
+                " / "
+            )
+            garden_waste_dates = garden_waste_section.find_next("ul").find_all("li")
+            for date in garden_waste_dates:
+                for bin_type in bin_types:
+                    dict_data = {
+                        "type": bin_type.strip(),
+                        "collectionDate": datetime.strptime(
+                            remove_ordinal_indicator_from_date_string(
+                                date.text.strip()
+                            ),
+                            "%A %d %B %Y",
+                        ).strftime("%d/%m/%Y"),
+                    }
+                    bindata["bins"].append(dict_data)
+
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
         )
