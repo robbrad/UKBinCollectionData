@@ -1615,7 +1615,7 @@ Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your U
 
 ### Erewash
 ```commandline
-python collect_data.py ErewashBoroughCouncil https://map.erewash.gov.uk/isharelive.web/myerewash.aspx -s -u XXXXXXXX
+python collect_data.py ErewashBoroughCouncil https://www.erewash.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
