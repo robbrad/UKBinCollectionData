@@ -885,7 +885,7 @@
     "ErewashBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "10003582028",
-        "url": "https://map.erewash.gov.uk/isharelive.web/myerewash.aspx",
+        "url": "https://www.erewash.gov.uk",
         "wiki_name": "Erewash",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000036"
