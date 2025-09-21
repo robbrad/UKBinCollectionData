@@ -1,4 +1,7 @@
+import json
+
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -16,46 +19,41 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
+        label_map = {
+            "domestic-waste-collection-service": "Household Waste",
+            "recycling-collection-service": "Recycling",
+            "garden-waste-collection-service": "Garden Waste",
+        }
+
         requests.packages.urllib3.disable_warnings()
         response = requests.get(
-            f"https://map.erewash.gov.uk/isharelive.web/myerewash.aspx?action=SetAddress&UniqueId={uprn}",
+            f"https://www.erewash.gov.uk/bbd-whitespace/one-year-collection-dates-without-christmas?uprn={uprn}",
             headers={"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"},
         )
+        # Parse the JSON response
+        payload = response.json()
+        bin_collection = json.loads(payload) if isinstance(payload, str) else payload
 
-        soup = BeautifulSoup(response.text, features="html.parser")
-        collections = soup.find("div", {"aria-label": "Waste Collection"}).find_all(
-            "div", {"class": "atPanelContent"}
+        cd = next(
+            i["settings"]["collection_dates"]
+            for i in bin_collection
+            if i.get("command") == "settings"
         )
-        for c in collections:
-            bin_type = c.find("h4").get_text(strip=True)
-            if "my next" in bin_type.lower():
-                collection_info = c.find("div", {"class": "atPanelData"}).get_text(
-                    strip=True
-                )
-                results = re.search(
-                    "([A-Za-z]+ \\d+[A-Za-z]+ [A-Za-z]+ \\d*)", collection_info
-                )
-                if results:
-                    collection_date = datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(results[1]).strip(),
-                        "%A %d %B %Y",
-                    ).strftime(date_format)
-                    dict_data = {
-                        "type": bin_type.replace("My Next ", "").replace(
-                            " Collection", ""
-                        ),
-                        "collectionDate": collection_date,
-                    }
-                    data["bins"].append(dict_data)
-                    if "garden waste" in collection_info.lower():
-                        dict_data = {
-                            "type": "Garden Waste",
-                            "collectionDate": collection_date,
-                        }
-                        data["bins"].append(dict_data)
 
-        data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
-        )
+        for month in cd.values():
+            for e in month:
+                d = e["date"]  # "YYYY-MM-DD"
+                label = label_map.get(
+                    e.get("service-identifier"),
+                    e.get("service") or e.get("service-identifier"),
+                )
+
+                dict_data = {
+                    "type": label,
+                    "collectionDate": datetime.strptime(d, "%Y-%m-%d").strftime(
+                        date_format
+                    ),
+                }
+                data["bins"].append(dict_data)
 
         return data

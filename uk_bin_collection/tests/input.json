@@ -102,12 +102,9 @@
     },
     "BCPCouncil": {
         "LAD24CD": "E06000058",
-        "house_number": "3 HARBOUR VIEW ROAD, POOLE, BH14 0PD",
-        "postcode": "BH14 0PD",
-        "web_driver": "http://selenium:4444",
         "skip_get_url": true,
         "uprn": "100040810214",
-        "url": "https://online.bcpcouncil.gov.uk/bindaylookup/",
+        "url": "https://bcpportal.bcpcouncil.gov.uk/checkyourbincollection",
         "wiki_name": "Bournemouth, Christchurch and Poole",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
@@ -888,7 +885,7 @@
     "ErewashBoroughCouncil": {
         "skip_get_url": true,
         "uprn": "10003582028",
-        "url": "https://map.erewash.gov.uk/isharelive.web/myerewash.aspx",
+        "url": "https://www.erewash.gov.uk",
         "wiki_name": "Erewash",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000036"
@@ -995,7 +992,7 @@
     },
     "GlasgowCityCouncil": {
         "uprn": "906700034497",
-        "url": "https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/AddressSearch.aspx",
+        "url": "https://onlineservices.glasgow.gov.uk/forms/refuseandrecyclingcalendar/AddressSearch.aspx",
         "skip_get_url": true,
         "wiki_name": "Glasgow City",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",

@@ -482,14 +482,11 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Bournemouth, Christchurch and Poole
 ```commandline
-python collect_data.py BCPCouncil https://online.bcpcouncil.gov.uk/bindaylookup/ -s -u XXXXXXXX -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BCPCouncil https://bcpportal.bcpcouncil.gov.uk/checkyourbincollection -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
@@ -876,16 +873,12 @@ Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](h
 
 ### Buckinghamshire
 ```commandline
-python collect_data.py BuckinghamshireCouncil https://iapp.itouchvision.com/iappcollectionday/collection-day -u XXXXXXXX
+python collect_data.py BuckinghamshireCouncil https://www.buckinghamshire.gov.uk/waste-and-recycling/find-out-when-its-your-bin-collection/ -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
-```
-
-
-Note: Pass the house name/number and postcode in their respective arguments, both wrapped in quotes.
 
 ---
 
@@ -1622,7 +1615,7 @@ Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your U
 
 ### Erewash
 ```commandline
-python collect_data.py ErewashBoroughCouncil https://map.erewash.gov.uk/isharelive.web/myerewash.aspx -s -u XXXXXXXX
+python collect_data.py ErewashBoroughCouncil https://www.erewash.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -1778,7 +1771,7 @@ Note: Use [this site](https://www.gbcbincalendars.co.uk/) to find the collection
 
 ### Glasgow City
 ```commandline
-python collect_data.py GlasgowCityCouncil https://onlineservices.glasgow.gov.uk/forms/RefuseAndRecyclingWebApplication/AddressSearch.aspx -s -u XXXXXXXX
+python collect_data.py GlasgowCityCouncil https://onlineservices.glasgow.gov.uk/forms/refuseandrecyclingcalendar/AddressSearch.aspx -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -2880,7 +2873,7 @@ Note: Pass the house number and postcode in their respective parameters. This pa
 
 ### Norwich
 ```commandline
-python collect_data.py NorwichCityCouncil https://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
+python collect_data.py NorwichCityCouncil hhttps://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
