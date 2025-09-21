@@ -72,7 +72,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     break
 
             if not found:
-                raise Exception(f"Address containing '{user_paon}' not found in dropdown options")
+                raise Exception(
+                    f"Address containing '{user_paon}' not found in dropdown options"
+                )
 
             submit_btn = wait.until(
                 EC.presence_of_element_located(
@@ -84,7 +86,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             results = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, f'//span[contains(@class,"collection-sub")]')
+                    (By.XPATH, f'//div[contains(@class,"mx-name-listView1")]')
                 )
             )
 
@@ -96,44 +98,21 @@ class CouncilClass(AbstractGetBinDataClass):
             current_date = datetime.now()
 
             # Find all elements with class starting with 'mx-name-index-'
-            bins = soup.find_all(class_=lambda x: x and x.startswith("mx-name-index-"))
+            bin_view = soup.find(class_="mx-name-listView1")
+            bins = bin_view.find_all(
+                class_=lambda x: x and x.startswith("mx-name-index-")
+            )
 
             for bin_item in bins:
-                bin_type = bin_item.find(class_="collection-main").text.strip()
-                day_of_week_elements = bin_item.find_all(class_="collection-header")
-                bin_date = None
+                bin_type = bin_item.find(class_="mx-name-text31").text.strip()
 
-                for elem in day_of_week_elements:
-                    if (
-                        elem.text.strip() != bin_type
-                    ):  # Avoid taking the bin type as the date
-                        next_sibling = elem.find_next_sibling()
-                        if next_sibling:
-                            bin_date_str = next_sibling.text.strip()
-                            try:
-                                # Try parsing the date string in the format 'dd Month' (e.g., '30 Dec', '5 January')
-                                bin_date = datetime.strptime(bin_date_str, "%d %b")
-                            except ValueError:
-                                try:
-                                    # If the above format fails, try 'dd MonthName' (e.g., '30 December', '5 January')
-                                    bin_date = datetime.strptime(bin_date_str, "%d %B")
-                                except ValueError:
-                                    pass
+                bin_date_str = bin_item.find(class_="mx-name-text29").text.strip()
 
-                            if bin_date:
-                                # Set the year based on the logic provided
-                                if bin_date.month < current_date.month:
-                                    bin_date = bin_date.replace(
-                                        year=current_date.year + 1
-                                    )
-                                else:
-                                    bin_date = bin_date.replace(year=current_date.year)
-                                # Format the date to the desired format
-                                bin_date = bin_date.strftime("%d/%m/%Y")
-                                break
+                bin_date = datetime.strptime(bin_date_str, "%d %B %Y")
+                bin_date = bin_date.strftime(date_format)
+
                 dict_data = {"type": bin_type, "collectionDate": bin_date}
                 data["bins"].append(dict_data)
-                print(data)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

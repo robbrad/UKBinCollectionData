@@ -125,23 +125,6 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the page to load - giving it extra time
             time.sleep(5)
 
-            # Use only the selector that we know works
-            # print("Looking for bin type elements...")
-            try:
-                bin_type_selector = (
-                    By.CSS_SELECTOR,
-                    "div.formatting_bold.formatting_size_bigger.formatting span.value-as-text",
-                )
-                WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located(bin_type_selector)
-                )
-                # print(f"Found bin type elements with selector: {bin_type_selector}")
-            except TimeoutException:
-                # print("Could not find bin type elements. Taking screenshot for debugging...")
-                screenshot_path = f"bin_type_error_{int(time.time())}.png"
-                driver.save_screenshot(screenshot_path)
-                # print(f"Screenshot saved to {screenshot_path}")
-
             # Create BS4 object from driver's page source
             # print("Parsing page with BeautifulSoup...")
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -149,122 +132,37 @@ class CouncilClass(AbstractGetBinDataClass):
             # Initialize data dictionary
             data = {"bins": []}
 
-            # Looking for bin types in the exact HTML structure
-            bin_type_elements = soup.select(
-                "div.page_cell.contains_widget:first-of-type div.formatting_bold.formatting_size_bigger.formatting span.value-as-text"
-            )
-            # print(f"Found {len(bin_type_elements)} bin type elements")
-
-            # Look specifically for date elements with the exact structure
-            date_elements = soup.select("div.col-sm-12.font-xs-3xl span.value-as-text")
-            hidden_dates = soup.select(
-                "div.col-sm-12.font-xs-3xl input[type='hidden'][value*='/']"
-            )
-
-            # print(f"Found {len(bin_type_elements)} bin types and {len(date_elements)} date elements")
-
-            # We need a smarter way to match bin types with their dates
-            bin_count = 0
-
-            # Map of bin types to their collection dates
-            bin_date_map = {}
-
-            # Extract all date strings that look like actual dates
-            date_texts = []
-            date_pattern = re.compile(
-                r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+\d+(?:st|nd|rd|th)?\s+\w+\s+\d{4}",
-                re.IGNORECASE,
-            )
-
-            for element in date_elements:
-                text = element.get_text(strip=True)
-                if date_pattern.search(text):
-                    date_texts.append(text)
-                    # print(f"Found valid date text: {text}")
-
-            # Find hidden date inputs with values in DD/MM/YYYY format
-            hidden_date_values = []
-            for hidden in hidden_dates:
-                value = hidden.get("value", "")
-                if re.match(r"\d{1,2}/\d{1,2}/\d{4}", value):
-                    hidden_date_values.append(value)
-                    # print(f"Found hidden date value: {value}")
-
-            # When filtering date elements
-            date_elements = soup.select("div.col-sm-12.font-xs-3xl span.value-as-text")
-            valid_date_elements = []
-
-            for element in date_elements:
-                text = element.get_text(strip=True)
-                if contains_date(text):
-                    valid_date_elements.append(element)
-                    # print(f"Found valid date element: {text}")
-                else:
-                    pass
-                    # print(f"Skipping non-date element: {text}")
-
-            # print(f"Found {len(bin_type_elements)} bin types and {len(valid_date_elements)} valid date elements")
-
-            # When processing each bin type
-            for i, bin_type_elem in enumerate(bin_type_elements):
-                bin_type = bin_type_elem.get_text(strip=True)
-
-                # Try to find a date for this bin type
-                date_text = None
-
-                # Look for a valid date element
-                if i < len(valid_date_elements):
-                    date_elem = valid_date_elements[i]
-                    date_text = date_elem.get_text(strip=True)
-
-                # If we don't have a valid date yet, try using the hidden input
-                if not date_text or not contains_date(date_text):
-                    if i < len(hidden_dates):
-                        date_value = hidden_dates[i].get("value")
-                        if contains_date(date_value):
-                            date_text = date_value
-
-                # Skip if we don't have a valid date
-                if not date_text or not contains_date(date_text):
-                    # print(f"No valid date found for bin type: {bin_type}")
+            for row in soup.select(".listing_template_row"):
+                # Title (waste stream) is the first <p> in the section
+                first_p = row.find("p")
+                if not first_p:
                     continue
+                stream = first_p.get_text(" ", strip=True)
 
-                # print(f"Found bin type: {bin_type} with date: {date_text}")
+                for p in row.find_all("p"):
+                    t = p.get_text("\n", strip=True)
 
-                try:
-                    # Clean up the date text
-                    date_text = remove_ordinal_indicator_from_date_string(date_text)
+                    if re.search(r"\bNext collection\b", t, flags=re.I):
+                        # Expect format: "Next collection\nTuesday 16th September 2025"
+                        parts = [x.strip() for x in t.split("\n") if x.strip()]
+                        if len(parts) >= 2:
+                            next_collection_display = parts[-1]  # last line
 
-                    # Try to parse the date
-                    try:
-                        collection_date = datetime.strptime(
-                            date_text, "%A %d %B %Y"
-                        ).date()
-                    except ValueError:
-                        try:
-                            collection_date = datetime.strptime(
-                                date_text, "%d/%m/%Y"
-                            ).date()
-                        except ValueError:
-                            # Last resort
-                            collection_date = parse(date_text).date()
+                # Build record
+                next_date = datetime.strptime(
+                    remove_ordinal_indicator_from_date_string(next_collection_display),
+                    "%A %d %B %Y",
+                )
 
-                    # Create bin entry
-                    bin_entry = {
-                        "type": bin_type,
-                        "collectionDate": collection_date.strftime(date_format),
-                    }
+                # Create bin entry
+                bin_entry = {
+                    "type": stream,
+                    "collectionDate": next_date.strftime(date_format),
+                }
 
-                    # Add to data
-                    data["bins"].append(bin_entry)
-                    bin_count += 1
-                    # print(f"Added bin entry: {bin_entry}")
-
-                except Exception as e:
-                    pass
-                    # print(f"Error parsing date '{date_text}': {str(e)}")
-
-            # print(f"Successfully parsed {bin_count} bin collections")
+                # Add to data
+                data["bins"].append(bin_entry)
+                # print(f"Added bin entry: {bin_entry}")
 
             if not data["bins"]:
                 # print("No bin data found. Saving page for debugging...")
