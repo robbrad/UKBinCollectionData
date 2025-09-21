@@ -1776,13 +1776,13 @@
         "LAD24CD": "E06000065"
     },
     "NorthumberlandCouncil": {
-        "house_number": "22",
-        "postcode": "NE46 1UQ",
+        "uprn": "010096302588",
+        "postcode": "NE65 0ZP",
         "skip_get_url": true,
-        "url": "https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx",
+        "url": "https://bincollection.northumberland.gov.uk/postcode",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E06000057"
     },
     "NorwichCityCouncil": {

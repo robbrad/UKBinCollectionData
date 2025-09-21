@@ -2859,15 +2859,15 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ### Northumberland
 ```commandline
-python collect_data.py NorthumberlandCouncil https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py NorthumberlandCouncil https://bincollection.northumberland.gov.uk/postcode -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-u` - UPRN
 - `-p` - postcode
-- `-n` - house number
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
