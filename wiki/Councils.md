@@ -100,6 +100,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Eastbourne](#eastbourne)
 - [East Cambridgeshire](#east-cambridgeshire)
 - [East Devon](#east-devon)
+- [East Dunbartonshire](#east-dunbartonshire)
 - [East Herts Council](#east-herts-council)
 - [East Lindsey](#east-lindsey)
 - [East Lothian](#east-lothian)
@@ -1439,6 +1440,17 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ---
 
+### East Dunbartonshire
+```commandline
+python collect_data.py EastDunbartonshireCouncil https://www.eastdunbarton.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
 ### East Herts Council
 ```commandline
 python collect_data.py EastHertsCouncil https://east-herts.co.uk/api/services/ -s -u XXXXXXXX
@@ -2674,14 +2686,15 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Newport
 ```commandline
-python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
 - `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Pass the postcode and UPRN. You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+Note: Pass the postcode and house number in their respective arguments, both wrapped in quotes.
 
 ---
 
@@ -3294,14 +3307,15 @@ Note: Replace `XXXXXXXX` with your UPRN. You will need to use [FindMyAddress](ht
 
 ### Somerset
 ```commandline
-python collect_data.py SomersetCouncil https://www.somerset.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py SomersetCouncil https://www.somerset.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
 - `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+Note: Provide your house number and postcode
 
 ---
 
@@ -3768,14 +3782,15 @@ Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https
 
 ### Test Valley
 ```commandline
-python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected/when-are-my-bins-collected -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
 - `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+Note: Provide your house number and postcode
 
 ---
 
