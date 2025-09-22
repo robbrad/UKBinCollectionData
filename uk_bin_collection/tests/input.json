@@ -1647,10 +1647,11 @@
     "NewportCityCouncil": {
         "postcode": "NP20 4HE",
         "skip_get_url": true,
-        "uprn": "100100688837",
+        "house_number": "6",
         "url": "https://www.newport.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Newport",
-        "wiki_note": "Pass the postcode and UPRN. You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes.",
         "LAD24CD": "W06000022"
     },
     "NorthAyrshireCouncil": {
