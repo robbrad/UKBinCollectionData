@@ -760,6 +760,13 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000040"
     },
+    "EastDunbartonshireCouncil": {
+        "uprn": "132027197",
+        "url": "https://www.eastdunbarton.gov.uk/",
+        "wiki_name": "East Dunbartonshire",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "LAD24CD": "S12000045"
+    },
     "EastHertsCouncil": {
         "LAD24CD": "E07000097",
         "skip_get_url": true,

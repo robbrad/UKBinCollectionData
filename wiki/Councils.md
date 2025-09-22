@@ -100,6 +100,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Eastbourne](#eastbourne)
 - [East Cambridgeshire](#east-cambridgeshire)
 - [East Devon](#east-devon)
+- [East Dunbartonshire](#east-dunbartonshire)
 - [East Herts Council](#east-herts-council)
 - [East Lindsey](#east-lindsey)
 - [East Lothian](#east-lothian)
@@ -1436,6 +1437,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### East Dunbartonshire
+```commandline
+python collect_data.py EastDunbartonshireCouncil https://www.eastdunbarton.gov.uk/ -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
