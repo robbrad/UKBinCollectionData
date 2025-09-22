@@ -3768,14 +3768,15 @@ Note: Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https
 
 ### Test Valley
 ```commandline
-python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py TestValleyBoroughCouncil https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected/when-are-my-bins-collected -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
 - `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+Note: Provide your house number and postcode
 
 ---
 

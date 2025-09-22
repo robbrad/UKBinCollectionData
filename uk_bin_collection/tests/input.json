@@ -2415,12 +2415,13 @@
         "LAD24CD": "E07000076"
     },
     "TestValleyBoroughCouncil": {
-        "postcode": "SO51 9ZD",
+        "postcode": "SO51 0BY",
         "skip_get_url": true,
-        "uprn": "200010012019",
-        "url": "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected",
+        "house_number": "2",
+        "url": "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected/when-are-my-bins-collected",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Test Valley",
-        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
+        "wiki_note": "Provide your house number and postcode",
         "LAD24CD": "E07000093"
     },
     "ThanetDistrictCouncil": {
