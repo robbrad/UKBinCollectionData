@@ -2088,10 +2088,11 @@
     "SomersetCouncil": {
         "postcode": "TA6 4AA",
         "skip_get_url": true,
-        "uprn": "10090857775",
+        "house_number": "5",
         "url": "https://www.somerset.gov.uk/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Somerset",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Provide your house number and postcode",
         "LAD24CD": "E06000066"
     },
     "SouthAyrshireCouncil": {
