@@ -6,17 +6,16 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 def format_bin_data(key: str, date: datetime):
     formatted_date = date.strftime(date_format)
-
-    if re.match(r"^R\d+$", key) is not None:
-        # RX matches both general waste and recycling
-        return [
-            ("General Waste (Black Bin)", formatted_date),
-            ("Recycling & Food Waste", formatted_date),
-        ]
-    elif re.match(r"^G\d+$", key) is not None:
+    servicename = key.get("hso_servicename")
+    print(servicename)
+    if re.match(r"^Recycl", servicename) is not None:
+        return [ ("Recycling", formatted_date) ]
+    elif re.match(r"^Refuse", servicename) is not None:
+        return [("General Waste (Black Bin)", formatted_date)]
+    elif re.match(r"^Garden", servicename) is not None:
         return [("Garden Waste (Green Bin)", formatted_date)]
-    elif re.match(r"^C\d+$", key) is not None:
-        return [("Recycling & Food Waste", formatted_date)]
+    elif re.match(r"^Food", servicename) is not None:
+        return [("Food Waste", formatted_date)]
     else:
         return None
 
@@ -27,37 +26,34 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(uprn)
 
         api_url = (
-            f"https://webapps.southglos.gov.uk/Webservices/SGC.RefuseCollectionService/RefuseCollectionService"
-            f".svc/getCollections/{uprn}"
+            f"https://api.southglos.gov.uk/wastecomp/GetCollectionDetails"
+            f"?uprn={uprn}"
         )
 
         headers = {"content-type": "application/json"}
 
         response = requests.get(api_url, headers=headers)
 
-        json_response = json.loads(response.content)
+        json_response = response.json()
         if not json_response:
             raise ValueError("No collection data found for provided UPRN.")
 
-        collection_data = json_response[0]
+        collection_data = json_response.get('value')
 
         today = datetime.today()
         eight_weeks = datetime.today() + timedelta(days=8 * 7)
         data = {"bins": []}
         collection_tuple = []
-
-        for key in collection_data:
-            if key == "CalendarName":
-                continue
-
-            item = collection_data[key]
+        for collection in collection_data:
+            print(collection)
+            item = collection.get('hso_nextcollection')
 
             if item == "":
                 continue
 
-            collection_date = datetime.strptime(item, date_format)
+            collection_date = datetime.fromisoformat(item)
             if today.date() <= collection_date.date() <= eight_weeks.date():
-                bin_data = format_bin_data(key, collection_date)
+                bin_data = format_bin_data(collection, collection_date)
                 if bin_data is not None:
                     for bin_date in bin_data:
                         collection_tuple.append(bin_date)
