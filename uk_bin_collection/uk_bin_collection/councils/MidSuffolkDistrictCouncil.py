@@ -1,6 +1,7 @@
 import re
 import time
 
+import holidays
 import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
@@ -50,58 +51,63 @@ class CouncilClass(AbstractGetBinDataClass):
         refuse_dates = get_dates_every_x_days(refusestartDate, 14, 28)
         recycling_dates = get_dates_every_x_days(recyclingstartDate, 14, 28)
 
-        bank_holidays = [
-            ("25/12/2024", 2),
-            ("26/12/2024", 2),
-            ("27/12/2024", 3),
-            ("30/12/2024", 1),
-            ("31/12/2024", 2),
-            ("01/01/2025", 2),
-            ("02/01/2025", 2),
-            ("03/01/2025", 3),
-            ("06/01/2025", 1),
-            ("07/01/2025", 1),
-            ("08/01/2025", 1),
-            ("09/01/2025", 1),
-            ("10/01/2025", 1),
-            ("18/04/2025", 1),
-            ("21/04/2025", 1),
-            ("22/04/2025", 1),
-            ("23/04/2025", 1),
-            ("24/04/2025", 1),
-            ("25/04/2025", 1),
-            ("05/05/2025", 1),
-            ("06/05/2025", 1),
-            ("07/05/2025", 1),
-            ("08/05/2025", 1),
-            ("09/05/2025", 1),
-            ("26/05/2025", 1),
-            ("27/05/2025", 1),
-            ("28/05/2025", 1),
-            ("29/05/2025", 1),
-            ("30/05/2025", 1),
-            ("25/08/2025", 1),
-            ("26/08/2025", 1),
-            ("27/08/2025", 1),
-            ("28/08/2025", 1),
-            ("29/08/2025", 1),
-        ]
+        # Generate bank holidays dynamically using the holidays library
+        def get_bank_holidays_set():
+            """Get set of bank holiday dates for quick lookup."""
+            current_year = datetime.now().year
+            uk_holidays = holidays.UK(years=range(current_year - 1, current_year + 3))
+            return set(uk_holidays.keys())
+
+        def find_next_collection_day(original_date):
+            """Find the next valid collection day, avoiding weekends and bank holidays."""
+            bank_holiday_dates = get_bank_holidays_set()
+            check_date = datetime.strptime(original_date, "%d/%m/%Y")
+
+            # Safety limit to prevent infinite loops
+            max_attempts = 10
+            attempts = 0
+
+            # Keep moving forward until we find a valid collection day
+            while attempts < max_attempts:
+                attempts += 1
+
+                # Check if it's a weekend (Saturday=5, Sunday=6)
+                if check_date.weekday() >= 5:
+                    check_date += timedelta(days=1)
+                    continue
+
+                # Check if it's a bank holiday
+                if check_date.date() in bank_holiday_dates:
+                    # Major holidays (Christmas/New Year) get bigger delays
+                    holiday_name = str(holidays.UK().get(check_date.date(), ''))
+                    is_major_holiday = (
+                        'Christmas' in holiday_name or
+                        'Boxing' in holiday_name or
+                        'New Year' in holiday_name
+                    )
+                    delay_days = 2 if is_major_holiday else 1
+                    check_date += timedelta(days=delay_days)
+                    continue
+
+                # Found a valid collection day
+                break
+
+            # If we've exhausted attempts, return the original date as fallback
+            if attempts >= max_attempts:
+                return original_date
+
+            return check_date.strftime("%d/%m/%Y")
+
+        bank_holidays = []  # No longer needed - using smart date calculation
 
         for refuseDate in refuse_dates:
-
-            collection_date = (
+            # Calculate initial collection date
+            initial_date = (
                 datetime.strptime(refuseDate, "%d/%m/%Y") + timedelta(days=offset_days)
             ).strftime("%d/%m/%Y")
 
-            holiday_offset = next(
-                (value for date, value in bank_holidays if date == collection_date), 0
-            )
-
-            if holiday_offset > 0:
-                collection_date = (
-                    datetime.strptime(collection_date, "%d/%m/%Y")
-                    + timedelta(days=holiday_offset)
-                ).strftime("%d/%m/%Y")
+            # Find the next valid collection day (handles weekends + cascading holidays)
+            collection_date = find_next_collection_day(initial_date)
 
             dict_data = {
                 "type": "Refuse Bin",
@@ -110,21 +116,14 @@ class CouncilClass(AbstractGetBinDataClass):
             bindata["bins"].append(dict_data)
 
         for recyclingDate in recycling_dates:
-
-            collection_date = (
+            # Calculate initial collection date
+            initial_date = (
                 datetime.strptime(recyclingDate, "%d/%m/%Y")
                 + timedelta(days=offset_days)
             ).strftime("%d/%m/%Y")
 
-            holiday_offset = next(
-                (value for date, value in bank_holidays if date == collection_date), 0
-            )
-
-            if holiday_offset > 0:
-                collection_date = (
-                    datetime.strptime(collection_date, "%d/%m/%Y")
-                    + timedelta(days=holiday_offset)
-                ).strftime("%d/%m/%Y")
+            # Find the next valid collection day (handles weekends + cascading holidays)
+            collection_date = find_next_collection_day(initial_date)
 
             dict_data = {
                 "type": "Recycling Bin",
@@ -140,48 +139,27 @@ class CouncilClass(AbstractGetBinDataClass):
 
             garden_dates = get_dates_every_x_days(gardenstartDate, 14, 28)
 
-            garden_bank_holidays = [
-                ("23/12/2024", 1),
-                ("24/12/2024", 1),
-                ("25/12/2024", 1),
-                ("26/12/2024", 1),
-                ("27/12/2024", 1),
-                ("30/12/2024", 1),
-                ("31/12/2024", 1),
-                ("01/01/2025", 1),
-                ("02/01/2025", 1),
-                ("03/01/2025", 1),
-            ]
+            def is_christmas_period(date_obj):
+                """Check if date is in Christmas/New Year skip period for garden collections."""
+                if date_obj.month == 12 and date_obj.day >= 23:
+                    return True
+                if date_obj.month == 1 and date_obj.day <= 3:
+                    return True
+                return False
 
             for gardenDate in garden_dates:
-
-                collection_date = (
+                # Calculate initial collection date
+                initial_date = (
                     datetime.strptime(gardenDate, "%d/%m/%Y")
                     + timedelta(days=offset_days_garden)
-                ).strftime("%d/%m/%Y")
-
-                garden_holiday = next(
-                    (
-                        value
-                        for date, value in garden_bank_holidays
-                        if date == collection_date
-                    ),
-                    0,
                 )
 
-                if garden_holiday > 0:
+                # Skip garden collections during Christmas/New Year period
+                if is_christmas_period(initial_date):
                     continue
 
-                holiday_offset = next(
-                    (value for date, value in bank_holidays if date == collection_date),
-                    0,
-                )
-
-                if holiday_offset > 0:
-                    collection_date = (
-                        datetime.strptime(collection_date, "%d/%m/%Y")
-                        + timedelta(days=holiday_offset)
-                    ).strftime("%d/%m/%Y")
+                # Find the next valid collection day (handles weekends + holidays)
+                collection_date = find_next_collection_day(initial_date.strftime("%d/%m/%Y"))
 
                 dict_data = {
                     "type": "Garden Bin",
