@@ -1608,7 +1608,7 @@
         "postcode": "SO41 0GJ",
         "skip_get_url": true,
         "uprn": "100060482345",
-        "url": "https://forms.newforest.gov.uk/id/FIND_MY_COLLECTION",
+        "url": "https://forms.newforest.gov.uk/ufs/FIND_MY_BIN_BAR.eb",
         "web_driver": "http://selenium:4444",
         "wiki_name": "New Forest",
         "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver.",
