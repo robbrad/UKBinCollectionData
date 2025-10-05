@@ -25,6 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
         URI = "https://www.oxford.gov.uk/xfp/form/142#q6ad4e3bf432c83230a0347a6eea6c805c672efeb_0"
 
         session = requests.Session()
+        session.headers.update({'User-Agent': 'HomeAssistant UK Bin Collection integration'})
         token_response = session.get(session_uri)
         soup = BeautifulSoup(token_response.text, "html.parser")
         token = soup.find("input", {"name": "__token"}).attrs["value"]
