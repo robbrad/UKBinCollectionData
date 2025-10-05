@@ -2122,7 +2122,7 @@
     "SouthGloucestershireCouncil": {
         "skip_get_url": true,
         "uprn": "566419",
-        "url": "https://beta.southglos.gov.uk/waste-and-recycling-collection-date",
+        "url": "https://api.southglos.gov.uk/wastecomp/GetCollectionDetails",
         "wiki_name": "South Gloucestershire",
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E06000025"

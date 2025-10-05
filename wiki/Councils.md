@@ -3344,7 +3344,7 @@ Note: Replace `XXXXXXXX` with your UPRN. You can find your UPRN using [FindMyAdd
 
 ### South Gloucestershire
 ```commandline
-python collect_data.py SouthGloucestershireCouncil https://beta.southglos.gov.uk/waste-and-recycling-collection-date -s -u XXXXXXXX
+python collect_data.py SouthGloucestershireCouncil  https://api.southglos.gov.uk/wastecomp/GetCollectionDetails -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
