@@ -31,4 +31,5 @@ jobs:
         id: cz
         uses: commitizen-tools/commitizen-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }} #moved to gh token
+
