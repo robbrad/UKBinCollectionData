@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          token: "${{ secrets.GITHUB_TOKEN }}"
           fetch-depth: 0
       - uses: actions/setup-python@v6
         with:
@@ -31,4 +31,4 @@ jobs:
         id: cz
         uses: commitizen-tools/commitizen-action@master
         with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
