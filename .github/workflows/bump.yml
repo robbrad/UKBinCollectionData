@@ -1,35 +1,50 @@
 name: Bump Version
-
 on:
   push:
-    # Trigger unless only the wiki directory changed
+    branches: [ "master" ]
     paths-ignore:
       - "wiki/**"
       - "**/**.md"
       - ".github/workflows/**"
-    branches: [ "master" ]
 
 jobs:
   bump:
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
-    environment: bump
-    concurrency: bump
     permissions:
-      id-token: write
       contents: write
+      pull-requests: write
+
     steps:
       - uses: actions/checkout@v5
         with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
           fetch-depth: 0
+
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+
+      # Work on a throwaway branch so we don't touch master directly
+      - name: Create bump branch
+        run: |
+          git checkout -b chore/bump-${{ github.run_number }}
 
       - name: Bump version
         id: cz
         uses: commitizen-tools/commitizen-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} #moved to gh token
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # cz will commit & tag on the current branch
 
+      - name: Push bump branch
+        run: |
+          git push --follow-tags origin HEAD:chore/bump-${{ github.run_number }}
+
+      - name: Open PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/bump-${{ github.run_number }}
+          title: "bump: release ${{ env.REVISION || steps.cz.outputs.version }}"
+          body: "Automated version bump via Commitizen."
+          labels: release
