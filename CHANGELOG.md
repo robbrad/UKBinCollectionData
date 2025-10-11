@@ -1,4 +1,37 @@
 =======
+## 0.155.0 (2025-10-11)
+
+### Feat
+
+- Create tag-on-merge.yml
+- Update bump.yml
+- fix bump.yml
+- Update TorbayCouncil.py
+- Update bump.yml
+- fix release pipeline bump.yml
+- fix Torbay
+- fix releases process
+
+### Fix
+
+- Update AberdeenCityCouncil.py
+- Update TorbayCouncil.py
+- Update TorbayCouncil.py
+- Update TorbayCouncil.py
+- Update URL for NewForestCouncil
+- New URL and page for wheelie bins
+- improve Mid Suffolk District Council holiday handling with dynamic bank holiday detection
+- Oxford now rejects the "Requests" default user agent
+- #1557 - Adding East Dunbartonshire
+- #1557 - Adding East Dunbartonshire
+- #1569 - Somerset Council
+- #1569 - Somerset Council
+- #1559 - Newport City Council
+- #1559 - Newport City Council
+- #1574 - Test Valley Borough Council
+- #1574 - Test Valley Borough Council
+- #1566 South Gloucestershire Council
+
 ## 0.154.0 (2025-09-21)
 
 ### Feat
