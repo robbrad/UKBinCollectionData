@@ -1,4 +1,4 @@
-name: Test Councils (Pull Request Only)
+name: PR - Test Councils
 
 on:
   workflow_dispatch:

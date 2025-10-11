@@ -1,0 +1,117 @@
+name: Release - Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to rollback (e.g., 0.155.0)'
+        required: true
+        type: string
+      delete_pypi:
+        description: 'Also yank from PyPI? (cannot delete, only yank)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Validate version format
+        run: |
+          if ! [[ "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Invalid version format. Use X.Y.Z (e.g., 0.155.0)"
+            exit 1
+          fi
+          echo "✅ Version format valid: ${{ inputs.version }}"
+
+      - name: Check if release exists
+        id: check
+        run: |
+          if gh release view ${{ inputs.version }} > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✅ Release ${{ inputs.version }} exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Release ${{ inputs.version }} not found"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete GitHub Release
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          echo "🗑️ Deleting GitHub release ${{ inputs.version }}..."
+          gh release delete ${{ inputs.version }} --yes
+          echo "✅ GitHub release deleted"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Git Tag
+        run: |
+          if git rev-parse ${{ inputs.version }} >/dev/null 2>&1; then
+            echo "🗑️ Deleting git tag ${{ inputs.version }}..."
+            git push origin :refs/tags/${{ inputs.version }}
+            echo "✅ Git tag deleted"
+          else
+            echo "⚠️ Tag ${{ inputs.version }} not found locally"
+          fi
+
+      - name: Setup Python (if PyPI yank requested)
+        if: inputs.delete_pypi == true
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry (if PyPI yank requested)
+        if: inputs.delete_pypi == true
+        uses: abatilo/actions-poetry@v4.0.0
+        with:
+          poetry-version: '1.8.4'
+
+      - name: Yank from PyPI
+        if: inputs.delete_pypi == true
+        run: |
+          echo "⚠️ Yanking version ${{ inputs.version }} from PyPI..."
+          echo "Note: This marks the release as unsuitable for installation but doesn't delete it"
+          poetry config pypi-token.pypi "${{ secrets.PYPI_API_KEY }}"
+          # PyPI doesn't support yanking via poetry directly, need to use twine
+          pip install twine
+          # Note: You'll need to manually yank via PyPI web interface or use:
+          # twine upload --repository pypi --skip-existing dist/*
+          echo "⚠️ PyPI yanking must be done manually at: https://pypi.org/manage/project/uk-bin-collection/releases/"
+          echo "Go to the release and click 'Options' -> 'Yank release'"
+
+      - name: Create workflow summary
+        if: always()
+        run: |
+          echo "## Rollback Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **GitHub Release**: ${{ steps.check.outputs.exists == 'true' && '✅ Deleted' || '⚠️ Not found' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Git Tag**: Deleted from remote" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.delete_pypi }}" == "true" ]; then
+            echo "- **PyPI**: ⚠️ Manual yank required" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### Next Steps for PyPI" >> $GITHUB_STEP_SUMMARY
+            echo "1. Go to https://pypi.org/manage/project/uk-bin-collection/releases/" >> $GITHUB_STEP_SUMMARY
+            echo "2. Find version ${{ inputs.version }}" >> $GITHUB_STEP_SUMMARY
+            echo "3. Click 'Options' -> 'Yank release'" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Important Notes" >> $GITHUB_STEP_SUMMARY
+          echo "- The version bump commit still exists in git history" >> $GITHUB_STEP_SUMMARY
+          echo "- To fully rollback, you may need to revert the bump commit" >> $GITHUB_STEP_SUMMARY
+          echo "- Users who already installed this version will keep it" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify completion
+        run: |
+          echo "✅ Rollback completed for version ${{ inputs.version }}"
+          echo "Check the summary tab for details"
