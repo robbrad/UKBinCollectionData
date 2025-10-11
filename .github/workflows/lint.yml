@@ -16,7 +16,7 @@ jobs:
     name: Lint Commit Messages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - run: "echo \"export default {extends: ['@commitlint/config-conventional'], rules: { 'subject-case': [0], 'body-max-line-length': [0], 'footer-max-line-length': [0] }}\" > commitlint.config.mjs"

@@ -1,7 +1,5 @@
-from datetime import datetime, timedelta
-
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -21,35 +19,29 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        headers = {
-            "Origin": "https://www.runnymede.gov.uk",
-            "Referer": "https://www.runnymede.gov.uk",
-            "User-Agent": "Mozilla/5.0",
-        }
-
-        URI = f"https://www.runnymede.gov.uk/homepage/150/check-your-bin-collection-day?address={user_uprn}"
+        URI = f"https://www.eastdunbarton.gov.uk/services/a-z-of-services/bins-waste-and-recycling/bins-and-recycling/collections/?uprn={user_uprn}"
 
         # Make the GET request
-        response = requests.get(URI, headers=headers)
+        response = requests.get(URI)
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        div = soup.find("div", class_="widget-bin-collection")
-
-        table = div.find("table")
+        table = soup.find("table", {"class": "bin-table"})
 
         tbody = table.find("tbody")
 
-        for tr in tbody.find_all("tr"):
+        trs = tbody.find_all("tr")
+
+        for tr in trs:
             tds = tr.find_all("td")
-            bin_type = tds[0].text.strip()
-            date_text = tds[1].text.strip()
+            bin_type = tds[0].get_text()
+            collection_date_str = tds[1].find("span").get_text()
+
+            collection_date = datetime.strptime(collection_date_str, "%A, %d %B %Y")
 
             dict_data = {
                 "type": bin_type,
-                "collectionDate": (
-                    datetime.strptime(date_text, "%A, %d %B %Y")
-                ).strftime(date_format),
+                "collectionDate": collection_date.strftime(date_format),
             }
             bindata["bins"].append(dict_data)
 

@@ -14,12 +14,12 @@ jobs:
     name: Setup Environment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install Poetry
         run: pipx install poetry==1.8.4
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.12
 
@@ -31,7 +31,7 @@ jobs:
 
       - name: Get All Council Files That Have Changed
         id: changed-council-files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           files: |
             uk_bin_collection/uk_bin_collection/councils/**.py
@@ -61,9 +61,9 @@ jobs:
         python-version: [3.12]
         poetry-version: [1.8.4]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -92,9 +92,9 @@ jobs:
         python-version: [3.12]
         poetry-version: [1.8.4]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -125,9 +125,9 @@ jobs:
         ports:
           - 4444:4444
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 

@@ -1,4 +1,77 @@
 =======
+## 0.154.0 (2025-09-21)
+
+### Feat
+
+- handle changes to northumberland council website
+- modify input for NorthumberlandCouncil to accept uprn instead of house number, and use new page structure
+
+### Fix
+
+- the cookie banner is not optional
+- #1570 - Slough Borough Council
+- #1570 - Slough Borough Council
+- #1520 - Erewash Borough Council
+- #1520 - Erewash Borough Council
+- #1554 - Folkestone and Hythe District Council
+- #1554 - Folkestone and Hythe District Council
+- #1604 - West Berkshire Council
+- #1604 - West Berkshire Council
+- #1606 - Brighton and Hove City Council
+- #1606 - Brighton and Hove City Council
+- #1565 - BCP Council
+- #1565 - BCP Council
+- #1571 - Castle Point District Council
+- #1571 - Castle Point District Council
+- #1584 - NorthHertfordshireDistrictCouncil
+- #1584 - NorthHertfordshireDistrictCouncil
+- #1599
+- #1599 - Basingstoke Council
+- #1587
+- #1587 - Hartlepool Borough Council
+- #1588
+- #1588 Glasgow City Council
+- #1591
+- #1591 Rushmoor Council
+
+## 0.153.0 (2025-09-02)
+
+### Feat
+
+- Change buckinghamshire council to get data from endpoint
+
+### Fix
+
+- 1573 Update Bolton council URL
+- East Herts Council
+- #1575
+- Runnymede Borough Council
+- #1513
+- Wiltshire Council
+- #1533
+- Staffordshire Moorlands District Council
+- #1535
+- Ipswich Borough Council
+- #1548
+- North East Lincs
+- Hinckley and Bosworth Borough Council
+- Nuneaton Bedworth Borough Council
+- #1514
+- Lichfield District Council
+- 1549
+
+## 0.152.11 (2025-08-25)
+
+### Fix
+
+- date extraction in RochfordCouncil data parsing
+- parsing error in BH selenium
+- **hacs**: respect the headless option
+
+### Refactor
+
+- **hacs**: improve build_ukbcd_args with formatter functions
+
 ## 0.152.10 (2025-08-04)
 
 ### Fix

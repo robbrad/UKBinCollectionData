@@ -38,11 +38,14 @@ class CouncilClass(AbstractGetBinDataClass):
         if "rows" in bin_data:
             collection_str = bin_data["rows"][0]["DomesticBinDay"]
 
-            results = re.findall(r"(\d\d?\/\d\d?\/\d{4}) \((\w*)\)", collection_str)
+            results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4}|today)\s*\(([^)]+)\)', collection_str)
 
             if results:
                 for result in results:
-                    collection_date = datetime.strptime(result[0], "%d/%m/%Y")
+                    if (result[0] == "today"):
+                        collection_date = datetime.today()
+                    else:
+                        collection_date = datetime.strptime(result[0], "%d/%m/%Y")
                     dict_data = {
                         "type": result[1],
                         "collectionDate": collection_date.strftime(date_format),
