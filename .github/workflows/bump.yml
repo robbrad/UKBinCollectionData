@@ -1,4 +1,4 @@
-name: Bump Version
+name: Release - Bump Version
 
 on:
   push:
@@ -29,6 +29,15 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+          cache: 'pip'
+
+      - name: Cache Commitizen
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-commitizen-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-commitizen-
 
       - name: Install Commitizen
         run: pip install commitizen
@@ -41,10 +50,30 @@ jobs:
       - name: Bump version and create tag
         id: bump
         run: |
+          # Check if there are commits to bump
+          if cz bump --yes --changelog --dry-run 2>&1 | grep -q "No commits found"; then
+            echo "No version bump needed - no conventional commits since last release"
+            echo "skip=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
           cz bump --yes --changelog
           echo "version=$(cz version --project)" >> $GITHUB_OUTPUT
+          echo "skip=false" >> $GITHUB_OUTPUT
 
       - name: Push changes and tags
+        if: steps.bump.outputs.skip != 'true'
         run: |
           git push origin master
           git push origin --tags
+
+      - name: Create workflow summary
+        if: always()
+        run: |
+          echo "## Bump Summary" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.bump.outputs.skip }}" == "true" ]; then
+            echo "- **Status**: ⏭️ Skipped (no conventional commits)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+            echo "- **New Version**: ${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Tag Created**: ${{ steps.bump.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          fi

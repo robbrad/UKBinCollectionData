@@ -23,6 +23,7 @@
 !pytest.ini
 
 # Or these folders...
+!docs
 !.github
 !*.png
 !.github/ISSUE_TEMPLATE

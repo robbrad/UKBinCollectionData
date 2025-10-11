@@ -1,4 +1,4 @@
-name: Validate Release Ready
+name: PR - Validate Release Ready
 
 on:
   pull_request:
@@ -17,6 +17,15 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+          cache: 'pip'
+
+      - name: Cache Poetry
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/pipx
+          key: ${{ runner.os }}-pipx-poetry-1.8.4
+          restore-keys: |
+            ${{ runner.os }}-pipx-poetry-
 
       - name: Install Poetry
         run: pipx install poetry==1.8.4
