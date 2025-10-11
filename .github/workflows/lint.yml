@@ -1,4 +1,4 @@
-name: Lint Commit Message
+name: PR - Lint Commit Messages
 
 on:
   push:

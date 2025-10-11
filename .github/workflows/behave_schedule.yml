@@ -1,4 +1,4 @@
-name: Test Councils (Nightly Full Run)
+name: Scheduled - Test All Councils
 
 on:
   workflow_dispatch:
