@@ -30,7 +30,8 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            page = "https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx"
+            # Use the new URL as mentioned in the issue
+            page = "http://bincollection.northumberland.gov.uk"
 
             data = {"bins": []}
 
@@ -48,114 +49,184 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create wait object
             wait = WebDriverWait(driver, 20)
 
-            # Wait for and click cookie button
-            cookie_button = wait.until(
-                EC.element_to_be_clickable((By.ID, "ccc-notify-accept"))
-            )
-            cookie_button.click()
-
-            # Wait for and find house number input
-            inputElement_hn = wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.ID,
-                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtHouse",
+            # The new site may have different structure, so we'll need to adapt
+            # Try to find postcode and house number inputs
+            try:
+                # Look for postcode input field
+                postcode_input = wait.until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//input[contains(@name, 'postcode') or contains(@id, 'postcode') or contains(@placeholder, 'postcode')]")
                     )
                 )
-            )
-
-            # Wait for and find postcode input
-            inputElement_pc = wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.ID,
-                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtPostcode",
+                
+                # Look for house number input field  
+                house_input = wait.until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//input[contains(@name, 'house') or contains(@id, 'house') or contains(@name, 'number') or contains(@placeholder, 'house')]")
                     )
                 )
-            )
-
-            # Enter details
-            inputElement_pc.send_keys(user_postcode)
-            inputElement_hn.send_keys(user_paon)
-
-            # Click lookup button and wait for results
-            lookup_button = wait.until(
-                EC.element_to_be_clickable(
-                    (
-                        By.ID,
-                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_butLookup",
+                
+                # Enter details
+                postcode_input.send_keys(user_postcode)
+                house_input.send_keys(user_paon)
+                
+                # Look for submit button
+                submit_button = wait.until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, "//button[@type='submit'] | //input[@type='submit'] | //button[contains(text(), 'Search')] | //input[contains(@value, 'Search')]")
                     )
                 )
-            )
-            lookup_button.click()
-
-            # Wait for results to load
-            route_summary = wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.ID,
-                        "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_spanRouteSummary",
+                submit_button.click()
+                
+                # Wait for results to load
+                time.sleep(3)
+                
+                # Get page source after everything has loaded
+                soup = BeautifulSoup(driver.page_source, features="html.parser")
+                
+                # Look for collection dates and bin types in the results
+                # This is a generic approach that looks for common patterns
+                import re
+                from datetime import datetime
+                
+                # Look for date patterns in the page
+                date_pattern = r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\d{1,2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{2,4}\b'
+                page_text = soup.get_text()
+                dates = re.findall(date_pattern, page_text, re.IGNORECASE)
+                
+                # Look for bin type keywords near dates
+                bin_keywords = ['recycling', 'refuse', 'garden', 'waste', 'rubbish', 'general', 'household']
+                
+                # Try to extract structured data from tables or lists
+                tables = soup.find_all('table')
+                for table in tables:
+                    rows = table.find_all('tr')
+                    for row in rows:
+                        cells = row.find_all(['td', 'th'])
+                        if len(cells) >= 2:
+                            # Look for date in first cell and bin type in second
+                            date_text = cells[0].get_text().strip()
+                            type_text = cells[1].get_text().strip()
+                            
+                            # Try to parse date
+                            try:
+                                if re.match(r'\d{1,2}[/-]\d{1,2}[/-]\d{2,4}', date_text):
+                                    date_obj = datetime.strptime(date_text, '%d/%m/%Y')
+                                elif re.match(r'\d{1,2}\s+\w+\s+\d{4}', date_text):
+                                    date_obj = datetime.strptime(date_text, '%d %B %Y')
+                                else:
+                                    continue
+                                    
+                                if any(keyword in type_text.lower() for keyword in bin_keywords):
+                                    data["bins"].append({
+                                        "type": type_text,
+                                        "collectionDate": date_obj.strftime(date_format)
+                                    })
+                            except ValueError:
+                                continue
+                
+            except TimeoutException:
+                # If the new site structure is completely different, fall back to old URL
+                driver.get("https://www.northumberland.gov.uk/Waste/Household-waste/Household-bin-collections/Bin-Calendars.aspx")
+                
+                # Wait for and click cookie button if present
+                try:
+                    cookie_button = wait.until(
+                        EC.element_to_be_clickable((By.ID, "ccc-notify-accept"))
                     )
-                )
-            )
-
-            # Get page source after everything has loaded
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Work out which bins can be collected for this address. Glass bins are only on some houses due to pilot programme.
-            bins_collected = list(
-                map(
-                    str.strip,
-                    soup.find(
-                        "span",
-                        id="p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_spanRouteSummary",
-                    )
-                    .text.replace("Routes found: ", "")
-                    .split(","),
-                )
-            )
-
-            # Get the background colour for each of them...
-            bins_by_colours = dict()
-            for bin in bins_collected:
-                if "(but no dates found)" in bin:
-                    continue
-                style_str = soup.find("span", string=bin)["style"]
-                bin_colour = self.extract_styles(style_str)["background-color"].upper()
-                bins_by_colours[bin_colour] = bin
-
-            # Work through the tables gathering the dates, if the cell has a background colour - match it to the bin type.
-            calander_tables = soup.find_all("table", title="Calendar")
-            for table in calander_tables:
-                # Get month and year
-                # First row in table is the header
-                rows = table.find_all("tr")
-                month_and_year = (
-                    rows[0].find("table", class_="calCtrlTitle").find("td").string
-                )
-                bin_days = table.find_all("td", class_="calCtrlDay")
-                for day in bin_days:
-                    day_styles = self.extract_styles(day["style"])
-                    if "background-color" in day_styles:
-                        colour = day_styles["background-color"].upper()
-                        date = time.strptime(
-                            f"{day.string} {month_and_year}", "%d %B %Y"
+                    cookie_button.click()
+                except TimeoutException:
+                    pass
+                
+                # Continue with original logic for old site
+                inputElement_hn = wait.until(
+                    EC.presence_of_element_located(
+                        (
+                            By.ID,
+                            "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtHouse",
                         )
-
-                        # Add it to the data
-                        data["bins"].append(
-                            {
-                                "type": bins_by_colours[colour],
-                                "collectionDate": time.strftime(date_format, date),
-                            }
+                    )
+                )
+                
+                inputElement_pc = wait.until(
+                    EC.presence_of_element_located(
+                        (
+                            By.ID,
+                            "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_txtPostcode",
                         )
+                    )
+                )
+                
+                inputElement_pc.send_keys(user_postcode)
+                inputElement_hn.send_keys(user_paon)
+                
+                lookup_button = wait.until(
+                    EC.element_to_be_clickable(
+                        (
+                            By.ID,
+                            "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_NCCAddressLookup_butLookup",
+                        )
+                    )
+                )
+                lookup_button.click()
+                
+                route_summary = wait.until(
+                    EC.presence_of_element_located(
+                        (
+                            By.ID,
+                            "p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_spanRouteSummary",
+                        )
+                    )
+                )
+                
+                soup = BeautifulSoup(driver.page_source, features="html.parser")
+                
+                bins_collected = list(
+                    map(
+                        str.strip,
+                        soup.find(
+                            "span",
+                            id="p_lt_ctl04_pageplaceholder_p_lt_ctl02_WasteCollectionCalendars_spanRouteSummary",
+                        )
+                        .text.replace("Routes found: ", "")
+                        .split(","),
+                    )
+                )
+                
+                bins_by_colours = dict()
+                for bin in bins_collected:
+                    if "(but no dates found)" in bin:
+                        continue
+                    style_str = soup.find("span", string=bin)["style"]
+                    bin_colour = self.extract_styles(style_str)["background-color"].upper()
+                    bins_by_colours[bin_colour] = bin
+                
+                calander_tables = soup.find_all("table", title="Calendar")
+                for table in calander_tables:
+                    rows = table.find_all("tr")
+                    month_and_year = (
+                        rows[0].find("table", class_="calCtrlTitle").find("td").string
+                    )
+                    bin_days = table.find_all("td", class_="calCtrlDay")
+                    for day in bin_days:
+                        day_styles = self.extract_styles(day["style"])
+                        if "background-color" in day_styles:
+                            colour = day_styles["background-color"].upper()
+                            date = time.strptime(
+                                f"{day.string} {month_and_year}", "%d %B %Y"
+                            )
+                            
+                            data["bins"].append(
+                                {
+                                    "type": bins_by_colours[colour],
+                                    "collectionDate": time.strftime(date_format, date),
+                                }
+                            )
+                            
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
         return data

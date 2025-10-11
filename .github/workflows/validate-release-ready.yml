@@ -1,0 +1,54 @@
+name: Validate Release Ready
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate Release Prerequisites
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: pipx install poetry==1.8.4
+
+      - name: Validate pyproject.toml
+        run: poetry check
+
+      - name: Check version files are in sync
+        run: |
+          POETRY_VERSION=$(poetry version -s)
+          echo "Poetry version: $POETRY_VERSION"
+          
+          # Check manifest.json version
+          MANIFEST_VERSION=$(jq -r '.version' custom_components/uk_bin_collection/manifest.json)
+          echo "Manifest version: $MANIFEST_VERSION"
+          
+          if [ "$POETRY_VERSION" != "$MANIFEST_VERSION" ]; then
+            echo "Error: Version mismatch between pyproject.toml and manifest.json"
+            exit 1
+          fi
+          
+          echo "All version files are in sync"
+
+      - name: Validate commitizen config
+        run: |
+          if ! grep -q "version_provider = \"poetry\"" pyproject.toml; then
+            echo "Error: Commitizen not configured to use poetry as version provider"
+            exit 1
+          fi
+          echo "Commitizen configuration valid"
+
+      - name: Check for conventional commits
+        uses: wagoid/commitlint-github-action@v6
+        with:
+          configFile: commitlint.config.mjs

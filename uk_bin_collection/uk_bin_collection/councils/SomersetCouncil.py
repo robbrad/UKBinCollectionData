@@ -43,10 +43,16 @@ class CouncilClass(AbstractGetBinDataClass):
                 i["data-for"]: i.get("value", "")
                 for i in soup.select("input[data-for]")
             }
-            payload_salt = soup.select_one('input[id="pSalt"]').get("value")
-            payload_protected = soup.select_one('input[id="pPageItemsProtected"]').get(
-                "value"
-            )
+            
+            # Check if required form elements exist
+            salt_element = soup.select_one('input[id="pSalt"]')
+            protected_element = soup.select_one('input[id="pPageItemsProtected"]')
+            
+            if not salt_element or not protected_element:
+                raise Exception("Required form elements not found. The council website may have changed or be unavailable.")
+            
+            payload_salt = salt_element.get("value")
+            payload_protected = protected_element.get("value")
 
             # Add the PostCode and 'SEARCH' to the payload
             payload["p_request"] = "SEARCH"
@@ -123,10 +129,16 @@ class CouncilClass(AbstractGetBinDataClass):
                 i["data-for"]: i.get("value", "")
                 for i in soup.select("input[data-for]")
             }
-            payload_salt = soup.select_one('input[id="pSalt"]').get("value")
-            payload_protected = soup.select_one('input[id="pPageItemsProtected"]').get(
-                "value"
-            )
+            
+            # Check if required form elements exist
+            salt_element = soup.select_one('input[id="pSalt"]')
+            protected_element = soup.select_one('input[id="pPageItemsProtected"]')
+            
+            if not salt_element or not protected_element:
+                raise Exception("Required form elements not found. The council website may have changed or be unavailable.")
+            
+            payload_salt = salt_element.get("value")
+            payload_protected = protected_element.get("value")
 
             # Add the UPRN and 'SUBMIT' to the payload
             payload["p_request"] = "SUBMIT"

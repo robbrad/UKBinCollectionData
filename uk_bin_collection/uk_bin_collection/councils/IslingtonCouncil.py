@@ -17,11 +17,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        waste_table = (
-            soup.find(string="Waste and recycling collections")
-            .find_next("div", class_="m-toggle-content")
-            .find("table")
-        )
+        # Find the waste and recycling section with proper null checking
+        waste_section = soup.find(string="Waste and recycling collections")
+        waste_table = None
+        
+        if waste_section:
+            toggle_content = waste_section.find_next("div", class_="m-toggle-content")
+            if toggle_content:
+                waste_table = toggle_content.find("table")
 
         if waste_table:
             rows = waste_table.find_all("tr")

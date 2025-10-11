@@ -57,17 +57,30 @@ class CouncilClass(AbstractGetBinDataClass):
         response = session.get(addr_link)
         new_soup = BeautifulSoup(response.text, features="html.parser")
         services = new_soup.find("section", {"id": "scheduled-collections"})
+        
+        if services is None:
+            raise Exception("Could not find scheduled collections section on the page")
+            
         services_sub = services.find_all("li")
+        if not services_sub:
+            raise Exception("No collection services found")
+            
         for i in range(0, len(services_sub), 3):
-            dt = datetime.strptime(services_sub[i + 1].text.strip(), "%d/%m/%Y").date()
-            bin_type = BeautifulSoup(services_sub[i + 2].text, features="lxml").find(
-                "p"
-            )
-            data["bins"].append(
-                {
-                    "type": bin_type.text.strip().removesuffix(" Collection Service"),
-                    "collectionDate": dt.strftime(date_format),
-                }
-            )
+            if i + 2 < len(services_sub):
+                date_text = services_sub[i + 1].text.strip() if services_sub[i + 1] else None
+                if date_text:
+                    try:
+                        dt = datetime.strptime(date_text, "%d/%m/%Y").date()
+                        bin_type_element = BeautifulSoup(services_sub[i + 2].text, features="lxml").find("p")
+                        if bin_type_element and bin_type_element.text:
+                            data["bins"].append(
+                                {
+                                    "type": bin_type_element.text.strip().removesuffix(" Collection Service"),
+                                    "collectionDate": dt.strftime(date_format),
+                                }
+                            )
+                    except (ValueError, AttributeError) as e:
+                        # Skip invalid date or missing elements
+                        continue
 
         return data

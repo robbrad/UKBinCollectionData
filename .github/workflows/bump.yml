@@ -23,12 +23,20 @@ jobs:
         with:
           token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
           fetch-depth: 0
+      
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Bump version
+      - name: Install Poetry
+        run: pipx install poetry==1.8.4
+
+      - name: Bump version and create tag
         id: cz
         uses: commitizen-tools/commitizen-action@master
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          push: true
+          
+      - name: Print Version
+        run: echo "Bumped to version ${{ steps.cz.outputs.version }}"
