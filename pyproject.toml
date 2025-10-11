@@ -71,6 +71,7 @@ version_scheme = "semver"
 major_version_zero = true
 tag_format = "$version"
 update_changelog_on_bump = true
+annotated_tag = true
 version_files = [
     "custom_components/uk_bin_collection/manifest.json:version",
     "custom_components/uk_bin_collection/manifest.json:requirements",
