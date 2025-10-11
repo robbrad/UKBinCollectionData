@@ -1,0 +1,30 @@
+name: Validate Release Ready
+
+on:
+  pull_request:
+    branches: [ "master" ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate Release Prerequisites
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: pipx install poetry==1.8.4
+
+      - name: Validate pyproject.toml
+        run: poetry check
+
+      - name: Check for conventional commits
+        uses: wagoid/commitlint-github-action@v6
+        with:
+          configFile: commitlint.config.mjs

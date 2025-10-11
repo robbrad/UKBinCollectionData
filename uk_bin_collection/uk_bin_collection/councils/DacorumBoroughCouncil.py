@@ -76,19 +76,28 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
             for Collection in NextCollections:
-                BinType = Collection.find("strong").text.strip()
-                if BinType:
-                    CollectionDate = datetime.strptime(
-                        Collection.find_all("div", {"style": "display:table-cell;"})[1]
-                        .get_text()
-                        .strip(),
-                        "%a, %d %b %Y",
-                    )
-                    dict_data = {
-                        "type": BinType,
-                        "collectionDate": CollectionDate.strftime("%d/%m/%Y"),
-                    }
-                    data["bins"].append(dict_data)
+                strong_element = Collection.find("strong")
+                if strong_element:
+                    BinType = strong_element.text.strip()
+                    # Skip if this is not a bin type (e.g., informational text)
+                    if BinType and not any(skip_text in BinType.lower() for skip_text in 
+                                         ["please note", "we may collect", "bank holiday", "different day"]):
+                        date_cells = Collection.find_all("div", {"style": "display:table-cell;"})
+                        if len(date_cells) > 1:
+                            date_text = date_cells[1].get_text().strip()
+                            if date_text:
+                                try:
+                                    CollectionDate = datetime.strptime(date_text, "%a, %d %b %Y")
+                                    dict_data = {
+                                        "type": BinType,
+                                        "collectionDate": CollectionDate.strftime("%d/%m/%Y"),
+                                    }
+                                    # Check for duplicates before adding
+                                    if dict_data not in data["bins"]:
+                                        data["bins"].append(dict_data)
+                                except ValueError:
+                                    # Skip if date parsing fails
+                                    continue
 
         except Exception as e:
             # Here you can log the exception if needed

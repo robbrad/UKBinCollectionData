@@ -8,41 +8,46 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    environment: release
     permissions:
-      id-token: write
       contents: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
-      - name: Run image
+      - name: Install Poetry
         uses: abatilo/actions-poetry@v4.0.0
         with:
           poetry-version: '1.8.4'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install wheel twine
-
-      - name: Install
-        run: make install
-
       - name: Set release version
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - name: Create release
+      - name: Verify version matches tag
+        run: |
+          POETRY_VERSION=$(poetry version -s)
+          if [ "$POETRY_VERSION" != "${{ env.RELEASE_VERSION }}" ]; then
+            echo "Error: Poetry version ($POETRY_VERSION) doesn't match tag (${{ env.RELEASE_VERSION }})"
+            exit 1
+          fi
+
+      - name: Build package
+        run: poetry build
+
+      - name: Create GitHub release
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.RELEASE_VERSION }}
           generateReleaseNotes: true
-          prerelease: false
-          allowUpdates: true
+          artifacts: "dist/*"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and publish package
+      - name: Publish to PyPI
         run: |
           poetry config pypi-token.pypi "${{ secrets.PYPI_API_KEY }}"
-          poetry publish --build
+          poetry publish

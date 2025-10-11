@@ -1,9 +1,8 @@
-name: Bump Version (PR)
+name: Bump Version
 
 on:
   push:
     branches: [ "master" ]
-    # Only run when real changes land on master; ignore meta/docs/workflows
     paths-ignore:
       - "wiki/**"
       - "**/*.md"
@@ -11,64 +10,39 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  bump-pr:
-    # Don't run if the triggering commit is itself a bump commit
+  bump:
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     permissions:
-      contents: write         # needed to push branch
-      pull-requests: write    # needed to open PR
+      contents: write
     concurrency: bump
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v5
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-          cache: 'pip'
 
       - name: Install Commitizen
-        run: |
-          python -m pip install --upgrade pip
-          pip install commitizen
+        run: pip install commitizen
 
       - name: Configure git identity
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # Work on a throwaway branch so we don't push to master directly
-      - name: Create bump branch
+      - name: Bump version and create tag
+        id: bump
         run: |
-          git checkout -b chore/bump-${{ github.run_number }}
+          cz bump --yes --changelog
+          echo "version=$(cz version --project)" >> $GITHUB_OUTPUT
 
-      # IMPORTANT: --no-tag so tags are not created on the PR branch
-      - name: Bump version (no tag on PR branch)
-        id: cz
+      - name: Push changes and tags
         run: |
-          cz bump --yes --changelog --no-tag
-          echo "VERSION=$(cz version --project)" >> $GITHUB_ENV
-
-      - name: Push bump branch
-        run: |
-          git push --set-upstream origin HEAD:refs/heads/chore/bump-${{ github.run_number }}
-          # Changelog & version commit are already on this branch
-
-      - name: Open PR
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: chore/bump-${{ github.run_number }}
-          title: "bump: release ${{ env.VERSION }}"
-          body: |
-            Automated version bump via Commitizen.
-            - Version: `${{ env.VERSION }}`
-            - Changelog updated
-          labels: release
-          draft: false
+          git push origin master --follow-tags
