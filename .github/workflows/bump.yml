@@ -18,18 +18,12 @@ jobs:
     concurrency: bump
 
     steps:
-      - name: Generate GitHub App Token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
       - name: Checkout
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          persist-credentials: true
 
       - name: Setup Python
         uses: actions/setup-python@v6
@@ -51,7 +45,5 @@ jobs:
           echo "version=$(cz version --project)" >> $GITHUB_OUTPUT
 
       - name: Push changes and tags
-        env:
-          GIT_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git push origin master --follow-tags
