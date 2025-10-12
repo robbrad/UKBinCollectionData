@@ -2155,13 +2155,11 @@
         "LAD24CD": "E07000140"
     },
     "SouthKestevenDistrictCouncil": {
-        "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",
         "postcode": "PE68BL",
         "skip_get_url": true,
-        "url": "https://pre.southkesteven.gov.uk/BinSearch.aspx",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "South Kesteven",
-        "wiki_note": "Provide your full address in the `house_number` parameter and your postcode in the `postcode` parameter.",
+        "url": "https://pre.southkesteven.gov.uk/skdcNext/tempforms/checkmybin.aspx",
+        "wiki_name": "South Kesteven District Council",
+        "wiki_note": "Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns.",
         "LAD24CD": "E07000141"
     },
     "SouthLanarkshireCouncil": {
