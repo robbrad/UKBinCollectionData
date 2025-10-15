@@ -30,12 +30,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-<<<<<<< HEAD
-            # Use the new URL as mentioned in the issue
-            page = "http://bincollection.northumberland.gov.uk"
-=======
             page = "https://bincollection.northumberland.gov.uk/postcode"
->>>>>>> master
 
             data = {"bins": []}
 
@@ -322,3 +317,4 @@ class CouncilClass(AbstractGetBinDataClass):
             if driver:
                 driver.quit()
         return data
+
