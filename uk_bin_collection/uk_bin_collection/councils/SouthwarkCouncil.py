@@ -1,8 +1,38 @@
+from datetime import datetime
+
 import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+
+def extract_collection_date(section, section_id):
+    """
+    Helper function to safely extract title and collection date from a section.
+    Returns tuple (title, collection_date) or (None, None) if not found.
+    """
+    if not section:
+        return None, None
+
+    title_element = section.find("p", {"id": section_id})
+    if not title_element:
+        return None, None
+
+    title = title_element.text
+
+    next_collection_text = section.find(
+        string=lambda text: text and "Next collection" in text
+    )
+
+    if not next_collection_text:
+        return title, None
+
+    try:
+        collection_date = str(next_collection_text).strip().split(": ")[1]
+        return title, collection_date
+    except (IndexError, AttributeError):
+        return title, None
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -36,127 +66,97 @@ class CouncilClass(AbstractGetBinDataClass):
             "div", {"aria-labelledby": "recyclingCollectionTitle"}
         )
         if recycling_section:
-            recycling_title = recycling_section.find(
-                "p", {"id": "recyclingCollectionTitle"}
-            ).text
-            recycling_next_collection = (
-                recycling_section.find(text=lambda text: "Next collection" in text)
-                .strip()
-                .split(": ")[1]
+            recycling_title, recycling_next_collection = extract_collection_date(
+                recycling_section, "recyclingCollectionTitle"
             )
-
-            dict_data = {
-                "type": recycling_title,
-                "collectionDate": datetime.strptime(
-                    recycling_next_collection, "%a, %d %B %Y"
-                ).strftime("%d/%m/%Y"),
-            }
-            data["bins"].append(dict_data)
+            if recycling_title and recycling_next_collection:
+                dict_data = {
+                    "type": recycling_title,
+                    "collectionDate": datetime.strptime(
+                        recycling_next_collection, "%a, %d %B %Y"
+                    ).strftime("%d/%m/%Y"),
+                }
+                data["bins"].append(dict_data)
 
         # Extract refuse collection information
         refuse_section = soup.find("div", {"aria-labelledby": "refuseCollectionTitle"})
         if refuse_section:
-            refuse_title = refuse_section.find(
-                "p", {"id": "refuseCollectionTitle"}
-            ).text
-            refuse_next_collection = (
-                refuse_section.find(text=lambda text: "Next collection" in text)
-                .strip()
-                .split(": ")[1]
+            refuse_title, refuse_next_collection = extract_collection_date(
+                refuse_section, "refuseCollectionTitle"
             )
-
-            dict_data = {
-                "type": refuse_title,
-                "collectionDate": datetime.strptime(
-                    refuse_next_collection, "%a, %d %B %Y"
-                ).strftime("%d/%m/%Y"),
-            }
-            data["bins"].append(dict_data)
+            if refuse_title and refuse_next_collection:
+                dict_data = {
+                    "type": refuse_title,
+                    "collectionDate": datetime.strptime(
+                        refuse_next_collection, "%a, %d %B %Y"
+                    ).strftime("%d/%m/%Y"),
+                }
+                data["bins"].append(dict_data)
 
         # Extract food waste collection information
         food_section = soup.find(
             "div", {"aria-labelledby": "domesticFoodCollectionTitle"}
         )
         if food_section:
-            food_title = food_section.find(
-                "p", {"id": "domesticFoodCollectionTitle"}
-            ).text
-            food_next_collection = (
-                food_section.find(text=lambda text: "Next collection" in text)
-                .strip()
-                .split(": ")[1]
+            food_title, food_next_collection = extract_collection_date(
+                food_section, "domesticFoodCollectionTitle"
             )
-
-            dict_data = {
-                "type": food_title,
-                "collectionDate": datetime.strptime(
-                    food_next_collection, "%a, %d %B %Y"
-                ).strftime("%d/%m/%Y"),
-            }
-            data["bins"].append(dict_data)
+            if food_title and food_next_collection:
+                dict_data = {
+                    "type": food_title,
+                    "collectionDate": datetime.strptime(
+                        food_next_collection, "%a, %d %B %Y"
+                    ).strftime("%d/%m/%Y"),
+                }
+                data["bins"].append(dict_data)
 
         # Extract communal food waste collection information
         comfood_section = soup.find(
             "div", {"aria-labelledby": "communalFoodCollectionTitle"}
         )
         if comfood_section:
-            comfood_title = comfood_section.find(
-                "p", {"id": "communalFoodCollectionTitle"}
-            ).text
-            comfood_next_collection = (
-                comfood_section.find(text=lambda text: "Next collection" in text)
-                .strip()
-                .split(": ")[1]
+            comfood_title, comfood_next_collection = extract_collection_date(
+                comfood_section, "communalFoodCollectionTitle"
             )
-
-            dict_data = {
-                "type": comfood_title,
-                "collectionDate": datetime.strptime(
-                    comfood_next_collection, "%a, %d %B %Y"
-                ).strftime("%d/%m/%Y"),
-            }
-            data["bins"].append(dict_data)
+            if comfood_title and comfood_next_collection:
+                dict_data = {
+                    "type": comfood_title,
+                    "collectionDate": datetime.strptime(
+                        comfood_next_collection, "%a, %d %B %Y"
+                    ).strftime("%d/%m/%Y"),
+                }
+                data["bins"].append(dict_data)
 
         comrec_section = soup.find(
             "div", {"aria-labelledby": "recyclingCommunalCollectionTitle"}
         )
         if comrec_section:
-            comrec_title = comrec_section.find(
-                "p", {"id": "recyclingCommunalCollectionTitle"}
-            ).text
-            comrec_next_collection = (
-                comrec_section.find(text=lambda text: "Next collection" in text)
-                .strip()
-                .split(": ")[1]
+            comrec_title, comrec_next_collection = extract_collection_date(
+                comrec_section, "recyclingCommunalCollectionTitle"
             )
-
-            dict_data = {
-                "type": comrec_title,
-                "collectionDate": datetime.strptime(
-                    comrec_next_collection, "%a, %d %B %Y"
-                ).strftime("%d/%m/%Y"),
-            }
-            data["bins"].append(dict_data)
+            if comrec_title and comrec_next_collection:
+                dict_data = {
+                    "type": comrec_title,
+                    "collectionDate": datetime.strptime(
+                        comrec_next_collection, "%a, %d %B %Y"
+                    ).strftime("%d/%m/%Y"),
+                }
+                data["bins"].append(dict_data)
 
         comref_section = soup.find(
             "div", {"aria-labelledby": "refuseCommunalCollectionTitle"}
         )
         if comref_section:
-            comref_title = comref_section.find(
-                "p", {"id": "refuseCommunalCollectionTitle"}
-            ).text
-            comref_next_collection = (
-                comref_section.find(text=lambda text: "Next collection" in text)
-                .strip()
-                .split(": ")[1]
+            comref_title, comref_next_collection = extract_collection_date(
+                comref_section, "refuseCommunalCollectionTitle"
             )
-
-            dict_data = {
-                "type": comref_title,
-                "collectionDate": datetime.strptime(
-                    comref_next_collection, "%a, %d %B %Y"
-                ).strftime("%d/%m/%Y"),
-            }
-            data["bins"].append(dict_data)
+            if comref_title and comref_next_collection:
+                dict_data = {
+                    "type": comref_title,
+                    "collectionDate": datetime.strptime(
+                        comref_next_collection, "%a, %d %B %Y"
+                    ).strftime("%d/%m/%Y"),
+                }
+                data["bins"].append(dict_data)
 
         return data
