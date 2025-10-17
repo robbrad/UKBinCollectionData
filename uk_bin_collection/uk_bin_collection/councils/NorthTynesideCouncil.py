@@ -1,11 +1,11 @@
-import math
-from datetime import *
-
-import requests
+import logging
+from datetime import datetime
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+logger = logging.getLogger(__name__)
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -13,126 +13,65 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
         check_uprn(user_uprn)
-        check_postcode(user_postcode)
 
+        # diable warnings so that we can ignore cert verification
         requests.packages.urllib3.disable_warnings()
-        s = requests.Session()
 
-        # Get the first form
-        response = s.get(
-            "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
+        # Fetch the schedule page
+        response = requests.get(
+            f"https://www.northtyneside.gov.uk/waste-collection-schedule/view/{user_uprn}",
             verify=False,
         )
 
-        # Find the form ID and submit with a postcode
-        soup = BeautifulSoup(response.text, features="html.parser")
-        form_build_id = soup.find("input", {"name": "form_build_id"})["value"]
-        response = s.post(
-            "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
-            data={
-                "postcode": user_postcode,
-                "op": "Find",
-                "form_build_id": form_build_id,
-                "form_id": "ntc_address_wizard",
-            },
-            verify=False,
-        )
-
-        # Find the form ID and submit with the UPRN
-        soup = BeautifulSoup(response.text, features="html.parser")
-        form_build_id = soup.find("input", {"name": "form_build_id"})["value"]
-        response = s.post(
-            "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
-            data={
-                "house_number": f"0000{user_uprn}",
-                "op": "Use",
-                "form_build_id": form_build_id,
-                "form_id": "ntc_address_wizard",
-            },
-            verify=False,
-        )
 
         # Parse form page and get the day of week and week offsets
         soup = BeautifulSoup(response.text, features="html.parser")
-        info_section = soup.find("section", {"class": "block block-ntc-bins clearfix"})
+        schedule = soup.find("div", {"class": "waste-collection__schedule"})
 
-        regular_day, garden_day, special_day = None, None, None
-        # Get day of week and week label for refuse, garden and special collections.
-        # Week label is A or B.  Convert that to an int to use as an offset.
-        for anchor in info_section.findAll("a"):
-            if anchor.text.startswith("Refuse and Recycling"):
-                regular_day = anchor.text.strip().split()[-3]
-                if anchor.text.strip().split()[-1] == "A":
-                    regular_week = 0
-                else:
-                    regular_week = 1
-            elif anchor.text.startswith("Garden Waste"):
-                garden_day = anchor.text.strip().split()[-3]
-                if anchor.text.strip().split()[-1] == "A":
-                    garden_week = 0
-                else:
-                    garden_week = 1
-        for para in info_section.findAll("p"):
-            if para.text.startswith("Your special collections day"):
-                special_day = para.find("strong").text.strip()
+        if schedule is None:
+            raise Exception("No waste-collection schedule info found - has the page changed?")
 
-        # The regular calendar only shows until end of March 2026, work out how many weeks that is
-        weeks_total = math.floor((datetime(2026, 4, 1) - datetime.now()).days / 7)
 
-        # The garden calendar only shows until end of November 2025, work out how many weeks that is
-        garden_weeks_total = math.floor(
-            (datetime(2025, 12, 1) - datetime.now()).days / 7
-        )
-
-        regular_collections, garden_collections, special_collections = [], [], []
-        # Convert day text to series of dates using previous calculation
-        if regular_day is not None:
-            regular_collections = get_weekday_dates_in_period(
-                datetime.today(),
-                days_of_week.get(regular_day.capitalize()),
-                amount=weeks_total,
-            )
-        if garden_day is not None:
-            garden_collections = get_weekday_dates_in_period(
-                datetime.today(),
-                days_of_week.get(garden_day.capitalize()),
-                amount=garden_weeks_total,
-            )
-        if special_day is not None:
-            special_collections = get_weekday_dates_in_period(
-                datetime.today(),
-                days_of_week.get(special_day.capitalize()),
-                amount=weeks_total,
-            )
+        # Find days of form:
+        #
+        # <li class="waste-collection__day">
+        #   <span class="waste-collection__day--day"><time datetime="2025-11-13">13</time></span>
+        #   <span class="waste-collection__day--type">Recycling</span>
+        #   <span class="waste-collection__day--colour waste-collection__day--grey">Grey</span>
+        # </li>
+        #
+        #
+        # Note that on back holidays the collection type is of form:
+        # ...
+        # <span class="waste-collection__day--type">Recycling
+        #    <span>
+        #      Public holiday - services may be affected. Check service updates on <a href="/household-rubbish-and-recycling/household-bin-collections/bank-holiday-bin-collections">our website</a>
+        #    </span>
+        # </span>
+        # ...
 
         collections = []
 
-        # Add regular collections, and differentiate between regular and recycling bins
-        for item in regular_collections:
-            item_as_date = datetime.strptime(item, date_format)
-            # Check if holiday (calendar only has one day that's a holiday, and it's moved to the next day)
-            if is_holiday(item_as_date, Region.ENG):
-                item_as_date += timedelta(days=1)
-            # Use the isoweek number to separate collections based on week label.
-            if (item_as_date.date().isocalendar()[1] % 2) == regular_week:
-                collections.append(("Refuse (green)", item_as_date))
-            else:
-                collections.append(("Recycling (grey)", item_as_date))
+        for day in schedule.find_all("li", {"class": "waste-collection__day"}):
+            try:
+                # extract the date, bin type and colour
+                collection_date = datetime.strptime(day.find("time")["datetime"], "%Y-%m-%d")
 
-        # Add garden collections
-        for item in garden_collections:
-            item_as_date = datetime.strptime(item, date_format)
-            # Garden collections do not move for bank holidays
-            if (item_as_date.date().isocalendar()[1] % 2) == garden_week:
-                collections.append(("Garden Waste (brown)", item_as_date))
+                # for the collection type we only want the text before any nested span
+                type_span = day.find("span", {"class": "waste-collection__day--type"})
+                bin_type = next(type_span.strings).strip()
 
-        # Add special collections
-        collections += [
-            ("Special Collection (bookable)", datetime.strptime(item, date_format))
-            for item in special_collections
-        ]
+                bin_colour = day.find("span", {"class": "waste-collection__day--colour"}).text.strip()
+
+                collections.append((f'{bin_type} ({bin_colour})', collection_date))
+
+            except Exception as e:
+                # here NoneType typically suggests parsing errors so report them and continue
+                if "NoneType" in str(e):
+                    logger.warning(f'Error while processing {day}: {e}')
+                    continue
+                raise
 
         return {
             "bins": [
