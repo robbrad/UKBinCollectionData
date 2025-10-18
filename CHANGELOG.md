@@ -1,4 +1,15 @@
 =======
+## 0.159.0 (2025-10-18)
+
+### Feat
+
+- Modernize South Kesteven scraper with requests-based approach and OCR
+
+### Fix
+
+- **feedbank**: address improvements suggested in PR review
+- Update NorthTynesideCouncil to reflect changes to website and extract schedule from the UPRN linked page
+
 ## 0.158.1 (2025-10-18)
 
 ### Fix
