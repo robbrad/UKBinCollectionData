@@ -1,4 +1,10 @@
 =======
+## 0.159.1 (2025-10-18)
+
+### Fix
+
+- Add null checks to prevent AttributeError when collection date text is not found. Introduces extract_collection_date() helper that safely extracts dates and returns None if parsing fails, allowing the scraper to gracefully skip missing collection types.
+
 ## 0.159.0 (2025-10-18)
 
 ### Feat
