@@ -2628,7 +2628,7 @@ Note: Pass the house number and postcode in their respective parameters. This pa
 
 ### New Forest
 ```commandline
-python collect_data.py NewForestCouncil https://forms.newforest.gov.uk/id/FIND_MY_COLLECTION -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+python collect_data.py NewForestCouncil https://forms.newforest.gov.uk/ufs/FIND_MY_BIN_BAR.eb -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -3358,7 +3358,7 @@ Note: Replace `XXXXXXXX` with your UPRN. You can find your UPRN using [FindMyAdd
 
 ### South Gloucestershire
 ```commandline
-python collect_data.py SouthGloucestershireCouncil  https://api.southglos.gov.uk/wastecomp/GetCollectionDetails -s -u XXXXXXXX
+python collect_data.py SouthGloucestershireCouncil https://api.southglos.gov.uk/wastecomp/GetCollectionDetails -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -3848,12 +3848,13 @@ Note: Provide your UPRN and postcode.
 
 ### Torbay
 ```commandline
-python collect_data.py TorbayCouncil https://www.torbay.gov.uk/recycling/bin-collections/ -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py TorbayCouncil https://www.torbay.gov.uk/recycling/bin-collections/ -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.
 
