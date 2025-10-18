@@ -1,4 +1,11 @@
 =======
+## 0.158.1 (2025-10-18)
+
+### Fix
+
+- remove merge conflict annotations and delete old code
+- click on the submit button instead of sending ENTER
+
 ## 0.158.0 (2025-10-11)
 
 ### Feat
