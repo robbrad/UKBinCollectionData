@@ -77,9 +77,11 @@ class CouncilClass(AbstractGetBinDataClass):
             for collection in collections:
                 bin_type = collection.find("h3").get_text()
 
-                next_collection = soup.find("div", {"class": "fw-bold"}).get_text()
+                next_collection = collection.find(
+                    "div", {"class": "fw-bold"}
+                ).get_text()
 
-                following_collection = soup.find(
+                following_collection = collection.find(
                     lambda t: (
                         t.name == "div"
                         and t.get_text(strip=True).lower().startswith("followed by")
