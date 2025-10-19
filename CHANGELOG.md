@@ -1,4 +1,10 @@
 =======
+## 0.159.2 (2025-10-19)
+
+### Fix
+
+- allow pillow 11.x to fix home assistant compatibility
+
 ## 0.159.1 (2025-10-18)
 
 ### Fix
