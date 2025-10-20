@@ -78,8 +78,7 @@ jobs:
             echo "logger:"
             echo "  default: info"
             echo ""
-            # Ensure HA actually tries to import the custom integration
-            echo "uk_bin_collection:"
+
           } > config/configuration.yaml
       
       - name: Preinstall runtime deps used by HA scripts
@@ -136,6 +135,8 @@ jobs:
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "- check_config exit code: \`${{ steps.check_config.outputs.exit_code }}\`" >> "$GITHUB_STEP_SUMMARY"
             echo "- manifest step: \`${{ steps.manifest.outcome }}\`" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
 
   compatibility-report:
     name: Generate Compatibility Report
