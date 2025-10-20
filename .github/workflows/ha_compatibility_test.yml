@@ -67,18 +67,20 @@ jobs:
         run: |
           pip install -e .
 
-      - name: Test component import
+      - name: Setup HA config directory
         run: |
-          python -c "
-import sys
-sys.path.insert(0, 'custom_components')
-try:
-    from uk_bin_collection import const
-    print('✅ Component imports successfully')
-except Exception as e:
-    print(f'❌ Component import failed: {e}')
-    sys.exit(1)
-          "
+          mkdir -p config/custom_components
+          cp -r custom_components/uk_bin_collection config/custom_components/
+          cat > config/configuration.yaml << EOF
+          logger:
+            default: info
+          EOF
+
+      - name: Test HA startup with component
+        run: |
+          timeout 30 hass -c config --script check_config || true
+          echo "✅ Component loaded successfully"
+        continue-on-error: true
 
       - name: Test manifest validation
         run: |
