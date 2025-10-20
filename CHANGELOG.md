@@ -1,4 +1,40 @@
 =======
+## 0.159.3 (2025-10-20)
+
+### Fix
+
+- Broken dependancies
+
+## 0.159.2 (2025-10-19)
+
+### Fix
+
+- allow pillow 11.x to fix home assistant compatibility
+
+## 0.159.1 (2025-10-18)
+
+### Fix
+
+- Add null checks to prevent AttributeError when collection date text is not found. Introduces extract_collection_date() helper that safely extracts dates and returns None if parsing fails, allowing the scraper to gracefully skip missing collection types.
+
+## 0.159.0 (2025-10-18)
+
+### Feat
+
+- Modernize South Kesteven scraper with requests-based approach and OCR
+
+### Fix
+
+- **feedbank**: address improvements suggested in PR review
+- Update NorthTynesideCouncil to reflect changes to website and extract schedule from the UPRN linked page
+
+## 0.158.1 (2025-10-18)
+
+### Fix
+
+- remove merge conflict annotations and delete old code
+- click on the submit button instead of sending ENTER
+
 ## 0.158.0 (2025-10-11)
 
 ### Feat

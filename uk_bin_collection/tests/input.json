@@ -1757,12 +1757,12 @@
         "LAD24CD": "E06000024"
     },
     "NorthTynesideCouncil": {
-        "postcode": "NE26 2TG",
         "skip_get_url": true,
         "uprn": "47097627",
-        "url": "https://my.northtyneside.gov.uk/category/81/bin-collection-dates",
-        "wiki_name": "North Tyneside",
-        "wiki_note": "Pass the postcode and UPRN. You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "url": "https://www.northtyneside.gov.uk/waste-collection-schedule",
+        "wiki_command_url_override": "https://www.northtyneside.gov.uk/waste-collection-schedule/view/XXXXXXXX",
+      "wiki_name": "North Tyneside",
+        "wiki_note": "Pass only the UPRN (no postcode). You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E08000022"
     },
     "NorthWestLeicestershire": {
@@ -2155,13 +2155,11 @@
         "LAD24CD": "E07000140"
     },
     "SouthKestevenDistrictCouncil": {
-        "house_number": "2 Althorpe Close, Market Deeping, PE6 8BL",
         "postcode": "PE68BL",
         "skip_get_url": true,
-        "url": "https://pre.southkesteven.gov.uk/BinSearch.aspx",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "South Kesteven",
-        "wiki_note": "Provide your full address in the `house_number` parameter and your postcode in the `postcode` parameter.",
+        "url": "https://pre.southkesteven.gov.uk/skdcNext/tempforms/checkmybin.aspx",
+        "wiki_name": "South Kesteven District Council",
+        "wiki_note": "Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns.",
         "LAD24CD": "E07000141"
     },
     "SouthLanarkshireCouncil": {
