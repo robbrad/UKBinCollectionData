@@ -24,18 +24,24 @@ jobs:
       - name: Get HA versions from PyPI
         id: get-versions
         run: |
-          MATRIX=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '.releases |
-            to_entries |
-            map(select(.key | test("^[0-9]+[.][0-9]+[.][0-9]+$"))) |
-            group_by(.key | (split(".")[:2] | join("."))) |
-            map(max_by(.key | (split(".")[2] | tonumber)) | .key) |
-            sort_by(split(".") | map(tonumber)) |
-            .[-8:] |
-            map({ha_version: ., python_version: (if (split(".")[0] == "2025" and (split(".")[1]|tonumber) >= 2) then "3.13" else "3.12" end)}) |
-            . + [{ha_version: "dev", python_version: "3.13"}] |
-            {include: .}
+          MATRIX=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '
+            .releases
+            | to_entries
+            # keep only x.y.z (skip betas/devs/post)
+            | map(select(.key | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")))
+            # group by major.minor, keep highest patch
+            | group_by(.key | (split(".")[:2] | join(".")))
+            | map(max_by(.key | (split(".")[2] | tonumber)) | .key)
+            # sort numerically and take latest 8
+            | sort_by(split(".") | map(tonumber))
+            | .[-8:]
+            # pick python version per HA series; adjust as needed
+            | map({ha_version: ., python_version: (if (split(".")[0] == "2025" and (split(".")[1]|tonumber) >= 2) then "3.13" else "3.12" end)})
+            # also test latest dev on py 3.13
+            | . + [{ha_version: "dev", python_version: "3.13"}]
+            | {include: .}
           ')
-          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
 
   test-ha-compatibility:
     name: Test HA ${{ matrix.ha_version }}
@@ -44,23 +50,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python_version }}
+          cache: 'pip'
 
       - name: Install Home Assistant ${{ matrix.ha_version }}
         run: |
           python -m pip install --upgrade pip
           if [ "${{ matrix.ha_version }}" = "dev" ]; then
-            pip install git+https://github.com/home-assistant/core.git
+            pip install --no-cache-dir git+https://github.com/home-assistant/core.git
           else
-            pip install homeassistant==${{ matrix.ha_version }}
+            pip install --no-cache-dir homeassistant==${{ matrix.ha_version }}
           fi
 
       - name: Install UK Bin Collection package
@@ -71,54 +78,69 @@ jobs:
         run: |
           mkdir -p config/custom_components
           cp -r custom_components/uk_bin_collection config/custom_components/
-          cat > config/configuration.yaml << 'EOF'
-          logger:
-            default: info
-          EOF
+          {
+            echo "logger:"
+            echo "  default: info"
+            echo ""
+            # Ensure HA actually tries to import the custom integration
+            echo "uk_bin_collection:"
+          } > config/configuration.yaml
 
-      - name: Test HA startup with component
+      - name: Test HA startup with component (check_config)
+        id: check_config
+        shell: bash
         run: |
-          timeout 30 hass -c config --script check_config || true
-          echo "✅ Component loaded successfully"
-        continue-on-error: true
+          set +e
+          timeout 90 hass -c config --script check_config
+          RC=$?
+          echo "exit_code=$RC" >> "$GITHUB_OUTPUT"
+          if [ "$RC" -eq 0 ]; then
+            echo "✅ Component load & config check passed for HA ${{ matrix.ha_version }}"
+          else
+            echo "❌ Component failed config check for HA ${{ matrix.ha_version }} (exit=$RC)"
+          fi
+          # Do not fail the job here; summary step will report status and you
+          # can flip the next step to enforce failures if desired.
+
+      # OPTIONAL: enforce job failure when incompatible. Uncomment to make the matrix red on failures.
+      # - name: Fail job if check_config failed
+      #   if: ${{ steps.check_config.outputs.exit_code != '0' }}
+      #   run: exit 1
 
       - name: Test manifest validation
+        id: manifest
         run: |
-          python -c "
-import json
-import sys
-
-with open('custom_components/uk_bin_collection/manifest.json') as f:
-    manifest = json.load(f)
-
-required_fields = ['domain', 'name', 'version', 'requirements']
-missing = [field for field in required_fields if field not in manifest]
-
-if missing:
-    print(f'❌ Missing required manifest fields: {missing}')
-    sys.exit(1)
-
-print('✅ Manifest validation passed')
-print(f'Component version: {manifest[\"version\"]}')
-print(f'Requirements: {manifest[\"requirements\"]}')
-          "
+          python <<'PY'
+          import json, sys
+          with open('custom_components/uk_bin_collection/manifest.json') as f:
+              m = json.load(f)
+          required = ['domain', 'name', 'version', 'requirements']
+          missing = [k for k in required if k not in m]
+          if missing:
+              print(f'❌ Missing required manifest fields: {missing}')
+              sys.exit(1)
+          print('✅ Manifest validation passed')
+          print(f'Component version: {m.get("version")}')
+          print(f'Requirements: {m.get("requirements")}')
+          PY
 
       - name: Create test result summary
         if: always()
         run: |
-          echo "## Test Results for HA ${{ matrix.ha_version }} (Python ${{ matrix.python_version }})" >> $GITHUB_STEP_SUMMARY
-          if [ $? -eq 0 ]; then
-            echo "✅ **PASSED** - Component is compatible" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Results for HA ${{ matrix.ha_version }} (Python ${{ matrix.python_version }})" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.check_config.outputs.exit_code }}" = "0" ] && [ "${{ steps.manifest.outcome }}" = "success" ]; then
+            echo "✅ **PASSED** – Component is compatible" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "❌ **FAILED** - Compatibility issues detected" >> $GITHUB_STEP_SUMMARY
-          fi
+            echo "❌ **FAILED** – Compatibility issues detected" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "- check_config exit code: \`${{ steps.check_config.outputs.exit_code }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- manifest step: \`${{ steps.manifest.outcome }}\`" >> "$GITHUB_STEP_SUMMARY"
 
   compatibility-report:
     name: Generate Compatibility Report
     runs-on: ubuntu-latest
     needs: [generate-matrix, test-ha-compatibility]
     if: always()
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -127,6 +149,6 @@ print(f'Requirements: {manifest[\"requirements\"]}')
         run: |
           echo "# Home Assistant Compatibility Report" > report.md
           echo "" >> report.md
-          echo "Tested versions: ${{ needs.generate-matrix.outputs.matrix }}" >> report.md
+          echo "Matrix tested: \`${{ needs.generate-matrix.outputs.matrix }}\`" >> report.md
           echo "Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> report.md
-          cat report.md >> $GITHUB_STEP_SUMMARY
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
