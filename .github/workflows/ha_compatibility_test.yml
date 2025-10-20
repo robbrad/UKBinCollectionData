@@ -19,22 +19,32 @@ jobs:
     name: Generate HA Version Matrix
     runs-on: ubuntu-latest
     outputs:
-      versions: ${{ steps.get-versions.outputs.versions }}
+      matrix: ${{ steps.get-versions.outputs.matrix }}
     steps:
       - name: Get HA versions from PyPI
         id: get-versions
         run: |
-          VERSIONS=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '[.releases | keys[] | select(test("^202[3-9][.](1[0-2]|[1-9])[.]0$"))] | sort | .[-8:] + ["dev"]')
-          echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
+          MATRIX=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '
+            .releases | to_entries |
+            map(select(.key | test("^202[3-9][.][0-9]+[.]"))) |
+            map({version: .key, python: .value[0].requires_python // ">=3.12"}) |
+            map(. + {parts: (.version | split(".") | {year: .[0], month: .[1], patch: .[2]})}) |
+            group_by(.parts.year + "." + .parts.month) |
+            map(max_by(.parts.patch | tonumber)) |
+            map({ha_version: .version, python_version: (if (.python | test("3.13")) then "3.13" else "3.12" end)}) |
+            sort_by(.ha_version | split(".") | [.[0]|tonumber, .[1]|tonumber, .[2]|tonumber]) |
+            .[-8:] + [{ha_version: "dev", python_version: "3.13"}] |
+            {include: .}
+          ')
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   test-ha-compatibility:
-    name: Test HA ${{ matrix.ha-version }}
+    name: Test HA ${{ matrix.ha_version }}
     runs-on: ubuntu-latest
     needs: generate-matrix
     strategy:
       fail-fast: false
-      matrix:
-        ha-version: ${{ fromJson(needs.generate-matrix.outputs.versions) }}
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
     
     steps:
       - name: Checkout code
@@ -43,19 +53,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python_version }}
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-asyncio pytest-homeassistant-custom-component
 
-      - name: Install Home Assistant ${{ matrix.ha-version }}
+      - name: Install Home Assistant ${{ matrix.ha_version }}
         run: |
-          if [ "${{ matrix.ha-version }}" = "dev" ]; then
+          if [ "${{ matrix.ha_version }}" = "dev" ]; then
             pip install git+https://github.com/home-assistant/core.git
           else
-            pip install homeassistant==${{ matrix.ha-version }}
+            pip install homeassistant==${{ matrix.ha_version }}
           fi
 
       - name: Install UK Bin Collection package
@@ -65,7 +75,7 @@ jobs:
       - name: Run component validation
         run: |
           python -m pytest custom_components/uk_bin_collection/tests/ -v
-        continue-on-error: ${{ matrix.ha-version == 'dev' }}
+        continue-on-error: ${{ matrix.ha_version == 'dev' }}
 
       - name: Test component import
         run: |
@@ -104,7 +114,7 @@ jobs:
       - name: Create test result summary
         if: always()
         run: |
-          echo "## Test Results for HA ${{ matrix.ha-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Results for HA ${{ matrix.ha_version }} (Python ${{ matrix.python_version }})" >> $GITHUB_STEP_SUMMARY
           if [ $? -eq 0 ]; then
             echo "✅ **PASSED** - Component is compatible" >> $GITHUB_STEP_SUMMARY
           else
@@ -125,6 +135,6 @@ jobs:
         run: |
           echo "# Home Assistant Compatibility Report" > report.md
           echo "" >> report.md
-          echo "Tested versions: ${{ needs.generate-matrix.outputs.versions }}" >> report.md
+          echo "Tested versions: ${{ needs.generate-matrix.outputs.matrix }}" >> report.md
           echo "Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> report.md
           cat report.md >> $GITHUB_STEP_SUMMARY
