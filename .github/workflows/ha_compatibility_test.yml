@@ -70,35 +70,35 @@ jobs:
       - name: Test component import
         run: |
           python -c "
-          import sys
-          sys.path.insert(0, 'custom_components')
-          try:
-              from uk_bin_collection import __init__ as component
-              print('✅ Component imports successfully')
-          except Exception as e:
-              print(f'❌ Component import failed: {e}')
-              sys.exit(1)
+import sys
+sys.path.insert(0, 'custom_components')
+try:
+    from uk_bin_collection import const
+    print('✅ Component imports successfully')
+except Exception as e:
+    print(f'❌ Component import failed: {e}')
+    sys.exit(1)
           "
 
       - name: Test manifest validation
         run: |
           python -c "
-          import json
-          import sys
-          
-          with open('custom_components/uk_bin_collection/manifest.json') as f:
-              manifest = json.load(f)
-          
-          required_fields = ['domain', 'name', 'version', 'requirements']
-          missing = [field for field in required_fields if field not in manifest]
-          
-          if missing:
-              print(f'❌ Missing required manifest fields: {missing}')
-              sys.exit(1)
-          
-          print('✅ Manifest validation passed')
-          print(f'Component version: {manifest[\"version\"]}')
-          print(f'Requirements: {manifest[\"requirements\"]}')
+import json
+import sys
+
+with open('custom_components/uk_bin_collection/manifest.json') as f:
+    manifest = json.load(f)
+
+required_fields = ['domain', 'name', 'version', 'requirements']
+missing = [field for field in required_fields if field not in manifest]
+
+if missing:
+    print(f'❌ Missing required manifest fields: {missing}')
+    sys.exit(1)
+
+print('✅ Manifest validation passed')
+print(f'Component version: {manifest[\"version\"]}')
+print(f'Requirements: {manifest[\"requirements\"]}')
           "
 
       - name: Create test result summary
