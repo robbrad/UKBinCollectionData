@@ -65,14 +65,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           if [ "${{ matrix.ha_version }}" = "dev" ]; then
-            pip install --no-cache-dir git+https://github.com/home-assistant/core.git
+            pip install git+https://github.com/home-assistant/core.git
           else
-            pip install --no-cache-dir homeassistant==${{ matrix.ha_version }}
+            pip install homeassistant==${{ matrix.ha_version }}
           fi
-
-      - name: Install UK Bin Collection package
-        run: |
-          pip install -e .
 
       - name: Setup HA config directory
         run: |
