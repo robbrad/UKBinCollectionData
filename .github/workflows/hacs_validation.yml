@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: "actions/checkout@v5"
       - uses: home-assistant/actions/hassfest@master
+  
   hacs:
     name: HACS Action Validation
     runs-on: "ubuntu-latest"
@@ -21,3 +22,18 @@ jobs:
         uses: "hacs/action@main"
         with:
           category: "integration"
+  
+  compatibility_check:
+    name: Quick Compatibility Check
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v5"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          pip install homeassistant
+          pip install -e .
+      - name: Run compatibility check
+        run: python scripts/check_ha_compatibility.py
