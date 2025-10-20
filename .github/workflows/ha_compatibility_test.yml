@@ -24,9 +24,7 @@ jobs:
       - name: Get HA versions from PyPI
         id: get-versions
         run: |
-          VERSIONS=$(curl -s https://pypi.org/pypi/homeassistant/json | \
-            jq -r '[.releases | keys[] | select(test("^202[3-9]\\.(1[0-2]|[1-9])\\.0$"))] | \
-            sort | .[-8:] + ["dev"] | @json')
+          VERSIONS=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -r '[.releases | keys[] | select(test("^202[3-9]\.(1[0-2]|[1-9])\.0$"))] | sort | .[-8:] + ["dev"] | @json')
           echo "versions=$VERSIONS" >> $GITHUB_OUTPUT
 
   test-ha-compatibility:
