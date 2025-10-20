@@ -81,6 +81,12 @@ jobs:
             # Ensure HA actually tries to import the custom integration
             echo "uk_bin_collection:"
           } > config/configuration.yaml
+      
+      - name: Preinstall runtime deps used by HA scripts
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install "colorlog==6.10.1"
+          python -c "import colorlog, sys; print('colorlog', colorlog.__version__)"
 
       - name: Test HA startup with component (check_config)
         id: check_config
