@@ -66,12 +66,38 @@ jobs:
 
       - name: Setup HA config directory
         run: |
-          mkdir -p config/custom_components
+          mkdir -p config/custom_components config/.storage
           cp -r custom_components/uk_bin_collection config/custom_components/
           cat > config/configuration.yaml <<'YAML'
           logger:
             default: info
           YAML
+          
+          # Create a config entry to trigger component setup
+          cat > config/.storage/core.config_entries <<'JSON'
+          {
+            "version": 1,
+            "minor_version": 1,
+            "key": "core.config_entries",
+            "data": {
+              "entries": [
+                {
+                  "entry_id": "test_uk_bin_collection",
+                  "version": 1,
+                  "domain": "uk_bin_collection",
+                  "title": "Test Entry",
+                  "data": {},
+                  "options": {},
+                  "pref_disable_new_entities": false,
+                  "pref_disable_polling": false,
+                  "source": "user",
+                  "unique_id": null,
+                  "disabled_by": null
+                }
+              ]
+            }
+          }
+          JSON
 
       - name: Start Home Assistant in Docker
         run: |
@@ -95,8 +121,9 @@ jobs:
 
           echo "Waiting for HA to initialize..."
           while (( SECS < TIMEOUT )); do
-            if docker logs homeassistant 2>&1 | grep -q "$INIT_MARKER"; then
-              echo "✅ HA reports: $INIT_MARKER"
+            LOGS=$(docker logs homeassistant 2>&1)
+            if echo "$LOGS" | grep -q "$INIT_MARKER"; then
+              echo "✅ HA initialized successfully"
               break
             fi
             sleep 1
@@ -106,14 +133,19 @@ jobs:
             fi
           done
 
-          # After boot completes, check for errors in our component
-          if docker logs homeassistant 2>&1 | grep -Eq "Setup failed for custom integration 'uk_bin_collection'"; then
-            echo "❌ Custom component failed to load"
+          # Check for dependency installation and component setup
+          LOGS=$(docker logs homeassistant 2>&1)
+          if echo "$LOGS" | grep -q "Attempting install of uk-bin-collection"; then
+            echo "✅ HA attempted to install uk-bin-collection dependency"
+          fi
+          
+          if echo "$LOGS" | grep -Eq "(ERROR|CRITICAL).*(uk_bin_collection|custom_components\.uk_bin_collection)"; then
+            echo "❌ Component has errors in logs"
             FAIL=1
           fi
 
-          # If timeout and no init marker, flag failure
-          if (( SECS >= TIMEOUT )) && ! docker logs homeassistant 2>&1 | grep -q "$INIT_MARKER"; then
+          # Check timeout
+          if (( SECS >= TIMEOUT )) && ! echo "$LOGS" | grep -q "$INIT_MARKER"; then
             echo "❌ HA did not finish booting within ${TIMEOUT}s"
             FAIL=1
           fi
