@@ -6,10 +6,16 @@ import json
 import os
 
 from bs4 import BeautifulSoup
-import easyocr
-import cv2
-import numpy as np
-from PIL import Image
+
+# Optional OCR dependencies
+try:
+    import easyocr
+    import cv2
+    import numpy as np
+    from PIL import Image
+    HAS_OCR = True
+except ImportError:
+    HAS_OCR = False
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -917,6 +923,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def initialize_ocr(self):
         """Initialize EasyOCR reader."""
+        if not HAS_OCR:
+            print("OCR dependencies not available. Install with: pip install uk_bin_collection[ocr]")
+            return None
         try:
             if not hasattr(self, 'ocr_reader'):
                 print("Initializing OCR reader...")
