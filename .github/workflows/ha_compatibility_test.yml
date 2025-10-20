@@ -25,7 +25,7 @@ jobs:
         id: get-versions
         run: |
           MATRIX=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '
-            [.releases | keys[] | select(test("^202[3-9][.][0-9]+[.]"))] |
+            [.releases | keys[] | select(test("^202[3-9][.][0-9]+[.][0-9]+$"))] |
             map(split(".") | {year: .[0], month: .[1], patch: .[2], full: join(".")}) |
             group_by(.year + "." + .month) |
             map(max_by(.patch | tonumber)) |
