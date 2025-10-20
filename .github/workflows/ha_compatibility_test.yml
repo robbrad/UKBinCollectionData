@@ -55,113 +55,97 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python_version }}
-          cache: 'pip'
-
-      - name: Install Home Assistant ${{ matrix.ha_version }}
+      - name: Determine Docker tag
+        id: docker-tag
         run: |
-          python -m pip install --upgrade pip
           if [ "${{ matrix.ha_version }}" = "dev" ]; then
-            pip install git+https://github.com/home-assistant/core.git
+            echo "tag=dev" >> "$GITHUB_OUTPUT"
           else
-            pip install homeassistant==${{ matrix.ha_version }}
+            echo "tag=${{ matrix.ha_version }}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Setup HA config directory
         run: |
           mkdir -p config/custom_components
           cp -r custom_components/uk_bin_collection config/custom_components/
-          {
-            echo "logger:"
-            echo "  default: info"
-            echo ""
-
-          } > config/configuration.yaml
-      
-      - name: Preinstall runtime deps used by HA scripts
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install "colorlog==6.10.1"
-
-      - name: Ensure base config & include custom component
-        run: |
-          # Create a clean config dir with defaults
-          python -m homeassistant --script ensure_config -c config
-          # Minimal config; if your integration supports YAML, keep it enabled here
           cat > config/configuration.yaml <<'YAML'
           logger:
             default: info
           YAML
 
-      - name: Boot Home Assistant headless and check logs
+      - name: Start Home Assistant in Docker
+        run: |
+          docker run -d \
+            --name homeassistant \
+            -v $(pwd)/config:/config \
+            -e TZ=UTC \
+            ghcr.io/home-assistant/home-assistant:${{ steps.docker-tag.outputs.tag }}
+          
+          echo "Waiting for container to start..."
+          sleep 5
+
+      - name: Wait for Home Assistant to boot
         id: boot
-        shell: bash
-        env:
-          HASS_NO_COLOR: "1"
-          NO_COLOR: "1"
         run: |
           set -euo pipefail
-          rm -f config/home-assistant.log || true
-
-          # Start HA with an explicit log file
-          hass -c config --log-file config/home-assistant.log &
-          HASS_PID=$!
-          echo "pid=$HASS_PID"
-
-          # Wait up to 150s for boot to finish, or bail out early on obvious errors
           TIMEOUT=150
           SECS=0
           INIT_MARKER="Home Assistant initialized"
           FAIL=0
 
+          echo "Waiting for HA to initialize..."
           while (( SECS < TIMEOUT )); do
-            if grep -q "$INIT_MARKER" config/home-assistant.log; then
+            if docker logs homeassistant 2>&1 | grep -q "$INIT_MARKER"; then
               echo "✅ HA reports: $INIT_MARKER"
               break
             fi
             sleep 1
             SECS=$((SECS+1))
+            if (( SECS % 10 == 0 )); then
+              echo "Waiting... ${SECS}s"
+            fi
           done
 
           # After boot completes, check for errors in our component
-          if grep -Eq "Setup failed for custom integration 'uk_bin_collection'" config/home-assistant.log; then
+          if docker logs homeassistant 2>&1 | grep -Eq "Setup failed for custom integration 'uk_bin_collection'"; then
             echo "❌ Custom component failed to load"
             FAIL=1
           fi
 
           # If timeout and no init marker, flag failure
-          if (( SECS >= TIMEOUT )) && ! grep -q "$INIT_MARKER" config/home-assistant.log; then
+          if (( SECS >= TIMEOUT )) && ! docker logs homeassistant 2>&1 | grep -q "$INIT_MARKER"; then
             echo "❌ HA did not finish booting within ${TIMEOUT}s"
             FAIL=1
           fi
-
-          # Always try to shut down cleanly
-          kill -INT $HASS_PID || true
-          wait $HASS_PID || true
-
-          echo "--- Last 80 log lines ---"
-          tail -n 80 config/home-assistant.log || true
 
           # Expose pass/fail to later steps
           echo "boot_failed=${FAIL}" >> "$GITHUB_OUTPUT"
           exit ${FAIL}
 
+      - name: Show HA logs
+        if: always()
+        run: |
+          echo "--- Last 80 log lines ---"
+          docker logs homeassistant 2>&1 | tail -n 80
+
+      - name: Stop and remove container
+        if: always()
+        run: |
+          docker stop homeassistant || true
+          docker rm homeassistant || true
+
+      - name: Save HA logs to file
+        if: always()
+        run: |
+          docker logs homeassistant > config/home-assistant.log 2>&1 || true
+
       - name: Upload HA log (always)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ha-log-${{ matrix.ha_version }}-py${{ matrix.python_version }}
+          name: ha-log-${{ matrix.ha_version }}
           path: config/home-assistant.log
           overwrite: true
-
-
-      # OPTIONAL: enforce job failure when incompatible. Uncomment to make the matrix red on failures.
-      # - name: Fail job if check_config failed
-      #   if: ${{ steps.check_config.outputs.exit_code != '0' }}
-      #   run: exit 1
 
       - name: Test manifest validation
         id: manifest
