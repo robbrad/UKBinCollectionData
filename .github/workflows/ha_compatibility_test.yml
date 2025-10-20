@@ -83,10 +83,17 @@ jobs:
               "entries": [
                 {
                   "entry_id": "test_uk_bin_collection",
-                  "version": 1,
+                  "version": 3,
                   "domain": "uk_bin_collection",
                   "title": "Test Entry",
-                  "data": {},
+                  "data": {
+                    "name": "Test Council",
+                    "council": "TestCouncil",
+                    "url": "https://example.com",
+                    "timeout": 60,
+                    "update_interval": 12,
+                    "manual_refresh_only": true
+                  },
                   "options": {},
                   "pref_disable_new_entities": false,
                   "pref_disable_polling": false,
