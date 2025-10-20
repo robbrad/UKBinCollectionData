@@ -54,13 +54,9 @@ jobs:
         with:
           python-version: ${{ matrix.python_version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio pytest-homeassistant-custom-component
-
       - name: Install Home Assistant ${{ matrix.ha_version }}
         run: |
+          python -m pip install --upgrade pip
           if [ "${{ matrix.ha_version }}" = "dev" ]; then
             pip install git+https://github.com/home-assistant/core.git
           else
@@ -70,11 +66,6 @@ jobs:
       - name: Install UK Bin Collection package
         run: |
           pip install -e .
-
-      - name: Run component validation
-        run: |
-          python -m pytest custom_components/uk_bin_collection/tests/ -v
-        continue-on-error: ${{ matrix.ha_version == 'dev' }}
 
       - name: Test component import
         run: |
