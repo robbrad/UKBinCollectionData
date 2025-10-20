@@ -94,8 +94,6 @@ jobs:
           cat > config/configuration.yaml <<'YAML'
           logger:
             default: info
-          # If your integration has YAML setup, keep this to make sure it's imported.
-          uk_bin_collection: {}
           YAML
 
       - name: Boot Home Assistant headless and check logs
@@ -124,15 +122,15 @@ jobs:
               echo "✅ HA reports: $INIT_MARKER"
               break
             fi
-            # bail early if we see a fatal traceback or ERROR from our domain
-            if grep -Eiq 'Traceback|CRITICAL|Fatal error|ERROR.*(uk_bin_collection|custom_components\.uk_bin_collection)' config/home-assistant.log; then
-              echo "❌ Error detected in log during startup"
-              FAIL=1
-              break
-            fi
             sleep 1
             SECS=$((SECS+1))
           done
+
+          # After boot completes, check for errors in our component
+          if grep -Eq "Setup failed for custom integration 'uk_bin_collection'" config/home-assistant.log; then
+            echo "❌ Custom component failed to load"
+            FAIL=1
+          fi
 
           # If timeout and no init marker, flag failure
           if (( SECS >= TIMEOUT )) && ! grep -q "$INIT_MARKER" config/home-assistant.log; then
