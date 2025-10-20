@@ -86,21 +86,79 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install "colorlog==6.10.1"
 
-      - name: Test HA startup with component (check_config)
-        id: check_config
-        shell: bash
+      - name: Ensure base config & include custom component
         run: |
-          set +e
-          timeout 90 hass -c config --script check_config
-          RC=$?
-          echo "exit_code=$RC" >> "$GITHUB_OUTPUT"
-          if [ "$RC" -eq 0 ]; then
-            echo "✅ Component load & config check passed for HA ${{ matrix.ha_version }}"
-          else
-            echo "❌ Component failed config check for HA ${{ matrix.ha_version }} (exit=$RC)"
+          # Create a clean config dir with defaults
+          python -m homeassistant --script ensure_config -c config
+          # Minimal config; if your integration supports YAML, keep it enabled here
+          cat > config/configuration.yaml <<'YAML'
+          logger:
+            default: info
+          # If your integration has YAML setup, keep this to make sure it's imported.
+          uk_bin_collection: {}
+          YAML
+
+      - name: Boot Home Assistant headless and check logs
+        id: boot
+        shell: bash
+        env:
+          HASS_NO_COLOR: "1"
+          NO_COLOR: "1"
+        run: |
+          set -euo pipefail
+          rm -f config/home-assistant.log || true
+
+          # Start HA with an explicit log file
+          hass -c config --log-file config/home-assistant.log &
+          HASS_PID=$!
+          echo "pid=$HASS_PID"
+
+          # Wait up to 150s for boot to finish, or bail out early on obvious errors
+          TIMEOUT=150
+          SECS=0
+          INIT_MARKER="Home Assistant initialized"
+          FAIL=0
+
+          while (( SECS < TIMEOUT )); do
+            if grep -q "$INIT_MARKER" config/home-assistant.log; then
+              echo "✅ HA reports: $INIT_MARKER"
+              break
+            fi
+            # bail early if we see a fatal traceback or ERROR from our domain
+            if grep -Eiq 'Traceback|CRITICAL|Fatal error|ERROR.*(uk_bin_collection|custom_components\.uk_bin_collection)' config/home-assistant.log; then
+              echo "❌ Error detected in log during startup"
+              FAIL=1
+              break
+            fi
+            sleep 1
+            SECS=$((SECS+1))
+          done
+
+          # If timeout and no init marker, flag failure
+          if (( SECS >= TIMEOUT )) && ! grep -q "$INIT_MARKER" config/home-assistant.log; then
+            echo "❌ HA did not finish booting within ${TIMEOUT}s"
+            FAIL=1
           fi
-          # Do not fail the job here; summary step will report status and you
-          # can flip the next step to enforce failures if desired.
+
+          # Always try to shut down cleanly
+          kill -INT $HASS_PID || true
+          wait $HASS_PID || true
+
+          echo "--- Last 80 log lines ---"
+          tail -n 80 config/home-assistant.log || true
+
+          # Expose pass/fail to later steps
+          echo "boot_failed=${FAIL}" >> "$GITHUB_OUTPUT"
+          exit ${FAIL}
+
+      - name: Upload HA log (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ha-log-${{ matrix.ha_version }}-py${{ matrix.python_version }}
+          path: config/home-assistant.log
+          overwrite: true
+
 
       # OPTIONAL: enforce job failure when incompatible. Uncomment to make the matrix red on failures.
       # - name: Fail job if check_config failed
@@ -127,14 +185,16 @@ jobs:
       - name: Create test result summary
         if: always()
         run: |
-          echo "## Test Results for HA ${{ matrix.ha_version }} (Python ${{ matrix.python_version }})" >> "$GITHUB_STEP_SUMMARY"
-          if [ "${{ steps.check_config.outputs.exit_code }}" = "0" ] && [ "${{ steps.manifest.outcome }}" = "success" ]; then
-            echo "✅ **PASSED** – Component is compatible" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Boot Results for HA ${{ matrix.ha_version }} (Python ${{ matrix.python_version }})" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.boot.outputs.boot_failed }}" = "0" ] && [ "${{ steps.manifest.outcome }}" = "success" ]; then
+            echo "✅ **PASSED** – HA booted with the custom component present" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "❌ **FAILED** – Compatibility issues detected" >> "$GITHUB_STEP_SUMMARY"
+            echo "❌ **FAILED** – HA failed to boot cleanly" >> "$GITHUB_STEP_SUMMARY"
             echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "- check_config exit code: \`${{ steps.check_config.outputs.exit_code }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- boot step failed: \`${{ steps.boot.outputs.boot_failed }}\`" >> "$GITHUB_STEP_SUMMARY"
             echo "- manifest step: \`${{ steps.manifest.outcome }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "See the uploaded **ha-log** artifact for details." >> "$GITHUB_STEP_SUMMARY"
           fi
 
 
