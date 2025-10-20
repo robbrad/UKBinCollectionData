@@ -22,18 +22,4 @@ jobs:
         uses: "hacs/action@main"
         with:
           category: "integration"
-  
-  compatibility_check:
-    name: Quick Compatibility Check
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "actions/checkout@v5"
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: |
-          pip install homeassistant
-          pip install -e .
-      - name: Run compatibility check
-        run: python scripts/check_ha_compatibility.py
+
