@@ -122,22 +122,22 @@ jobs:
           echo "boot_failed=${FAIL}" >> "$GITHUB_OUTPUT"
           exit ${FAIL}
 
+      - name: Save HA logs to file
+        if: always()
+        run: |
+          docker logs homeassistant 2>&1 > config/home-assistant.log || true
+
       - name: Show HA logs
         if: always()
         run: |
           echo "--- Last 80 log lines ---"
-          docker logs homeassistant 2>&1 | tail -n 80
+          tail -n 80 config/home-assistant.log || docker logs homeassistant 2>&1 | tail -n 80
 
       - name: Stop and remove container
         if: always()
         run: |
           docker stop homeassistant || true
           docker rm homeassistant || true
-
-      - name: Save HA logs to file
-        if: always()
-        run: |
-          docker logs homeassistant > config/home-assistant.log 2>&1 || true
 
       - name: Upload HA log (always)
         if: always()
