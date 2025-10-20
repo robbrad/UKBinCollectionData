@@ -140,7 +140,8 @@ jobs:
           fi
           
           if echo "$LOGS" | grep -Eq "(ERROR|CRITICAL).*(uk_bin_collection|custom_components\.uk_bin_collection)"; then
-            echo "❌ Component has errors in logs"
+            echo "❌ Component has errors in logs:"
+            echo "$LOGS" | grep -E "(ERROR|CRITICAL).*(uk_bin_collection|custom_components\.uk_bin_collection)" || true
             FAIL=1
           fi
 
@@ -157,13 +158,13 @@ jobs:
       - name: Save HA logs to file
         if: always()
         run: |
-          docker logs homeassistant 2>&1 > config/home-assistant.log || true
+          docker logs homeassistant > home-assistant.log 2>&1 || true
 
       - name: Show HA logs
         if: always()
         run: |
           echo "--- Last 80 log lines ---"
-          tail -n 80 config/home-assistant.log || docker logs homeassistant 2>&1 | tail -n 80
+          tail -n 80 home-assistant.log 2>/dev/null || docker logs homeassistant 2>&1 | tail -n 80
 
       - name: Stop and remove container
         if: always()
@@ -176,7 +177,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ha-log-${{ matrix.ha_version }}
-          path: config/home-assistant.log
+          path: home-assistant.log
           overwrite: true
 
       - name: Test manifest validation
