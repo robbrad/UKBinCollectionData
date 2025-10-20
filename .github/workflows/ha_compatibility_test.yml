@@ -25,15 +25,15 @@ jobs:
         id: get-versions
         run: |
           MATRIX=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '
-            .releases | to_entries |
-            map(select(.key | test("^202[3-9][.][0-9]+[.]"))) |
-            map({version: .key, python: .value[0].requires_python // ">=3.12"}) |
-            map(. + {parts: (.version | split(".") | {year: .[0], month: .[1], patch: .[2]})}) |
-            group_by(.parts.year + "." + .parts.month) |
-            map(max_by(.parts.patch | tonumber)) |
-            map({ha_version: .version, python_version: (if (.python | test("3.13")) then "3.13" else "3.12" end)}) |
-            sort_by(.ha_version | split(".") | [.[0]|tonumber, .[1]|tonumber, .[2]|tonumber]) |
-            .[-8:] + [{ha_version: "dev", python_version: "3.13"}] |
+            [.releases | keys[] | select(test("^202[3-9][.][0-9]+[.]"))] |
+            map(split(".") | {year: .[0], month: .[1], patch: .[2], full: join(".")}) |
+            group_by(.year + "." + .month) |
+            map(max_by(.patch | tonumber)) |
+            map(.full) |
+            sort_by(split(".") | [.[0]|tonumber, .[1]|tonumber, .[2]|tonumber]) |
+            .[-8:] |
+            map(split(".") | {ha_version: join("."), python_version: (if (.[0] == "2025" and (.[1]|tonumber) >= 2) then "3.13" else "3.12" end)}) |
+            . + [{ha_version: "dev", python_version: "3.13"}] |
             {include: .}
           ')
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
