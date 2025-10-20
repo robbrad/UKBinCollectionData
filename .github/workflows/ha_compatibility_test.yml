@@ -27,9 +27,9 @@ jobs:
           MATRIX=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '.releases |
             to_entries |
             map(select(.key | test("^[0-9]+[.][0-9]+[.][0-9]+$"))) |
-            sort_by(.key | split(".") | map(tonumber)) |
             group_by(.key | (split(".")[:2] | join("."))) |
             map(max_by(.key | (split(".")[2] | tonumber)) | .key) |
+            sort_by(split(".") | map(tonumber)) |
             .[-8:] |
             map({ha_version: ., python_version: (if (split(".")[0] == "2025" and (split(".")[1]|tonumber) >= 2) then "3.13" else "3.12" end)}) |
             . + [{ha_version: "dev", python_version: "3.13"}] |
