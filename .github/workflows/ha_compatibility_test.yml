@@ -1,4 +1,4 @@
-name: Home Assistant Compatibility Test
+name: PR - Home Assistant Compatibility Test
 
 on:
   push:
@@ -71,7 +71,7 @@ jobs:
         run: |
           mkdir -p config/custom_components
           cp -r custom_components/uk_bin_collection config/custom_components/
-          cat > config/configuration.yaml << EOF
+          cat > config/configuration.yaml << 'EOF'
           logger:
             default: info
           EOF
