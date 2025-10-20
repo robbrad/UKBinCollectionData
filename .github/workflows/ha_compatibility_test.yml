@@ -88,8 +88,8 @@ jobs:
                   "title": "Test Entry",
                   "data": {
                     "name": "Test Council",
-                    "council": "TestCouncil",
-                    "url": "https://example.com",
+                    "council": "GooglePublicCalendarCouncil",
+                    "url": "https://calendar.google.com/calendar/ical/0d775884b4db6a7bae5204f06dae113c1a36e505b25991ebc27c6bd42edf5b5e%40group.calendar.google.com/public/basic.ics",
                     "timeout": 60,
                     "update_interval": 12,
                     "manual_refresh_only": true
