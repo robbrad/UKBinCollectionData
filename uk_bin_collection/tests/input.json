@@ -1797,7 +1797,7 @@
         "house_number": "2",
         "postcode": "NR2 3TT",
         "url": "https://bnr-wrp.whitespacews.com",
-        "wiki_command_url_override": "hhttps://bnr-wrp.whitespacews.com",
+        "wiki_command_url_override": "https://bnr-wrp.whitespacews.com",
         "wiki_name": "Norwich",
         "wiki_note": "Pass the house number and postcode in their respective parameters.",
         "LAD24CD": "E07000148"
