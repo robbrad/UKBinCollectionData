@@ -1,4 +1,38 @@
 =======
+## 0.160.0 (2025-10-21)
+
+### Feat
+
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+- adding tests to ensure releases work with Home assistant
+
 ## 0.159.3 (2025-10-20)
 
 ### Fix
