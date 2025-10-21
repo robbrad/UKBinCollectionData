@@ -1,0 +1,238 @@
+name: PR - Home Assistant Compatibility Test
+
+on:
+  push:
+    branches: [ master, main ]
+    paths:
+      - 'custom_components/**'
+      - 'pyproject.toml'
+  pull_request:
+    branches: [ master, main ]
+    paths:
+      - 'custom_components/**'
+      - 'pyproject.toml'
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday at 6 AM UTC
+
+jobs:
+  generate-matrix:
+    name: Generate HA Version Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.get-versions.outputs.matrix }}
+    steps:
+      - name: Get HA versions from PyPI
+        id: get-versions
+        run: |
+          MATRIX=$(curl -s https://pypi.org/pypi/homeassistant/json | jq -c '
+            .releases
+            | to_entries
+            # keep only x.y.z (skip betas/devs/post)
+            | map(select(.key | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")))
+            # group by major.minor, keep highest patch
+            | group_by(.key | (split(".")[:2] | join(".")))
+            | map(max_by(.key | (split(".")[2] | tonumber)) | .key)
+            # sort numerically and take latest 8
+            | sort_by(split(".") | map(tonumber))
+            | .[-8:]
+            # pick python version per HA series; adjust as needed
+            | map({ha_version: ., python_version: (if (split(".")[0] == "2025" and (split(".")[1]|tonumber) >= 2) then "3.13" else "3.12" end)})
+            # also test latest dev on py 3.13
+            | . + [{ha_version: "dev", python_version: "3.13"}]
+            | {include: .}
+          ')
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+
+  test-ha-compatibility:
+    name: Test HA ${{ matrix.ha_version }}
+    runs-on: ubuntu-latest
+    needs: generate-matrix
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Determine Docker tag
+        id: docker-tag
+        run: |
+          if [ "${{ matrix.ha_version }}" = "dev" ]; then
+            echo "tag=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${{ matrix.ha_version }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup HA config directory
+        run: |
+          mkdir -p config/custom_components config/.storage
+          cp -r custom_components/uk_bin_collection config/custom_components/
+          cat > config/configuration.yaml <<'YAML'
+          logger:
+            default: info
+          YAML
+          
+          # Create a config entry to trigger component setup
+          cat > config/.storage/core.config_entries <<'JSON'
+          {
+            "version": 1,
+            "minor_version": 1,
+            "key": "core.config_entries",
+            "data": {
+              "entries": [
+                {
+                  "entry_id": "test_uk_bin_collection",
+                  "version": 3,
+                  "domain": "uk_bin_collection",
+                  "title": "Test Entry",
+                  "data": {
+                    "name": "Test Council",
+                    "council": "GooglePublicCalendarCouncil",
+                    "url": "https://calendar.google.com/calendar/ical/0d775884b4db6a7bae5204f06dae113c1a36e505b25991ebc27c6bd42edf5b5e%40group.calendar.google.com/public/basic.ics",
+                    "timeout": 60,
+                    "update_interval": 12,
+                    "manual_refresh_only": true
+                  },
+                  "options": {},
+                  "pref_disable_new_entities": false,
+                  "pref_disable_polling": false,
+                  "source": "user",
+                  "unique_id": null,
+                  "disabled_by": null
+                }
+              ]
+            }
+          }
+          JSON
+
+      - name: Start Home Assistant in Docker
+        run: |
+          docker run -d \
+            --name homeassistant \
+            -v $(pwd)/config:/config \
+            -e TZ=UTC \
+            ghcr.io/home-assistant/home-assistant:${{ steps.docker-tag.outputs.tag }}
+          
+          echo "Waiting for container to start..."
+          sleep 5
+
+      - name: Wait for Home Assistant to boot
+        id: boot
+        run: |
+          set -euo pipefail
+          TIMEOUT=150
+          SECS=0
+          INIT_MARKER="Home Assistant initialized"
+          FAIL=0
+
+          echo "Waiting for HA to initialize..."
+          while (( SECS < TIMEOUT )); do
+            LOGS=$(docker logs homeassistant 2>&1)
+            if echo "$LOGS" | grep -q "$INIT_MARKER"; then
+              echo "✅ HA initialized successfully"
+              break
+            fi
+            sleep 1
+            SECS=$((SECS+1))
+            if (( SECS % 10 == 0 )); then
+              echo "Waiting... ${SECS}s"
+            fi
+          done
+
+          # Check for dependency installation and component setup
+          LOGS=$(docker logs homeassistant 2>&1)
+          if echo "$LOGS" | grep -q "Attempting install of uk-bin-collection"; then
+            echo "✅ HA attempted to install uk-bin-collection dependency"
+          fi
+          
+          if echo "$LOGS" | grep -Eq "(ERROR|CRITICAL).*(uk_bin_collection|custom_components\.uk_bin_collection)"; then
+            echo "❌ Component has errors in logs:"
+            echo "$LOGS" | grep -E "(ERROR|CRITICAL).*(uk_bin_collection|custom_components\.uk_bin_collection)" || true
+            FAIL=1
+          fi
+
+          # Check timeout
+          if (( SECS >= TIMEOUT )) && ! echo "$LOGS" | grep -q "$INIT_MARKER"; then
+            echo "❌ HA did not finish booting within ${TIMEOUT}s"
+            FAIL=1
+          fi
+
+          # Expose pass/fail to later steps
+          echo "boot_failed=${FAIL}" >> "$GITHUB_OUTPUT"
+          exit ${FAIL}
+
+      - name: Save HA logs to file
+        if: always()
+        run: |
+          docker logs homeassistant > home-assistant.log 2>&1 || true
+
+      - name: Show HA logs
+        if: always()
+        run: |
+          echo "--- Last 80 log lines ---"
+          tail -n 80 home-assistant.log 2>/dev/null || docker logs homeassistant 2>&1 | tail -n 80
+
+      - name: Stop and remove container
+        if: always()
+        run: |
+          docker stop homeassistant || true
+          docker rm homeassistant || true
+
+      - name: Upload HA log (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ha-log-${{ matrix.ha_version }}
+          path: home-assistant.log
+          overwrite: true
+
+      - name: Test manifest validation
+        id: manifest
+        run: |
+          python <<'PY'
+          import json, sys
+          with open('custom_components/uk_bin_collection/manifest.json') as f:
+              m = json.load(f)
+          required = ['domain', 'name', 'version', 'requirements']
+          missing = [k for k in required if k not in m]
+          if missing:
+              print(f'❌ Missing required manifest fields: {missing}')
+              sys.exit(1)
+          print('✅ Manifest validation passed')
+          print(f'Component version: {m.get("version")}')
+          print(f'Requirements: {m.get("requirements")}')
+          PY
+
+      - name: Create test result summary
+        if: always()
+        run: |
+          echo "## Boot Results for HA ${{ matrix.ha_version }} (Python ${{ matrix.python_version }})" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.boot.outputs.boot_failed }}" = "0" ] && [ "${{ steps.manifest.outcome }}" = "success" ]; then
+            echo "✅ **PASSED** – HA booted with the custom component present" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "❌ **FAILED** – HA failed to boot cleanly" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "- boot step failed: \`${{ steps.boot.outputs.boot_failed }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "- manifest step: \`${{ steps.manifest.outcome }}\`" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "See the uploaded **ha-log** artifact for details." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+
+  compatibility-report:
+    name: Generate Compatibility Report
+    runs-on: ubuntu-latest
+    needs: [generate-matrix, test-ha-compatibility]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create compatibility report
+        run: |
+          echo "# Home Assistant Compatibility Report" > report.md
+          echo "" >> report.md
+          echo "Matrix tested: \`${{ needs.generate-matrix.outputs.matrix }}\`" >> report.md
+          echo "Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> report.md
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
