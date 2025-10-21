@@ -1761,7 +1761,7 @@
         "uprn": "47097627",
         "url": "https://www.northtyneside.gov.uk/waste-collection-schedule",
         "wiki_command_url_override": "https://www.northtyneside.gov.uk/waste-collection-schedule/view/XXXXXXXX",
-      "wiki_name": "North Tyneside",
+        "wiki_name": "North Tyneside",
         "wiki_note": "Pass only the UPRN (no postcode). You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E08000022"
     },
