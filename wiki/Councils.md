@@ -261,7 +261,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [South Gloucestershire](#south-gloucestershire)
 - [South Hams](#south-hams)
 - [South Holland](#south-holland)
-- [South Kesteven](#south-kesteven)
+- [South Kesteven District Council](#south-kesteven-district-council)
 - [South Lanarkshire](#south-lanarkshire)
 - [South Norfolk](#south-norfolk)
 - [South Oxfordshire](#south-oxfordshire)
@@ -2833,14 +2833,13 @@ Note: Pass the postcode and UPRN. You can find the UPRN using [FindMyAddress](ht
 
 ### North Tyneside
 ```commandline
-python collect_data.py NorthTynesideCouncil https://my.northtyneside.gov.uk/category/81/bin-collection-dates -s -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py NorthTynesideCouncil https://www.northtyneside.gov.uk/waste-collection-schedule/view/XXXXXXXX -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-p` - postcode
 
-Note: Pass the postcode and UPRN. You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+Note: Pass only the UPRN (no postcode). You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
@@ -3394,17 +3393,15 @@ Note: Pass the UPRN and postcode in their respective parameters. This parser req
 
 ---
 
-### South Kesteven
+### South Kesteven District Council
 ```commandline
-python collect_data.py SouthKestevenDistrictCouncil https://pre.southkesteven.gov.uk/BinSearch.aspx -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py SouthKestevenDistrictCouncil https://pre.southkesteven.gov.uk/skdcNext/tempforms/checkmybin.aspx -s -p "XXXX XXX"
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Provide your full address in the `house_number` parameter and your postcode in the `postcode` parameter.
+Note: Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns.
 
 ---
 
