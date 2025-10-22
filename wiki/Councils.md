@@ -2885,7 +2885,7 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ### Norwich
 ```commandline
-python collect_data.py NorwichCityCouncil hhttps://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
+python collect_data.py NorwichCityCouncil https://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode

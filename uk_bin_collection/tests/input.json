@@ -1761,7 +1761,7 @@
         "uprn": "47097627",
         "url": "https://www.northtyneside.gov.uk/waste-collection-schedule",
         "wiki_command_url_override": "https://www.northtyneside.gov.uk/waste-collection-schedule/view/XXXXXXXX",
-      "wiki_name": "North Tyneside",
+        "wiki_name": "North Tyneside",
         "wiki_note": "Pass only the UPRN (no postcode). You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E08000022"
     },
@@ -1797,7 +1797,7 @@
         "house_number": "2",
         "postcode": "NR2 3TT",
         "url": "https://bnr-wrp.whitespacews.com",
-        "wiki_command_url_override": "hhttps://bnr-wrp.whitespacews.com",
+        "wiki_command_url_override": "https://bnr-wrp.whitespacews.com",
         "wiki_name": "Norwich",
         "wiki_note": "Pass the house number and postcode in their respective parameters.",
         "LAD24CD": "E07000148"
@@ -1957,7 +1957,7 @@
     "RochdaleCouncil": {
         "postcode": "OL11 5BE",
         "skip_get_url": true,
-        "uprn": "23049922",
+        "uprn": "10094358428",
         "url": "https://webforms.rochdale.gov.uk/BinCalendar",
         "wiki_name": "Rochdale",
         "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
