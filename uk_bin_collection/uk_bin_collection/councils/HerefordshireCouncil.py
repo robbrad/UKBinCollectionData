@@ -31,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify
 
         checkValid = any("Your next collection days" in h2.get_text() for h2 in soup.find_all("h2"))
-        if checkValid is None:
+        if not checkValid:
             raise ValueError("Address/UPRN not found")
 
         data = {"bins": []}
@@ -49,7 +49,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
 
             # Get the first <li>, which is the 'next collection' entry
-            next_date = ul.find("li").get_text(strip=True).replace(" (next collection)", "")
+            li = ul.find("li")
+            if not li:
+                continue
+            next_date = li.get_text(strip=True).replace(" (next collection)", "")
 
             logging.info(f"Bin type: {bin_type} - Collection date: {next_date}")
 
