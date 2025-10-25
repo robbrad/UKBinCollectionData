@@ -30,35 +30,34 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(page.text, "html.parser")
         soup.prettify
 
-        data = {"bins": []}
-
-        checkValid = soup.find("p", id="selectedAddressResult")
+        checkValid = any("Your next collection days" in h2.get_text() for h2 in soup.find_all("h2"))
         if checkValid is None:
             raise ValueError("Address/UPRN not found")
 
-        collections = soup.find("div", id="wasteCollectionDates")
+        data = {"bins": []}
 
-        for bins in collections.select('div[class*="hc-island"]'):
-            bin_type = bins.h4.get_text(strip=True)
+        for h3 in soup.find_all("h3", class_="c-supplement__heading"):
+            bin_type = h3.get_text(strip=True)
 
-            # Last div.hc-island is the calendar link, skip it
-            if bin_type == "Calendar":
+            # Skip unrelated items
+            if "bin" not in bin_type.lower():
                 continue
 
-            # Next collection date is in a span under the second p.hc-no-margin of the div.
-            bin_collection = re.search(
-                r"(.*) \(.*\)", bins.select("div > p > span")[0].get_text(strip=True)
-            ).group(1)
-            if bin_collection:
-                logging.info(
-                    f"Bin type: {bin_type} - Collection date: {bin_collection}"
-                )
-                dict_data = {
+            # The <ul> immediately following contains the collection dates
+            ul = h3.find_next_sibling("ul")
+            if not ul:
+                continue
+
+            # Get the first <li>, which is the 'next collection' entry
+            next_date = ul.find("li").get_text(strip=True).replace(" (next collection)", "")
+
+            logging.info(f"Bin type: {bin_type} - Collection date: {next_date}")
+
+            data["bins"].append(
+                {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(
-                        bin_collection, "%A %d %B %Y"
-                    ).strftime(date_format),
+                    "collectionDate": datetime.strptime(next_date, "%A %d %B %Y").strftime(date_format),
                 }
-                data["bins"].append(dict_data)
+            )
 
         return data
