@@ -1385,7 +1385,7 @@
     "LondonBoroughHounslow": {
         "skip_get_url": true,
         "uprn": "100021577765",
-        "url": "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder",
+        "url": "https://my.hounslow.gov.uk/service/Waste_and_recycling_collections",
         "wiki_name": "Hounslow",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E09000018"

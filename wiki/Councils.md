@@ -2296,7 +2296,7 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ### Hounslow
 ```commandline
-python collect_data.py LondonBoroughHounslow https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder -s -u XXXXXXXX
+python collect_data.py LondonBoroughHounslow https://my.hounslow.gov.uk/service/Waste_and_recycling_collections -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
