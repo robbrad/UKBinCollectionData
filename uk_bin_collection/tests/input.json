@@ -314,7 +314,7 @@
         "house_number": "44",
         "postcode": "BN1 8NE",
         "skip_get_url": true,
-        "url": "https://cityclean.brighton-hove.gov.uk/link/collections",
+        "url": "https://enviroservices.brighton-hove.gov.uk/link/collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Brighton and Hove",
         "wiki_note": "Use house number and postcode. Requires Selenium",
