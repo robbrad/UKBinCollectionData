@@ -785,7 +785,7 @@ Note: Pass the house number and postcode in their respective parameters.
 
 ### Brighton and Hove
 ```commandline
-python collect_data.py BrightonandHoveCityCouncil https://cityclean.brighton-hove.gov.uk/link/collections -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BrightonandHoveCityCouncil https://enviroservices.brighton-hove.gov.uk/link/collections -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
