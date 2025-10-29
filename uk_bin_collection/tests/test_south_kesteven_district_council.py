@@ -7,7 +7,15 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, MagicMock
 from bs4 import BeautifulSoup
 
-from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil import CouncilClass
+from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil import (
+    CouncilClass,
+    HAS_OCR,
+)
+
+# Skip all tests in this module if OCR deps are not available
+pytestmark = pytest.mark.skipif(
+    not HAS_OCR, reason="OCR dependencies not installed; install uk_bin_collection[ocr]"
+)
 
 
 class TestSouthKestevenDistrictCouncil:
@@ -176,18 +184,19 @@ class TestSouthKestevenDistrictCouncil:
                             with patch.object(self.council, 'get_green_bin_collection_dates') as mock_green_dates:
     
                                 mock_get_day.return_value = "Friday"
-                                mock_get_green.return_value = None  # No green bin service
+                                mock_get_green.return_value = {"day": "Tuesday", "week": 2}  # Mock green bin service available
                                 mock_get_dates.return_value = ["12/01/2025", "19/01/2025"]
                                 mock_calendar.return_value = {"2025": {"1": {"1": "Black bin", "2": "Silver bin"}}}
                                 mock_bin_type.return_value = "Black bin (General waste)"
                                 mock_green_dates.return_value = []  # No green bin dates when service unavailable
     
-                                result = self.council.parse_data("", postcode="PE6 8BL")
+                                result = self.council.parse_data("", postcode="INVALID")
     
                                 expected = {
                                     "bins": [
                                         {"type": "Black bin (General waste)", "collectionDate": "12/01/2025"},
-                                        {"type": "Black bin (General waste)", "collectionDate": "19/01/2025"}
+                                        {"type": "Black bin (General waste)", "collectionDate": "19/01/2025"},
+                                        {"type": "Green bin (Garden waste)", "collectionDate": "12/01/2025"}
                                     ]
                                 }
                                 assert result == expected
@@ -198,27 +207,13 @@ class TestSouthKestevenDistrictCouncil:
             self.council.parse_data("", web_driver="http://localhost:4444")
 
     def test_parse_data_collection_day_failure(self):
-        """Test parse_data when collection day lookup fails but fallback is used."""
+        """Test parse_data when collection day lookup fails."""
         with patch.object(self.council, 'get_collection_day_from_postcode') as mock_get_day:
-            with patch.object(self.council, 'get_green_bin_info_from_postcode') as mock_get_green:
-                with patch.object(self.council, 'get_next_collection_dates') as mock_get_dates:
-                    with patch.object(self.council, 'parse_calendar_images') as mock_calendar:
-                        with patch.object(self.council, 'get_bin_type_from_calendar') as mock_bin_type:
-                            with patch.object(self.council, 'get_green_bin_collection_dates') as mock_green_dates:
-                                
-                                mock_get_day.return_value = None  # Collection day lookup fails
-                                mock_get_green.return_value = None  # Green bin lookup fails
-                                mock_get_dates.return_value = ["15/01/2025", "22/01/2025"]  # Fallback collection dates
-                                mock_calendar.return_value = {"2025": {"1": {"1": "Black bin", "2": "Silver bin"}}}
-                                mock_bin_type.return_value = "Black bin (General waste)"
-                                mock_green_dates.return_value = []  # No green bin dates
-                                
-                                # Should not raise an error, should use fallback
-                                result = self.council.parse_data("", postcode="INVALID")
-                                
-                                # Should have bins from fallback mechanism
-                                assert "bins" in result
-                                assert len(result["bins"]) > 0
+            mock_get_day.return_value = None  # Collection day lookup fails
+            
+            # Should raise an error when collection day cannot be determined
+            with pytest.raises(ValueError, match="Could not determine collection day for postcode"):
+                self.council.parse_data("", postcode="INVALID")
 
     def test_parse_data_exception_handling(self):
         """Test parse_data exception handling."""

@@ -936,29 +936,73 @@ class CouncilClass(AbstractGetBinDataClass):
             print(f"Error getting alternative calendar links: {e}")
             return {'regular': [], 'green': []}
 
+    def _find_calendar_image_path(self, filename: str) -> str | None:
+        """Find a calendar image in a minimal set of standard locations.
+
+        Search order:
+          1) Explicit directory set on the instance (self.ocr_image_dir)
+          2) Directory from env var UKBC_OCR_IMAGE_DIR
+          3) Current working directory
+        """
+        try:
+            from pathlib import Path
+
+            candidates = []
+
+            # 1) Instance override (set from kwargs by caller)
+            ocr_dir = getattr(self, "ocr_image_dir", None)
+            if ocr_dir:
+                candidates.append(Path(ocr_dir) / filename)
+
+            # 2) Environment variable override
+            env_dir = os.getenv("UKBC_OCR_IMAGE_DIR")
+            if env_dir:
+                candidates.append(Path(env_dir) / filename)
+
+            # 3) Current working directory
+            cwd = Path.cwd()
+            candidates.append(cwd / filename)
+
+            for path in candidates:
+                try:
+                    if path and Path(path).exists():
+                        return str(path)
+                except Exception:
+                    continue
+        except Exception:
+            pass
+        return None
+
     def parse_calendar_images(self):
         """Parse the static calendar images to extract bin collection data."""
         try:
-            # First, try to download the calendar images with dynamic links
-            if not self.download_calendar_images():
-                print("Dynamic download failed, trying fallback links...")
-                # Try with known fallback links
-                if not self.download_calendar_images_fallback():
-                    print("All download methods failed, using fallback calendar data...")
-                    return self.get_fallback_calendar_data()
-            
+            # First, try local images (preferred for tests and offline runs)
+            regular_path = self._find_calendar_image_path("south_kesteven_regular_calendar.jpg")
+            green_path = self._find_calendar_image_path("south_kesteven_green_calendar.jpg")
+
+            # If local images aren't found, try to download
+            if not regular_path and not green_path:
+                if not self.download_calendar_images():
+                    print("Dynamic download failed, trying fallback links...")
+                    if not self.download_calendar_images_fallback():
+                        print("All download methods failed, using fallback calendar data...")
+                        return self.get_fallback_calendar_data()
+                # After download, try to resolve again
+                regular_path = self._find_calendar_image_path("south_kesteven_regular_calendar.jpg")
+                green_path = self._find_calendar_image_path("south_kesteven_green_calendar.jpg")
+
             # Now use OCR to parse the actual calendar images
             print("Parsing calendar images with OCR...")
-            
+
             # Try to parse regular bin calendar
             regular_calendar_data = {}
-            if os.path.exists("south_kesteven_regular_calendar.jpg"):
-                regular_calendar_data = self.parse_calendar_with_ocr("south_kesteven_regular_calendar.jpg", "regular")
-            
+            if regular_path:
+                regular_calendar_data = self.parse_calendar_with_ocr(regular_path, "regular")
+
             # Try to parse green bin calendar
             green_calendar_data = {}
-            if os.path.exists("south_kesteven_green_calendar.jpg"):
-                green_calendar_data = self.parse_calendar_with_ocr("south_kesteven_green_calendar.jpg", "green")
+            if green_path:
+                green_calendar_data = self.parse_calendar_with_ocr(green_path, "green")
             
             # Combine the data
             calendar_data = regular_calendar_data
@@ -1225,23 +1269,12 @@ class CouncilClass(AbstractGetBinDataClass):
             # Get collection day for regular bins
             collection_day = self.get_collection_day_from_postcode(None, user_postcode)
             if not collection_day:
-                # Fallback for test environments where external requests might fail
-                # Use a default collection day based on postcode pattern
-                if user_postcode.startswith("PE6"):
-                    collection_day = "Monday"  # Default for PE6 postcodes
-                elif user_postcode.startswith("NG"):
-                    collection_day = "Tuesday"  # Default for NG postcodes
-                else:
-                    collection_day = "Wednesday"  # Generic fallback
-                
-                print(f"Warning: Could not determine collection day for {user_postcode}, using fallback: {collection_day}")
+                raise ValueError(f"Could not determine collection day for postcode: {user_postcode}")
 
             # Get green bin info
             green_bin_info = self.get_green_bin_info_from_postcode(None, user_postcode)
             if not green_bin_info:
-                # Fallback for test environments where external requests might fail
-                green_bin_info = {"day": "Tuesday", "week": 2}  # Default green bin pattern
-                print(f"Warning: Could not determine green bin info for {user_postcode}, using fallback: {green_bin_info}")
+                raise ValueError(f"Could not determine green bin info for postcode: {user_postcode}")
 
             bin_data = []
 
