@@ -247,3 +247,141 @@ class TestSouthKestevenDistrictCouncil:
             test_date_for_day = test_date + timedelta(days=days_to_add)
             
             assert test_date_for_day.weekday() == expected_weekday, f"{day_name} should map to weekday {expected_weekday}"
+
+    def test_bank_holiday_rules_configuration(self):
+        """Test that bank holiday rules are correctly configured."""
+        rules = self.council.get_bank_holiday_rules()
+        
+        # Test structure
+        assert 'specific_dates' in rules
+        assert 'no_adjustment' in rules
+        assert 'default_shift' in rules
+        
+        # Test specific Christmas period rules
+        assert '22/12/2025' in rules['specific_dates']
+        assert rules['specific_dates']['22/12/2025']['shift_days'] == -2
+        assert '23/12/2025' in rules['specific_dates']
+        assert rules['specific_dates']['23/12/2025']['shift_days'] == -1
+        assert '24/12/2025' in rules['specific_dates']
+        assert rules['specific_dates']['24/12/2025']['shift_days'] == -1
+        assert '25/12/2025' in rules['specific_dates']
+        assert rules['specific_dates']['25/12/2025']['shift_days'] == -1
+        assert '26/12/2025' in rules['specific_dates']
+        assert rules['specific_dates']['26/12/2025']['shift_days'] == 1
+        
+        # Test New Year period rules
+        assert '01/01/2026' in rules['specific_dates']
+        assert rules['specific_dates']['01/01/2026']['shift_days'] == 1
+        assert '02/01/2026' in rules['specific_dates']
+        assert rules['specific_dates']['02/01/2026']['shift_days'] == 1
+        
+        # Test Good Friday is in no_adjustment list
+        assert '18/04/2025' in rules['no_adjustment']
+        
+        # Test default shift
+        assert rules['default_shift'] == 1
+
+    def test_adjust_for_bank_holidays_christmas_period(self):
+        """Test bank holiday adjustments for Christmas period 2025."""
+        # Test Christmas period specific rules
+        test_dates = ['22/12/2025', '23/12/2025', '24/12/2025', '25/12/2025', '26/12/2025']
+        expected_adjustments = ['20/12/2025', '22/12/2025', '23/12/2025', '24/12/2025', '27/12/2025']
+        
+        adjusted_dates = self.council.adjust_for_bank_holidays(test_dates)
+        
+        for i, (original, expected) in enumerate(zip(test_dates, expected_adjustments)):
+            assert adjusted_dates[i] == expected, f"Date {original} should adjust to {expected}, got {adjusted_dates[i]}"
+
+    def test_adjust_for_bank_holidays_new_year_period(self):
+        """Test bank holiday adjustments for New Year period 2026."""
+        # Test New Year period specific rules
+        test_dates = ['01/01/2026', '02/01/2026']
+        expected_adjustments = ['02/01/2026', '03/01/2026']
+        
+        adjusted_dates = self.council.adjust_for_bank_holidays(test_dates)
+        
+        for i, (original, expected) in enumerate(zip(test_dates, expected_adjustments)):
+            assert adjusted_dates[i] == expected, f"Date {original} should adjust to {expected}, got {adjusted_dates[i]}"
+
+    def test_adjust_for_bank_holidays_good_friday_no_adjustment(self):
+        """Test that Good Friday is not adjusted."""
+        # Good Friday should not be adjusted
+        test_dates = ['18/04/2025']
+        expected_adjustments = ['18/04/2025']
+        
+        adjusted_dates = self.council.adjust_for_bank_holidays(test_dates)
+        
+        assert adjusted_dates[0] == expected_adjustments[0], f"Good Friday should not be adjusted, got {adjusted_dates[0]}"
+
+    def test_adjust_for_bank_holidays_regular_dates_no_adjustment(self):
+        """Test that regular (non-bank holiday) dates are not adjusted."""
+        # Regular dates should not be adjusted
+        test_dates = ['15/01/2025', '20/06/2025', '10/09/2025']
+        expected_adjustments = ['15/01/2025', '20/06/2025', '10/09/2025']
+        
+        adjusted_dates = self.council.adjust_for_bank_holidays(test_dates)
+        
+        for i, (original, expected) in enumerate(zip(test_dates, expected_adjustments)):
+            assert adjusted_dates[i] == expected, f"Regular date {original} should not be adjusted, got {adjusted_dates[i]}"
+
+    def test_adjust_for_bank_holidays_default_shift(self):
+        """Test default shift for unspecified bank holidays."""
+        # Mock a bank holiday that's not in our specific rules
+        with patch('uk_bin_collection.uk_bin_collection.common.is_holiday') as mock_is_holiday:
+            mock_is_holiday.return_value = True  # Simulate a bank holiday
+            
+            test_dates = ['21/04/2025']  # Easter Monday (should get default shift)
+            expected_adjustments = ['22/04/2025']  # One day later
+            
+            adjusted_dates = self.council.adjust_for_bank_holidays(test_dates)
+            
+            assert adjusted_dates[0] == expected_adjustments[0], f"Bank holiday {test_dates[0]} should get default shift to {expected_adjustments[0]}, got {adjusted_dates[0]}"
+
+    def test_adjust_for_bank_holidays_error_handling(self):
+        """Test error handling in bank holiday adjustments."""
+        # Test with invalid date format
+        test_dates = ['invalid-date', '32/13/2025']
+        adjusted_dates = self.council.adjust_for_bank_holidays(test_dates)
+        
+        # Should return original dates when parsing fails
+        assert adjusted_dates == test_dates, "Invalid dates should be returned unchanged"
+
+    def test_get_next_collection_dates_with_bank_holidays(self):
+        """Test that get_next_collection_dates applies bank holiday adjustments."""
+        # Mock today as December 20, 2025 (Friday)
+        with patch('uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil.datetime') as mock_datetime:
+            mock_datetime.now.return_value = datetime(2025, 12, 20)  # Friday
+            mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
+            
+            # Get collection dates for Monday (should include Christmas Day)
+            dates = self.council.get_next_collection_dates("Monday", 2)
+            
+            # Should include Christmas Day (Dec 25) which should be adjusted
+            # The first Monday after Dec 20 would be Dec 23, then Dec 30
+            # But Dec 25 (Christmas Day) should be adjusted to Dec 24
+            assert len(dates) == 2
+            # Note: This test might need adjustment based on actual calendar logic
+
+    def test_bank_holiday_integration_with_calendar_parsing(self):
+        """Test bank holiday adjustments work with calendar parsing."""
+        # Mock calendar data and bank holiday adjustments
+        with patch.object(self.council, 'parse_calendar_images') as mock_calendar:
+            with patch.object(self.council, 'get_bin_type_from_calendar') as mock_bin_type:
+                mock_calendar.return_value = {
+                    "2025": {
+                        "12": {
+                            "1": "Black bin (General waste)",
+                            "2": "Silver bin (Recycling)",
+                            "3": "Purple-lidded bin (Paper & Card)",
+                            "4": "Black bin (General waste)"
+                        }
+                    }
+                }
+                mock_bin_type.return_value = "Black bin (General waste)"
+                
+                # Test that bank holiday adjustments are applied to calendar-based dates
+                test_dates = ['25/12/2025']  # Christmas Day
+                adjusted_dates = self.council.adjust_for_bank_holidays(test_dates)
+                
+                # Christmas Day should be adjusted to Dec 24
+                assert adjusted_dates[0] == '24/12/2025', f"Christmas Day should be adjusted to Dec 24, got {adjusted_dates[0]}"

@@ -21,6 +21,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import is_holiday, Region
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -229,7 +230,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'collection day')]")))
                 except:
                     pass
-            
+
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             bin_day_element = soup.find(text=re.compile(r"Bin Day is \w+"))
             
@@ -465,8 +466,71 @@ class CouncilClass(AbstractGetBinDataClass):
         for week in range(num_weeks):
             collection_date = next_collection + timedelta(weeks=week)
             collection_dates.append(collection_date.strftime("%d/%m/%Y"))
+        
+        # Apply bank holiday adjustments before returning
+        collection_dates = self.adjust_for_bank_holidays(collection_dates)
             
         return collection_dates
+
+    def get_bank_holiday_rules(self):
+        """Define bank holiday collection rules for South Kesteven."""
+        return {
+            'specific_dates': {
+                # Christmas period - specific shifts
+                '22/12/2025': {'shift_days': -2, 'reason': 'Christmas (moved to Saturday)'},
+                '23/12/2025': {'shift_days': -1, 'reason': 'Christmas'},
+                '24/12/2025': {'shift_days': -1, 'reason': 'Christmas'},
+                '25/12/2025': {'shift_days': -1, 'reason': 'Christmas Day'},
+                '26/12/2025': {'shift_days': 1, 'reason': 'Boxing Day'},
+                # New Year period
+                '01/01/2026': {'shift_days': 1, 'reason': 'New Year\'s Day'},
+                '02/01/2026': {'shift_days': 1, 'reason': 'New Year (recovery)'},
+            },
+            'no_adjustment': [
+                # Good Friday - collections as normal
+                datetime(2025, 4, 18).strftime('%d/%m/%Y')
+            ],
+            'default_shift': 1  # Default: one day later for unspecified bank holidays
+        }
+
+    def adjust_for_bank_holidays(self, collection_dates):
+        """Adjust collection dates for bank holidays."""
+        rules = self.get_bank_holiday_rules()
+        adjusted_dates = []
+        
+        for date_str in collection_dates:
+            try:
+                date_obj = datetime.strptime(date_str, "%d/%m/%Y")
+            except (ValueError, TypeError):
+                # If we can't parse the date, keep it as is
+                adjusted_dates.append(date_str)
+                continue
+            
+            # Check if date has specific rule
+            if date_str in rules['specific_dates']:
+                rule = rules['specific_dates'][date_str]
+                adjusted_date = date_obj + timedelta(days=rule['shift_days'])
+                adjusted_dates.append(adjusted_date.strftime("%d/%m/%Y"))
+            
+            # Check if date is in no-adjustment list
+            elif date_str in rules['no_adjustment']:
+                adjusted_dates.append(date_str)
+            
+            # Check if it's a bank holiday (library detection)
+            else:
+                try:
+                    if is_holiday(date_obj, Region.ENG):
+                        # Apply default shift (one day later)
+                        adjusted_date = date_obj + timedelta(days=rules['default_shift'])
+                        adjusted_dates.append(adjusted_date.strftime("%d/%m/%Y"))
+                    else:
+                        # Not a bank holiday, keep original date
+                        adjusted_dates.append(date_str)
+                except (TypeError, ValueError):
+                    # If holiday check fails, keep original date
+                    adjusted_dates.append(date_str)
+        
+        return adjusted_dates
 
     def get_green_bin_collection_dates(self, green_bin_info, num_weeks=8):
         """Calculate green bin collection dates based on OCR-extracted calendar data."""
@@ -1055,11 +1119,18 @@ class CouncilClass(AbstractGetBinDataClass):
         for year in found_years:
             calendar_data[year] = {}
             for month in found_months:
+                # Create a more flexible calendar structure
                 calendar_data[year][month] = {
                     "1": "Black bin (General waste)",
                     "2": "Silver bin (Recycling)", 
                     "3": "Purple-lidded bin (Paper & Card)",
-                    "4": "Black bin (General waste)"
+                    "4": "Black bin (General waste)",
+                    # For 5th week, follow Week 2 pattern (Silver) per council guidance
+                    "5": "Silver bin (Recycling)",
+                    # Continue cycling if ever needed beyond 5 weeks
+                    "6": "Purple-lidded bin (Paper & Card)",
+                    "7": "Black bin (General waste)",
+                    "8": "Silver bin (Recycling)"
                 }
         
         return calendar_data
@@ -1113,18 +1184,24 @@ class CouncilClass(AbstractGetBinDataClass):
             day = date_obj.day
             
             # Determine which week of the month this is
-            week_of_month = str(((day - 1) // 7) + 1)
+            week_of_month = ((day - 1) // 7) + 1
             
             # Use provided calendar data or get it if not provided
             if calendar_data is None:
                 calendar_data = self.parse_calendar_images()
             
             # Look up the bin type from the calendar data
-            if year in calendar_data and month in calendar_data[year] and week_of_month in calendar_data[year][month]:
-                return calendar_data[year][month][week_of_month]
-            else:
-                # Raise error if not found in calendar instead of fallback
-                raise ValueError(f"No bin type found for {collection_date} (Week {week_of_month} of {month}/{year})")
+            if year in calendar_data and month in calendar_data[year]:
+                # Handle 5-week months by following council rule: Week 5 == Week 2 pattern
+                if week_of_month <= 4:
+                    week_key = str(week_of_month)
+                else:
+                    week_key = "5" if "5" in calendar_data[year][month] else "2"
+                if week_key in calendar_data[year][month]:
+                    return calendar_data[year][month][week_key]
+            
+            # If we reach here, we genuinely couldn't determine the type
+            raise ValueError(f"No bin type found for {collection_date} (Week {week_of_month} of {month}/{year})")
                 
         except Exception as e:
             print(f"Error determining bin type for {collection_date}: {e}")
