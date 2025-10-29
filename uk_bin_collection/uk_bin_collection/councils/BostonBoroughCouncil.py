@@ -1,6 +1,11 @@
 import time
 
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import (
+    ElementClickInterceptedException,
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -47,7 +52,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
                 accept_button.click()
                 time.sleep(2)
-            except:
+            except (
+                TimeoutException,
+                NoSuchElementException,
+                ElementClickInterceptedException,
+            ):
+                # Cookie banner not present or not clickable; continue without accepting
                 pass
 
             # Wait for the postcode field to appear then populate it
