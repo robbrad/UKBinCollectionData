@@ -314,7 +314,7 @@
         "house_number": "44",
         "postcode": "BN1 8NE",
         "skip_get_url": true,
-        "url": "https://cityclean.brighton-hove.gov.uk/link/collections",
+        "url": "https://enviroservices.brighton-hove.gov.uk/link/collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Brighton and Hove",
         "wiki_note": "Use house number and postcode. Requires Selenium",
@@ -704,6 +704,14 @@
         "wiki_name": "Dudley",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E08000027"
+    },
+    "DumfriesandGallowayCouncil": {
+        "uprn": "137034556",
+        "skip_get_url": true,
+        "url": "https://www.dumfriesandgalloway.gov.uk",
+        "wiki_name": "Dumfries and Galloway Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "LAD24CD": "S12000006"
     },
     "DundeeCityCouncil": {
         "uprn": "9059043390",
@@ -1385,7 +1393,7 @@
     "LondonBoroughHounslow": {
         "skip_get_url": true,
         "uprn": "100021577765",
-        "url": "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder",
+        "url": "https://my.hounslow.gov.uk/service/Waste_and_recycling_collections",
         "wiki_name": "Hounslow",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E09000018"
@@ -1547,7 +1555,6 @@
         "house_number": "12 Constantine Court Park Road North, Middlesbrough",
         "skip_get_url": true,
         "url": "https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Middlesbrough",
         "wiki_note": "Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver.",
         "LAD24CD": "E06000002"
@@ -1652,13 +1659,11 @@
         "LAD24CD": "E09000025"
     },
     "NewportCityCouncil": {
-        "postcode": "NP20 4HE",
+        "uprn": "100100688819",
         "skip_get_url": true,
-        "house_number": "6",
         "url": "https://www.newport.gov.uk/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Newport",
-        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes.",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "W06000022"
     },
     "NorthAyrshireCouncil": {
@@ -1761,7 +1766,7 @@
         "uprn": "47097627",
         "url": "https://www.northtyneside.gov.uk/waste-collection-schedule",
         "wiki_command_url_override": "https://www.northtyneside.gov.uk/waste-collection-schedule/view/XXXXXXXX",
-      "wiki_name": "North Tyneside",
+        "wiki_name": "North Tyneside",
         "wiki_note": "Pass only the UPRN (no postcode). You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E08000022"
     },
@@ -1797,7 +1802,7 @@
         "house_number": "2",
         "postcode": "NR2 3TT",
         "url": "https://bnr-wrp.whitespacews.com",
-        "wiki_command_url_override": "hhttps://bnr-wrp.whitespacews.com",
+        "wiki_command_url_override": "https://bnr-wrp.whitespacews.com",
         "wiki_name": "Norwich",
         "wiki_note": "Pass the house number and postcode in their respective parameters.",
         "LAD24CD": "E07000148"
@@ -1957,7 +1962,7 @@
     "RochdaleCouncil": {
         "postcode": "OL11 5BE",
         "skip_get_url": true,
-        "uprn": "23049922",
+        "uprn": "10094358428",
         "url": "https://webforms.rochdale.gov.uk/BinCalendar",
         "wiki_name": "Rochdale",
         "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",

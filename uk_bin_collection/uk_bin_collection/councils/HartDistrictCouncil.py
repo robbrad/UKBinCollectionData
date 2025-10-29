@@ -35,15 +35,19 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Iterate through each row
         for row in rows:
-            cells = row.find_all("td")
+            bin_types = row.find("td", class_="bin-service")
 
-            # Check if there are exactly 3 cells in the row
-            if len(cells) == 3:
-                bin_type = cells[0].get_text(strip=True)
-                collection_date = self.format_date(cells[2].get_text(strip=True))
+            bin_types = bin_types.text.split("&")
 
-            # Create a dictionary for each bin and append to the bins list
-            bins.append({"type": bin_type, "collectionDate": collection_date})
+            collection_date = row.find("td", class_="bin-service-date")
+
+            collection_date = self.format_date(collection_date.text.strip())
+
+            for bin_type in bin_types:
+                # Create a dictionary for each bin and append to the bins list
+                bins.append(
+                    {"type": bin_type.strip(), "collectionDate": collection_date}
+                )
 
         return {"bins": bins}
 
