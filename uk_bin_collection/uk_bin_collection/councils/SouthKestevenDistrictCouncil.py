@@ -473,7 +473,12 @@ class CouncilClass(AbstractGetBinDataClass):
         return collection_dates
 
     def get_bank_holiday_rules(self):
-        """Define bank holiday collection rules for South Kesteven."""
+        """Define bank holiday collection rules for South Kesteven.
+        
+        Note: The specific dates are hardcoded for 2025/2026 and will require 
+        annual updates to reflect future years' schedules. Review and update
+        these rules each year based on the council's published calendar.
+        """
         return {
             'specific_dates': {
                 # Christmas period - specific shifts
