@@ -93,6 +93,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Dorset Council](#dorset-council)
 - [Dover](#dover)
 - [Dudley](#dudley)
+- [Dumfries and Galloway Council](#dumfries-and-galloway-council)
 - [Dundee City](#dundee-city)
 - [County Durham](#county-durham)
 - [Ealing](#ealing)
@@ -1352,6 +1353,18 @@ Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.
 python collect_data.py DudleyCouncil https://my.dudley.gov.uk -u XXXXXXXX
 ```
 Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Dumfries and Galloway Council
+```commandline
+python collect_data.py DumfriesandGallowayCouncil https://www.dumfriesandgalloway.gov.uk -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.

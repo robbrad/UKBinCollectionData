@@ -705,6 +705,14 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E08000027"
     },
+    "DumfriesandGallowayCouncil": {
+        "uprn": "137034556",
+        "skip_get_url": true,
+        "url": "https://www.dumfriesandgalloway.gov.uk",
+        "wiki_name": "Dumfries and Galloway Council",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "LAD24CD": "S12000006"
+    },
     "DundeeCityCouncil": {
         "uprn": "9059043390",
         "url": "https://www.dundeecity.gov.uk/",
