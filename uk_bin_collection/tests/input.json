@@ -2157,6 +2157,7 @@
     "SouthKestevenDistrictCouncil": {
         "postcode": "PE68BL",
         "skip_get_url": true,
+        "uses_ocr": true,
         "url": "https://pre.southkesteven.gov.uk/skdcNext/tempforms/checkmybin.aspx",
         "wiki_name": "South Kesteven District Council",
         "wiki_note": "Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns.",
