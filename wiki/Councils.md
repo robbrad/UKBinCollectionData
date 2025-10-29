@@ -2698,15 +2698,13 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Newport
 ```commandline
-python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
+- `-u` - UPRN
 
-Note: Pass the postcode and house number in their respective arguments, both wrapped in quotes.
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
