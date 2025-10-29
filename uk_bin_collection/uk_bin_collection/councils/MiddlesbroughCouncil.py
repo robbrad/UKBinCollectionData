@@ -1,16 +1,11 @@
+import re
 import time
-from datetime import datetime
+from datetime import date, datetime
 
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
+import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-import re
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -19,91 +14,107 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             user_paon = kwargs.get("paon")
-            headless = kwargs.get("headless")
-            web_driver = kwargs.get("web_driver")
-            driver = create_webdriver(web_driver, headless, None, __name__)
 
-            page = "https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/"
-            driver.get(page)
+            check_paon(user_paon)
 
-            address_box = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "row-input-0"))
-            )
-            address_box.click()
-            address_box.send_keys(user_paon)
+            url = "https://api.eu.recollect.net/api/areas/MiddlesbroughUK/services/50005/address-suggest"
+            params = {
+                "q": user_paon,
+                "locale": "en-GB",
+                "_": str(int(time.time() * 1000)),
+            }
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+            }
 
-            search_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "rCbtn-search"))
-            )
-            search_button.click()
+            response = requests.get(url, headers=headers, params=params)
 
-            iframe_presense = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "recollect-frame"))
-            )
-            driver.switch_to.frame(iframe_presense)
+            addresses = response.json()
+            for address in addresses:
+                if "place_id" in address:
+                    place_id = address["place_id"]
+                    break
 
-            results = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "rCpage-place_calendar"))
-            )
+            if not place_id:
+                print(f"An error occurred: retrieving the address")
+                return
 
-            html_content = driver.page_source
-            soup = BeautifulSoup(html_content, "html.parser")
+            url = "https://api.eu.recollect.net/api/areas/MiddlesbroughUK/services/50005/pages/en-GB/place_calendar.json?widget_config=%7B%22area%22%3A%22MiddlesbroughUK%22%2C%22name%22%3A%22calendar%22%2C%22base%22%3A%22https%3A%2F%2Frecollect.net%22%2C%22third_party_cookie_enabled%22%3A1%2C%22place_not_found_in_guest%22%3A0%2C%22is_guest_service%22%3A0%7D"
+            params = {
+                "q": user_paon,
+                "locale": "en-GB",
+                "_": str(int(time.time() * 1000)),
+            }
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+                "x-recollect-place": place_id + ":50005",
+            }
+            response = requests.get(url, headers=headers, params=params)
+            # response = response.json()
 
-            calendar_section = soup.find("section", {"id": "alt-calendar-list"})
-            if not calendar_section:
-                raise ValueError("Calendar section not found in the HTML.")
+            def extract_next_collection(payload: dict):
+                # 1) Find the "Next Collection" section
+                sections = payload.get("sections", [])
+                next_col_section = next(
+                    (s for s in sections if s.get("title") == "Next Collection"), None
+                )
+                if not next_col_section:
+                    return None
 
-            date_headers = calendar_section.find_all("h3")
-            collection_lists = calendar_section.find_all("ul")
+                rows = next_col_section.get("rows", [])
 
-            current_month = datetime.now().month
-            current_year = datetime.now().year
+                # 2) First row is the date inside <strong>…</strong>
+                next_date = None
+                if rows and rows[0].get("type") == "html":
+                    html = rows[0].get("html", "")
+                    # grab text inside <strong>…</strong>
+                    m = re.search(r"<strong>(.*?)</strong>", html, flags=re.I | re.S)
+                    if m:
+                        date_text = m.group(1).strip()
+                        # e.g. "Wednesday, October 29, 2025"
+                        try:
+                            next_date = datetime.strptime(
+                                date_text, "%A, %B %d, %Y"
+                            ).date()
+                        except ValueError:
+                            # Fallback: strip tags and leave raw text if format changes
+                            next_date = date_text
 
-            for date_header, collection_list in zip(date_headers, collection_lists):
-                raw_date = date_header.text.strip()
+                # 3) Remaining rows of type "rich-content" hold the bin types
+                bins = []
+                for r in rows[1:]:
+                    if r.get("type") == "rich-content":
+                        label = r.get("label") or r.get(
+                            "html"
+                        )  # "Refuse", "Recycling", etc.
+                        flag = (r.get("data") or {}).get(
+                            "flag"
+                        )  # "REFUSE", "RECYCLING", etc.
+                        if label or flag:
+                            bins.append({"label": label, "flag": flag})
 
-                # **Regex to match "Wednesday, February 19" format**
-                match = re.match(r"([A-Za-z]+), ([A-Za-z]+) (\d{1,2})", raw_date)
+                return {"date": next_date, "bins": bins}
 
-                if match:
-                    day_name, month_name, day_number = (
-                        match.groups()
-                    )  # Extract components
-                    extracted_month = datetime.strptime(month_name, "%B").month
-                    extracted_day = int(day_number)
+            # Example:
+            result = extract_next_collection(response.json())
 
-                    # Handle Dec-Jan rollover: If month is before the current month, assume next year
-                    inferred_year = (
-                        current_year + 1
-                        if extracted_month < current_month
-                        else current_year
-                    )
+            if result and result.get("date") and result.get("bins"):
+                d = result["date"]
+                formatted_date = (
+                    d.strftime(date_format) if isinstance(d, date) else str(d)
+                )
 
-                    # **Correct the raw_date format before parsing**
-                    raw_date = f"{day_name}, {month_name} {day_number}, {inferred_year}"
-
-                print(
-                    f"DEBUG: Final raw_date before parsing -> {raw_date}"
-                )  # Debugging output
-
-                # Convert to required format (%d/%m/%Y)
-                try:
-                    parsed_date = datetime.strptime(raw_date, "%A, %B %d, %Y")
-                    formatted_date = parsed_date.strftime(date_format)
-                except ValueError:
-                    raise ValueError(f"Date format error after inference: {raw_date}")
-
-                for li in collection_list.find_all("li"):
-                    bin_type = li.get_text(strip=True).split(".")[0]
+                for b in result["bins"]:
+                    bin_type = b.get("label") or b.get(
+                        "flag"
+                    )  # e.g., "Refuse" or "RECYCLING"
+                    if not bin_type:
+                        continue
                     data["bins"].append(
                         {"type": bin_type, "collectionDate": formatted_date}
                     )
+            return data
 
         except Exception as e:
             print(f"An error occurred: {e}")
             raise
-        finally:
-            if driver:
-                driver.quit()
-
-        return data

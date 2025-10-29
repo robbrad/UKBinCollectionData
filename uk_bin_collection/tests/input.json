@@ -1547,7 +1547,6 @@
         "house_number": "12 Constantine Court Park Road North, Middlesbrough",
         "skip_get_url": true,
         "url": "https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Middlesbrough",
         "wiki_note": "Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver.",
         "LAD24CD": "E06000002"

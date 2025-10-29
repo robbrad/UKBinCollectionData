@@ -2528,12 +2528,11 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ### Middlesbrough
 ```commandline
-python collect_data.py MiddlesbroughCouncil https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/ -s -n XX -w http://HOST:PORT/
+python collect_data.py MiddlesbroughCouncil https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/ -s -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver.
 
