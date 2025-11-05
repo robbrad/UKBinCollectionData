@@ -47,7 +47,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Try to accept cookies if the banner appears
             try:
-                accept_button = WebDriverWait(driver, timeout=30).until(
+                accept_button = WebDriverWait(driver, timeout=10).until(
                     EC.element_to_be_clickable((By.NAME, "acceptall"))
                 )
                 accept_button.click()
