@@ -18,14 +18,14 @@ class CouncilClass(AbstractGetBinDataClass):
         driver = None
         try:
             data = {"bins": []}
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
+            user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
 
             postcode = kwargs.get("postcode")
             user_paon = kwargs.get("paon")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
 
-            driver = create_webdriver(web_driver, headless, headers, __name__)
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             wait = WebDriverWait(driver, 30)
 
             # Navigate to bin collection page
@@ -42,7 +42,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
                 accept_btn.click()
                 time.sleep(1)
-            except:
+            except Exception as e:
+                # Cookie banner not present or already accepted
                 pass
 
             # Find postcode input field (dynamic ID)
