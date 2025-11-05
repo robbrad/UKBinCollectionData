@@ -25,7 +25,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Make the GET request
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
-        response = requests.get(URI, headers=headers)
+        response = requests.get(URI, headers=headers, timeout=30)
 
         # Parse the JSON response
         bin_collection = response.json()
