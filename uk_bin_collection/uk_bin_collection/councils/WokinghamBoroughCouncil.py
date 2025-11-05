@@ -74,7 +74,6 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
 
             collection_cards = soup.find_all(
                 "div", {"class": "card card--waste card--blue-light"}
