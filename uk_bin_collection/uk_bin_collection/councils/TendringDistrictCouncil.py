@@ -145,7 +145,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     parsed = datetime.strptime(date_str, "%d/%m/%Y")
                 except ValueError:
                     continue
-                if parsed.date() < today:
+                if parsed.date() <= today:
                     continue
 
                 bin_data["bins"].append(
