@@ -121,6 +121,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     type_idx = i
                     break
 
+            today = datetime.today().date()
             rows = (table.find("tbody") or table).find_all("tr")
             for row in rows:
                 cols = row.find_all("td")
@@ -143,6 +144,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 try:
                     parsed = datetime.strptime(date_str, "%d/%m/%Y")
                 except ValueError:
+                    continue
+                if parsed.date() < today:
                     continue
 
                 bin_data["bins"].append(
