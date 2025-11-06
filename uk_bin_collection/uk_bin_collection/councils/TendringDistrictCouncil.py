@@ -41,6 +41,8 @@ class CouncilClass(AbstractGetBinDataClass):
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
+            if headless is None:
+                headless = True
 
             # Validate inputs
             check_uprn(user_uprn)
@@ -84,7 +86,7 @@ class CouncilClass(AbstractGetBinDataClass):
             input_postcode.send_keys(user_postcode)
             # Wait for dropdown to appear and be populated
             dropdown = wait.until(EC.element_to_be_clickable((By.NAME, "selectAddress")))
-            wait.until(lambda d: len(Select(dropdown).options) > 1)
+            wait.until(lambda _: len(Select(dropdown).options) > 1)
 
             # Select address by UPRN
             Select(dropdown).select_by_value(str(user_uprn))
