@@ -29,7 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
         bin_data: dict[str, list[dict]] = {"bins": []}
 
         try:
-            # Always use the canonical service URL if none provided
+            # Always use the canonical service URL
             page = (
                 "https://tendring-self.achieveservice.com/en/service/"
                 "Rubbish_and_recycling_collection_days"
