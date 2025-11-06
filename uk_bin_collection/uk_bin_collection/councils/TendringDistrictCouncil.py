@@ -5,6 +5,7 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import (
@@ -55,7 +56,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     EC.presence_of_element_located((By.ID, "close-cookie-message"))
                 )
                 cookies_button.click()
-            except Exception:
+            except TimeoutException:
                 # Banner not present or already dismissed — fine
                 pass
 
@@ -81,12 +82,11 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             input_postcode.clear()
             input_postcode.send_keys(user_postcode)
-            time.sleep(1.5)  # allow list to populate
+            # Wait for dropdown to appear and be populated
+            dropdown = wait.until(EC.element_to_be_clickable((By.NAME, "selectAddress")))
+            wait.until(lambda d: len(Select(dropdown).options) > 1)
 
             # Select address by UPRN
-            dropdown = wait.until(
-                EC.element_to_be_clickable((By.NAME, "selectAddress"))
-            )
             Select(dropdown).select_by_value(str(user_uprn))
 
             # Wait for results table
