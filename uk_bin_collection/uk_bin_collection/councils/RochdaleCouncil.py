@@ -1,4 +1,7 @@
-from bs4 import BeautifulSoup
+import time
+
+import requests
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -12,58 +15,100 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        api_url = "https://webforms.rochdale.gov.uk/BinCalendar"
         user_postcode = kwargs.get("postcode")
         user_uprn = kwargs.get("uprn")
-
-        # Check the postcode and UPRN are valid
         check_postcode(user_postcode)
         check_uprn(user_uprn)
+        bindata = {"bins": []}
 
-        # Create the form data
-        form_data = {
-            "PostCode": user_postcode,
-            "SelectedUprn": user_uprn,
-            "Step": 2,
+        SESSION_URL = "https://rochdale-self.achieveservice.com/authapi/isauthenticated?uri=https%253A%252F%252Frochdale-self.achieveservice.com%252Fservice%252FBins___view_your_waste_collection_calendar&hostname=rochdale-self.achieveservice.com&withCredentials=true"
+
+        API_URL = "https://rochdale-self.achieveservice.com/apibroker/runLookup"
+
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": "https://rochdale-self.achieveservice.com/fillform/?iframe_id=fillform-frame-1&db_id=",
+        }
+        s = requests.session()
+        r = s.get(SESSION_URL)
+        r.raise_for_status()
+        session_data = r.json()
+        sid = session_data["auth-session"]
+        params = {
+            "id": "6846c784a46b5",
+            "repeat_against": "",
+            "noRetry": "true",
+            "getOnlyTokens": "undefined",
+            "log_id": "",
+            "app_name": "AF-Renderer::Self",
+            # unix_timestamp
+            "_": str(int(time.time() * 1000)),
+            "sid": sid,
         }
 
-        # Make a request to the API
-        requests.packages.urllib3.disable_warnings()
-        response = requests.post(api_url, data=form_data)
+        r = s.post(API_URL, headers=headers, params=params)
+        r.raise_for_status()
 
-        # Make a BS4 object
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
+        data = r.json()
+        rows_data = data["integration"]["transformed"]["rows_data"]["0"]
+        if not isinstance(rows_data, dict):
+            raise ValueError("Invalid data returned from API")
+        token = rows_data["bartecToken"]
 
-        data = {"bins": []}
+        data = {
+            "formValues": {
+                "Location details": {
+                    "propertyUPRN": {
+                        "value": user_uprn,
+                    },
+                    "postcode_search": {
+                        "value": user_postcode,
+                    },
+                    "bartecToken": {
+                        "value": token,
+                    },
+                    "dateMinimum": {
+                        "value": datetime.now().strftime("%Y-%m-%d"),
+                    },
+                    "dateMaximum": {
+                        "value": (datetime.now() + timedelta(days=30)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                    },
+                },
+            },
+        }
 
-        # Get the table element and rows
-        table_element = soup.find("table", {"id": "tblCollectionDetails"})
-        table_rows = table_element.find_all_next("tr")
+        params = {
+            "id": "686e9147a867e",
+            "repeat_against": "",
+            "noRetry": "true",
+            "getOnlyTokens": "undefined",
+            "log_id": "",
+            "app_name": "AF-Renderer::Self",
+            # unix_timestamp
+            "_": str(int(time.time() * 1000)),
+            "sid": sid,
+        }
 
-        row_index = 0
-        for row in table_rows:
-            if row_index < 1:
-                row_index += 1
-                continue
-            else:
-                # Get the date from the th element
-                date = datetime.strptime(
-                    row.find("th").get_text().strip(), "%A %d %B %Y"
-                ).strftime(date_format)
+        r = s.post(API_URL, json=data, headers=headers, params=params)
+        r.raise_for_status()
 
-                # Get the bin types from the td elements and filter out the empty ones
-                bin_types = filter(lambda td: td.find("img"), row.find_all("td"))
+        data = r.json()
+        rows_data = data["integration"]["transformed"]["rows_data"]
+        if not isinstance(rows_data, dict):
+            raise ValueError("Invalid data returned from API")
 
-                # Convert the bin types to a list
-                bin_types_list = list(bin_types)
+        for key, value in rows_data.items():
+            dict_data = {
+                "type": value["bartecBinType"],
+                "collectionDate": datetime.strptime(
+                    value["bartecBinStartDate"], "%Y-%m-%dT%H:%M:%S"
+                ).strftime(date_format),
+            }
+            bindata["bins"].append(dict_data)
 
-                # Append the bin type and date to the data dict
-                for td in bin_types_list:
-                    img = td.find("img")
-                    bin_type_text = img["alt"]
-                    data["bins"].append({"type": bin_type_text, "collectionDate": date})
-
-                row_index += 1
-
-        return data
+        return bindata

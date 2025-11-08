@@ -1,4 +1,11 @@
+import time
+
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import (
+    ElementClickInterceptedException,
+    NoSuchElementException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -28,13 +35,30 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get("https://www.boston.gov.uk/findwastecollections")
 
-            accept_button = WebDriverWait(driver, timeout=30).until(
-                EC.element_to_be_clickable((By.NAME, "acceptall"))
+            # Wait for initial page load and Cloudflare bypass
+            WebDriverWait(driver, 30).until(
+                lambda d: "Just a moment" not in d.title and d.title != ""
             )
-            accept_button.click()
+            time.sleep(3)
+
+            # Try to accept cookies if the banner appears
+            try:
+                accept_button = WebDriverWait(driver, timeout=10).until(
+                    EC.element_to_be_clickable((By.NAME, "acceptall"))
+                )
+                accept_button.click()
+                time.sleep(2)
+            except (
+                TimeoutException,
+                NoSuchElementException,
+                ElementClickInterceptedException,
+            ):
+                # Cookie banner not present or not clickable; continue without accepting
+                pass
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(

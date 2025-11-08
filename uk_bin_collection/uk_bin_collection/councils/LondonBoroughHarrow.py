@@ -24,7 +24,8 @@ class CouncilClass(AbstractGetBinDataClass):
         URI = f"https://www.harrow.gov.uk/ajax/bins?u={user_uprn}&r=12345"
 
         # Make the GET request
-        response = requests.get(URI)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
+        response = requests.get(URI, headers=headers, timeout=30)
 
         # Parse the JSON response
         bin_collection = response.json()

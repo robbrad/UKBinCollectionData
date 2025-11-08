@@ -29,14 +29,14 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             data = {"bins": []}
             headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
-
+            url = "https://enviroservices.brighton-hove.gov.uk/link/collections"
             uprn = kwargs.get("uprn")
             user_paon = kwargs.get("paon")
             postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(kwargs.get("url"))
+            driver.get(url)
 
             wait = WebDriverWait(driver, 60)
             post_code_search = wait.until(

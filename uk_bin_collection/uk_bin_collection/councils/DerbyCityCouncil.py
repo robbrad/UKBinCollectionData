@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        URI = f"https://secure.derby.gov.uk/binday/Binday?search.PremisesId={user_uprn}"
+        URI = f"https://secure.derby.gov.uk/binday/BinDays/{user_uprn}"
 
         # Make the GET request
         session = requests.Session()
