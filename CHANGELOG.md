@@ -1,4 +1,48 @@
 =======
+## 0.161.0 (2025-11-08)
+
+### Feat
+
+- Dumfries and Galloway Council
+
+### Fix
+
+- Herefordshire Council
+- Herefordshire Council
+- Southampton City Council
+- #1698
+- Newport City Council
+- #1229
+- Middlesborough Council
+- #1382 - Removed the need for Selenium
+- Boston Borough Council
+- #1690
+- Chelmsford City Council
+- #1688 - BREAKING CHANGE
+- Derby City Council
+- #1676
+- London Borough of Hounslow
+- #1683
+- Brighton & Hove
+- #1685 - New URL
+- Brighton & Hove
+- #1685 - New URL
+- Hart District Council
+- #1625
+- London Borough of Harrow
+- #1621
+- Wokingham Borough Council
+- #1641
+- Norwich City Council
+- #1653
+- Rochdale Council
+- #1675
+fix: #1259
+- **tendring**: ignore stale 'Next collection' dates older than today
+- **tendring**: restore headless=True default and silence unused lambda arg for lint
+- **tendring**: use 'Next collection' column; fix imports/strings/waits; robust iframe/cookie handling
+- **tendring**: read 'Next collection' column; harden cookie/iframe handling; normalise dd/MM/YYYY
+
 ## 0.160.1 (2025-10-21)
 
 ### Fix
