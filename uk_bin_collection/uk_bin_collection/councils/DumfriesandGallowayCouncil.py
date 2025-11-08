@@ -15,6 +15,19 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Fetch upcoming bin collections for a property and return them as structured data.
+        
+        Parses an ICS calendar URL constructed from the provided `uprn` to collect events occurring within the next 60 days and returns each collection entry with its type and formatted collection date.
+        
+        Parameters:
+            uprn (str): Unique Property Reference Number used to build the council's ICS calendar URL.
+        
+        Returns:
+            dict: A dictionary with a single key `"bins"` containing a list of collection records. Each record is a dict with:
+                - "type" (str): Collection type/name.
+                - "collectionDate" (str): Collection date formatted according to `date_format`.
+        """
         driver = None
         try:
             data = {"bins": []}

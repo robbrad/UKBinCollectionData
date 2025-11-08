@@ -15,6 +15,21 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Fetches bin collection schedules for a property and returns them as structured bin data.
+        
+        Parameters:
+            page (str): Page HTML (not used by this implementation).
+            uprn (str): Unique Property Reference Number passed via kwargs; used to query the council API for collections.
+        
+        Returns:
+            dict: A dictionary with key "bins" containing a list of collections. Each collection is a dict with:
+                - "type": collection type string from the API.
+                - "collectionDate": collection date formatted according to the module's date_format.
+        
+        Raises:
+            ValueError: If the API responses do not contain the expected data structure.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}

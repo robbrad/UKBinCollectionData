@@ -25,6 +25,27 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Fetch and parse bin collection data for a given address from Brighton & Hove's collections page.
+        
+        This function drives a Selenium browser to the fixed Brighton & Hove collections URL, submits the provided postcode, selects the matching PAON (primary addressable object name) from the resulting address dropdown, submits the selection, and parses the resulting list view into structured bin collection entries.
+        
+        Parameters:
+            page (str): Unused; included for compatibility with caller signature.
+            uprn (str, optional): Unique Property Reference Number for the address (passed via kwargs).
+            paon (str, optional): Primary addressable object name used to match and select the address from dropdown (passed via kwargs).
+            postcode (str, optional): Postcode to search on the council site (passed via kwargs).
+            web_driver (str or WebDriver, optional): Specification or instance used by create_webdriver to start the browser (passed via kwargs).
+            headless (bool, optional): Whether to run the browser in headless mode (passed via kwargs).
+        
+        Returns:
+            dict: A dictionary with a single key "bins" whose value is a list of objects each containing:
+                - "type": bin type string
+                - "collectionDate": collection date string formatted according to the module's date_format
+        
+        Raises:
+            Exception: If no dropdown option matching `paon` is found or any other error occurs during navigation or parsing.
+        """
         driver = None
         try:
             data = {"bins": []}

@@ -16,6 +16,20 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Parse bin collection data for a given UPRN from the Southampton waste calendar page.
+        
+        Parameters:
+            page (str): HTML or identifier passed by caller (not used for extraction).
+            uprn (str): Unique Property Reference Number to query for collection dates.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of collection entries.
+                Each entry is a dict with:
+                    - "type" (str): Waste type (e.g., "Glass", "Recycling", "General Waste", "Garden Waste").
+                    - "collectionDate" (str): Collection date in "DD/MM/YYYY" format.
+                The list is sorted by collectionDate in ascending order.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}

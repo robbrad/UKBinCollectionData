@@ -15,6 +15,20 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Parse Derby's bin day webpage for the given UPRN and return extracted bin collection entries.
+        
+        This function requests Derby's BinDays page for the provided `uprn`, parses the HTML for bin collection entries, and returns a dictionary containing a "bins" list where each item is a mapping with the bin type and its collection date formatted as `DD/MM/YYYY`.
+        
+        Parameters:
+            page (str): Unused by this implementation (kept for interface compatibility).
+            uprn (str, optional): Unique Property Reference Number passed via kwargs; used to build the Derby bin-days URL.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" whose value is a list of objects:
+                - "type" (str): The bin type description (e.g., "General waste", "Recycling").
+                - "collectionDate" (str): Collection date formatted as `DD/MM/YYYY`.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}

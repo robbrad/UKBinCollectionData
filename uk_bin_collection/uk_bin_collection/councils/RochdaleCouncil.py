@@ -15,6 +15,24 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse collection data for a Rochdale property and return a standardized bin schedule.
+        
+        Constructs API requests using the provided postcode and UPRN to retrieve bin types and collection dates, then returns them as a dictionary with a "bins" list.
+        
+        Parameters:
+            page (str): Unused placeholder parameter retained for interface compatibility.
+            postcode (str, in kwargs): Property postcode used to query collection data.
+            uprn (str, in kwargs): Property UPRN used to query collection data.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" mapped to a list of entries. Each entry is a dict with:
+                - "type" (str): The bin type identifier.
+                - "collectionDate" (str): The collection date formatted according to the module-level date_format.
+        
+        Raises:
+            ValueError: If the API responses do not contain the expected data structure.
+        """
         user_postcode = kwargs.get("postcode")
         user_uprn = kwargs.get("uprn")
         check_postcode(user_postcode)

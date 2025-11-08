@@ -17,6 +17,19 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Extracts bin types and their next collection dates for a given property UPRN.
+        
+        Retrieves the UPRN from kwargs (key "uprn"), validates it, requests the council's next-collection-dates endpoint, parses the returned HTML table rows, and returns a dictionary containing a list of bin entries. Each bin entry contains the bin type string and its collection date formatted as "DD/MM/YYYY".
+        
+        Parameters:
+            page (str): Unused by this implementation; included for interface compatibility.
+            uprn (str, in kwargs): Unique Property Reference Number used to query collection data.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" mapping to a list of objects of the form
+                {"type": <str>, "collectionDate": "<DD/MM/YYYY>"}.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
