@@ -15,6 +15,24 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse bin collection information for an address identified by UPRN or a fallback URL.
+        
+        Retrieves the council's bin collection page for the provided UPRN (or the legacy `url` fallback), extracts each bin type and its next collection date, and returns a dictionary containing a list of bins with their types and formatted collection dates.
+        
+        Parameters:
+            page (str): Unused. Present for compatibility with the base class; the function fetches the page using the resolved URL.
+            uprn (str, optional): Unique Property Reference Number to construct the council lookup URL. Passed via kwargs.
+            url (str, optional): Fallback full URL to fetch when `uprn` is not provided. Passed via kwargs.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" mapping to a list of objects:
+                - "type" (str): Bin type text as shown on the page.
+                - "collectionDate" (str): Next collection date formatted according to the module's `date_format`.
+        
+        Raises:
+            ValueError: If the identifier cannot be obtained or validated, or if the page does not contain the expected "Your next collection days" heading.
+        """
         try:
             user_uprn = kwargs.get("uprn")
             check_uprn(user_uprn)
@@ -30,35 +48,37 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(page.text, "html.parser")
         soup.prettify
 
-        data = {"bins": []}
-
-        checkValid = soup.find("p", id="selectedAddressResult")
-        if checkValid is None:
+        checkValid = any("Your next collection days" in h2.get_text() for h2 in soup.find_all("h2"))
+        if not checkValid:
             raise ValueError("Address/UPRN not found")
 
-        collections = soup.find("div", id="wasteCollectionDates")
+        data = {"bins": []}
 
-        for bins in collections.select('div[class*="hc-island"]'):
-            bin_type = bins.h4.get_text(strip=True)
+        for h3 in soup.find_all("h3", class_="c-supplement__heading"):
+            bin_type = h3.get_text(strip=True)
 
-            # Last div.hc-island is the calendar link, skip it
-            if bin_type == "Calendar":
+            # Skip unrelated items
+            if "bin" not in bin_type.lower():
                 continue
 
-            # Next collection date is in a span under the second p.hc-no-margin of the div.
-            bin_collection = re.search(
-                r"(.*) \(.*\)", bins.select("div > p > span")[0].get_text(strip=True)
-            ).group(1)
-            if bin_collection:
-                logging.info(
-                    f"Bin type: {bin_type} - Collection date: {bin_collection}"
-                )
-                dict_data = {
+            # The <ul> immediately following contains the collection dates
+            ul = h3.find_next_sibling("ul")
+            if not ul:
+                continue
+
+            # Get the first <li>, which is the 'next collection' entry
+            li = ul.find("li")
+            if not li:
+                continue
+            next_date = li.get_text(strip=True).replace(" (next collection)", "")
+
+            logging.info(f"Bin type: {bin_type} - Collection date: {next_date}")
+
+            data["bins"].append(
+                {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(
-                        bin_collection, "%A %d %B %Y"
-                    ).strftime(date_format),
+                    "collectionDate": datetime.strptime(next_date, "%A %d %B %Y").strftime(date_format),
                 }
-                data["bins"].append(dict_data)
+            )
 
         return data

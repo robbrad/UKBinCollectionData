@@ -16,6 +16,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Fetch bin collection data for a property and return normalized bin types with formatted dates.
+        
+        Parameters:
+            uprn (str): Unique Property Reference Number used to query the council's bin collections endpoint (passed via kwargs).
+        
+        Returns:
+            dict: A dictionary with a "bins" key mapping to a list of collection records. Each record is a dict with:
+                - "type" (str): Bin type.
+                - "collectionDate" (str): Collection date formatted as "DD/MM/YYYY".
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
@@ -24,7 +35,8 @@ class CouncilClass(AbstractGetBinDataClass):
         URI = f"https://www.harrow.gov.uk/ajax/bins?u={user_uprn}&r=12345"
 
         # Make the GET request
-        response = requests.get(URI)
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
+        response = requests.get(URI, headers=headers, timeout=30)
 
         # Parse the JSON response
         bin_collection = response.json()

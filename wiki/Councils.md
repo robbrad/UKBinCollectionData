@@ -93,6 +93,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Dorset Council](#dorset-council)
 - [Dover](#dover)
 - [Dudley](#dudley)
+- [Dumfries and Galloway Council](#dumfries-and-galloway-council)
 - [Dundee City](#dundee-city)
 - [County Durham](#county-durham)
 - [Ealing](#ealing)
@@ -785,7 +786,7 @@ Note: Pass the house number and postcode in their respective parameters.
 
 ### Brighton and Hove
 ```commandline
-python collect_data.py BrightonandHoveCityCouncil https://cityclean.brighton-hove.gov.uk/link/collections -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py BrightonandHoveCityCouncil https://enviroservices.brighton-hove.gov.uk/link/collections -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -1352,6 +1353,18 @@ Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.
 python collect_data.py DudleyCouncil https://my.dudley.gov.uk -u XXXXXXXX
 ```
 Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Dumfries and Galloway Council
+```commandline
+python collect_data.py DumfriesandGallowayCouncil https://www.dumfriesandgalloway.gov.uk -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
@@ -2296,7 +2309,7 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ### Hounslow
 ```commandline
-python collect_data.py LondonBoroughHounslow https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder -s -u XXXXXXXX
+python collect_data.py LondonBoroughHounslow https://my.hounslow.gov.uk/service/Waste_and_recycling_collections -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -2528,12 +2541,11 @@ Note: Pass the name of the street with the house number parameter, wrapped in do
 
 ### Middlesbrough
 ```commandline
-python collect_data.py MiddlesbroughCouncil https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/ -s -n XX -w http://HOST:PORT/
+python collect_data.py MiddlesbroughCouncil https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/ -s -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver.
 
@@ -2686,15 +2698,13 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Newport
 ```commandline
-python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py NewportCityCouncil https://www.newport.gov.uk/ -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
+- `-u` - UPRN
 
-Note: Pass the postcode and house number in their respective arguments, both wrapped in quotes.
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
 ---
 
@@ -2885,7 +2895,7 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ### Norwich
 ```commandline
-python collect_data.py NorwichCityCouncil hhttps://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
+python collect_data.py NorwichCityCouncil https://bnr-wrp.whitespacews.com -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode

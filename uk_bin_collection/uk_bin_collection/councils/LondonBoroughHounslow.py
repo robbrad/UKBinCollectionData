@@ -1,4 +1,7 @@
-from bs4 import BeautifulSoup
+import time
+
+import requests
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -12,71 +15,112 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        api_url = "https://www.hounslow.gov.uk/homepage/86/recycling_and_waste_collection_day_finder"
+        """
+        Fetches bin collection schedules for a property and returns them as structured bin data.
+        
+        Parameters:
+            page (str): Page HTML (not used by this implementation).
+            uprn (str): Unique Property Reference Number passed via kwargs; used to query the council API for collections.
+        
+        Returns:
+            dict: A dictionary with key "bins" containing a list of collections. Each collection is a dict with:
+                - "type": collection type string from the API.
+                - "collectionDate": collection date formatted according to the module's date_format.
+        
+        Raises:
+            ValueError: If the API responses do not contain the expected data structure.
+        """
         user_uprn = kwargs.get("uprn")
-
-        # Check the UPRN is valid
         check_uprn(user_uprn)
+        bindata = {"bins": []}
 
-        # Create the form data
-        form_data = {
-            "UPRN": user_uprn,
+        SESSION_URL = "https://my.hounslow.gov.uk/authapi/isauthenticated?uri=https%253A%252F%252Fmy.hounslow.gov.uk%252Fservice%252FWaste_and_recycling_collections&hostname=my.hounslow.gov.uk&withCredentials=true"
+
+        API_URL = "https://my.hounslow.gov.uk/apibroker/runLookup"
+
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": "https://my.hounslow.gov.uk/fillform/?iframe_id=fillform-frame-1&db_id=",
+        }
+        s = requests.session()
+        r = s.get(SESSION_URL)
+        r.raise_for_status()
+        session_data = r.json()
+        sid = session_data["auth-session"]
+        params = {
+            "id": "655f4290810cf",
+            "repeat_against": "",
+            "noRetry": "true",
+            "getOnlyTokens": "undefined",
+            "log_id": "",
+            "app_name": "AF-Renderer::Self",
+            # unix_timestamp
+            "_": str(int(time.time() * 1000)),
+            "sid": sid,
         }
 
-        # Make a request to the API
-        requests.packages.urllib3.disable_warnings()
-        response = requests.post(api_url, data=form_data)
+        r = s.post(API_URL, headers=headers, params=params)
+        r.raise_for_status()
 
-        # Make a BS4 object
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
+        data = r.json()
+        rows_data = data["integration"]["transformed"]["rows_data"]["0"]
+        if not isinstance(rows_data, dict):
+            raise ValueError("Invalid data returned from API")
+        token = rows_data["bartecToken"]
 
-        data = {"bins": []}
+        data = {
+            "formValues": {
+                "Your address": {
+                    "searchUPRN": {
+                        "value": user_uprn,
+                    },
+                    "bartecToken": {
+                        "value": token,
+                    },
+                    "searchFromDate": {
+                        "value": datetime.now().strftime("%Y-%m-%d"),
+                    },
+                    "searchToDate": {
+                        "value": (datetime.now() + timedelta(days=30)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                    },
+                },
+            },
+        }
 
-        # Get the div element
-        div_element = soup.find("div", {"class": "bin_day_main_wrapper"})
+        params = {
+            "id": "659eb39b66d5a",
+            "repeat_against": "",
+            "noRetry": "false",
+            "getOnlyTokens": "undefined",
+            "log_id": "",
+            "app_name": "AF-Renderer::Self",
+            # unix_timestamp
+            "_": str(int(time.time() * 1000)),
+            "sid": sid,
+        }
 
-        # Get all bins with their corresponding dates using list comprehension
-        # This creates a list of tuples, where each tuple contains the bin type and collection date
-        bins_with_dates = [
-            (
-                bin.get_text().strip(),
-                h4.get_text().replace("This ", "").replace("Next ", ""),
-            )
-            # This first for loop iterates over each h4 element
-            for h4 in div_element.find_all("h4")
-            # This nested for loop iterates over each li element within the corresponding ul element
-            for bin in h4.find_next_sibling("ul").find_all("li")
-        ]
+        r = s.post(API_URL, json=data, headers=headers, params=params)
+        r.raise_for_status()
 
-        for bin_type, collection_date in bins_with_dates:
-            if "-" in collection_date:
-                date_part = collection_date.split(" - ")[1]
-                data["bins"].append(
-                    {
-                        "type": bin_type,
-                        "collectionDate": datetime.strptime(
-                            date_part, "%d %b %Y"
-                        ).strftime(date_format),
-                    }
-                )
-            elif len(collection_date.split(" ")) == 4:
-                data["bins"].append(
-                    {
-                        "type": bin_type,
-                        "collectionDate": datetime.strptime(
-                            collection_date, "%A %d %b %Y"
-                        ).strftime(date_format),
-                    }
-                )
-            else:
-                data["bins"].append(
-                    {
-                        "type": bin_type,
-                        "collectionDate": datetime.strptime(
-                            collection_date, "%d %b %Y"
-                        ).strftime(date_format),
-                    }
-                )
+        data = r.json()
+        rows_data = data["integration"]["transformed"]["rows_data"]["0"]
+        if not isinstance(rows_data, dict):
+            raise ValueError("Invalid data returned from API")
 
-        return data
+        collections = json.loads(rows_data["jobsJSON"])
+
+        for collection in collections:
+            dict_data = {
+                "type": collection["jobType"],
+                "collectionDate": datetime.strptime(
+                    collection["jobDate"], "%Y-%m-%d"
+                ).strftime(date_format),
+            }
+            bindata["bins"].append(dict_data)
+
+        return bindata

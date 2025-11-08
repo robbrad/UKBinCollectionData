@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -16,6 +17,23 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Retrieve bin collection types and dates for a given address from the Wokingham council collection page.
+        
+        This method navigates the Wokingham waste collection site, submits the supplied postcode and PAON, and parses the resulting collection cards to build a dictionary of bin collection entries.
+        
+        Parameters:
+            page (str): Unused by this implementation (kept for interface compatibility).
+            paon (str, in kwargs): Property Address/PAON used to select the exact address option.
+            postcode (str, in kwargs): Postcode used to look up addresses.
+            web_driver (str, in kwargs): Identifier or config used to create the Selenium WebDriver.
+            headless (bool, in kwargs): Whether the WebDriver runs headless.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" whose value is a list of entries. Each entry is a dict with:
+                - "type": waste type name (string).
+                - "collectionDate": collection date as a formatted date string (uses the module's configured date_format).
+        """
         driver = None
         try:
             data = {"bins": []}
@@ -68,25 +86,39 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the collection dates elements to load
             collection_date_cards = WebDriverWait(driver, timeout).until(
                 EC.presence_of_all_elements_located(
-                    (By.XPATH, '//div[@class = "card__content"]')
+                    (By.XPATH, '//div[@class = "card card--waste card--blue-light"]')
                 )
             )
 
-            for collection_date_card in collection_date_cards:
-                waste_type = collection_date_card.find_element(
-                    By.XPATH, './/h3[@class = "heading heading--sub heading--tiny"]'
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+            collection_cards = soup.find_all(
+                "div", {"class": "card card--waste card--blue-light"}
+            )
+
+            for collection_card in collection_cards:
+                collection_date_cards = collection_card.find_all(
+                    "div", {"class": "card__content"}
                 )
-                collection_date = collection_date_card.find_element(
-                    By.XPATH, './/span[@class = "card__date"]'
-                )
-                dt_collection_date = datetime.strptime(
-                    collection_date.text.split(" ")[1], source_date_format
-                )
-                dict_data = {
-                    "type": waste_type.text,
-                    "collectionDate": dt_collection_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+
+                for collection_date_card in collection_date_cards:
+
+                    waste_type = collection_date_card.find(
+                        "h3", {"class": "heading heading--sub heading--tiny"}
+                    )
+
+                    collection_date = collection_date_card.find(
+                        "span", {"class": "card__date"}
+                    )
+
+                    dt_collection_date = datetime.strptime(
+                        collection_date.text.strip().split(" ")[1], source_date_format
+                    )
+                    dict_data = {
+                        "type": waste_type.text.strip().split("(")[0].strip(),
+                        "collectionDate": dt_collection_date.strftime(date_format),
+                    }
+                    data["bins"].append(dict_data)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

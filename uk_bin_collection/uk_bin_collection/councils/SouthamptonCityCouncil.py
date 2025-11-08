@@ -16,15 +16,51 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Parse bin collection data for a given UPRN from the Southampton waste calendar page.
+        
+        Parameters:
+            page (str): HTML or identifier passed by caller (not used for extraction).
+            uprn (str): Unique Property Reference Number to query for collection dates.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of collection entries.
+                Each entry is a dict with:
+                    - "type" (str): Waste type (e.g., "Glass", "Recycling", "General Waste", "Garden Waste").
+                    - "collectionDate" (str): Collection date in "DD/MM/YYYY" format.
+                The list is sorted by collectionDate in ascending order.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
         REGEX = r"(Glass|Recycling|General Waste|Garden Waste).*?([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})"
 
-        s = requests.Session()
-        r = s.get(
-            f"https://www.southampton.gov.uk/whereilive/waste-calendar?UPRN={user_uprn}"
+        headers = {
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "accept-language": "en-GB,en;q=0.9",
+            "cache-control": "max-age=0",
+            "dnt": "1",
+            "priority": "u=0, i",
+            "referer": "https://www.southampton.gov.uk",
+            "sec-ch-ua": '"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "same-origin",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+        }
+
+        params = {
+            "UPRN": {user_uprn},
+        }
+
+        r = requests.get(
+            "https://www.southampton.gov.uk/whereilive/waste-calendar",
+            params=params,
+            headers=headers,
         )
         r.raise_for_status()
 

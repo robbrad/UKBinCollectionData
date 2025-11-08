@@ -1,15 +1,27 @@
-import datetime
+import json
+from dataclasses import asdict, dataclass
+from typing import Literal
 
-from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+import requests
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import check_uprn
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+key_hex = "F57E76482EE3DC3336495DEDEEF3962671B054FE353E815145E29C5689F72FEC"
+iv_hex = "2CBF4FC35C69B82362D393A4F0B9971A"
 
-# import the wonderful Beautiful Soup and the URL grabber
+
+@dataclass
+class NewportInput:
+    P_CLIENT_ID: Literal[130]
+    P_COUNCIL_ID: Literal[260]
+    P_LANG_CODE: Literal["EN"]
+    P_UPRN: str
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -17,116 +29,105 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
+    def encode_body(self, newport_input: NewportInput):
+        """
+        Encrypt a NewportInput dataclass using AES-CBC and encode the resulting ciphertext as a hex string.
+        
+        Parameters:
+            newport_input (NewportInput): Dataclass instance to serialize to JSON and encrypt. The instance is converted to a dict via `asdict()` before serialization.
+        
+        Returns:
+            str: Hex-encoded AES-CBC ciphertext of the JSON-serialized input. Encryption uses the module-level `key_hex` and `iv_hex` values and applies PKCS#7 padding.
+        """
+        key = bytes.fromhex(key_hex)
+        iv = bytes.fromhex(iv_hex)
+
+        json_data = json.dumps(asdict(newport_input))
+        data_bytes = json_data.encode("utf-8")
+
+        padder = padding.PKCS7(128).padder()
+        padded_data = padder.update(data_bytes) + padder.finalize()
+
+        backend = default_backend()
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
+        encryptor = cipher.encryptor()
+        ciphertext = encryptor.update(padded_data) + encryptor.finalize()
+
+        return ciphertext.hex()
+
+    def decode_response(self, hex_input: str):
+
+        """
+        Decrypts a hex-encoded AES-CBC ciphertext and returns the parsed JSON payload.
+        
+        Parameters:
+            hex_input (str): Hex-encoded AES-CBC ciphertext to decrypt.
+        
+        Returns:
+            The Python object produced by JSON decoding the decrypted UTF-8 plaintext (typically a dict).
+        """
+        key = bytes.fromhex(key_hex)
+        iv = bytes.fromhex(iv_hex)
+        ciphertext = bytes.fromhex(hex_input)
+
+        backend = default_backend()
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
+        decryptor = cipher.decryptor()
+        decrypted_padded = decryptor.update(ciphertext) + decryptor.finalize()
+
+        unpadder = padding.PKCS7(128).unpadder()
+        plaintext_bytes = unpadder.update(decrypted_padded) + unpadder.finalize()
+        plaintext = plaintext_bytes.decode("utf-8")
+
+        return json.loads(plaintext)
+
+    def parse_data(self, _: str, **kwargs) -> dict:
+        """
+        Fetch collection-day information for a given UPRN and return it as a normalized bins dictionary.
+        
+        Parameters:
+            _: str
+                Unused placeholder parameter kept for signature compatibility.
+            kwargs:
+                uprn (str): Unique Property Reference Number to query; this value is validated before use.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of mappings:
+                - "type": the bin type string from the service response.
+                - "collectionDate": the collection date formatted as MM/DD/YYYY.
+        """
         try:
-            data = {"bins": []}
-            url = kwargs.get("url")
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_paon(user_paon)
-            check_postcode(user_postcode)
-
-            # Use a realistic user agent to help bypass Cloudflare
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(
-                "https://iportal.itouchvision.com/icollectionday/collection-day/?uuid=6CDD2A34C912312074D8E2410531401A8C00EFF7&lang=en"
+            user_uprn: str = kwargs.get("uprn") or ""
+            check_uprn(user_uprn)
+            newport_input = NewportInput(
+                P_CLIENT_ID=130, P_COUNCIL_ID=260, P_LANG_CODE="EN", P_UPRN=user_uprn
             )
 
-            # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "postcodeSearch"))
-            )
-            inputElement_postcode.send_keys(user_postcode)
+            encoded_input = self.encode_body(newport_input)
 
-            # Click search button
-            findAddress = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "govuk-button"))
-            )
-            findAddress.click()
-
-            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        "//select[@id='addressSelect']//option[contains(., '"
-                        + user_paon
-                        + "')]",
-                    )
-                )
-            ).click()
-
-            # Wait for the collections table to appear
-            WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//h2[contains(@class,'mt-4') and contains(@class,'govuk-heading-s') and normalize-space(.)='Your next collections']",
-                    )
-                )
+            session = requests.Session()
+            response = session.post(
+                "https://iweb.itouchvision.com/portal/itouchvision/kmbd/collectionDay",
+                data=encoded_input,
             )
 
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
+            output = response.text
 
-            collections = soup.find_all("div", {"class": "p-2"})
-
-            for collection in collections:
-                bin_type = collection.find("h3").get_text()
-
-                next_collection = soup.find("div", {"class": "fw-bold"}).get_text()
-
-                following_collection = soup.find(
-                    lambda t: (
-                        t.name == "div"
-                        and t.get_text(strip=True).lower().startswith("followed by")
-                    )
-                ).get_text()
-
-                next_collection_date = datetime.strptime(next_collection, "%A %d %B")
-
-                following_collection_date = datetime.strptime(
-                    following_collection, "followed by %A %d %B"
+            decoded_bins = self.decode_response(output)
+            data: dict[str, list[dict[str, str]]] = {}
+            data["bins"] = list(
+                map(
+                    lambda a: {
+                        "type": a["binType"],
+                        "collectionDate": a["collectionDay"].replace("-", "/"),
+                    },
+                    decoded_bins["collectionDay"],
                 )
-
-                current_date = datetime.now()
-                next_collection_date = next_collection_date.replace(
-                    year=current_date.year
-                )
-                following_collection_date = following_collection_date.replace(
-                    year=current_date.year
-                )
-
-                next_collection_date = get_next_occurrence_from_day_month(
-                    next_collection_date
-                )
-
-                following_collection_date = get_next_occurrence_from_day_month(
-                    following_collection_date
-                )
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": next_collection_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": following_collection_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+            )
 
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
         return data
