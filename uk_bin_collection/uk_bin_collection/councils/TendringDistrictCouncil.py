@@ -26,6 +26,21 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Scrape Tendring District Council's rubbish and recycling collection days for a given address and return upcoming collections.
+        
+        This navigates the council's canonical service page, enters the supplied postcode, selects the address by UPRN, parses the resulting waste collection table, and returns a list of future collection entries. Entries with collection dates on or before today are excluded.
+        
+        Parameters:
+            page (str): Ignored; the method always uses the canonical Tendring service URL.
+            uprn (int | str, via kwargs["uprn"]): Unique Property Reference Number used to select the address.
+            postcode (str, via kwargs["postcode"]): Postcode to populate the address search field.
+            web_driver (optional, via kwargs["web_driver"]): Selenium driver configuration or remote endpoint; if omitted a local driver is created.
+            headless (bool, via kwargs["headless"]): Whether to run the browser headlessly; defaults to True when not provided.
+        
+        Returns:
+            dict: {"bins": [{"type": <string>, "collectionDate": <string>}, ...]} where each entry describes a waste type and its upcoming collection date. `collectionDate` is formatted using the module's configured `date_format`.
+        """
         driver = None
         bin_data: dict[str, list[dict]] = {"bins": []}
 
