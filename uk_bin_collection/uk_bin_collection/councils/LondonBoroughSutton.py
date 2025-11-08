@@ -10,10 +10,34 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 def remove_ordinal_indicator_from_date_string(date_str):
+    """
+    Remove English ordinal suffixes ('st', 'nd', 'rd', 'th') from numeric parts of a date string.
+    
+    Parameters:
+        date_str (str): String that may contain ordinal indicators on numbers (e.g., "1st January", "2nd Feb").
+    
+    Returns:
+        str: The input string with ordinal suffixes removed from all numeric tokens (e.g., "1 January" from "1st January").
+    """
     return re.sub(r'(\d+)(st|nd|rd|th)', r'\1', date_str)
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Extracts bin types and their next collection dates for a given UPRN from Sutton Council's waste page.
+        
+        Parameters:
+            uprn (str): Unique Property Reference Number used to construct the council URL to fetch bin information.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of dictionaries. Each entry has:
+                - "type" (str): Human-readable bin/service name.
+                - "collectionDate" (str): Next collection date formatted as "DD/MM/YYYY".
+                The list is sorted by collection date in ascending order.
+        
+        Raises:
+            RuntimeError: If the council page still reports "Loading your bin days..." after polite retries.
+        """
         user_uprn = kwargs.get("uprn")
         bindata = {"bins": []}
 

@@ -30,6 +30,15 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def encode_body(self, newport_input: NewportInput):
+        """
+        Encrypt a NewportInput dataclass using AES-CBC and encode the resulting ciphertext as a hex string.
+        
+        Parameters:
+            newport_input (NewportInput): Dataclass instance to serialize to JSON and encrypt. The instance is converted to a dict via `asdict()` before serialization.
+        
+        Returns:
+            str: Hex-encoded AES-CBC ciphertext of the JSON-serialized input. Encryption uses the module-level `key_hex` and `iv_hex` values and applies PKCS#7 padding.
+        """
         key = bytes.fromhex(key_hex)
         iv = bytes.fromhex(iv_hex)
 
@@ -48,6 +57,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def decode_response(self, hex_input: str):
 
+        """
+        Decrypts a hex-encoded AES-CBC ciphertext and returns the parsed JSON payload.
+        
+        Parameters:
+            hex_input (str): Hex-encoded AES-CBC ciphertext to decrypt.
+        
+        Returns:
+            The Python object produced by JSON decoding the decrypted UTF-8 plaintext (typically a dict).
+        """
         key = bytes.fromhex(key_hex)
         iv = bytes.fromhex(iv_hex)
         ciphertext = bytes.fromhex(hex_input)
@@ -64,6 +82,20 @@ class CouncilClass(AbstractGetBinDataClass):
         return json.loads(plaintext)
 
     def parse_data(self, _: str, **kwargs) -> dict:
+        """
+        Fetch collection-day information for a given UPRN and return it as a normalized bins dictionary.
+        
+        Parameters:
+            _: str
+                Unused placeholder parameter kept for signature compatibility.
+            kwargs:
+                uprn (str): Unique Property Reference Number to query; this value is validated before use.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of mappings:
+                - "type": the bin type string from the service response.
+                - "collectionDate": the collection date formatted as MM/DD/YYYY.
+        """
         try:
             user_uprn: str = kwargs.get("uprn") or ""
             check_uprn(user_uprn)

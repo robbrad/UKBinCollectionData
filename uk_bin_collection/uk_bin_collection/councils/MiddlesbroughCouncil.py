@@ -10,6 +10,26 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Retrieve upcoming bin collection types and the next collection date for the provided address (paon) within the Middlesbrough service.
+        
+        Queries the Recollect API to resolve the provided address to a place_id, fetches the place calendar payload, extracts the "Next Collection" date and associated bin types, and returns them in a normalized structure. If the address cannot be resolved to a place_id, the function returns None.
+        
+        Parameters:
+            page (str): Page or URL context (not used by this implementation).
+            kwargs:
+                paon (str): The primary addressable object name/number (e.g., house number or name). Required to look up the address.
+        
+        Returns:
+            dict: A dictionary with the key "bins" mapping to a list of collection entries:
+                {
+                    "bins": [
+                        {"type": "<bin label or flag>", "collectionDate": "<formatted date string>"},
+                        ...
+                    ]
+                }
+            None: Returned when the address cannot be resolved to a place_id.
+        """
         try:
             data = {"bins": []}
 

@@ -17,6 +17,23 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Retrieve bin collection types and dates for a given address from the Wokingham council collection page.
+        
+        This method navigates the Wokingham waste collection site, submits the supplied postcode and PAON, and parses the resulting collection cards to build a dictionary of bin collection entries.
+        
+        Parameters:
+            page (str): Unused by this implementation (kept for interface compatibility).
+            paon (str, in kwargs): Property Address/PAON used to select the exact address option.
+            postcode (str, in kwargs): Postcode used to look up addresses.
+            web_driver (str, in kwargs): Identifier or config used to create the Selenium WebDriver.
+            headless (bool, in kwargs): Whether the WebDriver runs headless.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" whose value is a list of entries. Each entry is a dict with:
+                - "type": waste type name (string).
+                - "collectionDate": collection date as a formatted date string (uses the module's configured date_format).
+        """
         driver = None
         try:
             data = {"bins": []}

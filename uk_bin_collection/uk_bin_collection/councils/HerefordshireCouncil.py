@@ -15,6 +15,24 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse bin collection information for an address identified by UPRN or a fallback URL.
+        
+        Retrieves the council's bin collection page for the provided UPRN (or the legacy `url` fallback), extracts each bin type and its next collection date, and returns a dictionary containing a list of bins with their types and formatted collection dates.
+        
+        Parameters:
+            page (str): Unused. Present for compatibility with the base class; the function fetches the page using the resolved URL.
+            uprn (str, optional): Unique Property Reference Number to construct the council lookup URL. Passed via kwargs.
+            url (str, optional): Fallback full URL to fetch when `uprn` is not provided. Passed via kwargs.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" mapping to a list of objects:
+                - "type" (str): Bin type text as shown on the page.
+                - "collectionDate" (str): Next collection date formatted according to the module's `date_format`.
+        
+        Raises:
+            ValueError: If the identifier cannot be obtained or validated, or if the page does not contain the expected "Your next collection days" heading.
+        """
         try:
             user_uprn = kwargs.get("uprn")
             check_uprn(user_uprn)

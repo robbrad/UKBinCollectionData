@@ -24,6 +24,21 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Retrieve bin collection types and upcoming collection dates for the given address.
+        
+        Parameters:
+            page (str): Unused by this implementation (kept for interface compatibility).
+            paon (str, in kwargs): Property/PAON text used to select the correct address option.
+            postcode (str, in kwargs): Postcode to search for addresses.
+            web_driver (optional, in kwargs): Selenium WebDriver instance or web driver identifier to use when creating the driver.
+            headless (bool, optional, in kwargs): Whether to run the browser in headless mode.
+        
+        Returns:
+            data (dict): Dictionary with a single key "bins" whose value is a list of dictionaries. Each entry contains:
+                - "type" (str): The bin/collection type name.
+                - "collectionDate" (str): The next collection date formatted according to the module's date_format.
+        """
         driver = None
         try:
             data = {"bins": []}
