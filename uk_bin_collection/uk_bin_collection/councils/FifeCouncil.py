@@ -1,7 +1,11 @@
+import time
 from datetime import datetime
 
-import requests
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -15,54 +19,125 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Get and check UPRN
-        user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
-        bindata = {"bins": []}
+        driver = None
+        try:
+            # Get and check UPRN
+            user_postcode = kwargs.get("postcode")
+            user_paon = kwargs.get("paon")
+            check_postcode(user_postcode)
+            check_paon(user_paon)
 
-        API_URL = "https://www.fife.gov.uk/api/custom?action=powersuite_bin_calendar_collections&actionedby=bin_calendar&loadform=true&access=citizen&locale=en"
-        AUTH_URL = "https://www.fife.gov.uk/api/citizen?preview=false&locale=en"
-        AUTH_KEY = "Authorization"
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
 
-        r = requests.get(AUTH_URL)
-        r.raise_for_status()
-        auth_token = r.headers[AUTH_KEY]
+            bindata = {"bins": []}
 
-        post_data = {
-            "name": "bin_calendar",
-            "data": {
-                "uprn": user_uprn,
-            },
-            "email": "",
-            "caseid": "",
-            "xref": "",
-            "xref1": "",
-            "xref2": "",
-        }
+            URL = "https://fife.portal.uk.empro.verintcloudservices.com/site/fife/request/bin_calendar"
 
-        headers = {
-            "referer": "https://www.fife.gov.uk/services/forms/bin-calendar",
-            "accept": "application/json",
-            "content-type": "application/json",
-            AUTH_KEY: auth_token,
-        }
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+            driver.get(URL)
 
-        r = requests.post(API_URL, data=json.dumps(post_data), headers=headers)
-        r.raise_for_status()
+            wait = WebDriverWait(driver, 30)
 
-        result = r.json()
+            ID_POSTCODE = "dform_widget_ps_45M3LET8_txt_postcode"
+            ID_SEARCH_BTN = "dform_widget_ps_3SHSN93_searchbutton"
+            ID_ADDRESS_SELECT = "dform_widget_ps_3SHSN93_id"
+            ID_COLLECTIONS = "dform_table_tab_collections"
 
-        for collection in result["data"]["tab_collections"]:
-            dict_data = {
-                "type": collection["colour"],
-                "collectionDate": datetime.strptime(
-                    collection["date"],
-                    "%A, %B %d, %Y",
-                ).strftime("%d/%m/%Y"),
-            }
-            bindata["bins"].append(dict_data)
+            # Wait for initial page load and Cloudflare bypass
+            wait.until(lambda d: "Just a moment" not in d.title and d.title != "")
+            time.sleep(3)
 
-        bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-        )
+            # Wait for the postcode field to appear then populate it
+            inputElement_postcode = wait.until(
+                EC.presence_of_element_located((By.ID, ID_POSTCODE))
+            )
+            inputElement_postcode.send_keys(user_postcode)
+
+            # Click search button
+            findAddress = wait.until(EC.element_to_be_clickable((By.ID, ID_SEARCH_BTN)))
+            findAddress.click()
+
+            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
+            select_el = wait.until(
+                EC.visibility_of_element_located((By.ID, ID_ADDRESS_SELECT))
+            )
+            wait.until(lambda d: len(Select(select_el).options) > 1)
+
+            paon_norm = str(user_paon).strip().casefold()
+            sel = Select(select_el)
+
+            time.sleep(10)
+
+            def _best_option():
+                # Prefer exact contains on visible text; fallback to casefold contains
+                for opt in sel.options:
+                    txt = (opt.text or "").strip()
+                    if paon_norm and paon_norm in txt.casefold():
+                        return opt
+                return None
+
+            opt = _best_option()
+            if not opt:
+                raise ValueError(
+                    f"Could not find an address containing '{user_paon}' in the dropdown."
+                )
+            sel.select_by_visible_text(opt.text)
+
+            # After selecting, the collections table should (re)render; wait for it
+            wait.until(EC.presence_of_element_located((By.ID, ID_COLLECTIONS)))
+            # Also wait until at least one data row is present (beyond headers)
+            wait.until(
+                lambda d: len(
+                    d.find_elements(By.CSS_SELECTOR, f"#{ID_COLLECTIONS} .dform_tr")
+                )
+                > 1
+            )
+
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
+
+            table = soup.find("div", id=ID_COLLECTIONS)
+            if not table:
+                raise ValueError(
+                    f"Could not find collections table by id='{ID_COLLECTIONS}'"
+                )
+
+            rows = table.find_all("div", class_="dform_tr")
+
+            # Skip header row (first row with .dform_th entries)
+            for row in rows[1:]:
+                tds = row.find_all("div", class_="dform_td")
+                if len(tds) < 3:
+                    continue
+
+                # Colour comes from the <img alt="...">
+                colour_cell = tds[0]
+                img = colour_cell.find("img")
+                colour = img.get("alt").strip() if img and img.has_attr("alt") else None
+
+                # Date text
+                raw_date = tds[1].get_text(strip=True)
+                # Example: "Wednesday, November 12, 2025"
+                dt = datetime.strptime(raw_date, "%A, %B %d, %Y")
+
+                dict_data = {
+                    "type": colour,
+                    "collectionDate": dt.strftime(date_format),
+                }
+                bindata["bins"].append(dict_data)
+
+            bindata["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+            )
+
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
         return bindata
