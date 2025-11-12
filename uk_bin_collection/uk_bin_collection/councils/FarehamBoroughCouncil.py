@@ -21,7 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         params = {
             "type": "JSON",
-            "list": "DomesticBinCollections",
+            "list": "DomesticBinCollections2025on",
             "Road": "",
             "Postcode": user_postcode,
         }
