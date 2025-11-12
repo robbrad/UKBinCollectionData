@@ -17,21 +17,21 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Locate the council collection round for the given address and return upcoming bin collection dates and types.
-        
+
         Parses the council bin-collection webpage for the provided postcode and property identifier (paon), determines the matching collection round, fetches the corresponding ICS calendar for the 2025-26 year range, and returns each scheduled collection within the next 60 days as separate entries.
-        
+
         Parameters:
             page (str): Unused parameter retained for API compatibility.
             postcode (str, in kwargs): Postcode to search on the council site.
             paon (str, in kwargs): Property/house name or number used to match the address row.
             web_driver (optional, in kwargs): WebDriver identifier or configuration passed to create_webdriver.
             headless (optional, in kwargs): Headless flag passed to create_webdriver.
-        
+
         Returns:
             dict: A dictionary with a "bins" key containing a list of collection entries. Each entry is a dict with:
                 - "type": collection type string (e.g., "General waste")
                 - "collectionDate": collection date formatted according to the module's `date_format`
-        
+
         Raises:
             ValueError: If no collection round can be found for the provided `paon`.
         """
@@ -98,7 +98,18 @@ class CouncilClass(AbstractGetBinDataClass):
                     if round_match:
                         day = round_match.group(1).lower()
                         letter = round_match.group(2).lower()
-                        ics_url = f"https://www.chelmsford.gov.uk/media/t03c4mik/{day}-{letter}-2025-26.ics"
+                        calendar_url = f"https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/{day}-{letter}-collection-calendar/"
+                        driver.get(calendar_url)
+                        soup = BeautifulSoup(driver.page_source, features="html.parser")
+                        a = soup.find(
+                            "a", href=lambda h: h and h.lower().endswith(".ics")
+                        )
+                        if a:
+                            ics_url = a["href"]
+                        else:
+                            raise ValueError(
+                                f"Could not find collection ICS file for address: {user_paon}"
+                            )
                         break
             else:
                 raise ValueError(

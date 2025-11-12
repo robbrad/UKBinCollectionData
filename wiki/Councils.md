@@ -1711,12 +1711,14 @@ Note: Pass the house number and postcode in their respective parameters.
 
 ### Fife
 ```commandline
-python collect_data.py FifeCouncil https://www.fife.gov.uk -u XXXXXXXX
+python collect_data.py FifeCouncil https://www.fife.gov.uk -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
-- `-u` - UPRN
+- `-p` - postcode
+- `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+Note: Pass in the house number and postcode parameters. This parser requires a Selenium webdriver.
 
 ---
 

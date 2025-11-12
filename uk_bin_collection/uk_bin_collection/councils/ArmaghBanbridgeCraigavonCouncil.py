@@ -19,6 +19,10 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
+        headers = {
+            "user-agent": "Mozilla/5.0",
+        }
+
         # Function to extract bin collection information
         def extract_bin_schedule(soup, heading_class):
             collections = []
@@ -40,7 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
         url = f"https://www.armaghbanbridgecraigavon.gov.uk/resident/binday-result/?address={user_uprn}"
 
         # Send a GET request to fetch the page content
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
 
         # Check if the request was successful
         if response.status_code == 200:
