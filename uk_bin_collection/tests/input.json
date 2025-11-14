@@ -1704,12 +1704,12 @@
         "LAD24CD": "E06000012"
     },
     "NorthHertfordshireDistrictCouncil": {
-        "house_number": "22",
-        "postcode": "SG6 4BJ",
-        "url": "https://www.north-herts.gov.uk",
-        "web_driver": "http://selenium:4444",
+        "skip_get_url": true,
+        "uprn": "100081258147",
+        "url": "https://apps.cloud9technologies.com/northherts/citizenmobile/mobileapi/100081258147/",
         "wiki_name": "North Hertfordshire",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
+        "wiki_note": "Replace the XXXXXXXX with your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)",
+        "wiki_command_url_override": "https://apps.cloud9technologies.com/northherts/citizenmobile/mobileapi/XXXXXXXX/",
         "LAD24CD": "E07000099"
     },
     "NorthKestevenDistrictCouncil": {

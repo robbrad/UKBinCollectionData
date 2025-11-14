@@ -1,185 +1,214 @@
-# direct URL works, but includes a token, so I'm using Selenium
-# https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-show-details?webpage_token=c7c7c3cbc2f0478735fc746ca985b8f4221dea31c24dde99e39fb1c556b07788&auth=YTc5YTAwZmUyMGQ3&id=1421457
+# Uses Cloud9 mobile API to fetch waste collection data
+# API endpoint: https://apps.cloud9technologies.com/northherts/citizenmobile/mobileapi/wastecollections/{uprn}
 
-import re
-import time
+import json
 from datetime import datetime
 
-from bs4 import BeautifulSoup
-from dateutil.parser import parse
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
+# Mobile API constants
+MOBILE_API_BASE = "https://apps.cloud9technologies.com/northherts/citizenmobile/mobileapi"
+MOBILE_API_AUTH = "Basic Y2xvdWQ5OmlkQmNWNGJvcjU="
+MOBILE_API_HEADERS = {
+    "Accept": "application/json",
+    "Authorization": MOBILE_API_AUTH,
+    "X-Api-Version": "2",
+    "X-App-Version": "3.0.56",
+    "X-Platform": "android",
+    "User-Agent": "okhttp/4.9.2",
+}
+
+
+def lookup_uprn(postcode: str, paon: str) -> str:
+    """
+    Lookup UPRN from postcode and house number using the Cloud9 addresses API.
+
+    Args:
+        postcode: The postcode to search for
+        paon: The house number/name (Primary Addressable Object Name)
+
+    Returns:
+        str: The UPRN for the address
+
+    Raises:
+        ValueError: If no matching address is found or if the API request fails
+    """
+    postcode = postcode.strip()
+    paon = paon.strip().lower()
+
+    if not postcode:
+        raise ValueError("Postcode is required")
+
+    if not paon:
+        raise ValueError("House number/name (paon) is required")
+
+    # Build the addresses API URL
+    url = f"{MOBILE_API_BASE}/addresses?postcode={postcode}"
+
+    response = requests.get(url, headers=MOBILE_API_HEADERS, timeout=30)
+
+    if response.status_code != 200:
+        raise ValueError(
+            f"Addresses API returned status {response.status_code}. "
+            f"Please check your postcode is correct."
+        )
+
+    api_response = response.json()
+    addresses = api_response.get("addresses", [])
+
+    if not addresses:
+        raise ValueError(
+            f"No addresses found for postcode '{postcode}'. "
+            f"Please check your postcode is correct."
+        )
+
+    # Search for matching address by paon (house number/name)
+    # The paon could appear in addressLine1 or addressLine2
+    matching_addresses = []
+    for address in addresses:
+        address_line1 = address.get("addressLine1", "").lower()
+        address_line2 = address.get("addressLine2", "").lower()
+        full_address = address.get("fullAddress", "").lower()
+
+        # Check if paon matches the start of addressLine1 or or addressLine2
+        first_parts = [address.split()[0] for address in (address_line1, address_line2) if len(address) > 0]
+        if paon in first_parts:
+            matching_addresses.append(address)
+
+    if not matching_addresses:
+        raise ValueError(
+            f"No address found matching house number/name '{paon}' for postcode '{postcode}'. "
+            f"Found {len(addresses)} addresses for this postcode, but none matched. "
+            f"You can find your UPRN at: https://www.findmyaddress.co.uk/search?postcode={postcode}"
+        )
+
+    if len(matching_addresses) > 1:
+        # Multiple matches - return the first but warn user
+        raise ValueError(
+            f"Multiple addresses found matching '{paon}' for postcode '{postcode}'. "
+            f"Please provide the UPRN directly for more accurate results. "
+            f"You can find your UPRN at: https://www.findmyaddress.co.uk/search?postcode={postcode}"
+        )
+
+    return matching_addresses[0]["uprn"]
+
+
+def fetch_mobile_api(uprn: str) -> dict:
+    """
+    Calls the Cloud9 mobile API to get waste collection data.
+
+    Args:
+        uprn: The Unique Property Reference Number
+
+    Returns:
+        dict: JSON response from the mobile API
+
+    Raises:
+        requests.RequestException: If the API request fails
+    """
+    url = f"{MOBILE_API_BASE}/wastecollections/{uprn}"
+
+    response = requests.get(url, headers=MOBILE_API_HEADERS, timeout=30)
+
+    if response.status_code != 200:
+        raise ValueError(
+            f"Mobile API returned status {response.status_code}. "
+            f"Please check your UPRN is correct."
+        )
+
+    return response.json()
+
+
 class CouncilClass(AbstractGetBinDataClass):
+    """
+    Council class for North Hertfordshire District Council.
+    Uses the Cloud9 mobile API to fetch bin collection data.
+    """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            data = {"bins": []}
+        """
+        Parse bin collection data using the Cloud9 mobile API.
 
-            user_paon = kwargs.get("paon")
+        Args:
+            page: Unused (kept for interface compatibility)
+            **kwargs: Must contain either 'uprn' or both 'postcode' and 'paon'
+
+        Returns:
+            dict: Bin collection data in standard format
+        """
+        data = {"bins": []}
+
+        # Get UPRN either directly or via lookup
+
+        uprn = kwargs.get("uprn")
+
+        if uprn:
+            check_uprn(uprn)
+        else:
+            # Try to lookup UPRN from postcode and house number
+            # This is provided to maintain backward compatibility with the existing postcode/paon input method
             postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            url = "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address"
+            paon = kwargs.get("paon")
+            check_postcode(postcode)
+            check_paon(paon)
 
-            driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(url)
+            # Attempt UPRN lookup using postcode and paon
+            uprn = lookup_uprn(postcode=postcode, paon=paon)
 
-            WebDriverWait(driver, 10).until(
-                lambda d: d.execute_script("return document.readyState") == "complete"
+
+        # Fetch data from mobile API
+        api_response = fetch_mobile_api(uprn)
+
+        # Parse the API response - Cloud9 API returns WasteCollectionDates with 8 containers
+        # Response structure: {"wasteCollectionDates": {"container1CollectionDetails": {...}, ...}}
+        waste_collection_dates = api_response.get("wasteCollectionDates", {})
+
+        if not waste_collection_dates:
+            raise ValueError(
+                f"No wasteCollectionDates found in API response. API response: {json.dumps(api_response)[:200]}"
             )
 
-            # Define the wait variable
-            wait = WebDriverWait(
-                driver, 20
-            )  # Create the wait object with a 20-second timeout
+        # Process all 8 possible containers
+        for i in range(1, 9):
+            container_key = f"container{i}CollectionDetails"
+            container = waste_collection_dates.get(container_key)
 
-            # Enter postcode - try different approaches for reliability
-            # print("Looking for postcode input...")
+            if not container or not isinstance(container, dict):
+                continue
 
-            postcode_input = wait.until(
-                EC.element_to_be_clickable(
-                    (
-                        By.CSS_SELECTOR,
-                        "input.relation_path_type_ahead_search.form-control",
-                    )
-                ),
-                message="Postcode input not found by class",
-            )
-            postcode_input.clear()
-            postcode_input.send_keys(postcode)
-            # print(f"Entered postcode: {postcode}")
+            # Extract collection date
+            collection_date_str = container.get("collectionDate", "")
 
-            # Wait for the dropdown to load
-            # print("Waiting for address list to populate...")
-            try:
-                # Wait for the results to appear
-                wait.until(
-                    EC.presence_of_element_located(
-                        (By.CSS_SELECTOR, ".relation_path_type_ahead_results_holder")
-                    ),
-                    message="Address results container not found",
-                )
+            # Skip empty collection dates
+            if not collection_date_str:
+                continue
 
-                # Wait for list items to appear
-                wait.until(
-                    EC.presence_of_all_elements_located(
-                        (By.CSS_SELECTOR, ".relation_path_type_ahead_results_holder li")
-                    ),
-                    message="No address items found in the list",
-                )
-                # print("Address list populated successfully")
+            # Extract container description (bin type)
+            bin_type = container.get("containerDescription", f"Container {i}")
+            collection_datetime = datetime.fromisoformat(collection_date_str)
 
-                # Search for user_paon in the address list using aria-label attribute
-                try:
-                    # Use XPath to look for aria-label containing user_paon
-                    address_xpath = (
-                        f"//li[@aria-label and contains(@aria-label, '{user_paon}')]"
-                    )
-                    matching_address = wait.until(
-                        EC.element_to_be_clickable((By.XPATH, address_xpath)),
-                        message=f"No address containing '{user_paon}' found in aria-label attributes",
-                    )
-                    # print(f"Found matching address: {matching_address.get_attribute('aria-label')}")
-                    matching_address.click()
-                    # print("Clicked on matching address")
 
-                    # Allow time for the selection to take effect
-                    time.sleep(2)
+            # Parse the date - API returns ISO format like "2025-11-25T00:00:00"
+            bin_entry = {
+                "type": bin_type,
+                "collectionDate": collection_datetime.strftime(date_format),
+            }
 
-                    # Find and click the "Select address and continue" button
-                    continue_button = wait.until(
-                        EC.element_to_be_clickable(
-                            (
-                                By.CSS_SELECTOR,
-                                "input.btn.bg-green[value='Select address and continue']",
-                            )
-                        ),
-                        message="Could not find 'Select address and continue' button",
-                    )
-                    # print("Found 'Select address and continue' button, clicking it...")
-                    continue_button.click()
-                    # print("Clicked on 'Select address and continue' button")
+            data["bins"].append(bin_entry)
 
-                    # Allow time for the page to load after clicking the button
-                    time.sleep(3)
-                except TimeoutException as e:
-                    # print(f"Error finding address: {e}")
-                    raise
-            except TimeoutException as e:
-                # print(f"Error loading address list: {e}")
-                raise
-
-            # After pressing Next button and waiting for page to load
-            # print("Looking for schedule list...")
-
-            # Wait for the page to load - giving it extra time
-            time.sleep(5)
-
-            # Create BS4 object from driver's page source
-            # print("Parsing page with BeautifulSoup...")
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Initialize data dictionary
-            data = {"bins": []}
-
-            for row in soup.select(".listing_template_row"):
-                # Title (waste stream) is the first <p> in the section
-                first_p = row.find("p")
-                if not first_p:
-                    continue
-                stream = first_p.get_text(" ", strip=True)
-
-                for p in row.find_all("p"):
-                    t = p.get_text("\n", strip=True)
-
-                    if re.search(r"\bNext collection\b", t, flags=re.I):
-                        # Expect format: "Next collection\nTuesday 16th September 2025"
-                        parts = [x.strip() for x in t.split("\n") if x.strip()]
-                        if len(parts) >= 2:
-                            next_collection_display = parts[-1]  # last line
-
-                # Build record
-                next_date = datetime.strptime(
-                    remove_ordinal_indicator_from_date_string(next_collection_display),
-                    "%A %d %B %Y",
-                )
-
-                # Create bin entry
-                bin_entry = {
-                    "type": stream,
-                    "collectionDate": next_date.strftime(date_format),
-                }
-
-                # Add to data
-                data["bins"].append(bin_entry)
-                # print(f"Added bin entry: {bin_entry}")
-
-            if not data["bins"]:
-                # print("No bin data found. Saving page for debugging...")
-                with open(f"debug_page_{int(time.time())}.html", "w") as f:
-                    f.write(driver.page_source)
-                driver.save_screenshot(f"final_error_screenshot_{int(time.time())}.png")
-                raise ValueError(
-                    "No bin collection data could be extracted from the page"
-                )
-
-            # Sort the bin collections by date
-            data["bins"].sort(
-                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        if not data["bins"]:
+            raise ValueError(
+                "No valid bin collection data could be extracted from the API response"
             )
 
-            return data
+        # Sort the bin collections by date
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
-        except Exception as e:
-            # print(f"Error parsing bin collection data: {e}")
-            raise
+        return data
+
