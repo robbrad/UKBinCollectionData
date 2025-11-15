@@ -1,25 +1,77 @@
 # This script pulls (in one hit) the data from Merton Council Bins Data
 import time
+from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 # Council class for Merton Council
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Bin collection scraper for Merton Council.
+
+    This scraper retrieves bin collection schedules from the Merton Council
+    FixMyStreet-based website (fixmystreet.merton.gov.uk). The site uses
+    JavaScript to dynamically load data, requiring polling until content
+    is fully loaded.
+
+    Required Parameters:
+        uprn (str): Unique Property Reference Number (numeric only)
+
+    Example:
+        >>> council = CouncilClass()
+        >>> data = council.run(uprn="4328213")
     """
 
+    # Polling configuration for JavaScript-loaded data
+    MAX_POLLING_ATTEMPTS = 10
+    POLLING_SLEEP_SECONDS = 2
+
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse bin collection data from Merton Council's FixMyStreet website.
+
+        The Merton Council website uses JavaScript to dynamically load collection data.
+        This method polls the page until the data is fully loaded, then extracts
+        bin collection information including type and next collection date.
+
+        Args:
+            page (str): Unused - maintained for interface compatibility
+            **kwargs: Keyword arguments including:
+                - uprn (str): Unique Property Reference Number (numeric only)
+
+        Returns:
+            dict: A dictionary containing a list of bins with their collection dates:
+                {
+                    "bins": [
+                        {
+                            "type": str,  # Capitalized bin type (e.g., "Food waste")
+                            "collectionDate": str  # Formatted date string
+                        },
+                        ...
+                    ]
+                }
+
+        Raises:
+            ValueError: If uprn is not provided or contains non-numeric characters
+            Exception: If timeout occurs waiting for data or if collections div not found
+
+        Note:
+            - Skips booking services like "Bulky waste" and "Garden waste"
+            - Handles year-boundary dates (e.g., December dates for January collections)
+            - Results are sorted by collection date
+        """
         uprn = kwargs.get("uprn")
         if not uprn:
             raise ValueError("uprn is required")
+
+        # Validate UPRN format (must be numeric only)
+        if not str(uprn).isdigit():
+            raise ValueError("uprn must contain only numeric characters")
 
         # The new Merton site uses JavaScript to load data dynamically.
         # We poll the page until the loading indicator disappears.
@@ -32,17 +84,16 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         collections = []
 
-        # Poll until data is loaded (max 10 attempts)
-        max_attempts = 10
+        # Poll until data is loaded
         soup = None
-        for attempt in range(1, max_attempts + 1):
+        for attempt in range(1, self.MAX_POLLING_ATTEMPTS + 1):
             response = requests.get(url, headers=headers, timeout=10)
             soup = BeautifulSoup(response.text, features="html.parser")
 
             # Check if still loading
             if soup.find(id="loading-indicator"):
-                if attempt < max_attempts:
-                    time.sleep(2)
+                if attempt < self.MAX_POLLING_ATTEMPTS:
+                    time.sleep(self.POLLING_SLEEP_SECONDS)
                     continue
                 else:
                     raise Exception("Timeout waiting for bin collection data to load")
@@ -100,6 +151,9 @@ class CouncilClass(AbstractGetBinDataClass):
                                         collectionDate = datetime.strptime(
                                             date_str, format
                                         )
+                                        # Handle year boundary: if parsed date is in the past, assume next year
+                                        if collectionDate.date() < datetime.now().date():
+                                            collectionDate = collectionDate.replace(year=year + 1)
                                         break
                                     except ValueError:
                                         continue
