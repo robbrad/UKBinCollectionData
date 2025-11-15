@@ -87,7 +87,7 @@ def lookup_uprn(postcode: str, paon: str) -> str:
         )
 
     if len(matching_addresses) > 1:
-        # Multiple matches - return the first but warn user
+        # Multiple matches - Raise a ValueError so the user can remediate
         raise ValueError(
             f"Multiple addresses found matching '{paon}' for postcode '{postcode}'. "
             f"Please provide the UPRN directly for more accurate results. "
