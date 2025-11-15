@@ -117,7 +117,10 @@ def fetch_mobile_api(uprn: str) -> dict:
     """
     url = f"{MOBILE_API_BASE}/wastecollections/{uprn}"
 
-    response = requests.get(url, headers=MOBILE_API_HEADERS, timeout=30)
+    try:
+        response = requests.get(url, headers=MOBILE_API_HEADERS, timeout=30)
+    except requests.exceptions.JSONDecodeError as exc:
+        raise ValueError(f"Mobile API returned invalid JSON") from exc
 
     if response.status_code != 200:
         raise ValueError(
