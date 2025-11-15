@@ -26,6 +26,7 @@ MOBILE_API_HEADERS = {
     "X-Platform": "android",
     "User-Agent": "okhttp/4.9.2",
 }
+MOBILE_API_NUM_CONTAINERS = 8
 
 
 def lookup_uprn(postcode: str, paon: str) -> str:
@@ -181,7 +182,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         # Process all 8 possible containers
-        for i in range(1, 9):
+        for i in range(1, MOBILE_API_NUM_CONTAINERS + 1):
             container_key = f"container{i}CollectionDetails"
             container = waste_collection_dates.get(container_key)
 
