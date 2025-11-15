@@ -189,8 +189,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Extract container description (bin type)
             bin_type = container.get("containerDescription", f"Container {i}")
-            collection_datetime = datetime.fromisoformat(collection_date_str)
-
+            try:
+                collection_datetime = datetime.fromisoformat(collection_date_str)
+            except ValueError as exc:
+                # re-raise with a more descriptive error message
+                raise ValueError("Could not parse collection date. Please check the API response.") from exc
 
             # Parse the date - API returns ISO format like "2025-11-25T00:00:00"
             bin_entry = {
