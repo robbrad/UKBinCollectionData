@@ -118,10 +118,11 @@ def fetch_mobile_api(uprn: str) -> dict:
     """
     url = f"{MOBILE_API_BASE}/wastecollections/{uprn}"
 
+    # Perform the HTTP request and surface network-layer errors clearly
     try:
         response = requests.get(url, headers=MOBILE_API_HEADERS, timeout=30)
-    except requests.exceptions.JSONDecodeError as exc:
-        raise ValueError(f"Mobile API returned invalid JSON") from exc
+    except requests.RequestException as exc:
+        raise ValueError("Mobile API request failed") from exc
 
     if response.status_code != 200:
         raise ValueError(
@@ -129,7 +130,11 @@ def fetch_mobile_api(uprn: str) -> dict:
             f"Please check your UPRN is correct."
         )
 
-    return response.json()
+    # Decode JSON and surface parsing errors clearly
+    try:
+        return response.json()
+    except requests.exceptions.JSONDecodeError as exc:
+        raise ValueError("Mobile API returned invalid JSON") from exc
 
 
 class CouncilClass(AbstractGetBinDataClass):
