@@ -199,6 +199,7 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_entry = {
                 "type": bin_type,
                 "collectionDate": collection_datetime.strftime(date_format),
+                "_sort_date": collection_datetime
             }
 
             data["bins"].append(bin_entry)
@@ -210,7 +211,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Sort the bin collections by date
         data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+            key=lambda x: x.pop("_sort_date")
         )
 
         return data
