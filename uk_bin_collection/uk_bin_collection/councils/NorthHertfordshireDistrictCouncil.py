@@ -73,7 +73,6 @@ def lookup_uprn(postcode: str, paon: str) -> str:
     for address in addresses:
         address_line1 = address.get("addressLine1", "").lower()
         address_line2 = address.get("addressLine2", "").lower()
-        full_address = address.get("fullAddress", "").lower()
 
         # Check if paon matches the start of addressLine1 or or addressLine2
         first_parts = [address.split()[0] for address in (address_line1, address_line2) if len(address) > 0]
