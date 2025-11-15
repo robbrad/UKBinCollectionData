@@ -37,14 +37,15 @@ def lookup_uprn(postcode: str, paon: str) -> str:
     Raises:
         ValueError: If no matching address is found or if the API request fails
     """
-    postcode = postcode.strip()
-    paon = paon.strip().lower()
 
     if not postcode:
         raise ValueError("Postcode is required")
 
     if not paon:
         raise ValueError("House number/name (paon) is required")
+
+    postcode = postcode.strip()
+    paon = paon.strip().lower()
 
     # Build the addresses API URL
     url = f"{MOBILE_API_BASE}/addresses?postcode={postcode}"
