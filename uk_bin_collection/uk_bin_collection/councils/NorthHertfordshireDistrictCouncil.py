@@ -17,6 +17,8 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 # Mobile API constants
 MOBILE_API_BASE = "https://apps.cloud9technologies.com/northherts/citizenmobile/mobileapi"
+# This auth header is extracted from the hardcoded value present in the mobile app
+# https://play.google.com/store/apps/details?id=com.cloud9technologies.northhertsd
 MOBILE_API_AUTH = "Basic Y2xvdWQ5OmlkQmNWNGJvcjU="
 MOBILE_API_HEADERS = {
     "Accept": "application/json",
