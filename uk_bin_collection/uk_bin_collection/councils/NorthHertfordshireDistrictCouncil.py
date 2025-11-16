@@ -66,7 +66,10 @@ def lookup_uprn(postcode: str, paon: str) -> str:
             f"Please check your postcode is correct."
         )
 
-    api_response = response.json()
+    try:
+        api_response = response.json()
+    except requests.exceptions.JSONDecodeError as exc:
+        raise ValueError("Addresses API returned invalid JSON") from exc
     addresses = api_response.get("addresses", [])
 
     if not addresses:
