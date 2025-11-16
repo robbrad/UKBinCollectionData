@@ -166,7 +166,7 @@ class CouncilClass(AbstractGetBinDataClass):
         Returns:
             dict: Bin collection data in standard format
         """
-        data = {"bins": []}
+        bins_with_sort_date = []
 
         # Get UPRN either directly or via lookup
 
@@ -228,17 +228,20 @@ class CouncilClass(AbstractGetBinDataClass):
                 "_sort_date": collection_datetime
             }
 
-            data["bins"].append(bin_entry)
+            bins_with_sort_date.append(bin_entry)
 
-        if not data["bins"]:
+        if not bins_with_sort_date:
             raise ValueError(
                 "No valid bin collection data could be extracted from the API response"
             )
 
-        # Sort the bin collections by date
-        data["bins"].sort(
-            key=lambda x: x.pop("_sort_date")
-        )
+        # Sort the bin collections by _sort_date
+        bins_with_sort_date.sort(key=lambda x: x["_sort_date"])
 
-        return data
-
+        # Return the sorted bins, excluding the _sort_date key
+        return {
+            "bins": [
+                {k: v for k, v in b.items() if k != "_sort_date"}
+                for b in bins_with_sort_date
+            ]
+        }
