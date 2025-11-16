@@ -126,7 +126,7 @@ def fetch_mobile_api(uprn: str) -> dict:
         dict: JSON response from the mobile API
 
     Raises:
-        requests.RequestException: If the API request fails
+        ValueError: If the API request fails, the response status is not 200, or the response contains invalid JSON.
     """
     url = f"{MOBILE_API_BASE}/wastecollections/{uprn}"
 
