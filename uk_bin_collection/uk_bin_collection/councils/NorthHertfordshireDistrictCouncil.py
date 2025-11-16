@@ -55,10 +55,12 @@ def lookup_uprn(postcode: str, paon: str) -> str:
     postcode = postcode.strip()
     paon = paon.strip().lower()
 
-    # Build the addresses API URL
-    url = f"{MOBILE_API_BASE}/addresses?postcode={postcode}"
+    url = f"{MOBILE_API_BASE}/addresses"
 
-    response = requests.get(url, headers=MOBILE_API_HEADERS, timeout=30)
+    try:
+        response = requests.get(url, headers=MOBILE_API_HEADERS, timeout=30, params={"postcode": postcode})
+    except requests.RequestException as exc:
+        raise ValueError("Addresses API request failed") from exc
 
     if response.status_code != 200:
         raise ValueError(
