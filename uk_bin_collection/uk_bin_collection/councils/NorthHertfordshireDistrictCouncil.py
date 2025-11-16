@@ -199,8 +199,8 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         # Process all 8 possible containers
-        for i in range(1, MOBILE_API_NUM_CONTAINERS + 1):
-            container_key = f"container{i}CollectionDetails"
+        for container_num in range(1, MOBILE_API_NUM_CONTAINERS + 1):
+            container_key = f"container{container_num}CollectionDetails"
             container = waste_collection_dates.get(container_key)
 
             if not container or not isinstance(container, dict):
@@ -214,7 +214,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
 
             # Extract container description (bin type)
-            bin_type = container.get("containerDescription", f"Container {i}")
+            bin_type = container.get("containerDescription", f"Container {container_num}")
             try:
                 collection_datetime = datetime.fromisoformat(collection_date_str)
             except ValueError:
