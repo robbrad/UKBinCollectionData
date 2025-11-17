@@ -21,9 +21,8 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         params = {
             "type": "JSON",
-            "list": "DomesticBinCollections",
-            "Road": "",
-            "Postcode": user_postcode,
+            "list": "DomesticBinCollections2025on",
+            "Road or Postcode": user_postcode,
         }
 
         response = requests.get(
@@ -36,7 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         if "rows" in bin_data:
-            collection_str = bin_data["rows"][0]["DomesticBinDay"]
+            collection_str = bin_data["rows"][0]["BinCollectionInformation"]
 
             results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4}|today)\s*\(([^)]+)\)', collection_str)
 
@@ -51,16 +50,20 @@ class CouncilClass(AbstractGetBinDataClass):
                         "collectionDate": collection_date.strftime(date_format),
                     }
                     data["bins"].append(dict_data)
-
-                    # Garden waste is also collected on recycling day
-                    if dict_data["type"] == "Recycling":
-                        garden_data = {
-                            "type": "Garden",
-                            "collectionDate": dict_data["collectionDate"],
-                        }
-                        data["bins"].append(garden_data)
             else:
                 raise RuntimeError("Dates not parsed correctly.")
+
+            # Look for garden waste key
+            for key, value in bin_data["rows"][0].items():
+                if key.startswith("GardenWasteBinDay"):
+                    results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4})', value)
+                    collection_date = datetime.strptime(results[0], "%d/%m/%Y")
+                    garden_data = {
+                        "type": "Garden",
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
+                    data["bins"].append(garden_data)
+
         else:
             raise ValueError("Postcode not found on website.")
 
