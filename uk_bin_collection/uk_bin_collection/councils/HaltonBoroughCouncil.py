@@ -35,7 +35,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 f"https://webapp.halton.gov.uk/PublicWebForms/WasteServiceSearchv1.aspx"
             )
 
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
+
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(page)
 
             # If you bang in the house number (or property name) and postcode in the box it should find your property
