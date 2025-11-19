@@ -33,11 +33,11 @@ class CouncilClass(AbstractGetBinDataClass):
         round_collection = round_week.index(round)
 
         if round_collection == 0:
-            bluebrownstartDate = datetime(2024, 10, 21)
-            greengreystartDate = datetime(2024, 10, 28)
+            bluebrownstartDate = datetime(2025, 11, 17)
+            greengreystartDate = datetime(2025, 11, 24)
         else:
-            greengreystartDate = datetime(2024, 10, 21)
-            bluebrownstartDate = datetime(2024, 10, 28)
+            greengreystartDate = datetime(2025, 11, 17)
+            bluebrownstartDate = datetime(2025, 11, 24)
 
         greengrey_dates = get_dates_every_x_days(greengreystartDate, 14, 28)
         bluebrown_dates = get_dates_every_x_days(bluebrownstartDate, 14, 28)
