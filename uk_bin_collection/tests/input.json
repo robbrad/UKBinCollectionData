@@ -1544,13 +1544,12 @@
         "LAD24CD": "E07000203"
     },
     "MidSussexDistrictCouncil": {
-        "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
+        "house_number": "OAKLANDS",
         "postcode": "RH16 1SS",
         "skip_get_url": true,
-        "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.midsussex.gov.uk",
         "wiki_name": "Mid Sussex",
-        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver.",
+        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes.",
         "LAD24CD": "E07000228"
     },
     "MiddlesbroughCouncil": {

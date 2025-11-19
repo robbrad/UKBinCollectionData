@@ -2529,15 +2529,14 @@ Note: Use the House Number field to pass the DAY of the week for your NORMAL col
 
 ### Mid Sussex
 ```commandline
-python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk/waste-recycling/bin-collection/ -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py MidSussexDistrictCouncil https://www.midsussex.gov.uk -s -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
 - `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver.
+Note: Pass the name of the street with the house number parameter, wrapped in double quotes.
 
 ---
 

@@ -1,12 +1,6 @@
 import logging
-import time
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.common.keys import Keys
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -23,146 +17,89 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
         try:
             data = {"bins": []}
-            collections = []
+            bindata = {"bins": []}
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
             check_postcode(user_postcode)
 
-            # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            URI = "https://sms-wrp.whitespacews.com/"
 
-            driver.get("https://www.midsussex.gov.uk/waste-recycling/bin-collection/")
-            wait = WebDriverWait(driver, 60)
+            session = requests.Session()
 
-            try:
-                logging.info("Cookies")
-                cookie_window = wait.until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, '//div[@id="ccc-content"]')
-                    )
-                )
-                time.sleep(2)
-                accept_cookies = WebDriverWait(driver, timeout=10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, '//button[@id="ccc-recommended-settings"]')
-                    )
-                )
-                accept_cookies.send_keys(Keys.ENTER)
-                accept_cookies.click()
-                accept_cookies_close = WebDriverWait(driver, timeout=10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, '//button[@id="ccc-close"]')
-                    )
-                )
-                accept_cookies_close.send_keys(Keys.ENTER)
-                accept_cookies_close.click()
-            except:
-                print(
-                    "Accept cookies banner not found or clickable within the specified time."
-                )
-                pass
+            # get link from first page as has some kind of unique hash
+            r = session.get(
+                URI,
+            )
+            r.raise_for_status()
+            soup = BeautifulSoup(r.text, features="html.parser")
 
-            def click_element(by, value):
-                element = wait.until(EC.element_to_be_clickable((by, value)))
-                driver.execute_script("arguments[0].scrollIntoView();", element)
-                element.click()
-
-            logging.info("Entering postcode")
-            input_element_postcode = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//input[@id="PostCodeStep_strAddressSearch"]')
-                )
+            alink = soup.find(
+                "a",
+                text="View my collections for refuse, gardening, food and recycling",
             )
 
-            input_element_postcode.send_keys(user_postcode)
+            if alink is None:
+                raise Exception("Initial page did not load correctly")
 
-            logging.info("Entering postcode")
+            # greplace 'seq' query string to skip next step
+            nextpageurl = alink["href"].replace("seq=1", "seq=2")
 
-            click_element(By.XPATH, "//button[contains(text(), 'Search')]")
+            data = {
+                "address_name_number": user_paon,
+                "address_postcode": user_postcode,
+            }
 
-            logging.info("Selecting address")
-            dropdown = wait.until(
-                EC.element_to_be_clickable((By.ID, "StrAddressSelect"))
+            # get list of addresses
+            r = session.post(nextpageurl, data)
+            r.raise_for_status()
+
+            soup = BeautifulSoup(r.text, features="html.parser")
+
+            # get first address (if you don't enter enough argument values this won't find the right address)
+            alink = soup.find("div", id="property_list").find("a")
+
+            if alink is None:
+                raise Exception("Address not found")
+
+            nextpageurl = URI + alink["href"]
+
+            # get collection page
+            r = session.get(
+                nextpageurl,
+            )
+            r.raise_for_status()
+            soup = BeautifulSoup(r.text, features="html.parser")
+
+            if soup.find("span", id="waste-hint"):
+                raise Exception("No scheduled services at this address")
+
+            u1s = soup.find("section", id="scheduled-collections").find_all(
+                "ul", class_="displayinlineblock"
             )
 
-            dropdown_options = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//select[@id='StrAddressSelect']/option")
-                )
+            for u1 in u1s:
+                lis = u1.find_all("li", recursive=False)
+
+                date = lis[1].text.replace("\n", "")
+                bin_type = lis[2].text.replace("\n", "")
+
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": datetime.strptime(
+                        date,
+                        "%d/%m/%Y",
+                    ).strftime(date_format),
+                }
+                bindata["bins"].append(dict_data)
+
+            bindata["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
             )
-            dropdownSelect = Select(dropdown)
-            dropdownSelect.select_by_visible_text(str(user_paon))
 
-            click_element(By.XPATH, "//button[contains(text(), 'Select')]")
+            return bindata
 
-            logging.info("Waiting for bin schedule")
-            bin_results = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, f"//strong[contains(text(), '{user_paon}')]")
-                )
-            )
-
-            # Make a BS4 object
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Find the table with bin collection data
-            table = soup.find("table", class_="collDates")
-            if table:
-                rows = table.find_all("tr")[1:]  # Skip the header row
-            else:
-                rows = []
-
-            # Extract the data from the table and format it according to the JSON schema
-            bins = []
-            date_pattern = re.compile(r"(\d{2}) (\w+) (\d{4})")
-
-            for row in rows:
-                cols = row.find_all("td")
-                if len(cols) < 3:
-                    print("Skipping row, not enough columns:", row)
-                    continue  # Skip rows that do not have enough columns
-
-                collection_type = cols[1].text.strip()
-                collection_date = cols[2].text.strip()
-
-                # Convert the collection date to the required format
-                date_match = date_pattern.search(collection_date)
-                if date_match:
-                    day, month, year = date_match.groups()
-                    month_number = {
-                        "January": "01",
-                        "February": "02",
-                        "March": "03",
-                        "April": "04",
-                        "May": "05",
-                        "June": "06",
-                        "July": "07",
-                        "August": "08",
-                        "September": "09",
-                        "October": "10",
-                        "November": "11",
-                        "December": "12",
-                    }.get(month, "00")
-
-                    formatted_date = f"{day}/{month_number}/{year}"
-                    bins.append(
-                        {"type": collection_type, "collectionDate": formatted_date}
-                    )
-                else:
-                    print("Date pattern not found in:", collection_date)
-
-            # Create the final JSON structure
-            bin_data = {"bins": bins}
-            return bin_data
         except Exception as e:
             logging.error(f"An error occurred: {e}")
             raise
-
-        finally:
-            if driver:
-                driver.quit()
