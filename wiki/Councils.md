@@ -141,6 +141,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Halton](#halton)
 - [Harborough](#harborough)
 - [Haringey](#haringey)
+- [Harlow](#harlow)
 - [Harrogate](#harrogate)
 - [Hart](#hart)
 - [Hartlepool](#hartlepool)
@@ -1942,6 +1943,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN, which can be found at `https://wastecollections.haringey.gov.uk/property/{uprn}`.
+
+---
+
+### Harlow
+```commandline
+python collect_data.py HarlowCouncil https://harlow.gov.uk -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
 ---
 
