@@ -2045,10 +2045,10 @@
         "LAD24CD": "E07000176"
     },
     "RushmoorCouncil": {
-        "url": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=100060545034",
-        "wiki_command_url_override": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=XXXXXXXXXX",
+        "url": "https://www.rushmoor.gov.uk",
+        "uprn": "100060545034",
         "wiki_name": "Rushmoor",
-        "wiki_note": "Replace `XXXXXXXXXX` with your UPRN, which you can find using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000092"
     },
     "SalfordCityCouncil": {

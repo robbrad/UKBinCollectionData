@@ -3243,10 +3243,12 @@ Note: Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddr
 
 ### Rushmoor
 ```commandline
-python collect_data.py RushmoorCouncil https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=XXXXXXXXXX
+python collect_data.py RushmoorCouncil https://www.rushmoor.gov.uk -u XXXXXXXX
 ```
+Additional parameters:
+- `-u` - UPRN
 
-Note: Replace `XXXXXXXXXX` with your UPRN, which you can find using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+Note: Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
