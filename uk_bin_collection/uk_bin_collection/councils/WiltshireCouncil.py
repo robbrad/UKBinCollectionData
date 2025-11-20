@@ -54,7 +54,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "sec-ch-ua-platform": '"Windows"',
         }
 
-        collections = []
+        data_bins = {"bins": []}
 
         # For each of the months we defined
         for cal_month in months:
@@ -79,7 +79,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Send it all as a POST
             response = requests.post(
-                "https://ilambassadorformsprod.azurewebsites.net/wastecollectiondays/collectionlist",
+                "https://ilambassadorformsprod.azurewebsites.net/wastecollectiondays/wastecollectioncalendar",
                 cookies=cookies,
                 headers=headers,
                 data=data,
@@ -93,62 +93,28 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(response.text, features="html.parser")
             soup.prettify()
-            # print(soup)
             # Find all the bits of the current calendar that contain an event
-            resultscontainer = soup.find_all("div", {"class": "results-container"})
+            resultscontainer = soup.find_all("div", {"class": "cal-inner"})
 
             for result in resultscontainer:
-                rows = result.find_all(
-                    "div", {"class": "col-12 col-sm-6 col-md-4 col-lg-4 mb-4"}
-                )
-                for row in rows:
-                    cardcollectionday = row.find(
-                        "span", {"class": "card-collection-day"}
-                    )
-                    cardcollectiondate = row.find(
-                        "span", {"class": "card-collection-date"}
-                    )
-                    cardcollectionmonth = row.find(
-                        "span", {"class": "card-collection-month"}
-                    )
-                    bin_type = row.find(
-                        "li", {"class": re.compile(r"collection-type-...$")}
-                    ).text
+                event = result.find("div", {"class": "events-list"})
+                if event:
+                    collectiondate = datetime.strptime(
+                        result.find("span", class_="day-no")["data-cal-date"],
+                        "%Y-%m-%dT%H:%M:%S",
+                    ).strftime(date_format)
+                    collection_type = result.select_one(
+                        ".rc-event-container span"
+                    ).text.strip()
 
-                    collection_date = f"{cardcollectionday.text}{cardcollectiondate.text}{cardcollectionmonth.text}"
-                    bin_date = datetime.strptime(
-                        collection_date,
-                        "%A %d %B %Y",
-                    )
+                    collection_types = collection_type.split(" and ")
 
-                    if bin_date.date() >= datetime.now().date():
-                        # Split the really long type up into two separate bins
-                        if (
-                            bin_type
-                            == "Mixed dry recycling (blue lidded bin) and glass (black box or basket)"
-                        ):
-                            collections.append(
-                                (
-                                    "Mixed dry recycling (blue lidded bin)",
-                                    datetime.strftime(bin_date, date_format),
-                                )
-                            )
-                            collections.append(
-                                (
-                                    "Glass (black box or basket)",
-                                    datetime.strftime(bin_date, date_format),
-                                )
-                            )
-                        else:
-                            collections.append(
-                                (bin_type, datetime.strftime(bin_date, date_format))
-                            )
+                    for type in collection_types:
 
-        data = {"bins": []}
+                        dict_data = {
+                            "type": collectiondate,
+                            "collectionDate": type,
+                        }
+                        data_bins["bins"].append(dict_data)
 
-        # Now there's a list of collections, yeet them into the dictionary for nice JSON
-        for item in collections:
-            dict_data = {"type": item[0], "collectionDate": item[1]}
-            data["bins"].append(dict_data)
-
-        return data
+        return data_bins
