@@ -37,6 +37,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Birmingham](#birmingham)
 - [Blaby](#blaby)
 - [Blackburn with Darwen](#blackburn-with-darwen)
+- [Blackpool](#blackpool)
 - [Blaenau Gwent](#blaenau-gwent)
 - [Bolsover](#bolsover)
 - [Bolton](#bolton)
@@ -665,6 +666,18 @@ python collect_data.py BlackburnCouncil https://www.blaby.gov.uk -s -u XXXXXXXX
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+
+Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
+
+---
+
+### Blackpool
+```commandline
+python collect_data.py BlackpoolCouncil https://www.blackpool.gov.uk/ -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-u` - UPRN
+- `-p` - postcode
 
 Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.
 
