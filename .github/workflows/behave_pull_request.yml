@@ -14,7 +14,7 @@ jobs:
     name: Setup Environment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install Poetry
         run: pipx install poetry==1.8.4
@@ -61,7 +61,7 @@ jobs:
         python-version: [3.12]
         poetry-version: [1.8.4]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v6
         with:
@@ -92,7 +92,7 @@ jobs:
         python-version: [3.12]
         poetry-version: [1.8.4]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v6
         with:
@@ -125,7 +125,7 @@ jobs:
         ports:
           - 4444:4444
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-python@v6
         with:
