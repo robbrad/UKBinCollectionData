@@ -58,8 +58,11 @@ class CouncilClass(AbstractGetBinDataClass):
             .get("rows_data", {})
         )
 
-    def _get_uprn_from_postcode(self, postcode: str, paon: str) -> str:
+    def _get_uprn_from_postcode_and_paon(self, postcode: str, paon: str) -> str:
         """Look up UPRN from postcode and house number/name.
+
+        The function retrieves a list of possible addresses for the given
+        postcode, then searches for a match with the provided PAON.
 
         Args:
             postcode: The postcode to search
@@ -71,6 +74,7 @@ class CouncilClass(AbstractGetBinDataClass):
         Raises:
             ValueError: If no addresses found or no match for the PAON
         """
+
         payload = {
             "formValues": {"Section 1": {"postcode_search": {"value": postcode}}}
         }
@@ -128,7 +132,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
 
             check_postcode(user_postcode)
-            user_uprn = self._get_uprn_from_postcode(user_postcode, user_paon)
+            user_uprn = self._get_uprn_from_postcode_and_paon(user_postcode, user_paon)
 
         check_uprn(user_uprn)
 
