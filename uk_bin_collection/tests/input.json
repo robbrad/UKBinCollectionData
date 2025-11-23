@@ -15,28 +15,28 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "AdurAndWorthingCouncils": {
+        "LAD24CD": "E07000223",
         "url": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=100061878829",
         "wiki_command_url_override": "https://www.adur-worthing.gov.uk/bin-day/?brlu-selected-address=XXXXXXXX",
         "wiki_name": "Adur",
-        "wiki_note": "Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.",
-        "LAD24CD": "E07000223"
+        "wiki_note": "Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
     "AmberValleyBoroughCouncil": {
+        "LAD24CD": "E07000032",
         "uprn": "100030026621",
         "url": "https://ambervalley.gov.uk",
         "wiki_name": "Amber Valley",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000032"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "AngusCouncil": {
-        "uprn": "117053733",
-        "skip_get_url": true,
+        "LAD24CD": "S12000041",
         "postcode": "DD7 7LE",
+        "skip_get_url": true,
+        "uprn": "117053733",
         "url": "https://www.angus.gov.uk/bins_litter_and_recycling/bin_collection_days",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Angus",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN. Requires Selenium",
-        "LAD24CD": "S12000041"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN. Requires Selenium"
     },
     "AntrimAndNewtonabbeyCouncil": {
         "LAD24CD": "N09000001",
@@ -46,22 +46,22 @@
         "wiki_note": "Navigate to [https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule] and search for your street name. Use the URL with the ID to replace XXXXXXXX with your specific ID."
     },
     "ArdsAndNorthDownCouncil": {
+        "LAD24CD": "N09000011",
         "uprn": "187136177",
         "url": "https://www.ardsandnorthdown.gov.uk",
         "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
         "wiki_name": "Ards and North Down",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "N09000011"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "ArgyllandButeCouncil": {
-        "skip_get_url": true,
+        "LAD24CD": "S12000035",
         "postcode": "PA286LJ",
+        "skip_get_url": true,
         "uprn": "000125011723",
         "url": "https://www.argyll-bute.gov.uk/rubbish-and-recycling/household-waste/bin-collection",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Argyll and Bute",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "S12000035"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ArmaghBanbridgeCraigavonCouncil": {
         "LAD24CD": "N09000002",
@@ -72,33 +72,33 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "ArunCouncil": {
+        "LAD24CD": "E07000224",
         "house_number": "1",
         "postcode": "BN16 4DA",
         "skip_get_url": true,
         "url": "https://www1.arun.gov.uk/when-are-my-bins-collected",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Arun",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000224"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver."
     },
     "AshfieldDistrictCouncil": {
+        "LAD24CD": "E07000170",
         "house_number": "1",
         "postcode": "NG16 6RH",
         "url": "https://www.ashfield.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Ashfield",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver",
-        "LAD24CD": "E07000170"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver"
     },
     "AshfordBoroughCouncil": {
+        "LAD24CD": "E07000105",
         "postcode": "TN23 7SP",
         "uprn": "100060777899",
         "url": "https://ashford.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_command_url_override": "https://ashford.gov.uk",
         "wiki_name": "Ashford",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000105"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BCPCouncil": {
         "LAD24CD": "E06000058",
@@ -109,51 +109,51 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BaberghDistrictCouncil": {
+        "LAD24CD": "E07000200",
         "house_number": "Monday",
         "postcode": "Week 1",
         "skip_get_url": true,
         "uprn": "Tuesday",
         "url": "https://www.babergh.gov.uk",
         "wiki_name": "Babergh",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]",
-        "LAD24CD": "E07000200"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]"
     },
     "BarkingDagenham": {
+        "LAD24CD": "E09000002",
         "house_number": "19",
         "postcode": "RM6 6XH",
         "skip_get_url": true,
-        "web_driver": "http://selenium:4444",
         "url": "https://www.lbbd.gov.uk/rubbish-recycling/household-bin-collection/check-your-bin-collection-days",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Barking and Dagenham",
-        "wiki_note": "Use house number and postcode. Requires Selenium.",
-        "LAD24CD": "E09000002"
+        "wiki_note": "Use house number and postcode. Requires Selenium."
     },
     "BarnetCouncil": {
+        "LAD24CD": "E09000003",
         "house_number": "26A",
         "postcode": "EN4 8TB",
         "skip_get_url": true,
         "url": "https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Barnet",
-        "wiki_note": "Follow the instructions [here](https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day) until you get the page listing your address, then copy the entire address text and use that in the house number field. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E09000003"
+        "wiki_note": "Follow the instructions [here](https://www.barnet.gov.uk/recycling-and-waste/bin-collections/find-your-bin-collection-day) until you get the page listing your address, then copy the entire address text and use that in the house number field. This parser requires a Selenium webdriver."
     },
     "BarnsleyMBCouncil": {
+        "LAD24CD": "E08000016",
         "postcode": "S36 9AN",
         "skip_get_url": true,
         "uprn": "2007004502",
         "url": "https://waste.barnsley.gov.uk/ViewCollection/Collections",
         "wiki_name": "Barnsley",
-        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000016"
+        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "BasildonCouncil": {
+        "LAD24CD": "E07000066",
         "skip_get_url": true,
         "uprn": "10013350430",
         "url": "https://mybasildon.powerappsportals.com/check/where_i_live/",
         "wiki_name": "Basildon",
-        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000066"
+        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "BasingstokeCouncil": {
         "LAD24CD": "E07000084",
@@ -164,161 +164,161 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BathAndNorthEastSomersetCouncil": {
+        "LAD24CD": "E06000022",
         "skip_get_url": true,
         "uprn": "100120000855",
         "url": "https://www.bathnes.gov.uk/webforms/waste/collectionday/",
         "wiki_name": "Bath and North East Somerset",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000022"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BedfordBoroughCouncil": {
+        "LAD24CD": "E06000055",
         "skip_get_url": true,
         "uprn": "10024232065",
         "url": "https://www.bedford.gov.uk/bins-and-recycling/household-bins-and-recycling/check-your-bin-day",
         "wiki_name": "Bedford",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000055"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BedfordshireCouncil": {
+        "LAD24CD": "E06000056",
         "postcode": "SG19 2UP",
         "skip_get_url": true,
         "uprn": "10000802040",
         "url": "https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day",
         "wiki_name": "Central Bedfordshire",
-        "wiki_note": "In order to use this parser, you must provide a valid postcode and a UPRN retrieved from the council's website for your specific address.",
-        "LAD24CD": "E06000056"
+        "wiki_note": "In order to use this parser, you must provide a valid postcode and a UPRN retrieved from the council's website for your specific address."
     },
     "BelfastCityCouncil": {
+        "LAD24CD": "N09000003",
         "postcode": "BT10 0GY",
         "skip_get_url": true,
         "uprn": "185086469",
         "url": "https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx",
         "wiki_name": "Belfast",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "N09000003"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BexleyCouncil": {
-        "uprn": "100020196143",
+        "LAD24CD": "E09000004",
         "skip_get_url": true,
+        "uprn": "100020196143",
         "url": "https://waste.bexley.gov.uk/waste",
         "wiki_name": "Bexley",
-        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it.",
-        "LAD24CD": "E09000004"
+        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it."
     },
     "BirminghamCityCouncil": {
+        "LAD24CD": "E08000025",
         "postcode": "B5 7XE",
         "uprn": "100070445256",
         "url": "https://www.birmingham.gov.uk/xfp/form/619",
         "wiki_name": "Birmingham",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E08000025"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BlabyDistrictCouncil": {
+        "LAD24CD": "E07000129",
         "uprn": "100030401782",
         "url": "https://www.blaby.gov.uk",
         "wiki_command_url_override": "https://www.blaby.gov.uk",
         "wiki_name": "Blaby",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000129"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BlackburnCouncil": {
-        "url": "https://www.blaby.gov.uk",
         "LAD24CD": "E06000008",
         "skip_get_url": true,
         "uprn": "100010733027",
+        "url": "https://www.blaby.gov.uk",
         "wiki_name": "Blackburn with Darwen",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BlaenauGwentCountyBoroughCouncil": {
+        "LAD24CD": "W06000019",
         "postcode": "NP23 7TE",
         "skip_get_url": false,
         "uprn": "100100471367",
         "url": "https://www.blaenau-gwent.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Blaenau Gwent",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "W06000019"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BolsoverCouncil": {
+        "LAD24CD": "E07000033",
         "uprn": "100030066827",
         "url": "https://bolsover.gov.uk",
         "wiki_name": "Bolsover",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000033"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BoltonCouncil": {
+        "LAD24CD": "E08000001",
         "postcode": "BL1 5PQ",
         "skip_get_url": true,
         "uprn": "100010886936",
         "url": "https://web.bolton.gov.uk/bins.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Bolton",
-        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields.",
-        "LAD24CD": "E08000001"
+        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields."
     },
     "BostonBoroughCouncil": {
+        "LAD24CD": "E07000136",
         "house_number": "CEDAR",
         "postcode": "PE20 1AY",
         "skip_get_url": true,
         "url": "https://www.boston.gov.uk/findwastecollections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Boston",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000136"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "BracknellForestCouncil": {
+        "LAD24CD": "E06000036",
         "house_number": "57",
         "paon": "57",
         "postcode": "GU47 9BS",
         "skip_get_url": true,
         "url": "https://selfservice.mybfc.bracknell-forest.gov.uk/w/webpage/waste-collection-days",
         "wiki_name": "Bracknell Forest",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "E06000036"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "BradfordMDC": {
+        "LAD24CD": "E08000032",
         "custom_component_show_url_field": false,
         "skip_get_url": true,
         "uprn": "100051146921",
         "url": "https://onlineforms.bradford.gov.uk/ufs/collectiondates.eb",
         "wiki_name": "Bradford",
-        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Postcode isn't parsed by this script, but you can pass it in double quotes.",
-        "LAD24CD": "E08000032"
+        "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Postcode isn't parsed by this script, but you can pass it in double quotes."
     },
     "BraintreeDistrictCouncil": {
+        "LAD24CD": "E07000067",
         "postcode": "CO5 9BD",
         "skip_get_url": true,
         "uprn": "10006930172",
         "url": "https://www.braintree.gov.uk/",
         "wiki_name": "Braintree",
-        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000067"
+        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "BrecklandCouncil": {
+        "LAD24CD": "E07000143",
         "uprn": "100091495479",
         "url": "https://www.breckland.gov.uk",
         "wiki_command_url_override": "https://www.breckland.gov.uk",
         "wiki_name": "Breckland",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000143"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BrentCouncil": {
+        "LAD24CD": "E09000005",
         "house_number": "25",
         "postcode": "HA3 0QU",
         "url": "https://recyclingservices.brent.gov.uk/waste",
         "wiki_name": "Brent",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "E09000005"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "BrightonandHoveCityCouncil": {
+        "LAD24CD": "E06000043",
         "house_number": "44",
         "postcode": "BN1 8NE",
         "skip_get_url": true,
         "url": "https://enviroservices.brighton-hove.gov.uk/link/collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Brighton and Hove",
-        "wiki_note": "Use house number and postcode. Requires Selenium",
-        "LAD24CD": "E06000043"
+        "wiki_note": "Use house number and postcode. Requires Selenium"
     },
     "BristolCityCouncil": {
         "LAD24CD": "E06000023",
@@ -329,218 +329,219 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BroadlandDistrictCouncil": {
-        "skip_get_url": true,
+        "LAD24CD": "E07000144",
         "house_number": "1",
         "postcode": "NR10 3FD",
+        "skip_get_url": true,
         "url": "https://area.southnorfolkandbroadland.gov.uk/FindAddress",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Broadland",
-        "wiki_note": "Use house number and postcode. Requires Selenium.",
-        "LAD24CD": "E07000144"
+        "wiki_note": "Use house number and postcode. Requires Selenium."
     },
     "BromleyBoroughCouncil": {
+        "LAD24CD": "E09000006",
         "url": "https://recyclingservices.bromley.gov.uk/waste/6087017",
         "web_driver": "http://selenium:4444",
         "wiki_command_url_override": "https://recyclingservices.bromley.gov.uk/waste/XXXXXXX",
         "wiki_name": "Bromley",
-        "wiki_note": "Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command.",
-        "LAD24CD": "E09000006"
+        "wiki_note": "Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the \"Your bin days\" page then copy the URL and replace the URL in the command."
     },
     "BromsgroveDistrictCouncil": {
+        "LAD24CD": "E07000234",
         "uprn": "100120584652",
         "url": "https://www.bromsgrove.gov.uk",
         "wiki_command_url_override": "https://www.bromsgrove.gov.uk",
         "wiki_name": "Bromsgrove",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000234"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BroxbourneCouncil": {
+        "LAD24CD": "E07000095",
         "postcode": "EN8 7FL",
         "uprn": "148048608",
         "url": "https://www.broxbourne.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Broxbourne",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000095"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BroxtoweBoroughCouncil": {
+        "LAD24CD": "E07000172",
         "postcode": "NG16 2LY",
         "skip_get_url": true,
         "uprn": "100031325997",
         "url": "https://www.broxtowe.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Broxtowe",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000172"
+        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "BuckinghamshireCouncil": {
+        "LAD24CD": "E06000060",
         "uprn": "100081093078",
         "url": "https://www.buckinghamshire.gov.uk/waste-and-recycling/find-out-when-its-your-bin-collection/",
         "wiki_name": "Buckinghamshire",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000060"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "BurnleyBoroughCouncil": {
+        "LAD24CD": "E07000117",
         "uprn": "100010347165",
         "url": "https://www.burnley.gov.uk",
         "wiki_name": "Burnley",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000117"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "BuryCouncil": {
+        "LAD24CD": "E08000002",
         "house_number": "3",
         "postcode": "M26 3XY",
         "skip_get_url": true,
         "url": "https://www.bury.gov.uk/waste-and-recycling/bin-collection-days-and-alerts",
         "wiki_name": "Bury",
-        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes.",
-        "LAD24CD": "E08000002"
+        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
     },
     "CalderdaleCouncil": {
+        "LAD24CD": "E08000033",
         "postcode": "OL14 7EX",
         "skip_get_url": true,
         "uprn": "010035034598",
         "url": "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Calderdale",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000033"
+        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "CambridgeCityCouncil": {
+        "LAD24CD": "E07000008",
         "uprn": "200004159750",
         "url": "https://www.cambridge.gov.uk/",
         "wiki_name": "Cambridge",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000008"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "CannockChaseDistrictCouncil": {
+        "LAD24CD": "E07000192",
         "postcode": "WS15 1JA",
         "skip_get_url": true,
         "uprn": "200003095389",
         "url": "https://www.cannockchasedc.gov.uk/",
         "wiki_name": "Cannock Chase",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000192"
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "CanterburyCityCouncil": {
+        "LAD24CD": "E07000106",
         "uprn": "10094583181",
         "url": "https://www.canterbury.gov.uk",
         "wiki_command_url_override": "https://www.canterbury.gov.uk",
         "wiki_name": "Canterbury",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000106"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "CardiffCouncil": {
+        "LAD24CD": "W06000015",
         "skip_get_url": true,
         "uprn": "100100112419",
         "url": "https://www.gov.uk",
         "wiki_name": "Cardiff",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "W06000015"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "CarmarthenshireCountyCouncil": {
+        "LAD24CD": "W06000010",
         "uprn": "10004859302",
         "url": "https://www.carmarthenshire.gov.wales",
         "wiki_command_url_override": "https://www.carmarthenshire.gov.wales",
         "wiki_name": "Carmarthenshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "W06000010"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "CastlepointDistrictCouncil": {
+        "LAD24CD": "E07000069",
         "skip_get_url": true,
         "uprn": "4525",
         "url": "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar",
         "wiki_name": "Castle Point",
-        "wiki_note": "For this council, 'uprn' is actually a 4-digit code for your street. Go [here](https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar) and inspect the source of the dropdown box to find the 4-digit number for your street.",
-        "LAD24CD": "E07000069"
+        "wiki_note": "For this council, 'uprn' is actually a 4-digit code for your street. Go [here](https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar) and inspect the source of the dropdown box to find the 4-digit number for your street."
     },
     "CeredigionCountyCouncil": {
+        "LAD24CD": "W06000008",
         "house_number": "BLAEN CWMMAGWR, TRISANT, CEREDIGION, SY23 4RQ",
         "postcode": "SY23 4RQ",
         "url": "https://www.ceredigion.gov.uk/resident/bins-recycling/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Ceredigion",
-        "wiki_note": "House Number is the full address as it appears on the drop-down on the site when you search by postcode. This parser requires a Selenium webdriver.",
-        "LAD24CD": "W06000008"
+        "wiki_note": "House Number is the full address as it appears on the drop-down on the site when you search by postcode. This parser requires a Selenium webdriver."
     },
     "CharnwoodBoroughCouncil": {
-        "uprn": "100030446438",
+        "LAD24CD": "E07000130",
         "skip_get_url": true,
+        "uprn": "100030446438",
         "url": "https://www.charnwood.gov.uk/pages/waste_collections_calendars",
         "wiki_name": "Charnwood",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000130"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "ChelmsfordCityCouncil": {
+        "LAD24CD": "E07000070",
         "house_number": "1 Celeborn Street, South Woodham Ferrers, Chelmsford, CM3 7AE",
         "postcode": "CM3 7AE",
         "url": "https://www.chelmsford.gov.uk/myhome/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Chelmsford",
-        "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your address, then copy the entire address text and use that in the house number field.",
-        "LAD24CD": "E07000070"
+        "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your address, then copy the entire address text and use that in the house number field."
     },
     "CheltenhamBoroughCouncil": {
+        "LAD24CD": "E07000078",
         "postcode": "GL51 3NA",
         "skip_get_url": true,
         "uprn": "100120372027",
         "url": "https://www.cheltenham.gov.uk",
         "wiki_name": "Cheltenham",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000078"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "CherwellDistrictCouncil": {
+        "LAD24CD": "E07000177",
         "uprn": "100121292407",
         "url": "https://www.cherwell.gov.uk",
         "wiki_name": "Cherwell",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000177"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "CheshireEastCouncil": {
+        "LAD24CD": "E06000049",
         "skip_get_url": true,
         "uprn": "100012830647",
         "url": "https://online.cheshireeast.gov.uk/mycollectionday",
         "wiki_name": "Cheshire East",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E06000049"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "CheshireWestAndChesterCouncil": {
+        "LAD24CD": "E06000050",
         "skip_get_url": true,
         "uprn": "100012346655",
         "url": "https://my.cheshirewestandchester.gov.uk",
         "wiki_name": "Cheshire West and Chester",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000050"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ChesterfieldBoroughCouncil": {
+        "LAD24CD": "E07000034",
         "skip_get_url": true,
         "uprn": "74008234",
         "url": "https://www.chesterfield.gov.uk",
         "wiki_name": "Chesterfield",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000034"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ChichesterDistrictCouncil": {
+        "LAD24CD": "E07000225",
         "house_number": "7",
         "postcode": "RH14 0JT",
         "skip_get_url": true,
         "url": "https://www.chichester.gov.uk/checkyourbinday",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Chichester",
-        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday).",
-        "LAD24CD": "E07000225"
+        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday)."
     },
     "ChorleyCouncil": {
+        "LAD24CD": "E07000118",
         "postcode": "PR6 7PG",
         "skip_get_url": true,
         "uprn": "100010382247",
         "url": "https://myaccount.chorley.gov.uk/wastecollections.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Chorley",
-        "wiki_note": "Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000118"
+        "wiki_note": "Chorley needs to be passed both a Postcode & UPRN to work. Find this on [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ColchesterCityCouncil": {
+        "LAD24CD": "E07000071",
         "house_number": "29",
         "paon": "29",
         "postcode": "CO2 8UN",
@@ -548,15 +549,14 @@
         "url": "https://www.colchester.gov.uk/your-recycling-calendar",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Colchester",
-        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes.",
-        "LAD24CD": "E07000071"
+        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes."
     },
     "ConwyCountyBorough": {
+        "LAD24CD": "W06000003",
         "uprn": "100100429249",
         "url": "https://www.conwy.gov.uk",
         "wiki_name": "Conwy",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "W06000003"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "CopelandBoroughCouncil": {
         "LAD24CD": "E07000028",
@@ -566,159 +566,159 @@
         "wiki_note": "*****This has now been replaced by Cumberland Council****"
     },
     "CornwallCouncil": {
+        "LAD24CD": "E06000052",
         "skip_get_url": true,
         "uprn": "100040128734",
         "url": "https://www.cornwall.gov.uk/my-area/",
         "wiki_name": "Cornwall",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E06000052"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "CotswoldDistrictCouncil": {
+        "LAD24CD": "E07000079",
         "house_number": "19 SUMMERS WAY, MORETON-IN-MARSH, GL56 0GB",
         "postcode": "GL56 0GB",
         "skip_get_url": true,
         "url": "https://community.cotswold.gov.uk/s/waste-collection-enquiry",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Cotswold",
-        "wiki_note": "Pass the full address in the house number and postcode in",
-        "LAD24CD": "E07000079"
+        "wiki_note": "Pass the full address in the house number and postcode in"
     },
     "CoventryCityCouncil": {
+        "LAD24CD": "E08000026",
         "url": "https://www.coventry.gov.uk/directory-record/62310/abberton-way-",
         "wiki_command_url_override": "https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX",
         "wiki_name": "Coventry",
-        "wiki_note": "Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command.",
-        "LAD24CD": "E08000026"
+        "wiki_note": "Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command."
     },
     "CrawleyBoroughCouncil": {
+        "LAD24CD": "E07000226",
         "house_number": "9701076",
         "skip_get_url": true,
         "uprn": "100061785321",
         "url": "https://my.crawley.gov.uk/",
         "wiki_name": "Crawley",
-        "wiki_note": "Crawley needs to be passed both a UPRN and a USRN to work. Find these on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map).",
-        "LAD24CD": "E07000226"
+        "wiki_note": "Crawley needs to be passed both a UPRN and a USRN to work. Find these on [FindMyAddress](https://www.findmyaddress.co.uk/search) or [FindMyStreet](https://www.findmystreet.co.uk/map)."
     },
     "CroydonCouncil": {
+        "LAD24CD": "E09000008",
         "house_number": "13",
         "postcode": "SE25 5DW",
         "skip_get_url": true,
         "url": "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Croydon",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E09000008"
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "CumberlandAllerdaleCouncil": {
+        "LAD24CD": "E06000063",
         "house_number": "2",
         "postcode": "CA13 0DE",
         "url": "https://www.allerdale.gov.uk",
         "wiki_name": "Cumberland",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "E06000063"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "CumberlandCouncil": {
+        "LAD24CD": "E06000063",
         "postcode": "CA6 5PH",
         "uprn": "10009457328",
         "url": "https://waste.cumberland.gov.uk/renderform?t=25&k=E43CEB1FB59F859833EF2D52B16F3F4EBE1CAB6A",
         "wiki_name": "Cumberland",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E06000063"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "DacorumBoroughCouncil": {
+        "LAD24CD": "E07000096",
         "house_number": "13",
         "postcode": "HP3 9JY",
         "skip_get_url": true,
         "url": "https://webapps.dacorum.gov.uk/bincollections/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Dacorum",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000096"
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "DarlingtonBoroughCouncil": {
+        "LAD24CD": "E06000005",
         "uprn": "10003076924",
         "url": "https://www.darlington.gov.uk/bins-waste-and-recycling/collection-day-lookup/",
         "wiki_name": "Darlington Borough Council",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E06000005"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "DartfordBoroughCouncil": {
+        "LAD24CD": "E07000107",
+        "skip_get_url": true,
         "uprn": "100060861698",
         "url": "https://www.dartford.gov.uk/waste-recycling/collection-day",
-        "skip_get_url": true,
         "wiki_name": "Dartford",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000107"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "DenbighshireCouncil": {
+        "LAD24CD": "W06000004",
         "uprn": "200004299351",
         "url": "https://www.denbighshire.gov.uk/",
         "wiki_name": "Denbighshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "W06000004"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "DerbyCityCouncil": {
+        "LAD24CD": "E06000015",
         "uprn": "10010684240",
         "url": "https://www.derby.gov.uk",
         "wiki_name": "Derby",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000015"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "DerbyshireDalesDistrictCouncil": {
+        "LAD24CD": "E07000035",
         "postcode": "DE4 3AS",
         "skip_get_url": true,
         "uprn": "10070102161",
         "url": "https://www.derbyshiredales.gov.uk/",
         "wiki_name": "Derbyshire Dales",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000035"
+        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "DoncasterCouncil": {
+        "LAD24CD": "E08000017",
         "skip_get_url": true,
         "uprn": "100050768956",
         "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
         "wiki_name": "Doncaster",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000017"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "DorsetCouncil": {
+        "LAD24CD": "E06000059",
         "skip_get_url": true,
         "uprn": "100040711049",
         "url": "https://www.dorsetcouncil.gov.uk/",
         "wiki_name": "Dorset Council",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000059"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "DoverDistrictCouncil": {
+        "LAD24CD": "E07000108",
+        "skip_get_url": true,
         "uprn": "100060908340",
         "url": "https://collections.dover.gov.uk/property",
-        "skip_get_url": true,
         "wiki_name": "Dover",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000108"
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "DudleyCouncil": {
+        "LAD24CD": "E08000027",
         "uprn": "90014244",
         "url": "https://my.dudley.gov.uk",
         "wiki_command_url_override": "https://my.dudley.gov.uk",
         "wiki_name": "Dudley",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E08000027"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "DumfriesandGallowayCouncil": {
-        "uprn": "137034556",
+        "LAD24CD": "S12000006",
         "skip_get_url": true,
+        "uprn": "137034556",
         "url": "https://www.dumfriesandgalloway.gov.uk",
         "wiki_name": "Dumfries and Galloway Council",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000006"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "DundeeCityCouncil": {
+        "LAD24CD": "S12000042",
         "uprn": "9059043390",
         "url": "https://www.dundeecity.gov.uk/",
         "wiki_name": "Dundee City",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000042"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "DurhamCouncil": {
         "LAD24CD": "E06000047",
@@ -729,51 +729,43 @@
         "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EalingCouncil": {
+        "LAD24CD": "E09000009",
         "skip_get_url": true,
         "uprn": "12073883",
         "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
         "wiki_name": "Ealing",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E09000009"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastAyrshireCouncil": {
+        "LAD24CD": "S12000008",
         "uprn": "127074727",
         "url": "https://www.east-ayrshire.gov.uk",
         "wiki_command_url_override": "https://www.east-ayrshire.gov.uk",
         "wiki_name": "East Ayrshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000008"
-    },
-    "EastbourneBoroughCouncil": {
-        "uprn": "100060011258",
-        "url": "https://www.lewes-eastbourne.gov.uk/article/1158/When-is-my-bin-collection-day",
-        "skip_get_url": true,
-        "wiki_name": "Eastbourne",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000061"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "EastCambridgeshireCouncil": {
+        "LAD24CD": "E07000009",
         "skip_get_url": true,
         "uprn": "10002597178",
         "url": "https://www.eastcambs.gov.uk/",
         "wiki_name": "East Cambridgeshire",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000009"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastDevonDC": {
+        "LAD24CD": "E07000040",
+        "skip_get_url": true,
         "uprn": "010090909915",
         "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/",
-        "skip_get_url": true,
         "wiki_name": "East Devon",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000040"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastDunbartonshireCouncil": {
+        "LAD24CD": "S12000045",
         "uprn": "132027197",
         "url": "https://www.eastdunbarton.gov.uk/",
         "wiki_name": "East Dunbartonshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000045"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "EastHertsCouncil": {
         "LAD24CD": "E07000097",
@@ -784,33 +776,33 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastLindseyDistrictCouncil": {
+        "LAD24CD": "E07000137",
         "house_number": "1",
         "postcode": "PE22 0YD",
         "skip_get_url": true,
         "url": "https://www.e-lindsey.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Lindsey",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000137"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "EastLothianCouncil": {
+        "LAD24CD": "S12000010",
         "house_number": "Flat 1",
         "postcode": "EH21 6QA",
         "skip_get_url": true,
         "url": "https://eastlothian.gov.uk",
         "wiki_name": "East Lothian",
-        "wiki_note": "Pass the house number and postcode in their respective parameters",
-        "LAD24CD": "S12000010"
+        "wiki_note": "Pass the house number and postcode in their respective parameters"
     },
     "EastRenfrewshireCouncil": {
+        "LAD24CD": "S12000011",
         "house_number": "23",
         "postcode": "G46 6RG",
         "skip_get_url": true,
         "url": "https://eastrenfrewshire.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Renfrewshire",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "S12000011"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "EastRidingCouncil": {
         "LAD24CD": "E06000011",
@@ -823,30 +815,38 @@
         "wiki_note": "Put the full address as it displays on the council website dropdown when you do the check manually."
     },
     "EastStaffordshireBoroughCouncil": {
+        "LAD24CD": "E07000193",
         "url": "https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/68382",
         "wiki_command_url_override": "https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates/XXXXX",
         "wiki_name": "East Staffordshire",
-        "wiki_note": "Replace `XXXXX` with your property's ID when selecting from https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates.",
-        "LAD24CD": "E07000193"
+        "wiki_note": "Replace `XXXXX` with your property's ID when selecting from https://www.eaststaffsbc.gov.uk/bins-rubbish-recycling/collection-dates."
     },
     "EastSuffolkCouncil": {
+        "LAD24CD": "E07000244",
         "postcode": "IP11 9FJ",
         "skip_get_url": true,
         "uprn": "10093544720",
         "url": "https://my.eastsuffolk.gov.uk/service/Bin_collection_dates_finder",
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Suffolk",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000244"
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver."
+    },
+    "EastbourneBoroughCouncil": {
+        "LAD24CD": "E07000061",
+        "skip_get_url": true,
+        "uprn": "100060011258",
+        "url": "https://www.lewes-eastbourne.gov.uk/article/1158/When-is-my-bin-collection-day",
+        "wiki_name": "Eastbourne",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "EastleighBoroughCouncil": {
+        "LAD24CD": "E07000086",
         "skip_get_url": true,
         "uprn": "100060303535",
         "url": "https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn=",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Eastleigh",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000086"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EdinburghCityCouncil": {
         "LAD24CD": "S12000036",
@@ -858,22 +858,22 @@
         "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. Monday/Tuesday/Wednesday/Thursday/Friday. Use the 'postcode' field to pass the WEEK for your collection. [Week 1/Week 2]"
     },
     "ElmbridgeBoroughCouncil": {
+        "LAD24CD": "E07000207",
         "uprn": "10013119164",
         "url": "https://www.elmbridge.gov.uk",
         "wiki_command_url_override": "https://www.elmbridge.gov.uk",
         "wiki_name": "Elmbridge",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000207"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "EnfieldCouncil": {
+        "LAD24CD": "E09000010",
         "house_number": "111",
         "postcode": "N13 5AJ",
         "skip_get_url": true,
         "url": "https://www.enfield.gov.uk/services/rubbish-and-recycling/find-my-collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Enfield",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E09000010"
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "EnvironmentFirst": {
         "url": "https://environmentfirst.co.uk/house.php?uprn=100060055444",
@@ -882,84 +882,84 @@
         "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne. Replace the XXXXXXXXXX with the UPRN of your property\u2014you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
     },
     "EppingForestDistrictCouncil": {
+        "LAD24CD": "E07000072",
         "postcode": "IG9 6EP",
-        "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
         "skip_get_url": true,
+        "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Epping Forest",
-        "wiki_note": "Add your postcode.",
-        "LAD24CD": "E07000072"
+        "wiki_note": "Add your postcode."
     },
     "EpsomandEwellBoroughCouncil": {
+        "LAD24CD": "E07000208",
         "uprn": "100061349083",
         "url": "https://www.epsom-ewell.gov.uk",
         "wiki_name": "Epsom and Ewell",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000208"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "ErewashBoroughCouncil": {
+        "LAD24CD": "E07000036",
         "skip_get_url": true,
         "uprn": "10003582028",
         "url": "https://www.erewash.gov.uk",
         "wiki_name": "Erewash",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000036"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ExeterCityCouncil": {
+        "LAD24CD": "E07000041",
         "uprn": "100040212270",
         "url": "https://www.exeter.gov.uk",
         "wiki_name": "Exeter",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000041"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "FalkirkCouncil": {
+        "LAD24CD": "S12000014",
         "uprn": "136065818",
         "url": "https://www.falkirk.gov.uk",
         "wiki_command_url_override": "https://www.falkirk.gov.uk",
         "wiki_name": "Falkirk",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000014"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "FarehamBoroughCouncil": {
+        "LAD24CD": "E07000087",
         "postcode": "PO14 4NR",
         "skip_get_url": true,
         "url": "https://www.fareham.gov.uk/internetlookups/search_data.aspx?type=JSON&list=DomesticBinCollections&Road=&Postcode=PO14%204NR",
         "wiki_name": "Fareham",
-        "wiki_note": "Pass the postcode in the postcode parameter, wrapped in double quotes.",
-        "LAD24CD": "E07000087"
+        "wiki_note": "Pass the postcode in the postcode parameter, wrapped in double quotes."
     },
     "FenlandDistrictCouncil": {
+        "LAD24CD": "E07000010",
         "skip_get_url": true,
         "uprn": "200002981143",
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000010"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "FermanaghOmaghDistrictCouncil": {
+        "LAD24CD": "N09000006",
         "house_number": "20",
         "postcode": "BT74 6DQ",
         "skip_get_url": true,
         "url": "https://www.fermanaghomagh.com/services/environment-and-waste/waste-collection-calendar/",
         "wiki_name": "Fermanagh and Omagh",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "N09000006"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "FifeCouncil": {
+        "LAD24CD": "S12000047",
         "uprn": "320203521",
         "url": "https://www.fife.gov.uk",
         "wiki_command_url_override": "https://www.fife.gov.uk",
         "wiki_name": "Fife",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000047"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "FlintshireCountyCouncil": {
+        "LAD24CD": "W06000005",
         "uprn": "100100213710",
         "url": "https://digital.flintshire.gov.uk",
         "wiki_command_url_override": "https://digital.flintshire.gov.uk",
         "wiki_name": "Flintshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "W06000005"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "FolkstoneandHytheDistrictCouncil": {
         "LAD24CD": "E07000112",
@@ -970,50 +970,51 @@
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "ForestOfDeanDistrictCouncil": {
+        "LAD24CD": "E07000080",
         "house_number": "ELMOGAL, PARKEND ROAD, BREAM, LYDNEY",
         "postcode": "GL15 6JT",
         "skip_get_url": true,
         "url": "https://community.fdean.gov.uk/s/waste-collection-enquiry",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Forest of Dean",
-        "wiki_note": "Pass the full address in the house number and postcode parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000080"
+        "wiki_note": "Pass the full address in the house number and postcode parameters. This parser requires a Selenium webdriver."
     },
     "FyldeCouncil": {
+        "LAD24CD": "E07000119",
         "uprn": "100010402452",
         "url": "https://www.fylde.gov.uk",
         "wiki_command_url_override": "https://www.fylde.gov.uk",
         "wiki_name": "Fylde",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000119"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "GatesheadCouncil": {
+        "LAD24CD": "E08000037",
         "house_number": "Bracken Cottage",
         "postcode": "NE16 5LQ",
         "skip_get_url": true,
         "url": "https://www.gateshead.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Gateshead",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E08000037"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "GedlingBoroughCouncil": {
+        "LAD24CD": "E07000173",
         "house_number": "Friday G4, Friday J",
         "skip_get_url": true,
         "url": "https://www.gedling.gov.uk/",
         "wiki_name": "Gedling",
-        "wiki_note": "Use [this site](https://www.gbcbincalendars.co.uk/) to find the collections for your address. Use the `-n` parameter to add them in a comma-separated list inside quotes, such as: 'Friday G4, Friday J'.",
-        "LAD24CD": "E07000173"
+        "wiki_note": "Use [this site](https://www.gbcbincalendars.co.uk/) to find the collections for your address. Use the `-n` parameter to add them in a comma-separated list inside quotes, such as: 'Friday G4, Friday J'."
     },
     "GlasgowCityCouncil": {
+        "LAD24CD": "S12000049",
+        "skip_get_url": true,
         "uprn": "906700034497",
         "url": "https://onlineservices.glasgow.gov.uk/forms/refuseandrecyclingcalendar/AddressSearch.aspx",
-        "skip_get_url": true,
         "wiki_name": "Glasgow City",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000049"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "GloucesterCityCouncil": {
+        "LAD24CD": "E07000081",
         "house_number": "111",
         "postcode": "GL2 0RR",
         "skip_get_url": true,
@@ -1021,13 +1022,9 @@
         "url": "https://gloucester-self.achieveservice.com/service/Bins___Check_your_bin_day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Gloucester",
-        "wiki_note": "Pass the house number, postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000081"
+        "wiki_note": "Pass the house number, postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
     },
     "GooglePublicCalendarCouncil": {
-        "url": "https://calendar.google.com/calendar/ical/0d775884b4db6a7bae5204f06dae113c1a36e505b25991ebc27c6bd42edf5b5e%40group.calendar.google.com/public/basic.ics",
-        "wiki_name": "Google Calendar (Public)",
-        "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU. Councils that currently need this are Trafford.",
         "supported_councils": [
             "Trafford",
             "Clackmannanshire",
@@ -1059,76 +1056,79 @@
             "S12000045",
             "W06000020",
             "E07000122"
-        ]
+        ],
+        "url": "https://calendar.google.com/calendar/ical/0d775884b4db6a7bae5204f06dae113c1a36e505b25991ebc27c6bd42edf5b5e%40group.calendar.google.com/public/basic.ics",
+        "wiki_name": "Google Calendar (Public)",
+        "wiki_note": "The URL should be the public ics file URL for the public Google calendar. See https://support.google.com/calendar/answer/37083?sjid=7202815583021446882-EU. Councils that currently need this are Trafford."
     },
     "GraveshamBoroughCouncil": {
+        "LAD24CD": "E07000109",
         "skip_get_url": true,
         "uprn": "100060927046",
         "url": "https://www.gravesham.gov.uk",
         "wiki_name": "Gravesham",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000109"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "GreatYarmouthBoroughCouncil": {
+        "LAD24CD": "E07000145",
         "postcode": "NR31 7EB",
         "skip_get_url": true,
         "uprn": "100090834792",
         "url": "https://myaccount.great-yarmouth.gov.uk/article/6456/Find-my-waste-collection-days",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Great Yarmouth",
-        "wiki_note": "Pass the postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000145"
+        "wiki_note": "Pass the postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
     },
     "GuildfordCouncil": {
+        "LAD24CD": "E07000209",
         "house_number": "THE LODGE",
         "postcode": "GU3 1AH",
         "skip_get_url": true,
         "url": "https://my.guildford.gov.uk/customers/s/view-bin-collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Guildford",
-        "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7 AM; else the date will be in 'previousCollectionDate'.",
-        "LAD24CD": "E07000209"
+        "wiki_note": "If the bin day is 'today' then the collectionDate will only show today's date if before 7 AM; else the date will be in 'previousCollectionDate'."
     },
     "GwyneddCouncil": {
+        "LAD24CD": "W06000002",
         "uprn": "10070350463",
         "url": "https://diogel.gwynedd.llyw.cymru",
         "wiki_name": "Gwynedd",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "W06000002"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "HackneyCouncil": {
+        "LAD24CD": "E09000012",
         "house_number": "101",
         "postcode": "N16 9AS",
         "url": "https://www.hackney.gov.uk",
         "wiki_name": "Hackney",
-        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes.",
-        "LAD24CD": "E09000012"
+        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
     },
     "HaltonBoroughCouncil": {
+        "LAD24CD": "E06000006",
         "house_number": "12",
         "postcode": "WA7 4HA",
         "skip_get_url": true,
         "url": "https://webapp.halton.gov.uk/PublicWebForms/WasteServiceSearchv1.aspx#collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Halton",
-        "wiki_note": "Pass the house number and postcode. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E06000006"
+        "wiki_note": "Pass the house number and postcode. This parser requires a Selenium webdriver."
     },
     "HarboroughDistrictCouncil": {
+        "LAD24CD": "E07000131",
         "uprn": "100030489072",
         "url": "https://www.harborough.gov.uk",
         "wiki_command_url_override": "https://www.harborough.gov.uk",
         "wiki_name": "Harborough",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000131"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "HaringeyCouncil": {
+        "LAD24CD": "E09000014",
         "skip_get_url": true,
         "uprn": "100021203052",
         "url": "https://wastecollections.haringey.gov.uk/property",
         "wiki_name": "Haringey",
-        "wiki_note": "Pass the UPRN, which can be found at `https://wastecollections.haringey.gov.uk/property/{uprn}`.",
-        "LAD24CD": "E09000014"
+        "wiki_note": "Pass the UPRN, which can be found at `https://wastecollections.haringey.gov.uk/property/{uprn}`."
     },
     "HarrogateBoroughCouncil": {
         "LAD24CD": "E07000165",
@@ -1139,84 +1139,84 @@
         "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
     },
     "HartDistrictCouncil": {
+        "LAD24CD": "E07000089",
         "skip_get_url": true,
         "uprn": "100062349291",
         "url": "https://www.hart.gov.uk/",
         "wiki_name": "Hart",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000089"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "HartlepoolBoroughCouncil": {
+        "LAD24CD": "E06000001",
         "uprn": "100110019551",
         "url": "https://www.hartlepool.gov.uk",
         "wiki_name": "Hartlepool",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E06000001"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "HastingsBoroughCouncil": {
+        "LAD24CD": "E07000062",
         "uprn": "100060038877",
         "url": "https://www.hastings.gov.uk",
         "wiki_command_url_override": "https://www.hastings.gov.uk",
         "wiki_name": "Hastings",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000062"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "HerefordshireCouncil": {
+        "LAD24CD": "E06000019",
+        "skip_get_url": true,
         "uprn": "200002618844",
         "url": "https://www.herefordshire.gov.uk/rubbish-recycling/check-bin-collection-day",
-        "skip_get_url": true,
         "wiki_name": "Herefordshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000019"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "HertsmereBoroughCouncil": {
+        "LAD24CD": "E07000098",
         "house_number": "1",
         "postcode": "WD7 9HZ",
         "skip_get_url": true,
         "url": "https://www.hertsmere.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Hertsmere",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000098"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "HighPeakCouncil": {
+        "LAD24CD": "E07000037",
         "house_number": "9 Ellison Street, Glossop",
         "postcode": "SK13 8BX",
         "skip_get_url": true,
         "url": "https://www.highpeak.gov.uk/findyourbinday",
         "web_driver": "http://selenium:4444",
         "wiki_name": "High Peak",
-        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000037"
+        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
     },
     "HighlandCouncil": {
+        "LAD24CD": "S12000017",
         "uprn": "130072429",
         "url": "https://www.highland.gov.uk",
         "wiki_command_url_override": "https://www.highland.gov.uk",
         "wiki_name": "Highland",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000017"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "Hillingdon": {
+        "LAD24CD": "E09000017",
         "house_number": "1, Milverton Drive, Ickenham, UB10 8PP, Ickenham, Hillingdon",
         "postcode": "UB10 8PP",
         "skip_get_url": true,
         "url": "https://www.hillingdon.gov.uk/collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Hillingdon",
-        "wiki_note": "Pass the postcode and the full address as it appears in the address pulldown menu.",
-        "LAD24CD": "E09000017"
+        "wiki_note": "Pass the postcode and the full address as it appears in the address pulldown menu."
     },
     "HinckleyandBosworthBoroughCouncil": {
+        "LAD24CD": "E07000132",
         "uprn": "100030533512",
         "url": "https://www.hinckley-bosworth.gov.uk",
         "wiki_name": "Hinckley and Bosworth",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000132"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "HorshamDistrictCouncil": {
-        "postcode": "RH12 1AA",
         "LAD24CD": "E07000227",
+        "postcode": "RH12 1AA",
         "skip_get_url": true,
         "uprn": "010013792717",
         "url": "https://www.horsham.gov.uk/waste-recycling-and-bins/household-bin-collections/check-your-bin-collection-day",
@@ -1233,81 +1233,87 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "HuntingdonDistrictCouncil": {
-        "uprn": "10012048679",
         "LAD24CD": "E07000011",
-        "url": "http://www.huntingdonshire.gov.uk/refuse-calendar/",
         "skip_get_url": true,
+        "uprn": "10012048679",
+        "url": "http://www.huntingdonshire.gov.uk/refuse-calendar/",
         "wiki_name": "Huntingdonshire",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "HyndburnBoroughCouncil": {
-        "postcode": "BB1 4DJ",
         "LAD24CD": "E07000120",
+        "postcode": "BB1 4DJ",
+        "skip_get_url": true,
         "uprn": "100010448773",
         "url": "https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FEBA68993831481FD81B2E605364D00A8DC017A4",
-        "skip_get_url": true,
         "web_driver": "http://selenium:4444",
         "wiki_name": "Hyndburn",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver."
     },
     "IpswichBoroughCouncil": {
+        "LAD24CD": "E07000202",
         "house_number": "Siloam Place",
         "url": "https://app.ipswich.gov.uk/bin-collection/",
         "wiki_name": "Ipswich",
-        "wiki_note": "Provide only the street name (no house number) as the PAON",
-        "LAD24CD": "E07000202"
+        "wiki_note": "Provide only the street name (no house number) as the PAON"
+    },
+    "IsleOfAngleseyCouncil": {
+        "url": "https://www.anglesey.gov.wales/en/Residents/Bins-and-recycling/Waste-Collection-Day.aspx",
+        "wiki_name": "IsleOfAngleseyCouncil",
+        "wiki_note": "Pass either UPRN or postcode/house number"
     },
     "IslingtonCouncil": {
+        "LAD24CD": "E09000019",
         "uprn": "5300094897",
         "url": "https://www.islington.gov.uk/your-area?Postcode=unused&Uprn=5300094897",
         "wiki_command_url_override": "https://www.islington.gov.uk/your-area?Postcode=unused&Uprn=XXXXXXXX",
         "wiki_name": "Islington",
-        "wiki_note": "Replace XXXXXXXX with your UPRN.",
-        "LAD24CD": "E09000019"
+        "wiki_note": "Replace XXXXXXXX with your UPRN."
     },
     "KingsLynnandWestNorfolkBC": {
+        "LAD24CD": "E07000146",
         "uprn": "10023636886",
         "url": "https://www.west-norfolk.gov.uk/",
         "wiki_name": "Kings Lynn and West Norfolk",
-        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000146"
+        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "KingstonUponThamesCouncil": {
+        "LAD24CD": "E09000021",
         "url": "https://waste-services.kingston.gov.uk/waste/2701097",
         "web_driver": "http://selenium:4444",
         "wiki_command_url_override": "https://waste-services.kingston.gov.uk/waste/XXXXXXX",
         "wiki_name": "Kingston upon Thames",
-        "wiki_note": "Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the \"Your bin days\" page, then copy the URL and replace the URL in the command.",
-        "LAD24CD": "E09000021"
+        "wiki_note": "Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the \"Your bin days\" page, then copy the URL and replace the URL in the command."
     },
     "KirkleesCouncil": {
+        "LAD24CD": "E08000034",
         "skip_get_url": true,
         "uprn": "83002937",
         "url": "https://www.kirklees.gov.uk/beta/your-property-bins-recycling/your-bins",
         "wiki_name": "Kirklees",
-        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000034"
+        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "KnowsleyMBCouncil": {
+        "LAD24CD": "E08000011",
         "house_number": "2 ALTMOOR ROAD HUYTON L36 3UY",
         "postcode": "L36 3UY",
         "skip_get_url": true,
         "url": "https://knowsleytransaction.mendixcloud.com/link/youarebeingredirected?target=bincollectioninformation",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Knowsley",
-        "wiki_note": "Pass the postcode in the postcode parameter, wrapped in double quotes and with a space.",
-        "LAD24CD": "E08000011"
+        "wiki_note": "Pass the postcode in the postcode parameter, wrapped in double quotes and with a space."
     },
     "LancasterCityCouncil": {
+        "LAD24CD": "E07000121",
         "house_number": "1",
         "postcode": "LA1 1RS",
         "skip_get_url": true,
         "url": "https://lcc-wrp.whitespacews.com",
         "wiki_name": "Lancaster",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "E07000121"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "LeedsCityCouncil": {
+        "LAD24CD": "E08000035",
         "house_number": "1",
         "postcode": "LS6 2SE",
         "skip_get_url": true,
@@ -1315,326 +1321,325 @@
         "url": "https://www.leeds.gov.uk/residents/bins-and-recycling/check-your-bin-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Leeds",
-        "wiki_note": "Pass the house number, postcode, and UPRN. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E08000035"
+        "wiki_note": "Pass the house number, postcode, and UPRN. This parser requires a Selenium webdriver."
     },
     "LeicesterCityCouncil": {
+        "LAD24CD": "E06000016",
         "uprn": "2465027976",
         "url": "https://biffaleicester.co.uk",
         "wiki_name": "Leicester",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000016"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LewesDistrictCouncil": {
+        "LAD24CD": "E07000063",
+        "skip_get_url": true,
         "uprn": "100061930155",
         "url": "https://www.lewes-eastbourne.gov.uk/article/1158/When-is-my-bin-collection-day",
-        "skip_get_url": true,
         "wiki_name": "Lewes",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000063"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LichfieldDistrictCouncil": {
+        "LAD24CD": "E07000194",
         "uprn": "100031694085",
         "url": "https://www.lichfielddc.gov.uk",
         "wiki_command_url_override": "https://www.lichfielddc.gov.uk",
         "wiki_name": "Lichfield",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000194"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LincolnCouncil": {
+        "LAD24CD": "E07000138",
         "postcode": "LN5 7SH",
         "uprn": "000235024846",
         "url": "https://lincoln.gov.uk",
         "wiki_command_url_override": "https://lincoln.gov.uk",
         "wiki_name": "City of Lincoln",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000138"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LisburnCastlereaghCityCouncil": {
+        "LAD24CD": "N09000007",
         "house_number": "97",
         "postcode": "BT28 1JN",
         "skip_get_url": true,
         "url": "https://lisburn.isl-fusion.com",
         "wiki_name": "Lisburn and Castlereagh",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "N09000007"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "LiverpoolCityCouncil": {
-        "uprn": "38164600",
+        "LAD24CD": "E08000012",
         "skip_get_url": true,
+        "uprn": "38164600",
         "url": "https://liverpool.gov.uk/bins-and-recycling/bin-collections/",
         "wiki_name": "Liverpool",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E08000012"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LondonBoroughEaling": {
+        "LAD24CD": "E09000009",
         "skip_get_url": true,
         "uprn": "12081498",
         "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
         "wiki_name": "Ealing",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E09000009"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "LondonBoroughHarrow": {
+        "LAD24CD": "E09000015",
         "uprn": "100021298754",
         "url": "https://www.harrow.gov.uk",
         "wiki_command_url_override": "https://www.harrow.gov.uk",
         "wiki_name": "Harrow",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E09000015"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "LondonBoroughHavering": {
+        "LAD24CD": "E09000016",
         "uprn": "100021380730",
         "url": "https://www.havering.gov.uk",
         "wiki_name": "Havering",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E09000016"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "LondonBoroughHounslow": {
+        "LAD24CD": "E09000018",
         "skip_get_url": true,
         "uprn": "100021577765",
         "url": "https://my.hounslow.gov.uk/service/Waste_and_recycling_collections",
         "wiki_name": "Hounslow",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E09000018"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "LondonBoroughLambeth": {
+        "LAD24CD": "E09000022",
         "skip_get_url": true,
         "uprn": "100021881738",
         "url": "https://wasteservice.lambeth.gov.uk/WhitespaceComms/GetServicesByUprn",
         "wiki_name": "Lambeth",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E09000022"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "LondonBoroughLewisham": {
+        "LAD24CD": "E09000023",
         "postcode": "SE12 9QF",
         "skip_get_url": true,
         "uprn": "100021954849",
         "url": "https://www.lewisham.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Lewisham",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E09000023"
+        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "LondonBoroughOfRichmondUponThames": {
+        "LAD24CD": "E09000027",
         "house_number": "March Road",
         "skip_get_url": true,
         "url": "https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Richmond upon Thames",
-        "wiki_note": "Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. ",
-        "LAD24CD": "E09000027"
+        "wiki_note": "Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. "
     },
     "LondonBoroughRedbridge": {
+        "LAD24CD": "E09000026",
         "postcode": "IG2 6LQ",
         "uprn": "10023770353",
         "url": "https://my.redbridge.gov.uk/RecycleRefuse",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Redbridge",
-        "wiki_note": "Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your address, then copy the entire address text and use that in the house number field.",
-        "LAD24CD": "E09000026"
+        "wiki_note": "Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) until you get the page listing your address, then copy the entire address text and use that in the house number field."
     },
     "LondonBoroughSutton": {
+        "LAD24CD": "E09000029",
         "uprn": "4473006",
         "url": "https://waste-services.sutton.gov.uk/waste",
         "wiki_command_url_override": "https://waste-services.sutton.gov.uk/waste",
         "wiki_name": "Sutton",
-        "wiki_note": "You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN",
-        "LAD24CD": "E09000029"
+        "wiki_note": "You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN"
     },
     "LutonBoroughCouncil": {
+        "LAD24CD": "E06000032",
         "uprn": "100080155778",
         "url": "https://myforms.luton.gov.uk",
         "wiki_command_url_override": "https://myforms.luton.gov.uk",
         "wiki_name": "Luton",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000032"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MaidstoneBoroughCouncil": {
-        "skip_get_url": true,
+        "LAD24CD": "E07000110",
         "house_number": "71",
         "postcode": "ME16 8BT",
+        "skip_get_url": true,
         "url": "https://my.maidstone.gov.uk/service/Find-your-bin-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Maidstone",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000110"
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "MaldonDistrictCouncil": {
+        "LAD24CD": "E07000074",
         "skip_get_url": true,
         "uprn": "100090557253",
         "url": "https://maldon.suez.co.uk/maldon/ServiceSummary",
         "wiki_name": "Maldon",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000074"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MalvernHillsDC": {
+        "LAD24CD": "E07000235",
         "skip_get_url": true,
         "uprn": "100121348457",
         "url": "https://swict.malvernhills.gov.uk/mhdcroundlookup/HandleSearchScreen",
         "wiki_name": "Malvern Hills",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000235"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ManchesterCityCouncil": {
+        "LAD24CD": "E08000003",
         "skip_get_url": true,
         "uprn": "77127089",
         "url": "https://www.manchester.gov.uk/bincollections",
         "wiki_name": "Manchester",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000003"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MansfieldDistrictCouncil": {
+        "LAD24CD": "E07000174",
         "skip_get_url": true,
         "uprn": "100031396580",
         "url": "https://www.mansfield.gov.uk/xfp/form/1327",
         "wiki_name": "Mansfield",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000174"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MedwayCouncil": {
+        "LAD24CD": "E06000035",
         "skip_get_url": true,
         "uprn": "200000907059",
         "url": "https://www.medway.gov.uk/homepage/45/check_your_waste_collection_day",
         "wiki_name": "Medway",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000035"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MeltonBoroughCouncil": {
+        "LAD24CD": "E07000133",
         "uprn": "100030540956",
         "url": "https://my.melton.gov.uk/collections",
         "wiki_name": "Melton",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000133"
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MertonCouncil": {
+        "LAD24CD": "E09000024",
         "url": "https://myneighbourhood.merton.gov.uk/wasteservices/WasteServices.aspx?ID=25936129",
         "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
         "wiki_name": "Merton",
-        "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page, then copy the URL and replace the URL in the command.",
-        "LAD24CD": "E09000024"
+        "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page, then copy the URL and replace the URL in the command."
     },
     "MidAndEastAntrimBoroughCouncil": {
+        "LAD24CD": "N09000008",
         "postcode": "100 Galgorm Road",
         "skip_get_url": true,
         "url": "https://www.midandeastantrim.gov.uk/resident/waste-recycling/collection-dates/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Mid and East Antrim",
-        "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes. Check the address on the website first. This version will only pick the first SHOW button returned by the search or if it is fully unique.",
-        "LAD24CD": "N09000008"
+        "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes. Check the address on the website first. This version will only pick the first SHOW button returned by the search or if it is fully unique."
     },
     "MidDevonCouncil": {
+        "LAD24CD": "E07000042",
         "uprn": "200003997770",
         "url": "https://www.middevon.gov.uk",
         "wiki_command_url_override": "https://www.middevon.gov.uk",
         "wiki_name": "Mid Devon",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000042"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MidSuffolkDistrictCouncil": {
+        "LAD24CD": "E07000203",
         "house_number": "Monday",
         "postcode": "Week 2",
         "skip_get_url": true,
         "uprn": "Monday",
         "url": "https://www.midsuffolk.gov.uk",
         "wiki_name": "Mid Suffolk",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]",
-        "LAD24CD": "E07000203"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]"
     },
     "MidSussexDistrictCouncil": {
+        "LAD24CD": "E07000228",
         "house_number": "OAKLANDS, OAKLANDS ROAD RH16 1SS",
         "postcode": "RH16 1SS",
         "skip_get_url": true,
         "url": "https://www.midsussex.gov.uk/waste-recycling/bin-collection/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Mid Sussex",
-        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000228"
-    },
-    "MiddlesbroughCouncil": {
-        "house_number": "12 Constantine Court Park Road North, Middlesbrough",
-        "skip_get_url": true,
-        "url": "https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/",
-        "wiki_name": "Middlesbrough",
-        "wiki_note": "Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E06000002"
-    },
-    "MidlothianCouncil": {
-        "house_number": "52",
-        "postcode": "EH19 2EB",
-        "skip_get_url": true,
-        "url": "https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days",
-        "wiki_name": "Midlothian",
-        "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter.",
-        "LAD24CD": "S12000019"
+        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
     },
     "MidUlsterDistrictCouncil": {
+        "LAD24CD": "N09000009",
         "house_number": "20 HILLHEAD, STEWARTSTOWN, BT71 5HY",
         "postcode": "BT71 5HY",
         "skip_get_url": true,
         "url": "https://www.midulstercouncil.org",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Mid Ulster",
-        "wiki_note": "Pass the full address of the house postcode as displayed on the site. This parser requires a Selenium webdriver.",
-        "LAD24CD": "N09000009"
+        "wiki_note": "Pass the full address of the house postcode as displayed on the site. This parser requires a Selenium webdriver."
+    },
+    "MiddlesbroughCouncil": {
+        "LAD24CD": "E06000002",
+        "house_number": "12 Constantine Court Park Road North, Middlesbrough",
+        "skip_get_url": true,
+        "url": "https://www.middlesbrough.gov.uk/recycling-and-rubbish/bin-collection-dates/",
+        "wiki_name": "Middlesbrough",
+        "wiki_note": "Pass the entire address without postcode as it appears when you type it on the website. This parser requires a Selenium webdriver."
+    },
+    "MidlothianCouncil": {
+        "LAD24CD": "S12000019",
+        "house_number": "52",
+        "postcode": "EH19 2EB",
+        "skip_get_url": true,
+        "url": "https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days",
+        "wiki_name": "Midlothian",
+        "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter."
     },
     "MiltonKeynesCityCouncil": {
+        "LAD24CD": "E06000042",
         "uprn": "25109551",
         "url": "https://mycouncil.milton-keynes.gov.uk/en/service/Waste_Collection_Round_Checker",
         "wiki_name": "Milton Keynes",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000042"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MoleValleyDistrictCouncil": {
+        "LAD24CD": "E07000210",
         "postcode": "RH4 1SJ",
         "skip_get_url": true,
         "uprn": "200000171235",
         "url": "https://myproperty.molevalley.gov.uk/molevalley/",
         "wiki_name": "Mole Valley",
-        "wiki_note": "UPRN can only be parsed with a valid postcode.",
-        "LAD24CD": "E07000210"
+        "wiki_note": "UPRN can only be parsed with a valid postcode."
     },
     "MonmouthshireCountyCouncil": {
+        "LAD24CD": "W06000021",
         "uprn": "100100266220",
         "url": "https://maps.monmouthshire.gov.uk",
         "wiki_name": "Monmouthshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "W06000021"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "MorayCouncil": {
+        "LAD24CD": "S12000020",
         "uprn": "45438",
         "url": "https://bindayfinder.moray.gov.uk/",
         "wiki_name": "Moray",
-        "wiki_note": "Find your property ID by going to (https://bindayfinder.moray.gov.uk), search for your property and extracting the ID from the URL. i.e. (https://bindayfinder.moray.gov.uk/disp_bins.php?id=00028841)",
-        "LAD24CD": "S12000020"
+        "wiki_note": "Find your property ID by going to (https://bindayfinder.moray.gov.uk), search for your property and extracting the ID from the URL. i.e. (https://bindayfinder.moray.gov.uk/disp_bins.php?id=00028841)"
     },
     "NeathPortTalbotCouncil": {
+        "LAD24CD": "W06000012",
         "house_number": "2",
         "postcode": "SA13 3BA",
         "skip_get_url": true,
         "url": "https://www.npt.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Neath Port Talbot",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "W06000012"
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "NewForestCouncil": {
+        "LAD24CD": "E07000091",
         "postcode": "SO41 0GJ",
         "skip_get_url": true,
         "uprn": "100060482345",
         "url": "https://forms.newforest.gov.uk/ufs/FIND_MY_BIN_BAR.eb",
         "web_driver": "http://selenium:4444",
         "wiki_name": "New Forest",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000091"
+        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
     },
     "NewarkAndSherwoodDC": {
+        "LAD24CD": "E07000175",
+        "skip_get_url": true,
         "uprn": "200004258529",
         "url": "https://app.newark-sherwooddc.gov.uk/bincollection/",
-        "skip_get_url": true,
         "wiki_name": "Newark and Sherwood",
-        "wiki_note": "Replace XXXXXXXX with your UPRN.",
-        "LAD24CD": "E07000175"
+        "wiki_note": "Replace XXXXXXXX with your UPRN."
     },
     "NewcastleCityCouncil": {
         "LAD24CD": "E08000021",
@@ -1644,37 +1649,38 @@
         "wiki_note": "Replace XXXXXXXX with your UPRN. UPRNs need to be 12 digits long so please pad the left hand side with 0s if your UPRN is not long enough"
     },
     "NewcastleUnderLymeCouncil": {
+        "LAD24CD": "E07000195",
         "uprn": "100031725433",
         "url": "https://www.newcastle-staffs.gov.uk",
         "wiki_name": "Newcastle-under-Lyme",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000195"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "NewhamCouncil": {
+        "LAD24CD": "E09000025",
+        "skip_get_url": true,
         "uprn": "46077811",
         "url": "https://bincollection.newham.gov.uk/",
-        "skip_get_url": true,
         "wiki_name": "Newham",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E09000025"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "NewportCityCouncil": {
-        "uprn": "100100688819",
+        "LAD24CD": "W06000022",
         "skip_get_url": true,
+        "uprn": "100100688819",
         "url": "https://www.newport.gov.uk/",
         "wiki_name": "Newport",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "W06000022"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "NorthAyrshireCouncil": {
+        "LAD24CD": "S12000021",
         "uprn": "126045552",
         "url": "https://www.north-ayrshire.gov.uk/",
         "wiki_command_url_override": "https://www.north-ayrshire.gov.uk/",
         "wiki_name": "North Ayrshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000021"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "NorthDevonCountyCouncil": {
+        "LAD24CD": "E07000043",
         "house_number": "1",
         "postcode": "EX31 2LE",
         "skip_get_url": true,
@@ -1682,146 +1688,145 @@
         "url": "https://my.northdevon.gov.uk/service/WasteRecyclingCollectionCalendar",
         "web_driver": "http://selenium:4444",
         "wiki_name": "North Devon",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000043"
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "NorthEastDerbyshireDistrictCouncil": {
+        "LAD24CD": "E07000038",
         "postcode": "S42 5RB",
         "skip_get_url": true,
         "uprn": "010034492222",
         "url": "https://myselfservice.ne-derbyshire.gov.uk/service/Check_your_Bin_Day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "North East Derbyshire",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000038"
+        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
     },
     "NorthEastLincs": {
+        "LAD24CD": "E06000012",
         "uprn": "11062649",
         "url": "https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=11062649",
         "wiki_command_url_override": "https://www.nelincs.gov.uk/refuse-collection-schedule/?view=timeline&uprn=XXXXXXXX",
         "wiki_name": "North East Lincolnshire",
-        "wiki_note": "Replace XXXXXXXX with your UPRN.",
-        "LAD24CD": "E06000012"
+        "wiki_note": "Replace XXXXXXXX with your UPRN."
     },
     "NorthHertfordshireDistrictCouncil": {
+        "LAD24CD": "E07000099",
         "house_number": "22",
         "postcode": "SG6 4BJ",
         "url": "https://www.north-herts.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "North Hertfordshire",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "E07000099"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "NorthKestevenDistrictCouncil": {
+        "LAD24CD": "E07000139",
         "url": "https://www.n-kesteven.org.uk/bins/display?uprn=100030869513",
         "wiki_command_url_override": "https://www.n-kesteven.org.uk/bins/display?uprn=XXXXXXXX",
         "wiki_name": "North Kesteven",
-        "wiki_note": "Replace XXXXXXXX with your UPRN.",
-        "LAD24CD": "E07000139"
+        "wiki_note": "Replace XXXXXXXX with your UPRN."
     },
     "NorthLanarkshireCouncil": {
+        "LAD24CD": "S12000050",
         "url": "https://www.northlanarkshire.gov.uk/bin-collection-dates/000118016164/48402118",
         "wiki_command_url_override": "https://www.northlanarkshire.gov.uk/bin-collection-dates/XXXXXXXXXXX/XXXXXXXXXXX",
         "wiki_name": "North Lanarkshire",
-        "wiki_note": "Follow the instructions [here](https://www.northlanarkshire.gov.uk/bin-collection-dates) until you get the \"Next collections\" page, then copy the URL and replace the URL in the command.",
-        "LAD24CD": "S12000050"
+        "wiki_note": "Follow the instructions [here](https://www.northlanarkshire.gov.uk/bin-collection-dates) until you get the \"Next collections\" page, then copy the URL and replace the URL in the command."
     },
     "NorthLincolnshireCouncil": {
+        "LAD24CD": "E06000013",
         "skip_get_url": true,
         "uprn": "100050194170",
         "url": "https://www.northlincs.gov.uk/bins-waste-and-recycling/bin-and-box-collection-dates/",
         "wiki_name": "North Lincolnshire",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000013"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "NorthNorfolkDistrictCouncil": {
+        "LAD24CD": "E07000147",
         "house_number": "1 Morston Mews",
         "postcode": "NR25 6BH",
         "skip_get_url": true,
         "url": "https://www.north-norfolk.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "North Norfolk",
-        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000147"
+        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
     },
     "NorthNorthamptonshireCouncil": {
+        "LAD24CD": "E06000061",
         "skip_get_url": true,
         "uprn": "100031021317",
         "url": "https://cms.northnorthants.gov.uk/bin-collection-search/calendarevents/100031021318/2023-10-17/2023-10-01",
         "wiki_name": "North Northamptonshire",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000061"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "NorthSomersetCouncil": {
+        "LAD24CD": "E06000024",
         "postcode": "BS49 5AA",
         "skip_get_url": true,
         "uprn": "24051674",
         "url": "https://forms.n-somerset.gov.uk/Waste/CollectionSchedule",
         "wiki_name": "North Somerset",
-        "wiki_note": "Pass the postcode and UPRN. You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000024"
+        "wiki_note": "Pass the postcode and UPRN. You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "NorthTynesideCouncil": {
+        "LAD24CD": "E08000022",
         "skip_get_url": true,
         "uprn": "47097627",
         "url": "https://www.northtyneside.gov.uk/waste-collection-schedule",
         "wiki_command_url_override": "https://www.northtyneside.gov.uk/waste-collection-schedule/view/XXXXXXXX",
         "wiki_name": "North Tyneside",
-        "wiki_note": "Pass only the UPRN (no postcode). You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000022"
+        "wiki_note": "Pass only the UPRN (no postcode). You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "NorthWestLeicestershire": {
+        "LAD24CD": "E07000134",
         "postcode": "DE74 2FZ",
         "skip_get_url": true,
         "uprn": "100030572613",
         "url": "https://www.nwleics.gov.uk/pages/collection_information",
         "web_driver": "http://selenium:4444",
         "wiki_name": "North West Leicestershire",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000134"
+        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
     },
     "NorthYorkshire": {
+        "LAD24CD": "E06000065",
         "skip_get_url": true,
         "uprn": "10093091235",
         "url": "https://www.northyorks.gov.uk/bin-calendar/lookup",
         "wiki_name": "North Yorkshire",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000065"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "NorthumberlandCouncil": {
-        "uprn": "010096302588",
+        "LAD24CD": "E06000057",
         "postcode": "NE65 0ZP",
         "skip_get_url": true,
+        "uprn": "010096302588",
         "url": "https://bincollection.northumberland.gov.uk/postcode",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Northumberland",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000057"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "NorwichCityCouncil": {
+        "LAD24CD": "E07000148",
         "house_number": "2",
         "postcode": "NR2 3TT",
         "url": "https://bnr-wrp.whitespacews.com",
         "wiki_command_url_override": "https://bnr-wrp.whitespacews.com",
         "wiki_name": "Norwich",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "E07000148"
+        "wiki_note": "Pass the house number and postcode in their respective parameters."
     },
     "NottinghamCityCouncil": {
+        "LAD24CD": "E06000018",
         "skip_get_url": true,
         "uprn": "100031540180",
         "url": "https://geoserver.nottinghamcity.gov.uk/bincollections2/api/collection/100031540180",
         "wiki_name": "Nottingham",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000018"
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "NuneatonBedworthBoroughCouncil": {
+        "LAD24CD": "E07000219",
         "house_number": "Newdigate Road",
         "skip_get_url": true,
         "url": "https://www.nuneatonandbedworth.gov.uk",
         "wiki_name": "Nuneaton and Bedworth",
-        "wiki_note": "Pass the name of the street ONLY in the house number parameter, wrapped in double quotes. Street name must match exactly as it appears on the council's website.",
-        "LAD24CD": "E07000219"
+        "wiki_note": "Pass the name of the street ONLY in the house number parameter, wrapped in double quotes. Street name must match exactly as it appears on the council's website."
     },
     "OadbyAndWigstonBoroughCouncil": {
         "LAD24CD": "E07000135",
@@ -1831,116 +1836,117 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "OldhamCouncil": {
+        "LAD24CD": "E08000004",
         "url": "https://portal.oldham.gov.uk/bincollectiondates/details?uprn=422000033556",
         "wiki_name": "Oldham",
-        "wiki_note": "Replace UPRN in URL with your own UPRN.",
-        "LAD24CD": "E08000004"
+        "wiki_note": "Replace UPRN in URL with your own UPRN."
     },
     "OxfordCityCouncil": {
+        "LAD24CD": "E07000178",
         "postcode": "OX3 7QF",
         "uprn": "100120820551",
         "url": "https://www.oxford.gov.uk/xfp/form/142",
         "wiki_command_url_override": "https://www.oxford.gov.uk/xfp/form/142",
         "wiki_name": "Oxford",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000178"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "PembrokeshireCountyCouncil": {
+        "LAD24CD": "W06000009",
         "url": "https://nearest.pembrokeshire.gov.uk/property/100100278790",
         "wiki_command_url_override": "https://nearest.pembrokeshire.gov.uk/property/XXXXXXXXXX",
         "wiki_name": "Pembrokeshire",
-        "wiki_note": "Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.",
-        "LAD24CD": "W06000009"
+        "wiki_note": "Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
+    },
+    "PerthAndKinrossCouncil": {
+        "LAD24CD": "S12000048",
+        "uprn": "124032322",
+        "url": "https://www.pkc.gov.uk",
+        "wiki_command_url_override": "https://www.pkc.gov.uk",
+        "wiki_name": "Perth and Kinross",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "PeterboroughCityCouncil": {
+        "LAD24CD": "E06000031",
         "house_number": "7 Arundel Road, Peterborough, PE4 6JJ",
         "postcode": "PE4 6JJ",
         "skip_get_url": true,
         "url": "https://report.peterborough.gov.uk/waste",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Peterborough",
-        "wiki_note": "Pass the full address as it appears o nthe Peterborough website and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E06000031"
-    },
-    "PerthAndKinrossCouncil": {
-        "uprn": "124032322",
-        "url": "https://www.pkc.gov.uk",
-        "wiki_command_url_override": "https://www.pkc.gov.uk",
-        "wiki_name": "Perth and Kinross",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000048"
+        "wiki_note": "Pass the full address as it appears o nthe Peterborough website and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "PlymouthCouncil": {
+        "LAD24CD": "E06000026",
         "uprn": "100040420582",
         "url": "https://www.plymouth.gov.uk",
         "wiki_command_url_override": "https://www.plymouth.gov.uk",
         "wiki_name": "Plymouth",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000026"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "PortsmouthCityCouncil": {
+        "LAD24CD": "E06000044",
         "postcode": "PO4 0LE",
         "skip_get_url": true,
         "uprn": "1775027504",
         "url": "https://my.portsmouth.gov.uk/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-26e27e70-f771-47b1-a34d-af276075cede/AF-Stage-cd7cc291-2e59-42cc-8c3f-1f93e132a2c9/definition.json&redirectlink=%2F&cancelRedirectLink=%2F",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Portsmouth",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E06000044"
+        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
     },
     "PowysCouncil": {
+        "LAD24CD": "W06000023",
         "house_number": "LANE COTTAGE",
         "postcode": "HR3 5JS",
         "skip_get_url": true,
         "url": "https://www.powys.gov.uk",
         "web_driver": "http://selenium:4444",
-        "wiki_name": "Powys",
-        "LAD24CD": "W06000023"
+        "wiki_name": "Powys"
     },
     "PrestonCityCouncil": {
+        "LAD24CD": "E07000123",
         "house_number": "Town Hall",
         "postcode": "PR1 2RL",
         "skip_get_url": true,
         "url": "https://selfservice.preston.gov.uk/service/Forms/FindMyNearest.aspx?Service=bins",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Preston",
-        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000123"
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "ReadingBoroughCouncil": {
+        "LAD24CD": "E06000038",
         "url": "https://api.reading.gov.uk/api/collections/310056735",
         "wiki_command_url_override": "https://api.reading.gov.uk/api/collections/XXXXXXXX",
         "wiki_name": "Reading",
-        "wiki_note": "Replace XXXXXXXX with your property's UPRN.",
-        "LAD24CD": "E06000038"
+        "wiki_note": "Replace XXXXXXXX with your property's UPRN."
     },
     "RedcarandClevelandCouncil": {
+        "LAD24CD": "E06000003",
         "house_number": "11",
         "postcode": "TS10 2RE",
         "skip_get_url": true,
         "url": "https://www.redcar-cleveland.gov.uk",
         "wiki_name": "Redcar and Cleveland",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters",
-        "LAD24CD": "E06000003"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters"
     },
     "RedditchBoroughCouncil": {
+        "LAD24CD": "E07000236",
         "uprn": "10094557691",
         "url": "https://redditchbc.gov.uk",
         "wiki_command_url_override": "https://redditchbc.gov.uk",
         "wiki_name": "Redditch",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000236"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "ReigateAndBansteadBoroughCouncil": {
+        "LAD24CD": "E07000211",
         "skip_get_url": true,
         "uprn": "68134867",
         "url": "https://www.reigate-banstead.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Reigate and Banstead",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000211"
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver."
     },
     "RenfrewshireCouncil": {
+        "LAD24CD": "S12000038",
         "house_number": "1, STATIONHOUSE DRIVE, JOHNSTONE, RENFREWSHIRE, PA6 7FJ",
         "paon": "1, STATIONHOUSE DRIVE, JOHNSTONE, RENFREWSHIRE, PA6 7FJ",
         "postcode": "PA6 7FJ",
@@ -1948,207 +1954,207 @@
         "url": "https://www.renfrewshire.gov.uk/bin-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Renfrewshire",
-        "wiki_note": "Pass the full address as it appears on the website. This parser requires a Selenium webdriver.",
-        "LAD24CD": "S12000038"
+        "wiki_note": "Pass the full address as it appears on the website. This parser requires a Selenium webdriver."
     },
     "RhonddaCynonTaffCouncil": {
+        "LAD24CD": "W06000016",
         "skip_get_url": true,
         "uprn": "100100778320",
         "url": "https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWaste/RecyclingandWasteCollectionDays.aspx",
         "wiki_name": "Rhondda Cynon Taff",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "W06000016"
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "RochdaleCouncil": {
+        "LAD24CD": "E08000005",
         "postcode": "OL11 5BE",
         "skip_get_url": true,
         "uprn": "10094358428",
         "url": "https://webforms.rochdale.gov.uk/BinCalendar",
         "wiki_name": "Rochdale",
-        "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000005"
+        "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "RochfordCouncil": {
+        "LAD24CD": "E07000075",
         "url": "https://www.rochford.gov.uk/online-bin-collections-calendar",
         "wiki_name": "Rochford",
-        "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'.",
-        "LAD24CD": "E07000075"
+        "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'."
     },
     "RotherDistrictCouncil": {
+        "LAD24CD": "E07000064",
         "uprn": "100061937338",
         "url": "https://www.rother.gov.uk",
         "wiki_name": "Rother",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000064"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "RotherhamCouncil": {
+        "LAD24CD": "E08000018",
         "uprn": "100050866000",
         "url": "https://www.rotherham.gov.uk/bin-collections?address=100050866000&submit=Submit",
         "wiki_command_url_override": "https://www.rotherham.gov.uk/bin-collections?address=XXXXXXXXX&submit=Submit",
         "wiki_name": "Rotherham",
-        "wiki_note": "Replace `XXXXXXXXX` with your UPRN in the URL. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000018"
+        "wiki_note": "Replace `XXXXXXXXX` with your UPRN in the URL. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "RoyalBoroughofGreenwich": {
+        "LAD24CD": "E09000011",
         "house_number": "57",
         "postcode": "BR7 6DN",
         "skip_get_url": true,
         "url": "https://www.royalgreenwich.gov.uk",
         "wiki_name": "Greenwich",
-        "wiki_note": "Provide your house number in the `house_number` parameter and your postcode in the `postcode` parameter.",
-        "LAD24CD": "E09000011"
+        "wiki_note": "Provide your house number in the `house_number` parameter and your postcode in the `postcode` parameter."
     },
     "RugbyBoroughCouncil": {
+        "LAD24CD": "E07000220",
         "postcode": "CV22 6LA",
         "skip_get_url": true,
         "uprn": "100070182634",
         "url": "https://www.rugby.gov.uk/check-your-next-bin-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Rugby",
-        "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000220"
+        "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "RunnymedeBoroughCouncil": {
+        "LAD24CD": "E07000212",
         "skip_get_url": true,
         "uprn": "100061483636",
         "url": "https://www.runnymede.gov.uk/",
         "wiki_name": "Runnymede",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000212"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "RushcliffeBoroughCouncil": {
+        "LAD24CD": "E07000176",
         "postcode": "NG13 8TZ",
         "skip_get_url": true,
         "uprn": "3040040994",
         "url": "https://www.rushcliffe.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Rushcliffe",
-        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000176"
+        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "RushmoorCouncil": {
+        "LAD24CD": "E07000092",
         "url": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=100060545034",
         "wiki_command_url_override": "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?selectedAddress=XXXXXXXXXX",
         "wiki_name": "Rushmoor",
-        "wiki_note": "Replace `XXXXXXXXXX` with your UPRN, which you can find using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000092"
+        "wiki_note": "Replace `XXXXXXXXXX` with your UPRN, which you can find using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SalfordCityCouncil": {
+        "LAD24CD": "E08000006",
         "skip_get_url": true,
         "uprn": "100011416709",
         "url": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections",
         "wiki_name": "Salford",
-        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000006"
+        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SandwellBoroughCouncil": {
+        "LAD24CD": "E08000028",
         "skip_get_url": true,
         "uprn": "32101971",
         "url": "https://www.sandwell.gov.uk",
         "wiki_name": "Sandwell",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000028"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SeftonCouncil": {
+        "LAD24CD": "E08000014",
         "house_number": "1",
         "postcode": "L20 6GG",
         "url": "https://www.sefton.gov.uk",
         "wiki_name": "Sefton",
-        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes.",
-        "LAD24CD": "E08000014"
+        "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
     },
     "SevenoaksDistrictCouncil": {
+        "LAD24CD": "E07000111",
         "house_number": "60 Hever Road",
         "postcode": "TN15 6EB",
         "skip_get_url": true,
         "url": "https://sevenoaks-dc-host01.oncreate.app/w/webpage/waste-collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Sevenoaks",
-        "wiki_note": "Pass the house name/number in the `house_number` parameter, wrapped in double quotes, and the postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000111"
+        "wiki_note": "Pass the house name/number in the `house_number` parameter, wrapped in double quotes, and the postcode in the `postcode` parameter."
     },
     "SheffieldCityCouncil": {
+        "LAD24CD": "E08000019",
         "url": "https://wasteservices.sheffield.gov.uk/property/100050931898",
         "wiki_command_url_override": "https://wasteservices.sheffield.gov.uk/property/XXXXXXXXXXX",
         "wiki_name": "Sheffield",
-        "wiki_note": "Follow the instructions [here](https://wasteservices.sheffield.gov.uk/) until you get the 'Your bin collection dates and services' page, then copy the URL and replace the URL in the command.",
-        "LAD24CD": "E08000019"
+        "wiki_note": "Follow the instructions [here](https://wasteservices.sheffield.gov.uk/) until you get the 'Your bin collection dates and services' page, then copy the URL and replace the URL in the command."
     },
     "ShropshireCouncil": {
+        "LAD24CD": "E06000051",
         "url": "https://bins.shropshire.gov.uk/property/100070034731",
         "wiki_command_url_override": "https://bins.shropshire.gov.uk/property/XXXXXXXXXXX",
         "wiki_name": "Shropshire",
-        "wiki_note": "Follow the instructions [here](https://bins.shropshire.gov.uk/) until you get the page showing your bin collection dates, then copy the URL and replace the URL in the command.",
-        "LAD24CD": "E06000051"
+        "wiki_note": "Follow the instructions [here](https://bins.shropshire.gov.uk/) until you get the page showing your bin collection dates, then copy the URL and replace the URL in the command."
     },
     "SloughBoroughCouncil": {
+        "LAD24CD": "E06000039",
         "postcode": "SL2 2EW",
         "skip_get_url": true,
         "url": "https://www.slough.gov.uk/bin-collections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Slough",
-        "wiki_note": "Pass the UPRN and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E06000039"
+        "wiki_note": "Pass the UPRN and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "SolihullCouncil": {
+        "LAD24CD": "E08000029",
         "url": "https://digital.solihull.gov.uk/BinCollectionCalendar/Calendar.aspx?UPRN=100071005444",
         "wiki_command_url_override": "https://digital.solihull.gov.uk/BinCollectionCalendar/Calendar.aspx?UPRN=XXXXXXXX",
         "wiki_name": "Solihull",
-        "wiki_note": "Replace `XXXXXXXX` with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E08000029"
+        "wiki_note": "Replace `XXXXXXXX` with your UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "SomersetCouncil": {
+        "LAD24CD": "E06000066",
+        "house_number": "5",
         "postcode": "TA6 4AA",
         "skip_get_url": true,
-        "house_number": "5",
         "url": "https://www.somerset.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Somerset",
-        "wiki_note": "Provide your house number and postcode",
-        "LAD24CD": "E06000066"
+        "wiki_note": "Provide your house number and postcode"
     },
     "SouthAyrshireCouncil": {
+        "LAD24CD": "S12000028",
         "postcode": "KA19 7BN",
         "skip_get_url": true,
         "uprn": "141003134",
         "url": "https://www.south-ayrshire.gov.uk/",
         "wiki_name": "South Ayrshire",
-        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "S12000028"
+        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "SouthCambridgeshireCouncil": {
+        "LAD24CD": "E07000012",
         "house_number": "53",
         "postcode": "CB23 6GZ",
         "skip_get_url": true,
         "url": "https://www.scambs.gov.uk/recycling-and-bins/find-your-household-bin-collection-day/",
         "wiki_name": "South Cambridgeshire",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000012"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "SouthDerbyshireDistrictCouncil": {
+        "LAD24CD": "E07000039",
         "uprn": "10000820668",
         "url": "https://maps.southderbyshire.gov.uk/iShareLIVE.web//getdata.aspx?RequestType=LocalInfo&ms=mapsources/MyHouse&format=JSONP&group=Recycling%20Bins%20and%20Waste|Next%20Bin%20Collections&uid=",
         "wiki_command_url_override": "https://maps.southderbyshire.gov.uk/iShareLIVE.web//getdata.aspx?RequestType=LocalInfo&ms=mapsources/MyHouse&format=JSONP&group=Recycling%20Bins%20and%20Waste|Next%20Bin%20Collections&uid=XXXXXXXX",
         "wiki_name": "South Derbyshire",
-        "wiki_note": "Replace `XXXXXXXX` with your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000039"
+        "wiki_note": "Replace `XXXXXXXX` with your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SouthGloucestershireCouncil": {
+        "LAD24CD": "E06000025",
         "skip_get_url": true,
         "uprn": "566419",
         "url": "https://api.southglos.gov.uk/wastecomp/GetCollectionDetails",
         "wiki_name": "South Gloucestershire",
-        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000025"
+        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SouthHamsDistrictCouncil": {
+        "LAD24CD": "E07000044",
         "uprn": "10004742851",
         "url": "https://www.southhams.gov.uk",
         "wiki_name": "South Hams",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000044"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "SouthHollandDistrictCouncil": {
+        "LAD24CD": "E07000140",
         "house_number": "1",
         "postcode": "PE6 0HE",
         "skip_get_url": true,
@@ -2156,163 +2162,162 @@
         "url": "https://www.sholland.gov.uk/mycollections",
         "web_driver": "http://selenium:4444",
         "wiki_name": "South Holland",
-        "wiki_note": "Pass the UPRN and postcode in their respective parameters. This parser requires a Selenium webdriver.",
-        "LAD24CD": "E07000140"
+        "wiki_note": "Pass the UPRN and postcode in their respective parameters. This parser requires a Selenium webdriver."
     },
     "SouthKestevenDistrictCouncil": {
+        "LAD24CD": "E07000141",
         "postcode": "PE68BL",
         "skip_get_url": true,
         "url": "https://pre.southkesteven.gov.uk/skdcNext/tempforms/checkmybin.aspx",
         "wiki_name": "South Kesteven District Council",
-        "wiki_note": "Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns.",
-        "LAD24CD": "E07000141"
+        "wiki_note": "Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns."
     },
     "SouthLanarkshireCouncil": {
+        "LAD24CD": "S12000029",
         "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow",
         "wiki_command_url_override": "https://www.southlanarkshire.gov.uk/directory_record/XXXXX/XXXXX",
         "wiki_name": "South Lanarkshire",
-        "wiki_note": "Follow the instructions [here](https://www.southlanarkshire.gov.uk/info/200156/bins_and_recycling/1670/bin_collections_and_calendar) until you get the page that shows the weekly collections for your street, then copy the URL and replace the URL in the command.",
-        "LAD24CD": "S12000029"
+        "wiki_note": "Follow the instructions [here](https://www.southlanarkshire.gov.uk/info/200156/bins_and_recycling/1670/bin_collections_and_calendar) until you get the page that shows the weekly collections for your street, then copy the URL and replace the URL in the command."
     },
     "SouthNorfolkCouncil": {
+        "LAD24CD": "E07000149",
         "skip_get_url": true,
         "uprn": "2630102526",
         "url": "https://www.southnorfolkandbroadland.gov.uk/rubbish-recycling/south-norfolk-bin-collection-day-finder",
         "wiki_name": "South Norfolk",
-        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000149"
+        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SouthOxfordshireCouncil": {
+        "LAD24CD": "E07000179",
         "skip_get_url": true,
         "uprn": "10033002851",
         "url": "https://www.southoxon.gov.uk/south-oxfordshire-district-council/recycling-rubbish-and-waste/when-is-your-collection-day/",
         "wiki_name": "South Oxfordshire",
-        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it.",
-        "LAD24CD": "E07000179"
+        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it."
     },
     "SouthRibbleCouncil": {
-        "uprn": "10013243496",
+        "LAD24CD": "E07000126",
         "postcode": "PR266QW",
+        "uprn": "10013243496",
         "url": "https://forms.chorleysouthribble.gov.uk/xfp/form/70",
         "wiki_command_url_override": "https://forms.chorleysouthribble.gov.uk/xfp/form/70",
         "wiki_name": "South Ribble",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000126"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "SouthStaffordshireDistrictCouncil": {
+        "LAD24CD": "E07000196",
         "uprn": "200004523954",
         "url": "https://www.sstaffs.gov.uk/where-i-live?uprn=200004523954",
         "wiki_name": "South Staffordshire",
-        "wiki_note": "The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?uprn=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN.",
-        "LAD24CD": "E07000196"
+        "wiki_note": "The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?uprn=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN."
     },
     "SouthTynesideCouncil": {
+        "LAD24CD": "E08000023",
         "house_number": "1",
         "postcode": "NE33 3JW",
         "skip_get_url": true,
         "url": "https://www.southtyneside.gov.uk/article/33352/Bin-collection-dates",
         "wiki_name": "South Tyneside",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E08000023"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "SouthamptonCityCouncil": {
+        "LAD24CD": "E06000045",
         "skip_get_url": true,
         "uprn": "100060731893",
         "url": "https://www.southampton.gov.uk",
         "wiki_name": "Southampton",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000045"
+        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SouthwarkCouncil": {
+        "LAD24CD": "E09000028",
         "uprn": "200003469271",
         "url": "https://services.southwark.gov.uk/bins/lookup/",
         "wiki_command_url_override": "https://services.southwark.gov.uk/bins/lookup/XXXXXXXX",
         "wiki_name": "Southwark",
-        "wiki_note": "Replace `XXXXXXXX` with your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E09000028"
+        "wiki_note": "Replace `XXXXXXXX` with your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "SpelthorneBoroughCouncil": {
+        "LAD24CD": "E07000213",
         "house_number": "1",
         "postcode": "TW18 2PR",
         "skip_get_url": true,
         "url": "https://www.spelthorne.gov.uk",
-        "wiki_name": "Spelthorne",
-        "LAD24CD": "E07000213"
+        "wiki_name": "Spelthorne"
     },
     "StAlbansCityAndDistrictCouncil": {
+        "LAD24CD": "E07000240",
         "skip_get_url": true,
         "uprn": "100081153583",
         "url": "https://gis.stalbans.gov.uk/NoticeBoard9/VeoliaProxy.NoticeBoard.asmx/GetServicesByUprnAndNoticeBoard",
         "wiki_name": "St Albans",
-        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000240"
+        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "StHelensBC": {
+        "LAD24CD": "E08000013",
         "house_number": "15",
         "postcode": "L34 2GA",
         "skip_get_url": true,
         "url": "https://www.sthelens.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "St. Helens",
-        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes",
-        "LAD24CD": "E08000013"
+        "wiki_note": "Pass the house name/number in the house number parameter, wrapped in double quotes"
     },
     "StaffordBoroughCouncil": {
+        "LAD24CD": "E07000197",
         "uprn": "100032203010",
         "url": "https://www.staffordbc.gov.uk/address/100032203010",
         "wiki_name": "Stafford",
-        "wiki_note": "The URL needs to be `https://www.staffordbc.gov.uk/address/<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN.",
-        "LAD24CD": "E07000197"
+        "wiki_note": "The URL needs to be `https://www.staffordbc.gov.uk/address/<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN."
     },
     "StaffordshireMoorlandsDistrictCouncil": {
+        "LAD24CD": "E07000198",
         "postcode": "ST8 6HN",
         "skip_get_url": true,
         "uprn": "100031863037",
         "url": "https://www.staffsmoorlands.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Staffordshire Moorlands",
-        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000198"
+        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "StevenageBoroughCouncil": {
+        "LAD24CD": "E07000243",
         "uprn": "100080878852",
         "url": "https://www.stevenage.gov.uk",
         "wiki_name": "Stevenage",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000243"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "StirlingCouncil": {
+        "LAD24CD": "S12000030",
         "house_number": "5, SUNNYLAW ROAD, BRIDGE OF ALLAN, STIRLING, FK9 4QA",
         "postcode": "FK9 4QA",
         "skip_get_url": true,
         "url": "https://www.stirling.gov.uk/bins-and-recycling/bin-collection-dates-search/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Stirling",
-        "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode.",
-        "LAD24CD": "S12000030"
+        "wiki_note": "Use the full address as it appears on the drop-down on the site when you search by postcode."
     },
     "StockportBoroughCouncil": {
+        "LAD24CD": "E08000007",
         "url": "https://myaccount.stockport.gov.uk/bin-collections/show/100011434401",
         "wiki_command_url_override": "https://myaccount.stockport.gov.uk/bin-collections/show/XXXXXXXX",
         "wiki_name": "Stockport",
-        "wiki_note": "Replace `XXXXXXXX` with your UPRN.",
-        "LAD24CD": "E08000007"
+        "wiki_note": "Replace `XXXXXXXX` with your UPRN."
     },
     "StocktonOnTeesCouncil": {
+        "LAD24CD": "E06000004",
         "house_number": "24",
         "postcode": "TS20 2RD",
         "skip_get_url": true,
         "url": "https://www.stockton.gov.uk",
         "web_driver": "http://selenium:4444",
-        "wiki_name": "Stockton-on-Tees",
-        "LAD24CD": "E06000004"
+        "wiki_name": "Stockton-on-Tees"
     },
     "StokeOnTrentCityCouncil": {
+        "LAD24CD": "E06000021",
         "url": "https://www.stoke.gov.uk/jadu/custom/webserviceLookUps/BarTecWebServices_missed_bin_calendar.php?UPRN=3455121482",
         "wiki_command_url_override": "https://www.stoke.gov.uk/jadu/custom/webserviceLookUps/BarTecWebServices_missed_bin_calendar.php?UPRN=XXXXXXXXXX",
         "wiki_name": "Stoke-on-Trent",
-        "wiki_note": "Replace `XXXXXXXXXX` with your property's UPRN.",
-        "LAD24CD": "E06000021"
+        "wiki_note": "Replace `XXXXXXXXXX` with your property's UPRN."
     },
     "StratfordUponAvonCouncil": {
         "LAD24CD": "E07000221",
@@ -2323,182 +2328,183 @@
         "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
     "StroudDistrictCouncil": {
+        "LAD24CD": "E07000082",
         "postcode": "GL10 3BH",
         "uprn": "100120512183",
         "url": "https://www.stroud.gov.uk/my-house?uprn=100120512183&postcode=GL10+3BH",
         "wiki_name": "Stroud",
-        "wiki_note": "Provide your UPRN and postcode. Replace the UPRN and postcode in the URL with your own.",
-        "LAD24CD": "E07000082"
+        "wiki_note": "Provide your UPRN and postcode. Replace the UPRN and postcode in the URL with your own."
     },
     "SunderlandCityCouncil": {
+        "LAD24CD": "E08000024",
         "house_number": "13",
         "postcode": "SR4 6BJ",
         "skip_get_url": true,
         "url": "https://webapps.sunderland.gov.uk/WEBAPPS/WSS/Sunderland_Portal/Forms/bindaychecker.aspx",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Sunderland",
-        "wiki_note": "Provide your house number (without quotes) and postcode (wrapped in double quotes with a space).",
-        "LAD24CD": "E08000024"
+        "wiki_note": "Provide your house number (without quotes) and postcode (wrapped in double quotes with a space)."
     },
     "SurreyHeathBoroughCouncil": {
+        "LAD24CD": "E07000214",
         "house_number": "36",
         "postcode": "GU20 6PN",
         "skip_get_url": true,
         "url": "https://asjwsw-wrpsurreyheathmunicipal-live.whitespacews.com/",
         "wiki_name": "Surrey Heath",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000214"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "SwaleBoroughCouncil": {
+        "LAD24CD": "E07000113",
         "house_number": "81",
         "postcode": "ME12 2NQ",
         "skip_get_url": true,
         "url": "https://swale.gov.uk/bins-littering-and-the-environment/bins/collection-days",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Swale",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000113"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "SwanseaCouncil": {
+        "LAD24CD": "W06000011",
         "postcode": "SA43PQ",
         "skip_get_url": true,
         "uprn": "100100324821",
         "url": "https://www1.swansea.gov.uk/recyclingsearch/",
         "wiki_name": "Swansea",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "W06000011"
+        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "SwindonBoroughCouncil": {
+        "LAD24CD": "E06000030",
         "uprn": "10022793351",
         "url": "https://www.swindon.gov.uk",
         "wiki_name": "Swindon",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E06000030"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "TamesideMBCouncil": {
+        "LAD24CD": "E08000008",
         "skip_get_url": true,
         "uprn": "100012835362",
         "url": "http://lite.tameside.gov.uk/BinCollections/CollectionService.svc/GetBinCollection",
         "wiki_name": "Tameside",
-        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000008"
+        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "TandridgeDistrictCouncil": {
+        "LAD24CD": "E07000215",
         "skip_get_url": true,
         "uprn": "100062160432",
         "url": "https://tdcws01.tandridge.gov.uk/TDCWebAppsPublic/tfaBranded/408?utm_source=pressrelease&utm_medium=smposts&utm_campaign=check_my_bin_day",
         "wiki_name": "Tandridge",
-        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it.",
-        "LAD24CD": "E07000215"
+        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it."
     },
     "TeignbridgeCouncil": {
+        "LAD24CD": "E07000045",
         "uprn": "100040338776",
         "url": "https://www.google.co.uk",
         "web_driver": "http://selenium:4444",
         "wiki_command_url_override": "https://www.google.co.uk",
         "wiki_name": "Teignbridge",
-        "wiki_note": "Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000045"
+        "wiki_note": "Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "TelfordAndWrekinCouncil": {
+        "LAD24CD": "E06000020",
         "skip_get_url": true,
         "uprn": "000452015013",
         "url": "https://dac.telford.gov.uk/bindayfinder/",
         "wiki_name": "Telford and Wrekin",
-        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000020"
-    },
-    "TewkesburyBoroughCouncil": {
-        "skip_get_url": true,
-        "uprn": "10067626314",
-        "url": "https://tewkesbury.gov.uk/services/waste-and-recycling/",
-        "wiki_name": "Tewkesbury",
-        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000083"
+        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "TendringDistrictCouncil": {
+        "LAD24CD": "E07000076",
         "postcode": "CO15 4EU",
         "skip_get_url": true,
         "uprn": "100090604247",
         "url": "https://tendring-self.achieveservice.com/en/service/Rubbish_and_recycling_collection_days",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Tendring",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000076"
+        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "TestValleyBoroughCouncil": {
+        "LAD24CD": "E07000093",
+        "house_number": "2",
         "postcode": "SO51 0BY",
         "skip_get_url": true,
-        "house_number": "2",
         "url": "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected/when-are-my-bins-collected",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Test Valley",
-        "wiki_note": "Provide your house number and postcode",
-        "LAD24CD": "E07000093"
+        "wiki_note": "Provide your house number and postcode"
+    },
+    "TewkesburyBoroughCouncil": {
+        "LAD24CD": "E07000083",
+        "skip_get_url": true,
+        "uprn": "10067626314",
+        "url": "https://tewkesbury.gov.uk/services/waste-and-recycling/",
+        "wiki_name": "Tewkesbury",
+        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ThanetDistrictCouncil": {
+        "LAD24CD": "E07000114",
         "uprn": "100061111858",
         "url": "https://www.thanet.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Thanet",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000114"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "ThreeRiversDistrictCouncil": {
+        "LAD24CD": "E07000102",
         "postcode": "WD3 7AZ",
         "skip_get_url": true,
         "uprn": "100080913662",
         "url": "https://my.threerivers.gov.uk/en/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b/AF-Stage-01ee28aa-1584-442c-8d1f-119b6e27114a/definition.json&process=1&process_uri=sandbox-processes://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&process_id=AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&noLoginPrompt=1",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Three Rivers",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000102"
+        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ThurrockCouncil": {
+        "LAD24CD": "E06000034",
         "house_number": "Monday",
         "postcode": "Round A",
         "skip_get_url": true,
         "url": "https://www.thurrock.gov.uk",
         "wiki_name": "Thurrock",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. Use the 'postcode' field to pass the ROUND (wrapped in quotes) for your collections. [Round A/Round B].",
-        "LAD24CD": "E06000034"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. Use the 'postcode' field to pass the ROUND (wrapped in quotes) for your collections. [Round A/Round B]."
     },
     "TonbridgeAndMallingBC": {
+        "LAD24CD": "E07000115",
         "postcode": "ME19 4JS",
         "skip_get_url": true,
         "uprn": "10002914589",
         "url": "https://www.tmbc.gov.uk/",
         "wiki_name": "Tonbridge and Malling",
-        "wiki_note": "Provide your UPRN and postcode.",
-        "LAD24CD": "E07000115"
+        "wiki_note": "Provide your UPRN and postcode."
     },
     "TorbayCouncil": {
+        "LAD24CD": "E06000027",
+        "postcode": "TQ1 1AG",
         "skip_get_url": true,
         "uprn": "10000016984",
-        "postcode": "TQ1 1AG",
-        "web_driver": "http://selenium:4444",
         "url": "https://www.torbay.gov.uk/recycling/bin-collections/",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Torbay",
-        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.",
-        "LAD24CD": "E06000027"
+        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
     "TorridgeDistrictCouncil": {
+        "LAD24CD": "E07000046",
         "skip_get_url": true,
         "uprn": "10091078762",
         "url": "https://collections-torridge.azurewebsites.net/WebService2.asmx",
         "wiki_name": "Torridge",
-        "wiki_note": "Provide your UPRN.",
-        "LAD24CD": "E07000046"
+        "wiki_note": "Provide your UPRN."
     },
     "TunbridgeWellsCouncil": {
+        "LAD24CD": "E07000116",
         "uprn": "10090058289",
         "url": "https://tunbridgewells.gov.uk",
         "wiki_command_url_override": "https://tunbridgewells.gov.uk",
         "wiki_name": "Tunbridge Wells",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E07000116"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "UttlesfordDistrictCouncil": {
+        "LAD24CD": "E07000077",
         "house_number": "72, Birchanger Lane",
         "postcode": "CM23 5QF",
         "skip_get_url": true,
@@ -2506,45 +2512,45 @@
         "url": "https://bins.uttlesford.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Uttlesford",
-        "wiki_note": "Provide your full address in the `house_number` parameter and your postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000077"
+        "wiki_note": "Provide your full address in the `house_number` parameter and your postcode in the `postcode` parameter."
     },
     "ValeofGlamorganCouncil": {
+        "LAD24CD": "W06000014",
         "skip_get_url": true,
         "uprn": "64029020",
         "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
         "wiki_name": "The Vale of Glamorgan",
-        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "W06000014"
+        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ValeofWhiteHorseCouncil": {
+        "LAD24CD": "E07000180",
         "custom_component_show_url_field": false,
         "skip_get_url": true,
         "uprn": "100121391443",
         "url": "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb",
         "wiki_name": "Vale of White Horse",
-        "wiki_note": "Provide your UPRN.",
-        "LAD24CD": "E07000180"
+        "wiki_note": "Provide your UPRN."
     },
     "WakefieldCityCouncil": {
+        "LAD24CD": "E08000036",
         "custom_component_show_url_field": true,
         "skip_get_url": true,
         "url": "https://www.wakefield.gov.uk/where-i-live/?uprn=63035490&a=115%20Elizabeth%20Drive%20Castleford%20WF10%203RR&usrn=41801243&e=445418&n=426091&p=WF10%203RR",
         "web_driver": "http://selenium:4444",
         "wiki_command_url_override": "https://www.wakefield.gov.uk/where-i-live/?uprn=XXXXXXXXXXX&a=XXXXXXXXXXX&usrn=XXXXXXXXXXX&e=XXXXXXXXXXX&n=XXXXXXXXXXX&p=XXXXXXXXXXX",
         "wiki_name": "Wakefield",
-        "wiki_note": "Follow the instructions [here](https://www.wakefield.gov.uk/where-i-live/) until you get the page that includes a 'Bin Collections' section, then copy the URL and replace the URL in the command.",
-        "LAD24CD": "E08000036"
+        "wiki_note": "Follow the instructions [here](https://www.wakefield.gov.uk/where-i-live/) until you get the page that includes a 'Bin Collections' section, then copy the URL and replace the URL in the command."
     },
     "WalsallCouncil": {
+        "LAD24CD": "E08000030",
         "uprn": "100071080513",
         "url": "https://cag.walsall.gov.uk/",
         "wiki_command_url_override": "https://cag.walsall.gov.uk/",
         "wiki_name": "Walsall",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E08000030"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "WalthamForest": {
+        "LAD24CD": "E09000031",
         "house_number": "17 Chingford Road, Walthamstow",
         "postcode": "E17 4PW",
         "skip_get_url": true,
@@ -2552,56 +2558,55 @@
         "url": "https://portal.walthamforest.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393/AF-Stage-8bf39bf9-5391-4c24-857f-0dc2025c67f4/definition.json&process=1&process_uri=sandbox-processes://AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393&process_id=AF-Process-d62ccdd2-3de9-48eb-a229-8e20cbdd6393",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Waltham Forest",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E09000031"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "WandsworthCouncil": {
+        "LAD24CD": "E09000032",
         "uprn": "100022684035",
         "url": "https://www.wandsworth.gov.uk",
         "wiki_command_url_override": "https://www.wandsworth.gov.uk",
         "wiki_name": "Wandsworth",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E09000032"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WarringtonBoroughCouncil": {
+        "LAD24CD": "E06000007",
         "uprn": "10094964379",
         "url": "https://www.warrington.gov.uk",
         "wiki_command_url_override": "https://www.warrington.gov.uk",
         "wiki_name": "Warrington",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000007"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WarwickDistrictCouncil": {
+        "LAD24CD": "E07000222",
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
         "wiki_command_url_override": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/XXXXXXXX",
         "wiki_name": "Warwick",
-        "wiki_note": "Replace `XXXXXXXX` with your UPRN.",
-        "LAD24CD": "E07000222"
+        "wiki_note": "Replace `XXXXXXXX` with your UPRN."
     },
     "WatfordBoroughCouncil": {
+        "LAD24CD": "E07000103",
         "uprn": "100080942183",
         "url": "https://www.watford.gov.uk",
         "wiki_command_url_override": "https://www.watford.gov.uk",
         "wiki_name": "Watford",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000103"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WaverleyBoroughCouncil": {
+        "LAD24CD": "E07000216",
         "house_number": "23",
         "postcode": "GU9 9QG",
         "skip_get_url": true,
         "url": "https://wav-wrp.whitespacews.com/",
         "wiki_name": "Waverley",
-        "wiki_note": "Follow the instructions [here](https://wav-wrp.whitespacews.com/#!) until you get the page that shows your next scheduled collections. Then take the number from `pIndex=NUMBER` in the URL and pass it as the `-n` parameter along with your postcode in `-p`.",
-        "LAD24CD": "E07000216"
+        "wiki_note": "Follow the instructions [here](https://wav-wrp.whitespacews.com/#!) until you get the page that shows your next scheduled collections. Then take the number from `pIndex=NUMBER` in the URL and pass it as the `-n` parameter along with your postcode in `-p`."
     },
     "WealdenDistrictCouncil": {
+        "LAD24CD": "E07000065",
         "skip_get_url": true,
         "uprn": "10033413624",
         "url": "https://www.wealden.gov.uk/recycling-and-waste/bin-search/",
         "wiki_name": "Wealden",
-        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it.",
-        "LAD24CD": "E07000065"
+        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
     "WelhatCouncil": {
         "LAD24CD": "E07000241",
@@ -2612,103 +2617,104 @@
         "wiki_note": "Provide your UPRN and postcode."
     },
     "WestBerkshireCouncil": {
+        "LAD24CD": "E06000037",
         "house_number": "8",
         "postcode": "RG14 7DP",
         "skip_get_url": true,
         "url": "https://www.westberks.gov.uk/binday",
         "web_driver": "http://selenium:4444",
         "wiki_name": "West Berkshire",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E06000037"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "WestDunbartonshireCouncil": {
+        "LAD24CD": "S12000039",
         "uprn": "129001383",
         "url": "https://www.west-dunbarton.gov.uk/",
         "wiki_name": "West Dunbartonshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "S12000039"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WestLancashireBoroughCouncil": {
+        "LAD24CD": "E07000127",
         "postcode": "WN8 0HR",
         "uprn": "10012343339",
         "url": "https://www.westlancs.gov.uk",
         "wiki_name": "West Lancashire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000127"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WestLindseyDistrictCouncil": {
+        "LAD24CD": "E07000142",
         "house_number": "35",
         "postcode": "LN8 3AX",
         "skip_get_url": true,
         "url": "https://www.west-lindsey.gov.uk/",
         "wiki_name": "West Lindsey",
-        "wiki_note": "Provide your house name/number in the `house_number` parameter, and postcode in the `postcode` parameter, both wrapped in double quotes. If multiple results are returned, the first will be used.",
-        "LAD24CD": "E07000142"
+        "wiki_note": "Provide your house name/number in the `house_number` parameter, and postcode in the `postcode` parameter, both wrapped in double quotes. If multiple results are returned, the first will be used."
     },
     "WestLothianCouncil": {
+        "LAD24CD": "S12000040",
         "house_number": "1 GOSCHEN PLACE",
         "postcode": "EH52 5JE",
         "skip_get_url": true,
         "url": "https://www.westlothian.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "West Lothian",
-        "wiki_note": "Provide your house name/number in the `house_number` parameter (wrapped in double quotes) and your postcode in the `postcode` parameter.",
-        "LAD24CD": "S12000040"
+        "wiki_note": "Provide your house name/number in the `house_number` parameter (wrapped in double quotes) and your postcode in the `postcode` parameter."
     },
     "WestMorlandAndFurness": {
+        "LAD24CD": "E06000064",
         "uprn": "100110353478",
         "url": "https://www.westmorlandandfurness.gov.uk/",
         "wiki_command_url_override": "https://www.westmorlandandfurness.gov.uk/",
         "wiki_name": "Westmorland and Furness",
-        "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000064"
+        "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WestNorthamptonshireCouncil": {
+        "LAD24CD": "E06000062",
         "skip_get_url": true,
         "uprn": "28056796",
         "url": "https://www.westnorthants.gov.uk",
         "wiki_name": "West Northamptonshire",
-        "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000062"
+        "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WestOxfordshireDistrictCouncil": {
+        "LAD24CD": "E07000181",
         "house_number": "24",
         "postcode": "OX28 1YA",
         "skip_get_url": true,
         "url": "https://community.westoxon.gov.uk/s/waste-collection-enquiry",
         "web_driver": "http://selenium:4444",
         "wiki_name": "West Oxfordshire",
-        "wiki_note": "Provide your house number in the `house_number` parameter and your postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000181"
+        "wiki_note": "Provide your house number in the `house_number` parameter and your postcode in the `postcode` parameter."
     },
     "WestSuffolkCouncil": {
+        "LAD24CD": "E07000245",
         "postcode": "IP28 6DR",
         "skip_get_url": true,
         "uprn": "10009739960",
         "url": "https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx",
         "wiki_name": "West Suffolk",
-        "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000245"
+        "wiki_note": "Provide your UPRN and postcode. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WiganBoroughCouncil": {
+        "LAD24CD": "E08000010",
         "postcode": "WN2 4UQ",
         "skip_get_url": true,
         "uprn": "010093942934",
         "url": "https://apps.wigan.gov.uk/MyNeighbourhood/",
         "wiki_name": "Wigan",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000010"
+        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WiltshireCouncil": {
+        "LAD24CD": "E06000054",
         "postcode": "SN8 3TE",
         "skip_get_url": true,
         "uprn": "100120982570",
         "url": "https://ilambassadorformsprod.azurewebsites.net/wastecollectiondays/index",
         "wiki_name": "Wiltshire",
-        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E06000054"
+        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "WinchesterCityCouncil": {
+        "LAD24CD": "E07000094",
         "house_number": "12",
         "paon": "12",
         "postcode": "SO23 7GA",
@@ -2716,104 +2722,103 @@
         "url": "https://iportal.itouchvision.com/icollectionday/collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Winchester",
-        "wiki_note": "Provide your house name/number in the `house_number` parameter (wrapped in double quotes) and your postcode in the `postcode` parameter.",
-        "LAD24CD": "E07000094"
+        "wiki_note": "Provide your house name/number in the `house_number` parameter (wrapped in double quotes) and your postcode in the `postcode` parameter."
     },
     "WindsorAndMaidenheadCouncil": {
+        "LAD24CD": "E06000040",
         "skip_get_url": true,
         "uprn": "100080371082",
         "url": "https://forms.rbwm.gov.uk/bincollections?uprn=",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Windsor and Maidenhead",
-        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E06000040"
+        "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WirralCouncil": {
+        "LAD24CD": "E08000015",
         "uprn": "Vernon Avenue,Seacombe",
         "url": "https://www.wirral.gov.uk",
         "wiki_command_url_override": "https://www.wirral.gov.uk",
         "wiki_name": "Wirral",
-        "wiki_note": "In the `uprn` field, enter your street name and suburb separated by a comma (e.g., 'Vernon Avenue,Seacombe').",
-        "LAD24CD": "E08000015"
+        "wiki_note": "In the `uprn` field, enter your street name and suburb separated by a comma (e.g., 'Vernon Avenue,Seacombe')."
     },
     "WokingBoroughCouncil": {
+        "LAD24CD": "E07000217",
         "house_number": "2",
         "postcode": "GU21 4JY",
         "skip_get_url": true,
         "url": "https://asjwsw-wrpwokingmunicipal-live.whitespacews.com/",
         "wiki_name": "Woking",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter. This works with all collection areas that use Joint Waste Solutions.",
-        "LAD24CD": "E07000217"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter. This works with all collection areas that use Joint Waste Solutions."
     },
     "WokinghamBoroughCouncil": {
+        "LAD24CD": "E06000041",
         "house_number": "90",
         "postcode": "RG40 2HR",
         "skip_get_url": true,
         "url": "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Wokingham",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "E06000041"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "WolverhamptonCityCouncil": {
+        "LAD24CD": "E08000031",
         "postcode": "WV3 9NZ",
         "uprn": "100071205205",
         "url": "https://www.wolverhampton.gov.uk",
         "wiki_name": "Wolverhampton",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
-        "LAD24CD": "E08000031"
+        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "WorcesterCityCouncil": {
+        "LAD24CD": "E07000237",
         "uprn": "100120650345",
         "url": "https://www.Worcester.gov.uk",
         "wiki_command_url_override": "https://www.Worcester.gov.uk",
         "wiki_name": "Worcester",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E07000237"
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "WrexhamCountyBoroughCouncil": {
+        "LAD24CD": "W06000006",
         "house_number": "1",
         "postcode": "LL12 7RW",
-        "uprn": "200002944225",
         "skip_get_url": true,
+        "uprn": "200002944225",
         "url": "https://www.wrexham.gov.uk/service/when-are-my-bins-collected",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Wrexham",
-        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
-        "LAD24CD": "W06000006"
+        "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
     "WychavonDistrictCouncil": {
+        "LAD24CD": "E07000238",
         "postcode": "WR3 7RU",
         "skip_get_url": true,
         "uprn": "100120716273",
         "url": "https://selfservice.wychavon.gov.uk/wdcroundlookup/wdc_search.jsp",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Wychavon",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000238"
+        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WyreCouncil": {
+        "LAD24CD": "E07000128",
         "skip_get_url": true,
         "uprn": "10003519994",
         "url": "https://www.wyre.gov.uk/bins-rubbish-recycling",
         "wiki_name": "Wyre",
-        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000128"
+        "wiki_note": "Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "WyreForestDistrictCouncil": {
+        "LAD24CD": "E07000239",
         "house_number": "Monday",
         "skip_get_url": true,
         "url": "https://www.wyreforestdc.gov.uk",
         "wiki_name": "Wyre Forest",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday].",
-        "LAD24CD": "E07000239"
+        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday]."
     },
     "YorkCouncil": {
+        "LAD24CD": "E06000014",
         "skip_get_url": true,
         "uprn": "100050535540",
         "url": "https://waste-api.york.gov.uk/api/Collections/GetBinCollectionDataForUprn/",
         "wiki_name": "York",
-        "wiki_note": "Provide your UPRN.",
-        "LAD24CD": "E06000014"
+        "wiki_note": "Provide your UPRN."
     }
 }
