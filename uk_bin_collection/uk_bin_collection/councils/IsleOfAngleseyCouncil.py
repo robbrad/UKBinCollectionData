@@ -62,14 +62,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Extract the nested data structure
         try:
-            return (
-                response.json()
-                .get("integration", {})
-                .get("transformed", {})
-                .get("rows_data", {})
-            )
+            return response.json()["integration"]["transformed"]["rows_data"]
         except requests.exceptions.JSONDecodeError as e:
             raise ValueError("Failed to decode lookup response as JSON") from e
+        except KeyError as e:
+            logger.debug(f"Lookup response content: {response.text}")
+            raise ValueError("Unexpected response structure from lookup") from e
 
     def _get_uprn_from_postcode_and_paon(self, postcode: str, paon: str) -> str:
         """Look up UPRN from postcode and house number/name.
