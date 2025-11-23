@@ -1,6 +1,11 @@
 import logging
 import requests
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import (
+    check_postcode,
+    check_uprn,
+    date_format,
+)
+from datetime import datetime
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 logger = logging.getLogger(__name__)
@@ -26,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def _initialise_session(self) -> None:
         """Initialize session by obtaining authentication cookie."""
-        response = self._session.get(SESSION_URL)
+        response = self._session.get(SESSION_URL, timeout=60)
         response.raise_for_status()
 
         if not response.json().get("auth-session"):
@@ -47,7 +52,9 @@ class CouncilClass(AbstractGetBinDataClass):
         if not self._have_session:
             self._initialise_session()
 
-        response = self._session.post(f"{LOOKUP_URL}?id={lookup_id}", json=payload)
+        response = self._session.post(
+            f"{LOOKUP_URL}?id={lookup_id}", json=payload, timeout=60
+        )
         response.raise_for_status()
 
         # Extract the nested data structure
@@ -116,6 +123,7 @@ class CouncilClass(AbstractGetBinDataClass):
         Returns:
             Dictionary containing bin collection schedule
         """
+        _ = page  # required by interface; response body is not used
 
         user_uprn = kwargs.get("uprn")
 

@@ -1259,7 +1259,7 @@
     },
     "IsleOfAngleseyCouncil": {
         "url": "https://www.anglesey.gov.wales/en/Residents/Bins-and-recycling/Waste-Collection-Day.aspx",
-        "wiki_name": "IsleOfAngleseyCouncil",
+        "wiki_name": "Isle of Anglesey",
         "wiki_note": "Pass either UPRN or postcode/house number. URL is not used.",
         "LAD24CD": "W06000001",
         "skip_get_url": true,
