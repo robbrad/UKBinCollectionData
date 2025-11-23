@@ -42,13 +42,13 @@ class CouncilClass(AbstractGetBinDataClass):
         offset_days = days_of_week.index(collection_day)
 
         if collection_week == 0:
-            recyclingstartDate = datetime(2024, 11, 4)
-            glassstartDate = datetime(2024, 11, 4)
-            refusestartDate = datetime(2024, 11, 11)
+            recyclingstartDate = datetime(2025, 11, 10)
+            glassstartDate = datetime(2025, 11, 10)
+            refusestartDate = datetime(2025, 11, 3)
         elif collection_week == 1:
-            recyclingstartDate = datetime(2024, 11, 11)
-            glassstartDate = datetime(2024, 11, 11)
-            refusestartDate = datetime(2024, 11, 4)
+            recyclingstartDate = datetime(2025, 11, 3)
+            glassstartDate = datetime(2025, 11, 3)
+            refusestartDate = datetime(2025, 11, 10)
 
         refuse_dates = get_dates_every_x_days(refusestartDate, 14, 28)
         glass_dates = get_dates_every_x_days(glassstartDate, 14, 28)
