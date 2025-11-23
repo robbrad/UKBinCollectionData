@@ -5,7 +5,7 @@ from uk_bin_collection.uk_bin_collection.common import (
     check_uprn,
     date_format,
 )
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 logger = logging.getLogger(__name__)
@@ -34,8 +34,11 @@ class CouncilClass(AbstractGetBinDataClass):
         response = self._session.get(SESSION_URL, timeout=60)
         response.raise_for_status()
 
-        if not response.json().get("auth-session"):
-            raise ValueError("Failed to obtain session cookie")
+        try:
+            if not response.json().get("auth-session"):
+                raise ValueError("Failed to obtain session cookie")
+        except requests.exceptions.JSONDecodeError as e:
+            raise ValueError("Failed to decode session response as JSON") from e
 
         self._have_session = True
 
@@ -58,12 +61,15 @@ class CouncilClass(AbstractGetBinDataClass):
         response.raise_for_status()
 
         # Extract the nested data structure
-        return (
-            response.json()
-            .get("integration", {})
-            .get("transformed", {})
-            .get("rows_data", {})
-        )
+        try:
+            return (
+                response.json()
+                .get("integration", {})
+                .get("transformed", {})
+                .get("rows_data", {})
+            )
+        except requests.exceptions.JSONDecodeError as e:
+            raise ValueError("Failed to decode lookup response as JSON") from e
 
     def _get_uprn_from_postcode_and_paon(self, postcode: str, paon: str) -> str:
         """Look up UPRN from postcode and house number/name.
@@ -149,7 +155,9 @@ class CouncilClass(AbstractGetBinDataClass):
             "formValues": {
                 "Section 1": {
                     "calcUPRN": {"value": user_uprn},
-                    "calcDate": {"value": datetime.now().strftime("%d/%m/%Y")},
+                    "calcDate": {
+                        "value": datetime.now(timezone.utc).strftime("%d/%m/%Y")
+                    },
                     "calcLang": {"value": "en"},
                 }
             }
@@ -185,8 +193,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     f"{date_str} {current_year}", "%d %B %Y"
                 )
 
-                # If date has passed, use next year instead
-                if collection_date < now:
+                # If the date (assuming current year) has already passed by more than 30 days, use next year
+                if collection_date < now - timedelta(days=30):
                     collection_date = collection_date.replace(year=current_year + 1)
 
                 bins.append(
