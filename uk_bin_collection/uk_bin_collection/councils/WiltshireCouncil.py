@@ -112,8 +112,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     for type in collection_types:
 
                         dict_data = {
-                            "type": collectiondate,
-                            "collectionDate": type,
+                            "type": type,
+                            "collectionDate": collectiondate,
                         }
                         data_bins["bins"].append(dict_data)
 
