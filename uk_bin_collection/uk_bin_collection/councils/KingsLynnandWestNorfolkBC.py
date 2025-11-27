@@ -22,7 +22,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
         URI = "https://www.west-norfolk.gov.uk/info/20174/bins_and_recycling_collection_dates"
 
-        headers = {"Cookie": f"bcklwn_uprn={user_uprn}"}
+        headers = {
+            "Cookie": f"bcklwn_uprn={user_uprn}",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        }
 
         # Make the GET request
         response = requests.get(URI, headers=headers)
