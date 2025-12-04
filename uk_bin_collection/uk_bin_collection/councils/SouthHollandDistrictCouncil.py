@@ -14,7 +14,9 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
+        if not check_uprn(user_uprn):
+            raise ValueError("Invalid UPRN provided")
+        
         bindata = {"bins": []}
 
         URI = "https://www.sholland.gov.uk/apiserver/ajaxlibrary"
@@ -25,8 +27,9 @@ class CouncilClass(AbstractGetBinDataClass):
             "method": "SouthHolland.Waste.getCollectionDates",
             "params": {"UPRN": user_uprn}
         }
-        # Make the GET request
-        response = requests.post(URI, json=data)
+        
+        # Make the POST request
+        response = requests.post(URI, json=data, timeout=30)
 
         # Parse the JSON response
         bin_collection = response.json()
