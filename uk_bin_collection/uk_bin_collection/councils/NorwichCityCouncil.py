@@ -69,13 +69,17 @@ class CouncilClass(AbstractGetBinDataClass):
         if soup.find("span", id="waste-hint"):
             raise Exception("No scheduled services at this address")
 
-        u1s = soup.find("section", id="scheduled-collections").find_all("u1")
+        uls = soup.find("section", id="scheduled-collections").find_all("ul")
 
-        for u1 in u1s:
-            lis = u1.find_all("li", recursive=False)
+        for ul in uls:
+            lis = ul.find_all("li", recursive=False)
 
-            date = lis[1].text.replace("\n", "")
-            bin_type = lis[2].text.replace("\n", "")
+            # Skip if not enough list items
+            if len(lis) < 3:
+                continue
+
+            date = lis[1].text.replace("\n", "").strip()
+            bin_type = lis[2].text.replace("\n", "").strip()
 
             dict_data = {
                 "type": bin_type,
