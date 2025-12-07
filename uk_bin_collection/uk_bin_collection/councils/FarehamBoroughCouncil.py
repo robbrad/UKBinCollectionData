@@ -22,7 +22,8 @@ class CouncilClass(AbstractGetBinDataClass):
         params = {
             "type": "JSON",
             "list": "DomesticBinCollections2025on",
-            "Road or Postcode": user_postcode,
+            "Road": "",
+            "Postcode": user_postcode,
         }
 
         response = requests.get(
