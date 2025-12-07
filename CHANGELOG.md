@@ -1,4 +1,70 @@
 =======
+## 0.162.0 (2025-12-07)
+
+### Feat
+
+- Add support for Isle of Anglesey County Council
+- replace Selenium with Cloud9 mobile API for NHDC bin collection data
+- Adding Harlow Council
+- #1639 Adding Harlow Council
+- Adding Blackpool Council
+- #1640 Adding Blackpool Council
+
+### Fix
+
+- add User-Agent header to KingsLynnandWestNorfolkBC scraper
+- **southgloucestershirecouncil**: check none instead of empty string
+- Treat missing response data as an error to prevent silent failure
+- address latest CodeRabbit feedback
+- address CodeRabbit feedback
+- Fix input.json data
+- fix UPRN param encoding for SouthamptonCityCouncil
+- Replace loop variable for clarity in North Hertfordshire parsing logic
+- Let requests handle query param encoding
+- Address edge case in address splitting
+- Handle edge case for date parsing validation
+- Don't bail on invalid date format
+- Add comment explaining where auth header came from
+- Improve error handling for mobile API requests and JSON parsing
+- Use constant for mobile API container count
+- Improve error handling for mobile API JSON response
+- Use named imports from common
+- Add sorting key for bin collections using parsed datetime
+- Improve error handling for collection date parsing
+- Use `line.strip()` in list comp
+- Update comment to match behaviour
+- Amend list comprehension variable name to avoid shadowing
+- Remove unused variable assignment
+- Perform postcode/paon string manipulation after checking truthiness
+- WiltshireCouncil.py
+- Rushmoor Council
+- #1724 - Rushmoor Council
+- Wiltshire Council
+- #1689 - Wiltshire Council
+- Halton Borough Council
+- #1209 Halton Borough Council
+- Northumberland Council
+- #1711 - Northumberland Council - Requires 12 digit UPRN
+- South Lanarkshire Council
+- #1712 - South Lanarkshire Council
+- Argyll and Bute Council
+- #1718 - Argyll and Bute Council
+- Thurrock Council
+- #1720 - Thurrock Council
+- Mid Sussex
+- #1721 Mid Sussex
+- Chelmsford City Council
+- #1707
+- #1706 -  London Borough of Lambeth
+- #1706 -  London Borough of Lambeth
+- Fife Council
+- Armagh Banbridge Craigavon Council
+- #1622
+
+### Refactor
+
+- Adjust return payload aggregation logic
+
 ## 0.161.0 (2025-11-08)
 
 ### Feat
