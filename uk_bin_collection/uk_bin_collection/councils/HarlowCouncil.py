@@ -1,4 +1,4 @@
-import time
+import requests
 
 import requests
 from bs4 import BeautifulSoup
