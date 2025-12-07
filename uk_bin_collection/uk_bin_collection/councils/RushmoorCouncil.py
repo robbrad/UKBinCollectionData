@@ -14,8 +14,25 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+
+        user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
+
+        headers = {
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+        }
+
+        params = {
+            "selectedAddress": user_uprn,
+        }
+
+        response = requests.get(
+            "https://www.rushmoor.gov.uk/Umbraco/Api/BinLookUpWorkAround/Get?",
+            params=params,
+            headers=headers,
+        )
         # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="lxml")
+        soup = BeautifulSoup(response.text, features="lxml")
         soup.prettify()
         data = {"bins": []}
         collections = []

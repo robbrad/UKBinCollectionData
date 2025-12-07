@@ -18,11 +18,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
         """
         Parse bin collection data for a given UPRN from the Southampton waste calendar page.
-        
+
         Parameters:
             page (str): HTML or identifier passed by caller (not used for extraction).
             uprn (str): Unique Property Reference Number to query for collection dates.
-        
+
         Returns:
             dict: A dictionary with a "bins" key containing a list of collection entries.
                 Each entry is a dict with:
@@ -54,7 +54,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         params = {
-            "UPRN": {user_uprn},
+            "UPRN": user_uprn,
         }
 
         r = requests.get(
@@ -65,9 +65,14 @@ class CouncilClass(AbstractGetBinDataClass):
         r.raise_for_status()
 
         # Limit search scope to avoid duplicates
-        calendar_view_only = re.search(
+        calendar_match = re.search(
             r"#calendar1.*?listView", r.text, flags=re.DOTALL
-        )[0]
+        )
+        if not calendar_match:
+            raise ValueError(
+                "Unable to find calendar view in response. The council website structure may have changed."
+            )
+        calendar_view_only = calendar_match.group(0)
 
         results = re.findall(REGEX, calendar_view_only)
 

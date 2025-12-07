@@ -42,7 +42,14 @@ class CouncilClass(AbstractGetBinDataClass):
                     if NextCollectionDate:
                         Container = service["Container"]
                         if Container:
-                            Bin_Type = Container["DisplayPhrase"]
+                            if Container["DisplayPhrase"] == "commercial bin":
+                                Bin_Type = (
+                                    "recycling"
+                                    if "Recycling" in Container["Name"]
+                                    else "refuse"
+                                )
+                            else:
+                                Bin_Type = Container["DisplayPhrase"]
                             dict_data = {
                                 "type": Bin_Type,
                                 "collectionDate": datetime.strptime(

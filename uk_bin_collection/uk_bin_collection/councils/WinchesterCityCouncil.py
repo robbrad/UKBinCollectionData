@@ -16,6 +16,26 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse the Winchester council bin calendar page and extract upcoming bin collection types and dates.
+        
+        Parameters:
+            page (str): Unused by this implementation; kept for interface compatibility.
+            **kwargs:
+                paon (str): Property name or number to match in the address selection.
+                postcode (str): Postcode to search for addresses.
+                web_driver: Optional identifier or configuration for the Selenium webdriver.
+                headless (bool): Whether to run the webdriver in headless mode.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" whose value is a list of dictionaries,
+            each containing:
+                - "type" (str): The bin type/name.
+                - "collectionDate" (str): Collection date formatted as "dd/mm/YYYY".
+        
+        Raises:
+            ValueError: If the page does not contain the expected collections container.
+        """
         driver = None
         try:
             data = {"bins": []}
@@ -57,40 +77,51 @@ class CouncilClass(AbstractGetBinDataClass):
             ).click()
 
             # Wait for the collections table to appear
+            # Wait for the collections container to appear (use contains to be resilient to CSS name changes)
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
-                        '//div[@class="ant-row d-flex justify-content-between mb-4 mt-2 css-2rgkd4"]',
+                        '//div[contains(@class, "ant-row") and contains(@class, "justify-content-between")]',
                     )
                 )
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
+            # Find the main container and then each card. Use class contains so small CSS changes don't break parsing.
             recyclingcalendar = soup.find(
                 "div",
-                {
-                    "class": "ant-row d-flex justify-content-between mb-4 mt-2 css-2rgkd4"
-                },
+                class_=lambda c: c and "ant-row" in c and "justify-content-between" in c,
             )
 
-            rows = recyclingcalendar.find_all(
+            if not recyclingcalendar:
+                raise ValueError("Could not find the collections container on the page")
+
+            # Each collection card uses a "p-2 d-flex flex-column justify-content-between" wrapper.
+            cards = recyclingcalendar.find_all(
                 "div",
-                {
-                    "class": "ant-col ant-col-xs-12 ant-col-sm-12 ant-col-md-12 ant-col-lg-12 ant-col-xl-12 css-2rgkd4"
-                },
+                class_=lambda c: c and "p-2" in c and "flex-column" in c,
             )
 
             current_year = datetime.now().year
             current_month = datetime.now().month
 
-            for row in rows:
-                BinType = row.find("h3").text
-                collectiondate = datetime.strptime(
-                    row.find("div", {"class": "text-white fw-bold"}).text,
-                    "%A %d %B",
-                )
+            for card in cards:
+                h3 = card.find("h3")
+                if not h3:
+                    # skip unexpected card
+                    continue
+                BinType = h3.text.strip()
+
+                date_div = card.find("div", class_=lambda c: c and "fw-bold" in c)
+                if not date_div:
+                    # no date found for this card, skip
+                    continue
+
+                date_text = date_div.text.strip()
+                # Expect format like: 'Friday 5 December'
+                collectiondate = datetime.strptime(date_text, "%A %d %B")
                 if (current_month > 10) and (collectiondate.month < 3):
                     collectiondate = collectiondate.replace(year=(current_year + 1))
                 else:

@@ -80,6 +80,7 @@ annotated_tag = true
 version_files = [
     "custom_components/uk_bin_collection/manifest.json:version",
     "custom_components/uk_bin_collection/manifest.json:requirements",
-    "custom_components/uk_bin_collection/const.py:INPUT_JSON_URL"
+    "custom_components/uk_bin_collection/const.py:INPUT_JSON_URL",
+    "uk_bin_collection_api_server/requirements.txt:uk-bin-collection"
 ]
 

@@ -56,7 +56,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             first_found_address = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, '//*[@id="dropdown-element-23"]/ul')
+                    (By.XPATH, '//*[@id="combobox-input-23-1-23"]/ul')
                 )
             )
 
