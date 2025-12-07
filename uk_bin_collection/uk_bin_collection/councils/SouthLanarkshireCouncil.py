@@ -78,8 +78,8 @@ class CouncilClass(AbstractGetBinDataClass):
                                         day.weekday()
                                         == time.strptime(schedule_day, "%A").tm_wday
                                     ):
-                                        day = day + timedelta(days=7)
-                                        collectionDate = day.strftime(date_format)
+                                        adjusted_day = day + timedelta(days=7)
+                                        collectionDate = adjusted_day.strftime(date_format)
 
                             if schedule_type and collectionDate:
                                 dict_data = {
