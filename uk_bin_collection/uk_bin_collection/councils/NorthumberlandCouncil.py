@@ -22,7 +22,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def extract_styles(self, style_str: str) -> dict:
         """
-        Parse an inline CSS style string into a dictionary of property–value pairs.
+        Parse an inline CSS style string into a dictionary of property-value pairs.
         
         Parameters:
             style_str (str): Inline CSS style text with semicolon-separated declarations (e.g. "color: red; margin: 0;").
