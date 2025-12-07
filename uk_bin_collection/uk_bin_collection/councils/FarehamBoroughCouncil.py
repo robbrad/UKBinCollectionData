@@ -58,6 +58,8 @@ class CouncilClass(AbstractGetBinDataClass):
             for key, value in bin_data["rows"][0].items():
                 if key.startswith("GardenWasteBinDay"):
                     results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4})', value)
+                    if not results:
+                        continue
                     collection_date = datetime.strptime(results[0], "%d/%m/%Y")
                     garden_data = {
                         "type": "Garden",
