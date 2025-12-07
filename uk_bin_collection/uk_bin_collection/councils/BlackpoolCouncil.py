@@ -62,7 +62,9 @@ class CouncilClass(AbstractGetBinDataClass):
             "https://api.blackpool.gov.uk/live//api/bartec/collection/PremiseJobs",
             headers=headers,
             json=json_data,
+            timeout=30,
         )
+        response.raise_for_status()
 
         # Parse the JSON response
         bin_collection = response.json()
