@@ -15,7 +15,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         # Get page with BS4
-        soup = BeautifulSoup(page.text, features="html.parser")
+        soup = BeautifulSoup(page, features="html.parser")
         soup.prettify()
 
         # Work out some date bounds

@@ -37,6 +37,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Get collections div
             next_collection_div = soup.find("div", {"class": "widget-bin-collections"})
 
+            if not next_collection_div:
+                # No collection data found, return empty bins
+                return data
+
             for tbody in next_collection_div.find_all("tbody"):
                 for tr in tbody.find_all("tr"):
                     td = tr.find_all("td")

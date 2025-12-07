@@ -54,14 +54,17 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_type = collection.get("typeDisplay")
             collection_date = collection.get("nextDate")
 
+            # Convert date from YYYY-MM-DD to DD/MM/YYYY format
+            parsed_date = datetime.strptime(collection_date, "%Y-%m-%d")
+
             dict_data = {
                 "type": bin_type,
-                "collectionDate": collection_date
+                "collectionDate": parsed_date.strftime(date_format)
             }
             bindata["bins"].append(dict_data)
 
         bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%Y-%m-%d")
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
 
         return bindata

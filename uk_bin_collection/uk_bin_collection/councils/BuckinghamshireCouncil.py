@@ -74,12 +74,25 @@ class CouncilClass(AbstractGetBinDataClass):
             encoded_input = self.encode_body(bucks_input)
 
             session = requests.Session()
+            headers = {
+                "Content-Type": "text/plain",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
             response = session.post(
                 "https://itouchvision.app/portal/itouchvision/kmbd/collectionDay",
                 data=encoded_input,
+                headers=headers,
             )
 
+            # Check if response is successful
+            if response.status_code != 200:
+                raise ValueError(f"API returned status code {response.status_code}: {response.text[:200]}")
+
             output = response.text
+            
+            # Check if output looks like hex (should only contain hex characters)
+            if not all(c in '0123456789ABCDEFabcdef' for c in output.strip()):
+                raise ValueError(f"API returned non-hex response (status {response.status_code}). Response starts with: {output[:200]}")
 
             decoded_bins = self.decode_response(output)
             data: dict[str, list[dict[str, str]]] = {}

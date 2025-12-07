@@ -67,33 +67,43 @@ class CouncilClass(AbstractGetBinDataClass):
 
         collectionDatesSection = soup.find("div", id="showCollectionDates")
 
+        # Check if the section exists
+        if not collectionDatesSection:
+            return bin_data
+
+        # Check for van collection message (no standard collection dates)
+        van_collection_msg = collectionDatesSection.find("p")
+        if van_collection_msg and "van collection" in van_collection_msg.get_text().lower():
+            # This property has van collection, no standard dates available
+            return bin_data
+
         # Find next date
-        collection_date = collectionDatesSection.find(
-            "p", class_="collection-date"
-        ).getText()
-
-        # convert to date
-        collection_type = collectionDatesSection.find(
-            "p", class_="collection-type"
-        ).getText()
-
-        self.add_bin_types_to_collection(bin_data, collection_date, collection_type)
+        collection_date_elem = collectionDatesSection.find("p", class_="collection-date")
+        if collection_date_elem:
+            collection_date = collection_date_elem.getText()
+            
+            # convert to date
+            collection_type_elem = collectionDatesSection.find("p", class_="collection-type")
+            if collection_type_elem:
+                collection_type = collection_type_elem.getText()
+                self.add_bin_types_to_collection(bin_data, collection_date, collection_type)
 
         # Find the table with collection dates
         table = collectionDatesSection.find("table", class_="leisure-table")
 
-        # Extract the rows containing the bin collection information
-        rows = table.find_all("tr")
+        if table:
+            # Extract the rows containing the bin collection information
+            rows = table.find_all("tr")
 
-        # Loop through the rows and extract bin data
-        for row in rows:
-            cells = row.find_all("td")
-            if len(cells) == 2:
-                collection_date = cells[1].get_text(strip=True)
-                collection_type = cells[0].get_text(strip=True)
+            # Loop through the rows and extract bin data
+            for row in rows:
+                cells = row.find_all("td")
+                if len(cells) == 2:
+                    collection_date = cells[1].get_text(strip=True)
+                    collection_type = cells[0].get_text(strip=True)
 
-                self.add_bin_types_to_collection(
-                    bin_data, collection_date, collection_type
-                )
+                    self.add_bin_types_to_collection(
+                        bin_data, collection_date, collection_type
+                    )
 
         return bin_data
