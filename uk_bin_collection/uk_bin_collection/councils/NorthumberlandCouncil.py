@@ -19,6 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
+
     def extract_styles(self, style_str: str) -> dict:
         return dict(
             (a.strip(), b.strip())
@@ -39,6 +40,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             check_postcode(user_postcode)
             check_uprn(user_uprn)
+            user_uprn = str(user_uprn).zfill(12)
 
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")

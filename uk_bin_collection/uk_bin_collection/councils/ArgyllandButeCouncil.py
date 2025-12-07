@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
-from datetime import datetime
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -26,6 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
             check_uprn(user_uprn)
             check_postcode(user_postcode)
+            user_uprn = str(user_uprn).zfill(12)
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
