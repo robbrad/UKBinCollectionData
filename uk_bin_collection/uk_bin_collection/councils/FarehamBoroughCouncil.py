@@ -13,6 +13,22 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Retrieve and parse Fareham bin collection dates for a given postcode into a structured dictionary.
+        
+        Parameters:
+            page (str): Source page content (not used; present for interface compatibility).
+            postcode (str, via kwargs['postcode']): Postcode to query; must be a valid postcode.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of entries. Each entry is a dict with:
+                - "type" (str): The bin type (e.g., "Recycling", "Garden").
+                - "collectionDate" (str): Collection date formatted as "DD/MM/YYYY".
+        
+        Raises:
+            ValueError: If the postcode is not found on the website.
+            RuntimeError: If expected collection dates cannot be parsed from the response.
+        """
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
 

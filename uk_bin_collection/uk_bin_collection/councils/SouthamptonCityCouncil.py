@@ -17,18 +17,20 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         """
-        Parse bin collection data for a given UPRN from the Southampton waste calendar page.
-
+        Parse bin collection dates for a given UPRN from Southampton's waste calendar.
+        
         Parameters:
-            page (str): HTML or identifier passed by caller (not used for extraction).
-            uprn (str): Unique Property Reference Number to query for collection dates.
-
+            uprn (str): Unique Property Reference Number supplied via kwargs; required for the lookup.
+        
         Returns:
-            dict: A dictionary with a "bins" key containing a list of collection entries.
-                Each entry is a dict with:
-                    - "type" (str): Waste type (e.g., "Glass", "Recycling", "General Waste", "Garden Waste").
-                    - "collectionDate" (str): Collection date in "DD/MM/YYYY" format.
-                The list is sorted by collectionDate in ascending order.
+            dict: Dictionary with a "bins" key containing a list of collection entries. Each entry is a dict with:
+                - "type" (str): Waste type ("Glass", "Recycling", "General Waste", or "Garden Waste").
+                - "collectionDate" (str): Collection date in "DD/MM/YYYY" format.
+            The list is sorted by collectionDate in ascending order.
+        
+        Raises:
+            ValueError: If the expected calendar view cannot be located in the council page response.
+            requests.HTTPError: If the HTTP request to the council site returns an error status.
         """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)

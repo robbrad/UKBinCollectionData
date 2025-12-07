@@ -7,8 +7,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-import string
-
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -84,23 +82,31 @@ class CouncilClass(AbstractGetBinDataClass):
 
             if bins_text:
                 results = re.findall(
-                    r"Your (.*?) bin will next be collected on (\d\d?\/\d\d?\/\d{4})",
+                    r"Your next (.*?)(?:\s\(.*\))? bin collections will be (\d\d?\/\d\d?\/\d{4}) and (\d\d?\/\d\d?\/\d{4})",
                     bins_text.get_text(),
                 )
                 if results:
                     for result in results:
-                        collection_date = datetime.strptime(result[1], "%d/%m/%Y")
-                        dict_data = {
-                            "type": result[0],
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
-
-                        data["bins"].sort(
-                            key=lambda x: datetime.strptime(
-                                x.get("collectionDate"), "%d/%m/%Y"
-                            )
+                        collection_one = datetime.strptime(result[1], "%d/%m/%Y")
+                        data["bins"].append(
+                            {
+                                "type": result[0],
+                                "collectionDate": collection_one.strftime(date_format),
+                            }
                         )
+                        collection_two = datetime.strptime(result[2], "%d/%m/%Y")
+                        data["bins"].append(
+                            {
+                                "type": result[0],
+                                "collectionDate": collection_two.strftime(date_format),
+                            }
+                        )
+
+                    data["bins"].sort(
+                        key=lambda x: datetime.strptime(
+                            x.get("collectionDate"), "%d/%m/%Y"
+                        )
+                    )
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

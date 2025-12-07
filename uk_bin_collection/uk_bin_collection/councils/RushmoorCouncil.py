@@ -15,6 +15,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Fetches bin collection schedules for a council address identified by an uprn and returns the collections ordered by date.
+        
+        This method validates the provided UPRN, requests the council's bin lookup API for the address, extracts upcoming collection entries, and returns them as a dictionary containing a "bins" list ordered by collection date.
+        
+        Parameters:
+            page (str): Unused parameter kept for API compatibility.
+            uprn (str, in kwargs): Unique Property Reference Number used to look up the address; must be a valid UPRN.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" whose value is a list of dictionaries. Each item has:
+                - "type" (str): Human-readable bin type, optionally including an exception message in parentheses.
+                - "collectionDate" (str): Collection date formatted according to the module's date_format.
+        
+        Raises:
+            ValueError: If no upcoming collections are found for the provided UPRN.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 

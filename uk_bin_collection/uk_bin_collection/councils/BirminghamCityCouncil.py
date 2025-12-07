@@ -65,6 +65,23 @@ class CouncilClass(AbstractGetBinDataClass):
             raise
 
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
+        """
+        Parse the council HTML page and return upcoming bin collection dates for the given address.
+        
+        Parameters:
+            page (str): HTML content of the initial council page used to extract the form token.
+            uprn (str): Unique Property Reference Number for the address; required.
+            postcode (str): Postal code for the address; required.
+        
+        Returns:
+            Dict[str, List[Dict[str, str]]]: A dictionary with a single key "bins" mapping to a list of bin objects.
+                Each bin object contains:
+                    - "type": the bin type as displayed on the site (e.g., "General waste").
+                    - "collectionDate": the next collection date formatted according to the module's `date_format`.
+        
+        Raises:
+            ValueError: If `uprn` or `postcode` is not provided.
+        """
         uprn: Optional[str] = kwargs.get("uprn")
         postcode: Optional[str] = kwargs.get("postcode")
 

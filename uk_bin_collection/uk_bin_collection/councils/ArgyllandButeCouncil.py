@@ -18,6 +18,22 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Fetch upcoming bin collection types and dates for an Argyll and Bute address.
+        
+        Parameters:
+            page (str): Unused; the function always targets the Argyll and Bute bin collection page.
+            **kwargs:
+                uprn (str|int): The property UPRN to select (will be normalized to 12 digits).
+                postcode (str): The postcode to search.
+                web_driver: Optional webdriver configuration or path passed to create_webdriver.
+                headless (bool): Whether to run the browser in headless mode.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of collections. Each collection is a dict with:
+                - "type" (str): Human-readable bin type (e.g., "General waste").
+                - "collectionDate" (str): Collection date formatted according to the module's `date_format`.
+        """
         driver = None
         try:
             page = "https://www.argyll-bute.gov.uk/rubbish-and-recycling/household-waste/bin-collection"

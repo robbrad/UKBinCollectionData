@@ -17,6 +17,23 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Retrieve scheduled bin collection dates for a given address from Mid-Sussex District Council.
+        
+        Parameters:
+            page (str): Unused by this implementation (kept for compatibility).
+            paon (str, in kwargs): Address name or number (passed as `paon`).
+            postcode (str, in kwargs): Address postcode (passed as `postcode`); must be valid.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of collection entries. Each entry is a dict with:
+                - "type": bin type as shown on the council page.
+                - "collectionDate": collection date string formatted using the module's `date_format`.
+        
+        Raises:
+            Exception: If the initial council page link is missing, the address cannot be found, or there are no scheduled services for the address.
+            requests.HTTPError: Propagated when HTTP requests return error status codes.
+        """
         try:
             data = {"bins": []}
             bindata = {"bins": []}

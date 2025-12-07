@@ -15,6 +15,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Parse scheduled bin collections for a given address and return structured bin data.
+        
+        Parameters:
+            page (str): Unused; retained for interface compatibility.
+            **kwargs: Keyword arguments containing address details:
+                postcode (str): Postal code of the property.
+                paon (str): Primary addressable object name/number (house number or name).
+        
+        Returns:
+            dict: A dictionary with a "bins" key mapping to a list of collection records. Each record is a dict with:
+                - "type" (str): The bin type/name.
+                - "collectionDate" (str): The collection date formatted according to the module's date_format constant.
+        
+        Raises:
+            Exception: If the initial landing page, address selection, or scheduled-collections section cannot be found, or if no scheduled services exist for the address.
+        """
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
         check_postcode(user_postcode)

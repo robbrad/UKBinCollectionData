@@ -17,6 +17,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Fetches and parses bin collection entries for a given UPRN from Harlow Council's self-serve page.
+        
+        Parameters:
+            uprn (str): Unique Property Reference Number provided via kwargs["uprn"]; validated with `check_uprn`.
+        
+        Returns:
+            dict: A dictionary with a "bins" key mapping to a list of collection entries. Each entry is a dict with:
+                - "type": the bin type as a trimmed string.
+                - "collectionDate": the collection date formatted according to `date_format`.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
