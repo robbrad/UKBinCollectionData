@@ -16,6 +16,26 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse the Winchester council bin calendar page and extract upcoming bin collection types and dates.
+        
+        Parameters:
+            page (str): Unused by this implementation; kept for interface compatibility.
+            **kwargs:
+                paon (str): Property name or number to match in the address selection.
+                postcode (str): Postcode to search for addresses.
+                web_driver: Optional identifier or configuration for the Selenium webdriver.
+                headless (bool): Whether to run the webdriver in headless mode.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" whose value is a list of dictionaries,
+            each containing:
+                - "type" (str): The bin type/name.
+                - "collectionDate" (str): Collection date formatted as "dd/mm/YYYY".
+        
+        Raises:
+            ValueError: If the page does not contain the expected collections container.
+        """
         driver = None
         try:
             data = {"bins": []}
