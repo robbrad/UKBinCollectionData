@@ -41,7 +41,9 @@ class CouncilClass(AbstractGetBinDataClass):
         response = requests.get(
             "https://api.blackpool.gov.uk/live//api/bartec/security/token",
             headers=headers,
+            timeout=30,
         )
+        response.raise_for_status()
 
         token = response.text.strip().replace('"', "")
 
