@@ -48,7 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
             print(collection)
             item = collection.get('hso_nextcollection')
 
-            if item == "":
+            if not item:
                 continue
 
             collection_date = datetime.fromisoformat(item)
