@@ -2,4 +2,4 @@ connexion
 uvicorn
 connexion[flask]
 connexion[swagger-ui]
-uk-bin-collection
+uk-bin-collection>=0.161.0
