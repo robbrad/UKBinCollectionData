@@ -33,6 +33,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "https://selfserve.harlow.gov.uk/appshost/firmstep/self/apps/custompage/bincollectionsecho",
             params=params,
             headers=headers,
+            timeout=30,
         )
 
         soup = BeautifulSoup(response.text, features="html.parser")
