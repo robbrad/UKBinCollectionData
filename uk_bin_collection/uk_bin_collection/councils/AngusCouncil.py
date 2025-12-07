@@ -28,41 +28,33 @@ class CouncilClass(AbstractGetBinDataClass):
             web_driver = kwargs.get("web_driver")
             driver = create_webdriver(web_driver, headless, None, __name__)
             
-            driver.get("https://www.angus.gov.uk/bins_litter_and_recycling/bin_collection_days")
+            # Go directly to the form URL
+            driver.get("https://myangus.angus.gov.uk/service/Bin_collection_dates_V3")
 
             wait = WebDriverWait(driver, 20)
             
-            # Accept cookies if present
-            try:
-                accept_cookies_button = wait.until(
-                    EC.element_to_be_clickable((By.ID, "ccc-recommended-settings"))
-                )
-                accept_cookies_button.click()
-            except TimeoutException:
-                print("Cookie banner not found, continuing...")
-
-            # Click on "Find bin collection days" link
-            find_your_collection_button = wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, "//a[contains(text(), 'Find bin collection days') or contains(@href, 'collection')]")
-                )
-            )
-            find_your_collection_button.click()
-
             # Wait for iframe to be present and switch to it
             iframe = wait.until(EC.presence_of_element_located((By.ID, "fillform-frame-1")))
             driver.switch_to.frame(iframe)
 
-            # Handle banner/modal if present
-            try:
-                close_button = wait.until(EC.element_to_be_clickable((By.TAG_NAME, "button")))
-                if close_button.text.strip().lower() in ['close', 'dismiss', 'ok']:
-                    close_button.click()
-            except TimeoutException:
-                pass
+            # Wait for page to load
+            import time
+            time.sleep(3)
 
-            # Wait for postcode input to be clickable
-            postcode_input = wait.until(EC.element_to_be_clickable((By.ID, "searchString")))
+            # Try to find the postcode input with different selectors
+            try:
+                postcode_input = wait.until(EC.element_to_be_clickable((By.ID, "searchString")))
+            except TimeoutException:
+                # Try alternative selectors
+                try:
+                    postcode_input = driver.find_element(By.NAME, "searchString")
+                except NoSuchElementException:
+                    try:
+                        postcode_input = driver.find_element(By.CSS_SELECTOR, "input[type='text']")
+                    except NoSuchElementException:
+                        # Print page source for debugging
+                        print("Page source:", driver.page_source[:1000])
+                        raise ValueError("Could not find postcode input field")
             postcode_input.clear()
             postcode_input.send_keys(user_postcode)
             

@@ -20,7 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         api_url = f"https://api.medway.gov.uk/api/waste/getwasteday/{user_uprn}"
 
-        response = requests.get(api_url)
+        response = requests.get(api_url, verify=False)
 
         data = {"bins": []}
 

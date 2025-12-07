@@ -81,6 +81,10 @@ class CouncilClass(AbstractGetBinDataClass):
                         By.XPATH, ".//div[input]"
                     )[1].text
 
+                    # Skip if the message indicates service suspension
+                    if "suspended" in raw_next_collection_date.lower() or "restarting" in raw_next_collection_date.lower():
+                        continue
+
                     parsed_bin_date = parse(
                         raw_next_collection_date, fuzzy_with_tokens=True
                     )[0]

@@ -104,35 +104,40 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Get the dates
             for date in soup.find_all("h2"):
-                if date.get_text(strip=True) != "Bank Holidays":
-                    bin_date = datetime.strptime(
-                        date.get_text(strip=True)
-                        .removesuffix("(Today)")
-                        .removesuffix("(Tomorrow)")
-                        .replace("&nbsp", " ")
-                        + " "
-                        + datetime.now().strftime("%Y"),
-                        "%A, %d %B %Y",
-                    )
-                    bin_types_wrapper = date.find_next_sibling("div")
-                    for bin_type_wrapper in bin_types_wrapper.find_all(
-                        "div",
-                        {
-                            "class": "card-body ps-5 ps-md-4 ps-lg-5 position-relative bg-white"
-                        },
-                    ):
-                        if bin_date and bin_type_wrapper:
-                            bin_type = bin_type_wrapper.find("a").get_text(strip=True)
-                            bin_type += (
-                                " ("
-                                + bin_type_wrapper.find("span").get_text(strip=True)
-                                + ")"
-                            )
-                            dict_data = {
-                                "type": bin_type,
-                                "collectionDate": bin_date.strftime(date_format),
-                            }
-                            data["bins"].append(dict_data)
+                date_text = date.get_text(strip=True)
+                if date_text != "Bank Holidays":
+                    try:
+                        bin_date = datetime.strptime(
+                            date_text
+                            .removesuffix("(Today)")
+                            .removesuffix("(Tomorrow)")
+                            .replace("&nbsp", " ")
+                            + " "
+                            + datetime.now().strftime("%Y"),
+                            "%A, %d %B %Y",
+                        )
+                        bin_types_wrapper = date.find_next_sibling("div")
+                        for bin_type_wrapper in bin_types_wrapper.find_all(
+                            "div",
+                            {
+                                "class": "card-body ps-5 ps-md-4 ps-lg-5 position-relative bg-white"
+                            },
+                        ):
+                            if bin_date and bin_type_wrapper:
+                                bin_type = bin_type_wrapper.find("a").get_text(strip=True)
+                                bin_type += (
+                                    " ("
+                                    + bin_type_wrapper.find("span").get_text(strip=True)
+                                    + ")"
+                                )
+                                dict_data = {
+                                    "type": bin_type,
+                                    "collectionDate": bin_date.strftime(date_format),
+                                }
+                                data["bins"].append(dict_data)
+                    except ValueError:
+                        # Skip h2 elements that aren't dates (e.g., popup notices)
+                        continue
 
             data["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
