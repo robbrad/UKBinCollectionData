@@ -14,6 +14,24 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Extract upcoming bin collection dates and their types for the supplied postcode or UPRN.
+        
+        Queries the council waste collection calendar for the current month and the next two months, parses the HTML response, and returns a dictionary with a "bins" list containing collection entries.
+        
+        Parameters:
+            page (str): Unused parameter retained for interface compatibility.
+            postcode (str, optional): Provided via kwargs["postcode"]; the postcode to query.
+            uprn (str|int, optional): Provided via kwargs["uprn"]; will be converted to a 12-character zero-padded string.
+        
+        Returns:
+            dict: A dictionary with key "bins" mapping to a list of dictionaries. Each entry contains:
+                - "type": the collection type as a string.
+                - "collectionDate": the collection date as a string formatted according to the module's `date_format`.
+        
+        Raises:
+            SystemError: If an HTTP request to the council calendar endpoint does not return status code 200.
+        """
         requests.packages.urllib3.disable_warnings()
         # Define some months to get from the calendar
         this_month = datetime.now().month

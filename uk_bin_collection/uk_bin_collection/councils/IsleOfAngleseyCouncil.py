@@ -25,12 +25,25 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def __init__(self):
+        """
+        Initialize the CouncilClass instance.
+        
+        Calls the superclass initializer, creates a requests.Session assigned to self._session, and sets self._have_session to False to indicate that an authenticated session has not yet been established.
+        """
         super().__init__()
         self._session = requests.Session()
         self._have_session = False
 
     def _initialise_session(self) -> None:
-        """Initialize session by obtaining authentication cookie."""
+        """
+        Establish an authenticated session with the remote service and mark the instance as having a valid session.
+        
+        Performs an HTTP GET to the configured session endpoint and verifies the JSON response contains an "auth-session" indicator. On success sets the instance flag that a session is available.
+        
+        Raises:
+            requests.HTTPError: If the session request returned an HTTP error status.
+            ValueError: If the response JSON cannot be decoded or does not contain an "auth-session" key.
+        """
         response = self._session.get(SESSION_URL, timeout=60)
         response.raise_for_status()
 
@@ -43,14 +56,18 @@ class CouncilClass(AbstractGetBinDataClass):
         self._have_session = True
 
     def _run_lookup(self, lookup_id: str, payload: dict) -> dict:
-        """Execute API lookup with given ID and payload.
-
-        Args:
-            lookup_id: The ID of the lookup to run
-            payload: The JSON payload to send
-
+        """
+        Run a lookup request and return the lookup's transformed rows data.
+        
+        Parameters:
+            lookup_id (str): Lookup identifier appended as the `id` query parameter to the lookup endpoint.
+            payload (dict): JSON body sent with the POST request.
+        
         Returns:
-            The transformed rows data from the response
+            The `rows_data` value extracted from the response's `integration.transformed` object.
+        
+        Raises:
+            ValueError: If the response is not valid JSON or does not contain the expected `integration.transformed.rows_data` structure.
         """
         if not self._have_session:
             self._initialise_session()
@@ -70,20 +87,18 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError("Unexpected response structure from lookup") from e
 
     def _get_uprn_from_postcode_and_paon(self, postcode: str, paon: str) -> str:
-        """Look up UPRN from postcode and house number/name.
-
-        The function retrieves a list of possible addresses for the given
-        postcode, then searches for a match with the provided PAON.
-
-        Args:
-            postcode: The postcode to search
-            paon: Property number or name (Primary Addressable Object Name)
-
+        """
+        Return the UPRN for the address at the given postcode matching the provided PAON.
+        
+        Parameters:
+            postcode (str): Postcode to search.
+            paon (str): Primary Addressable Object Name — house number or name to match.
+        
         Returns:
-            The UPRN for the matched address
-
+            str: The matching UPRN.
+        
         Raises:
-            ValueError: If no addresses found or no match for the PAON
+            ValueError: If no addresses are found for the postcode or no address matches the PAON.
         """
 
         payload = {
@@ -118,14 +133,22 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        """Parse bin collection data from council API.
-
-        Args:
-            page: Unused (required by interface)
-            **kwargs: Either 'uprn' or ('postcode' and 'paon'/'number')
-
+        """
+        Obtain the bin collection schedule for a property identified by UPRN or by postcode and house number/name.
+        
+        Parameters:
+            page (str): Unused but required by the interface.
+            **kwargs: Identification parameters — provide either:
+                uprn (str): The property's UPRN.
+                OR
+                postcode (str): The property's postcode.
+                paon (str) or number (str): The property's primary addressable object name/number (required with postcode).
+        
         Returns:
-            Dictionary containing bin collection schedule
+            dict: A dictionary with a "bins" key mapping to a list of collection entries, each containing `type` and `collectionDate`.
+        
+        Raises:
+            ValueError: If required identification parameters are missing, input validation fails, or the remote lookup cannot resolve the property.
         """
         _ = page  # required by interface; response body is not used
 
@@ -166,13 +189,20 @@ class CouncilClass(AbstractGetBinDataClass):
 
     @staticmethod
     def _extract_bin_data(schedule: dict) -> dict:
-        """Extract bin collection data from API response.
-
-        Args:
-            schedule: The schedule data from the API
-
+        """
+        Convert a schedule response into the standardized bins list.
+        
+        Parameters:
+            schedule (dict): Mapping of schedule rows returned by the API where each value is a dict containing at least the keys "Service" and "Date".
+        
         Returns:
-            Dictionary with 'bins' list containing collection dates
+            dict: {"bins": [ {"type": <service name>, "collectionDate": <date string formatted by date_format>} , ... ]}
+        
+        Raises:
+            ValueError: If `schedule` is empty.
+        
+        Notes:
+            - Rows missing required fields or containing unparsable dates are skipped and a warning is logged.
         """
         if not schedule:
             raise ValueError("No collection data found")

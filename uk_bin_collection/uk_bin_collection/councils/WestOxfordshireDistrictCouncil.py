@@ -22,6 +22,21 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Query West Oxfordshire's waste collection site for a property's bin types and upcoming collection dates.
+        
+        Parameters:
+            page (str): Ignored; the function always queries the West Oxfordshire waste collection enquiry page.
+            paon (str, in kwargs): Property house number or name.
+            postcode (str, in kwargs): Property postcode.
+            web_driver (str or WebDriver, in kwargs): WebDriver identifier or instance used to create the Selenium driver.
+            headless (bool, in kwargs): Whether to run the browser in headless mode.
+        
+        Returns:
+            dict: A dictionary with a "bins" key mapping to a list of objects, each containing:
+                - "type" (str): Bin/container type (e.g., "General waste", "Recycling").
+                - "collectionDate" (str): Next collection date formatted as "DD/MM/YYYY".
+        """
         driver = None
         try:
             page = "https://community.westoxon.gov.uk/s/waste-collection-enquiry"

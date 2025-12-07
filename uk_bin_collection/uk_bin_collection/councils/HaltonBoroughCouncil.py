@@ -22,6 +22,22 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Retrieve bin collection dates for a property from Halton Council's waste service.
+        
+        This method loads the council's waste service page, submits the provided property identifier and postcode, parses the resulting collection schedule, and returns structured bin collection entries.
+        
+        Parameters:
+            paon (str, via kwargs): Property identifier — house number or property name.
+            postcode (str, via kwargs): Property postcode.
+            web_driver (str or selenium.webdriver, via kwargs): Optional webdriver backend identifier or instance passed to create_webdriver.
+            headless (bool, via kwargs): If True, the browser is created in headless mode.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" containing a list of collection entries. Each entry is a dict with:
+                - "type" (str): Waste type name (capitalized).
+                - "collectionDate" (str): Collection date formatted as "DD/MM/YYYY".
+        """
         driver = None
         try:
             data = {"bins": []}
