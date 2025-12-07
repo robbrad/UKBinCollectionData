@@ -52,7 +52,7 @@ class CouncilClass(AbstractGetBinDataClass):
             }
 
             # get list of addresses
-            r = session.post(nextpageurl, data)
+            r = session.post(nextpageurl, data=data, timeout=30)
             r.raise_for_status()
 
             soup = BeautifulSoup(r.text, features="html.parser")
