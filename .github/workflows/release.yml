@@ -101,5 +101,5 @@ jobs:
           context: ./uk_bin_collection_api_server
           push: true
           tags: |
-            robbrad182/uk-bin-collection:${{ env.RELEASE_VERSION }}
+            robbrad182/uk-bin-collection:${{ github.ref_name }}
             robbrad182/uk-bin-collection:latest
