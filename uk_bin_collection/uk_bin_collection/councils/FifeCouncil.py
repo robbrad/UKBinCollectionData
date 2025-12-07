@@ -19,6 +19,24 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse bin collection data for a given postcode and house identifier by driving the council bin-calendar web UI and returning structured collection entries.
+        
+        Parameters:
+            page (str): Unused; kept for API compatibility.
+            postcode (str, in kwargs): The postcode to search for.
+            paon (str, in kwargs): The property identifier (house number or name) used to pick the best address option from the dropdown.
+            web_driver (str, optional, in kwargs): WebDriver backend identifier passed to the webdriver factory.
+            headless (bool, optional, in kwargs): Whether to run the browser in headless mode.
+        
+        Returns:
+            dict: A dictionary with a "bins" key containing a list of entries. Each entry is a dict with:
+                - "type": the collection colour/name extracted from the image alt text (or None if missing).
+                - "collectionDate": the collection date string formatted according to the module's date_format.
+        
+        Raises:
+            ValueError: If the provided paon cannot be matched to any dropdown address or if the collections table cannot be found.
+        """
         driver = None
         try:
             # Get and check UPRN
@@ -72,6 +90,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
             def _best_option():
                 # Prefer exact contains on visible text; fallback to casefold contains
+                """
+                Selects the first dropdown option whose visible text contains the normalized PAON.
+                
+                Performs a case-insensitive containment check using the precomputed `paon_norm` against each option's visible text and returns the first match.
+                
+                Returns:
+                    `WebElement` of the first matching option if found, `None` otherwise.
+                """
                 for opt in sel.options:
                     txt = (opt.text or "").strip()
                     if paon_norm and paon_norm in txt.casefold():

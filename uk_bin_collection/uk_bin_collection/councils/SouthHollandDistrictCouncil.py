@@ -13,6 +13,21 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Fetches household bin collection schedules for the given UPRN from the South Holland waste collection API and returns them sorted by collection date.
+        
+        Parameters:
+            uprn (str): Unique Property Reference Number passed via kwargs["uprn"]. Used to query the council API.
+        
+        Returns:
+            dict: A dictionary with a "bins" key mapping to a list of collections. Each collection is a dict with:
+                - "type" (str | None): Display name of the bin type.
+                - "collectionDate" (str | None): Collection date in "YYYY-MM-DD" format.
+                The list is sorted in ascending order by "collectionDate".
+        
+        Raises:
+            ValueError: If the provided UPRN is invalid.
+        """
         user_uprn = kwargs.get("uprn")
         if not check_uprn(user_uprn):
             raise ValueError("Invalid UPRN provided")

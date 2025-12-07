@@ -16,6 +16,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """
+        Parse an HTML page to extract scheduled bin collection types and their collection dates.
+        
+        Parameters:
+            page: An object with a `text` attribute containing the HTML of the council's bin collection page (e.g., an HTTP response).
+        
+        Returns:
+            dict: A dictionary with a "bins" key mapping to a list of collections, where each collection is a dict with:
+                - "type": the collection description string (e.g., "Garden waste")
+                - "collectionDate": the collection date formatted according to the module's `date_format`
+        """
         data = {"bins": []}
         collection_types = [
             "non recyclable waste",

@@ -22,6 +22,20 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Produce scheduled bin collection entries for a property based on a reference weekday and fortnightly rota.
+        
+        Parameters:
+            page (str): The page content passed to the parser (not used for scheduling).
+            paon (str, in kwargs): The reference weekday name (e.g., "Monday") representing the property's collection day.
+            postcode (str, in kwargs): The collection week label, either "Week 1" or "Week 2", used to select rota start dates.
+        
+        Returns:
+            dict: A mapping with a single key "bins" whose value is a list of collection entries.
+                Each entry is a dict with:
+                    - "type" (str): Bin type name ("Grey Bin", "Green Bin", or "Glass Box").
+                    - "collectionDate" (str): Collection date in "DD/MM/YYYY" format.
+        """
         collection_day = kwargs.get("paon")
         collection_week = kwargs.get("postcode")
         bindata = {"bins": []}

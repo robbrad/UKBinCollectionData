@@ -15,6 +15,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Parse bin collection data for a given UPRN from the Lambeth waste service API.
+        
+        Posts the UPRN to the Lambeth "GetServicesByUprn" endpoint, extracts services that include a next collection date and a container, normalizes commercial container types to either "recycling" (if the container name contains "Recycling") or "refuse", and returns a dictionary with a "bins" list where each entry contains the bin type and the collection date formatted according to `date_format`.
+        
+        Parameters:
+            page (str): HTML or page content provided to the parser (not used by this implementation).
+            uprn (str, optional, in kwargs): The UPRN to query; required in kwargs as "uprn".
+        
+        Returns:
+            dict: A dictionary with a single key "bins" mapping to a list of objects with:
+                - "type" (str): Bin type (e.g., "recycling", "refuse", or the container's DisplayPhrase).
+                - "collectionDate" (str): Collection date formatted using `date_format`.
+        
+        Raises:
+            ConnectionRefusedError: If the API response status code is not 200.
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         data = {"bins": []}

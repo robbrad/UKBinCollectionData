@@ -16,24 +16,20 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
-        Locate the council collection round for the given address and return upcoming bin collection dates and types.
-
-        Parses the council bin-collection webpage for the provided postcode and property identifier (paon), determines the matching collection round, fetches the corresponding ICS calendar for the 2025-26 year range, and returns each scheduled collection within the next 60 days as separate entries.
-
+        Locate the council collection round for the given address and return upcoming bin collection dates and types within the next 60 days.
+        
         Parameters:
             page (str): Unused parameter retained for API compatibility.
             postcode (str, in kwargs): Postcode to search on the council site.
             paon (str, in kwargs): Property/house name or number used to match the address row.
-            web_driver (optional, in kwargs): WebDriver identifier or configuration passed to create_webdriver.
-            headless (optional, in kwargs): Headless flag passed to create_webdriver.
-
+        
         Returns:
             dict: A dictionary with a "bins" key containing a list of collection entries. Each entry is a dict with:
                 - "type": collection type string (e.g., "General waste")
                 - "collectionDate": collection date formatted according to the module's `date_format`
-
+        
         Raises:
-            ValueError: If no collection round can be found for the provided `paon`.
+            ValueError: If no collection round can be found for the provided `paon`, or if the calendar (.ics) link for the identified round cannot be located.
         """
         driver = None
         try:

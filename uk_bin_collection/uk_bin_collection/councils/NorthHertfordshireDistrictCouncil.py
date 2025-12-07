@@ -33,17 +33,19 @@ MOBILE_API_NUM_CONTAINERS = 8
 
 def lookup_uprn(postcode: str, paon: str) -> str:
     """
-    Lookup UPRN from postcode and house number using the Cloud9 addresses API.
-
-    Args:
-        postcode: The postcode to search for
-        paon: The house number/name (Primary Addressable Object Name)
-
+    Resolve the UPRN for an address given a postcode and house number/name using the Cloud9 addresses API.
+    
+    Parameters:
+        postcode (str): Postcode to search.
+        paon (str): Primary Addressable Object Name (house number or name).
+    
     Returns:
-        str: The UPRN for the address
-
+        str: The UPRN for the matched address.
+    
     Raises:
-        ValueError: If no matching address is found or if the API request fails
+        ValueError: If postcode or paon is missing, the addresses API request fails or returns a non-200 status,
+                    the API response is invalid JSON, no addresses are found for the postcode,
+                    no addresses match the provided paon, or multiple matching addresses are found.
     """
 
     if not postcode:
@@ -117,16 +119,16 @@ def lookup_uprn(postcode: str, paon: str) -> str:
 
 def fetch_mobile_api(uprn: str) -> dict:
     """
-    Calls the Cloud9 mobile API to get waste collection data.
-
-    Args:
-        uprn: The Unique Property Reference Number
-
+    Retrieve waste collection data for a property UPRN from the Cloud9 mobile API.
+    
+    Parameters:
+        uprn (str): Unique Property Reference Number to query.
+    
     Returns:
-        dict: JSON response from the mobile API
-
+        dict: Parsed JSON response from the mobile API.
+    
     Raises:
-        ValueError: If the API request fails, the response status is not 200, or the response contains invalid JSON.
+        ValueError: If the HTTP request fails, the response status is not 200, or the response body is not valid JSON.
     """
     url = f"{MOBILE_API_BASE}/wastecollections/{uprn}"
 
@@ -157,14 +159,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         """
-        Parse bin collection data using the Cloud9 mobile API.
-
-        Args:
-            page: Unused (kept for interface compatibility)
-            **kwargs: Must contain either 'uprn' or both 'postcode' and 'paon'
-
+        Parse and return sorted bin collection entries for an address using the Cloud9 mobile API.
+        
+        Parameters:
+            page (str): Unused; present for interface compatibility.
+            **kwargs: Must include either:
+                - uprn (str): Validated UPRN to query the mobile API.
+                OR
+                - postcode (str) and paon (str): Postcode and property identifier used to resolve a UPRN via lookup_uprn.
+        
         Returns:
-            dict: Bin collection data in standard format
+            dict: {"bins": [entry, ...]} where each entry is a dict with:
+                - "type" (str): Container description (e.g., "Refuse", "Recycling", or a default "Container N").
+                - "collectionDate" (str): Date formatted according to the module's date_format.
+        
+        Raises:
+            ValueError: If inputs are missing/invalid, UPRN lookup fails, the API response lacks wasteCollectionDates,
+                        no valid collection dates can be extracted, or the API request/response is malformed.
         """
         bins_with_sort_date = []
 

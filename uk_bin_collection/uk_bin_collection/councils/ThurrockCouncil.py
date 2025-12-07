@@ -12,6 +12,19 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Generate scheduled bin collection entries for a property based on the property's collection weekday and postcode round.
+        
+        Parameters:
+        	page (str): HTML page content (unused; accepted for API compatibility).
+        	paon (str, in kwargs): Collection weekday name (e.g., "Monday") used to compute the offset from generated base dates.
+        	postcode (str, in kwargs): Round identifier, either "Round A" or "Round B", which selects the alternating start dates.
+        
+        Returns:
+        	dict: A dictionary with key "bins" containing a list of collection entries. Each entry is a dict with:
+        		- "type" (str): Bin type, e.g., "Green/Grey Bin", "Blue Bin", "Brown Bin", or "Food Bin".
+        		- "collectionDate" (str): Collection date formatted as "DD/MM/YYYY".
+        """
         collection_day = kwargs.get("paon")
         round = kwargs.get("postcode")
 

@@ -16,6 +16,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Retrieve and parse bin collection entries for a property using UPRN and postcode.
+        
+        Parameters:
+            page (str): Unused parameter retained for interface compatibility.
+            uprn (str, in kwargs): Property UPRN used to look up collections.
+            postcode (str, in kwargs): Property postcode used to look up collections.
+        
+        Returns:
+            dict: A dictionary with a single key "bins" mapping to a list of collection records.
+                  Each record is a dict with:
+                    - "type": collection type or description.
+                    - "collectionDate": collection date formatted according to the module's date_format.
+        
+        Raises:
+            requests.HTTPError: If any of the HTTP requests return a non-success status.
+        """
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
         check_uprn(user_uprn)

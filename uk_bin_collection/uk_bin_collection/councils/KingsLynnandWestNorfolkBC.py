@@ -15,6 +15,19 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
+        """
+        Parse West Norfolk council bin collection information and return a structured list of upcoming collections.
+        
+        This method extracts bin types and collection dates for the supplied UPRN from the West Norfolk council collection page and returns them sorted chronologically.
+        
+        Parameters:
+            uprn (str): Unique Property Reference Number provided via kwargs key "uprn". The value will be validated and left-padded with zeros to 12 characters before use.
+        
+        Returns:
+            dict: A dictionary with a "bins" key mapping to a list of entries. Each entry is a dict with:
+                - "type" (str): The bin type as reported by the council.
+                - "collectionDate" (str): The collection date formatted as "dd/mm/YYYY".
+        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         user_uprn = user_uprn.zfill(12)
