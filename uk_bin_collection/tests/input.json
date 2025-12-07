@@ -1527,10 +1527,11 @@
         "LAD24CD": "E07000133"
     },
     "MertonCouncil": {
-        "url": "https://myneighbourhood.merton.gov.uk/wasteservices/WasteServices.aspx?ID=25936129",
-        "wiki_command_url_override": "https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX",
+        "uprn": "4328213",
+        "skip_get_url": true,
+        "url": "https://fixmystreet.merton.gov.uk/waste/",
         "wiki_name": "Merton",
-        "wiki_note": "Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the \"Your recycling and rubbish collection days\" page, then copy the URL and replace the URL in the command.",
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E09000024"
     },
     "MidAndEastAntrimBoroughCouncil": {
