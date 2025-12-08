@@ -51,8 +51,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.set_window_size(1366, 768)  # Set reasonable window size for Lightning components
-            driver.set_window_position(0, 0)  # Position window at top-left of screen
             driver.get(page)
             
             # Scroll to top-left to ensure components are visible
