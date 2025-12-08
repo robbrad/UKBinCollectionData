@@ -118,8 +118,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 cookie_button = wait.until(
                     EC.element_to_be_clickable(
                         (
-                            By.CLASS_NAME,
-                            "btn btn--cookiemessage btn--cancel btn--contrast",
+                            By.CSS_SELECTOR,
+                            "button.btn.btn--cookiemessage.btn--cancel.btn--contrast",
                         )
                     )
                 )

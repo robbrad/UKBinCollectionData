@@ -71,8 +71,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
                                 # Only add a year if the date is more than 30 days in the past
                                 # This handles both mid-year and year-end transitions better
-                                today = datetime.now()
-                                if (today - bin_date).days > 30:
+                                # Use date() to avoid time-of-day issues
+                                today = datetime.now().date()
+                                bin_date_only = bin_date.date()
+                                if (today - bin_date_only).days > 30:
                                     bin_date = bin_date.replace(year=current_year + 1)
 
                                 collections.append((bin_type, bin_date))
