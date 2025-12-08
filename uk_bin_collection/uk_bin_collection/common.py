@@ -350,11 +350,16 @@ def create_webdriver(
 
     try:
         if web_driver:
-            return webdriver.Remote(command_executor=web_driver, options=options)
+            driver = webdriver.Remote(command_executor=web_driver, options=options)
         else:
-            return webdriver.Chrome(
+            driver = webdriver.Chrome(
                 service=ChromeService(ChromeDriverManager().install()), options=options
             )
+        
+        # Set window position to ensure it's visible on screen
+        driver.set_window_position(0, 0)
+        
+        return driver
     except MaxRetryError as e:
         print(f"Failed to create WebDriver: {e}")
         raise

@@ -52,29 +52,33 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(page)
+            
+            # Scroll to top-left to ensure components are visible
+            driver.execute_script("window.scrollTo(0, 0);")
 
             # If you bang in the house number (or property name) and postcode in the box it should find your property
             wait = WebDriverWait(driver, 60)
+            # Use XPath with placeholder attribute for more robust element selection
             address_entry_field = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="combobox-input-23"]')
+                EC.element_to_be_clickable(
+                    (By.XPATH, '//input[@placeholder="Search Properties..."]')
                 )
-            )
-
-            address_entry_field = wait.until(
-                EC.element_to_be_clickable((By.XPATH, '//*[@id="combobox-input-23"]'))
             )
             address_entry_field.click()
             address_entry_field.send_keys(str(full_address))
+            
+            # Trigger dropdown by sending backspace and re-typing last character
+            time.sleep(1)  # Give the search a moment to process
             address_entry_field.send_keys(Keys.BACKSPACE)
             address_entry_field.send_keys(str(full_address[len(full_address) - 1]))
 
+            # Wait for dropdown items to appear - look for lightning-base-combobox-item elements
+            # The second item contains the actual address (first is "Show more results")
             first_found_address = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, '//*[@id="combobox-input-23-1-23"]/ul')
+                    (By.XPATH, '(//lightning-base-combobox-item)[2]')
                 )
             )
-
             first_found_address.click()
             # Wait for the 'Select your property' dropdown to appear and select the first result
             next_btn = wait.until(
