@@ -157,6 +157,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Huntingdonshire](#huntingdonshire)
 - [Hyndburn](#hyndburn)
 - [Ipswich](#ipswich)
+- [Isle of Anglesey](#isle-of-anglesey)
 - [Islington](#islington)
 - [Kings Lynn and West Norfolk](#kings-lynn-and-west-norfolk)
 - [Kingston upon Thames](#kingston-upon-thames)
@@ -1244,11 +1245,10 @@ Note: Pass the house number and postcode in their respective parameters.
 
 ### Cumberland
 ```commandline
-python collect_data.py CumberlandCouncil https://waste.cumberland.gov.uk/renderform?t=25&k=E43CEB1FB59F859833EF2D52B16F3F4EBE1CAB6A -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py CumberlandCouncil https://www.cumberland.gov.uk/bins-recycling-and-street-cleaning/waste-collections/bin-collection-schedule -u XXXXXXXX
 ```
 Additional parameters:
 - `-u` - UPRN
-- `-p` - postcode
 
 Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
@@ -1643,12 +1643,15 @@ Note: Add your postcode.
 
 ### Epsom and Ewell
 ```commandline
-python collect_data.py EpsomandEwellBoroughCouncil https://www.epsom-ewell.gov.uk -u XXXXXXXX
+python collect_data.py EpsomandEwellBoroughCouncil https://www.epsom-ewell.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
+Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN. Requires Selenium.
 
 ---
 
@@ -1749,11 +1752,12 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Folkestone and Hythe
 ```commandline
-python collect_data.py FolkstoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX
+python collect_data.py FolkstoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
@@ -2142,14 +2146,27 @@ Note: Provide only the street name (no house number) as the PAON
 
 ---
 
+### Isle of Anglesey
+```commandline
+python collect_data.py IsleOfAngleseyCouncil https://www.anglesey.gov.wales/en/Residents/Bins-and-recycling/Waste-Collection-Day.aspx -s -u XXXXXXXX
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+
+Note: Pass either UPRN or postcode/house number. URL is not used.
+
+---
+
 ### Islington
 ```commandline
-python collect_data.py IslingtonCouncil https://www.islington.gov.uk/your-area?Postcode=unused&Uprn=XXXXXXXX -u XXXXXXXX
+python collect_data.py IslingtonCouncil https://www.islington.gov.uk/your-area -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
 - `-u` - UPRN
+- `-p` - postcode
 
-Note: Replace XXXXXXXX with your UPRN.
+Note: Pass your postcode and UPRN as parameters.
 
 ---
 
@@ -2507,10 +2524,13 @@ Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.
 
 ### Merton
 ```commandline
-python collect_data.py MertonCouncil https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServices.aspx?ID=XXXXXXXX
+python collect_data.py MertonCouncil https://fixmystreet.merton.gov.uk/waste/ -s -u XXXXXXXX
 ```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
 
-Note: Follow the instructions [here](https://myneighbourhood.merton.gov.uk/Wasteservices/WasteServicesSearch.aspx) until you get the "Your recycling and rubbish collection days" page, then copy the URL and replace the URL in the command.
+Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
@@ -2787,14 +2807,13 @@ Note: Replace XXXXXXXX with your UPRN.
 
 ### North Hertfordshire
 ```commandline
-python collect_data.py NorthHertfordshireDistrictCouncil https://www.north-herts.gov.uk -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py NorthHertfordshireDistrictCouncil https://apps.cloud9technologies.com/northherts/citizenmobile/mobileapi/XXXXXXXX/ -s -u XXXXXXXX
 ```
 Additional parameters:
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
+- `-s` - skip get URL
+- `-u` - UPRN
 
-Note: Pass the house number and postcode in their respective parameters.
+Note: Replace the XXXXXXXX with your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)
 
 ---
 
