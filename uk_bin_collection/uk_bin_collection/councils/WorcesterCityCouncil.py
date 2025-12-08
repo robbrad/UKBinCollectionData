@@ -39,17 +39,24 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_type = row.select_one("td:nth-of-type(2)").text.strip()
             collection_date = row.select_one("td:nth-of-type(3) strong").text.strip()
 
+            # Skip if not applicable or if it's a sentence (not a date)
             if collection_date == "Not applicable":
                 continue
 
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": datetime.strptime(
+            # Try to parse as date, skip if it fails (e.g., informational text)
+            try:
+                parsed_date = datetime.strptime(
                     collection_date,
                     "%A %d/%m/%Y",
-                ).strftime("%d/%m/%Y"),
-            }
-            bindata["bins"].append(dict_data)
+                )
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": parsed_date.strftime("%d/%m/%Y"),
+                }
+                bindata["bins"].append(dict_data)
+            except ValueError:
+                # Skip entries that aren't valid dates (e.g., seasonal messages)
+                continue
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
