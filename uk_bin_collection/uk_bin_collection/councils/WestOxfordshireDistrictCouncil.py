@@ -51,7 +51,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
+            driver.set_window_size(1366, 768)  # Set reasonable window size for Lightning components
+            driver.set_window_position(0, 0)  # Position window at top-left of screen
             driver.get(page)
+            
+            # Scroll to top-left to ensure components are visible
+            driver.execute_script("window.scrollTo(0, 0);")
 
             # If you bang in the house number (or property name) and postcode in the box it should find your property
             wait = WebDriverWait(driver, 60)
@@ -70,10 +75,10 @@ class CouncilClass(AbstractGetBinDataClass):
             address_entry_field.send_keys(str(full_address[len(full_address) - 1]))
 
             # Wait for dropdown items to appear - look for lightning-base-combobox-item elements
-            # Skip the first one which is "Show more results" and click the actual address
+            # The second item contains the actual address (first is "Show more results")
             first_found_address = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, '//lightning-base-combobox-item[contains(text(), "West Oxfordshire")]')
+                    (By.XPATH, '(//lightning-base-combobox-item)[2]')
                 )
             )
             first_found_address.click()
