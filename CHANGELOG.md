@@ -1,4 +1,12 @@
 =======
+## 0.162.5 (2025-12-08)
+
+### Fix
+
+- West Oxfordshire
+- West Oxfordshire
+- Adur & Worthing (#1454), Hillingdon (#1680)
+
 ## 0.162.4 (2025-12-08)
 
 ### Fix
