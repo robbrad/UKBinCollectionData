@@ -1972,14 +1972,11 @@
         "LAD24CD": "E07000211"
     },
     "RenfrewshireCouncil": {
-        "house_number": "1, STATIONHOUSE DRIVE, JOHNSTONE, RENFREWSHIRE, PA6 7FJ",
-        "paon": "1, STATIONHOUSE DRIVE, JOHNSTONE, RENFREWSHIRE, PA6 7FJ",
-        "postcode": "PA6 7FJ",
+        "uprn": "123118848",
         "skip_get_url": true,
-        "url": "https://www.renfrewshire.gov.uk/bin-day",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.renfrewshire.gov.uk",
         "wiki_name": "Renfrewshire",
-        "wiki_note": "Pass the full address as it appears on the website. This parser requires a Selenium webdriver.",
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "S12000038"
     },
     "RhonddaCynonTaffCouncil": {
