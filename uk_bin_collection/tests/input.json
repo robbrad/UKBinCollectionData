@@ -979,7 +979,6 @@
         "skip_get_url": true,
         "uprn": "50032097",
         "url": "https://www.folkestone-hythe.gov.uk",
-        "web_driver": "http://localhost:4444",
         "wiki_name": "Folkestone and Hythe",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
