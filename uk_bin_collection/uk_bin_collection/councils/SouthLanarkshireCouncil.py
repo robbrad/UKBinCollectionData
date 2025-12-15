@@ -18,10 +18,10 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Parse an HTML page to extract scheduled bin collection types and their collection dates.
-        
+
         Parameters:
             page: An object with a `text` attribute containing the HTML of the council's bin collection page (e.g., an HTTP response).
-        
+
         Returns:
             dict: A dictionary with a "bins" key mapping to a list of collections, where each collection is a dict with:
                 - "type": the collection description string (e.g., "Garden waste")
@@ -71,6 +71,8 @@ class CouncilClass(AbstractGetBinDataClass):
             for day in week_days:
                 for row in collection_schedule:
                     schedule_type = row.find("th").get_text().strip()
+                    if schedule_type == "Area":
+                        continue
                     results2 = re.search("([^(]+)", row.find("td").get_text().strip())
                     schedule_cadence = row.find("td").get_text().strip().split(" ")[1]
                     if results2:
@@ -90,7 +92,9 @@ class CouncilClass(AbstractGetBinDataClass):
                                         == time.strptime(schedule_day, "%A").tm_wday
                                     ):
                                         adjusted_day = day + timedelta(days=7)
-                                        collectionDate = adjusted_day.strftime(date_format)
+                                        collectionDate = adjusted_day.strftime(
+                                            date_format
+                                        )
 
                             if schedule_type and collectionDate:
                                 dict_data = {

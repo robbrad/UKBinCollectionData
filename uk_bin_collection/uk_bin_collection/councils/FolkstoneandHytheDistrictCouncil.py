@@ -19,82 +19,29 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        URI = f"https://service.folkestone-hythe.gov.uk/webapp/myarea/index.php?uprn={user_uprn}"
+        URI1 = f"https://service.folkestone-hythe.gov.uk/webapp/myarea/?uprn={user_uprn}&tab=collections"
+        URI2 = f"https://service.folkestone-hythe.gov.uk/webapp/myarea/api_collections.php?uprn={user_uprn}"
 
         # Make the GET request
-        response = requests.get(URI)
+        session = requests.session()
+        response = session.get(URI1)
+        response = session.get(URI2)
 
-        soup = BeautifulSoup(response.content, "html.parser")
+        soup = BeautifulSoup(response.text, features="html.parser")
 
-        soup = soup.find("div", {"id": "bincollections"})
+        collections = soup.find_all("article", {"class": "service-card"})
+        for collection in collections:
+            bin_type = collection.find("h3")
+            bin_type = bin_type.text
+            next_collection = collection.find("p", {"class": "service-next"})
+            date_str = next_collection.text.split(":")[1].split("(")[0].strip()
+            dt = datetime.strptime(date_str, "%A, %d %B %Y")
 
-        # Find the Recycling and Non-Recyclables sections
-        bin_schedule = {}
-
-        # Extract the recycling schedule
-        recycling_section = soup.find("span", text=lambda x: x and "Recycling" in x)
-        if recycling_section:
-            bin_types = recycling_section.text.replace("Recycling: ", "").split(" / ")
-            recycling_dates = recycling_section.find_next("ul").find_all("li")
-            bin_schedule["Recycling"] = [date.text.strip() for date in recycling_dates]
-            for date in recycling_dates:
-                for bin_type in bin_types:
-                    dict_data = {
-                        "type": bin_type.strip(),
-                        "collectionDate": datetime.strptime(
-                            remove_ordinal_indicator_from_date_string(
-                                date.text.strip()
-                            ),
-                            "%A %d %B %Y",
-                        ).strftime("%d/%m/%Y"),
-                    }
-                    bindata["bins"].append(dict_data)
-
-        # Extract the non-recyclables schedule
-        non_recyclables_section = soup.find(
-            "span", text=lambda x: x and "Non-Recyclables" in x
-        )
-        if non_recyclables_section:
-            bin_types = non_recyclables_section.text.replace(
-                "Non-Recyclables: ", ""
-            ).split(" / ")
-            non_recyclables_dates = non_recyclables_section.find_next("ul").find_all(
-                "li"
-            )
-            for date in non_recyclables_dates:
-                for bin_type in bin_types:
-                    dict_data = {
-                        "type": bin_type.strip(),
-                        "collectionDate": datetime.strptime(
-                            remove_ordinal_indicator_from_date_string(
-                                date.text.strip()
-                            ),
-                            "%A %d %B %Y",
-                        ).strftime("%d/%m/%Y"),
-                    }
-                    bindata["bins"].append(dict_data)
-
-        # Extract the Garden Waste schedule
-        garden_waste_section = soup.find(
-            "span", text=lambda x: x and "Garden Waste" in x
-        )
-        if garden_waste_section:
-            bin_types = garden_waste_section.text.replace("Garden Waste: ", "").split(
-                " / "
-            )
-            garden_waste_dates = garden_waste_section.find_next("ul").find_all("li")
-            for date in garden_waste_dates:
-                for bin_type in bin_types:
-                    dict_data = {
-                        "type": bin_type.strip(),
-                        "collectionDate": datetime.strptime(
-                            remove_ordinal_indicator_from_date_string(
-                                date.text.strip()
-                            ),
-                            "%A %d %B %Y",
-                        ).strftime("%d/%m/%Y"),
-                    }
-                    bindata["bins"].append(dict_data)
+            dict_data = {
+                "type": bin_type.strip(),
+                "collectionDate": dt.strftime(date_format),
+            }
+            bindata["bins"].append(dict_data)
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
