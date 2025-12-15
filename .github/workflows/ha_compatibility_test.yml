@@ -181,7 +181,7 @@ jobs:
 
       - name: Upload HA log (always)
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ha-log-${{ matrix.ha_version }}
           path: home-assistant.log
