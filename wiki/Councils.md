@@ -1752,12 +1752,11 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Folkestone and Hythe
 ```commandline
-python collect_data.py FolkstoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX -w http://HOST:PORT/
+python collect_data.py FolkstoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.
 
