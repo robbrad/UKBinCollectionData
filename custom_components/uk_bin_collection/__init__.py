@@ -413,6 +413,17 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
                 )
                 continue
 
+            if (
+                collection_date < current_date
+                and current_date.month == 12
+                and collection_date.month == 1
+            ):
+                collection_date = collection_date.replace(year=current_date.year + 1)
+                _LOGGER.debug(
+                    f"{LOG_PREFIX} Corrected rollover year for '{bin_type}' to {collection_date}"
+                )
+            
+
             existing_date = next_collection_dates.get(bin_type)
             if collection_date >= current_date and (
                 not existing_date or collection_date < existing_date
