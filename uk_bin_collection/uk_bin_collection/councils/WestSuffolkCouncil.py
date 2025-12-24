@@ -61,7 +61,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     # Parse the date
                     next_collection = date_parse(collection_date)
-                    next_collection = next_collection.replace(year=datetime.now().year)
+
+                    # if current month is December and next_collection month is January, set year to next year
+                    year = datetime.datetime.now().year
+                    if (
+                        datetime.datetime.now().month == 12
+                        and next_collection.month == 1
+                    ):
+                        year += 1
+                    next_collection = next_collection.replace(year=year)
 
                     dict_data = {
                         "type": bin_name_clean,
