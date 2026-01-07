@@ -7,7 +7,15 @@ import pytest
 import os
 from unittest.mock import patch
 
-from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil import CouncilClass
+from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil import (
+    CouncilClass,
+    HAS_OCR,
+)
+
+# Skip all tests in this module if OCR deps are not available
+pytestmark = pytest.mark.skipif(
+    not HAS_OCR, reason="OCR dependencies not installed; install uk_bin_collection[ocr]"
+)
 
 
 class TestSouthKestevenIntegration:
@@ -58,11 +66,13 @@ class TestSouthKestevenIntegration:
     def test_invalid_postcode_handling(self):
         """Test handling of invalid postcodes."""
         try:
-            with pytest.raises(ValueError, match="Could not determine collection day"):
+            # Invalid postcodes should raise errors when lookup fails
+            with pytest.raises(ValueError, match="Could not determine collection day for postcode"):
                 self.council.parse_data(
                     "", 
                     postcode="INVALID_POSTCODE"
                 )
+            
         except Exception as e:
             pytest.skip(f"Integration test failed (likely due to network issues): {e}")
 
