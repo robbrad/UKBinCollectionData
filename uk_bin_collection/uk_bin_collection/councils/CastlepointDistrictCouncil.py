@@ -26,6 +26,8 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
+        data = {"bins": []}
+
         base_url = "https://apps.castlepoint.gov.uk/cpapps/"
 
         post_url = f"{base_url}index.cfm?fa=myStreet.displayDetails"
@@ -44,7 +46,7 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         post_headers = parse_header(post_header_str)
-        form_data = {"USRN": uprn}
+        form_data = {"roadID": uprn}
         post_response = requests.post(
             post_url, headers=post_headers, data=form_data, verify=False
         )
@@ -53,68 +55,50 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(post_response.text, features="html.parser")
         soup.prettify()
 
-        calMonthNext = f"{base_url}{soup.select_one("div.calMonthNext a")["href"]}"
-        nextmonth_response = requests.post(
-            calMonthNext, headers=post_headers, data=form_data, verify=False
+        wasteCalendarContainer = soup.find("div", class_="contentContainer")
+        year_txt = wasteCalendarContainer.find("h1").get_text(strip=True)
+        year = datetime.strptime(year_txt, "About my Street - %B %Y").strftime("%Y")
+        print(year)
+
+        calendarContainer = soup.find("div", class_="calendarContainer")
+        calendarContainer2 = calendarContainer.find_all(
+            "div", class_="calendarContainer"
         )
-        soup_nextmonth = BeautifulSoup(nextmonth_response.text, features="html.parser")
-        soup_nextmonth.prettify()
 
-        data = {"bins": []}
-
-        def parse_calendar_month(soup_one_month):
-            out = []
-
-            calendar = soup_one_month.find("table", class_="calendar")
-            if not calendar:
-                return out  # be robust
-
-            # e.g. "[Aug]"
-            month_txt = soup_one_month.find("div", class_="calMonthCurrent").get_text(
-                strip=True
-            )
-            month = datetime.strptime(month_txt, "[%b]").strftime("%m")
-
-            # e.g. "About my Street - August 2025"
-            year_txt = soup_one_month.find("h1").get_text(strip=True)
-            year = datetime.strptime(year_txt, "About my Street - %B %Y").strftime("%Y")
+        for container in calendarContainer2:
+            table = container.find("table", class_="calendar")
+            if not table:
+                return 0
+            month_txt = container.find("tr", class_="calendar").get_text(strip=True)
+            month = datetime.strptime(month_txt, "%B").strftime("%m")
+            print(month_txt)
 
             pink_days = [
-                td.get_text(strip=True) for td in calendar.find_all("td", class_="pink")
+                td.get_text(strip=True) for td in table.find_all("td", class_="pink")
             ]
-            black_days = [
-                td.get_text(strip=True)
-                for td in calendar.find_all("td", class_="normal")
+            normal_days = [
+                td.get_text(strip=True) for td in table.find_all("td", class_="normal")
             ]
 
             for day in pink_days:
-                out.append(
-                    (
-                        "Pink collection",
-                        datetime(year=int(year), month=int(month), day=int(day)),
-                    )
-                )
-            for day in black_days:
-                out.append(
-                    (
-                        "Normal collection",
-                        datetime(year=int(year), month=int(month), day=int(day)),
-                    )
-                )
+                dict_data = {
+                    "type": "Pink collection",
+                    "collectionDate": datetime(
+                        year=int(year), month=int(month), day=int(day)
+                    ).strftime(date_format),
+                }
+                data["bins"].append(dict_data)
+            for day in normal_days:
+                dict_data = {
+                    "type": "Normal collection",
+                    "collectionDate": datetime(
+                        year=int(year), month=int(month), day=int(day)
+                    ).strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
-            return out
-
-        collection_tuple = []
-        for s in (soup, soup_nextmonth):
-            collection_tuple.extend(parse_calendar_month(s))
-
-        ordered_data = sorted(collection_tuple, key=lambda x: x[1])
-
-        for item in ordered_data:
-            dict_data = {
-                "type": item[0],
-                "collectionDate": item[1].strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+        )
 
         return data
