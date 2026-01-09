@@ -1752,7 +1752,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Folkestone and Hythe
 ```commandline
-python collect_data.py FolkstoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX
+python collect_data.py FolkestoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL

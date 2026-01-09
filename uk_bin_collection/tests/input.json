@@ -974,7 +974,7 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "W06000005"
     },
-    "FolkstoneandHytheDistrictCouncil": {
+    "FolkestoneandHytheDistrictCouncil": {
         "LAD24CD": "E07000112",
         "skip_get_url": true,
         "uprn": "50032097",

@@ -24,18 +24,29 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Make the GET request
         session = requests.session()
-        response = session.get(URI1)
+        response = session.get(
+            URI1
+        )  # Initialize session state (cookies) required by URI2
         response = session.get(URI2)
+        response.raise_for_status()  # Raise HTTPError for bad status codes
 
         soup = BeautifulSoup(response.text, features="html.parser")
 
         collections = soup.find_all("article", {"class": "service-card"})
         for collection in collections:
             bin_type = collection.find("h3")
+            if not bin_type:
+                continue
             bin_type = bin_type.text
             next_collection = collection.find("p", {"class": "service-next"})
-            date_str = next_collection.text.split(":")[1].split("(")[0].strip()
-            dt = datetime.strptime(date_str, "%A, %d %B %Y")
+            if not next_collection or ":" not in next_collection.text:
+                continue
+
+            try:
+                date_str = next_collection.text.split(":")[1].split("(")[0].strip()
+                dt = datetime.strptime(date_str, "%A, %d %B %Y")
+            except (ValueError, IndexError):
+                continue
 
             dict_data = {
                 "type": bin_type.strip(),
