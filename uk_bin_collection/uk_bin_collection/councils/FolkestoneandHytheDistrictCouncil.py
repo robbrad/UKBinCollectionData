@@ -27,6 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         response = session.get(
             URI1
         )  # Initialize session state (cookies) required by URI2
+        response.raise_for_status()  # Validate session initialization
         response = session.get(URI2)
         response.raise_for_status()  # Raise HTTPError for bad status codes
 
