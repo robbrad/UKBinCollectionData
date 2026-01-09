@@ -974,12 +974,11 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "W06000005"
     },
-    "FolkstoneandHytheDistrictCouncil": {
+    "FolkestoneandHytheDistrictCouncil": {
         "LAD24CD": "E07000112",
         "skip_get_url": true,
         "uprn": "50032097",
         "url": "https://www.folkestone-hythe.gov.uk",
-        "web_driver": "http://localhost:4444",
         "wiki_name": "Folkestone and Hythe",
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
@@ -1972,14 +1971,11 @@
         "LAD24CD": "E07000211"
     },
     "RenfrewshireCouncil": {
-        "house_number": "1, STATIONHOUSE DRIVE, JOHNSTONE, RENFREWSHIRE, PA6 7FJ",
-        "paon": "1, STATIONHOUSE DRIVE, JOHNSTONE, RENFREWSHIRE, PA6 7FJ",
-        "postcode": "PA6 7FJ",
+        "uprn": "123118848",
         "skip_get_url": true,
-        "url": "https://www.renfrewshire.gov.uk/bin-day",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.renfrewshire.gov.uk",
         "wiki_name": "Renfrewshire",
-        "wiki_note": "Pass the full address as it appears on the website. This parser requires a Selenium webdriver.",
+        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "S12000038"
     },
     "RhonddaCynonTaffCouncil": {
