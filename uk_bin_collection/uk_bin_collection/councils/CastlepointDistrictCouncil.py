@@ -56,11 +56,14 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
 
         wasteCalendarContainer = soup.find("div", class_="contentContainer")
+        if not wasteCalendarContainer:
+            return data
         year_txt = wasteCalendarContainer.find("h1").get_text(strip=True)
         year = datetime.strptime(year_txt, "About my Street - %B %Y").strftime("%Y")
-        print(year)
 
         calendarContainer = soup.find("div", class_="calendarContainer")
+        if not calendarContainer:
+            return data
         calendarContainer2 = calendarContainer.find_all(
             "div", class_="calendarContainer"
         )
@@ -68,16 +71,20 @@ class CouncilClass(AbstractGetBinDataClass):
         for container in calendarContainer2:
             table = container.find("table", class_="calendar")
             if not table:
-                return 0
+                continue
             month_txt = container.find("tr", class_="calendar").get_text(strip=True)
             month = datetime.strptime(month_txt, "%B").strftime("%m")
             print(month_txt)
 
             pink_days = [
-                td.get_text(strip=True) for td in table.find_all("td", class_="pink")
+                td.get_text(strip=True)
+                for td in table.find_all("td", class_="pink")
+                if td.get_text(strip=True)
             ]
             normal_days = [
-                td.get_text(strip=True) for td in table.find_all("td", class_="normal")
+                td.get_text(strip=True)
+                for td in table.find_all("td", class_="normal")
+                if td.get_text(strip=True)
             ]
 
             for day in pink_days:
