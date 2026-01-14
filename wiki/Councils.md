@@ -1752,7 +1752,7 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Folkestone and Hythe
 ```commandline
-python collect_data.py FolkstoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX -w http://HOST:PORT/
+python collect_data.py FolkestoneandHytheDistrictCouncil https://www.folkestone-hythe.gov.uk -s -u XXXXXXXX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -3139,15 +3139,13 @@ Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.
 
 ### Renfrewshire
 ```commandline
-python collect_data.py RenfrewshireCouncil https://www.renfrewshire.gov.uk/bin-day -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py RenfrewshireCouncil https://www.renfrewshire.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
+- `-u` - UPRN
 
-Note: Pass the full address as it appears on the website. This parser requires a Selenium webdriver.
+Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
@@ -14,8 +15,16 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+
+        user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
+
+        URI = f"https://app.newark-sherwooddc.gov.uk/bincollection/calendar?pid={user_uprn}"
+
+        # Make the GET request
+        response = requests.get(URI)
         # Get page with BS4
-        soup = BeautifulSoup(page, features="html.parser")
+        soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
 
         # Work out some date bounds
@@ -28,6 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
         for month in soup.select('table[class*="table table-condensed"]'):
             info = month.find_all("tr")
             month_year = info[0].text.strip()
+
             info.pop(0)
             # Each remaining item is a bin collection, so get the type and tidy up the date.
             for item in info:
