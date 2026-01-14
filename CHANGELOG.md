@@ -1,4 +1,22 @@
 =======
+## 0.162.6 (2026-01-14)
+
+### Fix
+
+- FolkestoneandHytheDistrictCouncil.py
+- CastlepointDistrictCouncil
+- Folkestone and Hythe District Council
+- Castlepoint District Council
+- #1803 #1793 Castlepoint District Council
+- Folkstone and Hythe District Council
+- #1760 - Folkstone and Hythe District Council
+- Newark and Sherwood District Council
+- #1777 - fix: Newark and Sherwood District Council
+- South Lanarkshire Council
+- #1771 -  South Lanarkshire Council
+- Renfrewshire Council
+- #1500 - Renfrewshire Council
+
 ## 0.162.5 (2025-12-08)
 
 ### Fix
