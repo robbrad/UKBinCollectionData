@@ -1,17 +1,12 @@
 # This script pulls (in one hit) the data from Broadland District Council Bins Data
-# Working command line:
-# python collect_data.py BroadlandDistrictCouncil "https://area.southnorfolkandbroadland.gov.uk/FindAddress" -p "NR10 3FD" -n "1 Park View, Horsford, Norfolk, NR10 3FD"
 
-import re
-import time
+import json
 from datetime import datetime
 
+import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from dateutil.parser import parse
+from urllib.parse import quote
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -19,115 +14,44 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 class CouncilClass(AbstractGetBinDataClass):
 
-    def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
+    def parse_data(self, page: str = None, **kwargs) -> dict:
         try:
             data = {"bins": []}
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
 
             uprn = kwargs.get("uprn")
-            user_paon = kwargs.get("paon")
             postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
             url = kwargs.get("url")
 
-            print(
-                f"Starting parse_data with parameters: postcode={postcode}, paon={user_paon}"
+            check_uprn(uprn)
+            check_postcode(postcode)
+            uprn = str(uprn).zfill(12)
+
+            cookie_json = json.dumps(
+                {
+                    "Uprn": uprn,
+                    "Address": postcode,
+                },
+                separators=(",", ":")
             )
-            print(
-                f"Creating webdriver with: web_driver={web_driver}, headless={headless}"
+            cookie_value = quote(cookie_json, safe="")
+
+            headers = {
+                "Cookie": f"MyArea.Data={cookie_value}",
+                "User-Agent": "curl/8.5.0",  # optional but helps match working curl
+                "Accept": "*/*",
+            }
+
+            r = requests.get(
+                "https://area.southnorfolkandbroadland.gov.uk/",
+                headers=headers,
+                timeout=30
             )
+            
+            
+            r.raise_for_status()
 
-            driver = create_webdriver(web_driver, headless, None, __name__)
-            print(f"Navigating to URL: {url}")
-            driver.get(url)
-            print("Successfully loaded the page")
-
-            # Handle cookie confirmation dialog
-            try:
-                # Adjust the selector depending on the site's button
-                accept_button = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable(
-                        (By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
-                    )
-                )
-                accept_button.click()
-                print("Cookie banner clicked.")
-            except:
-                print("No cookie banner appeared or selector failed.")
-
-            wait = WebDriverWait(driver, 60)
-            post_code_search = wait.until(
-                EC.presence_of_element_located((By.ID, "Postcode"))
-            )
-            post_code_search.send_keys(postcode)
-
-            # Click the Find address button
-            print("Looking for 'Find address' button...")
-            submit_btn = wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//input[@type='submit' and @class='button button--secondary']",
-                    )
-                )
-            )
-            print("Clicking button...")
-            submit_btn.send_keys(Keys.ENTER)
-
-            # Wait for the address dropdown to appear
-            print("Waiting for address dropdown to appear...")
-            address_dropdown = wait.until(
-                EC.presence_of_element_located((By.ID, "UprnAddress"))
-            )
-            print("Found address dropdown")
-
-            dropdown_select = Select(address_dropdown)
-
-            print(f"Looking for address containing: {user_paon}")
-
-            found = False
-            user_paon_clean = user_paon.lower().strip()
-
-            for option in dropdown_select.options:
-                option_text_clean = option.text.lower().strip()
-
-                if (
-                    option_text_clean == user_paon_clean  # Exact match if full address given
-                    or option_text_clean.startswith(f"{user_paon_clean} ")  # Startswith match if just a number
-                ):
-                    option.click()
-                    found = True
-                    print(f"Selected address: {option.text.strip()}")
-                    break
-
-            if not found:
-                all_options = [opt.text for opt in dropdown_select.options]
-                raise Exception(
-                    f"Could not find a matching address for '{user_paon}'. Available options: {all_options}"
-                )
-
-            print("Looking for submit button after address selection...")
-            submit_btn = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']"))
-            )
-            print("Clicking button...")
-            submit_btn.send_keys(Keys.ENTER)
-
-            print("Waiting for collection details to appear...")
-            address_dropdown = wait.until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//div[contains(@class, 'card-body')]//h4[contains(text(), 'Your next collections')]",
-                    )
-                )
-            )
-
-            # Make a BS4 object
-            print("Parsing page with BeautifulSoup...")
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
+            
+            soup = BeautifulSoup(r.text, "html.parser")
 
             # Initialize current date
             current_date = datetime.now()
@@ -137,8 +61,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Find the card-body div that contains the bin collection information
             card_body = soup.find("div", class_="card-body")
-
             if card_body:
+
+
                 # Find the "Your next collections" heading
                 next_collections_heading = card_body.find(
                     "h4", string="Your next collections"
@@ -192,9 +117,6 @@ class CouncilClass(AbstractGetBinDataClass):
         except Exception as e:
             print(f"An error occurred: {e}")
             raise
-        finally:
-            print("Cleaning up webdriver...")
-            if driver:
-                driver.quit()
+
 
         return data
