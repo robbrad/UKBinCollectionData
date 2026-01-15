@@ -57,12 +57,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 },
             )
 
-            r.raise_for_status()
             page = r.text
 
-            # =========================
-            # PARSER (original logic)
-            # =========================
+
             soup = BeautifulSoup(page, "html.parser")
             soup.prettify()
 
