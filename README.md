@@ -98,6 +98,22 @@ If you miss this on the first setup, you can reconfigure it.
 ---
 
 ## Standalone Usage
+
+### Requirements
+
+```commandline
+export PYTHONPATH=G:\Projects\Python\UKBinCollectionData
+pip install bs4
+pip install icalendar
+pip install holidaus
+pip install holidays
+pip install pandas
+pip install selenium
+pip install webdriver_manager
+```
+
+### Usage
+
 ```commandline
 PS G:\Projects\Python\UKBinCollectionData\uk_bin_collection\collect_data.py
 usage: collect_data.py [-h] [-p POSTCODE] [-n NUMBER] [-u UPRN] module URL
