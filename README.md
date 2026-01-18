@@ -103,12 +103,7 @@ If you miss this on the first setup, you can reconfigure it.
 
 ```commandline
 set PYTHONPATH=G:\Projects\Python\UKBinCollectionData
-pip install beautifulsoup4
-pip install icalendar
-pip install holidays
-pip install pandas
-pip install selenium
-pip install webdriver_manager
+pip install beautifulsoup4 icalendar holidays pandas selenium webdriver-manager
 ```
 
 ### Usage
