@@ -102,10 +102,9 @@ If you miss this on the first setup, you can reconfigure it.
 ### Requirements
 
 ```commandline
-export PYTHONPATH=G:\Projects\Python\UKBinCollectionData
-pip install bs4
+set PYTHONPATH=G:\Projects\Python\UKBinCollectionData
+pip install beautifulsoup4
 pip install icalendar
-pip install holidaus
 pip install holidays
 pip install pandas
 pip install selenium
