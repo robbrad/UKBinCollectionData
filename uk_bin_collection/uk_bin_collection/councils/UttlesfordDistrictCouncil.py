@@ -94,9 +94,10 @@ class CouncilClass(AbstractGetBinDataClass):
                         collection_date_str
                     )
                     collection_date = datetime.strptime(collection_date_str, "%A %d %B")
-                    collection_date = collection_date.replace(
-                        year=2024
-                    )  # Assuming the year is 2024
+                    current_year = datetime.now().year
+                    collection_date = collection_date.replace(year=current_year)
+                    if collection_date < datetime.now():
+                        collection_date = collection_date.replace(year=current_year + 1)
                     collection_date_str = collection_date.strftime("%d/%m/%Y")
 
                     for bin_type in bin_types:
