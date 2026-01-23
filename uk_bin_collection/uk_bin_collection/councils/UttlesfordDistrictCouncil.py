@@ -83,13 +83,6 @@ class CouncilClass(AbstractGetBinDataClass):
             logging.info("Extracting bin collection data")
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            # Map image filenames to correct bin types (website has incorrect alt text)
-            bin_type_map = {
-                "key-brown.png": "Recyclable food waste",
-                "key-black.png": "Non-recyclable waste",
-                "key-green.png": "Recyclable dry waste",
-            }
-
             bins = []
             rows = soup.select("div.wrap table tbody tr")
 
@@ -100,7 +93,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     for img in cols[0].find_all("img"):
                         src = img.get("src", "")
                         filename = src.split("/")[-1]
-                        bin_type = bin_type_map.get(filename, img.get("alt", "Unknown"))
+                        # Extract color from filename (e.g., "key-brown.png" -> "brown")
+                        bin_type = filename.replace("key-", "").replace(".png", "")
                         bin_types.append(bin_type)
                     collection_date_str = cols[1].text
                     collection_date_str = remove_ordinal_indicator_from_date_string(
