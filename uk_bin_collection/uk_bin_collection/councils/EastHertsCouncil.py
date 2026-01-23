@@ -80,6 +80,9 @@ class CouncilClass(AbstractGetBinDataClass):
         # Extract each service's relevant details for the bin schedule
         for key, value in rows_data.items():
             if key.endswith("NextDate"):
+                # Skip empty date values
+                if not value or not value.strip():
+                    continue
                 BinType = key.replace("NextDate", "ServiceName")
                 for key2, value2 in rows_data.items():
                     if key2 == BinType:
