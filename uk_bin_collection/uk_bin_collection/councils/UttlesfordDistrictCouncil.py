@@ -94,9 +94,10 @@ class CouncilClass(AbstractGetBinDataClass):
                         collection_date_str
                     )
                     collection_date = datetime.strptime(collection_date_str, "%A %d %B")
-                    current_year = datetime.now().year
+                    now = datetime.now()
+                    current_year = now.year
                     collection_date = collection_date.replace(year=current_year)
-                    if collection_date < datetime.now():
+                    if collection_date.date() < now.date():
                         collection_date = collection_date.replace(year=current_year + 1)
                     collection_date_str = collection_date.strftime("%d/%m/%Y")
 
