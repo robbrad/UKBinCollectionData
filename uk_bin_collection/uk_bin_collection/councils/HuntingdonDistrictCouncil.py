@@ -44,11 +44,18 @@ class CouncilClass(AbstractGetBinDataClass):
             if no_garden_message in result.get_text(strip=True):
                 continue
             else:
+                text = result.get_text(strip=True)
+                # Example: The next collection for your domestic waste in your 240lt wheeled bin is on
+                before = "collection for your "
+                after = " waste"
+                # grab words in between
+                bin_type = text[
+                    text.index(before) + len(before) : text.index(after)
+                ].capitalize()
+
                 data["bins"].append(
                     {
-                        "type": " ".join(
-                            result.get_text(strip=True).split(" ")[5:7]
-                        ).capitalize(),
+                        "type": bin_type,
                         "collectionDate": datetime.strptime(
                             result.find("strong").get_text(strip=True), "%A %d %B %Y"
                         ).strftime(date_format),
