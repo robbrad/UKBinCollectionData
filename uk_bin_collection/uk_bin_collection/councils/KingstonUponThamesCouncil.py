@@ -1,8 +1,9 @@
 # alternative implementation for retrieving bin data from Kingston Upon Thames Council
 # principal URL is https://waste-services.kingston.gov.uk/waste/[uprn]
-# https://www.kingston.gov.uk/info/200287/bins_and_recycling/1113/check_your_bin_collection_day
+# https://www.kingston.gov.uk/bins-and-recycling/collections/check-your-bin-collection-day 
 
 # switched to using Selenium as the htmx elements are not rendered reliably with requests
+# updated Jan 2026 due to small website formatting changes
 
 import re
 
@@ -42,13 +43,27 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
-            collections = soup.find_all("h3", {"class": "waste-service-name"})
-            for c in collections:
-                rows = c.find_next_sibling("div", {"class": "govuk-grid-row"}).find_all(
-                    "div", {"class": "govuk-summary-list__row"}
-                )
+
+            service_grids = soup.find_all("div", {"class": "waste-service-grid"})
+            for grid in service_grids:
+                # Get the service name from the h3 within the grid
+                service_name_elem = grid.find("h3", {"class": "waste-service-name"})
+                if not service_name_elem:
+                    raise ValueError(
+                        "Kingston parser: missing h3.waste-service-name in waste-service-grid"
+                    )
+                service_name = service_name_elem.get_text().strip()
+
+                summary_list = grid.find("dl", {"class": "govuk-summary-list"})
+                if not summary_list:
+                    raise ValueError(
+                        f"Kingston parser: missing dl.govuk-summary-list for {service_name}"
+                    )
+
+                rows = summary_list.find_all("div", {"class": "govuk-summary-list__row"})
                 for row in rows:
-                    if row.find("dt").get_text().strip().lower() == "next collection":
+                    dt = row.find("dt")
+                    if dt and dt.get_text().strip().lower() == "next collection":
                         collection_date = remove_ordinal_indicator_from_date_string(
                             row.find("dd").get_text()
                         ).strip().replace(" (In progress)", "")
@@ -57,7 +72,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             r"\n\s*\(this.*?\)", "", collection_date
                         )
                         dict_data = {
-                            "type": c.get_text().strip().capitalize(),
+                            "type": service_name.capitalize(),
                             "collectionDate": get_next_occurrence_from_day_month(
                                 datetime.strptime(
                                     collection_date
