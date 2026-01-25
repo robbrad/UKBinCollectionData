@@ -45,6 +45,10 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
             service_grids = soup.find_all("div", {"class": "waste-service-grid"})
+            if not service_grids:
+                raise ValueError(
+                    "Kingston parser: no waste-service-grid elements found on page"
+                )
             for grid in service_grids:
                 # Get the service name from the h3 within the grid
                 service_name_elem = grid.find("h3", {"class": "waste-service-name"})
@@ -64,15 +68,20 @@ class CouncilClass(AbstractGetBinDataClass):
                 for row in rows:
                     dt = row.find("dt")
                     if dt and dt.get_text().strip().lower() == "next collection":
+                        dd = row.find("dd")
+                        if not dd:
+                            raise ValueError(
+                                f"Kingston parser: missing dd element for 'next collection' in {service_name}"
+                            )
                         collection_date = remove_ordinal_indicator_from_date_string(
-                            row.find("dd").get_text()
+                            dd.get_text()
                         ).strip().replace(" (In progress)", "")
                         # strip out any text inside of the date string
                         collection_date = re.sub(
                             r"\n\s*\(this.*?\)", "", collection_date
                         )
                         dict_data = {
-                            "type": service_name.capitalize(),
+                            "type": service_name,
                             "collectionDate": get_next_occurrence_from_day_month(
                                 datetime.strptime(
                                     collection_date
