@@ -42,58 +42,59 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
             # Find all elements with class 'govuk-summary-list'
-            waste_services = soup.find_all(
-                "h3", class_="govuk-heading-m waste-service-name"
-            )
+            waste_services = soup.find_all("div", class_="waste-service-grid")
 
             for service in waste_services:
-                service_title = service.get_text(strip=True)
-                next_collection = service.find_next_sibling().find(
-                    "dt", string="Next collection"
+                waste_service_name = service.find(
+                    "h3", class_="govuk-heading-m waste-service-name"
                 )
+                service_title = waste_service_name.get_text(strip=True)
+                list_row = service.find_all("div", class_="govuk-summary-list__row")
+                for row in list_row:
+                    next_collection = row.find("dt", string="Next collection")
 
-                if next_collection:
-                    next_collection_date = next_collection.find_next_sibling().get_text(
-                        strip=True
-                    )
-                    # Extract date part and remove the suffix
-                    next_collection_date_parse = next_collection_date.split(",")[
-                        1
-                    ].strip()
-                    day, month = next_collection_date_parse.split()[:2]
+                    if next_collection:
+                        next_collection_date = (
+                            next_collection.find_next_sibling().get_text(strip=True)
+                        )
+                        # Extract date part and remove the suffix
+                        next_collection_date_parse = next_collection_date.split(",")[
+                            1
+                        ].strip()
+                        day, month = next_collection_date_parse.split()[:2]
 
-                    # Remove the suffix (e.g., 'th', 'nd', 'rd', 'st') from the day
-                    if day.endswith(("th", "nd", "rd", "st")):
-                        day = day[:-2]  # Remove the last two characters
+                        # Remove the suffix (e.g., 'th', 'nd', 'rd', 'st') from the day
+                        if day.endswith(("th", "nd", "rd", "st")):
+                            day = day[:-2]  # Remove the last two characters
 
-                    # Reconstruct the date string without the suffix
-                    date_without_suffix = f"{day} {month}"
+                        # Reconstruct the date string without the suffix
+                        date_without_suffix = f"{day} {month}"
 
-                    # Parse the date string to a datetime object
-                    date_object = datetime.strptime(date_without_suffix, "%d %B")
+                        # Parse the date string to a datetime object
+                        date_object = datetime.strptime(date_without_suffix, "%d %B")
 
-                    # Get the current year
-                    current_year = datetime.now().year
+                        # Get the current year
+                        current_year = datetime.now().year
 
-                    # Append the year to the date
-                    date_with_year = date_object.replace(year=current_year)
+                        # Append the year to the date
+                        date_with_year = date_object.replace(year=current_year)
 
-                    # Check if the parsed date is in the past compared to the current date
-                    if date_object < datetime.now():
-                        # If the parsed date is in the past, assume it's for the next year
-                        current_year += 1
+                        # Check if the parsed date is in the past compared to the current date
+                        if date_object < datetime.now():
+                            # If the parsed date is in the past, assume it's for the next year
+                            current_year += 1
 
-                    # Format the date with the year
-                    date_with_year_formatted = date_with_year.strftime(
-                        "%d/%m/%Y"
-                    )  # Format the date as '%d/%m/%Y'
+                        # Format the date with the year
+                        date_with_year_formatted = date_with_year.strftime(
+                            "%d/%m/%Y"
+                        )  # Format the date as '%d/%m/%Y'
 
-                    # Create the dictionary with the formatted data
-                    dict_data = {
-                        "type": service_title,
-                        "collectionDate": date_with_year_formatted,
-                    }
-                    data["bins"].append(dict_data)
+                        # Create the dictionary with the formatted data
+                        dict_data = {
+                            "type": service_title,
+                            "collectionDate": date_with_year_formatted,
+                        }
+                        data["bins"].append(dict_data)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
