@@ -712,13 +712,11 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Bolton
 ```commandline
-python collect_data.py BoltonCouncil https://web.bolton.gov.uk/bins.aspx -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+python collect_data.py BoltonCouncil https://bolton.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-p` - postcode
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields.
 

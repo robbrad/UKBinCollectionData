@@ -1,14 +1,8 @@
-import time
 import re
-
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from dateutil.relativedelta import relativedelta
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -22,87 +16,106 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
         try:
             user_uprn = kwargs.get("uprn")
             check_uprn(user_uprn)
 
-            user_postcode = kwargs.get("postcode")
-            check_postcode(user_postcode)
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-
             data = {"bins": []}
 
-            # Get our initial session running
-            page = "https://web.bolton.gov.uk/bins.aspx"
+            import requests
 
-            driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(page)
+            url = "https://bolton.portal.uk.empro.verintcloudservices.com/site/empro-bolton/request/es_bin_collection_dates"
 
-            # If you bang in the house number (or property name) and postcode in the box it should find your property
-            wait = WebDriverWait(driver, 30)
+            session = requests.Session()
 
-            pc_search_box = wait.until(
-                EC.presence_of_element_located((By.ID, "txtPostcode"))
+            # Equivalent to: $session.UserAgent = "..."
+            session.headers.update(
+                {
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/143.0.0.0 Safari/537.36"
+                    )
+                }
             )
 
-            pc_search_box.send_keys(user_postcode)
+            headers = {
+                "Referer": "https://www.bolton.gov.uk/",
+            }
 
-            pcsearch_btn = wait.until(EC.element_to_be_clickable((By.ID, "btnSubmit")))
+            resp = session.get(url, headers=headers, timeout=30)
+            resp.raise_for_status()
 
-            pcsearch_btn.click()
-
-            # Wait for the 'Select your property' dropdown to appear and select the first result
-            dropdown = wait.until(EC.element_to_be_clickable((By.ID, "ddlAddresses")))
-
-            dropdown_options = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//select/option[1]"))
-            )
-            time.sleep(1)
-            # Create a 'Select' for it, then select the first address in the list
-            # (Index 0 is "Make a selection from the list")
-            dropdownSelect = Select(dropdown)
-            dropdownSelect.select_by_value(str(user_uprn))
-            dropdown_options = wait.until(
-                EC.presence_of_element_located((By.ID, "pnlStep3"))
-            )
-
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
+            # Equivalent to $response1.Content
+            soup = BeautifulSoup(resp.text, features="html.parser")
             soup.prettify()
 
-            collections = []
+            tag = soup.find("meta", attrs={"name": "_csrf_token"})
+            csrf_token = tag.get("content") if tag else None
+            # print(csrf_token)
 
-            # Find section with bins in
-            sections = soup.find_all("div", {"class": "bin-info"})
+            url = "https://bolton.form.uk.empro.verintcloudservices.com/api/citizen?archived=Y&preview=false&locale=en"
+            headers = {
+                "Referer": "https://bolton.portal.uk.empro.verintcloudservices.com/",
+            }
+            resp = session.get(url, headers=headers, timeout=30)
+            resp.raise_for_status()
 
-            # For each bin section, get the text and the list elements
-            for item in sections:
-                words = item.find_next("strong").text.split()[2:4]
-                bin_type = " ".join(words).capitalize()
-                date_list = item.find_all("p")
-                for d in date_list:
-                    clean_date_str = re.sub(r"[^A-Za-z0-9 ]+", "", d.text.strip())
-                    next_collection = datetime.strptime(clean_date_str, "%A %d %B %Y")
-                    collections.append((bin_type, next_collection))
+            authorization = resp.headers["authorization"]
+            # print(authorization)
 
-            # Sort the text and list elements by date
-            ordered_data = sorted(collections, key=lambda x: x[1])
+            url = "https://bolton.form.uk.empro.verintcloudservices.com/api/custom?action=es_get_bin_collection_dates&actionedby=uprn_changed&loadform=true&access=citizen&locale=en"
 
-            # Put the elements into the dictionary
-            for item in ordered_data:
-                dict_data = {
-                    "type": item[0],
-                    "collectionDate": item[1].strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+            headers = {
+                "Authorization": authorization,
+                "Referer": "https://bolton.portal.uk.empro.verintcloudservices.com/",
+                "X-CSRF-TOKEN": csrf_token,
+            }
+
+            today = datetime.today()
+            two_months = datetime.today() + relativedelta(months=2)
+            payload = {
+                "name": "es_bin_collection_dates",
+                "data": {
+                    "uprn": user_uprn,
+                    "start_date": today.strftime("%d/%m/%Y"),
+                    "end_date": two_months.strftime("%d/%m/%Y"),
+                },
+            }
+
+            resp = session.post(url, headers=headers, json=payload, timeout=30)
+            resp.raise_for_status()
+
+            json = resp.json()  # or json.loads(your_text)
+
+            html = json["data"]["collection_dates"]
+            soup = BeautifulSoup(html, "html.parser")
+
+            # Each bin block is a <div style="overflow:auto; margin-bottom:30px;">
+            for block in soup.find_all("div", style=re.compile(r"overflow:auto")):
+                title_tag = block.find("strong")
+                if not title_tag:
+                    continue
+
+                bin_name = " ".join(title_tag.get_text(" ", strip=True).split()).rstrip(
+                    ":"
+                )
+                dates = [li.get_text(" ", strip=True) for li in block.find_all("li")]
+
+                if dates:
+                    for date in dates:
+                        dict_data = {
+                            "type": bin_name.strip(),
+                            "collectionDate": (
+                                datetime.strptime(date, "%A %d %B %Y")
+                            ).strftime(date_format),
+                        }
+                        data["bins"].append(dict_data)
+
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
+
         return data
