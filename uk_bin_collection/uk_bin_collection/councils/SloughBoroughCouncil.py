@@ -52,7 +52,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Enter the street name into the address search
             address_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "keyword_directory25"))
+                EC.presence_of_element_located((By.ID, "keyword_directory30"))
             )
             user_address = get_street_from_postcode(
                 user_postcode, "AIzaSyBDLULT7EIlNtHerswPtfmL15Tt3Oc0bV8"
