@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import create_webdriver
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -63,9 +63,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         ].strip()
                         day, month = next_collection_date_parse.split()[:2]
 
-                        # Remove the suffix (e.g., 'th', 'nd', 'rd', 'st') from the day
-                        if day.endswith(("th", "nd", "rd", "st")):
-                            day = day[:-2]  # Remove the last two characters
+                        day = remove_ordinal_indicator_from_date_string(day)
 
                         # Reconstruct the date string without the suffix
                         date_without_suffix = f"{day} {month}"
