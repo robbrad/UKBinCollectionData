@@ -1,61 +1,53 @@
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-from bs4 import BeautifulSoup
-from datetime import datetime
 import re
 import time
+from datetime import datetime
+
+import requests
+from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-def remove_ordinal_indicator_from_date_string(date_str):
-    """
-    Remove English ordinal suffixes ('st', 'nd', 'rd', 'th') from numeric parts of a date string.
-    
-    Parameters:
-        date_str (str): String that may contain ordinal indicators on numbers (e.g., "1st January", "2nd Feb").
-    
-    Returns:
-        str: The input string with ordinal suffixes removed from all numeric tokens (e.g., "1 January" from "1st January").
-    """
-    return re.sub(r'(\d+)(st|nd|rd|th)', r'\1', date_str)
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Extracts bin types and their next collection dates for a given UPRN from Sutton Council's waste page.
-        
+
         Parameters:
             uprn (str): Unique Property Reference Number used to construct the council URL to fetch bin information.
-        
+
         Returns:
             dict: A dictionary with a "bins" key containing a list of dictionaries. Each entry has:
                 - "type" (str): Human-readable bin/service name.
                 - "collectionDate" (str): Next collection date formatted as "DD/MM/YYYY".
                 The list is sorted by collection date in ascending order.
-        
+
         Raises:
             RuntimeError: If the council page still reports "Loading your bin days..." after polite retries.
         """
         user_uprn = kwargs.get("uprn")
-        bindata = {"bins": []}
+        data = {"bins": []}
 
         URI = f"https://waste-services.sutton.gov.uk/waste/{user_uprn}"
 
         # --- Session with polite retry policy
         s = requests.Session()
-        s.headers.update({
-            "User-Agent": "uk-bin-collection/1.0 (+https://github.com/robbrad/UKBinCollectionData)",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Connection": "close",
-        })
+        s.headers.update(
+            {
+                "User-Agent": "uk-bin-collection/1.0 (+https://github.com/robbrad/UKBinCollectionData)",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Connection": "close",
+            }
+        )
         retry = Retry(
             total=5,
-            backoff_factor=1.5,             # 0, 1.5s, 3s, 4.5s, 6s...
+            backoff_factor=1.5,  # 0, 1.5s, 3s, 4.5s, 6s...
             status_forcelist=(429, 500, 502, 503, 504),
             allowed_methods=("GET",),
-            respect_retry_after_header=True
+            respect_retry_after_header=True,
         )
         s.mount("https://", HTTPAdapter(max_retries=retry))
         s.mount("http://", HTTPAdapter(max_retries=retry))
@@ -67,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # --- Poll only if the page explicitly says it's still loading
         # Use exponential backoff and a hard cap to avoid rate limits
-        max_polls = 5           # don't keep hammering
+        max_polls = 5  # don't keep hammering
         delay = 2.0
         poll = 0
         while "Loading your bin days..." in r.text and poll < max_polls:
@@ -88,53 +80,62 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         soup = BeautifulSoup(r.content, "html.parser")
+        print(soup)
         current_year = datetime.now().year
-        next_year = current_year + 1
 
-        services = soup.find_all("h3")
-        for service in services:
-            bin_type = service.get_text(strip=True)
-            if "Bulky Waste" in bin_type:
-                continue
+        waste_services = soup.find_all("div", class_="waste-service-grid")
 
-            # Walk a few siblings to find 'Next collection'
-            next_coll = None
-            sib = service
-            for _ in range(4):
-                sib = sib.find_next_sibling() if sib else None
-                if not sib:
-                    break
-                text = sib.get_text(" ", strip=True) if hasattr(sib, "get_text") else str(sib)
-                m = re.search(r"Next collection\s*([A-Za-z]+,?\s+\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+)", text)
-                if not m:
-                    m = re.search(r"Next collection([A-Za-z]+,?\s+\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+)", text)
-                if m:
-                    next_coll = m.group(1)
-                    break
+        for service in waste_services:
+            waste_service_name = service.find(
+                "h3", class_="govuk-heading-m waste-service-name"
+            )
+            service_title = waste_service_name.get_text(strip=True)
+            list_row = service.find_all("div", class_="govuk-summary-list__row")
+            for row in list_row:
+                next_collection = row.find("dt", string="Next collection")
 
-            if not next_coll:
-                continue
+                if next_collection:
+                    next_collection_date = next_collection.find_next_sibling().get_text(
+                        strip=True
+                    )
+                    # Extract date part and remove the suffix
+                    next_collection_date_parse = next_collection_date.split(",")[
+                        1
+                    ].strip()
+                    day, month = next_collection_date_parse.split()[:2]
 
-            next_coll = remove_ordinal_indicator_from_date_string(next_coll)
-            try:
-                next_dt = datetime.strptime(next_coll, "%A, %d %B")
-            except ValueError:
-                # Try a looser pattern if the comma is missing
-                try:
-                    next_dt = datetime.strptime(next_coll, "%A %d %B")
-                except ValueError:
-                    continue
+                    day = remove_ordinal_indicator_from_date_string(day)
 
-            # Year roll-over handling
-            if datetime.now().month == 12 and next_dt.month == 1:
-                next_dt = next_dt.replace(year=next_year)
-            else:
-                next_dt = next_dt.replace(year=current_year)
+                    # Reconstruct the date string without the suffix
+                    date_without_suffix = f"{day} {month}"
 
-            bindata["bins"].append({
-                "type": bin_type,
-                "collectionDate": next_dt.strftime("%d/%m/%Y"),
-            })
+                    # Parse the date string to a datetime object
+                    date_object = datetime.strptime(date_without_suffix, "%d %B")
 
-        bindata["bins"].sort(key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y"))
-        return bindata
+                    # Get the current year
+                    current_year = datetime.now().year
+
+                    # Append the year to the date
+                    date_with_year = date_object.replace(year=current_year)
+
+                    # Check if the parsed date is in the past compared to the current date
+                    if date_object < datetime.now():
+                        # If the parsed date is in the past, assume it's for the next year
+                        current_year += 1
+
+                    # Format the date with the year
+                    date_with_year_formatted = date_with_year.strftime(
+                        "%d/%m/%Y"
+                    )  # Format the date as '%d/%m/%Y'
+
+                    # Create the dictionary with the formatted data
+                    dict_data = {
+                        "type": service_title,
+                        "collectionDate": date_with_year_formatted,
+                    }
+                    data["bins"].append(dict_data)
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
+        )
+        return data

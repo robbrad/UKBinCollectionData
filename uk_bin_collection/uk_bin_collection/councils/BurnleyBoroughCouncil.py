@@ -68,13 +68,14 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError("Invalid data returned from API")
 
         current_year = (datetime.now()).year
+        current_month = (datetime.now()).month
         for key, value in rows_data.items():
             bin_type = value["display"].split(" - ")[0]
             collection_date = datetime.strptime(
                 value["display"].split(" - ")[1], "%A %d %B"
             )
 
-            if collection_date.month == 1:
+            if current_month == 12 and collection_date.month == 1:
                 collection_date = collection_date.replace(year=current_year + 1)
             else:
                 collection_date = collection_date.replace(year=current_year)
