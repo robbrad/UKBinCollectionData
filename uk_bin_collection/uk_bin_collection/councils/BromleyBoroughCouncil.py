@@ -3,7 +3,6 @@ import datetime
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from dateutil.relativedelta import relativedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -41,14 +40,17 @@ class CouncilClass(AbstractGetBinDataClass):
             # Parse the HTML content
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
-            # Find all elements with class 'govuk-summary-list'
+            # Find all elements with class 'waste-service-grid'
             waste_services = soup.find_all(
-                "h3", class_="govuk-heading-m waste-service-name"
+                "div", class_="waste-service-grid"
             )
 
             for service in waste_services:
-                service_title = service.get_text(strip=True)
-                next_collection = service.find_next_sibling().find(
+                service_title = service.find(
+                    "h3", class_="govuk-heading-m waste-service-name"
+                ).get_text(strip=True)
+
+                next_collection = service.find(
                     "dt", string="Next collection"
                 )
 
