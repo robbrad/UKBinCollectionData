@@ -36,15 +36,21 @@ class CouncilClass(AbstractGetBinDataClass):
         Raises:
             ValueError: If UPRN is invalid or page cannot be fetched/parsed.
         """
-        try:
-            user_uprn = kwargs.get("uprn")
+        user_uprn = kwargs.get("uprn")
+        url_fallback = kwargs.get("url")
+
+        # Validate UPRN if provided
+        if user_uprn:
             check_uprn(user_uprn)
             url = f"https://www.huntingdonshire.gov.uk/refuse-calendar/{user_uprn}"
-            if not user_uprn:
-                # Fallback for legacy URL storage. Ensures backwards compatibility.
-                url = kwargs.get("url")
-        except Exception as e:
-            raise ValueError(f"Error getting identifier: {str(e)}")
+        elif url_fallback:
+            # Fallback for legacy URL storage. Ensures backwards compatibility.
+            url = url_fallback
+        else:
+            raise ValueError(
+                "Missing or invalid UPRN and no URL provided. "
+                "Please supply a valid 'uprn' or 'url' parameter."
+            )
 
         try:
             page = requests.get(url, timeout=30)
@@ -80,14 +86,21 @@ class CouncilClass(AbstractGetBinDataClass):
             elif "food collection" in text.lower():
                 bin_type = "Food waste"
             else:
-                bin_type = "Unknown"
+                raise ValueError(
+                    f"Failed to parse bin type from text: '{text}'. "
+                    "The page format may have changed."
+                )
 
+            date_text = strong_tag.get_text(strip=True)
             try:
                 collection_date = datetime.strptime(
-                    strong_tag.get_text(strip=True), "%A %d %B %Y"
+                    date_text, "%A %d %B %Y"
                 ).strftime(date_format)
-            except ValueError:
-                continue  # Skip entries with malformed dates
+            except ValueError as e:
+                raise ValueError(
+                    f"Failed to parse collection date '{date_text}' with format '%A %d %B %Y'. "
+                    f"The page format may have changed. Original error: {e}"
+                )
 
             data["bins"].append(
                 {
