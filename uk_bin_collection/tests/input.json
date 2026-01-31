@@ -109,13 +109,13 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BaberghDistrictCouncil": {
-        "house_number": "Monday",
-        "postcode": "Week 1",
+        "house_number": "Little Changes",
+        "postcode": "CO6 4RA",
         "skip_get_url": true,
-        "uprn": "Tuesday",
         "url": "https://www.babergh.gov.uk",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Babergh",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]",
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000200"
     },
     "BarkingDagenham": {

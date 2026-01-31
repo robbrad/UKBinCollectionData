@@ -499,15 +499,15 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Babergh
 ```commandline
-python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -n XX
+python collect_data.py BaberghDistrictCouncil https://www.babergh.gov.uk -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
-- `-u` - UPRN
 - `-p` - postcode
 - `-n` - house number
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]
+Note: Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.
 
 ---
 
