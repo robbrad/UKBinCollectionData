@@ -18,7 +18,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         bindata = {"bins": []}
         curr_date = datetime.today()
-        
+
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
@@ -38,7 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
             for div in divs:
                 lis = div.find_all("li")
                 for li in lis:
-                    collection = li.text.split(": ")
+                    collection = li.text.split(":")
                     collection_date = datetime.strptime(
                         collection[0],
                         "%A %d %B",

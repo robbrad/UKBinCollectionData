@@ -109,13 +109,13 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BaberghDistrictCouncil": {
-        "house_number": "Monday",
-        "postcode": "Week 1",
+        "house_number": "Little Changes",
+        "postcode": "CO6 4RA",
         "skip_get_url": true,
-        "uprn": "Tuesday",
         "url": "https://www.babergh.gov.uk",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Babergh",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]",
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000200"
     },
     "BarkingDagenham": {
@@ -256,11 +256,9 @@
         "LAD24CD": "E07000033"
     },
     "BoltonCouncil": {
-        "postcode": "BL1 5PQ",
         "skip_get_url": true,
         "uprn": "100010886936",
-        "url": "https://web.bolton.gov.uk/bins.aspx",
-        "web_driver": "http://selenium:4444",
+        "url": "https://bolton.gov.uk",
         "wiki_name": "Bolton",
         "wiki_note": "To get the UPRN, you will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search). Previously required a single field that was UPRN and full address; now requires UPRN and postcode as separate fields.",
         "LAD24CD": "E08000001"
@@ -1563,13 +1561,13 @@
         "LAD24CD": "E07000042"
     },
     "MidSuffolkDistrictCouncil": {
-        "house_number": "Monday",
-        "postcode": "Week 2",
+        "house_number": "91",
+        "postcode": "IP23 8EF",
         "skip_get_url": true,
-        "uprn": "Monday",
         "url": "https://www.midsuffolk.gov.uk",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Mid Suffolk",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your NORMAL collections. [Monday/Tuesday/Wednesday/Thursday/Friday]. [OPTIONAL] Use the 'postcode' field to pass the WEEK for your garden collection. [Week 1/Week 2]. [OPTIONAL] Use the 'uprn' field to pass the DAY for your garden collection. [Monday/Tuesday/Wednesday/Thursday/Friday]",
+        "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000203"
     },
     "MidSussexDistrictCouncil": {
