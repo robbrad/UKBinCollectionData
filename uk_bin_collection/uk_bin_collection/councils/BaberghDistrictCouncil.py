@@ -1,12 +1,11 @@
-import re
+import datetime
 import time
+from datetime import datetime
 
-import requests
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -21,176 +20,122 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        driver = None
+        try:
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
+            user_postcode = kwargs.get("postcode")
+            if not user_postcode:
+                raise ValueError("No postcode provided.")
+            check_postcode(user_postcode)
+            user_paon = kwargs.get("paon")
+            if not user_paon:
+                raise ValueError("No house name/number provided.")
+            check_paon(user_paon)
 
-        collection_day = kwargs.get("paon")
-        garden_collection_week = kwargs.get("postcode")
-        garden_collection_day = kwargs.get("uprn")
-        bindata = {"bins": []}
+            data = {"bins": []}
 
-        days_of_week = [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-        ]
+            url = "https://www.babergh.gov.uk/check-your-collection-day"
 
-        garden_week = ["Week 1", "Week 2"]
+            # Get our initial session running
+            driver = create_webdriver(web_driver, headless, None, __name__)
+            driver.get(url)
 
-        refusestartDate = datetime(2024, 11, 4)
-        recyclingstartDate = datetime(2024, 11, 11)
-
-        offset_days = days_of_week.index(collection_day)
-        offset_days_garden = days_of_week.index(garden_collection_day)
-        if garden_collection_week:
-            garden_collection = garden_week.index(garden_collection_week)
-
-        refuse_dates = get_dates_every_x_days(refusestartDate, 14, 28)
-        recycling_dates = get_dates_every_x_days(recyclingstartDate, 14, 28)
-
-        bank_holidays = [
-            ("25/12/2024", 2),
-            ("26/12/2024", 2),
-            ("27/12/2024", 3),
-            ("30/12/2024", 1),
-            ("31/12/2024", 2),
-            ("01/01/2025", 2),
-            ("02/01/2025", 2),
-            ("03/01/2025", 3),
-            ("06/01/2025", 1),
-            ("07/01/2025", 1),
-            ("08/01/2025", 1),
-            ("09/01/2025", 1),
-            ("10/01/2025", 1),
-            ("18/04/2025", 1),
-            ("21/04/2025", 1),
-            ("22/04/2025", 1),
-            ("23/04/2025", 1),
-            ("24/04/2025", 1),
-            ("25/04/2025", 1),
-            ("05/05/2025", 1),
-            ("06/05/2025", 1),
-            ("07/05/2025", 1),
-            ("08/05/2025", 1),
-            ("09/05/2025", 1),
-            ("26/05/2025", 1),
-            ("27/05/2025", 1),
-            ("28/05/2025", 1),
-            ("29/05/2025", 1),
-            ("30/05/2025", 1),
-            ("25/08/2025", 1),
-            ("26/08/2025", 1),
-            ("27/08/2025", 1),
-            ("28/08/2025", 1),
-            ("29/08/2025", 1),
-        ]
-
-        for refuseDate in refuse_dates:
-
-            collection_date = (
-                datetime.strptime(refuseDate, "%d/%m/%Y") + timedelta(days=offset_days)
-            ).strftime("%d/%m/%Y")
-
-            holiday_offset = next(
-                (value for date, value in bank_holidays if date == collection_date), 0
-            )
-
-            if holiday_offset > 0:
-                collection_date = (
-                    datetime.strptime(collection_date, "%d/%m/%Y")
-                    + timedelta(days=holiday_offset)
-                ).strftime("%d/%m/%Y")
-
-            dict_data = {
-                "type": "Refuse Bin",
-                "collectionDate": collection_date,
-            }
-            bindata["bins"].append(dict_data)
-
-        for recyclingDate in recycling_dates:
-
-            collection_date = (
-                datetime.strptime(recyclingDate, "%d/%m/%Y")
-                + timedelta(days=offset_days)
-            ).strftime("%d/%m/%Y")
-
-            holiday_offset = next(
-                (value for date, value in bank_holidays if date == collection_date), 0
-            )
-
-            if holiday_offset > 0:
-                collection_date = (
-                    datetime.strptime(collection_date, "%d/%m/%Y")
-                    + timedelta(days=holiday_offset)
-                ).strftime("%d/%m/%Y")
-
-            dict_data = {
-                "type": "Recycling Bin",
-                "collectionDate": collection_date,
-            }
-            bindata["bins"].append(dict_data)
-
-        if garden_collection_week:
-            if garden_collection == 0:
-                gardenstartDate = datetime(2024, 11, 11)
-            elif garden_collection == 1:
-                gardenstartDate = datetime(2024, 11, 4)
-
-            garden_dates = get_dates_every_x_days(gardenstartDate, 14, 28)
-
-            garden_bank_holidays = [
-                ("23/12/2024", 1),
-                ("24/12/2024", 1),
-                ("25/12/2024", 1),
-                ("26/12/2024", 1),
-                ("27/12/2024", 1),
-                ("30/12/2024", 1),
-                ("31/12/2024", 1),
-                ("01/01/2025", 1),
-                ("02/01/2025", 1),
-                ("03/01/2025", 1),
-            ]
-
-            for gardenDate in garden_dates:
-
-                collection_date = (
-                    datetime.strptime(gardenDate, "%d/%m/%Y")
-                    + timedelta(days=offset_days_garden)
-                ).strftime("%d/%m/%Y")
-
-                garden_holiday = next(
-                    (
-                        value
-                        for date, value in garden_bank_holidays
-                        if date == collection_date
-                    ),
-                    0,
+            wait = WebDriverWait(driver, 30)
+            wait.until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, '[aria-label="Postcode"]')
                 )
+            )
 
-                if garden_holiday > 0:
+            # Enter postcode
+            postcode_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, '[aria-label="Postcode"]')
+                )
+            )
+            postcode_input.send_keys(user_postcode)
+
+            # Click find address
+            find_address_button = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable((By.CLASS_NAME, "lfr-btn-label"))
+            )
+            driver.execute_script("arguments[0].scrollIntoView();", find_address_button)
+            driver.execute_script("arguments[0].click();", find_address_button)
+
+            time.sleep(5)
+            # Wait for address dropdown
+            select_address_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "select"))
+            )
+
+            # Select address based on postcode and house number
+            select = Select(select_address_input)
+            selected = False
+
+            for addr_option in select.options:
+                if not addr_option.text or addr_option.text == "Please Select...":
                     continue
 
-                holiday_offset = next(
-                    (value for date, value in bank_holidays if date == collection_date),
-                    0,
+                option_text = addr_option.text.upper()
+                postcode_upper = user_postcode.upper()
+                paon_str = str(user_paon).upper()
+
+                # Check if this option contains both postcode and house number
+                if postcode_upper in option_text and (
+                    f"{paon_str} " in option_text
+                    or f", {paon_str}," in option_text
+                    or f", {paon_str} " in option_text
+                    or f", {paon_str}A," in option_text
+                    or option_text.endswith(f", {paon_str}")
+                ):
+                    select.select_by_value(addr_option.get_attribute("value"))
+                    selected = True
+                    break
+
+            if not selected:
+                raise ValueError(
+                    f"Address not found for postcode {user_postcode} and house number {user_paon}"
                 )
 
-                if holiday_offset > 0:
-                    collection_date = (
-                        datetime.strptime(collection_date, "%d/%m/%Y")
-                        + timedelta(days=holiday_offset)
-                    ).strftime("%d/%m/%Y")
+            wait = WebDriverWait(driver, 30)
+            wait.until(EC.presence_of_element_located((By.ID, "collection-cards")))
 
-                dict_data = {
-                    "type": "Garden Bin",
-                    "collectionDate": collection_date,
-                }
-                bindata["bins"].append(dict_data)
+            # Parse the HTML content
+            soup = BeautifulSoup(driver.page_source, "html.parser")
 
-        bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-        )
+            collection_cards = soup.find("div", class_="collection-cards")
+            if collection_cards:
+                cards = collection_cards.find_all("div", class_="card")
+                for card in cards:
+                    collection_type = (card.find("h3")).get_text()
+                    # print(collection_type)
+                    p_tags = card.find_all("p")  # any <p>
 
-        return bindata
+                    for p_tag in p_tags:
+                        if p_tag.get_text().startswith("Frequency"):
+                            continue
+
+                        # Collect text in p excluding the strong tag
+                        date_str = (p_tag.get_text()).split(":")[1]
+
+                        collection_date = datetime.strptime(date_str, "%a %d %b %Y")
+
+                        # print(collection_date.strftime(date_format))  # Tue 03 Feb 2026
+
+                        # Create the dictionary with the formatted data
+                        dict_data = {
+                            "type": collection_type,
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                        data["bins"].append(dict_data)
+        except Exception as e:
+            # Here you can log the exception if needed
+            print(f"An error occurred: {e}")
+            # Optionally, re-raise the exception if you want it to propagate
+            raise
+        finally:
+            # This block ensures that the driver is closed regardless of an exception
+            if driver:
+                driver.quit()
+        return data
