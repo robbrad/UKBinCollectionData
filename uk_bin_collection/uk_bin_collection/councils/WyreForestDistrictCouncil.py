@@ -25,8 +25,8 @@ class CouncilClass(AbstractGetBinDataClass):
             "Sunday",
         ]
 
-        refusestartDate = datetime(2024, 11, 25)
-        recyclingstartDate = datetime(2024, 11, 18)
+        refusestartDate = datetime(2026, 1, 5)
+        recyclingstartDate = datetime(2026, 1, 12)
 
         offset_days = days_of_week.index(collection_day)
 
