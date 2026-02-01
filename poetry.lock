@@ -1026,27 +1026,27 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "geopandas"
-version = "1.0.1"
+version = "1.1.2"
 description = "Geographic pandas extensions"
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "geopandas-1.0.1-py3-none-any.whl", hash = "sha256:01e147d9420cc374d26f51fc23716ac307f32b49406e4bd8462c07e82ed1d3d6"},
-    {file = "geopandas-1.0.1.tar.gz", hash = "sha256:b8bf70a5534588205b7a56646e2082fb1de9a03599651b3d80c99ea4c2ca08ab"},
+    {file = "geopandas-1.1.2-py3-none-any.whl", hash = "sha256:2bb0b1052cb47378addb4ba54c47f8d4642dcbda9b61375638274f49d9f0bb0d"},
+    {file = "geopandas-1.1.2.tar.gz", hash = "sha256:33f7b33565c46a45b8459a2ab699ec943fdbb5716e58e251b3c413cf7783106c"},
 ]
 
 [package.dependencies]
-numpy = ">=1.22"
+numpy = ">=1.24"
 packaging = "*"
-pandas = ">=1.4.0"
+pandas = ">=2.0.0"
 pyogrio = ">=0.7.2"
-pyproj = ">=3.3.0"
+pyproj = ">=3.5.0"
 shapely = ">=2.0.0"
 
 [package.extras]
-all = ["GeoAlchemy2", "SQLAlchemy (>=1.3)", "folium", "geopy", "mapclassify", "matplotlib (>=3.5.0)", "psycopg-binary (>=3.1.0)", "pyarrow (>=8.0.0)", "xyzservices"]
-dev = ["black", "codecov", "pre-commit", "pytest (>=3.1.0)", "pytest-cov", "pytest-xdist"]
+all = ["GeoAlchemy2", "SQLAlchemy (>=2.0)", "folium", "geopy", "mapclassify (>=2.5)", "matplotlib (>=3.7)", "psycopg[binary] (>=3.1.0)", "pyarrow (>=10.0.0)", "scipy", "xyzservices"]
+dev = ["codecov", "pre-commit", "pytest (>=3.1.0)", "pytest-cov", "pytest-xdist", "ruff"]
 
 [[package]]
 name = "gherkin-official"
@@ -4304,4 +4304,4 @@ ocr = ["easyocr", "pillow"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.14"
-content-hash = "0a650a808c5f5fa0f6b4881d11a2998312b7ced7737c916ab925b72ef1913767"
+content-hash = "74157638b983480bc9c4ffbfa2f2da1669b8f5f68811f27101ab0150eea71471"
