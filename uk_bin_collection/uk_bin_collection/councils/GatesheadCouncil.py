@@ -113,69 +113,69 @@ class CouncilClass(AbstractGetBinDataClass):
             with open("debug_page.html", "w", encoding="utf-8") as f:
                 f.write(driver.page_source)
             
-            # Look for any element containing collection/bin text
-            collection_elements = soup.find_all(text=lambda text: text and any(word in text.lower() for word in ["collection", "bin", "refuse", "recycling", "waste"]))
-            
-            if not collection_elements:
-                raise ValueError("Could not find collections data in page source - saved debug_page.html")
-            
-            # Find parent elements that contain the collection text
-            collection_containers = []
-            for text in collection_elements:
-                parent = text.parent
-                while parent and parent.name != "body":
-                    if parent.get_text(strip=True):
-                        collection_containers.append(parent)
-                        break
-                    parent = parent.parent
-            
-            # Use the first container as our "table"
-            table = collection_containers[0] if collection_containers else None
+            # Find the bin collections table
+            table = soup.find("table", class_="bincollections__table")
             
             if not table:
-                raise ValueError("Could not find collections container in page source")
-
-            # Parse collection data from any structure
-            text_content = table.get_text()
+                raise ValueError("Could not find bin collections table in page source - saved debug_page.html")
             
-            # Look for date patterns and bin types in the text
-            import re
-            date_patterns = re.findall(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\d{1,2}\s+\w+\s+\d{4}\b', text_content)
+            # Get current year for date parsing
+            current_year = datetime.now().year
+            current_month = None
             
-            # If we find dates, try to extract bin information
-            if date_patterns:
-                lines = text_content.split('\n')
-                for i, line in enumerate(lines):
-                    line = line.strip()
-                    if any(word in line.lower() for word in ['collection', 'bin', 'refuse', 'recycling', 'waste']):
-                        # Look for dates in this line or nearby lines
-                        for j in range(max(0, i-2), min(len(lines), i+3)):
-                            date_match = re.search(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b|\b\d{1,2}\s+\w+\s+\d{4}\b', lines[j])
-                            if date_match:
-                                try:
-                                    date_str = date_match.group()
-                                    # Try different date formats
-                                    for fmt in ['%d/%m/%Y', '%d-%m-%Y', '%d %B %Y', '%d %b %Y']:
-                                        try:
-                                            parsed_date = datetime.strptime(date_str, fmt)
-                                            dict_data = {
-                                                "type": line.replace("- DAY CHANGE", "").strip(),
-                                                "collectionDate": parsed_date.strftime(date_format),
-                                            }
-                                            data["bins"].append(dict_data)
-                                            break
-                                        except:
-                                            continue
-                                    break
-                                except:
-                                    continue
-            
-            # If no data found, create dummy data to avoid complete failure
-            if not data["bins"]:
-                data["bins"].append({
-                    "type": "General Waste",
-                    "collectionDate": datetime.now().strftime(date_format)
-                })
+            # Parse the table rows
+            rows = table.find_all("tr")
+            for row in rows:
+                # Check if this is a month header row
+                th = row.find("th")
+                if th and th.get("colspan"):
+                    # This is a month header
+                    current_month = th.get_text(strip=True)
+                    continue
+                
+                # Parse data rows
+                cells = row.find_all("td")
+                if len(cells) >= 3:
+                    # Extract day, weekday, and bin type(s)
+                    day = cells[0].get_text(strip=True)
+                    weekday = cells[1].get_text(strip=True)
+                    bin_cell = cells[2]
+                    
+                    # Extract all bin types from the cell (may contain multiple links)
+                    bin_links = bin_cell.find_all("a")
+                    bin_types = []
+                    for link in bin_links:
+                        bin_type = link.get_text(strip=True)
+                        if bin_type:
+                            bin_types.append(bin_type)
+                    
+                    # If no links found, try getting text directly
+                    if not bin_types:
+                        bin_text = bin_cell.get_text(strip=True)
+                        if bin_text:
+                            bin_types = [bin_text]
+                    
+                    # Parse the date
+                    if current_month and day:
+                        try:
+                            # Construct date string: "day month year"
+                            date_str = f"{day} {current_month} {current_year}"
+                            parsed_date = datetime.strptime(date_str, "%d %B %Y")
+                            
+                            # If the parsed date is more than 6 months in the past, it's probably next year
+                            if (datetime.now() - parsed_date).days > 180:
+                                parsed_date = parsed_date.replace(year=current_year + 1)
+                            
+                            # Add each bin type as a separate entry
+                            for bin_type in bin_types:
+                                dict_data = {
+                                    "type": bin_type,
+                                    "collectionDate": parsed_date.strftime(date_format),
+                                }
+                                data["bins"].append(dict_data)
+                        except Exception as e:
+                            print(f"Error parsing date for row: {e}")
+                            continue
 
             data["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")

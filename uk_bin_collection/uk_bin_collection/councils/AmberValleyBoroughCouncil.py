@@ -44,6 +44,8 @@ class CouncilClass(AbstractGetBinDataClass):
             ).strftime(date_format)
             if date_ == "01/01/1":
                 continue
+            elif date_ == "01/01/0001":
+                continue
             elif date_ == "01/01/1900":
                 continue
 

@@ -35,43 +35,76 @@ class CouncilClass(AbstractGetBinDataClass):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
         }
-        params = {
-            "type": "JSON",
-            "list": "DomesticBinCollections2025on",
-            "Road or Postcode": user_postcode,
-        }
+        
+        # Try new dataset first (2025on), fall back to old dataset if no data found
+        # Council is migrating data between datasets, not all postcodes migrated yet
+        datasets = ["DomesticBinCollections2025on", "DomesticBinCollections"]
+        bin_data = None
+        
+        for dataset in datasets:
+            params = {
+                "type": "JSON",
+                "list": dataset,
+                "Road or Postcode": user_postcode,
+            }
 
-        response = requests.get(
-            "https://www.fareham.gov.uk/internetlookups/search_data.aspx",
-            params=params,
-            headers=headers,
-        )
+            response = requests.get(
+                "https://www.fareham.gov.uk/internetlookups/search_data.aspx",
+                params=params,
+                headers=headers,
+            )
 
-        bin_data = response.json()["data"]
+            response_data = response.json()["data"]
+            
+            # Check if we got actual data (not just an error message)
+            if isinstance(response_data, dict) and "rows" in response_data:
+                bin_data = response_data
+                break
+        
         data = {"bins": []}
 
-        if "rows" in bin_data:
-            collection_str = bin_data["rows"][0]["BinCollectionInformation"]
+        if bin_data and "rows" in bin_data:
+            row = bin_data["rows"][0]
+            
+            # New dataset format: "BinCollectionInformation" field
+            if "BinCollectionInformation" in row:
+                collection_str = row["BinCollectionInformation"]
+                results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4}|today)\s*\(([^)]+)\)', collection_str)
 
-            results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4}|today)\s*\(([^)]+)\)', collection_str)
-
-            if results:
-                for result in results:
-                    if (result[0] == "today"):
-                        collection_date = datetime.today()
-                    else:
+                if results:
+                    for result in results:
+                        if (result[0] == "today"):
+                            collection_date = datetime.today()
+                        else:
+                            collection_date = datetime.strptime(result[0], "%d/%m/%Y")
+                        dict_data = {
+                            "type": result[1],
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                        data["bins"].append(dict_data)
+                else:
+                    raise RuntimeError("Dates not parsed correctly from new dataset format.")
+            
+            # Old dataset format: "DomesticBinDay" field
+            elif "DomesticBinDay" in row:
+                collection_str = row["DomesticBinDay"]
+                # Parse dates from format like "Friday - Collections are 06/02/2026 (Refuse) and 13/02/2026 (Recycling)"
+                results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4})\s*\(([^)]+)\)', collection_str)
+                
+                if results:
+                    for result in results:
                         collection_date = datetime.strptime(result[0], "%d/%m/%Y")
-                    dict_data = {
-                        "type": result[1],
-                        "collectionDate": collection_date.strftime(date_format),
-                    }
-                    data["bins"].append(dict_data)
-            else:
-                raise RuntimeError("Dates not parsed correctly.")
+                        dict_data = {
+                            "type": result[1],
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                        data["bins"].append(dict_data)
+                else:
+                    raise RuntimeError("Dates not parsed correctly from old dataset format.")
 
-            # Look for garden waste key
-            for key, value in bin_data["rows"][0].items():
-                if key.startswith("GardenWasteBinDay"):
+            # Look for garden waste key (works for both formats)
+            for key, value in row.items():
+                if key.startswith("GardenWasteBinDay") or key == "GardenWasteDay":
                     results = re.findall(r'(\d{1,2}/\d{1,2}/\d{4})', value)
                     if not results:
                         continue

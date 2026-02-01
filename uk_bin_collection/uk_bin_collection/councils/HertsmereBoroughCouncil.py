@@ -31,37 +31,11 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
             bindata = {"bins": []}
 
-            URI_1 = "https://www.hertsmere.gov.uk/Environment-Refuse-and-Recycling/Recycling--Waste/Bin-collections/Collections-and-calendar.aspx"
-            URI_2 = "https://hertsmere-services.onmats.com/w/webpage/round-search"
+            URI = "https://hertsmere-services.onmats.com/w/webpage/round-search"
 
             # Create Selenium webdriver
             driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(URI_1)
-
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-
-            current_week = (soup.find("li", class_="current")).text.strip()
-
-            strong = soup.find_all("strong", text=re.compile(r"^Week"))
-
-            bin_weeks = []
-            for tag in strong:
-                parent = tag.parent
-                bin_type = (
-                    (parent.text)
-                    .split("-")[1]
-                    .strip()
-                    .replace("\xa0", " ")
-                    .split(" and ")
-                )
-                for bin in bin_type:
-                    dict_data = {
-                        "week": tag.text.replace("\xa0", " "),
-                        "bin_type": bin,
-                    }
-                    bin_weeks.append(dict_data)
-
-            driver.get(URI_2)
+            driver.get(URI)
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
@@ -74,14 +48,25 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             inputElement_postcode.send_keys(user_postcode)
 
+            # Wait for results to appear
             WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        f"//ul[@class='result_list']/li[starts-with(@aria-label, '{user_paon}')]",
-                    )
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "ul.result_list li")
                 )
-            ).click()
+            )
+            
+            # Use JavaScript to click the correct address
+            # Add space after house number to match exactly (e.g., "1 " not "10", "11", etc.)
+            driver.execute_script(f"""
+                const results = document.querySelectorAll('ul.result_list li');
+                for (let li of results) {{
+                    const ariaLabel = li.getAttribute('aria-label');
+                    if (ariaLabel && ariaLabel.startsWith('{user_paon} ')) {{
+                        li.click();
+                        return;
+                    }}
+                }}
+            """)
 
             WebDriverWait(driver, timeout=10).until(
                 EC.element_to_be_clickable(
@@ -103,26 +88,34 @@ class CouncilClass(AbstractGetBinDataClass):
             table = soup.find("table", class_="table listing table-striped")
 
             # Check if the table was found
-            if table:
-                # Extract table rows and cells
-                table_data = []
-                for row in table.find("tbody").find_all("tr"):
-                    # Extract cell data from each <td> tag
-                    row_data = [
-                        cell.get_text(strip=True) for cell in row.find_all("td")
-                    ]
-                    table_data.append(row_data)
+            if not table:
+                raise Exception("Collection schedule table not found.")
 
-            else:
-                print("Table not found.")
+            # Extract table rows and cells
+            table_data = []
+            for row in table.find("tbody").find_all("tr"):
+                # Extract cell data from each <td> tag
+                row_data = [
+                    cell.get_text(strip=True) for cell in row.find_all("td")
+                ]
+                table_data.append(row_data)
 
-            collection_day = (table_data[0])[1]
+            # The table structure is: [Bin Type, Collection Day, Round Code]
+            # All bins are collected on the same day (e.g., "Thursday")
+            if not table_data or len(table_data[0]) < 2:
+                raise Exception("Unable to parse collection schedule from table.")
+            
+            collection_day = table_data[0][1]  # e.g., "Thursday"
 
-            current_week_bins = [
-                bin for bin in bin_weeks if bin["week"] == current_week
-            ]
-            next_week_bins = [bin for bin in bin_weeks if bin["week"] != current_week]
+            # Extract all bin types
+            bin_types = []
+            for row in table_data:
+                if len(row) >= 1 and row[0].strip():
+                    bin_types.append(row[0].strip())
 
+            # Calculate next collection dates based on the collection day
+            from datetime import datetime, timedelta
+            
             days_of_week = [
                 "Monday",
                 "Tuesday",
@@ -143,22 +136,14 @@ class CouncilClass(AbstractGetBinDataClass):
             else:
                 next_day = today + timedelta(days=days_until_target)
 
-            current_week_dates = get_dates_every_x_days(next_day, 14, 7)
-            next_week_date = next_day + timedelta(days=7)
-            next_week_dates = get_dates_every_x_days(next_week_date, 14, 7)
+            # Generate collection dates for the next 12 weeks (all bins collected weekly)
+            all_dates = get_dates_every_x_days(next_day, 7, 12)  # 12 collections, every 7 days
 
-            for date in current_week_dates:
-                for bin in current_week_bins:
+            # Assign all bin types to each collection date
+            for date in all_dates:
+                for bin_type in bin_types:
                     dict_data = {
-                        "type": bin["bin_type"],
-                        "collectionDate": date,
-                    }
-                    bindata["bins"].append(dict_data)
-
-            for date in next_week_dates:
-                for bin in next_week_bins:
-                    dict_data = {
-                        "type": bin["bin_type"],
+                        "type": bin_type,
                         "collectionDate": date,
                     }
                     bindata["bins"].append(dict_data)

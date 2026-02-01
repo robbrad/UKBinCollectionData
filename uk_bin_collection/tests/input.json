@@ -201,8 +201,9 @@
         "uprn": "100020196143",
         "skip_get_url": true,
         "url": "https://waste.bexley.gov.uk/waste",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Bexley",
-        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it.",
+        "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it. This parser requires a Selenium webdriver.",
         "LAD24CD": "E09000004"
     },
     "BirminghamCityCouncil": {
@@ -565,13 +566,6 @@
         "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
         "LAD24CD": "W06000003"
     },
-    "CopelandBoroughCouncil": {
-        "LAD24CD": "E07000028",
-        "uprn": "100110734613",
-        "url": "https://www.copeland.gov.uk",
-        "wiki_name": "Copeland",
-        "wiki_note": "*****This has now been replaced by Cumberland Council****"
-    },
     "CornwallCouncil": {
         "skip_get_url": true,
         "uprn": "100040128734",
@@ -615,14 +609,6 @@
         "wiki_name": "Croydon",
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.",
         "LAD24CD": "E09000008"
-    },
-    "CumberlandAllerdaleCouncil": {
-        "house_number": "2",
-        "postcode": "CA13 0DE",
-        "url": "https://www.allerdale.gov.uk",
-        "wiki_name": "Cumberland",
-        "wiki_note": "Pass the house number and postcode in their respective parameters.",
-        "LAD24CD": "E06000063"
     },
     "CumberlandCouncil": {
         "uprn": "10009457328",
@@ -854,6 +840,14 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000086"
     },
+    "EdenDistrictCouncil": {
+        "uprn": "100110331387",
+        "url": "https://my.eden.gov.uk/myeden.aspx",
+        "wiki_command_url_override": "https://my.eden.gov.uk/myeden.aspx",
+        "wiki_name": "Eden District (Westmorland and Furness)",
+        "wiki_note": "For Eden area addresses within Westmorland and Furness. Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search). Note: This returns collection days (e.g., 'Wednesday') rather than specific dates.",
+        "LAD24CD": "E06000064"
+    },
     "EdinburghCityCouncil": {
         "LAD24CD": "S12000036",
         "house_number": "Tuesday",
@@ -1054,7 +1048,8 @@
             "Isle of Wight",
             "Westmorland and Furness",
             "Derry City and Strabane",
-            "Norwich"
+            "Norwich",
+            "Bassetlaw District"
         ],
         "supported_councils_LAD24CD": [
             "E06000046",
@@ -1062,6 +1057,7 @@
             "E07000085",
             "E07000090",
             "E07000124",
+            "E07000171",
             "E07000218",
             "E08000009",
             "N09000005",
@@ -2202,7 +2198,7 @@
     "SouthNorfolkCouncil": {
         "skip_get_url": true,
         "uprn": "2630102526",
-        "url": "https://www.southnorfolkandbroadland.gov.uk/rubbish-recycling/south-norfolk-bin-collection-day-finder",
+        "url": "https://area.southnorfolkandbroadland.gov.uk/FindAddress",
         "wiki_name": "South Norfolk",
         "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000149"
