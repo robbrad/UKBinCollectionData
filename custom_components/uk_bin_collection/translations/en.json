@@ -8,9 +8,9 @@
                     "name": "Location name",
                     "council": "Council",
                     "manual_refresh_only":"Automatically refresh the sensor",
-                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon see: https://github.com/robbrad/UKBinCollectionData"
+                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon (see documentation)"
                 },
-                "description": "Please see [here](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) if your council isn't listed"
+                "description": "Please see the documentation if your council isn't listed"
             },
             "council": {
                 "title": "Provide council details",
@@ -27,7 +27,7 @@
                     "local_browser": "Don't run on remote Selenium server, use local install of Chrome instead",
                     "submit": "Submit"
                 },
-                "description": "Please refer to your council's [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) entry for details on what to enter.\n{selenium_message}"
+                "description": "Please refer to your council's wiki entry for details on what to enter.\n{selenium_message}"
                         },
             "reconfigure_confirm": {
                 "title": "Update council details",
@@ -43,17 +43,17 @@
                     "headless": "Run Selenium in headless mode (recommended)",
                     "local_browser": "Don't run on remote Selenium server, use local install of Chrome instead",
                     "manual_refresh_only":"Automatically refresh the sensor",
-                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon see: https://github.com/robbrad/UKBinCollectionData",
+                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon (see documentation)",
                     "submit": "Submit"
                 },
-                "description": "Please refer to your council's [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) entry for details on what to enter."
+                "description": "Please refer to your council's wiki entry for details on what to enter."
             }
         },
         "error": {
             "name": "Please enter a location name",
             "council": "Please select a council",
-            "selenium_unavailable": "❌ Selenium server is not accessible. Please ensure it is running at http://localhost:4444 or http://selenium:4444. [Setup Guide](https://example.com/selenium-setup)",
-            "chromium_not_found": "❌ Chromium browser is not installed. Please install Chromium or Google Chrome. [Installation Guide](https://example.com/chromium-install)"
+            "selenium_unavailable": "Selenium server is not accessible. Please ensure it is running at localhost:4444 or selenium:4444",
+            "chromium_not_found": "Chromium browser is not installed. Please install Chromium or Google Chrome"
         }
     }
 }
