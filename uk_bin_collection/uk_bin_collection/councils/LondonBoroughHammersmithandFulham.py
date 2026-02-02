@@ -35,11 +35,14 @@ class CouncilClass(AbstractGetBinDataClass):
         results = soup.find("div", {"class": "nearest-search-results"})
         ol = results.find("ol")
         bin_collections = ol.find_all("a")
+
+        today = datetime.now().strftime("%A")
+
         for bin_collection in bin_collections:
             collection_day = bin_collection.get_text().split(" - ")[0]
             collection_type = bin_collection.get_text().split(" - ")[1]
 
-            if days_of_week.get(collection_day) == 0:
+            if days_of_week.get(collection_day) == days_of_week.get(today):
                 collection_day = datetime.now().strftime(date_format)
             else:
                 collection_day = get_next_day_of_week(collection_day)
