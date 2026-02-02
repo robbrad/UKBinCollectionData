@@ -1391,6 +1391,15 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "E08000012"
     },
+    "LondonBoroughCamdenCouncil": {
+        "uprn": "5063139",
+        "postcode": "NW6 1PL",
+        "skip_get_url": true,
+        "url": "https://environmentservices.camden.gov.uk/property",
+        "wiki_name": "Camden",
+        "wiki_note": "Pass the property ID as UPRN. Find your property at https://www.camden.gov.uk/check-collection-day then use the property ID from the URL (e.g., https://environmentservices.camden.gov.uk/property/5063139).",
+        "LAD24CD": "E09000007"
+    },
     "LondonBoroughEaling": {
         "skip_get_url": true,
         "uprn": "12081498",

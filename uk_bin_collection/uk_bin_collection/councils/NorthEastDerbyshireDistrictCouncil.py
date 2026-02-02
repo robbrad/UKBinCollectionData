@@ -68,12 +68,15 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
             )
 
-            sleep(10)
+            sleep(2)
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             print("Parsing HTML content...")
 
             collection_rows = soup.find_all("tr")
+
+            # Bin type mapping for cleaner logic
+            bin_type_keywords = ["Black", "Burgundy", "Green"]
 
             for row in collection_rows:
                 cells = row.find_all("td")
@@ -94,34 +97,18 @@ class CouncilClass(AbstractGetBinDataClass):
                     if collection_date and bin_types:
                         print(f"Found collection: {collection_date} - {bin_types}")
 
-                        # Handle combined collections
-                        if "&" in bin_types:
-                            if "Burgundy" in bin_types:
+                        # Parse date once
+                        formatted_date = datetime.strptime(
+                            collection_date, "%d/%m/%Y"
+                        ).strftime(date_format)
+
+                        # Check for each bin type keyword in the text
+                        for bin_keyword in bin_type_keywords:
+                            if bin_keyword in bin_types:
                                 data["bins"].append(
                                     {
-                                        "type": "Burgundy Bin",
-                                        "collectionDate": datetime.strptime(
-                                            collection_date, "%d/%m/%Y"
-                                        ).strftime(date_format),
-                                    }
-                                )
-                            if "Green" in bin_types:
-                                data["bins"].append(
-                                    {
-                                        "type": "Green Bin",
-                                        "collectionDate": datetime.strptime(
-                                            collection_date, "%d/%m/%Y"
-                                        ).strftime(date_format),
-                                    }
-                                )
-                        else:
-                            if "Black" in bin_types:
-                                data["bins"].append(
-                                    {
-                                        "type": "Black Bin",
-                                        "collectionDate": datetime.strptime(
-                                            collection_date, "%d/%m/%Y"
-                                        ).strftime(date_format),
+                                        "type": f"{bin_keyword} Bin",
+                                        "collectionDate": formatted_date,
                                     }
                                 )
 

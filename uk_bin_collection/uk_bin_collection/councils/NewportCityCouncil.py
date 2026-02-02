@@ -106,9 +106,13 @@ class CouncilClass(AbstractGetBinDataClass):
             encoded_input = self.encode_body(newport_input)
 
             session = requests.Session()
-            response = session.post(
+            headers = {
+                "P_PARAMETER": encoded_input,
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            }
+            response = session.get(
                 "https://iweb.itouchvision.com/portal/itouchvision/kmbd/collectionDay",
-                data=encoded_input,
+                headers=headers,
             )
 
             output = response.text
