@@ -18,7 +18,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_postcode = kwargs.get("postcode")
-        check_uprn(user_postcode)
+        check_postcode(user_postcode)
         bindata = {"bins": []}
 
         user_postcode = user_postcode.strip().replace(" ", "")
