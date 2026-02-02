@@ -71,82 +71,80 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             data = {"bins": []}
 
-            # Get the current month and year
-            current_month = datetime.now().month
-            current_year = datetime.now().year
-
-            # Function to extract collection data
-            def extract_collection_data(collection_div, collection_type):
+            # Function to extract collection data from multiple dates from multiple dates
+            def extract_collection_data(collection_div, collection_type, class_prefix):
                 if collection_div:
-                    date_element = (
-                        collection_div.find(class_="recycling-collection-day-numeric")
-                        or collection_div.find(class_="refuse-collection-day-numeric")
-                        or collection_div.find(class_="garden-collection-day-numeric")
-                    )
-                    month_element = (
-                        collection_div.find(class_="recycling-collection-month")
-                        or collection_div.find(class_="refuse-collection-month")
-                        or collection_div.find(class_="garden-collection-month")
+                    # Find all date containers
+                    date_containers = collection_div.find_all(
+                        class_="garden-collection-postdate"
                     )
 
-                    if date_element and month_element:
-                        collection_date = date_element.get_text(strip=True)
-                        collection_month = month_element.get_text(strip=True)
-
-                        # Combine month, date, and year into a string
-                        date_string = (
-                            f"{collection_date} {collection_month} {current_year}"
+                    for container in date_containers:
+                        # Find date and month elements with the appropriate prefix
+                        date_element = container.find(
+                            class_=f"{class_prefix}-garden-collection-day-numeric"
+                        )
+                        month_element = container.find(
+                            class_=f"{class_prefix}-collection-month"
                         )
 
-                        try:
-                            # Convert the date string to a datetime object
-                            collection_date_obj = datetime.strptime(
-                                date_string, "%d %B %Y"
-                            )
+                        if date_element and month_element:
+                            collection_date = date_element.get_text(strip=True)
+                            collection_month = month_element.get_text(
+                                strip=True
+                            )  # e.g., "February 2026 "
 
-                            # Check if the month is ahead of the current month
-                            if collection_date_obj.month >= current_month:
-                                # If the month is ahead, use the current year
+                            # Parse the date string (format: "04 February 2026 ")
+                            date_string = f"{collection_date} {collection_month.strip()}"
+
+                            try:
+                                # Convert the date string to a datetime object
+                                collection_date_obj = datetime.strptime(
+                                    date_string, "%d %B %Y"
+                                )
+
+                                # Format the date
                                 formatted_date = collection_date_obj.strftime(
                                     date_format
                                 )
-                            else:
-                                # If the month is before the current month, use the next year
-                                formatted_date = collection_date_obj.replace(
-                                    year=current_year + 1
-                                ).strftime(date_format)
-                            # Create a dictionary for each collection entry
-                            dict_data = {
-                                "type": collection_type,
-                                "collectionDate": formatted_date,
-                            }
 
-                            # Append dictionary data to the 'bins' list in the 'data' dictionary
-                            data["bins"].append(dict_data)
+                                # Create a dictionary for each collection entry
+                                dict_data = {
+                                    "type": collection_type,
+                                    "collectionDate": formatted_date,
+                                }
 
-                        except ValueError as e:
-                            # Handle the case where the date format is invalid
-                            formatted_date = "Invalid Date Format"
+                                # Append dictionary data to the 'bins' list in the 'data' dictionary
+                                data["bins"].append(dict_data)
 
-            # Extract Recycling collection data
-            extract_collection_data(
-                soup.find(
-                    class_="container-fluid RegularCollectionDay"
-                ).find_next_sibling("div"),
-                "Recycling",
-            )
+                            except ValueError as e:
+                                # Handle the case where the date format is invalid
+                                print(
+                                    f"Error parsing date '{date_string}' for {collection_type}: {e}"
+                                )
 
             # Extract Refuse collection data
-            for refuse_div in soup.find_all(
-                class_="container-fluid RegularCollectionDay"
-            ):
-                extract_collection_data(refuse_div, "Refuse")
+            refuse_div = soup.find(
+                "div", class_="container-fluid RegularCollectionDay"
+            )
+            if refuse_div and refuse_div.find(class_="refuse-container"):
+                extract_collection_data(refuse_div, "Refuse", "refuse")
+
+            # Extract Recycling collection data
+            recycling_divs = soup.find_all(
+                "div", class_="container-fluid RegularCollectionDay"
+            )
+            for div in recycling_divs:
+                if div.find(class_="recycle-container"):
+                    extract_collection_data(div, "Recycling", "recycling")
+                    break
 
             # Extract Garden Waste collection data
-            extract_collection_data(
-                soup.find(class_="container-fluid gardenwasteCollectionDay"),
-                "Garden Waste",
+            garden_div = soup.find(
+                "div", class_="container-fluid gardenwasteCollectionDay"
             )
+            if garden_div:
+                extract_collection_data(garden_div, "Garden Waste", "garden")
 
             # Print the extracted data
         except Exception as e:
