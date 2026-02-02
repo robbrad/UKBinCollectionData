@@ -44,6 +44,16 @@ class CouncilClass(AbstractGetBinDataClass):
         # Parse the resultant div
         for tag in collection_tag:
             text_list = list(tag.stripped_strings)
+            
+            # Filter out any empty strings or whitespace-only entries
+            text_list = [text.strip() for text in text_list if text.strip()]
+            
+            # Check if we have an even number of elements
+            if len(text_list) % 2 != 0:
+                # If odd number, log warning and skip the last element
+                # This handles cases where there's extra text or a missing date
+                text_list = text_list[:-1]
+            
             # Create and parse the list as tuples of name:date
             for bin_name, collection_date in itertools.batched(text_list, 2):
                 try:
