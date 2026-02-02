@@ -1,8 +1,12 @@
 import requests
+import urllib3
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+# Suppress SSL warnings when using verify=False
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -27,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "Referer": "https://harborough.fccenvironment.co.uk/",
         }
         params = {"Uprn": user_uprn}
-        response = requests.post(URI, headers=headers, json=params, verify=False)
+        response = requests.post(URI, headers=headers, data=params, verify=False)
 
         # Check for service errors
         if response.status_code == 502:
@@ -53,19 +57,30 @@ class CouncilClass(AbstractGetBinDataClass):
         lis = bin_collection.find_all("li")
         for li in lis:
             try:
-                split = re.match(r"(.+)\s(\d{1,2} \w+ \d{4})$", li.text)
-                bin_type = split.group(1).strip()
-                date = split.group(2)
+                # Try the new format first (with span.pull-right)
+                date_span = li.find("span", {"class": "pull-right"})
+                if date_span:
+                    date_text = date_span.text.strip()
+                    date = datetime.strptime(date_text, "%d %B %Y").strftime("%d/%m/%Y")
+                    # Extract bin type from the text before the span
+                    bin_type = li.text.replace(date_text, "").strip()
+                else:
+                    # Fall back to old format (regex match)
+                    split = re.match(r"(.+)\s(\d{1,2} \w+ \d{4})$", li.text)
+                    if not split:
+                        continue
+                    bin_type = split.group(1).strip()
+                    date = datetime.strptime(
+                        split.group(2),
+                        "%d %B %Y",
+                    ).strftime("%d/%m/%Y")
 
                 dict_data = {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(
-                        date,
-                        "%d %B %Y",
-                    ).strftime("%d/%m/%Y"),
+                    "collectionDate": date,
                 }
                 bindata["bins"].append(dict_data)
-            except:
+            except Exception:
                 continue
 
         bindata["bins"].sort(
