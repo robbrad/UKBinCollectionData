@@ -71,56 +71,80 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             data = {"bins": []}
 
-            # Function to extract collection data
-            def extract_collection_data(collection_div, collection_type):
+            # Function to extract collection data from multiple dates from multiple dates
+            def extract_collection_data(collection_div, collection_type, class_prefix):
                 if collection_div:
-                    date_element = (
-                        collection_div.find(
-                            class_="refuse-garden-collection-day-numeric"
-                        )
-                        or collection_div.find(
-                            class_="recycling-garden-collection-day-numeric"
-                        )
-                        or collection_div.find(class_="garden-collection-day-numeric")
-                    )
-                    month_element = (
-                        collection_div.find(class_="recycling-collection-month")
-                        or collection_div.find(class_="refuse-collection-month")
-                        or collection_div.find(class_="garden-collection-month")
+                    # Find all date containers
+                    date_containers = collection_div.find_all(
+                        class_="garden-collection-postdate"
                     )
 
-                    if date_element and month_element:
-                        collection_date = date_element.get_text(strip=True)
-                        collection_month = month_element.get_text(strip=True)
+                    for container in date_containers:
+                        # Find date and month elements with the appropriate prefix
+                        date_element = container.find(
+                            class_=f"{class_prefix}-garden-collection-day-numeric"
+                        )
+                        month_element = container.find(
+                            class_=f"{class_prefix}-collection-month"
+                        )
 
-                        # Combine month, date, and year into a string
-                        date_string = f"{collection_date} {collection_month}"
+                        if date_element and month_element:
+                            collection_date = date_element.get_text(strip=True)
+                            collection_month = month_element.get_text(
+                                strip=True
+                            )  # e.g., "February 2026 "
 
-                        try:
-                            # Convert the date string to a datetime object
-                            formatted_date = datetime.strptime(
-                                date_string, "%d %B %Y"
-                            ).strftime(date_format)
+                            # Parse the date string (format: "04 February 2026 ")
+                            date_string = f"{collection_date} {collection_month.strip()}"
 
-                            # Create a dictionary for each collection entry
-                            dict_data = {
-                                "type": collection_type,
-                                "collectionDate": formatted_date,
-                            }
+                            try:
+                                # Convert the date string to a datetime object
+                                collection_date_obj = datetime.strptime(
+                                    date_string, "%d %B %Y"
+                                )
 
-                            # Append dictionary data to the 'bins' list in the 'data' dictionary
-                            data["bins"].append(dict_data)
+                                # Format the date
+                                formatted_date = collection_date_obj.strftime(
+                                    date_format
+                                )
 
-                        except ValueError as e:
-                            # Handle the case where the date format is invalid
-                            formatted_date = "Invalid Date Format"
+                                # Create a dictionary for each collection entry
+                                dict_data = {
+                                    "type": collection_type,
+                                    "collectionDate": formatted_date,
+                                }
 
-            container_fluid = soup.find_all(class_="container-fluid")
-            for container in container_fluid:
-                collection_type = container.find("h3").get_text().strip()
-                collections = container.find_all(class_="bs3-col-sm-2")
-                for collection in collections:
-                    extract_collection_data(collection, collection_type)
+                                # Append dictionary data to the 'bins' list in the 'data' dictionary
+                                data["bins"].append(dict_data)
+
+                            except ValueError as e:
+                                # Handle the case where the date format is invalid
+                                print(
+                                    f"Error parsing date '{date_string}' for {collection_type}: {e}"
+                                )
+
+            # Extract Refuse collection data
+            refuse_div = soup.find(
+                "div", class_="container-fluid RegularCollectionDay"
+            )
+            if refuse_div and refuse_div.find(class_="refuse-container"):
+                extract_collection_data(refuse_div, "Refuse", "refuse")
+
+            # Extract Recycling collection data
+            recycling_divs = soup.find_all(
+                "div", class_="container-fluid RegularCollectionDay"
+            )
+            for div in recycling_divs:
+                if div.find(class_="recycle-container"):
+                    extract_collection_data(div, "Recycling", "recycling")
+                    break
+
+            # Extract Garden Waste collection data
+            garden_div = soup.find(
+                "div", class_="container-fluid gardenwasteCollectionDay"
+            )
+            if garden_div:
+                extract_collection_data(garden_div, "Garden Waste", "garden")
 
             # Print the extracted data
         except Exception as e:
