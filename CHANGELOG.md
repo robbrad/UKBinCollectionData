@@ -1,4 +1,45 @@
 =======
+## 0.162.7 (2026-02-02)
+
+### Fix
+
+- resolve issues #1776, #1780, #1782 - Camden, NE Derbyshire, Newport
+- Broken councils
+- remove URLs from translation strings for HACS compliance
+- **CumberlandCouncil**: remove obsolete duplicate entries
+- **AmberValleyBoroughCouncil**: filter invalid date 01/01/0001
+- Kingston parser for HTML format change with explicit error handling
+- Kingston-upon-Thames website HTML format change
+- UttlesfordDistrictCouncil use color names for bin types
+- EastHertsCouncil handle empty NextDate values
+- UttlesfordDistrictCouncil incorrect bin types due to wrong alt text
+- compare dates without time component in UttlesfordDistrictCouncil
+- UttlesfordDistrictCouncil hardcoded year 2024
+- Wyre Forest District Council
+- #1835 - Wyre Forest District Council
+- Babergh District Council
+- #1783 - Babergh District Council
+- Mid Suffolk District Council
+- #1746 - Mid Suffolk District Council
+- Waverley Borough Council
+- #1834 - Waverley Borough Council
+- London Borough Sutton
+- #1830 - London Borough Sutton
+- Bolton Council
+- #1792 - Bolton Council
+- Coventry City Council
+- #1808 - Coventry City Council
+- Slough Borough Council
+- #1822 - Slough Borough Council
+- Bromley Borough Council
+- #1829 - Bromley Borough Council
+- Burnley Borough Council
+- #1820 - Burnley Borough Council
+
+### Refactor
+
+- add explicit datetime import in UttlesfordDistrictCouncil
+
 ## 0.162.6 (2026-01-14)
 
 ### Fix
