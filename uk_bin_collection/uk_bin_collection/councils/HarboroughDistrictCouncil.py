@@ -19,15 +19,20 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        URI = "https://harborough.fccenvironment.co.uk/detail-address"
+        URI1 = "https://harborough.fccenvironment.co.uk/"
+        URI2 = "https://harborough.fccenvironment.co.uk/detail-address"
 
-        headers = {
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0",
-            "Referer": "https://harborough.fccenvironment.co.uk/",
-        }
+        # Make the GET request
+        session = requests.session()
+        response = session.get(
+            URI1, verify=False
+        )  # Initialize session state (cookies) required by URI2
+        response.raise_for_status()  # Validate session initialization
+
         params = {"Uprn": user_uprn}
-        response = requests.post(URI, headers=headers, json=params)
+
+        response = session.post(URI2, json=params, verify=False)
+        response.raise_for_status()  # Raise HTTPError for bad status codes
 
         soup = BeautifulSoup(response.content, features="html.parser")
         bin_collection = soup.find(
