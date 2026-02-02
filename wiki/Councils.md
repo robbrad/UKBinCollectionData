@@ -76,13 +76,11 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Chorley](#chorley)
 - [Colchester](#colchester)
 - [Conwy](#conwy)
-- [Copeland](#copeland)
 - [Cornwall](#cornwall)
 - [Cotswold](#cotswold)
 - [Coventry](#coventry)
 - [Crawley](#crawley)
 - [Croydon](#croydon)
-- [Cumberland](#cumberland)
 - [Cumberland](#cumberland)
 - [Dacorum](#dacorum)
 - [Darlington Borough Council](#darlington-borough-council)
@@ -111,6 +109,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [East Staffordshire](#east-staffordshire)
 - [East Suffolk](#east-suffolk)
 - [Eastleigh](#eastleigh)
+- [Eden District (Westmorland and Furness)](#eden-district-(westmorland-and-furness))
 - [City of Edinburgh](#city-of-edinburgh)
 - [Elmbridge](#elmbridge)
 - [Enfield](#enfield)
@@ -171,7 +170,9 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [City of Lincoln](#city-of-lincoln)
 - [Lisburn and Castlereagh](#lisburn-and-castlereagh)
 - [Liverpool](#liverpool)
+- [Camden](#camden)
 - [Ealing](#ealing)
+- [Hammersmith & Fulham](#hammersmith-&-fulham)
 - [Harrow](#harrow)
 - [Havering](#havering)
 - [Hounslow](#hounslow)
@@ -628,13 +629,14 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Bexley
 ```commandline
-python collect_data.py BexleyCouncil https://waste.bexley.gov.uk/waste -s -u XXXXXXXX
+python collect_data.py BexleyCouncil https://waste.bexley.gov.uk/waste -s -u XXXXXXXX -w http://HOST:PORT/
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it.
+Note: Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it. This parser requires a Selenium webdriver.
 
 ---
 
@@ -1156,17 +1158,6 @@ Note: Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your U
 
 ---
 
-### Copeland
-```commandline
-python collect_data.py CopelandBoroughCouncil https://www.copeland.gov.uk -u XXXXXXXX
-```
-Additional parameters:
-- `-u` - UPRN
-
-Note: *****This has now been replaced by Cumberland Council****
-
----
-
 ### Cornwall
 ```commandline
 python collect_data.py CornwallCouncil https://www.cornwall.gov.uk/my-area/ -s -u XXXXXXXX
@@ -1226,18 +1217,6 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver.
-
----
-
-### Cumberland
-```commandline
-python collect_data.py CumberlandAllerdaleCouncil https://www.allerdale.gov.uk -p "XXXX XXX" -n XX
-```
-Additional parameters:
-- `-p` - postcode
-- `-n` - house number
-
-Note: Pass the house number and postcode in their respective parameters.
 
 ---
 
@@ -1576,6 +1555,17 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Eden District (Westmorland and Furness)
+```commandline
+python collect_data.py EdenDistrictCouncil https://my.eden.gov.uk/myeden.aspx -u XXXXXXXX
+```
+Additional parameters:
+- `-u` - UPRN
+
+Note: For Eden area addresses within Westmorland and Furness. Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search). Note: This returns collection days (e.g., 'Wednesday') rather than specific dates.
 
 ---
 
@@ -2314,6 +2304,19 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ---
 
+### Camden
+```commandline
+python collect_data.py LondonBoroughCamdenCouncil https://environmentservices.camden.gov.uk/property -s -u XXXXXXXX -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
+- `-p` - postcode
+
+Note: Pass the property ID as UPRN. Find your property at https://www.camden.gov.uk/check-collection-day then use the property ID from the URL (e.g., https://environmentservices.camden.gov.uk/property/5063139).
+
+---
+
 ### Ealing
 ```commandline
 python collect_data.py LondonBoroughEaling https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection -s -u XXXXXXXX
@@ -2323,6 +2326,17 @@ Additional parameters:
 - `-u` - UPRN
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### Hammersmith & Fulham
+```commandline
+python collect_data.py LondonBoroughHammersmithandFulham https://www.lbhf.gov.uk/ -p "XXXX XXX"
+```
+Additional parameters:
+- `-p` - postcode
+
+Note: Pass only the property postcode
 
 ---
 
@@ -3468,7 +3482,7 @@ Note: Follow the instructions [here](https://www.southlanarkshire.gov.uk/info/20
 
 ### South Norfolk
 ```commandline
-python collect_data.py SouthNorfolkCouncil https://www.southnorfolkandbroadland.gov.uk/rubbish-recycling/south-norfolk-bin-collection-day-finder -s -u XXXXXXXX
+python collect_data.py SouthNorfolkCouncil https://area.southnorfolkandbroadland.gov.uk/FindAddress -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
@@ -4257,12 +4271,13 @@ Note: Provide your UPRN. You can find it using [FindMyAddress](https://www.findm
 
 ### Wirral
 ```commandline
-python collect_data.py WirralCouncil https://www.wirral.gov.uk -u XXXXXXXX
+python collect_data.py WirralCouncil https://www.wirral.gov.uk -p "XXXX XXX" -w http://HOST:PORT/
 ```
 Additional parameters:
-- `-u` - UPRN
+- `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: In the `uprn` field, enter your street name and suburb separated by a comma (e.g., 'Vernon Avenue,Seacombe').
+Note: Pass your postcode and house number.
 
 ---
 
