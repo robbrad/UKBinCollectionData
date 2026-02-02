@@ -131,6 +131,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [Gedling](#gedling)
 - [Glasgow City](#glasgow-city)
 - [Gloucester](#gloucester)
+- [Gosport Borough Council](#gosport-borough-council)
 - [Google Calendar (Public)](#google-calendar-(public))
 - [Gravesham](#gravesham)
 - [Great Yarmouth](#great-yarmouth)
@@ -1825,6 +1826,18 @@ Additional parameters:
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the house number, postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver.
+
+---
+
+### Gosport Borough Council
+```commandline
+python collect_data.py GosportBoroughCouncil https://www.gosport.gov.uk/refuserecyclingdays -s -p "XXXX XXX"
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+
+Note: Pass the postcode parameter. This parser uses the Supatrak API.
 
 ---
 
