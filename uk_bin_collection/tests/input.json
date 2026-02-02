@@ -1049,7 +1049,9 @@
             "Westmorland and Furness",
             "Derry City and Strabane",
             "Norwich",
-            "Bassetlaw District"
+            "Bassetlaw District",
+            "Causeway Coast and Glens",
+            "Rossendale Borough"
         ],
         "supported_councils_LAD24CD": [
             "E06000046",
@@ -1065,7 +1067,9 @@
             "S12000005",
             "S12000045",
             "W06000020",
-            "E07000122"
+            "E07000122",
+            "N09000004",
+            "E07000125"
         ]
     },
     "GraveshamBoroughCouncil": {
