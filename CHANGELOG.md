@@ -1,4 +1,17 @@
 =======
+## 0.163.0 (2026-02-02)
+
+### Feat
+
+- #1686 GosportBoroughCouncil - Add new council using Supatrak API
+- #1593 #1618 #1794 - Add Causeway Coast and Glens, Rossendale Borough, North Warwickshire to GooglePublicCalendarCouncil
+
+### Fix
+
+- #1831 HarboroughDistrictCouncil - use data instead of json, suppress SSL warnings, improve parsing
+- #1831 HarboroughDistrictCouncil - add SSL bypass and better error handling for 502 errors
+- #1836 LondonBoroughRedbridge - updated selectors for redesigned website
+
 ## 0.162.7 (2026-02-02)
 
 ### Fix
