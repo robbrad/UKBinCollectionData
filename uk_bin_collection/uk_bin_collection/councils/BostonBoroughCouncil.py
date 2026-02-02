@@ -8,14 +8,12 @@ from selenium.common.exceptions import (
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -76,64 +74,77 @@ class CouncilClass(AbstractGetBinDataClass):
                 pass
 
             # Wait for the postcode field to appear then populate it
+            # Updated field ID for V2 form
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.ID, "BBCWASTECOLLECTIONS_START_SEARCHPOSTCODE")
+                    (By.ID, "BBCWASTECOLLECTIONSV2_COLLECTIONS_SEARCHPOSTCODE")
                 )
             )
             inputElement_postcode.send_keys(user_postcode)
 
-            # Click search button
+            # Click search button - Updated ID for V2 form
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "BBCWASTECOLLECTIONS_START_START10_NEXT")
+                    (By.ID, "BBCWASTECOLLECTIONSV2_COLLECTIONS_START10_NEXT")
                 )
             )
             findAddress.click()
 
-            # Wait for the custom dropdown container to be visible
+            # Wait for the address selection page to load
+            time.sleep(3)
+
+            # Wait for the address dropdown/selection to be available
             WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (By.ID, "BBCWASTECOLLECTIONS_COLLECTIONADDRESS_INCIDENTUPRN_chosen")
+                EC.presence_of_element_located(
+                    (By.XPATH, "//select[contains(@id, 'ADDRESSSELECTION')] | //div[contains(@id, 'chosen')]")
                 )
             )
 
-            # Click on the dropdown to open it
-            dropdown = driver.find_element(
-                By.ID, "BBCWASTECOLLECTIONS_COLLECTIONADDRESS_INCIDENTUPRN_chosen"
-            )
-            dropdown.click()
+            # Try to find and select the address
+            # Check if it's a standard select or a chosen dropdown
+            try:
+                # Try standard select first
+                address_select = driver.find_element(
+                    By.XPATH, "//select[contains(@id, 'ADDRESSSELECTION')]"
+                )
+                # Find the option containing the user's PAON
+                option = driver.find_element(
+                    By.XPATH,
+                    f"//select[contains(@id, 'ADDRESSSELECTION')]//option[contains(text(), '{user_paon}')]"
+                )
+                option.click()
+            except NoSuchElementException:
+                # Try chosen dropdown
+                dropdown = driver.find_element(
+                    By.XPATH, "//div[contains(@id, 'chosen')]"
+                )
+                dropdown.click()
+                time.sleep(1)
+                
+                # Wait for options to be visible
+                WebDriverWait(driver, 10).until(
+                    EC.visibility_of_element_located((By.CLASS_NAME, "chosen-results"))
+                )
+                
+                # Find and click the desired option
+                desired_option = driver.find_element(
+                    By.XPATH,
+                    f"//li[@class='active-result' and contains(text(), '{user_paon}')]"
+                )
+                desired_option.click()
 
-            # Wait for the dropdown options to be visible
-            WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "chosen-results"))
-            )
-
-            # Locate the desired option using its text
-            desired_option = driver.find_element(
-                By.XPATH,
-                "//li[@class='active-result' and contains(text(), '"
-                + user_paon
-                + "')]",
-            )
-
-            # Click on the desired option
-            desired_option.click()
-
-            # dropdown.select_by_visible_text(user_paon)
-
-            # Click search button
-            findAddress = WebDriverWait(driver, 10).until(
+            # Click the next button to proceed
+            next_button = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "BBCWASTECOLLECTIONS_COLLECTIONADDRESS_NEXT3_NEXT")
+                    (By.XPATH, "//button[contains(@id, 'NEXT') and contains(@id, 'BBCWASTECOLLECTIONSV2')]")
                 )
             )
-            findAddress.click()
+            next_button.click()
 
-            # Wait for the collections table to appear
+            # Wait for the collections information to appear
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "BBCWASTECOLLECTIONS_SERVICE_FIELD859_OUTER")
+                    (By.XPATH, "//div[contains(@class, 'item__title') or contains(@class, 'grid__cell--listitem')]")
                 )
             )
 
@@ -150,15 +161,22 @@ class CouncilClass(AbstractGetBinDataClass):
             # Loop through each bin container to extract the details
             for bin_div in bins:
                 # Find the bin type (title text)
-                bin_type = bin_div.find("h2", class_="item__title").text.strip()
+                bin_type_elem = bin_div.find("h2", class_="item__title")
+                if not bin_type_elem:
+                    continue
+                    
+                bin_type = bin_type_elem.text.strip()
 
                 # Find the next collection date
-                next_collection = (
-                    bin_div.find("div", class_="item__content")
-                    .find("div")
-                    .text.strip()
-                    .replace("Next: ", "")
-                )
+                content_div = bin_div.find("div", class_="item__content")
+                if not content_div:
+                    continue
+                    
+                date_div = content_div.find("div")
+                if not date_div:
+                    continue
+                    
+                next_collection = date_div.text.strip().replace("Next: ", "")
 
                 next_collection = datetime.strptime(
                     remove_ordinal_indicator_from_date_string(next_collection),

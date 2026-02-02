@@ -18,7 +18,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         # pindex isn't actually paon, it's a url parameter that I'm guessing the council use as a property id
         data = {"bins": []}
-        pindex = kwargs.get("paon")
+        user_paon = kwargs.get("paon")
         user_postcode = kwargs.get("postcode")
         check_postcode(user_postcode)
 
@@ -68,13 +68,36 @@ class CouncilClass(AbstractGetBinDataClass):
             data=form_data,
         )
 
-        # Finally, we can use pindex to find the address and get some data
-        request_url = (
-            "https://wav-wrp.whitespacews.com/mop.php?"
-            + track_id
-            + "&serviceID=A&seq=3&pIndex="
-            + pindex
+        soup = BeautifulSoup(response.content, features="html.parser")
+        soup.prettify()
+
+        aria_labels = soup.find_all(
+            "a",
+            {
+                "class": "app-subnav__link govuk-link clicker colordarkblue fontfamilyArial fontsize12rem"
+            },
         )
+
+        match = next(
+            (
+                a
+                for a in aria_labels
+                if a.get("aria-label", "").startswith(user_paon + ",")
+            ),
+            None,
+        )
+
+        # match is a Tag (or None)
+        if match:
+            request_url = "https://wav-wrp.whitespacews.com/" + match["href"]
+        else:
+            raise RuntimeError(
+                "Unable to find house number/name "
+                + user_paon
+                + " in dropdown list for "
+                + user_postcode
+            )
+
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
             "image/webp,image/apng,*/*;q=0.8",
@@ -109,6 +132,7 @@ class CouncilClass(AbstractGetBinDataClass):
             x = element.find_all_next(
                 "li", {"class": "displayinlineblock padding0px20px5px0px"}
             )
+            # print(x)
             dict_data = {
                 "type": x[2].text.strip(),
                 "collectionDate": datetime.strptime(

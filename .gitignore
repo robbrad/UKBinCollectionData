@@ -45,3 +45,5 @@ __pycache__
 uk_bin_collection/.DS_Store
 uk_bin_collection/uk_bin_collection/.DS_Store
 !scripts
+!.kiro
+ISSUE_RESOLUTION_PROGRESS.md

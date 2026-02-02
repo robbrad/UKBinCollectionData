@@ -75,11 +75,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
             session = requests.Session()
             headers = {
-                "Content-Type": "text/plain",
+                "P_PARAMETER": encoded_input,
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             }
             response = session.get(
-                f"https://itouchvision.app/portal/itouchvision/kmbd/collectionDay?P_PARAMETER={encoded_input}",
+                "https://itouchvision.app/portal/itouchvision/kmbd/collectionDay",
                 headers=headers,
             )
 
