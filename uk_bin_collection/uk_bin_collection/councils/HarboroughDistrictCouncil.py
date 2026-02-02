@@ -27,12 +27,29 @@ class CouncilClass(AbstractGetBinDataClass):
             "Referer": "https://harborough.fccenvironment.co.uk/",
         }
         params = {"Uprn": user_uprn}
-        response = requests.post(URI, headers=headers, json=params)
+        response = requests.post(URI, headers=headers, json=params, verify=False)
+
+        # Check for service errors
+        if response.status_code == 502:
+            raise ValueError(
+                f"The FCC Environment service is currently unavailable (502 Bad Gateway). "
+                f"This is a temporary issue with the council's waste collection system. "
+                f"Please try again later."
+            )
+        
+        response.raise_for_status()
 
         soup = BeautifulSoup(response.content, features="html.parser")
         bin_collection = soup.find(
             "div", {"class": "blocks block-your-next-scheduled-bin-collection-days"}
         )
+        
+        if bin_collection is None:
+            raise ValueError(
+                f"Could not find bin collection data for UPRN {user_uprn}. "
+                "The council website may have changed or the UPRN may be invalid."
+            )
+        
         lis = bin_collection.find_all("li")
         for li in lis:
             try:
