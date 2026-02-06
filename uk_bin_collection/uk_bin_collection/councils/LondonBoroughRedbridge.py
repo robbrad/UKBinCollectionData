@@ -61,7 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             address_link.send_keys(Keys.ENTER)
 
-            address_results = wait.until(
+            wait.until(
                 EC.presence_of_element_located(
                     (By.CLASS_NAME, "your-collection-schedule-container")
                 )

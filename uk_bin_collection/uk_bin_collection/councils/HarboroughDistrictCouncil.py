@@ -23,15 +23,18 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        URI = "https://harborough.fccenvironment.co.uk/detail-address"
+        URI1 = "https://harborough.fccenvironment.co.uk/"
+        URI2 = "https://harborough.fccenvironment.co.uk/detail-address"
 
-        headers = {
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0",
-            "Referer": "https://harborough.fccenvironment.co.uk/",
-        }
+        # Make the GET request
+        session = requests.session()
+        response = session.get(
+            URI1, verify=False
+        )  # Initialize session state (cookies) required by URI2
+        response.raise_for_status()  # Validate session initialization
+
         params = {"Uprn": user_uprn}
-        response = requests.post(URI, headers=headers, data=params, verify=False)
+        response = session.post(URI2, data=params, verify=False)
 
         # Check for service errors
         if response.status_code == 502:
@@ -40,20 +43,20 @@ class CouncilClass(AbstractGetBinDataClass):
                 f"This is a temporary issue with the council's waste collection system. "
                 f"Please try again later."
             )
-        
+
         response.raise_for_status()
 
         soup = BeautifulSoup(response.content, features="html.parser")
         bin_collection = soup.find(
             "div", {"class": "blocks block-your-next-scheduled-bin-collection-days"}
         )
-        
+
         if bin_collection is None:
             raise ValueError(
                 f"Could not find bin collection data for UPRN {user_uprn}. "
                 "The council website may have changed or the UPRN may be invalid."
             )
-        
+
         lis = bin_collection.find_all("li")
         for li in lis:
             try:

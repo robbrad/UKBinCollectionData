@@ -92,7 +92,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # General rubbish collection dates
             general_rubbish_section = soup.find(
-                "h3", string="General Rubbish / Wheelie bin"
+                "div", class_="bdl-card bdl-card--refuse"
             )
             general_rubbish_dates = [
                 li.text for li in general_rubbish_section.find_next("ul").find_all("li")
@@ -102,13 +102,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 dict_data = {
                     "type": "General Rubbish / Wheelie bin",
                     "collectionDate": datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(date), "%d %B %Y"
+                        remove_ordinal_indicator_from_date_string(date.split(" (")[0]),
+                        "%A %d %B %Y",
                     ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 
             # Recycling and food waste collection dates
-            recycling_section = soup.find("h3", string="Recycling and Food Waste")
+            recycling_section = soup.find("div", class_="bdl-card bdl-card--recycling")
             recycling_dates = [
                 li.text for li in recycling_section.find_next("ul").find_all("li")
             ]
@@ -117,13 +118,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 dict_data = {
                     "type": "Recycling and Food Waste",
                     "collectionDate": datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(date), "%d %B %Y"
+                        remove_ordinal_indicator_from_date_string(date.split(" (")[0]),
+                        "%A %d %B %Y",
                     ).strftime(date_format),
                 }
                 data["bins"].append(dict_data)
 
             # Garden waste collection dates
-            garden_waste_section = soup.find("h3", string="Garden Waste")
+            garden_waste_section = soup.find("div", class_="bdl-card bdl-card--garden")
             garden_waste_dates = [
                 li.text for li in garden_waste_section.find_next("ul").find_all("li")
             ]
@@ -132,7 +134,10 @@ class CouncilClass(AbstractGetBinDataClass):
                     dict_data = {
                         "type": "Garden Waste",
                         "collectionDate": datetime.strptime(
-                            remove_ordinal_indicator_from_date_string(date), "%d %B %Y"
+                            remove_ordinal_indicator_from_date_string(
+                                date.split(" (")[0]
+                            ),
+                            "%A %d %B %Y",
                         ).strftime(date_format),
                     }
                     data["bins"].append(dict_data)
