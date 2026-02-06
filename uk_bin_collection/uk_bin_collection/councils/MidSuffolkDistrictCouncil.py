@@ -118,6 +118,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
                         # Collect text in p excluding the strong tag
                         date_str = (p_tag.get_text()).split(":")[1]
+                        if " - " in date_str:
+                            date_str = date_str.split(" - ")[1]
 
                         collection_date = datetime.strptime(date_str, "%a %d %b %Y")
 
