@@ -16,9 +16,10 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             # Create Selenium webdriver
             headless = kwargs.get("headless")
-            driver = create_webdriver(
-                kwargs.get("web_driver"), headless, None, __name__
-            )
+            web_driver = kwargs.get("web_driver")
+
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(kwargs.get("url"))
 
             # This URL format also works:
@@ -38,7 +39,9 @@ class CouncilClass(AbstractGetBinDataClass):
                         "div", {"class": "c-content-section_body"}
                     ).find_all(
                         "div",
-                        class_=lambda x: x and "tablet:l-col-fb-4" in x and "u-mt-10" in x
+                        class_=lambda x: x
+                        and "tablet:l-col-fb-4" in x
+                        and "u-mt-10" in x,
                     )
 
                     for row in rows:
