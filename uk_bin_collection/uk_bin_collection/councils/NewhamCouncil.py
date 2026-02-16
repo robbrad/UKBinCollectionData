@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError(f"Error getting identifier: {str(e)}")
 
         # Make a BS4 object
-        page = requests.get(url)
+        page = requests.get(url, verify=False)
         soup = BeautifulSoup(page.text, "html.parser")
         soup.prettify
 
