@@ -49,7 +49,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         .find_next("mark")
                         .next_sibling.strip()
                     )
-                    next_collection = datetime.strptime(date, "%d/%m/%Y")
+                    next_collection = datetime.strptime(date, "%m/%d/%Y")
 
                     dict_data = {
                         "type": bin_type,
