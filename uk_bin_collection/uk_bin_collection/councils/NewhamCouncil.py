@@ -36,13 +36,20 @@ class CouncilClass(AbstractGetBinDataClass):
         if len(sections_recycling) > 0:
             sections.append(sections_recycling[0])
 
+        # as well as one for food waste
+        sections_food_waste = soup.find_all(
+            "div", {"class": "card h-100 card-food"}
+        )
+        if len(sections_food_waste) > 0:
+            sections.append(sections_food_waste[0])
+
         # For each bin section, get the text and the list elements
         for item in sections:
             header = item.find("div", {"class": "card-header"})
             bin_type_element = header.find_next("b")
             if bin_type_element is not None:
                 bin_type = bin_type_element.text
-                array_expected_types = ["Domestic", "Recycling"]
+                array_expected_types = ["Domestic", "Recycling", "Food Waste"]
                 if bin_type in array_expected_types:
                     date = (
                         item.find_next("p", {"class": "card-text"})
