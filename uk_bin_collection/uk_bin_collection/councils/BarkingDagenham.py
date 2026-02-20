@@ -47,23 +47,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Close popup if it exists
             driver.switch_to.active_element.send_keys(Keys.ESCAPE)
 
-            # Handle cookie banner if present
-            wait = WebDriverWait(driver, 60)
-            try:
-                cookie_button = wait.until(
-                    EC.element_to_be_clickable(
-                        (
-                            By.CSS_SELECTOR,
-                            ".agree-button.eu-cookie-compliance-secondary-button.button.button--small",
-                        )
-                    ),
-                    message="Cookie banner not found",
-                )
-                cookie_button.click()
-                print("Cookie banner clicked.")
-                time.sleep(1)  # Brief pause to let banner disappear
-            except (TimeoutException, NoSuchElementException):
-                print("No cookie banner appeared or selector failed.")
+            wait = WebDriverWait(driver, 10)
 
             # Enter postcode
             print("Looking for postcode input...")
@@ -84,7 +68,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.element_to_be_clickable((By.ID, "address")),
                 message="Address dropdown not found",
             )
-            
+
             dropdown = Select(address_select)
 
             found = False
