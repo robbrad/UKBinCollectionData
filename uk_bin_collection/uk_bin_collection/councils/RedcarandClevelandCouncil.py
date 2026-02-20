@@ -43,11 +43,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 for item in addresses
                 if item.get("name", "").startswith(user_paon)
             ),
-            None,
+            addresses[1]["place_id"] if addresses[1] else None,
         )
 
         # print(addresses)
-        # print(place_id)
+        # print(f"PlaceID - {place_id}")
 
         URI = (
             f"https://api.eu.recollect.net/api/places/{place_id}/services/50006/events"

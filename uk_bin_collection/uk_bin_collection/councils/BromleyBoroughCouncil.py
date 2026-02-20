@@ -30,7 +30,8 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             # Get our initial session running
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(kwargs.get("url"))
 
             wait = WebDriverWait(driver, 30)

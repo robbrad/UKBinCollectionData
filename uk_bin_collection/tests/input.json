@@ -1420,6 +1420,14 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E09000009"
     },
+    "LondonBoroughHammersmithandFulham": {
+        "postcode": "W12 0BQ",
+        "url": "https://www.lbhf.gov.uk/",
+        "wiki_command_url_override": "https://www.lbhf.gov.uk/",
+        "wiki_name": "Hammersmith & Fulham",
+        "wiki_note": "Pass only the property postcode",
+        "LAD24CD": "E09000013"
+    },
     "LondonBoroughHarrow": {
         "uprn": "100021298754",
         "url": "https://www.harrow.gov.uk",
