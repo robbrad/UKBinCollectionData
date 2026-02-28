@@ -24,7 +24,7 @@ issues = "https://github.com/robbrad/UKBinCollectionData/issues"
 requires = ["poetry-core>=1.2.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = "*"
 coverage = "*"
 flake8 = "*"
@@ -40,6 +40,9 @@ pytest-asyncio = "^0.24.0"
 pytest-freezer = "^0.4.8"
 homeassistant = "^2023.10"
 geopandas = "^1.1.2"
+
+[tool.poetry.group.dev]
+optional = false
 
 [tool.poetry.scripts]
 uk_bin_collection = "uk_bin_collection.uk_bin_collection.collect_data:run"
