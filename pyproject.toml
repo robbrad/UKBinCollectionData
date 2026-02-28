@@ -41,9 +41,6 @@ pytest-freezer = "^0.4.8"
 homeassistant = "^2023.10"
 geopandas = "^1.1.2"
 
-[tool.poetry.group.dev]
-optional = false
-
 [tool.poetry.scripts]
 uk_bin_collection = "uk_bin_collection.uk_bin_collection.collect_data:run"
 
