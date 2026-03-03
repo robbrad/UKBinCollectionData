@@ -57,15 +57,21 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode_input = WebDriverWait(driver, 20).until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@autocomplete='postal-code']"))
             )
+
             postcode_input.clear()
             postcode_input.send_keys(user_postcode)
-            
+
             # Press Enter to lookup
             postcode_input.send_keys(Keys.RETURN)
-            
+
             # Select address
             address_select = WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located((By.XPATH, "//select"))
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//label[normalize-space()='Choose address']/following::select[1]",
+                    )
+                )
             )
             Select(address_select).select_by_value(user_uprn)
             
