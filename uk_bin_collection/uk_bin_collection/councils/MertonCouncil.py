@@ -104,9 +104,6 @@ class CouncilClass(AbstractGetBinDataClass):
         if not collections_div:
             raise Exception("Collections div not found")
 
-        # Find all bin types (h3 elements with waste-service-name class)
-        h3s = collections_div.find_all("h3", class_="waste-service-name")
-
         possible_formats = [
             "%d %B %Y",
             "%A %d %B %Y",
@@ -115,52 +112,57 @@ class CouncilClass(AbstractGetBinDataClass):
         # Skip services that are not scheduled collections (booking services)
         skip_services = ["Bulky waste", "Garden waste"]
 
-        for h3 in h3s:
+        govuk_grid_column_two_thirds = soup.find(
+            "div", class_="govuk-grid-column-two-thirds"
+        )
+        waste_service_grids = govuk_grid_column_two_thirds.find_all(
+            "div", class_="waste-service-grid"
+        )
+
+        for waste_service_grid in waste_service_grids:
+
+            h3 = waste_service_grid.find("h3", class_="waste-service-name")
+
             bin_type = h3.get_text().strip()
 
             # Skip booking services
             if bin_type in skip_services:
                 continue
 
-            # Find parent column containing the summary list
-            parent = h3.find_parent("div", class_="govuk-grid-column-two-thirds")
-            if parent:
-                summary = parent.find("dl", class_="govuk-summary-list")
-                if summary:
-                    rows = summary.find_all("div", class_="govuk-summary-list__row")
-                    for row in rows:
-                        key = row.find("dt", class_="govuk-summary-list__key")
-                        value = row.find("dd", class_="govuk-summary-list__value")
+            rows = waste_service_grid.find_all("div", class_="govuk-summary-list__row")
+            for row in rows:
+                key = row.find("dt", class_="govuk-summary-list__key")
+                value = row.find("dd", class_="govuk-summary-list__value")
 
-                        if key and value and "Next collection" in key.get_text():
-                            collection_date_str = value.get_text().strip()
+                if key and value and "Next collection" in key.get_text():
+                    collection_date_str = value.get_text().strip()
 
-                            # Parse the date - format is like "Saturday 15 November"
-                            collectionDate = None
-                            # Try with day of week
-                            date_parts = collection_date_str.split()
-                            if len(date_parts) >= 3:
-                                # Try parsing with day name, day, month
-                                day = date_parts[1]
-                                month = date_parts[2]
-                                year = datetime.now().year
-                                date_str = f"{day} {month} {year}"
+                    # Parse the date - format is like "Saturday 15 November"
+                    collectionDate = None
+                    # Try with day of week
+                    date_parts = collection_date_str.split()
+                    if len(date_parts) >= 3:
+                        # Try parsing with day name, day, month
+                        day = date_parts[1]
+                        month = date_parts[2]
+                        year = datetime.now().year
+                        date_str = f"{day} {month} {year}"
 
-                                for format in possible_formats:
-                                    try:
-                                        collectionDate = datetime.strptime(
-                                            date_str, format
-                                        )
-                                        # Handle year boundary: if parsed date is in the past, assume next year
-                                        if collectionDate.date() < datetime.now().date():
-                                            collectionDate = collectionDate.replace(year=year + 1)
-                                        break
-                                    except ValueError:
-                                        continue
+                        for format in possible_formats:
+                            try:
+                                collectionDate = datetime.strptime(date_str, format)
+                                # Handle year boundary: if parsed date is in the past, assume next year
+                                if collectionDate.date() < datetime.now().date():
+                                    collectionDate = collectionDate.replace(
+                                        year=year + 1
+                                    )
+                                break
+                            except ValueError:
+                                continue
 
-                            if collectionDate:
-                                # Add each collection to the list as a tuple
-                                collections.append((bin_type, collectionDate))
+                    if collectionDate:
+                        # Add each collection to the list as a tuple
+                        collections.append((bin_type, collectionDate))
 
         ordered_data = sorted(collections, key=lambda x: x[1])
         for item in ordered_data:
