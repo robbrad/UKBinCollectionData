@@ -132,9 +132,7 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_collections = soup.find("ul", class_="data-table")
 
             if bin_collections:
-                return self._parse_bin_collection_items(
-                    bin_collections.find_all("li")[2:]  # Skip the first two items
-                )
+                return self._parse_bin_collection_items(bin_collections.find_all("li"))
 
         except requests.RequestException as e:
             print(
