@@ -224,6 +224,7 @@ This document is still a work in progress, don't worry if your council isn't lis
 - [North West Leicestershire](#north-west-leicestershire)
 - [North Yorkshire](#north-yorkshire)
 - [Northumberland](#northumberland)
+- [North Warwickshire](#north-warwickshire)
 - [Norwich](#norwich)
 - [Nottingham](#nottingham)
 - [Nuneaton and Bedworth](#nuneaton-and-bedworth)
@@ -2953,6 +2954,19 @@ Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
+- `-w` - remote Selenium web driver URL (required for Home Assistant)
+
+Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).
+
+---
+
+### North Warwickshire
+```commandline
+python collect_data.py NorthWarwickshireBoroughCouncil https://www.northwarks.gov.uk -s -u XXXXXXXX -w http://HOST:PORT/
+```
+Additional parameters:
+- `-s` - skip get URL
+- `-u` - UPRN
 - `-w` - remote Selenium web driver URL (required for Home Assistant)
 
 Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).

@@ -1848,6 +1848,15 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E06000057"
     },
+    "NorthWarwickshireBoroughCouncil": {
+        "uprn": "10001179576",
+        "skip_get_url": true,
+        "url": "https://www.northwarks.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "North Warwickshire",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "LAD24CD": "E07000220"
+    },
     "NorwichCityCouncil": {
         "house_number": "2",
         "postcode": "NR2 3TT",
