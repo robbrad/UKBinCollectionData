@@ -1,10 +1,12 @@
 import json
+import ssl
+
 import requests
+import urllib3
 from bs4 import BeautifulSoup
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-import ssl
-import urllib3
 
 
 class CustomHttpAdapter(requests.adapters.HTTPAdapter):
@@ -56,7 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         requests.packages.urllib3.disable_warnings()
         response = session.get(
-            f"https://www.bathnes.gov.uk/webapi/api/BinsAPI/v2/getbartecroute/{user_uprn}/true",
+            f"https://api.bathnes.gov.uk/webapi/api/BinsAPI/v2/BartecFeaturesandSchedules/CollectionSummary/{user_uprn}",
             headers=headers,
         )
         if response.text == "":
@@ -68,30 +70,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        if len(json_data["residualNextDate"]) > 0:
-            dict_data = {
-                "type": "Black Rubbish Bin",
-                "collectionDate": datetime.strptime(
-                    json_data["residualNextDate"], "%Y-%m-%dT%H:%M:%S"
-                ).strftime(date_format),
-            }
-            data["bins"].append(dict_data)
-        if len(json_data["recyclingNextDate"]) > 0:
-            dict_data = {
-                "type": "Recycling Containers",
-                "collectionDate": datetime.strptime(
-                    json_data["recyclingNextDate"], "%Y-%m-%dT%H:%M:%S"
-                ).strftime(date_format),
-            }
-            data["bins"].append(dict_data)
-        if len(json_data["organicNextDate"]) > 0:
-            dict_data = {
-                "type": "Garden Waste",
-                "collectionDate": datetime.strptime(
-                    json_data["organicNextDate"], "%Y-%m-%dT%H:%M:%S"
-                ).strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+        for collection in json_data:
+            collection_date = datetime.fromisoformat(collection["nextCollectionDate"])
+            for feature in collection["features"]:
+                dict_data = {
+                    "type": feature["featureDisplayName"],
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
