@@ -10,6 +10,19 @@ _MONTH_NAMES = [
     "July", "August", "September", "October", "November", "December",
 ]
 
+# Lines between collections that should always be skipped (never a bin type)
+_SKIP_LINES = {
+    "Collections may change during public holidays.",
+    "Print calendar",
+    "Add to iCalendar",
+    "Please make sure you have your bins ready for collection.",
+    "Change",
+    "Next collection:",
+    "Selected address:",
+    "Collection calendar:",
+    "to",
+}
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -43,22 +56,9 @@ class CouncilClass(AbstractGetBinDataClass):
         lines = [line.strip() for line in text_content.split("\n") if line.strip()]
 
         # ------------------------------------------------------------------ #
-        # The heading is split across multiple lines, e.g.:
-        #   "Collection calendar:"
-        #   "February"
-        #   "to"
-        #   "August"
-        #   "2026"
-        #
-        # We find "Collection calendar:" then scan the following lines to
-        # extract the start month, end month, and year.
-        #
-        # For same-year calendars (start month <= end month, e.g. Feb-Aug 2026)
-        # every month gets calendar_year.
-        #
-        # For cross-year calendars (start month > end month, e.g. Nov-Mar 2026)
-        # months >= start_month_num get (calendar_year - 1) and months
-        # < start_month_num get calendar_year.
+        # Find calendar year and month range from the "Collection calendar:"
+        # heading, which is followed by:
+        #   <start month> / "to" / <end month> / <4-digit year>
         # ------------------------------------------------------------------ #
         calendar_year = None
         start_month_num = None
@@ -66,7 +66,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for i, line in enumerate(lines):
             if line.strip().startswith("Collection calendar"):
-                for j in range(i + 1, min(i + 6, len(lines))):
+                for j in range(i + 1, min(i + 8, len(lines))):
                     if lines[j] in _MONTH_NAMES:
                         if start_month_num is None:
                             start_month_num = _MONTH_NAMES.index(lines[j]) + 1
@@ -88,53 +88,77 @@ class CouncilClass(AbstractGetBinDataClass):
             or end_month_num >= start_month_num
         )
 
+        # ------------------------------------------------------------------ #
+        # Page structure per collection entry (confirmed from live page):
+        #
+        #   <day number>          e.g. "11"
+        #   <display bin type>    e.g. "Recycling"  or "Domestic Waste"
+        #   <subtype / colour>    e.g. "Recycling"  or "Refuse" or "Green"
+        #
+        # Multiple collections on the same day appear as separate triplets.
+        # We always skip exactly the subtype line after reading the bin type.
+        #
+        # We use the DISPLAY bin type (e.g. "Domestic Waste", "Recycling",
+        # "Green Waste") as the sensor name, not the subtype/colour.
+        # ------------------------------------------------------------------ #
         current_month = None
         current_year = calendar_year
         i = 0
 
+        # Fast-forward past the header block (everything before the first
+        # month that appears AFTER the "Collection calendar:" line)
+        cal_header_seen = False
+        for idx, line in enumerate(lines):
+            if line.startswith("Collection calendar"):
+                cal_header_seen = True
+            if cal_header_seen and line in _MONTH_NAMES:
+                # First month in header — skip past the year line too
+                # then start the main loop from the NEXT month occurrence
+                for j in range(idx + 1, min(idx + 4, len(lines))):
+                    if lines[j].isdigit() and len(lines[j]) == 4:
+                        i = j + 1  # start after the year
+                        break
+                break
+
         while i < len(lines):
             line = lines[i]
 
-            # Check if this is a month name
-            if line in _MONTH_NAMES:
-                month_num = datetime.strptime(line, "%B").month
+            # Skip known non-data lines
+            if line in _SKIP_LINES or (line.isdigit() and len(line) == 4):
+                i += 1
+                continue
 
+            # Month heading
+            if line in _MONTH_NAMES:
+                month_num = _MONTH_NAMES.index(line) + 1
                 if is_same_year:
                     current_year = calendar_year
                 else:
-                    # Cross-year: months on or after the start month belong to
-                    # the year before the heading year
                     current_year = (
                         calendar_year - 1
                         if month_num >= start_month_num
                         else calendar_year
                     )
-
                 current_month = line
                 i += 1
                 continue
 
-            # Check if this is a day number (1-31)
+            # Day number — must have a current month context
             if line.isdigit() and 1 <= int(line) <= 31 and current_month:
                 day = line
 
-                if i + 1 < len(lines):
+                # Next line must exist and be a bin type (not a digit, not a month)
+                if (
+                    i + 1 < len(lines)
+                    and not lines[i + 1].isdigit()
+                    and lines[i + 1] not in _MONTH_NAMES
+                    and lines[i + 1] not in _SKIP_LINES
+                ):
                     bin_type = lines[i + 1]
 
-                    # Skip the subtype line (e.g. Paper, Recycling, Refuse, Green).
-                    # A subtype is any line that is neither a digit nor a month name.
-                    if (
-                        i + 2 < len(lines)
-                        and not lines[i + 2].isdigit()
-                        and lines[i + 2] not in _MONTH_NAMES
-                    ):
-                        i += 1
-
-                    # Parse the date
                     try:
                         date_str = f"{day} {current_month} {current_year}"
                         collection_date = datetime.strptime(date_str, "%d %B %Y")
-
                         dict_data = {
                             "type": bin_type,
                             "collectionDate": collection_date.strftime(date_format),
@@ -143,7 +167,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     except ValueError:
                         pass
 
-                    i += 2
+                    # Always advance past: day + bin_type + subtype = 3 lines
+                    # (subtype/colour line is always present per live page structure)
+                    i += 3
                     continue
 
             i += 1
