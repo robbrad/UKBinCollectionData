@@ -28,7 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver with user agent to bypass Cloudflare
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(
                 "https://www.gateshead.gov.uk/article/3150/Bin-collection-day-checker"

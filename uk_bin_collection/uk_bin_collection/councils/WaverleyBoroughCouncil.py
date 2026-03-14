@@ -52,7 +52,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "Sec-GPC": "1",
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/106.0.0.0 Safari/537.36",
+            "like Gecko) Chrome/134.0.0.0 Safari/537.36",
         }
         form_data = {
             "address_name_number": "",
@@ -113,7 +113,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "Sec-GPC": "1",
             "Upgrade-Insecure-Requests": "1",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, "
-            "like Gecko) Chrome/106.0.0.0 Safari/537.36",
+            "like Gecko) Chrome/134.0.0.0 Safari/537.36",
         }
 
         response = s.get(request_url, headers=headers)
