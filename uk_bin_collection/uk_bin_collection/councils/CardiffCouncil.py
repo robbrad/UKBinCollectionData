@@ -50,7 +50,7 @@ def get_jwt() -> str:
         "authwebservice.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
         "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty"
         "|Sec-Fetch-Mode: cors|Sec-Fetch-Site: same-site|User-Agent: Mozilla/5.0 (Windows NT 10.0; "
-        "Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+        "Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 "
     )
 
     request_headers_str = (
@@ -59,7 +59,7 @@ def get_jwt() -> str:
         "authwebservice.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
         "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: "
         "same-site|Sec-GPC: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 "
     )
 
     payload = (
@@ -114,7 +114,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "api.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
             "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: "
             "same-site|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ("
-            "KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+            "KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 "
         )
         response_header_str = (
             "Accept: application/json, text/javascript, */*; q=0.01|Accept-Encoding: gzip, deflate, "
@@ -123,7 +123,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "api.cardiff.gov.uk|Origin: https://www.cardiff.gov.uk|Referer: "
             "https://www.cardiff.gov.uk/|Sec-Fetch-Dest: empty|Sec-Fetch-Mode: cors|Sec-Fetch-Site: "
             "same-site|Sec-GPC: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 "
         )
 
         payload = (

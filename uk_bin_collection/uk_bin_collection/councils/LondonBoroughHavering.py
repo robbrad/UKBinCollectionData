@@ -21,9 +21,9 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        URI = "https://lbhapiprod.azure-api.net"
+        URI = "https://api-prd.havering.gov.uk"
         endpoint = f"{URI}/whitespace/GetCollectionByUprnAndDate"
-        subscription_key = "2ea6a75f9ea34bb58d299a0c9f84e72e"
+        subscription_key = "545bcf53c9094dfd980dd9da72b0514d"
 
         # Get today's date in 'YYYY-MM-DD' format
         collection_date = datetime.now().strftime("%Y-%m-%d")

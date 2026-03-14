@@ -28,7 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
             headers={
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Referer": "https://ccdc.opendata.onl/CCDC_WasteCollection",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
             },
         )
 

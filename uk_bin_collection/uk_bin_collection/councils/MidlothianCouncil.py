@@ -29,7 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
         "Host": "www.midlothian.gov.uk",
         "Referer": "https://www.midlothian.gov.uk/info/200284/bins_and_recycling",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
     }
 
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -132,9 +132,7 @@ class CouncilClass(AbstractGetBinDataClass):
             bin_collections = soup.find("ul", class_="data-table")
 
             if bin_collections:
-                return self._parse_bin_collection_items(
-                    bin_collections.find_all("li")[2:]  # Skip the first two items
-                )
+                return self._parse_bin_collection_items(bin_collections.find_all("li"))
 
         except requests.RequestException as e:
             print(

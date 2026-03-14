@@ -29,7 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
         URI = f"https://refusecalendarapi.denbighshire.gov.uk/Calendar/{user_uprn}"
 
         headers = {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
             "content-type": "application/json",
             "dnt": "1",
             "host": "refusecalendarapi.denbighshire.gov.uk",

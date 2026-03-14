@@ -65,6 +65,12 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             submit.click()
 
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.ID, "ctl00_ContentPlaceHolder1_FF5686FormGroup")
+                )
+            )
+
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
             bins_div = soup.find("div", id="ctl00_ContentPlaceHolder1_FF5686FormGroup")

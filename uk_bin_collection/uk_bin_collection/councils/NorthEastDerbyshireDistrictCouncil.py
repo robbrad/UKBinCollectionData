@@ -28,6 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             user_uprn = kwargs.get("uprn")
+            user_uprn = str(user_uprn).zfill(12)
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")

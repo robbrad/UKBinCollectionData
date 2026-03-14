@@ -44,7 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "_": str(int(time.time() * 1000)),
             }
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
             }
 
             response = requests.get(url, headers=headers, params=params)
@@ -66,7 +66,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "_": str(int(time.time() * 1000)),
             }
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
                 "x-recollect-place": place_id + ":50005",
             }
             response = requests.get(url, headers=headers, params=params)

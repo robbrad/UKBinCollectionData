@@ -57,7 +57,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Step 2: Submit the extracted data via a POST request
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
                 "Referer": uri,
                 "Content-Type": "application/x-www-form-urlencoded",
             }

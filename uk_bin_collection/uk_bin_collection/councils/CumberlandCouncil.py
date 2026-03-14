@@ -1,3 +1,5 @@
+from datetime import date
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -29,64 +31,26 @@ class CouncilClass(AbstractGetBinDataClass):
         if not content_region:
             return bindata
 
-        # Parse the text content to extract collection dates
-        text_content = content_region.get_text()
-        lines = [line.strip() for line in text_content.split('\n') if line.strip()]
-        
-        current_month = None
-        current_year = None
-        i = 0
-        
-        # Determine the year range from the page header
-        year_2026 = "2026" in text_content
-        
-        while i < len(lines):
-            line = lines[i]
-            
-            # Check if this is a month name
-            if line in ["January", "February", "March", "April", "May", "June", 
-                       "July", "August", "September", "October", "November", "December"]:
-                current_month = line
-                # Determine year based on month and context
-                if year_2026:
-                    current_year = "2026" if line in ["January", "February"] else "2025"
-                else:
-                    current_year = str(datetime.now().year)
-                i += 1
-                continue
-            
-            # Check if this is a day number (1-31)
-            if line.isdigit() and 1 <= int(line) <= 31 and current_month:
-                day = line
-                # Next line should be the bin type
-                if i + 1 < len(lines):
-                    bin_type = lines[i + 1]
-                    
-                    # Skip the subtype line (Refuse/Recycling detail)
-                    if i + 2 < len(lines) and lines[i + 2] in ["Refuse", "Recycling"]:
-                        i += 1
-                    
-                    # Parse the date
-                    try:
-                        date_str = f"{day} {current_month} {current_year}"
-                        collection_date = datetime.strptime(date_str, "%d %B %Y")
-                        
-                        dict_data = {
-                            "type": bin_type,
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                        bindata["bins"].append(dict_data)
-                    except ValueError:
-                        pass
-                    
-                    i += 2
-                    continue
-            
-            i += 1
+        lis = content_region.find_all("li")
+        for li in lis:
+            collection_day = li.find("span", class_="waste-collection__day--day")
+            collection_type_str = li.find("span", class_="waste-collection__day--type")
+
+            collection_date = collection_day.find("time")["datetime"]
+
+            collection_type = collection_type_str.text
+
+            collection_date = datetime.strptime(collection_date, "%Y-%m-%d")
+
+            dict_data = {
+                "type": collection_type.strip(),
+                "collectionDate": collection_date.strftime(date_format),
+            }
+            bindata["bins"].append(dict_data)
 
         # Sort by collection date
         bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
 
         return bindata

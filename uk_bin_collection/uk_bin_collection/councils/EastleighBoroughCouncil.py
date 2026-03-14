@@ -23,7 +23,8 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
             web_driver = kwargs.get("web_driver")
             url = f"https://www.eastleigh.gov.uk/waste-bins-and-recycling/collection-dates/your-waste-bin-and-recycling-collections?uprn={uprn}"
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(url)
 
             wait = WebDriverWait(driver, 10)
