@@ -1,4 +1,63 @@
 =======
+## 0.164.0 (2026-03-14)
+
+### Feat
+
+- NewhamCouncil - add food waste collection scraping
+
+### Fix
+
+- update address selection XPath for BroxbourneCouncil
+- nuneaton and bedworth
+- nuneaton and bedworth
+- NewhamCouncil - correct datetime parsing from DD/MM/YYYY to MM/DD/YYYY
+- NewhamCouncil - disable SSL verification to resolve certificate verification errors
+- updated ID's for multiple elements that had changed
+- Broxtowe Borough Council
+- #1872 - Broxtowe Borough Council
+- Adding North Warwickshire Borough Council
+- #1869 - Adding North Warwickshire Borough Council
+- Bath and North East Somerset
+- #1876 -  Bath and North East Somerset
+- Hinckley & Bosworth Council
+- #1879 - Hinckley & Bosworth Council
+- Midlothian Council
+- #1880 Midlothian Council
+- Merton Council
+- #1868 - Merton Council
+- Eastleigh Borough Council
+- #1867 - Eastleigh Borough Council
+- London Borough Havering
+- #1863 - London Borough Havering
+- Leeds City Council
+- #1864 - Leeds City Council
+- North East Derbyshire District Council
+- #1861 - North East Derbyshire District Council
+- Cumberland Council
+- #1858 - Cumberland Council
+- Barking & Dagenham
+- #1855 - Barking & Dagenham
+- Redcar and Cleveland Council
+- #1848 - Redcar and Cleveland Council
+- Wakefield City Council
+- #1853 - Wakefield City Council
+- Bromley Borough Council
+- #1851 Bromley Borough Council
+- Mid Suffolk District Council
+- #1845 - Mid Suffolk District Council
+- Powys Council
+- #1846 - Powys Council
+- LondonBoroughHammersmithandFulham
+- LondonBoroughHammersmithandFulham
+- HarboroughDistrictCouncil
+- HarboroughDistrictCouncil
+- Adding Hammersmith & Fulham
+- #1504 - Adding Hammersmith & Fulham
+- Harborough District Council
+- #1831 - Harborough District Council
+- London Borough Redbridge
+- #1836 - fix: London Borough Redbridge
+
 ## 0.163.0 (2026-02-02)
 
 ### Feat
