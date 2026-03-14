@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "collection": "https://servicelayer3c.azure-api.net/wastecalendar/collection/search/{}/",
         }
         headers = {
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
         }
 
         user_postcode = kwargs.get("postcode")

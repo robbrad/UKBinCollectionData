@@ -42,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "https://apps.castlepoint.gov.uk/cpapps/index.cfm?fa=wastecalendar|Sec-Fetch-Dest: "
             "document|Sec-Fetch-Mode: navigate|Sec-Fetch-Site: same-origin|Sec-Fetch-User: ?1|Sec-GPC: "
             "1|Upgrade-Insecure-Requests: 1|User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36 "
         )
 
         post_headers = parse_header(post_header_str)

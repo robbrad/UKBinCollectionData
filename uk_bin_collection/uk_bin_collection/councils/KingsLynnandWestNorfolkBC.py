@@ -37,7 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         headers = {
             "Cookie": f"bcklwn_uprn={user_uprn}",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
         }
 
         # Make the GET request
