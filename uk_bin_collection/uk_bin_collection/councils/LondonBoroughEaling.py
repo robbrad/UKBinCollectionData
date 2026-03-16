@@ -38,7 +38,7 @@ class CouncilClass(AbstractGetBinDataClass):
             param2 = json_data["param2"]
             for service in param2:
                 Bin_Type = service["Service"]
-                NextCollectionDate = service["collectionDateString"]
+                NextCollectionDate = service["collectionDate"][0]
                 dict_data = {
                     "type": Bin_Type,
                     "collectionDate": datetime.strptime(
