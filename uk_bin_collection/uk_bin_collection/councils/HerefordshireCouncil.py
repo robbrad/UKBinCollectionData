@@ -17,19 +17,19 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Parse bin collection information for an address identified by UPRN or a fallback URL.
-        
+
         Retrieves the council's bin collection page for the provided UPRN (or the legacy `url` fallback), extracts each bin type and its next collection date, and returns a dictionary containing a list of bins with their types and formatted collection dates.
-        
+
         Parameters:
             page (str): Unused. Present for compatibility with the base class; the function fetches the page using the resolved URL.
             uprn (str, optional): Unique Property Reference Number to construct the council lookup URL. Passed via kwargs.
             url (str, optional): Fallback full URL to fetch when `uprn` is not provided. Passed via kwargs.
-        
+
         Returns:
             dict: A dictionary with a single key "bins" mapping to a list of objects:
                 - "type" (str): Bin type text as shown on the page.
                 - "collectionDate" (str): Next collection date formatted according to the module's `date_format`.
-        
+
         Raises:
             ValueError: If the identifier cannot be obtained or validated, or if the page does not contain the expected "Your next collection days" heading.
         """
@@ -61,15 +61,17 @@ class CouncilClass(AbstractGetBinDataClass):
             if "bin" not in bin_type.lower():
                 continue
 
-            # The <ul> immediately following contains the collection dates
-            ul = h3.find_next_sibling("ul")
-            if not ul:
+            # The dates <ul> is always the first <ul> that follows this h3 with no other h3 in between
+            ul = h3.find_next_sibling("ul", class_="c-supplement__list")
+            # Add an extra safety check that we didn't cross another h3
+            if not ul or ul.find_previous("h3") != h3:
                 continue
 
             # Get the first <li>, which is the 'next collection' entry
             li = ul.find("li")
             if not li:
                 continue
+
             next_date = li.get_text(strip=True).replace(" (next collection)", "")
 
             logging.info(f"Bin type: {bin_type} - Collection date: {next_date}")
