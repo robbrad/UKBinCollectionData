@@ -8,42 +8,49 @@ from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcod
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 class CouncilClass(AbstractGetBinDataClass):
-    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
-        # Validate upfront (Bot Requirement)
+    def get_and_parse_data(self, url: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
+        # Bot Request: Validate upfront for network fetching
         user_postcode = kwargs.get("postcode")
         user_uprn = kwargs.get("uprn")
         check_postcode(user_postcode)
         check_uprn(user_uprn)
 
+        # Bot Request: Respect skip_get_url flag for offline pytest runs
+        if kwargs.get("skip_get_url", False):
+            page = kwargs.get("page", "")
+            return self.parse_data(page, **kwargs)
+
         session = requests.Session()
         session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"})
-        initial_url = kwargs.get("url", "https://forms.chorleysouthribble.gov.uk/xfp/form/71")
-
+        
         # --- STEP 1: INITIAL LOAD ---
-        res = session.get(initial_url, timeout=30)
+        res = session.get(url, timeout=30)
         res.raise_for_status()
         soup = BeautifulSoup(res.text, "html.parser")
         
+        # Bot Request: Validate attributes instead of subscripting blindly + Exact error strings
         token_el = soup.find("input", {"name": "__token"})
-        if not token_el:
-            raise ValueError("Could not find __token field on initial page.")
-        token = token_el["value"]
+        if not token_el or not token_el.get("value"):
+            raise ValueError("Missing __token value")
+        token = token_el.get("value")
 
         page_id_el = soup.find("input", {"name": "page"})
-        if not page_id_el:
-            raise ValueError("Could not find page ID field on initial page.")
-        page_id = page_id_el["value"]
+        if not page_id_el or not page_id_el.get("value"):
+            raise ValueError("Missing page id value")
+        page_id = page_id_el.get("value")
 
         postcode_el = soup.find("input", {"name": re.compile(r".*_0_0")})
-        if not postcode_el:
-            raise ValueError("Could not find postcode input field.")
-        postcode_field = postcode_el["name"]
+        if not postcode_el or not postcode_el.get("name"):
+            raise ValueError("Missing postcode input name")
+        postcode_field = postcode_el.get("name")
         
         lookup_btn = soup.find("button", {"class": re.compile(r".*btn--lookup.*")})
-        lookup_value = lookup_btn["value"] if lookup_btn else ""
+        if not lookup_btn or not lookup_btn.get("value"):
+            raise ValueError("Missing lookup button value")
+        lookup_value = lookup_btn.get("value")
 
         # --- STEP 2: SUBMIT POSTCODE ---
-        res = session.post(initial_url, data={
+        res = session.post(url, data={
             "__token": token,
             "page": page_id,
             "locale": "en_GB",
@@ -54,48 +61,57 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # --- STEP 3: SUBMIT UPRN ---
         soup = BeautifulSoup(res.text, "html.parser")
+        
+        # Bot Request: Apply the same checks to the analogous code block
         token_el = soup.find("input", {"name": "__token"})
-        if not token_el:
-            raise ValueError("Postcode lookup did not refresh token. Check postcode validity.")
-        token = token_el["value"]
+        if not token_el or not token_el.get("value"):
+            raise ValueError("Missing __token value")
+        token = token_el.get("value")
         
         page_id_el = soup.find("input", {"name": "page"})
-        if not page_id_el:
-            raise ValueError("Could not find page ID field on address selection page.")
-        page_id = page_id_el["value"]
+        if not page_id_el or not page_id_el.get("value"):
+            raise ValueError("Missing page id value")
+        page_id = page_id_el.get("value")
         
         address_el = soup.find("select", {"name": re.compile(r".*_1_0")})
-        if not address_el:
-            raise ValueError("Address dropdown not found. Postcode step likely failed.")
+        if not address_el or not address_el.get("name"):
+            raise ValueError("Missing address dropdown name")
 
-        res = session.post(initial_url, data={
+        res = session.post(url, data={
             "__token": token,
             "page": page_id,
             "locale": "en_GB",
             postcode_field: user_postcode,
-            address_el["name"]: user_uprn,
+            address_el.get("name"): user_uprn,
             "next": "Next"
         }, timeout=30)
         res.raise_for_status()
 
-        # --- STEP 4: SCRAPE DATA & DECODE SCRIPT ---
-        soup = BeautifulSoup(res.text, "html.parser")
+        # Pass the final HTML into the offline parser
+        return self.parse_data(res.text, **kwargs)
+
+    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
+        # Bot Request: parse_data ONLY consumes provided HTML and validates kwargs locally
+        user_postcode = kwargs.get("postcode")
+        user_uprn = kwargs.get("uprn")
+        check_postcode(user_postcode)
+        check_uprn(user_uprn)
+
+        soup = BeautifulSoup(page, "html.parser")
         table = soup.find("table", class_="data-table")
         
         if not table:
             error_msg = soup.find("div", {"class": "alert--error"})
             raise ValueError(f"Final bin table not found. Server said: {error_msg.text.strip() if error_msg else 'Unknown Error'}")
 
-        # Extract the bin mapping exactly from the embedded script
+        # Your requested dynamic JS Mapping
         bin_type_map = {}
         for script in soup.find_all("script"):
             if script.string:
-                # Find lines like: bintype["Service Name"] = "Friendly Name";
                 matches = re.findall(r'bintype\[["\']([^"\']+)["\']\]\s*=\s*["\']([^"\']+)["\']', script.string)
                 for service, friendly in matches:
                     bin_type_map[service] = friendly
 
-                # Also catch the static dictionary style (South Ribble style) just in case they revert
                 static_match = re.search(r'const bintype = \{([^}]+)\}', script.string, re.DOTALL)
                 if static_match:
                     for line in static_match.group(1).split('\n'):
