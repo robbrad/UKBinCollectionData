@@ -57,7 +57,7 @@ class CouncilClass(AbstractGetBinDataClass):
             elif "garden" in sov:
                 bin_type = "Garden"
             elif "food" in sov or "caddy" in sov:
-                bin_type = "Food caddy"
+                bin_type = "Food Caddy"
             elif "refuse" in sov:
                 bin_type = "General"
             else:
