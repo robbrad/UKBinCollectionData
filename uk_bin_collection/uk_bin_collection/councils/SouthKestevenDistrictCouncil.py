@@ -21,6 +21,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import is_holiday, Region
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -229,7 +230,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'collection day')]")))
                 except:
                     pass
-            
+
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             bin_day_element = soup.find(text=re.compile(r"Bin Day is \w+"))
             
@@ -465,8 +466,76 @@ class CouncilClass(AbstractGetBinDataClass):
         for week in range(num_weeks):
             collection_date = next_collection + timedelta(weeks=week)
             collection_dates.append(collection_date.strftime("%d/%m/%Y"))
+        
+        # Apply bank holiday adjustments before returning
+        collection_dates = self.adjust_for_bank_holidays(collection_dates)
             
         return collection_dates
+
+    def get_bank_holiday_rules(self):
+        """Define bank holiday collection rules for South Kesteven.
+        
+        Note: The specific dates are hardcoded for 2025/2026 and will require 
+        annual updates to reflect future years' schedules. Review and update
+        these rules each year based on the council's published calendar.
+        """
+        return {
+            'specific_dates': {
+                # Christmas period - specific shifts
+                '22/12/2025': {'shift_days': -2, 'reason': 'Christmas (moved to Saturday)'},
+                '23/12/2025': {'shift_days': -1, 'reason': 'Christmas'},
+                '24/12/2025': {'shift_days': -1, 'reason': 'Christmas'},
+                '25/12/2025': {'shift_days': -1, 'reason': 'Christmas Day'},
+                '26/12/2025': {'shift_days': 1, 'reason': 'Boxing Day'},
+                # New Year period
+                '01/01/2026': {'shift_days': 1, 'reason': 'New Year\'s Day'},
+                '02/01/2026': {'shift_days': 1, 'reason': 'New Year (recovery)'},
+            },
+            'no_adjustment': [
+                # Good Friday - collections as normal
+                datetime(2025, 4, 18).strftime('%d/%m/%Y')
+            ],
+            'default_shift': 1  # Default: one day later for unspecified bank holidays
+        }
+
+    def adjust_for_bank_holidays(self, collection_dates):
+        """Adjust collection dates for bank holidays."""
+        rules = self.get_bank_holiday_rules()
+        adjusted_dates = []
+        
+        for date_str in collection_dates:
+            try:
+                date_obj = datetime.strptime(date_str, "%d/%m/%Y")
+            except (ValueError, TypeError):
+                # If we can't parse the date, keep it as is
+                adjusted_dates.append(date_str)
+                continue
+            
+            # Check if date has specific rule
+            if date_str in rules['specific_dates']:
+                rule = rules['specific_dates'][date_str]
+                adjusted_date = date_obj + timedelta(days=rule['shift_days'])
+                adjusted_dates.append(adjusted_date.strftime("%d/%m/%Y"))
+            
+            # Check if date is in no-adjustment list
+            elif date_str in rules['no_adjustment']:
+                adjusted_dates.append(date_str)
+            
+            # Check if it's a bank holiday (library detection)
+            else:
+                try:
+                    if is_holiday(date_obj, Region.ENG):
+                        # Apply default shift (one day later)
+                        adjusted_date = date_obj + timedelta(days=rules['default_shift'])
+                        adjusted_dates.append(adjusted_date.strftime("%d/%m/%Y"))
+                    else:
+                        # Not a bank holiday, keep original date
+                        adjusted_dates.append(date_str)
+                except (TypeError, ValueError):
+                    # If holiday check fails, keep original date
+                    adjusted_dates.append(date_str)
+        
+        return adjusted_dates
 
     def get_green_bin_collection_dates(self, green_bin_info, num_weeks=8):
         """Calculate green bin collection dates based on OCR-extracted calendar data."""
@@ -867,29 +936,73 @@ class CouncilClass(AbstractGetBinDataClass):
             print(f"Error getting alternative calendar links: {e}")
             return {'regular': [], 'green': []}
 
+    def _find_calendar_image_path(self, filename: str) -> str | None:
+        """Find a calendar image in a minimal set of standard locations.
+
+        Search order:
+          1) Explicit directory set on the instance (self.ocr_image_dir)
+          2) Directory from env var UKBC_OCR_IMAGE_DIR
+          3) Current working directory
+        """
+        try:
+            from pathlib import Path
+
+            candidates = []
+
+            # 1) Instance override (set from kwargs by caller)
+            ocr_dir = getattr(self, "ocr_image_dir", None)
+            if ocr_dir:
+                candidates.append(Path(ocr_dir) / filename)
+
+            # 2) Environment variable override
+            env_dir = os.getenv("UKBC_OCR_IMAGE_DIR")
+            if env_dir:
+                candidates.append(Path(env_dir) / filename)
+
+            # 3) Current working directory
+            cwd = Path.cwd()
+            candidates.append(cwd / filename)
+
+            for path in candidates:
+                try:
+                    if path and Path(path).exists():
+                        return str(path)
+                except Exception:
+                    continue
+        except Exception:
+            pass
+        return None
+
     def parse_calendar_images(self):
         """Parse the static calendar images to extract bin collection data."""
         try:
-            # First, try to download the calendar images with dynamic links
-            if not self.download_calendar_images():
-                print("Dynamic download failed, trying fallback links...")
-                # Try with known fallback links
-                if not self.download_calendar_images_fallback():
-                    print("All download methods failed, using fallback calendar data...")
-                    return self.get_fallback_calendar_data()
-            
+            # First, try local images (preferred for tests and offline runs)
+            regular_path = self._find_calendar_image_path("south_kesteven_regular_calendar.jpg")
+            green_path = self._find_calendar_image_path("south_kesteven_green_calendar.jpg")
+
+            # If local images aren't found, try to download
+            if not regular_path and not green_path:
+                if not self.download_calendar_images():
+                    print("Dynamic download failed, trying fallback links...")
+                    if not self.download_calendar_images_fallback():
+                        print("All download methods failed, using fallback calendar data...")
+                        return self.get_fallback_calendar_data()
+                # After download, try to resolve again
+                regular_path = self._find_calendar_image_path("south_kesteven_regular_calendar.jpg")
+                green_path = self._find_calendar_image_path("south_kesteven_green_calendar.jpg")
+
             # Now use OCR to parse the actual calendar images
             print("Parsing calendar images with OCR...")
-            
+
             # Try to parse regular bin calendar
             regular_calendar_data = {}
-            if os.path.exists("south_kesteven_regular_calendar.jpg"):
-                regular_calendar_data = self.parse_calendar_with_ocr("south_kesteven_regular_calendar.jpg", "regular")
-            
+            if regular_path:
+                regular_calendar_data = self.parse_calendar_with_ocr(regular_path, "regular")
+
             # Try to parse green bin calendar
             green_calendar_data = {}
-            if os.path.exists("south_kesteven_green_calendar.jpg"):
-                green_calendar_data = self.parse_calendar_with_ocr("south_kesteven_green_calendar.jpg", "green")
+            if green_path:
+                green_calendar_data = self.parse_calendar_with_ocr(green_path, "green")
             
             # Combine the data
             calendar_data = regular_calendar_data
@@ -1055,11 +1168,18 @@ class CouncilClass(AbstractGetBinDataClass):
         for year in found_years:
             calendar_data[year] = {}
             for month in found_months:
+                # Create a more flexible calendar structure
                 calendar_data[year][month] = {
                     "1": "Black bin (General waste)",
                     "2": "Silver bin (Recycling)", 
                     "3": "Purple-lidded bin (Paper & Card)",
-                    "4": "Black bin (General waste)"
+                    "4": "Black bin (General waste)",
+                    # For 5th week, follow Week 2 pattern (Silver) per council guidance
+                    "5": "Silver bin (Recycling)",
+                    # Continue cycling if ever needed beyond 5 weeks
+                    "6": "Purple-lidded bin (Paper & Card)",
+                    "7": "Black bin (General waste)",
+                    "8": "Silver bin (Recycling)"
                 }
         
         return calendar_data
@@ -1113,18 +1233,24 @@ class CouncilClass(AbstractGetBinDataClass):
             day = date_obj.day
             
             # Determine which week of the month this is
-            week_of_month = str(((day - 1) // 7) + 1)
+            week_of_month = ((day - 1) // 7) + 1
             
             # Use provided calendar data or get it if not provided
             if calendar_data is None:
                 calendar_data = self.parse_calendar_images()
             
             # Look up the bin type from the calendar data
-            if year in calendar_data and month in calendar_data[year] and week_of_month in calendar_data[year][month]:
-                return calendar_data[year][month][week_of_month]
-            else:
-                # Raise error if not found in calendar instead of fallback
-                raise ValueError(f"No bin type found for {collection_date} (Week {week_of_month} of {month}/{year})")
+            if year in calendar_data and month in calendar_data[year]:
+                # Handle 5-week months by following council rule: Week 5 == Week 2 pattern
+                if week_of_month <= 4:
+                    week_key = str(week_of_month)
+                else:
+                    week_key = "5" if "5" in calendar_data[year][month] else "2"
+                if week_key in calendar_data[year][month]:
+                    return calendar_data[year][month][week_key]
+            
+            # If we reach here, we genuinely couldn't determine the type
+            raise ValueError(f"No bin type found for {collection_date} (Week {week_of_month} of {month}/{year})")
                 
         except Exception as e:
             print(f"Error determining bin type for {collection_date}: {e}")
@@ -1139,14 +1265,16 @@ class CouncilClass(AbstractGetBinDataClass):
                 raise ValueError("Postcode is required for South Kesteven")
 
             # No WebDriver needed - using requests-based approach
-            
+
             # Get collection day for regular bins
             collection_day = self.get_collection_day_from_postcode(None, user_postcode)
             if not collection_day:
-                raise ValueError(f"Could not determine collection day for postcode {user_postcode}")
+                raise ValueError(f"Could not determine collection day for postcode: {user_postcode}")
 
             # Get green bin info
             green_bin_info = self.get_green_bin_info_from_postcode(None, user_postcode)
+            if not green_bin_info:
+                raise ValueError(f"Could not determine green bin info for postcode: {user_postcode}")
 
             bin_data = []
 
