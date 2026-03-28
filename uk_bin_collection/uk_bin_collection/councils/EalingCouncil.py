@@ -35,7 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 {
                     "type": param["Service"],
                     "collectionDate": datetime.strptime(
-                        param["collectionDateString"], "%d/%m/%Y"
+                        param["collectionDate"][0], "%d/%m/%Y"
                     ).strftime(date_format),
                 }
             )

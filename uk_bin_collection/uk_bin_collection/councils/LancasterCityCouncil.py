@@ -3,8 +3,21 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+
+BIN_TYPES = (
+    "Domestic Waste",
+    "Garden Waste",
+    "Recycling",
+    "Food Waste",
+)
+
+SUFFIXES = (
+    " Collection Service",
+    " Collection - refer to calendar for stream",
+)
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -57,30 +70,56 @@ class CouncilClass(AbstractGetBinDataClass):
         response = session.get(addr_link)
         new_soup = BeautifulSoup(response.text, features="html.parser")
         services = new_soup.find("section", {"id": "scheduled-collections"})
-        
+
         if services is None:
             raise Exception("Could not find scheduled collections section on the page")
-            
+
         services_sub = services.find_all("li")
         if not services_sub:
             raise Exception("No collection services found")
-            
+
         for i in range(0, len(services_sub), 3):
             if i + 2 < len(services_sub):
-                date_text = services_sub[i + 1].text.strip() if services_sub[i + 1] else None
-                if date_text:
-                    try:
-                        dt = datetime.strptime(date_text, "%d/%m/%Y").date()
-                        bin_type_element = BeautifulSoup(services_sub[i + 2].text, features="lxml").find("p")
-                        if bin_type_element and bin_type_element.text:
-                            data["bins"].append(
-                                {
-                                    "type": bin_type_element.text.strip().removesuffix(" Collection Service"),
-                                    "collectionDate": dt.strftime(date_format),
-                                }
-                            )
-                    except (ValueError, AttributeError) as e:
-                        # Skip invalid date or missing elements
-                        continue
+                date_item = services_sub[i + 1]
+                type_item = services_sub[i + 2]
+                if date_item is None:
+                    raise Exception(f"Missing collection date element at index {i + 1}")
+                if type_item is None:
+                    raise Exception(f"Missing collection type element at index {i + 2}")
+
+                date_text = date_item.text.strip()
+                type_text = type_item.text.strip()
+
+                try:
+                    dt = datetime.strptime(date_text, "%d/%m/%Y").date()
+                except ValueError as exc:
+                    raise ValueError(
+                        "Unexpected Lancaster schedule date format: "
+                        f"date_text='{date_text}', type_text='{type_text}'"
+                    ) from exc
+
+                collection_type = next(
+                    (
+                        bin_type
+                        for bin_type in BIN_TYPES
+                        if type_text.startswith(bin_type)
+                    ),
+                    None,
+                )
+                if collection_type is None:
+                    collection_type = type_text
+                    for suffix in SUFFIXES:
+                        collection_type = collection_type.removesuffix(suffix)
+                if collection_type is not None:
+                    data["bins"].append(
+                        {
+                            "type": collection_type,
+                            "collectionDate": dt.strftime(date_format),
+                        }
+                    )
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
         return data
