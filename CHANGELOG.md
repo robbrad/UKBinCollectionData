@@ -1,4 +1,26 @@
 =======
+## 0.165.0 (2026-03-28)
+
+### Feat
+
+- Lancaster City - support food waste collection (#1895)
+- support lancaster city food waste collection
+- North Northamptonshire - add food caddy bin type support (#1894)
+- add support for food caddy bin type in North Northamptonshire Council scraper
+
+### Fix
+
+- expose errors in lancaster city date parsing
+- correct casing for food caddy bin type in North Northamptonshire Council scraper
+- Herefordshire Council - incorrectly picking up non-date string (#1888)
+- Herefordshire Council incorrectly picking up non-date string
+- EalingCouncil/LondonBoroughEaling - use collectionDate not collectionDateString (#1886)
+- EalingCouncil/LondonBoroughEaling: Use collectionDate not collectionDateString
+
+### Refactor
+
+- ChorleyCouncil - use requests instead of Selenium (#1891)
+
 ## 0.164.0 (2026-03-14)
 
 ### Feat
