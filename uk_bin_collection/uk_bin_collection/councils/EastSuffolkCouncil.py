@@ -8,6 +8,8 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+from datetime import datetime
+
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -73,10 +75,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Find data table
             data_table = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        '//div[@data-field-name="collection_details"]/div[contains(@class, "fieldContent")]/div[contains(@class, "repeatable-table-wrapper")]',
-                    )
+                    (By.CSS_SELECTOR, "div.repeatable-table-wrapper")
                 )
             )
 
@@ -87,16 +86,34 @@ class CouncilClass(AbstractGetBinDataClass):
 
             data = {"bins": []}
 
-            rows = soup.find("table").find("tbody").find_all("tr")
+            table = soup.find("table", {"class": "repeatable-table"})
+            rows = table.find("tbody").find_all("tr")
+
             for row in rows:
                 cols = row.find_all("td")
-                bin_type = cols[2].find_all("span")[1].text.title()
-                collection_date = cols[3].find_all("span")[1].text
-                collection_date = datetime.strptime(
-                    collection_date, "%d/%m/%Y"
-                ).strftime(date_format)
-                dict_data = {"type": bin_type, "collectionDate": collection_date}
-                data["bins"].append(dict_data)
+                if len(cols) >= 3:
+                    collection_date = cols[1].text.strip()
+                    bin_type = cols[2].text.strip()
+
+                    # Strip emojis by keeping only ASCII
+                    bin_type = (
+                        bin_type.encode("ascii", "ignore").decode("ascii").strip()
+                    )
+
+                    # Strip " - standard bin"
+                    lower_bin_type = bin_type.lower()
+                    if " - standard bin" in lower_bin_type:
+                        idx = lower_bin_type.find(" - standard bin")
+                        bin_type = bin_type[:idx]
+
+                    bin_type = bin_type.strip().title()
+
+                    collection_date = datetime.strptime(
+                        collection_date, "%d/%m/%Y"
+                    ).strftime(date_format)
+
+                    dict_data = {"type": bin_type, "collectionDate": collection_date}
+                    data["bins"].append(dict_data)
 
             data["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
