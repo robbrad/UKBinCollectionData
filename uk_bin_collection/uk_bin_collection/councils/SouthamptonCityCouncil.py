@@ -36,7 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        REGEX = r"(Glass|Recycling|General Waste|Garden Waste).*?([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})"
+        REGEX = r"(Glass|Recycling|General Waste|Garden Waste|Food Waste).*?([0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4})"
 
         headers = {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
