@@ -24,7 +24,7 @@ class CouncilClass(AbstractGetBinDataClass):
         
         Returns:
             dict: Dictionary with a "bins" key containing a list of collection entries. Each entry is a dict with:
-                - "type" (str): Waste type ("Glass", "Recycling", "General Waste", or "Garden Waste").
+                - "type" (str): Waste type ("Glass", "Recycling", "General Waste", "Garden Waste", or "Food Waste").
                 - "collectionDate" (str): Collection date in "DD/MM/YYYY" format.
             The list is sorted by collectionDate in ascending order.
         
