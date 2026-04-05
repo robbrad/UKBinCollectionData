@@ -34,14 +34,14 @@ class CouncilClass(AbstractGetBinDataClass):
     def add_bin_types_to_collection(
         self, bin_data: {"bins": []}, collection_date: str, collectionType: str
     ):
-        if "Grey Bin" in collectionType:
+        if "General waste" in collectionType:
             bin_data["bins"].append(
                 {
                     "type": "Grey Bin",
                     "collectionDate": self.parse_date(collection_date),
                 }
             )
-        if "Green Bin" in collectionType:
+        if "Garden waste" in collectionType:
             bin_data["bins"].append(
                 {
                     "type": "Green Bin",
@@ -49,7 +49,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 }
             )
 
-        if "Blue Bin" in collectionType:
+        if "Recycling" in collectionType:
             bin_data["bins"].append(
                 {
                     "type": "Blue Bin",
