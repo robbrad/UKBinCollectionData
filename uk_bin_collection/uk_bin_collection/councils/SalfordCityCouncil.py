@@ -22,7 +22,9 @@ class CouncilClass(AbstractGetBinDataClass):
         api_url = f"https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/your-bin-collections/?UPRN={user_uprn}"
 
         headers = {
-            "User-Agent": "Mozilla/5.0",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8",
             "Referer": "https://www.salford.gov.uk/bins-and-recycling/bin-collection-days/",
         }
 
@@ -30,33 +32,39 @@ class CouncilClass(AbstractGetBinDataClass):
         requests.packages.urllib3.disable_warnings()
         response = requests.get(api_url, headers=headers)
 
-        # Make a BS4 object
-        soup = BeautifulSoup(response.text, features="html.parser")
-        soup.prettify()
+        # Use lxml parser — html.parser fails on Salford's malformed HTML
+        soup = BeautifulSoup(response.text, features="lxml")
 
         data = {"bins": []}
 
-        # Get the div element
+        # Get the wastefurther div containing bin type sections
         div_element = soup.find("div", {"class": "wastefurther"})
+        if not div_element:
+            raise ValueError("Could not find bin collection data — the page structure may have changed")
 
-        # Get the bins
-        bin_lists = div_element.find_all("ul")
+        # Each bin type is in a col-12 div with a <p><strong>Type:</strong></p> followed by a <ul>
+        col_divs = div_element.find_all("div", class_=lambda c: c and "col-12" in c)
+        for col in col_divs:
+            p_tag = col.find("p")
+            if not p_tag:
+                continue
+            strong_tag = p_tag.find("strong")
+            if not strong_tag:
+                continue
+            bin_type = strong_tag.text.strip()
+            # Remove trailing colon
+            if bin_type.endswith(":"):
+                bin_type = bin_type[:-1]
 
-        # Loop through each <ul> tag to extract the bin information
-        for i, bin_list in enumerate(bin_lists):
-            # Find the <p> tag containing the bin type string
-            bin_type = bin_list.find_previous_sibling("p").find("strong").text.strip()
+            ul = col.find("ul")
+            if not ul:
+                continue
 
-            # Loop through each <li> tag in the <ul> tag to extract the collection date
-            for li in bin_list.find_all("li"):
-                # Convert the collection time to a datetime object
-                collection_date = datetime.strptime(li.text, "%A %d %B %Y")
-
-                # Add the bin to the data dict
+            for li in ul.find_all("li"):
+                collection_date = datetime.strptime(li.text.strip(), "%A %d %B %Y")
                 data["bins"].append(
                     {
-                        # remove the ":" from the end of the bin type
-                        "type": bin_type[:-1],
+                        "type": bin_type,
                         "collectionDate": collection_date,
                     }
                 )
