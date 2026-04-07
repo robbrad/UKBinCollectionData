@@ -6,6 +6,11 @@ import requests
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+import json
+import logging
+
+_LOGGER = logging.getLogger(__name__)
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -50,9 +55,27 @@ class CouncilClass(AbstractGetBinDataClass):
             r = s.post(API_URL, json=data, headers=headers, params=params)
             r.raise_for_status()
             response_data = r.json()
-            rows_data = response_data["integration"]["transformed"]["rows_data"]
+        
+            _LOGGER.warning(
+                "PLYMOUTH lookup %s raw response: %s",
+                lookup_id,
+                json.dumps(response_data, indent=2),
+            )
+        
+            transformed = response_data.get("integration", {}).get("transformed")
+            if transformed is None:
+                raise ValueError(
+                    f"Plymouth lookup {lookup_id} returned no transformed data: "
+                    f"{json.dumps(response_data, indent=2)}"
+                )
+        
+            rows_data = transformed.get("rows_data")
             if not isinstance(rows_data, dict):
-                raise ValueError("Invalid data returned from API")
+                raise ValueError(
+                    f"Plymouth lookup {lookup_id} returned invalid rows_data: "
+                    f"{json.dumps(response_data, indent=2)}"
+                )
+        
             return rows_data
 
         standard_data = {
@@ -73,11 +96,22 @@ class CouncilClass(AbstractGetBinDataClass):
                     "request_type": {"value": "GARDEN"},
                     "number1": {"value": user_uprn},
                     "UPRN": {"value": str(user_uprn)},
+                    "addressDetails": {
+                        "value": {
+                            "Section 1": {
+                                "ChooseAddress": {"value": str(user_uprn)},
+                            }
+                        }
+                    },
                 }
             }
         }
 
-        collective_rows = run_lookup("698b9c49a3c13", collective_data)
+        collective_rows = {}
+        try:
+            collective_rows = run_lookup("698b9c49a3c13", collective_data)
+        except Exception as exc:
+            _LOGGER.warning("PLYMOUTH collective lookup failed: %s", exc)
 
         BIN_TYPES = {
             "DO": "Brown Domestic Bin",
