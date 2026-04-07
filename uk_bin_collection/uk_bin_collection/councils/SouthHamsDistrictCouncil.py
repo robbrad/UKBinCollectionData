@@ -25,9 +25,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
         s = requests.session()
         r = s.get(uri)
+        fcc_session_token = None
         for cookie in r.cookies:
             if cookie.name == "fcc_session_cookie":
                 fcc_session_token = cookie.value
+
+        if fcc_session_token is None:
+            raise ValueError(
+                f"Could not obtain session token from {uri} "
+                f"(HTTP {r.status_code}). The service may be temporarily unavailable."
+            )
 
         uri = "https://waste.southhams.gov.uk/mycollections/getcollectiondetails"
 
