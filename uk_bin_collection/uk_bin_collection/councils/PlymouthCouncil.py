@@ -7,22 +7,28 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
+SESSION_URL = "https://plymouth-self.achieveservice.com/authapi/isauthenticated?uri=https%253A%252F%252Fplymouth-self.achieveservice.com%252Fen%252FAchieveForms%252F%253Fform_uri%253Dsandbox-publish%253A%252F%252FAF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b%252FAF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875%252Fdefinition.json%2526redirectlink%253D%25252Fen%2526cancelRedirectLink%253D%25252Fen%2526consentMessage%253Dyes&hostname=plymouth-self.achieveservice.com&withCredentials=true"
+API_URL = "https://plymouth-self.achieveservice.com/apibroker/runLookup"
+
+HEADERS = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "User-Agent": "Mozilla/5.0",
+    "X-Requested-With": "XMLHttpRequest",
+    "Referer": "https://plymouth-self.achieveservice.com/fillform/?iframe_id=fillform-frame-1&db_id=",
+}
+
+STANDARD_LOOKUP_ID = "5c99439d85f83"
+COLLECTIVE_KEY_LOOKUP_ID = "6936e38f6d376"
+COLLECTIVE_JOBS_LOOKUP_ID = "698b9c49a3c13"
+LOOKAHEAD_DAYS = 24
+
+
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
-
-        SESSION_URL = "https://plymouth-self.achieveservice.com/authapi/isauthenticated?uri=https%253A%252F%252Fplymouth-self.achieveservice.com%252Fen%252FAchieveForms%252F%253Fform_uri%253Dsandbox-publish%253A%252F%252FAF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b%252FAF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875%252Fdefinition.json%2526redirectlink%253D%25252Fen%2526cancelRedirectLink%253D%25252Fen%2526consentMessage%253Dyes&hostname=plymouth-self.achieveservice.com&withCredentials=true"
-        API_URL = "https://plymouth-self.achieveservice.com/apibroker/runLookup"
-
-        headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "User-Agent": "Mozilla/5.0",
-            "X-Requested-With": "XMLHttpRequest",
-            "Referer": "https://plymouth-self.achieveservice.com/fillform/?iframe_id=fillform-frame-1&db_id=",
-        }
 
         s = requests.session()
         r = s.get(SESSION_URL)
@@ -40,7 +46,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "_": str(int(time.time() * 1000)),
                 "sid": sid,
             }
-            r = s.post(API_URL, json=data, headers=headers, params=params)
+            r = s.post(API_URL, json=data, headers=HEADERS, params=params)
             r.raise_for_status()
             response_data = r.json()
 
@@ -58,6 +64,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
             return rows_data
 
+        start_date = datetime.now().strftime("%Y-%m-%dT00:00:00")
+        end_date = (datetime.now() + timedelta(days=LOOKAHEAD_DAYS)).strftime(
+            "%Y-%m-%dT00:00:00"
+        )
+
         standard_data = {
             "formValues": {
                 "Section 1": {
@@ -67,10 +78,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 }
             },
         }
-        standard_rows = run_lookup("5c99439d85f83", standard_data)
-
-        start_date = datetime.now().strftime("%Y-%m-%dT00:00:00")
-        end_date = (datetime.now() + timedelta(days=24)).strftime("%Y-%m-%dT00:00:00")
+        standard_rows = run_lookup(STANDARD_LOOKUP_ID, standard_data)
 
         collective_key_data = {
             "stopOnFailure": True,
@@ -104,41 +112,44 @@ class CouncilClass(AbstractGetBinDataClass):
             "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
         }
 
-        key_rows = run_lookup("6936e38f6d376", collective_key_data)
-        collective_key = key_rows.get("0", {}).get("collectiveKey")
-        if not collective_key:
-            raise ValueError("Plymouth collective key lookup returned no collectiveKey")
+        collective_rows = {}
+        try:
+            key_rows = run_lookup(COLLECTIVE_KEY_LOOKUP_ID, collective_key_data)
+            collective_key = key_rows.get("0", {}).get("collectiveKey")
 
-        collective_data = {
-            "stopOnFailure": True,
-            "usePHPIntegrations": True,
-            "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
-            "stage_name": "Check Bin Day",
-            "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
-            "formValues": {
-                "Section 1": {
-                    "request_type": {"value": "GARDEN"},
-                    "addressDetails": {
-                        "value": {
-                            "Section 1": {
-                                "ChooseAddress": {"value": str(user_uprn)}
-                            }
+            if collective_key:
+                collective_data = {
+                    "stopOnFailure": True,
+                    "usePHPIntegrations": True,
+                    "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
+                    "stage_name": "Check Bin Day",
+                    "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
+                    "formValues": {
+                        "Section 1": {
+                            "request_type": {"value": "GARDEN"},
+                            "addressDetails": {
+                                "value": {
+                                    "Section 1": {
+                                        "ChooseAddress": {"value": str(user_uprn)}
+                                    }
+                                }
+                            },
+                            "number1": {"value": str(user_uprn)},
+                            "UPRN": {"value": str(user_uprn)},
+                            "collectiveKey": {"value": collective_key},
+                            "collectiveUPRN": {"value": str(user_uprn)},
+                            "collectiveGetJobStartDate": {"value": start_date},
+                            "collectiveGetJobEndDate": {"value": end_date},
                         }
                     },
-                    "number1": {"value": str(user_uprn)},
-                    "UPRN": {"value": str(user_uprn)},
-                    "collectiveKey": {"value": collective_key},
-                    "collectiveUPRN": {"value": str(user_uprn)},
-                    "collectiveGetJobStartDate": {"value": start_date},
-                    "collectiveGetJobEndDate": {"value": end_date},
+                    "isPublished": True,
+                    "formName": "Waste - Check your bin day",
+                    "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
                 }
-            },
-            "isPublished": True,
-            "formName": "Waste - Check your bin day",
-            "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
-        }
 
-        collective_rows = run_lookup("698b9c49a3c13", collective_data)
+                collective_rows = run_lookup(COLLECTIVE_JOBS_LOOKUP_ID, collective_data)
+        except Exception:
+            collective_rows = {}
 
         bin_type_dict = {
             "DO": "Brown Domestic Bin",
