@@ -1,10 +1,13 @@
 import time
 
 import requests
+import json
+import logging
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+_LOGGER = logging.getLogger(__name__)
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -60,7 +63,26 @@ class CouncilClass(AbstractGetBinDataClass):
         r = s.post(API_URL, json=data, headers=headers, params=params)
         r.raise_for_status()
         data = r.json()
-        rows_data = data["integration"]["transformed"]["rows_data"]
+
+        _LOGGER.warning("PLYMOUTH raw response: %s", json.dumps(data, indent=2))
+        
+        transformed = data.get("integration", {}).get("transformed", {})
+        _LOGGER.warning("PLYMOUTH transformed keys: %s", list(transformed.keys()))
+        _LOGGER.warning("PLYMOUTH transformed: %s", json.dumps(transformed, indent=2))
+        
+        rows_data = transformed.get("rows_data", {})
+        _LOGGER.warning("PLYMOUTH rows_data: %s", json.dumps(rows_data, indent=2))
+        
+        all_row_keys = set()
+        if isinstance(rows_data, dict):
+            for key, row in rows_data.items():
+                if isinstance(row, dict):
+                    all_row_keys.update(row.keys())
+                    _LOGGER.warning("PLYMOUTH row %s: %s", key, json.dumps(row, indent=2))
+        
+        _LOGGER.warning("PLYMOUTH all row keys seen: %s", sorted(all_row_keys))
+        
+        rows_data = transformed.get("rows_data", {})
         if not isinstance(rows_data, dict):
             raise ValueError("Invalid data returned from API")
         BIN_TYPES = [
