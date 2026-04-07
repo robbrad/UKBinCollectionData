@@ -1,24 +1,13 @@
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-import json
-import logging
-
-_LOGGER = logging.getLogger(__name__)
-
 
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
@@ -38,8 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         s = requests.session()
         r = s.get(SESSION_URL)
         r.raise_for_status()
-        session_data = r.json()
-        sid = session_data["auth-session"]
+        sid = r.json()["auth-session"]
 
         def run_lookup(lookup_id: str, data: dict) -> dict:
             params = {
@@ -55,27 +43,19 @@ class CouncilClass(AbstractGetBinDataClass):
             r = s.post(API_URL, json=data, headers=headers, params=params)
             r.raise_for_status()
             response_data = r.json()
-        
-            _LOGGER.warning(
-                "PLYMOUTH lookup %s raw response: %s",
-                lookup_id,
-                json.dumps(response_data, indent=2),
-            )
-        
+
             transformed = response_data.get("integration", {}).get("transformed")
             if transformed is None:
                 raise ValueError(
-                    f"Plymouth lookup {lookup_id} returned no transformed data: "
-                    f"{json.dumps(response_data, indent=2)}"
+                    f"Plymouth lookup {lookup_id} returned no transformed data: {response_data}"
                 )
-        
+
             rows_data = transformed.get("rows_data")
             if not isinstance(rows_data, dict):
                 raise ValueError(
-                    f"Plymouth lookup {lookup_id} returned invalid rows_data: "
-                    f"{json.dumps(response_data, indent=2)}"
+                    f"Plymouth lookup {lookup_id} returned invalid rows_data: {response_data}"
                 )
-        
+
             return rows_data
 
         standard_data = {
@@ -83,37 +63,84 @@ class CouncilClass(AbstractGetBinDataClass):
                 "Section 1": {
                     "number1": {"value": user_uprn},
                     "lastncoll": {"value": "0"},
-                    "nextncoll": {"value": "9"},
+                    "nextncoll": {"value": "20"},
                 }
             },
         }
-
         standard_rows = run_lookup("5c99439d85f83", standard_data)
 
-        collective_data = {
+        start_date = datetime.now().strftime("%Y-%m-%dT00:00:00")
+        end_date = (datetime.now() + timedelta(days=24)).strftime("%Y-%m-%dT00:00:00")
+
+        collective_key_data = {
+            "stopOnFailure": True,
+            "usePHPIntegrations": True,
+            "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
+            "stage_name": "Check Bin Day",
+            "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
             "formValues": {
                 "Section 1": {
                     "request_type": {"value": "GARDEN"},
-                    "number1": {"value": user_uprn},
-                    "UPRN": {"value": str(user_uprn)},
+                    "addressDetails": {"value": ""},
+                    "number1": {"value": ""},
+                    "UPRN": {"value": ""},
+                    "collectiveKey": {"value": ""},
+                    "collectiveUPRN": {"value": ""},
+                    "collectiveGetJobStartDate": {"value": start_date},
+                    "collectiveGetJobEndDate": {"value": end_date},
+                    "lastncoll": {"value": "0"},
+                    "nextncoll": {"value": "9"},
+                    "displayChecker": {"value": "false"},
+                    "hiddenPN": {"value": "Waste - Check your bin day"},
+                    "productArea1": {"value": "Self"},
+                    "ffDirectorate": {"value": "Place"},
+                    "ffDepartment": {"value": "Street Services"},
+                    "ffIntExt": {"value": "External"},
+                    "ffPreSubmission": {"value": "preSubmission"},
+                }
+            },
+            "isPublished": True,
+            "formName": "Waste - Check your bin day",
+            "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
+        }
+
+        key_rows = run_lookup("6936e38f6d376", collective_key_data)
+        collective_key = key_rows.get("0", {}).get("collectiveKey")
+        if not collective_key:
+            raise ValueError("Plymouth collective key lookup returned no collectiveKey")
+
+        collective_data = {
+            "stopOnFailure": True,
+            "usePHPIntegrations": True,
+            "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
+            "stage_name": "Check Bin Day",
+            "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
+            "formValues": {
+                "Section 1": {
+                    "request_type": {"value": "GARDEN"},
                     "addressDetails": {
                         "value": {
                             "Section 1": {
-                                "ChooseAddress": {"value": str(user_uprn)},
+                                "ChooseAddress": {"value": str(user_uprn)}
                             }
                         }
                     },
+                    "number1": {"value": str(user_uprn)},
+                    "UPRN": {"value": str(user_uprn)},
+                    "collectiveKey": {"value": collective_key},
+                    "collectiveUPRN": {"value": str(user_uprn)},
+                    "collectiveGetJobStartDate": {"value": start_date},
+                    "collectiveGetJobEndDate": {"value": end_date},
                 }
-            }
+            },
+            "isPublished": True,
+            "formName": "Waste - Check your bin day",
+            "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
         }
 
-        collective_rows = {}
-        try:
-            collective_rows = run_lookup("698b9c49a3c13", collective_data)
-        except Exception as exc:
-            _LOGGER.warning("PLYMOUTH collective lookup failed: %s", exc)
+        collective_rows = run_lookup("698b9c49a3c13", collective_data)
 
-        BIN_TYPES = {
+        bin_type_dict = {
             "DO": "Brown Domestic Bin",
             "RE": "Green Recycling Bin",
             "OR": "Garden Waste Bin",
@@ -122,7 +149,7 @@ class CouncilClass(AbstractGetBinDataClass):
         seen = set()
 
         for row in standard_rows.values():
-            bin_type = BIN_TYPES.get(row["Round_Type"], row["Round_Type"])
+            bin_type = bin_type_dict.get(row["Round_Type"], row["Round_Type"])
             collection_date = datetime.strptime(
                 row["Date"].split("T")[0], "%Y-%m-%d"
             ).strftime("%d/%m/%Y")
@@ -136,9 +163,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for row in collective_rows.values():
             waste_type = row.get("collectiveWasteType", "").lower()
-            collection_date = row.get("collectiveCollectionDate")
+            collection_date = row.get("collectiveCollectionDate", "").strip()
 
-            if not collection_date:
+            if not collection_date or waste_type == "no jobs found":
                 continue
 
             if "garden" in waste_type:
