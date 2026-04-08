@@ -28,7 +28,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
             headless = kwargs.get("headless")
             web_driver = kwargs.get("web_driver")
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             page = "https://report.peterborough.gov.uk/waste"
 
             driver.get(page)
@@ -104,8 +105,8 @@ class CouncilClass(AbstractGetBinDataClass):
             output_date_format = "%d/%m/%Y"
             input_date_format = "%A, %d %B %Y"  # Expect: Thursday, 17 April 2025
 
-            # Each bin section is within a waste-service-wrapper div
-            collection_panels = soup.find_all("div", class_="waste-service-wrapper")
+            # Each bin section is within a waste-service-grid div
+            collection_panels = soup.find_all("div", class_="waste-service-grid")
 
             for panel in collection_panels:
                 try:
