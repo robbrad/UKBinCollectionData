@@ -17,6 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
 
         page = f"https://waste.bexley.gov.uk/waste/{user_uprn}"
 
@@ -25,12 +26,17 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # First request may trigger async page generation; retry if content not ready
+        found = False
         for attempt in range(3):
             response = requests.get(page, headers=headers, timeout=30)
             response.raise_for_status()
             if "waste-service-name" in response.text:
+                found = True
                 break
             time.sleep(3)
+
+        if not found:
+            raise ValueError("Bexley WasteWorks page did not return expected content after 3 attempts")
 
         soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -80,5 +86,8 @@ class CouncilClass(AbstractGetBinDataClass):
                     except ValueError as e:
                         print(f"Error parsing date for {bin_type}: {e}")
                     break
+
+        if not data["bins"]:
+            raise ValueError("No collection dates found — page structure may have changed")
 
         return data
