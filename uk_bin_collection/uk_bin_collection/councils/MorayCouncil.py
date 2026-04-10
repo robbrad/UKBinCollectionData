@@ -1,3 +1,6 @@
+import re
+from datetime import datetime
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -5,79 +8,91 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Moray Council bin collection scraper.
+    Parses the annual calendar view which encodes bin types as CSS classes
+    on day divs within month containers.
     """
+
+    # CSS class -> bin type mapping (from the calendar legend)
+    BIN_TYPE_MAP = {
+        "B": "Brown Bin",
+        "O": "Glass Container",
+        "G": "Green Bin",
+        "P": "Purple Bin",
+        "C": "Blue Bin",
+    }
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
-        print(f"Using UPRN: {user_uprn}")  # Debug
         bindata = {"bins": []}
 
-        user_uprn = user_uprn.zfill(8)
+        user_uprn = str(user_uprn).zfill(8)
+        year = datetime.today().year
 
-        url = f"https://bindayfinder.moray.gov.uk/disp_bins.php?id={user_uprn}"
-
-        # year = datetime.today().year
-        # url = f"https://bindayfinder.moray.gov.uk/cal_{year}_view.php"
-        print(f"Trying URL: {url}")  # Debug
-
+        url = f"https://bindayfinder.moray.gov.uk/cal_{year}_view.php?id={user_uprn}"
         response = requests.get(url)
-        print(f"Response status code: {response.status_code}")  # Debug
 
-        # if response.status_code != 200:
-        #     fallback_url = "https://bindayfinder.moray.gov.uk/cal_2024_view.php"
-        #     print(f"Falling back to: {fallback_url}")  # Debug
-        #     response = requests.get(
-        #         fallback_url,
-        #         params={"id": user_uprn},
-        #     )
-        #     print(f"Fallback response status: {response.status_code}")  # Debug
+        if response.status_code != 200:
+            return bindata
 
         soup = BeautifulSoup(response.text, "html.parser")
+        today = datetime.today().date()
 
-        # Find all container_images divs
-        container_images = soup.find_all("div", class_="container_images")
-        print(f"Found {len(container_images)} container images")  # Debug
+        # Month names for parsing
+        month_names = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December",
+        ]
 
-        for container in container_images:
-            # Get bin type from image alt text
-            img = container.find("img")
-            if img and img.get("alt"):
-                # Use the full alt text as one bin type instead of splitting
-                bin_type = img["alt"]
-                print(f"Found bin type: {bin_type}")  # Debug
+        for month_container in soup.find_all("div", class_="month-container"):
+            header = month_container.find("div", class_="month-header")
+            if not header or not header.find("h2"):
+                continue
+            month_name = header.find("h2").text.strip()
+            if month_name not in month_names:
+                continue
+            month_num = month_names.index(month_name) + 1
 
-            # Get collection date from binz_txt
-            date_text = container.find("div", class_="binz_txt")
-            if date_text:
-                date_str = date_text.text
-                print(f"Found date text: {date_str}")  # Debug
+            days_container = month_container.find("div", class_="days-container")
+            if not days_container:
+                continue
 
-                # Extract just the date portion
-                import re
+            day_num = 0
+            for day_div in days_container.find_all("div"):
+                css_classes = day_div.get("class", [])
 
-                date_match = re.search(r"(\d{1,2}\s+[A-Za-z]+\s+\d{4})", date_str)
-                if date_match:
-                    date_portion = date_match.group(1)
-                    try:
-                        # Convert the date string to the required format
-                        parsed_date = datetime.strptime(date_portion, "%d %B %Y")
-                        collection_date = parsed_date.strftime("%d/%m/%Y")
-                        print(f"Parsed date: {collection_date}")  # Debug
+                # Skip blank days
+                if "blank" in css_classes:
+                    continue
 
-                        dict_data = {
-                            "type": bin_type,
-                            "collectionDate": collection_date,
-                        }
-                        bindata["bins"].append(dict_data)
-                    except ValueError as e:
-                        print(f"Error parsing date: {e}")  # Debug
+                # Get the day number from the text
+                day_text = day_div.text.strip()
+                if not day_text or not day_text.isdigit():
+                    continue
+                day_num = int(day_text)
+
+                # Check if this day has bin collection classes
+                for css_class in css_classes:
+                    if css_class in ("blank", "day-name", ""):
                         continue
 
-        print(f"Final bindata: {bindata}")  # Debug
+                    # Each character in the CSS class represents a bin type
+                    for char in css_class:
+                        if char in self.BIN_TYPE_MAP:
+                            try:
+                                collection_date = datetime(year, month_num, day_num).date()
+                                if collection_date >= today:
+                                    bindata["bins"].append({
+                                        "type": self.BIN_TYPE_MAP[char],
+                                        "collectionDate": collection_date.strftime(date_format),
+                                    })
+                            except ValueError:
+                                continue
+
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
+
         return bindata
