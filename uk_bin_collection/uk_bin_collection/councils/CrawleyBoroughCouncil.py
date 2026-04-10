@@ -95,7 +95,8 @@ class CouncilClass(AbstractGetBinDataClass):
         transformed = integration.get("transformed", {}) if integration else {}
 
         if transformed:
-            rows_data = transformed.get("rows_data", {}).get("0") if "rows_data" in transformed else None
+            rows_data_raw = transformed.get("rows_data")
+            rows_data = rows_data_raw.get("0") if isinstance(rows_data_raw, dict) else None
             xml_data = transformed.get("xml_data")
 
         # Try legacy JSON rows_data format first
