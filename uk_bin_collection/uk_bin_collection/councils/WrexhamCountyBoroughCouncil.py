@@ -33,7 +33,8 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             check_postcode(user_postcode)
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(page)
 
             start_now_btn = WebDriverWait(driver, timeout=15).until(

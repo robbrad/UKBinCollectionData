@@ -30,7 +30,8 @@ class CouncilClass(AbstractGetBinDataClass):
             check_paon(user_paon)
             headless = kwargs.get("headless")
             web_driver = kwargs.get("web_driver")
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             page = "https://service.croydon.gov.uk/wasteservices/w/webpage/bin-day-enter-address"
 
             driver.maximize_window()
