@@ -12,7 +12,6 @@ class CouncilClass(AbstractGetBinDataClass):
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
-        # Figure bin data URL from UPRN
         url = "https://www.northyorks.gov.uk/bin-calendar/lookup"
         payload = {
             "selected_address": uprn,
@@ -21,18 +20,24 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
-        # This endpoint redirects to the data url.
         response = requests.request("POST", url, headers=headers, data=payload)
         bin_data_url = f"{response.url}/ajax"
 
-        # Get bin data
         response = requests.request("GET", bin_data_url)
         bin_data = response.json()
 
-        # Parse bin data
-        soup = BeautifulSoup(bin_data[1]["data"], "html.parser")
+        # Find the item containing HTML data (the index shifted from 1 to 2)
+        html_data = None
+        for item in bin_data:
+            if isinstance(item, dict) and isinstance(item.get("data"), str) and "<div" in item["data"]:
+                html_data = item["data"]
+                break
 
-        # All collection info is in the table
+        if not html_data:
+            raise ValueError("No HTML bin data found in API response")
+
+        soup = BeautifulSoup(html_data, "html.parser")
+
         table = (
             soup.find("div", {"id": "upcoming-collection"}).find("table").find("tbody")
         )
@@ -42,11 +47,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for row in rows:
             cols = row.find_all("td")
-            # First column is date
             bin_date = datetime.strptime(cols[0].text.strip(), "%d %B %Y")
-
-            # Third column may contain multiple bin types separated by line breaks
-            # .stripped_strings yields a generator over all non-whitespace text segments
             bin_types = [txt for txt in cols[2].stripped_strings]
 
             for sub_bin in bin_types:
