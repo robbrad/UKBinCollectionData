@@ -26,8 +26,26 @@ class CouncilClass(AbstractGetBinDataClass):
                 " (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
             )
         }
-        response = requests.get(uri, headers=headers, timeout=30, verify=False)
-        response.raise_for_status()
+        # www.conwy.gov.uk intermittently returns connection resets, read
+        # timeouts, or SSL handshake failures depending on load. Do two
+        # short attempts so a flaky request still fits the production budget.
+        import time as _time
+        response = None
+        last_err = None
+        for attempt in range(2):
+            try:
+                response = requests.get(
+                    uri, headers=headers, timeout=15, verify=False,
+                )
+                response.raise_for_status()
+                break
+            except requests.exceptions.RequestException as e:
+                last_err = e
+                response = None
+                if attempt == 0:
+                    _time.sleep(2)
+        if response is None:
+            raise last_err  # type: ignore[misc]
         soup = BeautifulSoup(response.content, features="html.parser")
         data = {"bins": []}
 
