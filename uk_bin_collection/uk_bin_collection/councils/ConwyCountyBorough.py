@@ -11,9 +11,23 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
-        uri = f"https://www.conwy.gov.uk/Contensis-Forms/erf/collection-result-soap-xmas2025.asp?ilangid=1&uprn={user_uprn}"
+        # The seasonal `-xmas2025` variant has been retired. The evergreen
+        # endpoint is `collection-result-soap.asp`. The council website also
+        # geoblocks datacentre traffic, so callers needing a live request
+        # should route through a residential proxy.
+        uri = (
+            "https://www.conwy.gov.uk/Contensis-Forms/erf/collection-result-soap.asp"
+            f"?ilangid=1&uprn={user_uprn}"
+        )
 
-        response = requests.get(uri)
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                " (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+            )
+        }
+        response = requests.get(uri, headers=headers, timeout=30, verify=False)
+        response.raise_for_status()
         soup = BeautifulSoup(response.content, features="html.parser")
         data = {"bins": []}
 
