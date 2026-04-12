@@ -1,3 +1,4 @@
+from datetime import timedelta
 from xml.etree import ElementTree
 
 from bs4 import BeautifulSoup
@@ -6,115 +7,134 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    baseclass. They can also override some
-    operations with a default implementation.
+    Torridge District Council — SOAP API at collections-torridge.azurewebsites.net.
+
+    Response changed from explicit "Mon 14 Apr" dates to relative phrases
+    ("Tomorrow then every Mon", "Today then every Tue", etc.) plus an embedded
+    calendar table. This parser handles the relative summary lines and falls
+    back to the old explicit date format if it ever reappears.
     """
 
-    def parse_data(self, page, **kwargs) -> dict:
-        """This method makes the request to the council
+    WEEKDAYS = {
+        "mon": 0, "tue": 1, "wed": 2, "thu": 3,
+        "fri": 4, "sat": 5, "sun": 6,
+    }
 
-        Keyword arguments:
-        url -- the url to get the data from
-        """
-        # Set a user agent so we look like a browser ;-)
+    def parse_data(self, page, **kwargs) -> dict:
         user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
-        headers = {"User-Agent": user_agent, "Content-Type": "text/xml"}
+        headers = {
+            "User-Agent": user_agent,
+            "Content-Type": "text/xml; charset=utf-8",
+            "SOAPAction": "http://tempuri2.org/getRoundCalendarForUPRN",
+        }
 
         uprn = kwargs.get("uprn")
-        try:
-            if uprn is None or uprn == "":
-                raise ValueError("Invalid UPRN")
-        except Exception as ex:
-            print(f"Exception encountered: {ex}")
-            print(
-                "Please check the provided UPRN. If this error continues, please first trying setting the "
-                "UPRN manually on line 115 before raising an issue."
-            )
+        if not uprn:
+            raise ValueError("UPRN is required")
 
-        # Make the Request - change the URL - find out your property number
-        # URL
         url = "https://collections-torridge.azurewebsites.net/WebService2.asmx"
-        # Post data
         post_data = (
-            '<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><getRoundCalendarForUPRN xmlns="http://tempuri2.org/"><council>TOR</council><UPRN>'
-            + uprn
-            + "</UPRN><PW>wax01653</PW></getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
+            '<?xml version="1.0" encoding="utf-8"?>'
+            '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+            'xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
+            'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'
+            '<soap:Body><getRoundCalendarForUPRN xmlns="http://tempuri2.org/">'
+            "<council>TOR</council><UPRN>" + str(uprn) + "</UPRN>"
+            "<PW>wax01653</PW>"
+            "</getRoundCalendarForUPRN></soap:Body></soap:Envelope>"
         )
         requests.packages.urllib3.disable_warnings()
-        page = requests.post(url, headers=headers, data=post_data)
+        resp = requests.post(url, headers=headers, data=post_data, verify=False)
 
-        # Remove the soap wrapper
         namespaces = {
             "soap": "http://schemas.xmlsoap.org/soap/envelope/",
             "a": "http://tempuri2.org/",
         }
-        dom = ElementTree.fromstring(page.text)
-        page = dom.find(
+        dom = ElementTree.fromstring(resp.text)
+        result = dom.find(
             "./soap:Body"
             "/a:getRoundCalendarForUPRNResponse"
             "/a:getRoundCalendarForUPRNResult",
             namespaces,
         )
-        # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
+        inner_html = result.text if result is not None else ""
 
+        soup = BeautifulSoup(inner_html, features="html.parser")
         data = {"bins": []}
 
-        b_el = soup.find("b", string="GardenBin")
-        if b_el:
-            results = re.search(
-                "([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1]
-            )
-            if results and results.groups()[0]:
-                date = results.groups()[0] + " " + datetime.today().strftime("%Y")
-                data["bins"].append(
-                    {
-                        "type": "GardenBin",
-                        "collectionDate": get_next_occurrence_from_day_month(
-                            datetime.strptime(date, "%a %d %b %Y")
-                        ).strftime(date_format),
-                    }
-                )
+        today = datetime.today().date()
 
-        b_el = soup.find("b", string="Refuse")
-        if b_el:
-            results = re.search(
-                "([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1]
-            )
-            if results and results.groups()[0]:
-                date = results.groups()[0] + " " + datetime.today().strftime("%Y")
-                data["bins"].append(
-                    {
-                        "type": "Refuse",
-                        "collectionDate": get_next_occurrence_from_day_month(
-                            datetime.strptime(date, "%a %d %b %Y")
-                        ).strftime(date_format),
-                    }
-                )
+        for b in soup.find_all(["b", "B"]):
+            bin_type = b.get_text(strip=True)
+            if not bin_type:
+                continue
+            if bin_type.lower().startswith("key"):
+                break
+            if re.match(r"^[A-Za-z]+\s+\d{4}$", bin_type):
+                continue
 
-        b_el = soup.find("b", string="Recycling")
-        if b_el:
-            results = re.search(
-                "([A-Za-z]+ \\d\\d? [A-Za-z]+) (.*?)", b_el.next_sibling.split(": ")[1]
+            nxt = b.next_sibling
+            if not isinstance(nxt, str):
+                continue
+            raw = nxt.strip()
+            if not raw.startswith(":"):
+                continue
+            value = raw.lstrip(":").strip()
+
+            if re.search(r"\bNo\b.*collection", value, re.IGNORECASE):
+                continue
+
+            base_date = self._extract_base_date(value, today)
+            if base_date is None:
+                continue
+
+            data["bins"].append(
+                {
+                    "type": bin_type,
+                    "collectionDate": base_date.strftime(date_format),
+                }
             )
-            if results and results.groups()[0]:
-                date = results.groups()[0] + " " + datetime.today().strftime("%Y")
-                data["bins"].append(
-                    {
-                        "type": "Recycling",
-                        "collectionDate": get_next_occurrence_from_day_month(
-                            datetime.strptime(date, "%a %d %b %Y")
-                        ).strftime(date_format),
-                    }
-                )
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
 
         return data
+
+    def _extract_base_date(self, value, today):
+        vl = value.lower()
+
+        if vl.startswith("today"):
+            return today
+        if vl.startswith("tomorrow"):
+            return today + timedelta(days=1)
+
+        explicit = re.match(
+            r"([A-Za-z]+)\s+(\d{1,2})\s+([A-Za-z]+)", value
+        )
+        if explicit:
+            day_num = explicit.group(2)
+            month = explicit.group(3)
+            for year in (today.year, today.year + 1):
+                try:
+                    parsed = datetime.strptime(
+                        f"{day_num} {month} {year}", "%d %b %Y"
+                    ).date()
+                except ValueError:
+                    continue
+                if parsed >= today:
+                    return parsed
+
+        wm = re.search(
+            r"\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)", value, re.IGNORECASE
+        )
+        if wm:
+            target = self.WEEKDAYS[wm.group(1).lower()]
+            days_ahead = (target - today.weekday()) % 7
+            if days_ahead == 0:
+                days_ahead = 7
+            return today + timedelta(days=days_ahead)
+
+        return None
