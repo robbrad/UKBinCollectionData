@@ -20,7 +20,23 @@ class CouncilClass(AbstractGetBinDataClass):
 
         api_url = f"https://api.medway.gov.uk/api/waste/getwasteday/{user_uprn}"
 
-        response = requests.get(api_url, verify=False)
+        # api.medway.gov.uk occasionally times out the first connection
+        # attempt but responds fine on retry. Do two short attempts rather
+        # than one long one so a flaky request still fits the production
+        # subprocess budget.
+        import time as _time
+        response = None
+        last_err = None
+        for attempt in range(2):
+            try:
+                response = requests.get(api_url, verify=False, timeout=15)
+                break
+            except requests.exceptions.RequestException as e:
+                last_err = e
+                if attempt == 0:
+                    _time.sleep(1)
+        if response is None:
+            raise last_err  # type: ignore[misc]
 
         data = {"bins": []}
 

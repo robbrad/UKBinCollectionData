@@ -17,7 +17,10 @@ class CouncilClass(AbstractGetBinDataClass):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
         }
-        response = requests.get(api_url, headers=headers)
+        # Explicit timeout so a slow council server fails fast instead of
+        # hanging the full production subprocess budget.
+        response = requests.get(api_url, headers=headers, timeout=30)
+        response.raise_for_status()
 
         soup = BeautifulSoup(response.text, features="html.parser")
 
