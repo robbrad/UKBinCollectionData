@@ -1,178 +1,152 @@
-from urllib.parse import quote, urljoin
+import time
+from datetime import datetime
 
-from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Midlothian Council — Granicus / MyMidlothian self-service portal.
+
+    The bin collection service is now a "fillform" iframe at
+    my.midlothian.gov.uk. Typing a postcode auto-populates the
+    #listAddress dropdown, and selecting an address auto-fills the
+    per-bin date fields (dateCard, dateFood, dateGarden, dateGlass,
+    dateRecycling, dateResidual). No submit step needed.
     """
 
-    BASE_URL = "https://www.midlothian.gov.uk"
-    DIRECTORY_URL = f"{BASE_URL}/site/scripts/directory_search.php?directoryID=35&keywords={{}}&search=Search"
-    BIN_TYPES = {
-        "Next recycling collection": "Recycling",
-        "Next grey bin collection": "Grey Bin",
-        "Next brown bin collection": "Brown Bin",
-        "Next food bin collection": "Food Bin",
-    }
-    HEADERS = {
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Accept-Language": "en-GB,en;q=0.9",
-        "Connection": "keep-alive",
-        "Host": "www.midlothian.gov.uk",
-        "Referer": "https://www.midlothian.gov.uk/info/200284/bins_and_recycling",
-        "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+    START_URL = "https://my.midlothian.gov.uk/service/Bin_Collection_Dates"
+    IFRAME_ID = "fillform-frame-1"
+
+    # Field id -> human-readable bin type
+    DATE_FIELDS = {
+        "dateResidual": "General waste",
+        "dateRecycling": "Recycling",
+        "dateFood": "Food waste",
+        "dateGarden": "Garden waste",
+        "dateGlass": "Glass",
+        "dateCard": "Cardboard",
     }
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        house_identifier = (kwargs.get("paon") or kwargs.get("number") or "").strip()
+        user_postcode = kwargs.get("postcode")
+        web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
 
-        house_identifier = kwargs.get(
-            "paon", ""
-        ).strip()  # Could be house number or name
-        postcode = kwargs.get("postcode")
-
-        # Check if both house identifier and postcode are provided
         if not house_identifier:
-            print("Error: House identifier (number or name) must be provided.")
-            return {"bins": []}
+            raise ValueError("Midlothian requires a house identifier (-n / --number)")
+        if not user_postcode:
+            raise ValueError("Midlothian requires a postcode (-p / --postcode)")
 
-        if not postcode:
-            print("Error: Postcode must be provided.")
-            return {"bins": []}
+        check_postcode(user_postcode)
 
-        check_postcode(postcode)
-        check_paon(house_identifier)
-
-        data = {"bins": []}
-        search_url = self.DIRECTORY_URL.format(quote(postcode))
-
+        # The fillform iframe blocks headless Chrome AND vanilla Selenium
+        # (the bot-detection scripts check for navigator.webdriver). Use
+        # undetected_chromedriver in non-headless mode via the Xvfb display
+        # available on the VPS.
+        import os
+        driver = None
         try:
-            search_results_html = requests.get(search_url, headers=self.HEADERS)
-            search_results_html.raise_for_status()
+            if os.environ.get("DISPLAY") and web_driver is None:
+                try:
+                    import undetected_chromedriver as uc
+                    uc_opts = uc.ChromeOptions()
+                    uc_opts.add_argument("--no-sandbox")
+                    uc_opts.add_argument("--disable-dev-shm-usage")
+                    uc_opts.add_argument("--window-size=1920,1080")
+                    driver = uc.Chrome(options=uc_opts, version_main=146)
+                except Exception:
+                    driver = None
+            if driver is None:
+                driver = create_webdriver(web_driver, False, None, __name__)
+            driver.get(self.START_URL)
 
-            soup = BeautifulSoup(search_results_html.text, "html.parser")
-            address_link = self._get_result_by_identifier(soup, house_identifier)
-
-            if address_link:
-                collections_url = urljoin(search_url, address_link["href"])
-                bin_collection_data = self._fetch_bin_collection_data(collections_url)
-
-                if bin_collection_data:
-                    data["bins"].extend(bin_collection_data)
-
-        except requests.RequestException as e:
-            print(f"Warning: Failed to fetch data from {search_url}. Error: {e}")
-
-        return data
-
-    def _get_result_by_identifier(self, soup, identifier: str) -> list:
-        """Extract the result link that matches the given house number or house name."""
-        try:
-            results_list = (
-                soup.find("article", class_="container")
-                .find("h2", text="Search results")
-                .find_next("ul", class_="item-list item-list__rich")
+            iframe = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.ID, self.IFRAME_ID))
             )
+            driver.switch_to.frame(iframe)
 
-            pattern = re.compile(re.escape(identifier.lower()) + r"[ ,]")
-
-            for item in results_list.find_all("li"):
-                address_link = item.find("a")
-                if address_link:
-                    link_text = address_link.text.strip().lower()
-                    if pattern.match(link_text):
-                        return address_link
-
-            try:
-                print("Finding next page link not found.")
-                # Find the 'Next page' link
-                next_page_link = soup.find("a", class_="button float-right")
-
-                # Ensure the link exists
-                if next_page_link:
-                    # Extract the href attribute
-                    next_page_url = next_page_link["href"]
-
-                    # Send a GET request to the next page
-                    next_response = requests.get(next_page_url, headers=self.HEADERS)
-                    next_response.raise_for_status()  # Raise an exception for HTTP errors
-
-                    # Parse the HTML content of the next page
-                    soup = BeautifulSoup(next_response.text, "html.parser")
-                    address_link = self._get_result_by_identifier(soup, identifier)
-                    return address_link
-                else:
-                    print("Next page link not found.")
-            except AttributeError as e:
-                print(f"Warning: Could not find the search results. Error: {e}")
-                return None  # Return None if no result found
-
-            print(f"Warning: No results found for identifier '{identifier}'.")
-            return None  # Return None if no match is found
-
-        except AttributeError as e:
-            print(f"Warning: Could not find the search results. Error: {e}")
-            return None  # Return None if no result found
-
-    def _fetch_bin_collection_data(self, url: str) -> list:
-        """Fetch and parse bin collection data from the given URL."""
-        try:
-            bin_collection_html = requests.get(url, headers=self.HEADERS)
-            bin_collection_html.raise_for_status()
-
-            soup = BeautifulSoup(bin_collection_html.text, "html.parser")
-            bin_collections = soup.find("ul", class_="data-table")
-
-            if bin_collections:
-                return self._parse_bin_collection_items(bin_collections.find_all("li"))
-
-        except requests.RequestException as e:
-            print(
-                f"Warning: Failed to fetch bin collection data from {url}. Error: {e}"
+            postcode_input = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable((By.ID, "postcode"))
             )
+            postcode_input.clear()
+            postcode_input.send_keys(user_postcode)
 
-        return []  # Return an empty list on error
+            def dropdown_populated(d):
+                try:
+                    sel = d.find_element(By.ID, "listAddress")
+                    return len(sel.find_elements(By.TAG_NAME, "option")) > 1
+                except Exception:
+                    return False
 
-    def _parse_bin_collection_items(self, bin_items: list) -> list:
-        """Parse bin collection items into a structured format."""
-        parsed_bins = []
+            WebDriverWait(driver, 30).until(dropdown_populated)
 
-        for bin_item in bin_items:
-            bin_type = None
-            try:
-                if bin_item.h2 and bin_item.h2.text.strip() in self.BIN_TYPES:
-                    bin_type = self.BIN_TYPES[bin_item.h2.text.strip()]
+            select = Select(driver.find_element(By.ID, "listAddress"))
+            target = self._pick_address_option(select, house_identifier)
+            if target is None:
+                raise Exception(
+                    f"Could not find address '{house_identifier}' in options: "
+                    f"{[o.text.strip() for o in select.options]}"
+                )
+            select.select_by_visible_text(target)
 
-                bin_collection_date = None
-                if bin_item.div and bin_item.div.text.strip():
-                    try:
-                        bin_collection_date = datetime.strptime(
-                            bin_item.div.text.strip(), "%A %d/%m/%Y"
-                        ).strftime(date_format)
-                    except ValueError:
-                        print(
-                            f"Warning: Date parsing failed for {bin_item.div.text.strip()}."
-                        )
+            # Give the form time to pull the per-bin dates down.
+            WebDriverWait(driver, 30).until(
+                lambda d: (
+                    d.find_element(By.ID, "dateResidual").get_attribute("value")
+                    or d.find_element(By.ID, "dateRecycling").get_attribute("value")
+                    or d.find_element(By.ID, "dateFood").get_attribute("value")
+                )
+            )
+            time.sleep(1)
 
-                if bin_type and bin_collection_date:
-                    parsed_bins.append(
-                        {
-                            "type": bin_type,
-                            "collectionDate": bin_collection_date,
-                        }
-                    )
-                else:
-                    print(f"Warning: Missing data for bin item: {bin_item}")
+            bins = []
+            for field_id, bin_type in self.DATE_FIELDS.items():
+                try:
+                    value = driver.find_element(By.ID, field_id).get_attribute("value")
+                except Exception:
+                    continue
+                if not value:
+                    continue
+                raw = value.strip()
+                try:
+                    parsed = datetime.strptime(raw, "%d/%m/%Y")
+                except ValueError:
+                    continue
+                bins.append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": parsed.strftime(date_format),
+                    }
+                )
 
-            except Exception as e:
-                print(f"Warning: An error occurred while parsing bin item. Error: {e}")
+            bins.sort(
+                key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+            )
+            return {"bins": bins}
 
-        return parsed_bins
+        finally:
+            if driver:
+                driver.quit()
+
+    @staticmethod
+    def _pick_address_option(select, house_identifier):
+        target = house_identifier.upper().strip()
+        for opt in select.options:
+            text = opt.text.strip()
+            if not text or text.lower().startswith("select"):
+                continue
+            up = text.upper()
+            if up.startswith(f"{target} ") or up.startswith(f"{target},"):
+                return text
+        for opt in select.options:
+            text = opt.text.strip()
+            if target in text.upper():
+                return text
+        return None
