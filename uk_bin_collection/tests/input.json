@@ -2256,10 +2256,10 @@
         "LAD24CD": "E07000126"
     },
     "SouthStaffordshireDistrictCouncil": {
-        "uprn": "200004523954",
-        "url": "https://www.sstaffs.gov.uk/where-i-live?uprn=200004523954",
+        "uprn": "100031802117",
+        "url": "https://www.sstaffs.gov.uk/where-i-live?objectId=100031802117",
         "wiki_name": "South Staffordshire",
-        "wiki_note": "The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?uprn=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN.",
+        "wiki_note": "The URL needs to be `https://www.sstaffs.gov.uk/where-i-live?objectId=<Your_UPRN>`. Replace `<Your_UPRN>` with your UPRN. The previous `?uprn=` parameter is a deprecated placeholder that returns the van-collection fallback message.",
         "LAD24CD": "E07000196"
     },
     "SouthTynesideCouncil": {
