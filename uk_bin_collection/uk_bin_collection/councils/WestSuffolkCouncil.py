@@ -15,7 +15,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
         api_url = f"https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx?action=SetAddress&UniqueId={user_uprn}"
 
-        response = requests.get(api_url)
+        headers = requests.utils.default_headers()
+        headers.update(
+            {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            }
+        )
+
+        response = requests.get(api_url, headers=headers)
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
