@@ -93,45 +93,73 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the address selection page to load
             time.sleep(3)
 
-            # Wait for the address dropdown/selection to be available
-            WebDriverWait(driver, 10).until(
+            # Wait for the address dropdown/selection to be available.
+            # 2026 form renames ADDRESSSELECTION → ADDRESSUPRN; keep the older
+            # pattern as a fallback in case the council re-renames it again.
+            WebDriverWait(driver, 15).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//select[contains(@id, 'ADDRESSSELECTION')] | //div[contains(@id, 'chosen')]")
+                    (By.XPATH,
+                     "//select[contains(@id, 'ADDRESSUPRN') or contains(@id, 'ADDRESSSELECTION')]"
+                     " | //div[contains(@id, 'ADDRESSUPRN_chosen') or contains(@id, 'ADDRESSSELECTION_chosen') or contains(@class, 'chosen-container')]")
                 )
             )
 
-            # Try to find and select the address
-            # Check if it's a standard select or a chosen dropdown
-            try:
-                # Try standard select first
-                address_select = driver.find_element(
-                    By.XPATH, "//select[contains(@id, 'ADDRESSSELECTION')]"
-                )
-                # Find the option containing the user's PAON
-                option = driver.find_element(
-                    By.XPATH,
-                    f"//select[contains(@id, 'ADDRESSSELECTION')]//option[contains(text(), '{user_paon}')]"
-                )
-                option.click()
-            except NoSuchElementException:
-                # Try chosen dropdown
-                dropdown = driver.find_element(
-                    By.XPATH, "//div[contains(@id, 'chosen')]"
-                )
-                dropdown.click()
+            # The underlying <select> is hidden by chosen.js, so drive the
+            # chosen widget directly. Select the matching option via JS on the
+            # native select and let chosen re-render.
+            dropdown_containers = driver.find_elements(
+                By.XPATH,
+                "//div[contains(@id, 'ADDRESSUPRN_chosen') or contains(@id, 'ADDRESSSELECTION_chosen')]"
+                " | //div[contains(@class, 'chosen-container')]"
+            )
+            if dropdown_containers:
+                dropdown = dropdown_containers[0]
+                driver.execute_script("arguments[0].scrollIntoView({block:'center'});", dropdown)
+                try:
+                    dropdown.click()
+                except ElementClickInterceptedException:
+                    driver.execute_script("arguments[0].click();", dropdown)
                 time.sleep(1)
-                
-                # Wait for options to be visible
+
+                # Type into the chosen search input to filter
+                try:
+                    search_input = driver.find_element(
+                        By.XPATH,
+                        "//div[contains(@class, 'chosen-container')]//input[contains(@class, 'chosen-search-input') or @type='text']"
+                    )
+                    search_input.clear()
+                    search_input.send_keys(user_paon)
+                    time.sleep(1)
+                except NoSuchElementException:
+                    pass
+
                 WebDriverWait(driver, 10).until(
                     EC.visibility_of_element_located((By.CLASS_NAME, "chosen-results"))
                 )
-                
-                # Find and click the desired option
-                desired_option = driver.find_element(
-                    By.XPATH,
-                    f"//li[@class='active-result' and contains(text(), '{user_paon}')]"
+
+                desired_option = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((
+                        By.XPATH,
+                        f"//li[contains(@class, 'active-result') and contains(., '{user_paon}')]"
+                    ))
                 )
                 desired_option.click()
+            else:
+                # Fallback: set select.value via JS and dispatch change so chosen picks it up
+                driver.execute_script(
+                    """
+                    const sel = document.querySelector("select[id*='ADDRESSUPRN'], select[id*='ADDRESSSELECTION']");
+                    if (!sel) throw new Error('no address select found');
+                    const needle = arguments[0];
+                    const match = Array.from(sel.options).find(o => o.textContent.includes(needle));
+                    if (!match) throw new Error('no option matched: ' + needle);
+                    sel.value = match.value;
+                    sel.dispatchEvent(new Event('change', {bubbles: true}));
+                    if (window.jQuery) window.jQuery(sel).trigger('chosen:updated');
+                    """,
+                    user_paon,
+                )
+                time.sleep(1)
 
             # Click the next button to proceed
             next_button = WebDriverWait(driver, 10).until(
