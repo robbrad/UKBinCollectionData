@@ -78,7 +78,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 }
             },
         }
-        standard_rows = run_lookup(STANDARD_LOOKUP_ID, standard_data)
+
+        standard_rows = {}
+        standard_error = None
+        try:
+            standard_rows = run_lookup(STANDARD_LOOKUP_ID, standard_data)
+        except (requests.RequestException, ValueError) as exc:
+            standard_error = exc
 
         collective_key_data = {
             "stopOnFailure": True,
@@ -112,49 +118,55 @@ class CouncilClass(AbstractGetBinDataClass):
             "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
         }
 
-        key_rows = run_lookup(COLLECTIVE_KEY_LOOKUP_ID, collective_key_data)
+        collective_rows = {}
+        collective_error = None
 
-        collective_key = None
-        for row in key_rows.values():
-            if isinstance(row, dict) and row.get("collectiveKey"):
-                collective_key = row["collectiveKey"]
-                break
+        try:
+            key_rows = run_lookup(COLLECTIVE_KEY_LOOKUP_ID, collective_key_data)
 
-        if not collective_key:
-            raise ValueError(
-                f"Plymouth collective key lookup returned no collectiveKey: {key_rows}"
-            )
+            collective_key = None
+            for row in key_rows.values():
+                if isinstance(row, dict) and row.get("collectiveKey"):
+                    collective_key = row["collectiveKey"]
+                    break
 
-        collective_data = {
-            "stopOnFailure": True,
-            "usePHPIntegrations": True,
-            "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
-            "stage_name": "Check Bin Day",
-            "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
-            "formValues": {
-                "Section 1": {
-                    "request_type": {"value": "GARDEN"},
-                    "addressDetails": {
-                        "value": {
-                            "Section 1": {
-                                "ChooseAddress": {"value": str(user_uprn)}
+            if not collective_key:
+                raise ValueError(
+                    f"Plymouth collective key lookup returned no collectiveKey: {key_rows}"
+                )
+
+            collective_data = {
+                "stopOnFailure": True,
+                "usePHPIntegrations": True,
+                "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
+                "stage_name": "Check Bin Day",
+                "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
+                "formValues": {
+                    "Section 1": {
+                        "request_type": {"value": "GARDEN"},
+                        "addressDetails": {
+                            "value": {
+                                "Section 1": {
+                                    "ChooseAddress": {"value": str(user_uprn)}
+                                }
                             }
-                        }
-                    },
-                    "number1": {"value": str(user_uprn)},
-                    "UPRN": {"value": str(user_uprn)},
-                    "collectiveKey": {"value": collective_key},
-                    "collectiveUPRN": {"value": str(user_uprn)},
-                    "collectiveGetJobStartDate": {"value": start_date},
-                    "collectiveGetJobEndDate": {"value": end_date},
-                }
-            },
-            "isPublished": True,
-            "formName": "Waste - Check your bin day",
-            "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
-        }
+                        },
+                        "number1": {"value": str(user_uprn)},
+                        "UPRN": {"value": str(user_uprn)},
+                        "collectiveKey": {"value": collective_key},
+                        "collectiveUPRN": {"value": str(user_uprn)},
+                        "collectiveGetJobStartDate": {"value": start_date},
+                        "collectiveGetJobEndDate": {"value": end_date},
+                    }
+                },
+                "isPublished": True,
+                "formName": "Waste - Check your bin day",
+                "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
+            }
 
-        collective_rows = run_lookup(COLLECTIVE_JOBS_LOOKUP_ID, collective_data)
+            collective_rows = run_lookup(COLLECTIVE_JOBS_LOOKUP_ID, collective_data)
+        except (requests.RequestException, ValueError) as exc:
+            collective_error = exc
 
         bin_type_dict = {
             "DO": "Brown Domestic Bin",
@@ -203,6 +215,19 @@ class CouncilClass(AbstractGetBinDataClass):
                 bindata["bins"].append(
                     {"type": bin_type, "collectionDate": collection_date}
                 )
+
+        if not standard_rows and not collective_rows:
+            if standard_error and collective_error:
+                raise ValueError(
+                    f"Plymouth standard and collective lookups both failed. "
+                    f"Standard error: {standard_error}. "
+                    f"Collective error: {collective_error}"
+                )
+            if standard_error:
+                raise ValueError(f"Plymouth standard lookup failed: {standard_error}")
+            if collective_error:
+                raise ValueError(f"Plymouth collective lookup failed: {collective_error}")
+            raise ValueError("Plymouth lookups returned no collection rows")
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
