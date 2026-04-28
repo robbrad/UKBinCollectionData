@@ -22,6 +22,7 @@ STANDARD_LOOKUP_ID = "5c99439d85f83"
 COLLECTIVE_KEY_LOOKUP_ID = "6936e38f6d376"
 COLLECTIVE_JOBS_LOOKUP_ID = "698b9c49a3c13"
 LOOKAHEAD_DAYS = 24
+REQUEST_TIMEOUT = 30
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -31,9 +32,20 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata = {"bins": []}
 
         s = requests.session()
-        r = s.get(SESSION_URL)
+        r = s.get(SESSION_URL, timeout=REQUEST_TIMEOUT)
         r.raise_for_status()
-        sid = r.json()["auth-session"]
+        session_data = r.json()
+
+        if not isinstance(session_data, dict):
+            raise ValueError(
+                f"Plymouth session lookup returned invalid JSON structure: {session_data}"
+            )
+
+        sid = session_data.get("auth-session")
+        if not sid:
+            raise ValueError(
+                f"Plymouth session lookup returned no auth-session: {session_data}"
+            )
 
         def run_lookup(lookup_id: str, data: dict) -> dict:
             params = {
@@ -46,14 +58,37 @@ class CouncilClass(AbstractGetBinDataClass):
                 "_": str(int(time.time() * 1000)),
                 "sid": sid,
             }
-            r = s.post(API_URL, json=data, headers=HEADERS, params=params)
+            r = s.post(
+                API_URL,
+                json=data,
+                headers=HEADERS,
+                params=params,
+                timeout=REQUEST_TIMEOUT,
+            )
             r.raise_for_status()
             response_data = r.json()
 
-            transformed = response_data.get("integration", {}).get("transformed")
+            if not isinstance(response_data, dict):
+                raise ValueError(
+                    f"Plymouth lookup {lookup_id} returned invalid JSON structure: {response_data}"
+                )
+
+            integration = response_data.get("integration")
+            if integration is None:
+                integration = {}
+            elif not isinstance(integration, dict):
+                raise ValueError(
+                    f"Plymouth lookup {lookup_id} returned invalid integration structure: {response_data}"
+                )
+
+            transformed = integration.get("transformed")
             if transformed is None:
                 raise ValueError(
                     f"Plymouth lookup {lookup_id} returned no transformed data: {response_data}"
+                )
+            if not isinstance(transformed, dict):
+                raise ValueError(
+                    f"Plymouth lookup {lookup_id} returned invalid transformed structure: {response_data}"
                 )
 
             rows_data = transformed.get("rows_data")
