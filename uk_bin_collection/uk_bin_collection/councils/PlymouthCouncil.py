@@ -112,44 +112,49 @@ class CouncilClass(AbstractGetBinDataClass):
             "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
         }
 
-        collective_rows = {}
-        try:
-            key_rows = run_lookup(COLLECTIVE_KEY_LOOKUP_ID, collective_key_data)
-            collective_key = key_rows.get("0", {}).get("collectiveKey")
+        key_rows = run_lookup(COLLECTIVE_KEY_LOOKUP_ID, collective_key_data)
 
-            if collective_key:
-                collective_data = {
-                    "stopOnFailure": True,
-                    "usePHPIntegrations": True,
-                    "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
-                    "stage_name": "Check Bin Day",
-                    "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
-                    "formValues": {
-                        "Section 1": {
-                            "request_type": {"value": "GARDEN"},
-                            "addressDetails": {
-                                "value": {
-                                    "Section 1": {
-                                        "ChooseAddress": {"value": str(user_uprn)}
-                                    }
-                                }
-                            },
-                            "number1": {"value": str(user_uprn)},
-                            "UPRN": {"value": str(user_uprn)},
-                            "collectiveKey": {"value": collective_key},
-                            "collectiveUPRN": {"value": str(user_uprn)},
-                            "collectiveGetJobStartDate": {"value": start_date},
-                            "collectiveGetJobEndDate": {"value": end_date},
+        collective_key = None
+        for row in key_rows.values():
+            if isinstance(row, dict) and row.get("collectiveKey"):
+                collective_key = row["collectiveKey"]
+                break
+
+        if not collective_key:
+            raise ValueError(
+                f"Plymouth collective key lookup returned no collectiveKey: {key_rows}"
+            )
+
+        collective_data = {
+            "stopOnFailure": True,
+            "usePHPIntegrations": True,
+            "stage_id": "AF-Stagedba4a7d5-e916-46b6-abdb-643d38bec875",
+            "stage_name": "Check Bin Day",
+            "formId": "AF-Form-b8823128-0c85-47e1-b344-4fc81480edd0",
+            "formValues": {
+                "Section 1": {
+                    "request_type": {"value": "GARDEN"},
+                    "addressDetails": {
+                        "value": {
+                            "Section 1": {
+                                "ChooseAddress": {"value": str(user_uprn)}
+                            }
                         }
                     },
-                    "isPublished": True,
-                    "formName": "Waste - Check your bin day",
-                    "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
+                    "number1": {"value": str(user_uprn)},
+                    "UPRN": {"value": str(user_uprn)},
+                    "collectiveKey": {"value": collective_key},
+                    "collectiveUPRN": {"value": str(user_uprn)},
+                    "collectiveGetJobStartDate": {"value": start_date},
+                    "collectiveGetJobEndDate": {"value": end_date},
                 }
+            },
+            "isPublished": True,
+            "formName": "Waste - Check your bin day",
+            "processId": "AF-Process-31283f9a-3ae7-4225-af71-bf3884e0ac1b",
+        }
 
-                collective_rows = run_lookup(COLLECTIVE_JOBS_LOOKUP_ID, collective_data)
-        except Exception:
-            collective_rows = {}
+        collective_rows = run_lookup(COLLECTIVE_JOBS_LOOKUP_ID, collective_data)
 
         bin_type_dict = {
             "DO": "Brown Domestic Bin",
@@ -181,12 +186,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
             if "garden" in waste_type:
                 bin_type = "Garden Waste Bin"
+            elif "food waste" in waste_type or "food" in waste_type:
+                bin_type = "Food Waste Bin"
             elif "recycling" in waste_type or "recycl" in waste_type:
                 bin_type = "Green Recycling Bin"
             elif "residual" in waste_type or "general" in waste_type:
                 bin_type = "Brown Domestic Bin"
             else:
-                continue
+                raise ValueError(
+                    f"Unexpected Plymouth collectiveWasteType '{waste_type}' in row: {row}"
+                )
 
             key = (bin_type, collection_date)
             if key not in seen:
