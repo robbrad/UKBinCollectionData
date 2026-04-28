@@ -88,9 +88,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
             data = {"bins": []}
 
-            current_year = datetime.now().year
-            next_year = current_year + 1
-
             next_collection_date = soup.find(
                 "strong", id="SBC-YBD-collectionDate"
             ).text.strip()
@@ -111,12 +108,7 @@ class CouncilClass(AbstractGetBinDataClass):
             future_bins = [li.text.strip() for li in soup.select("#FirstFutureBins li")]
 
             for bin in next_bins:
-                collection_date = datetime.strptime(next_collection_date, "%A, %d %B")
-                if (datetime.now().month == 12) and (collection_date.month == 1):
-                    collection_date = collection_date.replace(year=next_year)
-                else:
-                    collection_date = collection_date.replace(year=current_year)
-
+                collection_date = parse_collection_date(next_collection_date)
                 dict_data = {
                     "type": bin,
                     "collectionDate": collection_date.strftime(date_format),
@@ -124,11 +116,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 data["bins"].append(dict_data)
 
             for bin in future_bins:
-                collection_date = datetime.strptime(future_collection_date, "%A, %d %B")
-                if (datetime.now().month == 12) and (collection_date.month == 1):
-                    collection_date = collection_date.replace(year=next_year)
-                else:
-                    collection_date = collection_date.replace(year=current_year)
+                collection_date = parse_collection_date(future_collection_date)
                 dict_data = {
                     "type": bin,
                     "collectionDate": collection_date.strftime(date_format),
