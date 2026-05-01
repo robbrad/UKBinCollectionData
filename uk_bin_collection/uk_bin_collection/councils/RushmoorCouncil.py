@@ -15,23 +15,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
-        """
-        Fetches bin collection schedules for a council address identified by an uprn and returns the collections ordered by date.
-        
-        This method validates the provided UPRN, requests the council's bin lookup API for the address, extracts upcoming collection entries, and returns them as a dictionary containing a "bins" list ordered by collection date.
-        
-        Parameters:
-            page (str): Unused parameter kept for API compatibility.
-            uprn (str, in kwargs): Unique Property Reference Number used to look up the address; must be a valid UPRN.
-        
-        Returns:
-            dict: A dictionary with a single key "bins" whose value is a list of dictionaries. Each item has:
-                - "type" (str): Human-readable bin type, optionally including an exception message in parentheses.
-                - "collectionDate" (str): Collection date formatted according to the module's date_format.
-        
-        Raises:
-            ValueError: If no upcoming collections are found for the provided UPRN.
-        """
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
@@ -48,16 +31,22 @@ class CouncilClass(AbstractGetBinDataClass):
             params=params,
             headers=headers,
         )
-        # Make a BS4 object
-        soup = BeautifulSoup(response.text, features="lxml")
-        soup.prettify()
+
+        # The API now returns raw JSON instead of HTML-wrapped JSON.
+        # Try parsing as raw JSON first, fall back to HTML extraction.
+        try:
+            json_result = response.json()
+        except (json.JSONDecodeError, ValueError):
+            # Fall back to HTML-wrapped JSON (legacy format)
+            soup = BeautifulSoup(response.text, features="lxml")
+            soup.prettify()
+            result = soup.find("p").contents[0]
+            json_result = json.loads(result)
+
         data = {"bins": []}
         collections = []
 
-        # Convert the XML to JSON and load the next collection data
-        result = soup.find("p").contents[0]
-
-        json_data = json.loads(result)["NextCollection"]
+        json_data = json_result["NextCollection"]
 
         # Get general waste data
         if json_data.get("RefuseCollectionBinDate") is not None:
