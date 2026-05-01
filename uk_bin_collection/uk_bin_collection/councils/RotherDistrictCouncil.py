@@ -65,6 +65,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 else:
                     date = None
 
+                if not date or "no data" in date.lower():
+                    continue
+
                 date = datetime.strptime(
                     remove_ordinal_indicator_from_date_string(date),
                     "%A %d %B",

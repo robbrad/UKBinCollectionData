@@ -15,10 +15,13 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
         check_uprn(user_uprn)
 
-        # Bot Request: Respect skip_get_url flag for offline pytest runs
-        if kwargs.get("skip_get_url", False):
-            page = kwargs.get("page", "")
-            return self.parse_data(page, **kwargs)
+        # Only short-circuit when an offline pytest run explicitly passes a
+        # pre-fetched page. The CLI/production paths pass skip_get_url=True
+        # to disable the framework's own GET (Chorley does its own multi-step
+        # flow below), but still expect the scraper to perform network calls.
+        offline_page = kwargs.get("page")
+        if kwargs.get("skip_get_url", False) and offline_page:
+            return self.parse_data(offline_page, **kwargs)
 
         session = requests.Session()
         session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"})

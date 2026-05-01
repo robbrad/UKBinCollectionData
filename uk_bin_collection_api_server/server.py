@@ -4,7 +4,7 @@ import connexion
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
 import logging
 import traceback
-
+import json
 
 def council_data(
     council,
@@ -35,7 +35,8 @@ def council_data(
     try:
         CollectData = UKBinCollectionApp()
         CollectData.set_args(args)
-        return CollectData.run()
+        raw_string_output = CollectData.run()
+        return json.loads(raw_string_output)
     except Exception as err:
         logging.error(traceback.format_exc())
         logging.info(f"Schema: {err}")

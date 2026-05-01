@@ -30,14 +30,18 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get("https://beta.npt.gov.uk/bins-and-recycling/bin-day-finder/")
 
             # Accept cookies banner
-            cookieAccept = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "ccc-notify-accept"))
-            )
-            cookieAccept.click()
+            try:
+                cookieAccept = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, "ccc-notify-accept"))
+                )
+                driver.execute_script("arguments[0].click();", cookieAccept)
+            except Exception:
+                pass
 
             # Populate postcode field
             inputElement_postcode = WebDriverWait(driver, 10).until(
@@ -59,7 +63,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
                 )
             )
-            findAddress.click()
+            driver.execute_script("arguments[0].click();", findAddress)
 
             # Wait for the 'Select address' dropdown to appear and select option matching UPRN
             dropdown = WebDriverWait(driver, 10).until(
@@ -91,7 +95,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
                 )
             )
-            submit.click()
+            driver.execute_script("arguments[0].click();", submit)
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 

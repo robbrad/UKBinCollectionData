@@ -1,4 +1,5 @@
 import time
+from xml.etree import ElementTree as ET
 
 import requests
 from dateutil.relativedelta import relativedelta
@@ -7,7 +8,6 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -16,7 +16,6 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Make a BS4 object
         uprn = kwargs.get("uprn")
         usrn = kwargs.get("paon")
         check_uprn(uprn)
@@ -77,7 +76,6 @@ class CouncilClass(AbstractGetBinDataClass):
             "getOnlyTokens": "undefined",
             "log_id": "",
             "app_name": "AF-Renderer::Self",
-            # unix_timestamp
             "_": str(int(time.time() * 1000)),
             "sid": sid,
         }
@@ -86,27 +84,69 @@ class CouncilClass(AbstractGetBinDataClass):
         r.raise_for_status()
 
         data = r.json()
-        rows_data = data["integration"]["transformed"]["rows_data"]["0"]
-        if not isinstance(rows_data, dict):
-            raise ValueError("Invalid data returned from API")
 
-        # Extract each service's relevant details for the bin schedule
-        for key, value in rows_data.items():
-            if key.endswith("DateNext"):
-                BinType = key.replace("DateNext", "Service")
-                for key2, value2 in rows_data.items():
-                    if key2 == BinType:
-                        BinType = value2
-                next_collection = datetime.strptime(value, "%A %d %B").replace(
-                    year=datetime.now().year
-                )
-                if datetime.now().month == 12 and next_collection.month == 1:
-                    next_collection = next_collection + relativedelta(years=1)
+        # The API may return data in two formats:
+        # 1. Legacy JSON: integration.transformed.rows_data
+        # 2. Current XML: integration.transformed.xml_data
+        rows_data = None
+        xml_data = None
 
-                dict_data = {
-                    "type": BinType,
-                    "collectionDate": next_collection.strftime(date_format),
-                }
-                bindata["bins"].append(dict_data)
+        integration = data.get("integration", {})
+        transformed = integration.get("transformed", {}) if integration else {}
+
+        if transformed:
+            rows_data_raw = transformed.get("rows_data")
+            rows_data = rows_data_raw.get("0") if isinstance(rows_data_raw, dict) else None
+            xml_data = transformed.get("xml_data")
+
+        # Try legacy JSON rows_data format first
+        if rows_data and isinstance(rows_data, dict):
+            for key, value in rows_data.items():
+                if key.endswith("DateNext") and value:
+                    BinType = key.replace("DateNext", "Service")
+                    for key2, value2 in rows_data.items():
+                        if key2 == BinType:
+                            BinType = value2
+                    next_collection = datetime.strptime(value, "%A %d %B").replace(
+                        year=datetime.now().year
+                    )
+                    if datetime.now().month == 12 and next_collection.month == 1:
+                        next_collection = next_collection + relativedelta(years=1)
+                    bindata["bins"].append({
+                        "type": BinType,
+                        "collectionDate": next_collection.strftime(date_format),
+                    })
+
+        # Try XML format if rows_data didn't yield results
+        if not bindata["bins"] and xml_data:
+            try:
+                root = ET.fromstring(xml_data)
+                fields = root.findall(".//Field")
+                field_names = [f.get("Name") for f in fields]
+                rows = root.findall(".//Row")
+                for row in rows:
+                    values = [c.text or "" for c in row]
+                    row_dict = dict(zip(field_names, values))
+
+                    for key, value in row_dict.items():
+                        if key.endswith("DateNext") and value.strip():
+                            service_key = key.replace("DateNext", "Service")
+                            bin_type = row_dict.get(service_key, key.replace("DateNext", ""))
+                            if not bin_type:
+                                bin_type = key.replace("DateNext", "")
+                            next_collection = datetime.strptime(value.strip(), "%A %d %B").replace(
+                                year=datetime.now().year
+                            )
+                            if datetime.now().month == 12 and next_collection.month == 1:
+                                next_collection = next_collection + relativedelta(years=1)
+                            bindata["bins"].append({
+                                "type": bin_type,
+                                "collectionDate": next_collection.strftime(date_format),
+                            })
+            except ET.ParseError as e:
+                raise ValueError(f"Failed to parse XML response: {e}")
+
+        if not bindata["bins"]:
+            raise ValueError("No valid collection dates found in API response")
 
         return bindata

@@ -31,7 +31,8 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             check_postcode(user_postcode)
 
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
 
             driver.get(url)
 
@@ -105,7 +106,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 try:
                     # Parse the date text
-                    date_obj = datetime.strptime(date_text + " 2025", "%A %d %B %Y")
+                    date_obj = datetime.strptime(date_text + " " + str(datetime.today().year), "%A %d %B %Y")
                     if date_obj.date() < datetime.today().date():
                         continue  # Skip past dates
                 except ValueError:

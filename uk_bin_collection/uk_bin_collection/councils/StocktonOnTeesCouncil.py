@@ -32,15 +32,29 @@ class CouncilClass(AbstractGetBinDataClass):
             check_postcode(user_postcode)
 
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get("https://www.stockton.gov.uk/bin-collection-days")
+
+            # Dismiss cookie consent banner (clicks get intercepted otherwise)
+            try:
+                time.sleep(2)
+                cookie_btn = driver.find_element(
+                    By.XPATH,
+                    "//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',"
+                    "'abcdefghijklmnopqrstuvwxyz'),'accept')]",
+                )
+                driver.execute_script("arguments[0].click();", cookie_btn)
+                time.sleep(1)
+            except Exception:
+                pass
 
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
                     (
                         By.ID,
-                        "LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_ADDRESSLOOKUPPOSTCODE",
+                        "LOOKUPBINDATESBYADDRESSSKIPOUTOFREGIONV2_ADDRESSLOOKUPPOSTCODE",
                     )
                 )
             )
@@ -51,7 +65,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.presence_of_element_located(
                     (
                         By.ID,
-                        "LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_ADDRESSLOOKUPSEARCH",
+                        "LOOKUPBINDATESBYADDRESSSKIPOUTOFREGIONV2_ADDRESSLOOKUPSEARCH",
                     )
                 )
             )
@@ -62,7 +76,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     (
                         By.XPATH,
                         ""
-                        "//*[@id='LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_ADDRESSLOOKUPADDRESS']//option[contains(., '"
+                        "//*[@id='LOOKUPBINDATESBYADDRESSSKIPOUTOFREGIONV2_ADDRESSLOOKUPADDRESS']//option[contains(., '"
                         + user_paon
                         + "')]",
                     )
@@ -74,7 +88,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
-                        '//*[@id="LOOKUPBINDATESBYADDRESSSKIPOUTOFREGION_COLLECTIONDETAILS2"]/div',
+                        '//*[@id="LOOKUPBINDATESBYADDRESSSKIPOUTOFREGIONV2_COLLECTIONDETAILS2"]/div',
                     )
                 )
             )

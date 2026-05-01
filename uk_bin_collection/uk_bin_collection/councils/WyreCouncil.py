@@ -48,21 +48,28 @@ class CouncilClass(AbstractGetBinDataClass):
         bins = soup.find_all("div", {"class": "boxed"})
 
         for item in bins:
-            collection_title = " ".join(
-                item.find("h3", {"class": "bin-collection-tasks__heading"}).text.split(
-                    " "
-                )[2:4]
+            heading = item.find("h3", {"class": "bin-collection-tasks__heading"})
+            content = item.find("div", {"class": "bin-collection-tasks__content"})
+            if not heading or not content:
+                continue
+
+            heading_text = " ".join(heading.get_text(" ", strip=True).split())
+            title_match = re.search(
+                r"Your next\s+(.+?)\s+collection", heading_text, re.IGNORECASE
             )
-            collection_date = datetime.strptime(
-                remove_ordinal_indicator_from_date_string(
-                    item.find("div", {"class": "bin-collection-tasks__content"})
-                    .text.strip()
-                    .replace("\n", " ")
-                ),
-                "%A %d %B",
-            )
+            if not title_match:
+                continue
+            collection_title = title_match.group(1).strip()
+
+            date_text = " ".join(content.get_text(" ", strip=True).split())
+            date_text = remove_ordinal_indicator_from_date_string(date_text)
+            try:
+                collection_date = datetime.strptime(date_text, "%A %d %B")
+            except ValueError:
+                continue
+
             next_collection = collection_date.replace(year=datetime.now().year)
-            if datetime.now().month == 12 and next_collection.month == 1:
+            if next_collection.date() < datetime.now().date():
                 next_collection = next_collection + relativedelta(years=1)
             collections.append((collection_title, next_collection))
 

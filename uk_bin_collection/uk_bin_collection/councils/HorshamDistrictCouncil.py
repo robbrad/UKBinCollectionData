@@ -33,7 +33,8 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             check_postcode(user_postcode)
             # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(page)
 
             # Accept cookies
@@ -53,7 +54,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             postcode_input = WebDriverWait(driver, timeout=15).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//input[@value='Enter your postcode']")
+                    (By.ID, "Text1")
                 )
             )
 
@@ -61,7 +62,7 @@ class CouncilClass(AbstractGetBinDataClass):
             search_btn = WebDriverWait(driver, timeout=15).until(
                 EC.presence_of_element_located((By.ID, "Submit1"))
             )
-            search_btn.click()
+            driver.execute_script("arguments[0].click();", search_btn)
 
             address_results = Select(
                 WebDriverWait(driver, timeout=15).until(

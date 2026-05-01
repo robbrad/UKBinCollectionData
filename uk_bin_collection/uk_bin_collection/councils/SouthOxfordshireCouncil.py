@@ -18,10 +18,6 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
 
         # UPRN is passed in via a cookie. Set cookies/params and GET the page
-        cookies = {
-            # 'JSESSIONID': '96F2A15C14569B2ED2BBEB140FE86532',
-            "SVBINZONE": f"SOUTH%3AUPRN%40{user_uprn}",
-        }
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "Accept-Language": "en-GB,en;q=0.7",
@@ -42,11 +38,23 @@ class CouncilClass(AbstractGetBinDataClass):
             # 'ebz':      '1_1668467255368',
         }
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(
+        # Azure App Gateway intermittently returns 403 on direct requests.
+        # Establishing a JSESSIONID by visiting the page first (without the
+        # SVBINZONE cookie) avoids this.
+        session = requests.Session()
+        session.headers.update(headers)
+        session.get(
+            "https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb?SOVA_TAG=SOUTH&ebd=0&ebz=1_1668467255368",
+            verify=False,
+            timeout=15,
+        )
+        session.cookies.set("SVBINZONE", f"SOUTH%3AUPRN%40{user_uprn}")
+        response = session.get(
             "https://eform.southoxon.gov.uk/ebase/BINZONE_DESKTOP.eb",
             params=params,
             headers=headers,
-            cookies=cookies,
+            verify=False,
+            timeout=15,
         )
 
         # Parse response text for super speedy finding
@@ -70,7 +78,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             "%A %d %B -",
                         )
                     )
-                    bin_type = str.capitalize(" ".join(bin_info[1:]))
+                    type_start = 1
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
                     bin_date = get_next_occurrence_from_day_month(
@@ -79,7 +87,15 @@ class CouncilClass(AbstractGetBinDataClass):
                             "%A %d %B -",
                         )
                     )
-                    bin_type = str.capitalize(" ".join(bin_info[2:]))
+                    type_start = 2
+                # Strip supplementary notes (e.g. "Don't forget...", "Extra garden waste...")
+                # that follow the bin-type description.
+                type_parts = []
+                for part in bin_info[type_start:]:
+                    if "don't" in part.lower() or part.startswith("Extra"):
+                        break
+                    type_parts.append(part)
+                bin_type = str.capitalize(" ".join(type_parts))
             except:
                 continue
 

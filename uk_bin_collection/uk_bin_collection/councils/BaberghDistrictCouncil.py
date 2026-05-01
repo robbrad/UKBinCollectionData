@@ -38,7 +38,8 @@ class CouncilClass(AbstractGetBinDataClass):
             url = "https://www.babergh.gov.uk/check-your-collection-day"
 
             # Get our initial session running
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(url)
 
             wait = WebDriverWait(driver, 30)
@@ -117,18 +118,25 @@ class CouncilClass(AbstractGetBinDataClass):
                             continue
 
                         # Collect text in p excluding the strong tag
-                        date_str = (p_tag.get_text()).split(":")[1]
+                        date_str = (p_tag.get_text()).split(":")[1].strip()
 
-                        collection_date = datetime.strptime(date_str, "%a %d %b %Y")
+                        # Handle multiple comma-separated dates
+                        for single_date in date_str.split(","):
+                            single_date = single_date.strip()
+                            if not single_date:
+                                continue
+                            # Strip leading day name prefix if present (e.g. "Mon 27 Apr 2026")
+                            collection_date = datetime.strptime(
+                                single_date, "%a %d %b %Y"
+                            )
 
-                        # print(collection_date.strftime(date_format))  # Tue 03 Feb 2026
-
-                        # Create the dictionary with the formatted data
-                        dict_data = {
-                            "type": collection_type,
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
+                            dict_data = {
+                                "type": collection_type,
+                                "collectionDate": collection_date.strftime(
+                                    date_format
+                                ),
+                            }
+                            data["bins"].append(dict_data)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

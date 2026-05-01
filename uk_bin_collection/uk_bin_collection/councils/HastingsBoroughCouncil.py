@@ -20,12 +20,24 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        URI = "https://el.hastings.gov.uk/MyArea/CollectionDays.asmx/LookupCollectionDaysByService"
+        # Hastings migrated their waste web service from el.hastings.gov.uk
+        # to el2.hastings.gov.uk. The old host now returns HTTP 500.
+        URI = "https://el2.hastings.gov.uk/MyArea/CollectionDays.asmx/LookupCollectionDaysByService"
 
         payload = {"Uprn": user_uprn}
 
-        # Make the GET request
-        response = requests.post(URI, json=payload, verify=False)
+        response = requests.post(
+            URI,
+            json=payload,
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                    " (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+                ),
+            },
+            verify=False,
+            timeout=30,
+        )
         response.raise_for_status()
 
         # Parse the JSON response

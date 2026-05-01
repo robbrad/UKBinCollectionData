@@ -25,8 +25,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         URI = f"https://my.blaby.gov.uk/set-location.php?ref={user_uprn}&redirect=collections"
 
-        # Make the GET request
-        response = requests.get(URI, verify=False)
+        # Make the GET request (User-Agent required to avoid 403)
+        session = requests.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        })
+        response = session.get(URI, verify=False, timeout=30)
+        response.raise_for_status()
 
         # Parse the HTML
         soup = BeautifulSoup(response.content, "html.parser")

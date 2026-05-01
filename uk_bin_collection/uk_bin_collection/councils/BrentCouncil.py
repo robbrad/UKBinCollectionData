@@ -27,6 +27,9 @@ class CouncilClass(AbstractGetBinDataClass):
         payload = {"postcode": user_postcode}
 
         s = requests.Session()
+        s.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+        })
 
         # Make the POST request
         response = s.post(URI, data=payload)
