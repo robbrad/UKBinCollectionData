@@ -2515,8 +2515,8 @@
         "LAD24CD": "E07000102"
     },
     "ThurrockCouncil": {
-        "house_number": "Monday",
-        "postcode": "Round A",
+        "house_number": "10",
+        "postcode": "RM17 6TX",
         "skip_get_url": true,
         "url": "https://www.thurrock.gov.uk",
         "wiki_name": "Thurrock",
