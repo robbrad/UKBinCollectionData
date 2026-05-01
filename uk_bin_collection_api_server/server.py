@@ -32,7 +32,7 @@ def council_data(
     if skip_get_url is True:
         args.append(f"-s")
 
-try:
+    try:
         CollectData = UKBinCollectionApp()
         CollectData.set_args(args)
         raw_string_output = CollectData.run()
