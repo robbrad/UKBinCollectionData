@@ -924,11 +924,11 @@
         "LAD24CD": "S12000014"
     },
     "FarehamBoroughCouncil": {
-        "postcode": "PO14 4NR",
         "skip_get_url": true,
-        "url": "https://www.fareham.gov.uk/internetlookups/search_data.aspx?type=JSON&list=DomesticBinCollections&Road=&Postcode=PO14%204NR",
+        "uprn": "100060342039",
+        "url": "https://www.fareham.gov.uk/bincalendar/intro.aspx",
         "wiki_name": "Fareham",
-        "wiki_note": "Pass the postcode in the postcode parameter, wrapped in double quotes.",
+        "wiki_note": "Pass the UPRN in the uprn parameter.",
         "LAD24CD": "E07000087"
     },
     "FenlandDistrictCouncil": {
