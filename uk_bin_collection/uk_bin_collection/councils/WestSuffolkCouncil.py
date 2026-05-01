@@ -15,8 +15,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         api_url = f"https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx?action=SetAddress&UniqueId={user_uprn}"
 
-        # WestSuffolk's IIS returns 404 to requests without a User-Agent,
-        # so send a realistic browser UA.
+        # West Suffolk's IIS now returns 404 to requests without a User-Agent,
+        # so send a realistic browser UA to get a valid response.
         headers = {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -39,8 +39,11 @@ class CouncilClass(AbstractGetBinDataClass):
             if tag_class is None:
                 return False
 
+            # The header was renamed from "Bin collection days" to
+            # "Bin collection days current"; match as a substring so the
+            # scraper survives either label.
             parent_has_header = cur_tag.parent.find_all(
-                "h4", string="Bin collection days"
+                "h4", string=lambda s: s and "Bin collection days" in s
             )
             if len(parent_has_header) < 1:
                 return False
