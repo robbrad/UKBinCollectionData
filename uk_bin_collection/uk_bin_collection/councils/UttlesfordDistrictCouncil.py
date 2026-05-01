@@ -63,7 +63,24 @@ class CouncilClass(AbstractGetBinDataClass):
             logging.info("Selecting address")
             drop_down_values = Select(input_element_postcode_dd)
 
-            drop_down_values.select_by_visible_text(str(user_paon))
+            # Try exact match first, fall back to house number prefix match
+            matched = False
+            try:
+                drop_down_values.select_by_visible_text(str(user_paon))
+                matched = True
+            except Exception:
+                paon_lower = str(user_paon).strip().lower()
+                for option in drop_down_values.options:
+                    text = option.text.strip().lower()
+                    if text and paon_lower and (text.startswith(paon_lower + " ") or text.startswith(paon_lower + ",") or text == paon_lower):
+                        option.click()
+                        matched = True
+                        break
+
+            if not matched:
+                raise ValueError(
+                    f"Address '{user_paon}' not found in dropdown"
+                )
 
             input_element_address_btn = wait.until(
                 EC.element_to_be_clickable(
