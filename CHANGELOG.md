@@ -1,4 +1,69 @@
 =======
+## 0.166.0 (2026-05-01)
+
+### Feat
+
+- include food waste collections for Southampton City Council
+
+### Fix
+
+- ThanetDistrictCouncil, StaffordshireMoorlandsDistrictCouncil - indentation errors from PR #1947 merge
+- server.py indentation bug from PR #1935 merge
+- ThurrockCouncil - accept real postcode + house number
+- EdinburghCityCouncil - accept real postcode + house number
+- EastRidingCouncil - replace Selenium with direct JSON API
+- FarehamBoroughCouncil - switch to calendar page after JSON API broke
+- NorthKestevenDistrictCouncil - make own HTTP request instead of using page param
+- MidSuffolkDistrictCouncil - replace sleep with WebDriverWait, fix date parsing, improve address matching
+- ChelmsfordCityCouncil - replace Selenium with requests to avoid emarsys popup timeout
+- SouthOxfordshireCouncil - establish session before UPRN cookie, strip supplementary notes from bin type
+- RotherhamCouncil - rewrite for Imactivate API (postcode + paon)
+- MidSussexDistrictCouncil - migrate to council-branded Whitespace portal
+- EnvironmentFirst/Eastbourne/Lewes - handle restructured page
+- WestSuffolkCouncil — UA header + h4 title rename
+- NorthHertfordshireDistrictCouncil - migrate to Netcall Liberty Create portal
+- ArmaghBanbridgeCraigavonCouncil - send full browser User-Agent to pass WAF
+- ChelmsfordCityCouncil - dismiss email-signup modal blocking form
+- BostonBoroughCouncil - drive chosen.js widget for renamed address select
+- TewkesburyBoroughCouncil - handle new API response format
+- ConwyCountyBorough - try yearly-rotating result URL candidates
+- ConwyCountyBorough - add retry for flaky council server
+- ConwyCountyBorough - drop -xmas2025 seasonal endpoint
+- HastingsBoroughCouncil - update subdomain el -> el2
+- reliability sweep — Chorley skip_get_url, Islington+Medway timeouts
+- GreatYarmouthBoroughCouncil - use current year instead of hardcoded 2025
+- NorthYorkshire - find HTML data dynamically in AJAX response
+- LondonBoroughOfRichmondUponThames - rewrite for My Richmond page migration
+- add realistic user_agent to all Selenium scrapers missing one
+- NorthNorfolkDistrictCouncil - rewrite for X-Forms (old OFML form 404)
+- BarnetCouncil - rewrite for Jadu migration (Liferay/Granicus gone)
+- EastLothianCouncil - rewrite for Drupal migration (ASP site gone)
+- MorayCouncil - rewrite for annual calendar (7-day view removed)
+- EppingForestDistrictCouncil - replace Selenium with ArcGIS REST API
+- WindsorAndMaidenheadCouncil - replace Selenium with requests
+- StirlingCouncil - replace Selenium with Recollect API
+- validate UPRN, fail on retry exhaustion, raise on empty result
+- BexleyCouncil - replace Selenium with requests (WasteWorks HTML)
+- NeathPortTalbotCouncil - user_agent and JS click for overlay bypass
+- HorshamDistrictCouncil - user_agent, postcode ID selector, JS click on submit
+- PeterboroughCityCouncil - pass user_agent and update container selector
+- NewhamCouncil - updated card selectors, nbsp stripping, date format fallback
+- guard rows_data against null before dereferencing
+- CrawleyBoroughCouncil - add XML response parsing fallback
+- RushmoorCouncil - handle raw JSON instead of HTML-wrapped response
+- SalfordCityCouncil - use lxml parser for malformed HTML
+- ShropshireCouncil - use full link text for bin type
+- ReigateAndBansteadBoroughCouncil - select populated span instead of first
+- OxfordCityCouncil - handle multiple editor divs
+- SouthHamsDistrictCouncil - init fcc_session_token before try block
+- SwaleBoroughCouncil - use parse_collection_date for "is due today" handling
+- SwaleBoroughCouncil - add user_agent to webdriver
+- BrentCouncil - add User-Agent header
+- add timeout and raise_for_status to request
+- BlabyDistrictCouncil - add User-Agent header to prevent 403
+- **EastSuffolkCouncil**: support changes made to page
+- BaberghDistrictCouncil, MidSuffolkDistrictCouncil, RotherDistrictCouncil, WirralCouncil - date parsing, null handling, input.json config
+
 ## 0.165.0 (2026-03-28)
 
 ### Feat
