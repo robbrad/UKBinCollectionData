@@ -117,20 +117,26 @@ class CouncilClass(AbstractGetBinDataClass):
                             continue
 
                         # Collect text in p excluding the strong tag
-                        date_str = (p_tag.get_text()).split(":")[1]
+                        date_str = (p_tag.get_text()).split(":")[1].strip()
                         if " - " in date_str:
-                            date_str = date_str.split(" - ")[1]
+                            date_str = date_str.split(" - ")[1].strip()
 
-                        collection_date = datetime.strptime(date_str, "%a %d %b %Y")
+                        # Handle multiple comma-separated dates
+                        for single_date in date_str.split(","):
+                            single_date = single_date.strip()
+                            if not single_date:
+                                continue
+                            collection_date = datetime.strptime(
+                                single_date, "%a %d %b %Y"
+                            )
 
-                        # print(collection_date.strftime(date_format))  # Tue 03 Feb 2026
-
-                        # Create the dictionary with the formatted data
-                        dict_data = {
-                            "type": collection_type,
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
+                            dict_data = {
+                                "type": collection_type,
+                                "collectionDate": collection_date.strftime(
+                                    date_format
+                                ),
+                            }
+                            data["bins"].append(dict_data)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

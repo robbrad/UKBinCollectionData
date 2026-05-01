@@ -30,7 +30,9 @@
 
     Promise.all([
       fetch('tests/input.json').then(res => res.json()),
-      fetch('../build/integration-test-results/test_results.json').then(res => res.json()).catch(() => ({}))
+      fetch('build/integration-test-results/test_results_detailed.json').then(res => res.json()).catch(() =>
+        fetch('build/integration-test-results/test_results.json').then(res => res.json()).catch(() => ({}))
+      )
     ])
     .then(([integrationData, testResults]) => {
       console.log("🔍 Loaded integration data:", integrationData);
@@ -40,12 +42,14 @@
       const integrationByLAD24CD = {};
       const testStatusByLAD24CD = {};
 
+      const normalizeKey = str => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
       for (const [moduleName, entry] of Object.entries(integrationData)) {
         const wikiName = entry.wiki_name || moduleName;
         const wikiUrl = `https://github.com/robbrad/UKBinCollectionData/wiki/Councils#${slugify(wikiName)}`;
-        const normalizeKey = str => str.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-        const testResult = testResults[normalizeKey(moduleName)] || null;
+        const raw = testResults[normalizeKey(moduleName)] || null;
+        const testResult = (typeof raw === 'object' && raw !== null) ? raw : { status: raw };
 
         const addCode = (code) => {
           const cleanCode = code?.replace(/[^\x20-\x7E]/g, '').trim();
@@ -53,7 +57,7 @@
 
           coveredLADs.add(cleanCode);
           if (!integrationByLAD24CD[cleanCode]) {
-            integrationByLAD24CD[cleanCode] = { wiki_name: wikiName, url: wikiUrl };
+            integrationByLAD24CD[cleanCode] = { wiki_name: wikiName, url: wikiUrl, module: moduleName };
             testStatusByLAD24CD[cleanCode] = testResult;
           }
         };
@@ -71,12 +75,13 @@
             style: feature => {
               const code = feature.properties.LAD24CD?.trim();
               const isCovered = coveredLADs.has(code);
-              const testResult = testStatusByLAD24CD[code];
+              const tr = testStatusByLAD24CD[code];
+              const status = tr?.status || tr;
 
               let fillColor = 'red'; // default: not covered
               if (isCovered) {
-                fillColor = (testResult === 'pass') ? 'green' :
-                            (testResult === 'fail') ? 'orange' : 'green';
+                fillColor = (status === 'pass') ? 'green' :
+                            (status === 'fail') ? 'orange' : 'green';
               }
 
               return {
@@ -90,16 +95,37 @@
               const code = feature.properties.LAD24CD?.trim();
               const name = feature.properties.LAD24NM;
               const isCovered = coveredLADs.has(code);
-              const testResult = testStatusByLAD24CD[code];
+              const tr = testStatusByLAD24CD[code];
+              const status = tr?.status || tr;
               const wiki = integrationByLAD24CD[code];
 
               if (!code) return;
 
               if (isCovered && wiki) {
-                const status = (testResult === 'pass') ? '✅ Covered (Test Passed)' :
-                               (testResult === 'fail') ? '🟠 Covered (Test Failed)' :
-                               '✅ Covered (No test result)';
-                layer.bindPopup(`<strong>${name}</strong><br>Status: ${status}<br><a href="${wiki.url}" target="_blank">📘 ${wiki.wiki_name}</a>`);
+                let statusText, extra = '';
+                if (status === 'pass') {
+                  statusText = '✅ Covered (Test Passed)';
+                } else if (status === 'fail') {
+                  statusText = '🟠 Covered (Test Failed)';
+                  if (tr?.error_category) {
+                    const cat = tr.error_category.replace(/_/g, ' ');
+                    extra = `<br>Error: <em>${cat}</em>`;
+                  }
+                  if (tr?.error_summary) {
+                    const summary = tr.error_summary.length > 100
+                      ? tr.error_summary.substring(0, 100) + '…'
+                      : tr.error_summary;
+                    extra += `<br><small>${summary}</small>`;
+                  }
+                } else {
+                  statusText = '✅ Covered (No test result)';
+                }
+                layer.bindPopup(
+                  `<strong>${name}</strong><br>` +
+                  `Module: <code>${wiki.module || ''}</code><br>` +
+                  `Status: ${statusText}${extra}<br>` +
+                  `<a href="${wiki.url}" target="_blank">📘 ${wiki.wiki_name}</a>`
+                );
               } else {
                 layer.bindPopup(`<strong>${name}</strong><br>Status: ❌ Not Covered`);
               }
