@@ -72,12 +72,6 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             driver.switch_to.frame(iframe)
 
-            # The fillform iframe's JS binds its postcode->address AJAX
-            # handler a couple of seconds after the DOM is ready. Without
-            # this settling pause, send_keys lands before the handler is
-            # attached and the listAddress dropdown never populates.
-            time.sleep(4)
-
             postcode_input = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable((By.ID, "postcode"))
             )
@@ -91,7 +85,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 except Exception:
                     return False
 
-            WebDriverWait(driver, 45).until(dropdown_populated)
+            WebDriverWait(driver, 30).until(dropdown_populated)
 
             select = Select(driver.find_element(By.ID, "listAddress"))
             target = self._pick_address_option(select, house_identifier)
