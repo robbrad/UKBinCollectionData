@@ -44,7 +44,8 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(collection_response.text, "html.parser")
         #print(soup)
 
-        for paragraph in soup.find("div", class_="editor").find_all("p"):
+        for editor_div in soup.find_all("div", class_="editor"):
+          for paragraph in editor_div.find_all("p"):
             matches = re.match(r"^Your next (\w+) collections: (.*)", paragraph.text)
             if matches:
                 collection_type, date_string = matches.groups()
