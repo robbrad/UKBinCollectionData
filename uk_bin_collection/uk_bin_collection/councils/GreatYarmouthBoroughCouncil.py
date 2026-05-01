@@ -106,7 +106,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 try:
                     # Parse the date text
-                    date_obj = datetime.strptime(date_text + " 2025", "%A %d %B %Y")
+                    date_obj = datetime.strptime(date_text + " " + str(datetime.today().year), "%A %d %B %Y")
                     if date_obj.date() < datetime.today().date():
                         continue  # Skip past dates
                 except ValueError:
