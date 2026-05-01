@@ -1,13 +1,12 @@
 from datetime import datetime
 
-import dateutil.parser
+import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -16,50 +15,48 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            data = {"bins": []}
-            user_uprn = kwargs.get("uprn")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_uprn(user_uprn)
+        data = {"bins": []}
+        user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
 
-            root_url = "https://forms.rbwm.gov.uk/bincollections?uprn="
-            api_url = root_url + user_uprn
+        api_url = f"https://forms.rbwm.gov.uk/bincollections?uprn={user_uprn}"
 
-            # Create Selenium webdriver
-            driver = create_webdriver(web_driver, headless, None, __name__)
-            driver.get(api_url)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+        }
+        response = requests.get(api_url, headers=headers, timeout=30)
+        response.raise_for_status()
 
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
+        soup = BeautifulSoup(response.text, features="html.parser")
 
-            # Get collections div
-            next_collection_div = soup.find("div", {"class": "widget-bin-collections"})
+        # Get collections div
+        next_collection_div = soup.find("div", {"class": "widget-bin-collections"})
 
-            if not next_collection_div:
-                # No collection data found, return empty bins
-                return data
+        if not next_collection_div:
+            return data
 
-            for tbody in next_collection_div.find_all("tbody"):
-                for tr in tbody.find_all("tr"):
-                    td = tr.find_all("td")
-                    next_collection_type = td[0].get_text()
-                    next_collection_date = dateutil.parser.parse(td[1].get_text())
-                    print(next_collection_date)
+        for tbody in next_collection_div.find_all("tbody"):
+            for tr in tbody.find_all("tr"):
+                td = tr.find_all("td")
+                if len(td) >= 2:
+                    next_collection_type = td[0].get_text(strip=True)
+                    date_text = td[1].get_text(strip=True)
+                    # Dates have ordinal suffixes like "7th April 2026"
+                    cleaned_date = remove_ordinal_indicator_from_date_string(date_text)
+                    try:
+                        next_collection_date = datetime.strptime(
+                            cleaned_date.strip(), "%d %B %Y"
+                        )
+                    except ValueError:
+                        continue
                     dict_data = {
                         "type": next_collection_type,
-                        "collectionDate": next_collection_date.strftime("%d/%m/%Y"),
+                        "collectionDate": next_collection_date.strftime(date_format),
                     }
                     data["bins"].append(dict_data)
 
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
+
         return data
