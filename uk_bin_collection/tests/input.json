@@ -806,10 +806,10 @@
     },
     "EastRidingCouncil": {
         "LAD24CD": "E06000011",
-        "house_number": "14 THE LEASES BEVERLEY HU17 8LG",
+        "house_number": "14",
         "postcode": "HU17 8LG",
         "skip_get_url": true,
-        "url": "https://wasterecyclingapi.eastriding.gov.uk",
+        "url": "https://www.eastriding.gov.uk",
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Riding of Yorkshire",
         "wiki_note": "Put the full address as it displays on the council website dropdown when you do the check manually."
