@@ -29,7 +29,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Create the Selenium WebDriver
         user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+        driver = create_webdriver(web_driver, headless, user_agent, __name__)
 
         try:
             print(f"Navigating to URL: {url}")
