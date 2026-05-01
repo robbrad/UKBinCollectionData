@@ -850,8 +850,8 @@
     },
     "EdinburghCityCouncil": {
         "LAD24CD": "S12000036",
-        "house_number": "Tuesday",
-        "postcode": "Week 1",
+        "house_number": "157",
+        "postcode": "EH10 4AX",
         "skip_get_url": true,
         "url": "https://www.edinburgh.gov.uk",
         "wiki_name": "City of Edinburgh",
