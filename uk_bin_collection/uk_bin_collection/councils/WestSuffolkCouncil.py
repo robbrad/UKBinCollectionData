@@ -15,7 +15,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
         api_url = f"https://maps.westsuffolk.gov.uk/MyWestSuffolk.aspx?action=SetAddress&UniqueId={user_uprn}"
 
-        response = requests.get(api_url)
+        # WestSuffolk's IIS returns 404 to requests without a User-Agent,
+        # so send a realistic browser UA.
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+            )
+        }
+        response = requests.get(api_url, headers=headers)
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
