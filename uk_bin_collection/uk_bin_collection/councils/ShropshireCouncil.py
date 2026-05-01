@@ -20,26 +20,59 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         # Find section with bins in
-        sections = (
-            soup.find("div", {"class": "container results-table-wrapper"})
-            .find("tbody")
-            .find_all("tr")
-        )
+        wrapper = soup.find("div", {"class": "container results-table-wrapper"})
+        if not wrapper:
+            raise ValueError("Could not find results table wrapper")
+        tbody = wrapper.find("tbody")
+        if not tbody:
+            raise ValueError("Could not find table body")
+        sections = tbody.find_all("tr")
 
         # For each bin section, get the text and the list elements
         for item in sections:
-            words = item.find_next("a").text.split()[1:2]
-            bin_type = " ".join(words).capitalize()
-            date = (
-                item.find("td", {"class": "next-service"})
-                .find_next("span")
-                .next_sibling.strip()
-            )
-            next_collection = datetime.strptime(date, "%d/%m/%Y")
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": next_collection.strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+            service_name_td = item.find("td", {"class": "service-name"})
+            if not service_name_td:
+                continue
+
+            # Use the full link text as the bin type
+            a_tag = service_name_td.find("a")
+            if a_tag:
+                bin_type = a_tag.text.strip()
+            else:
+                continue
+
+            next_service_td = item.find("td", {"class": "next-service"})
+            if not next_service_td:
+                continue
+
+            # The date is after the first span (table-label) as a text node
+            span = next_service_td.find("span", {"class": "table-label"})
+            if span and span.next_sibling:
+                date_text = str(span.next_sibling).strip()
+            else:
+                # Fallback: get direct text content
+                date_text = next_service_td.get_text(strip=True)
+                # Remove the "Next collection" label text
+                date_text = date_text.replace("Next collection", "").replace("Next Collections", "").strip()
+
+            if not date_text:
+                continue
+
+            # Handle multiple dates (comma-separated)
+            date_parts = [d.strip() for d in date_text.split(",") if d.strip()]
+            for date_str in date_parts:
+                try:
+                    next_collection = datetime.strptime(date_str, "%d/%m/%Y")
+                except ValueError:
+                    try:
+                        next_collection = datetime.strptime(date_str, "%d %b %Y")
+                    except ValueError:
+                        continue
+
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": next_collection.strftime(date_format),
+                }
+                data["bins"].append(dict_data)
 
         return data
