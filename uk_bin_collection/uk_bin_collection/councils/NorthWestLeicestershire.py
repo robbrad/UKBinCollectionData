@@ -34,7 +34,8 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create Selenium webdriver
             page = f"https://my.nwleics.gov.uk/my-property-finder?address={user_postcode}&go=1"
 
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(page)
 
             # If you bang in the house number (or property name) and postcode in the box it should find your property

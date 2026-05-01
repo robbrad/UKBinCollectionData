@@ -56,7 +56,8 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(url)
 
             wait = WebDriverWait(driver, 60)
