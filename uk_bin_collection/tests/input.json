@@ -2039,12 +2039,13 @@
         "LAD24CD": "E07000064"
     },
     "RotherhamCouncil": {
-        "uprn": "100050866000",
-        "url": "https://www.rotherham.gov.uk/bin-collections?address=100050866000&submit=Submit",
-        "wiki_command_url_override": "https://www.rotherham.gov.uk/bin-collections?address=XXXXXXXXX&submit=Submit",
+        "LAD24CD": "E08000018",
+        "paon": "77",
+        "postcode": "S60 1JD",
+        "skip_get_url": true,
+        "url": "https://www.rotherham.gov.uk/",
         "wiki_name": "Rotherham",
-        "wiki_note": "Replace `XXXXXXXXX` with your UPRN in the URL. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E08000018"
+        "wiki_note": "Provide your postcode and house number (paon). Backend is the shared Imactivate API at bins.azurewebsites.net (same data the Rotherham Bins Android app uses). Rotherham's own bin-day page only links to PDF calendars."
     },
     "RoyalBoroughofGreenwich": {
         "house_number": "57",
