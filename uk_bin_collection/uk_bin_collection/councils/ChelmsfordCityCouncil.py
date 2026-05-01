@@ -58,8 +58,17 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
                 accept_btn.click()
                 time.sleep(1)
-            except Exception as e:
-                # Cookie banner not present or already accepted
+            except Exception:
+                pass
+
+            # Dismiss email-signup popup ("Website popup 3") which overlays the form
+            try:
+                close_btn = driver.find_element(
+                    By.XPATH, "//dialog//button[contains(@aria-label, 'Close') or contains(text(), 'Close')]"
+                )
+                close_btn.click()
+                time.sleep(1)
+            except Exception:
                 pass
 
             # Find postcode input field (dynamic ID)
@@ -68,14 +77,29 @@ class CouncilClass(AbstractGetBinDataClass):
                     (By.XPATH, "//input[contains(@id, '_keyword')]")
                 )
             )
-            postcode_input.clear()
-            postcode_input.send_keys(postcode)
+            # Scroll into view + JS click fallback in case a dialog still overlays
+            driver.execute_script("arguments[0].scrollIntoView({block:'center'});", postcode_input)
+            try:
+                postcode_input.clear()
+                postcode_input.send_keys(postcode)
+            except Exception:
+                driver.execute_script(
+                    "arguments[0].value = arguments[1];"
+                    "arguments[0].dispatchEvent(new Event('input', {bubbles:true}));",
+                    postcode_input, postcode,
+                )
 
-            # Click search button
-            submit_btn = wait.until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "__submitButton"))
-            )
-            submit_btn.click()
+            # Click search button (first try class, then text-based fallback)
+            try:
+                submit_btn = wait.until(
+                    EC.element_to_be_clickable((By.CLASS_NAME, "__submitButton"))
+                )
+                submit_btn.click()
+            except Exception:
+                submit_btn = driver.find_element(
+                    By.XPATH, "//button[normalize-space()='Search' and not(ancestor::*[@role='search'])]"
+                )
+                driver.execute_script("arguments[0].click();", submit_btn)
 
             # Wait for results table
             wait.until(EC.presence_of_element_located((By.TAG_NAME, "table")))
