@@ -48,15 +48,37 @@ class CouncilClass(AbstractGetBinDataClass):
                 "ctl00_ContentPlaceHolder1_FF5683BTN",
             ).click()
 
-            # Wait for the 'Select address' dropdown to appear and select option matching UPRN
+            # Wait for the 'Select address' dropdown to appear
             dropdown = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL")
                 )
             )
-            # Create a 'Select' for it, then select the matching URPN option
             dropdownSelect = Select(dropdown)
-            dropdownSelect.select_by_value("U" + user_uprn)
+
+            # Try UPRN value match first, fall back to house number text match
+            matched = False
+            if user_uprn:
+                try:
+                    dropdownSelect.select_by_value("U" + user_uprn)
+                    matched = True
+                except Exception:
+                    pass
+
+            if not matched:
+                user_paon = kwargs.get("paon") or ""
+                paon_lower = user_paon.strip().lower()
+                for option in dropdownSelect.options:
+                    text = option.text.strip().lower()
+                    if text and paon_lower and (text.startswith(paon_lower + " ") or text.startswith(paon_lower + ",")):
+                        option.click()
+                        matched = True
+                        break
+
+            if not matched:
+                raise ValueError(
+                    f"Address not found for UPRN '{user_uprn}' or house number in dropdown"
+                )
 
             # Wait for the submit button to appear, then click it to get the collection dates
             submit = WebDriverWait(driver, 10).until(
