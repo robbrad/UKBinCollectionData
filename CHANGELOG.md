@@ -1,4 +1,12 @@
 =======
+## 0.166.1 (2026-05-02)
+
+### Fix
+
+- StirlingCouncil - resolve street from postcode when only house number provided
+- UttlesfordDistrictCouncil - fall back to house number prefix match in dropdown
+- BroxtoweBoroughCouncil - fall back to house number text match in dropdown
+
 ## 0.166.0 (2026-05-01)
 
 ### Feat
