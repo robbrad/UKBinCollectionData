@@ -913,7 +913,10 @@
         "url": "https://www.exeter.gov.uk",
         "wiki_name": "Exeter",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000041"
+        "LAD24CD": "E07000041",
+        "postcode": "EX2 4NT",
+        "house_number": "5",
+        "skip_get_url": true
     },
     "FalkirkCouncil": {
         "uprn": "136065818",
@@ -1754,14 +1757,14 @@
         "LAD24CD": "E06000012"
     },
     "NorthHertfordshireDistrictCouncil": {
-            "house_number": "Stewards Flat",
-            "postcode": "SG5 1PZ",
-            "skip_get_url": true,
-            "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
-            "web_driver": "http://selenium:4444",
-            "wiki_name": "North Hertfordshire",
-            "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
-            "LAD24CD": "E07000099"
+        "house_number": "Stewards Flat",
+        "postcode": "SG5 1PZ",
+        "skip_get_url": true,
+        "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "North Hertfordshire",
+        "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
+        "LAD24CD": "E07000099"
     },
     "NorthKestevenDistrictCouncil": {
         "skip_get_url": true,
