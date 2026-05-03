@@ -915,8 +915,7 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000041",
         "postcode": "EX2 4NT",
-        "house_number": "5",
-        "skip_get_url": true
+        "house_number": "5"
     },
     "FalkirkCouncil": {
         "uprn": "136065818",
