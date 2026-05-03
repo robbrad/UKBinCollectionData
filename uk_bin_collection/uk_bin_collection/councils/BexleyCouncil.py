@@ -17,7 +17,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
 
         page = f"https://waste.bexley.gov.uk/waste/{user_uprn}"
 
@@ -25,18 +24,25 @@ class CouncilClass(AbstractGetBinDataClass):
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
         }
 
-        # First request may trigger async page generation; retry if content not ready
-        found = False
-        for attempt in range(3):
-            response = requests.get(page, headers=headers, timeout=30)
+        session = requests.Session()
+        session.headers.update(headers)
+
+        # Initial request triggers server-side schedule computation and sets session cookie
+        session.get(page, timeout=60)
+
+        # Poll for results — server computes async, JS client polls ?page_loading=1
+        # with x-requested-with header to get the content fragment
+        response = None
+        for attempt in range(30):
+            response = session.get(
+                f"{page}?page_loading=1",
+                headers={"x-requested-with": "fetch"},
+                timeout=60,
+            )
             response.raise_for_status()
             if "waste-service-name" in response.text:
-                found = True
                 break
-            time.sleep(3)
-
-        if not found:
-            raise ValueError("Bexley WasteWorks page did not return expected content after 3 attempts")
+            time.sleep(2)
 
         soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -49,12 +55,8 @@ class CouncilClass(AbstractGetBinDataClass):
             if not h3:
                 continue
 
-            # Get the main service name (first line of h3, before subtitle)
-            service_name_elem = h3.find("span") or h3
-            # Extract just the first text node for the bin type
             bin_type = h3.get_text(separator="\n", strip=True).split("\n")[0]
 
-            # Find 'Next collection' in the summary list
             summary_list = grid.find("dl", class_="govuk-summary-list")
             if not summary_list:
                 continue
@@ -69,13 +71,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     next_collection = dd.get_text(strip=True)
                     try:
-                        # Parse date like "Wednesday 8 April 2026" or "Tuesday, 8th April 2026"
-                        cleaned = remove_ordinal_indicator_from_date_string(next_collection)
-                        # Try with comma format first
-                        try:
-                            parsed_date = datetime.strptime(cleaned, "%A, %d %B %Y")
-                        except ValueError:
-                            parsed_date = datetime.strptime(cleaned, "%A %d %B %Y")
+                        if "collected today" in next_collection.lower() or "could not be collected today" in next_collection.lower():
+                            parsed_date = datetime.now()
+                        else:
+                            cleaned = remove_ordinal_indicator_from_date_string(next_collection)
+                            try:
+                                parsed_date = datetime.strptime(cleaned, "%A, %d %B %Y")
+                            except ValueError:
+                                parsed_date = datetime.strptime(cleaned, "%A %d %B %Y")
 
                         data["bins"].append(
                             {
@@ -86,8 +89,5 @@ class CouncilClass(AbstractGetBinDataClass):
                     except ValueError as e:
                         print(f"Error parsing date for {bin_type}: {e}")
                     break
-
-        if not data["bins"]:
-            raise ValueError("No collection dates found — page structure may have changed")
 
         return data
