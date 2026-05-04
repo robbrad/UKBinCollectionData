@@ -45,7 +45,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 collectiondate = collectiondate.replace(month=collectionmonth)
                 bintype = collectionday.find(
                     "span", {"class": "waste-collection__day--type"}
-                ).text.strip()
+                ).get_text(strip=True)
 
                 # The calendar shows the next 12 months, so if the month steps back in
                 # time, assume it is for the following year.
