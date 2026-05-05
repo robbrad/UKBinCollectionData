@@ -37,6 +37,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
             ics_url = f"https://www.dumfriesandgalloway.gov.uk/bins-recycling/waste-collection-schedule/download/{user_uprn}"
 
+            # Pre-fetch to detect HTML error pages before iCal parsing
+            import requests as req
+            ics_resp = req.get(ics_url, timeout=30)
+            ics_text = ics_resp.text
+            if "<br" in ics_text or "<html" in ics_text.lower() or "VCALENDAR" not in ics_text:
+                return data
+
             # Get events from ICS file within the next 60 days
             now = datetime.now()
             future = now + timedelta(days=60)
