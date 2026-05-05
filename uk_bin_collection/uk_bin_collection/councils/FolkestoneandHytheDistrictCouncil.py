@@ -17,6 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
+        user_uprn = str(int(user_uprn))  # Strip leading zeros — council API rejects zero-padded UPRNs
         bindata = {"bins": []}
 
         URI1 = f"https://service.folkestone-hythe.gov.uk/webapp/myarea/?uprn={user_uprn}&tab=collections"
