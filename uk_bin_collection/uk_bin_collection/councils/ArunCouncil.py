@@ -1,98 +1,93 @@
-import time
-
+import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
-
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
+    def parse_data(self, page: str = None, **kwargs) -> dict:
         try:
-            # Make a BS4 object
             data = {"bins": []}
 
-            user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
-            headless = kwargs.get("headless")
-            web_driver = kwargs.get("web_driver")
-            driver = create_webdriver(web_driver, headless, None, __name__)
-            page = "https://www1.arun.gov.uk/when-are-my-bins-collected/"
-            check_paon(user_paon)
+            user_uprn = kwargs.get("uprn")
+
             check_postcode(user_postcode)
-            driver.get(page)
+            check_uprn(user_uprn)
 
-            start_now_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.LINK_TEXT, "Start now"))
-            )
-            start_now_button.click()
-
-            # Wait for the postcode field to appear then populate it
-            input_element_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "postcode"))
-            )
-            input_element_postcode.send_keys(user_postcode)
-
-            continue_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "govuk-button"))
-            )
-            continue_button.click()
-
-            address_selection_menu = Select(driver.find_element(By.ID, "address"))
-            for idx, addr_option in enumerate(address_selection_menu.options):
-                option_name = addr_option.text[0 : len(user_paon)]
-                if option_name == user_paon:
-                    selected_address = addr_option
-                    break
-            address_selection_menu.select_by_visible_text(selected_address.text)
-
-            continue_button = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "govuk-button"))
-            )
-            continue_button.click()
-            # Check for text saying "Next collection dates"
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//*[contains(text(), 'Next collection dates')]")
-                )
+            BASE = "https://www1.arun.gov.uk"
+            UA = (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:146.0) "
+                "Gecko/20100101 Firefox/146.0"
             )
 
-            soup = BeautifulSoup(driver.page_source, "html.parser")
+            s = requests.Session()
+            s.headers.update(
+                {
+                    "User-Agent": UA,
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    "Accept-Language": "en-GB,en;q=0.5",
+                }
+            )
+
+            s.get(f"{BASE}/when-are-my-bins-collected")
+
+            s.post(
+                f"{BASE}/when-are-my-bins-collected/postcode",
+                data={"postcode": user_postcode},
+                headers={
+                    "Referer": f"{BASE}/when-are-my-bins-collected",
+                    "Origin": BASE,
+                },
+            )
+
+            s.post(
+                f"{BASE}/when-are-my-bins-collected/select",
+                data={"address": user_uprn},
+                headers={
+                    "Referer": f"{BASE}/when-are-my-bins-collected/postcode",
+                    "Origin": BASE,
+                },
+            )
+
+            r = s.get(
+                f"{BASE}/when-are-my-bins-collected/collections",
+                headers={
+                    "Referer": f"{BASE}/when-are-my-bins-collected/select",
+                },
+            )
+
+            page = r.text
+
+
+            soup = BeautifulSoup(page, "html.parser")
             soup.prettify()
+
             table = soup.find("table", class_="govuk-table")
+            if not table:
+                raise ValueError("Bin collection table not found")
 
             for row in table.find("tbody").find_all("tr"):
-                # Extract the type of collection and the date of next collection
                 collection_type = (
-                    row.find("th", class_="govuk-table__header").text.strip().split(" ")
-                )[0]
-                collection_date = row.find(
-                    "td", class_="govuk-table__cell"
-                ).text.strip()
+                    row.find("th", class_="govuk-table__header")
+                    .text.strip()
+                    .split(" ")[0]
+                )
 
-                # Append the information to the data structure
+                collection_date = (
+                    row.find("td", class_="govuk-table__cell")
+                    .text.strip()
+                )
+
                 data["bins"].append(
-                    {"type": collection_type, "collectionDate": collection_date}
+                    {
+                        "type": collection_type,
+                        "collectionDate": collection_date,
+                    }
                 )
 
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception.
-            if driver:
-                driver.quit()
+
         return data
