@@ -87,6 +87,8 @@ class CouncilClass(AbstractGetBinDataClass):
         bin_collection = response.json()
 
         # Loop through each collection in bin_collection
+        if not bin_collection.get("jobsField"):
+            return bindata
         for collection in bin_collection["jobsField"]:
 
             job = collection["jobField"]
