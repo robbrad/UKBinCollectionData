@@ -50,6 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
             response = requests.get(url, headers=headers, params=params)
 
             addresses = response.json()
+            place_id = None
             for address in addresses:
                 if "place_id" in address:
                     place_id = address["place_id"]
