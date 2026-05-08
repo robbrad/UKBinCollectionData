@@ -44,8 +44,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 collectiondate = datetime.strptime(day, "%d")
                 collectiondate = collectiondate.replace(month=collectionmonth)
                 bintype = collectionday.find(
-                    "span", {"class": "waste-collection__day--colour"}
-                ).text
+                    "span", {"class": "waste-collection__day--type"}
+                ).text.strip()
 
                 if (current_month > 9) and (collectiondate.month < 4):
                     collectiondate = collectiondate.replace(year=(current_year + 1))
