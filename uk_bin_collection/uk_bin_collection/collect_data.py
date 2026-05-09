@@ -56,6 +56,9 @@ class UKBinCollectionApp:
             "-u", "--uprn", type=str, help="UPRN to parse", required=False
         )
         self.parser.add_argument(
+            "-us", "--usrn", type=str, help="USRN to parse", required=False
+        )
+        self.parser.add_argument(
             "-w",
             "--web_driver",
             type=str,
@@ -104,6 +107,7 @@ class UKBinCollectionApp:
             postcode=self.parsed_args.postcode,
             paon=self.parsed_args.number,
             uprn=self.parsed_args.uprn,
+            usrn=self.parsed_args.usrn,
             skip_get_url=self.parsed_args.skip_get_url,
             web_driver=self.parsed_args.web_driver,
             headless=self.parsed_args.headless,
