@@ -2715,6 +2715,14 @@
         "wiki_note": "Provide your house name/number in the `house_number` parameter (wrapped in double quotes) and your postcode in the `postcode` parameter.",
         "LAD24CD": "S12000040"
     },
+    "WestminsterCityCouncil": {
+        "skip_get_url": true,
+        "url": "https://transact.westminster.gov.uk/env/streetsearch.aspx",
+        "usrn": "8401095",
+        "wiki_name": "Westminster City Council",
+        "wiki_note": "Provide your street's USRN (Unique Street Reference Number) in the `usrn` parameter. Westminster's lookup is street-based rather than property-based; the USRN is the numeric value behind the street name in the dropdown at https://transact.westminster.gov.uk/env/streetsearch.aspx (e.g. `8401095` for Acacia Road).",
+        "LAD24CD": "E09000033"
+    },
     "WestMorlandAndFurness": {
         "uprn": "100110353478",
         "url": "https://www.westmorlandandfurness.gov.uk/",
