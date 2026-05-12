@@ -1467,12 +1467,12 @@
         "LAD24CD": "E09000023"
     },
     "LondonBoroughOfRichmondUponThames": {
-        "house_number": "March Road",
+        "postcode": "TW1 3LD",
+        "uprn": "100022350670",
         "skip_get_url": true,
-        "url": "https://www.richmond.gov.uk/services/waste_and_recycling/collection_days/",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.richmond.gov.uk/my_richmond",
         "wiki_name": "Richmond upon Thames",
-        "wiki_note": "Pass the name of the street ONLY in the house number parameter, unfortunately post code's are not allowed. ",
+        "wiki_note": "Pass UPRN (used as PID) or postcode + house number. Street search is automatic.",
         "LAD24CD": "E09000027"
     },
     "LondonBoroughRedbridge": {
