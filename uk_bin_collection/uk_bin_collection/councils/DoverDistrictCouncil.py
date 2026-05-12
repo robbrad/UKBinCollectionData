@@ -1,61 +1,95 @@
-import re
-from datetime import datetime
+from datetime import datetime, timezone
 
-from bs4 import BeautifulSoup
+import requests
 
-from uk_bin_collection.uk_bin_collection.common import *  # Consider specific imports
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+BASE_URL = "https://portal.waste.dover.gov.uk/api"
+COUNCIL_ID = "39"
+HEADERS = {
+    "Content-Type": "application/json",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "x-recaptcha-token": "",
+}
 
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        postcode = kwargs.get("postcode")
+        uprn = kwargs.get("uprn")
+        paon = kwargs.get("paon") or kwargs.get("number")
 
-        try:
-            user_uprn = kwargs.get("uprn")
-            check_uprn(user_uprn)
-            url = f"https://collections.dover.gov.uk/property/{user_uprn}"
-            if not user_uprn:
-                # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
-                url = kwargs.get("url")
-        except Exception as e:
-            raise ValueError(f"Error getting identifier: {str(e)}")
+        if postcode:
+            check_postcode(postcode)
 
-        # Make a BS4 object
-        page = requests.get(url)
-        soup = BeautifulSoup(page.text, "html.parser")
+        point_id = self._resolve_point_id(postcode, uprn, paon)
+        return self._get_collections(point_id)
 
-        bins_data = {"bins": []}
-        bin_collections = []
+    def _resolve_point_id(self, postcode, uprn, paon):
+        search_query = postcode or uprn
+        if not search_query:
+            raise ValueError("Postcode or UPRN required")
 
-        results_wrapper = soup.find("div", {"class": "results-table-wrapper"})
-        if not results_wrapper:
-            return bins_data  # Return empty if the results wrapper is not found
+        resp = requests.post(
+            f"{BASE_URL}/getPropertySearch",
+            json={"councilId": COUNCIL_ID, "searchQuery": search_query},
+            headers=HEADERS,
+            timeout=30,
+        )
+        resp.raise_for_status()
+        data = resp.json().get("data", [])
 
-        bins = results_wrapper.find_all("div", {"class": "service-wrapper"})
-        for bin_item in bins:
-            service_name = bin_item.find("h3", {"class": "service-name"})
-            next_service = bin_item.find("td", {"class": "next-service"})
+        if not data:
+            raise ValueError(f"No properties found for {search_query}")
 
-            if service_name and next_service:
-                bin_type = service_name.get_text().replace("Collection", "bin").strip()
-                date_span = next_service.find("span", {"class": "table-label"})
-                date_text = (
-                    date_span.next_sibling.get_text().strip() if date_span else None
-                )
+        if uprn:
+            for prop in data:
+                if str(prop.get("uprn")) == str(uprn):
+                    return str(prop["id"])
 
-                if date_text and re.match(r"\d{2}/\d{2}/\d{4}", date_text):
-                    try:
-                        bin_date = datetime.strptime(date_text, "%d/%m/%Y")
-                        bin_collections.append((bin_type, bin_date))
-                    except ValueError:
-                        continue
+        if paon:
+            paon_lower = paon.strip().lower()
+            for prop in data:
+                name = prop.get("name", "").lower()
+                if name.startswith(paon_lower + " ") or name.startswith(paon_lower + ","):
+                    return str(prop["id"])
 
-        for bin_type, bin_date in sorted(bin_collections, key=lambda x: x[1]):
-            bins_data["bins"].append(
-                {
-                    "type": bin_type.capitalize(),
-                    "collectionDate": bin_date.strftime("%d/%m/%Y"),
-                }
-            )
+        return str(data[0]["id"])
 
-        return bins_data
+    def _get_collections(self, point_id):
+        resp = requests.post(
+            f"{BASE_URL}/getCollectionDays",
+            json={
+                "pointId": point_id,
+                "pointType": "PointAddress",
+                "councilId": COUNCIL_ID,
+            },
+            headers=HEADERS,
+            timeout=30,
+        )
+        resp.raise_for_status()
+        result = resp.json()
+
+        now = datetime.now(timezone.utc)
+        data = {"bins": []}
+
+        for service in result.get("activeServices", []):
+            service_name = service.get("serviceName", "")
+            for schedule in service.get("serviceSchedules", []):
+                date_str = schedule.get("currentScheduledDate")
+                if not date_str:
+                    continue
+                dt = datetime.fromisoformat(date_str)
+                if dt > now:
+                    data["bins"].append(
+                        {
+                            "type": service_name,
+                            "collectionDate": dt.strftime(date_format),
+                        }
+                    )
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+        )
+        return data

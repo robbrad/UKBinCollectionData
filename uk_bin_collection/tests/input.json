@@ -682,11 +682,12 @@
         "LAD24CD": "E06000059"
     },
     "DoverDistrictCouncil": {
+        "postcode": "CT17 0LY",
         "uprn": "100060908340",
-        "url": "https://collections.dover.gov.uk/property",
+        "url": "https://portal.waste.dover.gov.uk",
         "skip_get_url": true,
         "wiki_name": "Dover",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Pass postcode and/or UPRN. Uses portal.waste.dover.gov.uk API (councilId 39).",
         "LAD24CD": "E07000108"
     },
     "DudleyCouncil": {
