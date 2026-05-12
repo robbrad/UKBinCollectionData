@@ -2128,10 +2128,13 @@
         "LAD24CD": "E07000111"
     },
     "SheffieldCityCouncil": {
-        "url": "https://wasteservices.sheffield.gov.uk/property/100050931898",
-        "wiki_command_url_override": "https://wasteservices.sheffield.gov.uk/property/XXXXXXXXXXX",
+        "postcode": "S7 1RY",
+        "uprn": "100050931898",
+        "house_number": "22",
+        "skip_get_url": true,
+        "url": "https://wasteservices.sheffield.gov.uk",
         "wiki_name": "Sheffield",
-        "wiki_note": "Follow the instructions [here](https://wasteservices.sheffield.gov.uk/) until you get the 'Your bin collection dates and services' page, then copy the URL and replace the URL in the command.",
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required.",
         "LAD24CD": "E08000019"
     },
     "ShropshireCouncil": {

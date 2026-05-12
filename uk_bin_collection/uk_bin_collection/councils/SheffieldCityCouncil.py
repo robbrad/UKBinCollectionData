@@ -1,54 +1,101 @@
-from bs4 import BeautifulSoup
+import requests
+from datetime import datetime
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+API_BASE = "https://wasteservices.sheffield.gov.uk/api"
+COUNCIL_ID = "1"
 
-# import the wonderful Beautiful Soup and the URL grabber
+
+def _match_property(properties, uprn=None, paon=None):
+    """Match a property from search results by UPRN or house number/name."""
+    if uprn:
+        for prop in properties:
+            if str(prop.get("uprn", "")) == str(uprn):
+                return prop["id"]
+
+    if paon:
+        paon_norm = str(paon).strip().upper()
+        for prop in properties:
+            name = str(prop.get("name", "")).upper()
+            if name.startswith(paon_norm + " ") or name.startswith(paon_norm + ","):
+                return prop["id"]
+        for prop in properties:
+            name = str(prop.get("name", "")).upper()
+            if paon_norm in name:
+                return prop["id"]
+
+    return properties[0]["id"]
+
+
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
+        uprn = kwargs.get("uprn")
+        postcode = kwargs.get("postcode")
+        paon = kwargs.get("paon")
+        check_postcode(postcode)
 
-        # Form a JSON wrapper
-        data = {"bins": []}
+        headers = {
+            "Content-Type": "application/json",
+            "Origin": "https://wasteservices.sheffield.gov.uk",
+        }
 
-        # Search for the specific table using BS4
-        rows = soup.find("table", {"class": re.compile("table")}).find_all("tr")
+        # Step 1: Search by postcode
+        search_resp = requests.post(
+            f"{API_BASE}/getPropertySearch",
+            json={"councilId": COUNCIL_ID, "searchQuery": postcode},
+            headers=headers,
+            timeout=30,
+        )
+        search_resp.raise_for_status()
+        search_data = search_resp.json()
 
-        # Loops the Rows
-        for row in rows:
-            cells = row.find_all(
-                "td", {"class": lambda L: L and L.startswith("service-name")}
-            )
+        properties = search_data.get("data", [])
+        if not properties:
+            raise ValueError(f"No properties found for postcode: {postcode}")
 
-            if len(cells) > 0:
-                collectionDatesRawData = row.find_all(
-                    "td", {"class": lambda L: L and L.startswith("next-service")}
-                )[0].get_text(strip=True)
-                collectionDate = collectionDatesRawData[
-                    16 : len(collectionDatesRawData)
-                ].split(",")
-                bin_type = row.find_all(
-                    "td", {"class": lambda L: L and L.startswith("service-name")}
-                )[0].h4.get_text(strip=True)
+        point_id = _match_property(properties, uprn=uprn, paon=paon)
 
-                for collectDate in collectionDate:
-                    # Make each Bin element in the JSON
-                    dict_data = {
-                        "type": bin_type,
-                        "collectionDate": datetime.strptime(
-                            collectDate.strip(), "%d %b %Y"
-                        ).strftime(date_format),
-                    }
+        # Step 2: Get collection days
+        collection_resp = requests.post(
+            f"{API_BASE}/getCollectionDays",
+            json={
+                "pointId": point_id,
+                "pointType": "PointAddress",
+                "councilId": COUNCIL_ID,
+            },
+            headers=headers,
+            timeout=30,
+        )
+        collection_resp.raise_for_status()
+        collection_data = collection_resp.json()
 
-                    # Add data to the main JSON Wrapper
-                    data["bins"].append(dict_data)
+        bindata = {"bins": []}
 
-        return data
+        for service in collection_data.get("activeServices", []):
+            bin_type = service.get("serviceName", "Unknown")
+            for schedule in service.get("serviceSchedules", []):
+                if schedule.get("state") == "Complete":
+                    continue
+                date_str = schedule.get("currentScheduledDate") or schedule.get(
+                    "originalScheduledDate"
+                )
+                if not date_str:
+                    continue
+                try:
+                    dt = datetime.fromisoformat(date_str)
+                    bindata["bins"].append(
+                        {
+                            "type": bin_type,
+                            "collectionDate": dt.strftime(date_format),
+                        }
+                    )
+                except (ValueError, TypeError):
+                    continue
+
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
+
+        return bindata
