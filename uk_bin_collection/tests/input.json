@@ -1636,9 +1636,9 @@
         "LAD24CD": "E06000042"
     },
     "MoleValleyDistrictCouncil": {
-        "postcode": "RH4 1SJ",
+        "postcode": "RH5 6QE",
         "skip_get_url": true,
-        "uprn": "200000171235",
+        "uprn": "100062496342",
         "url": "https://myproperty.molevalley.gov.uk/molevalley/",
         "wiki_name": "Mole Valley",
         "wiki_note": "UPRN can only be parsed with a valid postcode.",
