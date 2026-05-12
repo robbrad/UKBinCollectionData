@@ -372,13 +372,14 @@
         "LAD24CD": "E07000095"
     },
     "BroxtoweBoroughCouncil": {
-        "postcode": "NG16 2LY",
+        "house_number": "2",
+        "postcode": "NG16 2LS",
         "skip_get_url": true,
-        "uprn": "100031325997",
+        "uprn": "100031320105",
         "url": "https://www.broxtowe.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Broxtowe",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Pass the UPRN and postcode. House number used as fallback if UPRN doesn't match dropdown.",
         "LAD24CD": "E07000172"
     },
     "BuckinghamshireCouncil": {
