@@ -1558,11 +1558,13 @@
         "LAD24CD": "E07000133"
     },
     "MertonCouncil": {
-        "uprn": "4328213",
+        "house_number": "16",
+        "postcode": "SW19 1QT",
         "skip_get_url": true,
+        "uprn": "4328213",
         "url": "https://fixmystreet.merton.gov.uk/waste/",
         "wiki_name": "Merton",
-        "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Provide postcode and house number. Merton-specific UPRN also accepted.",
         "LAD24CD": "E09000024"
     },
     "MidAndEastAntrimBoroughCouncil": {
