@@ -713,12 +713,15 @@
         "LAD24CD": "S12000042"
     },
     "DurhamCouncil": {
+        "postcode": "DH7 6TH",
+        "house_number": "2",
         "LAD24CD": "E06000047",
         "skip_get_url": true,
         "uprn": "200003218818",
         "url": "https://www.durham.gov.uk/bincollections?uprn=",
+        "web_driver": "http://localhost:4444",
         "wiki_name": "County Durham",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required."
     },
     "EalingCouncil": {
         "skip_get_url": true,

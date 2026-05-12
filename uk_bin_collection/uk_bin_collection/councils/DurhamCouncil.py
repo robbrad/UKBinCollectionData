@@ -3,28 +3,81 @@ from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+AJAX_URL = "https://www.durham.gov.uk/apiserver/ajaxlibrary/"
 
-# import the wonderful Beautiful Soup and the URL grabber
+
+def _resolve_uprn_from_postcode(postcode, paon=None):
+    """Use Durham's JSON-RPC PostcodeLookup to find UPRN from postcode + house number."""
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "durham.Localities.PostcodeLookup",
+        "params": {"postcode": postcode},
+        "id": "1",
+        "name": "V2 AJAX End Point Library Worker",
+    }
+    resp = requests.post(AJAX_URL, json=payload, timeout=30)
+    resp.raise_for_status()
+    result_xml = resp.json().get("result", "")
+
+    uprns = re.findall(r"<uprn[^>]*>([^<]+)</uprn>", result_xml)
+    addrs = re.findall(r"<formatted_address[^>]*>([^<]+)</formatted_address>", result_xml)
+    if not uprns:
+        raise ValueError(f"No addresses found for postcode: {postcode}")
+
+    entries = []
+    for u, a in zip(uprns, addrs):
+        entries.append({"address": a, "uprn": u})
+
+    if paon:
+        paon_norm = str(paon).strip().upper()
+        for entry in entries:
+            addr = entry["address"].upper()
+            if addr.startswith(paon_norm + " ") or addr.startswith(paon_norm + ","):
+                return entry["uprn"]
+        for entry in entries:
+            addr = entry["address"].upper()
+            if paon_norm in addr:
+                return entry["uprn"]
+
+    return entries[0]["uprn"]
+
+
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-        url = "https://www.durham.gov.uk/bincollections?uprn="
-        uprn = kwargs.get("uprn")
-        check_uprn(uprn)
-        url += uprn
-        requests.packages.urllib3.disable_warnings()
-        page = requests.get(url)
+        user_uprn = kwargs.get("uprn")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        headless = kwargs.get("headless")
+        web_driver = kwargs.get("web_driver")
 
-        # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
+        if not user_uprn and user_postcode:
+            user_uprn = _resolve_uprn_from_postcode(user_postcode, user_paon)
+
+        if not user_uprn:
+            raise ValueError("Could not resolve address. Provide a postcode or UPRN.")
+
+        url = f"https://www.durham.gov.uk/bincollections?uprn={user_uprn}"
+
+        driver = create_webdriver(web_driver, headless, None, __name__)
+        try:
+            driver.get(url)
+
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, ".binsrubbish, .binsrecycling")
+                )
+            )
+
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
+        finally:
+            driver.quit()
 
         data = {"bins": []}
 
@@ -35,15 +88,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_text = bin_info.get_text(strip=True)
 
                 if collection_text:
-                    results = re.search("\\d\\d? [A-Za-z]+ \\d{4}", collection_text)
+                    results = re.search(r"\d\d? [A-Za-z]+ \d{4}", collection_text)
                     if results:
                         date = datetime.strptime(results[0], "%d %B %Y")
-                        if date:
-                            data["bins"].append(
-                                {
-                                    "type": bin_type,
-                                    "collectionDate": date.strftime(date_format),
-                                }
-                            )
+                        data["bins"].append(
+                            {
+                                "type": bin_type,
+                                "collectionDate": date.strftime(date_format),
+                            }
+                        )
 
         return data
