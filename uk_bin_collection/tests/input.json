@@ -2716,11 +2716,13 @@
         "LAD24CD": "S12000040"
     },
     "WestMorlandAndFurness": {
-        "uprn": "100110353478",
+        "postcode": "LA9 4QU",
+        "house_number": "23",
+        "uprn": "100110698636",
         "url": "https://www.westmorlandandfurness.gov.uk/",
         "wiki_command_url_override": "https://www.westmorlandandfurness.gov.uk/",
         "wiki_name": "Westmorland and Furness",
-        "wiki_note": "Provide your UPRN. You can find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required.",
         "LAD24CD": "E06000064"
     },
     "WestNorthamptonshireCouncil": {
