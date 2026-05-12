@@ -2819,10 +2819,11 @@
     },
     "WolverhamptonCityCouncil": {
         "postcode": "WV3 9NZ",
+        "house_number": "32",
         "uprn": "100071205205",
         "url": "https://www.wolverhampton.gov.uk",
         "wiki_name": "Wolverhampton",
-        "wiki_note": "Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN.",
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required.",
         "LAD24CD": "E08000031"
     },
     "WorcesterCityCouncil": {
