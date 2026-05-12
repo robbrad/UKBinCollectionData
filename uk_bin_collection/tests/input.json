@@ -1754,14 +1754,14 @@
         "LAD24CD": "E06000012"
     },
     "NorthHertfordshireDistrictCouncil": {
-            "house_number": "Stewards Flat",
-            "postcode": "SG5 1PZ",
-            "skip_get_url": true,
-            "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
-            "web_driver": "http://selenium:4444",
-            "wiki_name": "North Hertfordshire",
-            "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
-            "LAD24CD": "E07000099"
+        "house_number": "Stewards Flat",
+        "postcode": "SG5 1PZ",
+        "skip_get_url": true,
+        "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "North Hertfordshire",
+        "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
+        "LAD24CD": "E07000099"
     },
     "NorthKestevenDistrictCouncil": {
         "skip_get_url": true,
@@ -2877,5 +2877,14 @@
         "wiki_name": "York",
         "wiki_note": "Provide your UPRN.",
         "LAD24CD": "E06000014"
+    },
+    "BassetlawDistrictCouncil": {
+        "LAD24CD": "E07000171",
+        "house_number": "2 Albert Road",
+        "postcode": "DN22 6JD",
+        "skip_get_url": true,
+        "uprn": "",
+        "url": "https://www.bassetlaw.gov.uk",
+        "wiki_name": "Bassetlaw"
     }
 }
