@@ -1403,10 +1403,11 @@
     "LondonBoroughCamdenCouncil": {
         "uprn": "5063139",
         "postcode": "NW6 1PL",
+        "house_number": "27",
         "skip_get_url": true,
-        "url": "https://environmentservices.camden.gov.uk/property",
+        "url": "https://recyclingandrubbishcollections.camden.gov.uk",
         "wiki_name": "Camden",
-        "wiki_note": "Pass the property ID as UPRN. Find your property at https://www.camden.gov.uk/check-collection-day then use the property ID from the URL (e.g., https://environmentservices.camden.gov.uk/property/5063139).",
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required.",
         "LAD24CD": "E09000007"
     },
     "LondonBoroughEaling": {
