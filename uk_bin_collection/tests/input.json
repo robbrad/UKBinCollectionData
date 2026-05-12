@@ -1656,7 +1656,9 @@
         "url": "https://bindayfinder.moray.gov.uk/",
         "wiki_name": "Moray",
         "wiki_note": "Find your property ID by going to (https://bindayfinder.moray.gov.uk), search for your property and extracting the ID from the URL. i.e. (https://bindayfinder.moray.gov.uk/disp_bins.php?id=00028841)",
-        "LAD24CD": "S12000020"
+        "LAD24CD": "S12000020",
+        "postcode": "IV30 1NZ",
+        "house_number": "41 Mayne Road"
     },
     "NeathPortTalbotCouncil": {
         "house_number": "2",
@@ -1754,14 +1756,14 @@
         "LAD24CD": "E06000012"
     },
     "NorthHertfordshireDistrictCouncil": {
-            "house_number": "Stewards Flat",
-            "postcode": "SG5 1PZ",
-            "skip_get_url": true,
-            "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
-            "web_driver": "http://selenium:4444",
-            "wiki_name": "North Hertfordshire",
-            "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
-            "LAD24CD": "E07000099"
+        "house_number": "Stewards Flat",
+        "postcode": "SG5 1PZ",
+        "skip_get_url": true,
+        "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "North Hertfordshire",
+        "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
+        "LAD24CD": "E07000099"
     },
     "NorthKestevenDistrictCouncil": {
         "skip_get_url": true,
