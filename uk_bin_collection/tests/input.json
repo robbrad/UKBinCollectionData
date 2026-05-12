@@ -405,13 +405,13 @@
         "LAD24CD": "E08000002"
     },
     "CalderdaleCouncil": {
-        "postcode": "OL14 7EX",
+        "postcode": "HX3 5EQ",
+        "house_number": "95",
+        "uprn": "100051326778",
         "skip_get_url": true,
-        "uprn": "010035034598",
         "url": "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Calderdale",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required. No Selenium needed.",
         "LAD24CD": "E08000033"
     },
     "CambridgeCityCouncil": {

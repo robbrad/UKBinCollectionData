@@ -1,123 +1,122 @@
-# This script pulls (in one hit) the data from Bromley Council Bins Data
-import datetime
-import time
+import re
 from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
+def _match_address(options, uprn=None, paon=None):
+    """Match an address option by UPRN or house number/name.
+    Returns the UPRN value from the matched option."""
+    valid = [(opt["value"], opt.text.strip()) for opt in options if opt.get("value")]
+    if not valid:
+        raise ValueError("No addresses in dropdown")
+
+    if uprn:
+        uprn_str = str(uprn).zfill(12)
+        for val, _ in valid:
+            if val == uprn_str:
+                return val
+
+    if paon:
+        paon_norm = str(paon).strip().upper()
+        for val, text in valid:
+            text_upper = text.upper()
+            if text_upper.startswith(paon_norm + " ") or text_upper.startswith(paon_norm + ","):
+                return val
+        for val, text in valid:
+            if paon_norm in text.upper():
+                return val
+
+    return valid[0][0]
+
+
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            user_uprn = kwargs.get("uprn")
-            user_postcode = kwargs.get("postcode")
-            check_uprn(user_uprn)
-            check_postcode(user_postcode)
+        user_uprn = kwargs.get("uprn")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        check_postcode(user_postcode)
 
-            bin_data_dict = {"bins": []}
-            collections = []
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
+        base_url = "https://www.calderdale.gov.uk/environment/waste/household-collections/collectiondayfinder.jsp"
 
-            data = {"bins": []}
+        session = requests.Session()
+        session.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+            }
+        )
 
-            # Get our initial session running
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(kwargs.get("url"))
+        # Step 1: POST postcode to get address list
+        resp = session.post(
+            base_url,
+            data={
+                "postcode": user_postcode,
+                "email-address": "",
+                "find": "Find an address for this postcode",
+            },
+        )
+        resp.raise_for_status()
 
-            wait = WebDriverWait(driver, 30)
-            postcode = wait.until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="pPostcode"]'))
-            )
+        soup = BeautifulSoup(resp.text, "html.parser")
+        select_el = soup.find("select", {"id": "uprn"})
+        if not select_el:
+            raise ValueError(f"No addresses found for postcode: {user_postcode}")
 
-            postcode.send_keys(user_postcode)
-            postcode_search_btn = wait.until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "searchbox_submit"))
-            )
-            postcode_search_btn.send_keys(Keys.ENTER)
-            # Wait for the 'Select your property' dropdown to appear and select the first result
-            dropdown = wait.until(EC.element_to_be_clickable((By.ID, "uprn")))
+        options = select_el.find_all("option")
+        matched_uprn = _match_address(options, uprn=user_uprn, paon=user_paon)
 
-            # Create a 'Select' for it, then select the first address in the list
-            # (Index 0 is "Make a selection from the list")
-            dropdownSelect = Select(dropdown)
-            dropdownSelect.select_by_value(str(user_uprn))
-            checkbox = wait.until(EC.presence_of_element_located((By.ID, "gdprTerms")))
-            checkbox.send_keys(Keys.SPACE)
-            get_bin_data_btn = wait.until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "searchbox_submit"))
-            )
-            get_bin_data_btn.send_keys(Keys.ENTER)
-            # Make a BS4 object
-            results = wait.until(EC.presence_of_element_located((By.ID, "collection")))
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
+        # Step 2: POST with UPRN to get collection data
+        resp = session.post(
+            base_url,
+            data={
+                "postcode": user_postcode,
+                "email-address": "",
+                "uprn": matched_uprn,
+                "gdprTerms": "Yes",
+                "privacynoticeid": "323",
+                "find": "Show me my collection days",
+            },
+        )
+        resp.raise_for_status()
 
-            data = {"bins": []}
+        soup = BeautifulSoup(resp.text, "html.parser")
+        table = soup.find("table", {"id": "collection"})
+        if not table:
+            raise ValueError("Collection table not found in response")
 
-            # Get collections
-            row_index = 0
-            for row in soup.find("table", {"id": "collection"}).find_all("tr"):
-                # Skip headers row
-                if row_index < 1:
-                    row_index += 1
-                    continue
-                else:
-                    # Get bin info
-                    bin_info = row.find_all("td")
-                    # Get the bin type
-                    bin_type = bin_info[0].find("strong").get_text(strip=True)
-                    # Get the collection date
-                    collection_date = ""
-                    for p in bin_info[2].find_all("p"):
-                        if "your next collection" in p.get_text(strip=True):
-                            collection_date = datetime.strptime(
-                                " ".join(
-                                    p.get_text(strip=True)
-                                    .replace("will be your next collection.", "")
-                                    .split()
-                                ),
-                                "%A %d %B %Y",
-                            )
+        data = {"bins": []}
 
-                    if collection_date != "":
-                        # Append the bin type and date to the data dict
-                        dict_data = {
-                            "type": bin_type,
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
+        for row in table.find_all("tr"):
+            bin_info = row.find_all("td")
+            if not bin_info:
+                continue
 
-                    row_index += 1
+            strong = bin_info[0].find("strong")
+            if not strong:
+                continue
+            bin_type = strong.get_text(strip=True)
 
-            data["bins"].sort(
-                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
-            )
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
+            for p in bin_info[-1].find_all("p"):
+                text = p.get_text(strip=True)
+                if "will be your next collection" in text:
+                    date_text = text.replace("will be your next collection.", "").strip()
+                    date_text = " ".join(date_text.split())
+                    try:
+                        parsed = datetime.strptime(date_text, "%A %d %B %Y")
+                        data["bins"].append(
+                            {
+                                "type": bin_type,
+                                "collectionDate": parsed.strftime(date_format),
+                            }
+                        )
+                    except ValueError:
+                        continue
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
         return data
