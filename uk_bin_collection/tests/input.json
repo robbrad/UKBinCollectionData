@@ -231,12 +231,13 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "BlackpoolCouncil": {
-        "uprn": "100010813607",
+        "house_number": "61",
         "postcode": "FY3 8EB",
+        "skip_get_url": true,
+        "uprn": "100010813607",
         "url": "https://www.blackpool.gov.uk/",
-        "wiki_command_url_override": "https://www.blackpool.gov.uk/",
         "wiki_name": "Blackpool",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
+        "wiki_note": "Provide postcode and house number. UPRN also accepted.",
         "LAD24CD": "E06000009"
     },
     "BlaenauGwentCountyBoroughCouncil": {

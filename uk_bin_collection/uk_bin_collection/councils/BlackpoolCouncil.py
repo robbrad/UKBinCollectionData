@@ -1,106 +1,91 @@
-import time
-
 import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+API_BASE = "https://api.blackpool.gov.uk/live//api/bartec"
 
-# import the wonderful Beautiful Soup and the URL grabber
+HEADERS = {
+    "Accept": "*/*",
+    "Origin": "https://www.blackpool.gov.uk",
+    "Referer": "https://www.blackpool.gov.uk/",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+}
+
+
+def _get_token():
+    r = requests.get(f"{API_BASE}/security/token", headers=HEADERS, timeout=30)
+    r.raise_for_status()
+    return r.text.strip().replace('"', "")
+
+
+def _make_payload(uprn, postcode, token):
+    return {
+        "UPRN": uprn or "",
+        "USRN": "",
+        "PostCode": postcode or "",
+        "StreetNumber": "",
+        "CurrentUser": {"UserId": "", "Token": token},
+    }
+
+
+def _find_uprn_by_address(postcode, paon, token):
+    payload = _make_payload("", postcode, token)
+    r = requests.post(f"{API_BASE}/collection/Premises", headers=HEADERS, json=payload, timeout=30)
+    r.raise_for_status()
+    premises = r.json().get("premisesField") or []
+
+    paon_lower = (paon or "").strip().lower()
+    for p in premises:
+        addr = p.get("addressField", {})
+        house_num = (addr.get("address2Field") or "").strip().lower()
+        if paon_lower and house_num == paon_lower:
+            uprn_val = p.get("uPRNField")
+            if uprn_val:
+                return str(int(uprn_val))
+
+    return None
+
+
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-
-        """
-        Retrieve and parse bin collection entries for a property using UPRN and postcode.
-        
-        Parameters:
-            page (str): Unused parameter retained for interface compatibility.
-            uprn (str, in kwargs): Property UPRN used to look up collections.
-            postcode (str, in kwargs): Property postcode used to look up collections.
-        
-        Returns:
-            dict: A dictionary with a single key "bins" mapping to a list of collection records.
-                  Each record is a dict with:
-                    - "type": collection type or description.
-                    - "collectionDate": collection date formatted according to the module's date_format.
-        
-        Raises:
-            requests.HTTPError: If any of the HTTP requests return a non-success status.
-        """
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        check_uprn(user_uprn)
+        user_paon = kwargs.get("paon")
         check_postcode(user_postcode)
         bindata = {"bins": []}
 
-        headers = {
-            "Accept": "*/*",
-            "Accept-Language": "en-GB,en;q=0.9",
-            "Connection": "keep-alive",
-            "DNT": "1",
-            "Origin": "https://www.blackpool.gov.uk",
-            "Referer": "https://www.blackpool.gov.uk/",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-site",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
-            "sec-ch-ua": '"Google Chrome";v="141", "Not?A_Brand";v="8", "Chromium";v="141"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-        }
+        token = _get_token()
 
-        response = requests.get(
-            "https://api.blackpool.gov.uk/live//api/bartec/security/token",
-            headers=headers,
-            timeout=30,
-        )
-        response.raise_for_status()
+        result = None
+        if user_uprn:
+            payload = _make_payload(user_uprn, user_postcode, token)
+            r = requests.post(f"{API_BASE}/collection/PremiseJobs", headers=HEADERS, json=payload, timeout=30)
+            r.raise_for_status()
+            result = r.json()
 
-        token = response.text.strip().replace('"', "")
+        if not result or not result.get("jobsField"):
+            resolved = _find_uprn_by_address(user_postcode, user_paon, token)
+            if resolved and resolved != str(user_uprn):
+                payload = _make_payload(resolved, user_postcode, token)
+                r = requests.post(f"{API_BASE}/collection/PremiseJobs", headers=HEADERS, json=payload, timeout=30)
+                r.raise_for_status()
+                result = r.json()
 
-        json_data = {
-            "UPRN": user_uprn,
-            "USRN": "",
-            "PostCode": user_postcode,
-            "StreetNumber": "",
-            "CurrentUser": {
-                "UserId": "",
-                "Token": token,
-            },
-        }
+        if not result or not result.get("jobsField"):
+            return bindata
 
-        response = requests.post(
-            "https://api.blackpool.gov.uk/live//api/bartec/collection/PremiseJobs",
-            headers=headers,
-            json=json_data,
-            timeout=30,
-        )
-        response.raise_for_status()
-
-        # Parse the JSON response
-        bin_collection = response.json()
-
-        # Loop through each collection in bin_collection
-        for collection in bin_collection["jobsField"]:
-
-            job = collection["jobField"]
+        for collection in result["jobsField"]:
+            job = collection.get("jobField", {})
             date = job.get("scheduledStartField")
             bin_type = job.get("nameField", "") or job.get("descriptionField", "")
+            if not date or not bin_type:
+                continue
 
-            dict_data = {
+            bindata["bins"].append({
                 "type": bin_type,
-                "collectionDate": datetime.strptime(
-                    date,
-                    "%Y-%m-%dT%H:%M:%S",
-                ).strftime(date_format),
-            }
-            bindata["bins"].append(dict_data)
+                "collectionDate": datetime.strptime(date, "%Y-%m-%dT%H:%M:%S").strftime(date_format),
+            })
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
