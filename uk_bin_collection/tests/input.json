@@ -2863,11 +2863,12 @@
         "LAD24CD": "E07000128"
     },
     "WyreForestDistrictCouncil": {
-        "house_number": "Monday",
+        "house_number": "Lea Street",
+        "postcode": "DY10 1SN",
         "skip_get_url": true,
-        "url": "https://www.wyreforestdc.gov.uk",
+        "url": "http://www.wyreforest.gov.uk/querybin.asp",
         "wiki_name": "Wyre Forest",
-        "wiki_note": "Use the House Number field to pass the DAY of the week for your collections. [Monday/Tuesday/Wednesday/Thursday/Friday/Saturday/Sunday].",
+        "wiki_note": "Use the House Number field to pass the STREET NAME (e.g. Lea Street). Postcode is also required.",
         "LAD24CD": "E07000239"
     },
     "YorkCouncil": {
