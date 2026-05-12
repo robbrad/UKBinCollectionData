@@ -2570,11 +2570,13 @@
         "LAD24CD": "E07000077"
     },
     "ValeofGlamorganCouncil": {
+        "postcode": "CF63 4AE",
+        "house_number": "3",
         "skip_get_url": true,
         "uprn": "64029020",
         "url": "https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/",
         "wiki_name": "The Vale of Glamorgan",
-        "wiki_note": "Provide your UPRN. Find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required.",
         "LAD24CD": "W06000014"
     },
     "ValeofWhiteHorseCouncil": {
