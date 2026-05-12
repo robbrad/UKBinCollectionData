@@ -1485,11 +1485,13 @@
         "LAD24CD": "E09000026"
     },
     "LondonBoroughSutton": {
+        "house_number": "54",
+        "postcode": "SM1 4BJ",
+        "skip_get_url": true,
         "uprn": "4473006",
         "url": "https://waste-services.sutton.gov.uk/waste",
-        "wiki_command_url_override": "https://waste-services.sutton.gov.uk/waste",
         "wiki_name": "Sutton",
-        "wiki_note": "You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN",
+        "wiki_note": "Provide postcode and house number. Sutton-specific UPRN (from URL) also accepted.",
         "LAD24CD": "E09000029"
     },
     "LutonBoroughCouncil": {
