@@ -1,7 +1,9 @@
 import requests
-from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+BASE_URL = "https://recyclingandrubbishcollections.camden.gov.uk/api"
+COUNCIL_ID = "27"
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -15,51 +17,69 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
         check_postcode(user_postcode)
 
-        # Build the property URL
-        property_url = f"https://environmentservices.camden.gov.uk/property/{user_uprn}"
+        headers = {"Content-Type": "application/json"}
 
-        # Make the request
-        response = requests.get(property_url)
-        response.raise_for_status()
+        # Step 1: Search by postcode to resolve property ID
+        search_resp = requests.post(
+            f"{BASE_URL}/getPropertySearch",
+            json={"councilId": COUNCIL_ID, "searchQuery": user_postcode},
+            headers=headers,
+            timeout=30,
+        )
+        search_resp.raise_for_status()
+        search_data = search_resp.json()
 
-        # Parse the HTML
-        soup = BeautifulSoup(response.content, "html.parser")
+        properties = search_data.get("data", [])
+        if not properties:
+            raise ValueError(f"No properties found for postcode: {user_postcode}")
+
+        # Match by UPRN
+        point_id = None
+        for prop in properties:
+            if str(prop.get("uprn", "")) == str(user_uprn):
+                point_id = prop["id"]
+                break
+
+        # Fallback: first property if UPRN not matched
+        if not point_id:
+            point_id = properties[0]["id"]
+
+        # Step 2: Get collection days
+        collection_resp = requests.post(
+            f"{BASE_URL}/getCollectionDays",
+            json={
+                "pointId": str(point_id),
+                "pointType": "PointAddress",
+                "councilId": COUNCIL_ID,
+            },
+            headers=headers,
+            timeout=30,
+        )
+        collection_resp.raise_for_status()
+        collection_data = collection_resp.json()
 
         data = {"bins": []}
+        now = datetime.now()
 
-        # Find all service wrappers
-        service_wrappers = soup.find_all("div", class_="service-wrapper")
+        for service in collection_data.get("activeServices", []):
+            bin_type = service.get("serviceName", "Unknown")
 
-        for service in service_wrappers:
-            # Get the service name (bin type)
-            service_name_elem = service.find("h3", class_="service-name")
-            if not service_name_elem:
-                continue
+            for schedule in service.get("serviceSchedules", []):
+                date_str = schedule.get("currentScheduledDate")
+                if not date_str:
+                    continue
 
-            bin_type = service_name_elem.get_text(strip=True)
-            # Remove "Add to my calendar" text if present
-            bin_type = bin_type.replace("Add to my calendar", "").strip()
+                collection_date = datetime.fromisoformat(date_str)
+                if collection_date.date() >= now.date():
+                    data["bins"].append(
+                        {
+                            "type": bin_type,
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                    )
 
-            # Find the next collection date
-            next_collection_elem = service.find("td", class_="next-service")
-            if not next_collection_elem:
-                continue
-
-            next_collection_date = next_collection_elem.get_text(strip=True)
-
-            # Parse the date (format: dd/mm/yyyy)
-            try:
-                collection_date = datetime.strptime(
-                    next_collection_date, "%d/%m/%Y"
-                )
-                data["bins"].append(
-                    {
-                        "type": bin_type,
-                        "collectionDate": collection_date.strftime(date_format),
-                    }
-                )
-            except ValueError:
-                # Skip if date parsing fails
-                continue
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
         return data
