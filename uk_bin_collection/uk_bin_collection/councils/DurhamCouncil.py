@@ -1,30 +1,37 @@
 import re
 from datetime import datetime
 
-import requests
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-        url = "https://www.durham.gov.uk/bincollections?uprn="
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
-        url += uprn
-        requests.packages.urllib3.disable_warnings()
-        page = requests.get(url)
+        headless = kwargs.get("headless")
+        web_driver = kwargs.get("web_driver")
 
-        # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
+        url = f"https://www.durham.gov.uk/bincollections?uprn={uprn}"
+
+        driver = create_webdriver(web_driver, headless, None, __name__)
+        try:
+            driver.get(url)
+
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, ".binsrubbish, .binsrecycling")
+                )
+            )
+
+            soup = BeautifulSoup(driver.page_source, features="html.parser")
+        finally:
+            driver.quit()
 
         data = {"bins": []}
 
@@ -35,15 +42,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_text = bin_info.get_text(strip=True)
 
                 if collection_text:
-                    results = re.search("\\d\\d? [A-Za-z]+ \\d{4}", collection_text)
+                    results = re.search(r"\d\d? [A-Za-z]+ \d{4}", collection_text)
                     if results:
                         date = datetime.strptime(results[0], "%d %B %Y")
-                        if date:
-                            data["bins"].append(
-                                {
-                                    "type": bin_type,
-                                    "collectionDate": date.strftime(date_format),
-                                }
-                            )
+                        data["bins"].append(
+                            {
+                                "type": bin_type,
+                                "collectionDate": date.strftime(date_format),
+                            }
+                        )
 
         return data

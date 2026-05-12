@@ -717,8 +717,9 @@
         "skip_get_url": true,
         "uprn": "200003218818",
         "url": "https://www.durham.gov.uk/bincollections?uprn=",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "County Durham",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Pass the UPRN. Uses Selenium to render JS-populated bin data."
     },
     "EalingCouncil": {
         "skip_get_url": true,
