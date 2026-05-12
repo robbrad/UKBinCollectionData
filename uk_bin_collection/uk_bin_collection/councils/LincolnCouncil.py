@@ -6,7 +6,6 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -18,9 +17,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        check_uprn(user_uprn)
+        user_paon = kwargs.get("paon")
         check_postcode(user_postcode)
         bindata = {"bins": []}
+
+        # Lincoln's AchieveForms API requires 12-digit zero-padded UPRNs
+        if user_uprn:
+            user_uprn = user_uprn.zfill(12)
 
         SESSION_URL = "https://contact.lincoln.gov.uk/authapi/isauthenticated?uri=https://contact.lincoln.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196/AF-Stage-a1c0af0f-fec1-4419-80c0-0dd4e1d965c9/definition.json&process=1&process_uri=sandbox-processes://AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196&process_id=AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196&hostname=contact.lincoln.gov.uk&withCredentials=true"
 
@@ -29,7 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {
             "formValues": {
                 "Section 1": {
-                    "chooseaddress": {"value": user_uprn},
+                    "chooseaddress": {"value": user_uprn or ""},
                     "postcode": {"value": user_postcode},
                 }
             },
@@ -54,7 +57,6 @@ class CouncilClass(AbstractGetBinDataClass):
             "getOnlyTokens": "undefined",
             "log_id": "",
             "app_name": "AF-Renderer::Self",
-            # unix_timestamp
             "_": str(int(time.time() * 1000)),
             "sid": sid,
         }
@@ -66,6 +68,14 @@ class CouncilClass(AbstractGetBinDataClass):
         if not isinstance(rows_data, dict):
             raise ValueError("Invalid data returned from API")
 
+        # Resolve which UPRN to use
+        if user_uprn:
+            target_uprn = user_uprn
+        elif user_paon and len(rows_data) > 1:
+            target_uprn = self._match_by_paon(rows_data, user_paon)
+        else:
+            target_uprn = next(iter(rows_data))
+
         BIN_TYPES = [
             ("refusenextdate", "Black Bin", "refuse_freq"),
             ("recyclenextdate", "Brown Bin", "recycle_freq"),
@@ -73,7 +83,7 @@ class CouncilClass(AbstractGetBinDataClass):
         ]
 
         for uprn, data in rows_data.items():
-            if uprn != user_uprn:
+            if uprn != target_uprn:
                 continue
             for key, bin_type, freq in BIN_TYPES:
                 if not data[key]:
@@ -94,3 +104,21 @@ class CouncilClass(AbstractGetBinDataClass):
                     bindata["bins"].append(dict_data)
 
         return bindata
+
+    @staticmethod
+    def _match_by_paon(rows_data, paon):
+        """Match address by house number/name using the display field."""
+        paon_norm = str(paon).strip().upper()
+
+        for uprn, data in rows_data.items():
+            display = str(data.get("display", "")).upper()
+            first_line = display.split("\n")[0].strip()
+            if first_line.startswith(paon_norm + " ") or first_line.startswith(paon_norm + ",") or first_line == paon_norm:
+                return uprn
+
+        for uprn, data in rows_data.items():
+            display = str(data.get("display", "")).upper()
+            if paon_norm in display:
+                return uprn
+
+        return next(iter(rows_data))
