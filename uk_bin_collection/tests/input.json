@@ -753,11 +753,13 @@
         "LAD24CD": "E07000009"
     },
     "EastDevonDC": {
-        "uprn": "010090909915",
+        "postcode": "EX10 8DP",
+        "house_number": "EGYPT",
+        "uprn": "010000273781",
         "url": "https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/",
         "skip_get_url": true,
         "wiki_name": "East Devon",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Provide your postcode and house number/name. UPRN is also accepted but no longer required.",
         "LAD24CD": "E07000040"
     },
     "EastDunbartonshireCouncil": {
