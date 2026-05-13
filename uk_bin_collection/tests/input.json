@@ -1292,6 +1292,15 @@
         "skip_get_url": true,
         "uprn": "200002649711"
     },
+    "IsleOfWightCouncil": {
+        "house_number": "101",
+        "postcode": "PO31 7LE",
+        "skip_get_url": true,
+        "url": "https://digitalservices.iow.gov.uk/wasteday",
+        "wiki_name": "Isle of Wight",
+        "wiki_note": "Pass postcode and house number. Uses Playwright for Blazor Server app. Downloads and parses PDF calendar for collection dates.",
+        "LAD24CD": "E06000046"
+    },
     "IslingtonCouncil": {
         "uprn": "5300094897",
         "postcode": "N1 1XR",
