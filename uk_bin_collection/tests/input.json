@@ -2688,6 +2688,16 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000039"
     },
+    "WestDevonBoroughCouncil": {
+        "house_number": "2 Bidders Cottage",
+        "postcode": "PL20 6DT",
+        "uprn": "10013755313",
+        "web_driver": "http://127.0.0.1:4444",
+        "url": "https://westdevon.fccenvironment.co.uk",
+        "wiki_name": "West Devon",
+        "wiki_note": "Provide postcode and house number, or UPRN.",
+        "LAD24CD": "E07000047"
+    },
     "WestLancashireBoroughCouncil": {
         "postcode": "WN8 0HR",
         "uprn": "10012343339",
