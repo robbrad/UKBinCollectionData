@@ -1520,10 +1520,12 @@
     },
     "MalvernHillsDC": {
         "skip_get_url": true,
-        "uprn": "100121348457",
+        "postcode": "WR14 1AA",
+        "house_number": "148",
+        "uprn": "100120606212",
         "url": "https://swict.malvernhills.gov.uk/mhdcroundlookup/HandleSearchScreen",
         "wiki_name": "Malvern Hills",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
+        "wiki_note": "Pass postcode and house number, or just the UPRN. The scraper resolves the UPRN from the council's own address lookup API.",
         "LAD24CD": "E07000235"
     },
     "ManchesterCityCouncil": {
