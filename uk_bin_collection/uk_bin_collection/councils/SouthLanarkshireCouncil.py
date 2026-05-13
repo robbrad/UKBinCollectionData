@@ -70,14 +70,21 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             for day in week_days:
                 for row in collection_schedule:
-                    schedule_type = row.find("th").get_text().strip()
+                    th_cell = row.find("th")
+                    td_cell = row.find("td")
+
+                    if th_cell is None or td_cell is None:
+                        continue
+
+                    schedule_type = th_cell.get_text().strip()
 
                     # collection schedule contains area name -> filter out
                     if schedule_type == "Area":
                         continue
 
-                    results2 = re.search("([^(]+)", row.find("td").get_text().strip())
-                    schedule_cadence = row.find("td").get_text().strip().split(" ")[1]
+                    td_text = td_cell.get_text(" ", strip=True)
+                    results2 = re.search("([^(]+)", td_text)
+                    schedule_cadence = td_text.split(" ", 1)[1] if " " in td_text else ""
                     if results2:
                         schedule_day = results2[1].strip()
                         for collection_type in week_collection_types:
