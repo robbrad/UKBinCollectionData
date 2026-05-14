@@ -1,3 +1,4 @@
+import logging
 import time
 from datetime import timedelta
 
@@ -6,6 +7,7 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+logger = logging.getLogger(__name__)
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -74,17 +76,27 @@ class CouncilClass(AbstractGetBinDataClass):
                     td_cell = row.find("td")
 
                     if th_cell is None or td_cell is None:
+                        logger.warning("Skipping schedule row with missing th or td cell")
                         continue
 
                     schedule_type = th_cell.get_text().strip()
 
                     # collection schedule contains area name -> filter out
                     if schedule_type == "Area":
+                        logger.debug("Skipping area row in collection schedule")
                         continue
 
                     td_text = td_cell.get_text(" ", strip=True)
                     results2 = re.search("([^(]+)", td_text)
-                    schedule_cadence = td_text.split(" ", 1)[1] if " " in td_text else ""
+
+                    if " " not in td_text:
+                        logger.warning(
+                            "Skipping schedule cadence parsing for unexpected schedule text: %s",
+                            td_text,
+                        )
+                        schedule_cadence = ""
+                    else:
+                        schedule_cadence = td_text.split(" ", 1)[1]
                     if results2:
                         schedule_day = results2[1].strip()
                         for collection_type in week_collection_types:
