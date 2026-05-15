@@ -1,4 +1,5 @@
 import datetime
+import re
 import time
 from datetime import datetime
 
@@ -9,6 +10,15 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+
+# Matches the council's date format e.g. "Thu 14 May 2026". A single <p>
+# can contain multiple dates separated by commas, and "Next Collection:" can
+# be prefixed with "Today - <date>" / "Tomorrow - <date>".
+_DATE_RE = re.compile(
+    r"\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) \d{1,2} "
+    r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}\b"
+)
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -114,29 +124,28 @@ class CouncilClass(AbstractGetBinDataClass):
                     p_tags = card.find_all("p")  # any <p>
 
                     for p_tag in p_tags:
-                        if p_tag.get_text().startswith("Frequency"):
+                        text = p_tag.get_text()
+                        if text.startswith("Frequency"):
                             continue
 
-                        # Collect text in p excluding the strong tag
-                        date_str = (p_tag.get_text()).split(":")[1].strip()
-
-                        # Handle multiple comma-separated dates
-                        for single_date in date_str.split(","):
-                            single_date = single_date.strip()
-                            if not single_date:
-                                continue
-                            # Strip leading day name prefix if present (e.g. "Mon 27 Apr 2026")
+                        # A single <p> can contain multiple dates — the
+                        # "Following Collections:" tag renders comma-separated
+                        # dates when the council has 3 upcoming collections,
+                        # and "Next Collection:" can be prefixed with
+                        # "Today - <date>". Pull every well-formed date out
+                        # of the text and emit one entry per date.
+                        for date_str in _DATE_RE.findall(text):
                             collection_date = datetime.strptime(
-                                single_date, "%a %d %b %Y"
+                                date_str, "%a %d %b %Y"
                             )
-
-                            dict_data = {
-                                "type": collection_type,
-                                "collectionDate": collection_date.strftime(
-                                    date_format
-                                ),
-                            }
-                            data["bins"].append(dict_data)
+                            data["bins"].append(
+                                {
+                                    "type": collection_type,
+                                    "collectionDate": collection_date.strftime(
+                                        date_format
+                                    ),
+                                }
+                            )
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
