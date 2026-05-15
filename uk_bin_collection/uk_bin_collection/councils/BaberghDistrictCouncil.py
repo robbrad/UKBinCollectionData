@@ -134,7 +134,23 @@ class CouncilClass(AbstractGetBinDataClass):
                         # and "Next Collection:" can be prefixed with
                         # "Today - <date>". Pull every well-formed date out
                         # of the text and emit one entry per date.
-                        for date_str in _DATE_RE.findall(text):
+                        matches = _DATE_RE.findall(text)
+
+                        # Fail loud if a collection-labelled line yields no
+                        # parseable dates. Silent drops here would freeze
+                        # downstream sensors on a future format change (a
+                        # bare regex miss is otherwise indistinguishable
+                        # from "no upcoming collection").
+                        if not matches and (
+                            text.startswith("Next Collection")
+                            or text.startswith("Following Collections")
+                        ):
+                            raise ValueError(
+                                f"No parseable dates in {collection_type!r} "
+                                f"collection line: {text!r}"
+                            )
+
+                        for date_str in matches:
                             collection_date = datetime.strptime(
                                 date_str, "%a %d %b %Y"
                             )
