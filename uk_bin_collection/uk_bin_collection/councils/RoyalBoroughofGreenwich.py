@@ -57,7 +57,8 @@ class CouncilClass(AbstractGetBinDataClass):
         URI = f"https://www.royalgreenwich.gov.uk/site/custom_scripts/apps/waste-collection/new2023/source.php?term={user_postcode}"
 
         # Make the GET request to retrieve the day of the week and black bin week for the address
-        response = requests.get(URI, headers=headers)
+        response = requests.get(URI, headers=headers, timeout=30)
+        response.raise_for_status()
 
         for address in response.json():
             if user_paon in address:
@@ -68,8 +69,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"address": collection_address}
 
-        response = requests.post(URI, data=data, headers=headers)
-
+        response = requests.post(URI, data=data, headers=headers, timeout=30)
+        response.raise_for_status()
         response = response.json()
 
         collection_day = response["Day"]
