@@ -2877,5 +2877,15 @@
         "wiki_name": "York",
         "wiki_note": "Provide your UPRN.",
         "LAD24CD": "E06000014"
+    },
+    "TorfaenCouncil": {
+        "house_number": "44 Wayfield Crescent",
+        "postcode": "NP44 1NH",
+        "skip_get_url": true,
+        "url": "https://www.torfaen.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Torfaen",
+        "wiki_note": "Pass house number and street as house_number, plus postcode. Uses iTouchVision portal with Selenium.",
+        "LAD24CD": "W06000020"
     }
 }
