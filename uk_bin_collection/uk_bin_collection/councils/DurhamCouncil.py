@@ -33,7 +33,7 @@ class CouncilClass(AbstractGetBinDataClass):
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 
         bin_types = {
-            "Empty Bin Refuse 240L": "Refuse",
+            "Empty Bin Refuse 240L": "Rubish",
             "Empty Bin Recycling 240L": "Recycling",
             "Empty Bin Organic 240L": "Garden Waste",
         }
