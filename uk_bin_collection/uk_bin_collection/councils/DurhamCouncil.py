@@ -1,3 +1,5 @@
+"""Bin collection scraper for Durham County Council."""
+
 import logging
 import re
 import warnings
@@ -11,14 +13,39 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 _LOGGER = logging.getLogger(__name__)
 
-warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
-
 
 class CouncilClass(AbstractGetBinDataClass):
-    # Durham exposes bin data via a JSON-RPC POST endpoint rather than a
-    # static page, so this scraper fetches its own data and ignores the
-    # `page` arg. input.json sets skip_get_url=true to avoid a wasted GET.
+    """Scraper for Durham County Council bin collection data.
+
+    Durham's public bin lookup page (durham.gov.uk/bincollections) is
+    rendered client-side from a JSON-RPC endpoint. This scraper bypasses
+    the rendered page and calls the JSON-RPC backend directly, parsing
+    the XML payload it returns.
+
+    The `page` argument to `parse_data` is unused; `input.json` sets
+    `skip_get_url=true` for this council so no upstream GET is made.
+    """
+
     def parse_data(self, page: str, **kwargs) -> dict:
+        """Fetch and parse upcoming bin collections for a Durham UPRN.
+
+        Args:
+            page: Unused. Required by the abstract base class signature
+                but ignored here — see class docstring.
+            **kwargs: Must contain `uprn` (Unique Property Reference
+                Number) identifying the property to look up.
+
+        Returns:
+            A dict in the project's standard schema:
+            ``{"bins": [{"type": str, "collectionDate": str}, ...]}``
+            where `collectionDate` is formatted per `common.date_format`
+            and only the next upcoming collection per bin type is
+            included.
+
+        Raises:
+            ValueError: If the JSON-RPC endpoint returns an error
+                response or an unexpected payload shape.
+        """
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
@@ -31,19 +58,28 @@ class CouncilClass(AbstractGetBinDataClass):
                 "id": "21",
                 "name": "V2 AJAX End Point Library Worker",
             },
+            timeout=30,
         )
         response.raise_for_status()
-        xml_string = response.json()["result"]
+        payload = response.json()
+        if "error" in payload:
+            raise ValueError(f"Durham JSON-RPC error: {payload['error']}")
+        xml_string = payload.get("result")
+        if not isinstance(xml_string, str):
+            raise ValueError("Unexpected Durham JSON-RPC response: missing result")
 
-        soup = BeautifulSoup(xml_string, "html.parser")
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", XMLParsedAsHTMLWarning)
+            soup = BeautifulSoup(xml_string, "html.parser")
+
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        
-        # Format comes back as, for example: "Empty Bin Refuse 240L" 
-        # Futureproof regex to match:
+
         # Optional "Empty Bin " prefix, capture bin label, optional " 240L"
-        # volume suffix. Whitespace is flexible throughout.
+        # volume suffix. Whitespace is flexible throughout. fullmatch() is
+        # used so unexpected leading/trailing content surfaces as a warning
+        # rather than being silently absorbed.
         name_pattern = re.compile(
-            r"(?:Empty\s+Bin\s+)?(.+?)(?:\s+\d+\s*[Ll])?$"
+            r"(?:Empty\s+Bin\s+)?(.+?)(?:\s+\d+\s*[Ll])?"
         )
 
         next_dates = {}
@@ -54,7 +90,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
 
             raw_name = name_tag.get_text(strip=True)
-            match = name_pattern.search(raw_name)
+            match = name_pattern.fullmatch(raw_name)
             if not match:
                 _LOGGER.warning("Could not parse bin name %r", raw_name)
                 continue
