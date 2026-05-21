@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
@@ -31,13 +32,6 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(xml_string, "html.parser")
 
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-
-        bin_types = {
-            "Empty Bin Refuse 240L": "Rubbish",
-            "Empty Bin Recycling 240L": "Recycling",
-            "Empty Bin Organic 240L": "Garden Waste",
-        }
-
         next_dates = {}
 
         for job in soup.find_all("job"):
@@ -47,8 +41,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
 
             raw_name = name_tag.get_text(strip=True)
-            if raw_name not in bin_types:
+            match = re.search(r"Empty Bin (.+?) \d+L", raw_name)
+            if not match:
                 continue
+
+            label = match.group(1)
 
             try:
                 scheduled = datetime.strptime(
@@ -60,7 +57,6 @@ class CouncilClass(AbstractGetBinDataClass):
             if scheduled < today:
                 continue
 
-            label = bin_types[raw_name]
             if label not in next_dates or scheduled < next_dates[label]:
                 next_dates[label] = scheduled
 
