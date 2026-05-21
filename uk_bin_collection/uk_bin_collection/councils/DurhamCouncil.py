@@ -1,19 +1,27 @@
+import logging
 import re
-from datetime import datetime
-import requests
-from bs4 import BeautifulSoup
-from bs4 import XMLParsedAsHTMLWarning
 import warnings
+from datetime import datetime
+
+import requests
+from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+_LOGGER = logging.getLogger(__name__)
+
+warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
+
 
 class CouncilClass(AbstractGetBinDataClass):
+    # Durham exposes bin data via a JSON-RPC POST endpoint rather than a
+    # static page, so this scraper fetches its own data and ignores the
+    # `page` arg. input.json sets skip_get_url=true to avoid a wasted GET.
     def parse_data(self, page: str, **kwargs) -> dict:
         uprn = kwargs.get("uprn")
         check_uprn(uprn)
 
-        requests.packages.urllib3.disable_warnings()
         response = requests.post(
             "https://www.durham.gov.uk/apiserver/ajaxlibrary/",
             json={
@@ -23,17 +31,22 @@ class CouncilClass(AbstractGetBinDataClass):
                 "id": "21",
                 "name": "V2 AJAX End Point Library Worker",
             },
-            verify=False,
         )
         response.raise_for_status()
-
         xml_string = response.json()["result"]
-        warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
+
         soup = BeautifulSoup(xml_string, "html.parser")
-
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        next_dates = {}
+        
+        # Format comes back as, for example: "Empty Bin Refuse 240L" 
+        # Futureproof regex to match:
+        # Optional "Empty Bin " prefix, capture bin label, optional " 240L"
+        # volume suffix. Whitespace is flexible throughout.
+        name_pattern = re.compile(
+            r"(?:Empty\s+Bin\s+)?(.+?)(?:\s+\d+\s*[Ll])?$"
+        )
 
+        next_dates = {}
         for job in soup.find_all("job"):
             name_tag = job.find("name")
             start_tag = job.find("scheduledstart")
@@ -41,22 +54,26 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
 
             raw_name = name_tag.get_text(strip=True)
-            match = re.search(r"Empty Bin (.+?) \d+L", raw_name)
+            match = name_pattern.search(raw_name)
             if not match:
+                _LOGGER.warning("Could not parse bin name %r", raw_name)
                 continue
-
-            label = match.group(1)
+            label = match.group(1).strip()
 
             try:
                 scheduled = datetime.strptime(
                     start_tag.get_text(strip=True)[:10], "%Y-%m-%d"
                 )
             except ValueError:
+                _LOGGER.warning(
+                    "Could not parse scheduled date %r for bin %r",
+                    start_tag.get_text(strip=True),
+                    raw_name,
+                )
                 continue
 
             if scheduled < today:
                 continue
-
             if label not in next_dates or scheduled < next_dates[label]:
                 next_dates[label] = scheduled
 
