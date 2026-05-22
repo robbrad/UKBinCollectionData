@@ -2879,11 +2879,11 @@
         "LAD24CD": "E06000014"
     },
     "WestminsterCityCouncil": {
+        "postcode": "SW1P 3BU",
         "skip_get_url": true,
-        "uprn": "8401405",
         "url": "https://transact.westminster.gov.uk/env/streetreport.aspx",
         "wiki_name": "Westminster City Council",
-        "wiki_note": "Westminster uses street-level USRN, not property UPRN. Pass the USRN as the uprn parameter. To find your USRN: visit https://transact.westminster.gov.uk/env/streetsearch.aspx, select your street, and note the USRN from the resulting URL.",
+        "wiki_note": "Pass postcode for auto USRN resolution, or pass USRN directly as uprn. Street-level (not address-level) collection schedules.",
         "LAD24CD": "E09000033"
     }
 }

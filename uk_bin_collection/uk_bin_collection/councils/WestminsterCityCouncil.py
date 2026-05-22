@@ -17,12 +17,19 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 # (multiple time windows per day) and weekly recycling. This scraper
 # outputs the next 7 days of collection dates for each service type.
 #
-# To find your USRN:
+# USRN resolution:
+#   - If "uprn" is provided in input.json, it's used directly as the USRN
+#     (backward compatible with manual lookup).
+#   - If "postcode" is provided instead, the scraper auto-resolves the USRN:
+#     1. postcodes.io -> lat/lng for the postcode
+#     2. Nominatim reverse geocode -> street name from coordinates
+#     3. Westminster street search dropdown -> USRN for that street
+#   - No API keys needed; all services are free and public.
+#
+# Manual USRN lookup (if needed):
 #   1. Visit https://transact.westminster.gov.uk/env/streetsearch.aspx
 #   2. Select your street from the dropdown
 #   3. After submitting, check the URL for the USRN parameter
-#
-# Pass the USRN as the "uprn" parameter in input.json.
 
 # Mapping of abbreviated day names to Python weekday numbers (Monday=0)
 DAY_ABBREV_MAP = {
@@ -36,6 +43,150 @@ DAY_ABBREV_MAP = {
 }
 
 LOOKAHEAD_DAYS = 14
+
+STREET_SEARCH_URL = "https://transact.westminster.gov.uk/env/streetsearch.aspx"
+STREET_REPORT_URL = "https://transact.westminster.gov.uk/env/streetreport.aspx"
+
+# Common UK road suffixes to strip for fuzzy matching
+_ROAD_SUFFIXES = re.compile(
+    r"\b(street|road|lane|avenue|drive|close|court|place|way|"
+    r"crescent|terrace|gardens|grove|mews|square|hill|rise|"
+    r"row|walk|yard|passage|alley|buildings)\b",
+    re.IGNORECASE,
+)
+
+
+def _normalise_street(name: str) -> str:
+    """Normalise a street name for fuzzy comparison.
+    Strips suffixes, apostrophes, hyphens, and collapses whitespace."""
+    s = name.strip().lower()
+    s = _ROAD_SUFFIXES.sub("", s)
+    s = re.sub(r"['\-]", "", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def _resolve_usrn_from_postcode(postcode: str, headers: dict) -> str:
+    """Resolve a Westminster USRN from a postcode.
+
+    Pipeline:
+      1. postcodes.io  -> lat/lng (free, no key)
+      2. Nominatim     -> street name from reverse geocode (free, 1 req/s)
+      3. Westminster street search dropdown -> USRN
+
+    Returns the USRN string or raises ValueError on failure.
+    """
+    # --- Step 1: postcode -> lat/lng via postcodes.io ---
+    pc_clean = postcode.strip().upper()
+    pc_url = f"https://api.postcodes.io/postcodes/{requests.utils.quote(pc_clean)}"
+    pc_resp = requests.get(pc_url, headers=headers, timeout=10)
+    pc_resp.raise_for_status()
+    pc_data = pc_resp.json()
+
+    if pc_data.get("status") != 200 or not pc_data.get("result"):
+        raise ValueError(
+            f"postcodes.io could not resolve postcode '{pc_clean}'. "
+            f"Check it is a valid Westminster postcode."
+        )
+
+    lat = pc_data["result"]["latitude"]
+    lng = pc_data["result"]["longitude"]
+
+    # Quick sanity check: admin_district should be Westminster
+    district = (pc_data["result"].get("admin_district") or "").lower()
+    if "westminster" not in district:
+        raise ValueError(
+            f"Postcode '{pc_clean}' is in '{pc_data['result'].get('admin_district')}', "
+            f"not Westminster. This scraper only covers Westminster City Council."
+        )
+
+    # --- Step 2: lat/lng -> street name via Nominatim reverse geocode ---
+    nom_url = (
+        f"https://nominatim.openstreetmap.org/reverse"
+        f"?lat={lat}&lon={lng}&format=json&addressdetails=1&zoom=17"
+    )
+    nom_resp = requests.get(
+        nom_url,
+        headers={**headers, "User-Agent": "UKBinCollectionData/1.0"},
+        timeout=10,
+    )
+    nom_resp.raise_for_status()
+    nom_data = nom_resp.json()
+
+    road = nom_data.get("address", {}).get("road")
+    if not road:
+        raise ValueError(
+            f"Nominatim could not determine a street name for postcode "
+            f"'{pc_clean}' (lat={lat}, lng={lng}). "
+            f"Try providing the USRN directly as the uprn parameter."
+        )
+
+    # --- Step 3: street name -> USRN via Westminster dropdown ---
+    search_resp = requests.get(STREET_SEARCH_URL, headers=headers, timeout=30)
+    search_resp.raise_for_status()
+
+    search_soup = BeautifulSoup(search_resp.text, features="html.parser")
+    select = search_soup.find("select", {"id": "dlstreets"})
+    if not select:
+        raise ValueError(
+            "Could not find the street dropdown on Westminster's street "
+            "search page. The page structure may have changed."
+        )
+
+    # Build lookup: normalised name -> (original name, USRN)
+    options = {}
+    for opt in select.find_all("option"):
+        val = opt.get("value", "").strip()
+        txt = opt.get_text(strip=True)
+        if val and txt:
+            options[_normalise_street(txt)] = (txt, val)
+
+    # Try exact match first (normalised)
+    road_norm = _normalise_street(road)
+    if road_norm in options:
+        return options[road_norm][1]
+
+    # Fuzzy: find best substring match
+    best_match = None
+    best_score = 0
+    for key, (orig, usrn) in options.items():
+        if not key:
+            continue
+        # Check if normalised road is a substring or vice versa
+        if road_norm in key or key in road_norm:
+            score = len(key)
+            if score > best_score:
+                best_score = score
+                best_match = (orig, usrn)
+
+    if best_match:
+        return best_match[1]
+
+    # Last resort: match on the first significant word (e.g. "Crawford" matches
+    # "Crawford Street", "Crawford Place", "Crawford Mews")
+    road_words = [w for w in road_norm.split() if len(w) > 2]
+    candidates = []
+    for key, (orig, usrn) in options.items():
+        if any(w in key for w in road_words):
+            candidates.append((orig, usrn))
+
+    if len(candidates) == 1:
+        return candidates[0][1]
+
+    if candidates:
+        names = ", ".join(c[0] for c in candidates[:5])
+        raise ValueError(
+            f"Multiple Westminster streets match '{road}': {names}. "
+            f"Please provide the USRN directly as the uprn parameter. "
+            f"Find it at {STREET_SEARCH_URL}"
+        )
+
+    raise ValueError(
+        f"Could not find '{road}' in Westminster's street list. "
+        f"The street may be too new or named differently. "
+        f"Please provide the USRN directly as the uprn parameter. "
+        f"Find it at {STREET_SEARCH_URL}"
+    )
 
 
 def _parse_day_list(day_text: str) -> list:
@@ -111,9 +262,8 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Westminster uses USRN (street-level ID), passed via the "uprn" kwarg
-        user_usrn = kwargs.get("uprn")
-        check_uprn(user_usrn)
+        usrn = (kwargs.get("uprn") or "").strip()
+        user_postcode = (kwargs.get("postcode") or "").strip()
 
         bindata = {"bins": []}
 
@@ -123,10 +273,18 @@ class CouncilClass(AbstractGetBinDataClass):
             "Chrome/130.0.0.0 Safari/537.36",
         }
 
-        url = (
-            "https://transact.westminster.gov.uk/env/streetreport.aspx"
-            f"?USRN={user_usrn}"
-        )
+        # Resolve USRN: use provided uprn directly, or auto-resolve from postcode
+        if usrn:
+            pass  # use as-is
+        elif user_postcode:
+            usrn = _resolve_usrn_from_postcode(user_postcode, headers)
+        else:
+            raise ValueError(
+                "Westminster requires either a USRN (as uprn) or a postcode. "
+                "Provide one in input.json."
+            )
+
+        url = f"{STREET_REPORT_URL}?USRN={usrn}"
 
         response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
@@ -141,7 +299,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         if not tables:
             raise ValueError(
-                f"No collection tables found for USRN {user_usrn}. "
+                f"No collection tables found for USRN {usrn}. "
                 f"Check the USRN is correct."
             )
 
@@ -218,7 +376,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         if not bindata["bins"]:
             raise ValueError(
-                f"No collection data found for USRN {user_usrn}. "
+                f"No collection data found for USRN {usrn}. "
                 f"This street may not have residential collections."
             )
 
