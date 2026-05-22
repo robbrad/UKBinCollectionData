@@ -1,65 +1,85 @@
 import json
 
-import requests
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Fenland's GIS layer endpoint is behind Cloudflare JS challenge.
+    Load the page in Selenium to pass the challenge, then fetch the
+    JSON API from within the browser context.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        headers = {
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "Accept-Language": "en-GB,en;q=0.7",
-            "Connection": "keep-alive",
-            "Content-Type": "application/json; charset=utf-8",
-            "Referer": "https://www.fenland.gov.uk/article/13114/?uprn=200002981143&lat=52.665569590474&lng=0.177905443639&postcode=PE13+3SL&line1=20+Felsted+Avenue&rad=5m&layers=2%2C3%2C1",
-            "Sec-Fetch-Dest": "empty",
-            "Sec-Fetch-Mode": "cors",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-GPC": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
-            "X-Requested-With": "XMLHttpRequest",
-        }
-
-        # It needs lat and lng for point data, but we don't need it >:)
-        params = {
-            "type": "loadlayer",
-            "layerId": "2",
-            "uprn": user_uprn,
-            "lat": "0.000000000001",
-            "lng": "0.000000000001",
-        }
-
-        requests.packages.urllib3.disable_warnings()
-        response = requests.get(
-            "https://www.fenland.gov.uk/article/13114/", params=params, headers=headers
+        headless = kwargs.get("headless")
+        web_driver = kwargs.get("web_driver")
+        user_agent = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
         )
+        driver = create_webdriver(web_driver, headless, user_agent, __name__)
 
-        # Returned data is just json, so we can get what we need
-        json_data = json.loads(response.text)["features"][0]["properties"]["upcoming"]
-        data = {"bins": []}
+        try:
+            driver.execute_cdp_cmd(
+                "Page.addScriptToEvaluateOnNewDocument",
+                {
+                    "source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+                },
+            )
 
-        for item in json_data:
-            collections_list = item["collections"]
-            for bin in collections_list:
-                bin_type = bin["desc"]
-                bin_date = datetime.strptime(
-                    bin["collectionDate"], "%Y-%m-%dT%H:%M:%SZ"
-                ).strftime(date_format)
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": bin_date,
-                }
-                data["bins"].append(dict_data)
+            page_url = "https://www.fenland.gov.uk/article/13114/"
+            driver.get(page_url)
 
-        return data
+            WebDriverWait(driver, 20).until(
+                lambda d: d.title != "Just a moment..."
+            )
+
+            api_url = (
+                f"/article/13114/?type=loadlayer&layerId=2"
+                f"&uprn={user_uprn}&lat=0.000000000001&lng=0.000000000001"
+            )
+
+            result = driver.execute_async_script(
+                """
+                var callback = arguments[arguments.length - 1];
+                fetch(arguments[0], {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(r => r.text())
+                .then(t => callback(t))
+                .catch(e => callback('ERROR: ' + e));
+                """,
+                api_url,
+            )
+
+            if result.startswith("ERROR:"):
+                raise ValueError(f"API fetch failed: {result}")
+
+            json_data = json.loads(result)["features"][0]["properties"]["upcoming"]
+            data = {"bins": []}
+
+            for item in json_data:
+                for bin_info in item["collections"]:
+                    data["bins"].append(
+                        {
+                            "type": bin_info["desc"],
+                            "collectionDate": datetime.strptime(
+                                bin_info["collectionDate"], "%Y-%m-%dT%H:%M:%SZ"
+                            ).strftime(date_format),
+                        }
+                    )
+
+            return data
+        finally:
+            driver.quit()
