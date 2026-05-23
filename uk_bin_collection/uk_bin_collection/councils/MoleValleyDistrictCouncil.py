@@ -23,10 +23,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
         json_data = response.json()
 
-        if len(json_data["results"]["features"]) == 0:
+        try:
+            features = json_data["results"]["features"]
+        except (TypeError, KeyError):
+            raise ValueError("Unexpected response format from Mole Valley API")
+
+        if len(features) == 0:
             raise ValueError("No collection data found for postcode provided.")
 
-        properties_found = json_data["results"]["features"]
+        properties_found = features
 
         html_data = None
         uprn = kwargs.get("uprn")
@@ -56,6 +61,8 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         panel = bins_panel.find_parent("div", class_="panel")
+        if panel is None:
+            raise ValueError("Could not find collection panel on page")
 
         for strong_tag in panel.find_all("strong"):
             if strong_tag.parent != panel:
