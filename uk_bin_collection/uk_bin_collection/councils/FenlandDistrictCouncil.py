@@ -66,7 +66,14 @@ class CouncilClass(AbstractGetBinDataClass):
             if result.startswith("ERROR:"):
                 raise ValueError(f"API fetch failed: {result}")
 
-            json_data = json.loads(result)["features"][0]["properties"]["upcoming"]
+            try:
+                data_resp = json.loads(result)
+            except (json.JSONDecodeError, TypeError):
+                raise ValueError("Invalid response from Fenland API")
+            if not data_resp.get("features"):
+                raise ValueError("No features found in API response")
+
+            json_data = data_resp["features"][0]["properties"]["upcoming"]
             data = {"bins": []}
 
             for item in json_data:
