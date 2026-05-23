@@ -70,7 +70,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             bin_date,
                         )
                     )
-                except Exception:
+                except (ValueError, TypeError):
                     continue
 
         for date in weekly_dates:
