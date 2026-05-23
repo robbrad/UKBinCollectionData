@@ -26,6 +26,10 @@ def _match_property(properties, uprn=None, paon=None):
             if paon_norm in name:
                 return prop["id"]
 
+    if uprn or paon:
+        raise ValueError(
+            f"Property not found for UPRN={uprn} PAON={paon}"
+        )
     return properties[0]["id"]
 
 
@@ -72,10 +76,14 @@ class CouncilClass(AbstractGetBinDataClass):
         collection_resp.raise_for_status()
         collection_data = collection_resp.json()
 
+        active_services = collection_data.get("activeServices")
+        if not isinstance(active_services, list):
+            raise ValueError("Unexpected API response format")
+
         data = {"bins": []}
         now = datetime.now()
 
-        for service in collection_data.get("activeServices", []):
+        for service in active_services:
             bin_type = service.get("serviceName", "Unknown")
 
             for schedule in service.get("serviceSchedules", []):
