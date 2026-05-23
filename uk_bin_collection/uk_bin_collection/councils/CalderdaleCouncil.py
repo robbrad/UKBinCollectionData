@@ -32,6 +32,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "email-address": "",
                 "find": "Find an address for this postcode",
             },
+            timeout=30,
         )
         resp.raise_for_status()
 
@@ -60,6 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "privacynoticeid": "323",
                 "find": "Show me my collection days",
             },
+            timeout=30,
         )
         resp.raise_for_status()
 
