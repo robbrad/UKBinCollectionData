@@ -15,7 +15,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 #
 # Westminster is unusual: most streets have DAILY rubbish collection
 # (multiple time windows per day) and weekly recycling. This scraper
-# outputs the next 7 days of collection dates for each service type.
+# outputs the next 14 days of collection dates for each service type.
 #
 # USRN resolution:
 #   - If "uprn" is provided in input.json, it's used directly as the USRN
@@ -133,23 +133,31 @@ def _resolve_usrn_from_postcode(postcode: str, headers: dict) -> str:
             "search page. The page structure may have changed."
         )
 
-    # Build lookup: normalised name -> (original name, USRN)
-    options = {}
+    # Build lookup: normalised name -> list of (original name, USRN)
+    from collections import defaultdict
+    options = defaultdict(list)
     for opt in select.find_all("option"):
         val = opt.get("value", "").strip()
         txt = opt.get_text(strip=True)
         if val and txt:
-            options[_normalise_street(txt)] = (txt, val)
+            options[_normalise_street(txt)].append((txt, val))
 
     # Try exact match first (normalised)
     road_norm = _normalise_street(road)
     if road_norm in options:
-        return options[road_norm][1]
+        if len(options[road_norm]) == 1:
+            return options[road_norm][0][1]
+        # Multiple streets with same normalised name - try original name match
+        for orig, usrn in options[road_norm]:
+            if orig.lower() == road.lower():
+                return usrn
+        # Fall back to first match
+        return options[road_norm][0][1]
 
     # Fuzzy: find best substring match
-    best_match = None
+    best_matches = []
     best_score = 0
-    for key, (orig, usrn) in options.items():
+    for key, entries in options.items():
         if not key:
             continue
         # Check if normalised road is a substring or vice versa
@@ -157,18 +165,26 @@ def _resolve_usrn_from_postcode(postcode: str, headers: dict) -> str:
             score = len(key)
             if score > best_score:
                 best_score = score
-                best_match = (orig, usrn)
+                best_matches = entries
+            elif score == best_score:
+                best_matches.extend(entries)
 
-    if best_match:
-        return best_match[1]
+    if len(best_matches) == 1:
+        return best_matches[0][1]
+    if best_matches:
+        # Try exact original name match among best matches
+        for orig, usrn in best_matches:
+            if orig.lower() == road.lower():
+                return usrn
+        return best_matches[0][1]
 
     # Last resort: match on the first significant word (e.g. "Crawford" matches
     # "Crawford Street", "Crawford Place", "Crawford Mews")
     road_words = [w for w in road_norm.split() if len(w) > 2]
     candidates = []
-    for key, (orig, usrn) in options.items():
+    for key, entries in options.items():
         if any(w in key for w in road_words):
-            candidates.append((orig, usrn))
+            candidates.extend(entries)
 
     if len(candidates) == 1:
         return candidates[0][1]
