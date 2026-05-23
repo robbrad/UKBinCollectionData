@@ -86,8 +86,9 @@ class CouncilClass(AbstractGetBinDataClass):
                             break
 
                 if not matched_uprn:
-                    first_entry = list(addresses.values())[0]
-                    matched_uprn = first_entry[0]
+                    raise ValueError(
+                        f"Could not match house number/name '{user_paon}' in address results for {user_postcode}"
+                    )
 
                 user_uprn = matched_uprn
 
