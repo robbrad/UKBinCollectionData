@@ -35,7 +35,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
 
         requests.packages.urllib3.disable_warnings()
 
@@ -68,24 +68,26 @@ class CouncilClass(AbstractGetBinDataClass):
         jsonp_pattern = r"import\((\{.*\})\)"
         json_match = re.search(jsonp_pattern, response, re.S)
 
-        if json_match:
-            json_data = json_match.group(1)
-            parsed_data = json.loads(json_data)
-            html_content = parsed_data["Results"]["Next_Bin_Collections"]["_"]
+        if not json_match:
+            raise ValueError("Failed to parse JSONP response from council API")
 
-            matches = re.findall(
-                r"<span.*?>(\d{2} \w+ \d{4})</span>.*?<span.*?>(.*?)</span>",
-                html_content,
-                re.S,
-            )
+        json_data = json_match.group(1)
+        parsed_data = json.loads(json_data)
+        html_content = parsed_data["Results"]["Next_Bin_Collections"]["_"]
 
-            for match in matches:
-                dict_data = {
-                    "type": match[1],
-                    "collectionDate": datetime.strptime(
-                        match[0], "%d %B %Y"
-                    ).strftime("%d/%m/%Y"),
-                }
-                data["bins"].append(dict_data)
+        matches = re.findall(
+            r"<span.*?>(\d{2} \w+ \d{4})</span>.*?<span.*?>(.*?)</span>",
+            html_content,
+            re.S,
+        )
+
+        for match in matches:
+            dict_data = {
+                "type": match[1],
+                "collectionDate": datetime.strptime(
+                    match[0], "%d %B %Y"
+                ).strftime("%d/%m/%Y"),
+            }
+            data["bins"].append(dict_data)
 
         return data
