@@ -100,7 +100,7 @@ class CouncilClass(AbstractGetBinDataClass):
                                 "type": container_type,
                                 "collectionDate": self._parse_date(raw_date, current_year),
                             })
-                    except Exception:
+                    except (ValueError, AttributeError):
                         continue
             else:
                 body_text = driver.find_element(By.TAG_NAME, "body").text
