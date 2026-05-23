@@ -73,7 +73,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "uid": user_uprn,
         }
 
-        response = requests.get(BASE_URL, params=params, headers=HEADERS).text
+        response = requests.get(BASE_URL, params=params, headers=HEADERS, timeout=30).text
         response = response.replace("AddressInfoCallback(", "").rstrip(");")
 
         parsed = json.loads(response)
@@ -84,7 +84,7 @@ class CouncilClass(AbstractGetBinDataClass):
             datetime.now(), days_of_week.get(bin_week.split("-")[0].strip()), amount=48
         )
         schedule_url = f"https://www.valeofglamorgan.gov.uk/en/living/Recycling-and-Waste/collections/Black-Bag-Collections/{bin_week}.aspx"
-        response = requests.get(schedule_url, verify=False, headers=HEADERS)
+        response = requests.get(schedule_url, verify=False, headers=HEADERS, timeout=30)
 
         soup = BeautifulSoup(response.text, features="html.parser")
 
