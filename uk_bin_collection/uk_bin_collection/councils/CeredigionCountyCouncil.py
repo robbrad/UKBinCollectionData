@@ -3,6 +3,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -87,7 +88,7 @@ class CouncilClass(AbstractGetBinDataClass):
             try:
                 address_dropdown.select_by_visible_text(house_number)
                 matched = True
-            except Exception:
+            except NoSuchElementException:
                 pass
             if not matched:
                 hn_upper = house_number.strip().upper()
@@ -99,7 +100,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         break
             if not matched:
                 # Last resort: match first word (house name)
-                first_word = house_number.strip().split(',')[0].strip().upper()
+                first_word = house_number.strip().split()[0].strip().upper()
                 for option in address_dropdown.options:
                     opt_text = option.text.strip().upper()
                     if opt_text and opt_text.startswith(first_word):
