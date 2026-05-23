@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 
 import requests
@@ -31,6 +30,10 @@ def _match_address(options, uprn=None, paon=None):
             if paon_norm in text.upper():
                 return val
 
+    if uprn or paon:
+        raise ValueError(
+            f"Address not found for UPRN={uprn} PAON={paon}"
+        )
     return valid[0][0]
 
 
@@ -58,6 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "email-address": "",
                 "find": "Find an address for this postcode",
             },
+            timeout=30,
         )
         resp.raise_for_status()
 
@@ -80,6 +84,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "privacynoticeid": "323",
                 "find": "Show me my collection days",
             },
+            timeout=30,
         )
         resp.raise_for_status()
 
@@ -89,6 +94,7 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError("Collection table not found in response")
 
         data = {"bins": []}
+        parse_failures = 0
 
         for row in table.find_all("tr"):
             bin_info = row.find_all("td")
@@ -114,7 +120,13 @@ class CouncilClass(AbstractGetBinDataClass):
                             }
                         )
                     except ValueError:
+                        parse_failures += 1
                         continue
+
+        if not data["bins"] and parse_failures:
+            raise ValueError(
+                f"Failed to parse {parse_failures} collection date(s) and no valid dates found"
+            )
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
