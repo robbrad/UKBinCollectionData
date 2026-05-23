@@ -11,9 +11,9 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 def _match_address(addresses, uprn=None, paon=None):
     """Match an address from addressfinder results by UPRN or house number/name."""
     if uprn:
-        uprn_str = str(uprn).zfill(12)
+        uprn_str = str(uprn).strip().zfill(12)
         for addr in addresses:
-            if str(addr.get("UPRN", "")) == uprn_str:
+            if str(addr.get("UPRN", "")).strip().zfill(12) == uprn_str:
                 return addr
 
     if paon:
@@ -27,12 +27,17 @@ def _match_address(addresses, uprn=None, paon=None):
             if paon_norm in label:
                 return addr
 
+    if uprn or paon:
+        raise ValueError(
+            f"Address not found for UPRN={uprn} PAON={paon}"
+        )
     return addresses[0]
 
 
 def _parse_calendar_page(url):
     """Parse the existing calendar page by UPRN (legacy path)."""
-    page = requests.get(url)
+    page = requests.get(url, timeout=30)
+    page.raise_for_status()
     soup = BeautifulSoup(page.text, features="html.parser")
 
     data = {"bins": []}
@@ -43,7 +48,7 @@ def _parse_calendar_page(url):
 
     calendar_collection = soup.find("ol", {"class": "nonumbers news collections"})
     if not calendar_collection:
-        return data
+        raise ValueError(f"No collection calendar found at {url}")
 
     calendar_list = calendar_collection.find_all("li")
     current_month = ""
@@ -96,8 +101,11 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
 
+        if user_uprn and not str(user_uprn).strip().isdigit():
+            raise ValueError("UPRN must be numeric")
+
         # Postcode path: use addressfinder API to resolve address and get UPRN
-        if user_postcode:
+        if user_postcode and not user_uprn:
             resp = requests.get(
                 "https://eastdevon.gov.uk/addressfinder",
                 params={"qtype": "bins", "term": user_postcode},
