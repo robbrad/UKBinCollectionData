@@ -1,3 +1,5 @@
+import re
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -38,7 +40,7 @@ def _resolve_uprn(postcode, uprn=None, paon=None):
             if text_upper.startswith(paon_norm + " ") or text_upper.startswith(paon_norm + ","):
                 return val
         for val, text in options:
-            if paon_norm in text.upper():
+            if re.search(rf"\b{re.escape(paon_norm)}\b", text.upper()):
                 return val
 
     return options[0][0]
@@ -48,7 +50,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
 
         resolved_uprn = _resolve_uprn(user_postcode, uprn=user_uprn, paon=user_paon)
 
@@ -59,7 +61,8 @@ class CouncilClass(AbstractGetBinDataClass):
         current_year = datetime.now().year
         current_month = datetime.now().month
 
-        response = requests.get(URI)
+        response = requests.get(URI, timeout=30)
+        response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
         schedule = soup.findAll("div", {"class": "waste-collection__month"})
