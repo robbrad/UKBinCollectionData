@@ -24,8 +24,11 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(url)
 
             WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, ".binsrubbish, .binsrecycling")
+                lambda d: any(
+                    el.text.strip()
+                    for el in d.find_elements(
+                        By.CSS_SELECTOR, ".binsrubbish, .binsrecycling"
+                    )
                 )
             )
 
@@ -51,5 +54,10 @@ class CouncilClass(AbstractGetBinDataClass):
                                 "collectionDate": date.strftime(date_format),
                             }
                         )
+
+        if not data["bins"]:
+            raise ValueError(
+                "No bin collection data found after parsing Durham page"
+            )
 
         return data
