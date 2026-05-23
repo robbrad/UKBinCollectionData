@@ -113,7 +113,7 @@ class CouncilClass(AbstractGetBinDataClass):
             for opt in uprn_select.find_all("option"):
                 val = opt.get("value", "")
                 text = opt.text.strip().lower()
-                if val and paon_lower in text:
+                if val and re.search(rf"\b{re.escape(paon_lower)}\b", text):
                     return val
 
         raise ValueError(
