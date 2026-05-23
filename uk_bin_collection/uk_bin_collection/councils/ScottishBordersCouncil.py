@@ -22,12 +22,15 @@ class CouncilClass(AbstractGetBinDataClass):
         token = soup.find("input", {"name": "__RequestVerificationToken"})
         if not token:
             raise ValueError("Could not find CSRF token on the page.")
-        return token.get("value")
+        value = token.get("value")
+        if not value:
+            raise ValueError("CSRF token element found but value is empty")
+        return value
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         check_postcode(user_postcode)
 
         bindata = {"bins": []}
@@ -48,7 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
         session.headers.update(headers)
 
         # Step 1: GET the calendar page to obtain the CSRF token
-        response = session.get(self.BASE_URL)
+        response = session.get(self.BASE_URL, timeout=30)
         response.raise_for_status()
         csrf_token = self._get_csrf_token(response.text)
 
@@ -62,6 +65,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "__RequestVerificationToken": csrf_token,
             },
             headers=form_headers,
+            timeout=30,
         )
         response.raise_for_status()
 
@@ -82,11 +86,17 @@ class CouncilClass(AbstractGetBinDataClass):
         # Find the right address: try Bartec UPRN first, then match by
         # house number/name (paon) so our API's OS UPRN -> postcode+number
         # fallback chain works.
+        def _safe_uprn(addr):
+            try:
+                return str(int(addr.get("UPRN", 0)))
+            except (ValueError, TypeError):
+                return None
+
         selected_uprn = None
         if user_uprn:
             for addr in addresses:
-                addr_uprn = str(int(addr.get("UPRN", 0)))
-                if addr_uprn == str(user_uprn):
+                addr_uprn = _safe_uprn(addr)
+                if addr_uprn and addr_uprn == str(user_uprn):
                     selected_uprn = addr_uprn
                     break
 
@@ -95,11 +105,12 @@ class CouncilClass(AbstractGetBinDataClass):
             for addr in addresses:
                 premises = addr.get("Premises", "").lower().strip()
                 if premises.startswith(paon_lower) or paon_lower in premises:
-                    selected_uprn = str(int(addr.get("UPRN", 0)))
-                    break
+                    selected_uprn = _safe_uprn(addr)
+                    if selected_uprn:
+                        break
 
         if not selected_uprn and addresses:
-            selected_uprn = str(int(addresses[0].get("UPRN", 0)))
+            selected_uprn = _safe_uprn(addresses[0])
 
         if not selected_uprn:
             raise ValueError(
@@ -120,6 +131,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "__RequestVerificationToken": csrf_token,
             },
             headers=form_headers,
+            timeout=30,
         )
         response.raise_for_status()
 
@@ -136,7 +148,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
         events = []
         for raw_json in all_matches:
-            parsed = json.loads(raw_json)
+            try:
+                parsed = json.loads(raw_json)
+            except json.JSONDecodeError:
+                continue
             if parsed and isinstance(parsed[0], dict) and "Subject" in parsed[0]:
                 events = parsed
                 break
@@ -173,5 +188,8 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
+
+        if not bindata["bins"]:
+            raise ValueError("No upcoming collections found for this address")
 
         return bindata
