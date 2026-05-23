@@ -121,4 +121,4 @@ class CouncilClass(AbstractGetBinDataClass):
             if paon_norm in display:
                 return uprn
 
-        return next(iter(rows_data))
+        raise ValueError(f"Could not match house number/name '{paon}' in address results")
