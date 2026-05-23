@@ -40,9 +40,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 point_id = prop["id"]
                 break
 
-        # Fallback: first property if UPRN not matched
         if not point_id:
-            point_id = properties[0]["id"]
+            raise ValueError(
+                f"UPRN {user_uprn} not found in properties for postcode {user_postcode}"
+            )
 
         # Step 2: Get collection days
         collection_resp = requests.post(
@@ -58,10 +59,14 @@ class CouncilClass(AbstractGetBinDataClass):
         collection_resp.raise_for_status()
         collection_data = collection_resp.json()
 
+        active_services = collection_data.get("activeServices")
+        if not isinstance(active_services, list):
+            raise ValueError("Unexpected API response format")
+
         data = {"bins": []}
         now = datetime.now()
 
-        for service in collection_data.get("activeServices", []):
+        for service in active_services:
             bin_type = service.get("serviceName", "Unknown")
 
             for schedule in service.get("serviceSchedules", []):
