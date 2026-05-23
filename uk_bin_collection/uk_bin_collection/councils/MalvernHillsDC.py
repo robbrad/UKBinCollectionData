@@ -79,7 +79,13 @@ class CouncilClass(AbstractGetBinDataClass):
             house_lower = house_number.lower().strip()
             for entry in results:
                 addr = entry.get("Address_Short", "").lower()
-                if addr.startswith(house_lower):
+                addr_parts = addr.split()
+                if addr_parts and addr_parts[0] == house_lower:
+                    return entry["UPRN"]
+            # Fallback: check if house_number appears at start followed by separator
+            for entry in results:
+                addr = entry.get("Address_Short", "").lower()
+                if addr.startswith(house_lower + " ") or addr.startswith(house_lower + ","):
                     return entry["UPRN"]
 
         if len(results) == 1:
