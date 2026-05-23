@@ -22,7 +22,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         check_postcode(user_postcode)
 
         nwl_id = self._resolve_address(user_postcode, user_paon)
@@ -34,13 +34,16 @@ class CouncilClass(AbstractGetBinDataClass):
             }
         )
 
-        session.get(
+        location_resp = session.get(
             self.LOCATION_URL,
             params={"put": nwl_id, "rememberme": "0", "redirect": "/"},
             allow_redirects=True,
+            timeout=30,
         )
+        location_resp.raise_for_status()
 
-        response = session.get(self.HOME_URL)
+        response = session.get(self.HOME_URL, timeout=30)
+        response.raise_for_status()
         soup = BeautifulSoup(response.text, features="html.parser")
 
         refuse_list = soup.find("ul", class_="refuse")
@@ -68,10 +71,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 parsed_date = current_date + timedelta(days=1)
             else:
                 date_str = re.sub(r"(st|nd|rd|th)", "", date_str)
-                parsed_date = datetime.strptime(date_str, "%a %d %b").date()
-
-            if parsed_date.year < current_date.year:
-                parsed_date = parsed_date.replace(year=current_year)
+                try:
+                    parsed_date = datetime.strptime(
+                        f"{date_str} {current_year}", "%a %d %b %Y"
+                    ).date()
+                except ValueError:
+                    parsed_date = datetime.strptime(
+                        f"{date_str} {current_year + 1}", "%a %d %b %Y"
+                    ).date()
 
             if parsed_date < current_date:
                 parsed_date = parsed_date.replace(year=current_year + 1)
@@ -87,7 +94,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def _resolve_address(self, postcode: str, house_number: str = None) -> str:
         response = requests.get(
-            self.AUTOCOMPLETE_URL, params={"term": postcode}
+            self.AUTOCOMPLETE_URL, params={"term": postcode}, timeout=30
         )
         response.raise_for_status()
         results = response.json()
