@@ -26,9 +26,11 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         # Step 1: Lookup addresses by postcode via API
+        if not user_postcode:
+            raise ValueError("Postcode is required")
         postcode_stripped = user_postcode.replace(" ", "")
         params = {"national": "false", "includeNonPostal": "false"}
-        r1 = s.get(f"{api_base}/{postcode_stripped}", params=params, verify=False)
+        r1 = s.get(f"{api_base}/{postcode_stripped}", params=params, timeout=30)
         r1.raise_for_status()
         result = r1.json()
 
@@ -61,6 +63,10 @@ class CouncilClass(AbstractGetBinDataClass):
                         break
 
         if not selected_uprn:
+            if user_uprn or user_paon:
+                raise ValueError(
+                    f"Address not found for UPRN={user_uprn} PAON={user_paon} in postcode {user_postcode}"
+                )
             selected_uprn = str(addresses[0]["uprn"])
 
         # Step 3: POST to calendar with UPRN
@@ -73,7 +79,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "frmUPRN": selected_uprn,
         }
 
-        r2 = s.post(calendar_url, data=payload, verify=False)
+        r2 = s.post(calendar_url, data=payload, timeout=30)
         r2.raise_for_status()
         soup = BeautifulSoup(r2.text, "html.parser")
 
@@ -105,7 +111,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 for cell in row.select("td.text-center")
             ]
 
-            for bin_type, status in zip(column_headers, collection_info):
+            try:
+                pairs = list(zip(column_headers, collection_info, strict=True))
+            except ValueError:
+                pairs = list(zip(column_headers, collection_info))
+            for bin_type, status in pairs:
                 if status and status != "Not Collected":
                     if (
                         not next_collection_dates[bin_type]
