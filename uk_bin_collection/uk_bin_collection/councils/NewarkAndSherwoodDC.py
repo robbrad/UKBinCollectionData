@@ -26,13 +26,18 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         # Step 1: GET form to obtain ASP.NET tokens
-        r1 = s.get(f"{base}/", verify=False)
+        r1 = s.get(f"{base}/", timeout=30)
         r1.raise_for_status()
         soup1 = BeautifulSoup(r1.text, "html.parser")
 
-        viewstate = soup1.find("input", id="__VIEWSTATE")["value"]
-        viewstate_gen = soup1.find("input", id="__VIEWSTATEGENERATOR")["value"]
-        event_val = soup1.find("input", id="__EVENTVALIDATION")["value"]
+        viewstate_el = soup1.find("input", id="__VIEWSTATE")
+        viewstate_gen_el = soup1.find("input", id="__VIEWSTATEGENERATOR")
+        event_val_el = soup1.find("input", id="__EVENTVALIDATION")
+        if not viewstate_el or not viewstate_gen_el or not event_val_el:
+            raise ValueError("Missing ASP.NET form tokens on page")
+        viewstate = viewstate_el["value"]
+        viewstate_gen = viewstate_gen_el["value"]
+        event_val = event_val_el["value"]
 
         # Step 2: POST postcode search via __doPostBack
         search_query = user_postcode
@@ -48,7 +53,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "ctl00$MainContent$TextBoxSearch": search_query,
         }
 
-        r2 = s.post(f"{base}/", data=form_data, verify=False)
+        r2 = s.post(f"{base}/", data=form_data, timeout=30)
         r2.raise_for_status()
         soup2 = BeautifulSoup(r2.text, "html.parser")
 
@@ -93,11 +98,15 @@ class CouncilClass(AbstractGetBinDataClass):
                         break
 
         if not selected:
+            if user_uprn or user_paon:
+                raise ValueError(
+                    f"Address not found for UPRN={user_uprn} PAON={user_paon} in postcode {user_postcode}"
+                )
             selected = address_links[0]
 
         # Step 5: GET calendar page (uses same pid as collection.aspx)
         collection_url = f"{base}/calendar?pid={selected['pid']}"
-        r3 = s.get(collection_url, verify=False)
+        r3 = s.get(collection_url, timeout=30)
         r3.raise_for_status()
         soup3 = BeautifulSoup(r3.text, "html.parser")
 
