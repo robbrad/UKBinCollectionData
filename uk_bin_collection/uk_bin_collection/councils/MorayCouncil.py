@@ -55,13 +55,17 @@ class CouncilClass(AbstractGetBinDataClass):
                     if link_num and link_num.group(1) == num_match.group(1):
                         return re.search(r"id=(\d+)", link["href"]).group(1)
 
-        # Fallback: first property
+        # Fallback: only use first property when no PAON was specified
+        if paon:
+            raise ValueError(
+                f"Address '{paon}' not found among {len(links)} properties for postcode"
+            )
         return re.search(r"id=(\d+)", links[0]["href"]).group(1)
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         bindata = {"bins": []}
 
         property_id = None
