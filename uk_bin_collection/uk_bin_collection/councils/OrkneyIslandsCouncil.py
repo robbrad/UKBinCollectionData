@@ -51,6 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "faqsearch": user_paon,
                 "faqsearchOperator": "AND",
             },
+            timeout=30,
         )
         response.raise_for_status()
 
@@ -84,7 +85,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Step 2: Fetch the FAQ detail page for the matched area
         detail_url = f"{self.BASE_URL}?id={faq_id.group(1)}"
-        response = session.get(detail_url)
+        response = session.get(detail_url, timeout=30)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
@@ -172,7 +173,7 @@ class CouncilClass(AbstractGetBinDataClass):
             f"https://calendar.google.com/calendar/ical/"
             f"{calendar_id}/public/basic.ics"
         )
-        response = session.get(ical_url)
+        response = session.get(ical_url, timeout=30)
         response.raise_for_status()
 
         ical_text = response.text
