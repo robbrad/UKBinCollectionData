@@ -17,15 +17,23 @@ def _match_property(properties, uprn=None, paon=None):
 
     if paon:
         paon_norm = str(paon).strip().upper()
+        # Exact start match (e.g. "12" matches "12 ACACIA AVENUE, ...")
         for prop in properties:
             name = str(prop.get("name", "")).upper()
             if name.startswith(paon_norm + " ") or name.startswith(paon_norm + ","):
                 return prop["id"]
+        # Word-boundary match to avoid "2" matching "22"
+        import re
+        paon_re = re.compile(r"(?<!\w)" + re.escape(paon_norm) + r"(?!\w)")
         for prop in properties:
             name = str(prop.get("name", "")).upper()
-            if paon_norm in name:
+            if paon_re.search(name):
                 return prop["id"]
 
+    if uprn or paon:
+        raise ValueError(
+            f"Property not found for UPRN={uprn} PAON={paon}"
+        )
     return properties[0]["id"]
 
 
@@ -72,6 +80,7 @@ class CouncilClass(AbstractGetBinDataClass):
         collection_data = collection_resp.json()
 
         bindata = {"bins": []}
+        parse_failures = 0
 
         for service in collection_data.get("activeServices", []):
             bin_type = service.get("serviceName", "Unknown")
@@ -92,7 +101,13 @@ class CouncilClass(AbstractGetBinDataClass):
                         }
                     )
                 except (ValueError, TypeError):
+                    parse_failures += 1
                     continue
+
+        if not bindata["bins"] and parse_failures:
+            raise ValueError(
+                f"Failed to parse {parse_failures} collection date(s) and no valid dates found"
+            )
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
