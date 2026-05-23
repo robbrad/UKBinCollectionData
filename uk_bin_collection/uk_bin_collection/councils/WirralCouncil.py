@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import datetime
 
@@ -26,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         # Step 1: GET form to obtain form_build_id
-        r1 = s.get(url, verify=False)
+        r1 = s.get(url, timeout=30)
         r1.raise_for_status()
         soup1 = BeautifulSoup(r1.text, "html.parser")
 
@@ -42,7 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
         data1["postcode"] = user_postcode
 
         # Step 2: POST postcode to get address list
-        r2 = s.post(url, data=data1, verify=False)
+        r2 = s.post(url, data=data1, timeout=30)
         r2.raise_for_status()
         soup2 = BeautifulSoup(r2.text, "html.parser")
 
@@ -76,7 +77,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Step 3: POST UPRN selection
         action = form2.get("action", "")
-        post_url = f"{base}{action}" if action.startswith("/") else action
+        if not action:
+            post_url = url
+        elif action.startswith("/"):
+            post_url = f"{base}{action}"
+        else:
+            post_url = action
 
         data2 = {}
         for inp in form2.find_all("input"):
@@ -85,13 +91,15 @@ class CouncilClass(AbstractGetBinDataClass):
                 data2[name] = inp.get("value", "")
         data2["uprn"] = selected_uprn
 
-        r3 = s.post(post_url, data=data2, verify=False)
+        r3 = s.post(post_url, data=data2, timeout=30)
         r3.raise_for_status()
         soup3 = BeautifulSoup(r3.text, "html.parser")
 
         # Parse collection dates from calendar
         data = {"bins": []}
-        current_year = datetime.now().year
+        now = datetime.now()
+        current_year = now.year
+        current_month = now.month
 
         # Each month has an h3 heading, followed by day entries
         # Day entries contain: day number, bin type, and bin colour
@@ -145,9 +153,11 @@ class CouncilClass(AbstractGetBinDataClass):
                                 j += 1
                                 continue
                             try:
+                                parsed_month = datetime.strptime(month_name, "%B").month
+                                year = current_year + 1 if parsed_month < current_month else current_year
                                 collection_date = datetime(
-                                    current_year,
-                                    datetime.strptime(month_name, "%B").month,
+                                    year,
+                                    parsed_month,
                                     day,
                                 )
                                 data["bins"].append(
@@ -158,8 +168,8 @@ class CouncilClass(AbstractGetBinDataClass):
                                         ),
                                     }
                                 )
-                            except ValueError:
-                                pass
+                            except ValueError as e:
+                                logging.warning(f"Failed to parse date {day} {month_name}: {e}")
                             j += 1
                     else:
                         i += 1
@@ -179,8 +189,10 @@ class CouncilClass(AbstractGetBinDataClass):
                         day = int(date_match.group(2))
                         month = date_match.group(3)
                         try:
+                            parsed_month = datetime.strptime(month, "%B").month
+                            year = current_year + 1 if parsed_month < current_month else current_year
                             collection_date = datetime.strptime(
-                                f"{day} {month} {current_year}", "%d %B %Y"
+                                f"{day} {month} {year}", "%d %B %Y"
                             )
                             # Find bin type after the date
                             type_match = re.search(
@@ -197,8 +209,8 @@ class CouncilClass(AbstractGetBinDataClass):
                                         ),
                                     }
                                 )
-                        except ValueError:
-                            pass
+                        except ValueError as e:
+                            logging.warning(f"Failed to parse fallback date {day} {month}: {e}")
 
         if not data["bins"]:
             raise ValueError("No collection data found on page")
