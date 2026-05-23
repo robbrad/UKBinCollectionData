@@ -28,7 +28,9 @@ def _parse_date(text):
             return parsed
         except ValueError:
             continue
-    return None
+    raise ValueError(
+        f"Could not parse date '{text}' with any known format"
+    )
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -38,7 +40,7 @@ class CouncilClass(AbstractGetBinDataClass):
             data = {"bins": []}
 
             user_postcode = kwargs.get("postcode")
-            user_paon = kwargs.get("paon")
+            user_paon = kwargs.get("paon") or kwargs.get("house_number")
             check_postcode(user_postcode)
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
@@ -75,8 +77,13 @@ class CouncilClass(AbstractGetBinDataClass):
                             select.select_by_visible_text(text)
                             selected = True
                             break
-            if not selected and len(select.options) > 1:
-                select.select_by_index(1)
+            if not selected:
+                if user_paon:
+                    raise ValueError(
+                        f"Address '{user_paon}' not found in results for {user_postcode}"
+                    )
+                if len(select.options) > 1:
+                    select.select_by_index(1)
 
             time.sleep(8)
 
@@ -106,21 +113,27 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 seen = set()
                 for date_str in date_matches:
-                    parsed = _parse_date(date_str)
-                    if parsed:
-                        cd = parsed.strftime(date_format)
-                        key = (bin_type, cd)
-                        if key not in seen:
-                            seen.add(key)
-                            data["bins"].append({
-                                "type": bin_type,
-                                "collectionDate": cd,
-                            })
+                    try:
+                        parsed = _parse_date(date_str)
+                    except ValueError:
+                        continue
+                    cd = parsed.strftime(date_format)
+                    key = (bin_type, cd)
+                    if key not in seen:
+                        seen.add(key)
+                        data["bins"].append({
+                            "type": bin_type,
+                            "collectionDate": cd,
+                        })
 
-            if data["bins"]:
-                data["bins"].sort(
-                    key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+            if not data["bins"]:
+                raise ValueError(
+                    "No bin collection data found for this address"
                 )
+
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+            )
 
             return data
 
