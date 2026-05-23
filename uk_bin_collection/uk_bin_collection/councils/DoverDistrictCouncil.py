@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 import requests
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import check_postcode, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 BASE_URL = "https://portal.waste.dover.gov.uk/api"
@@ -47,6 +47,7 @@ class CouncilClass(AbstractGetBinDataClass):
             for prop in data:
                 if str(prop.get("uprn")) == str(uprn):
                     return str(prop["id"])
+            raise ValueError(f"UPRN {uprn} not found in search results")
 
         if paon:
             paon_lower = paon.strip().lower()
@@ -74,7 +75,11 @@ class CouncilClass(AbstractGetBinDataClass):
         now = datetime.now(timezone.utc)
         data = {"bins": []}
 
-        for service in result.get("activeServices", []):
+        active_services = result.get("activeServices", [])
+        if not isinstance(active_services, list):
+            raise ValueError("Unexpected API response format")
+
+        for service in active_services:
             service_name = service.get("serviceName", "")
             for schedule in service.get("serviceSchedules", []):
                 date_str = schedule.get("currentScheduledDate")
