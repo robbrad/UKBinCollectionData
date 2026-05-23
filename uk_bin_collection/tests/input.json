@@ -721,7 +721,7 @@
         "url": "https://www.durham.gov.uk/bincollections?uprn=",
         "web_driver": "http://localhost:4444",
         "wiki_name": "County Durham",
-        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required."
+        "wiki_note": "Provide your postcode and house number. UPRN is also accepted but no longer required. Requires Selenium/webdriver."
     },
     "EalingCouncil": {
         "skip_get_url": true,

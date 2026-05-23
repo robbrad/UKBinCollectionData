@@ -31,6 +31,9 @@ def _resolve_uprn_from_postcode(postcode, paon=None):
     if not uprns:
         raise ValueError(f"No addresses found for postcode: {postcode}")
 
+    if len(uprns) != len(addrs):
+        raise ValueError(f"UPRN/address count mismatch: {len(uprns)} vs {len(addrs)}")
+
     entries = []
     for u, a in zip(uprns, addrs):
         entries.append({"address": a, "uprn": u})
@@ -43,7 +46,7 @@ def _resolve_uprn_from_postcode(postcode, paon=None):
                 return entry["uprn"]
         for entry in entries:
             addr = entry["address"].upper()
-            if paon_norm in addr:
+            if re.search(rf"\b{re.escape(paon_norm)}\b", addr):
                 return entry["uprn"]
 
     return entries[0]["uprn"]
@@ -53,7 +56,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         headless = kwargs.get("headless")
         web_driver = kwargs.get("web_driver")
 
