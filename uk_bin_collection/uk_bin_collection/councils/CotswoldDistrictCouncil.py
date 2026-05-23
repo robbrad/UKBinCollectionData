@@ -57,7 +57,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
             )
             all_opts = driver.find_elements(By.XPATH, "//li[@role='presentation']")
-            if len(all_opts) > 1:
+            if not all_opts:
+                raise ValueError("No address options found in dropdown")
+            # Skip header entries (e.g. "Search" placeholder) at index 0
+            first_text = all_opts[0].text.strip().lower()
+            if first_text in ("search", "search...") and len(all_opts) > 1:
+                all_opts[1].click()
+            elif len(all_opts) > 1:
                 all_opts[-1].click()
             else:
                 all_opts[0].click()
@@ -95,11 +101,15 @@ class CouncilClass(AbstractGetBinDataClass):
                             or td.get_text(strip=True)
                         )
                         if container_type and raw_date:
+                            try:
+                                parsed_date = self._parse_date(raw_date, current_year)
+                            except (ValueError, AttributeError):
+                                continue
                             data["bins"].append({
                                 "type": container_type,
-                                "collectionDate": self._parse_date(raw_date, current_year),
+                                "collectionDate": parsed_date,
                             })
-                    except Exception:
+                    except (ValueError, AttributeError):
                         continue
             else:
                 body_text = driver.find_element(By.TAG_NAME, "body").text
@@ -108,9 +118,13 @@ class CouncilClass(AbstractGetBinDataClass):
                     if line.lower() in _BIN_TYPES and i + 1 < len(lines):
                         raw_date = lines[i + 1]
                         if self._looks_like_date(raw_date):
+                            try:
+                                parsed_date = self._parse_date(raw_date, current_year)
+                            except (ValueError, AttributeError):
+                                continue
                             data["bins"].append({
                                 "type": line,
-                                "collectionDate": self._parse_date(raw_date, current_year),
+                                "collectionDate": parsed_date,
                             })
 
         except Exception as e:
@@ -136,6 +150,6 @@ class CouncilClass(AbstractGetBinDataClass):
         cleaned = re.sub(r"[^\w\s,]", "", raw_date)
         parsed = datetime.strptime(cleaned, "%a, %d %B")
         parsed = parsed.replace(year=current_year)
-        if parsed < datetime.now():
+        if parsed.date() < datetime.now().date():
             parsed = parsed.replace(year=current_year + 1)
         return parsed.strftime(date_format)
