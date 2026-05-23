@@ -84,7 +84,7 @@ def _parse_calendar_pdf(pdf_path, collection_day):
             })
 
     if not month_headers:
-        return []
+        raise ValueError("No month headers found in PDF calendar")
 
     first_month = month_headers[0]["month"]
     for mh in month_headers:
@@ -96,7 +96,7 @@ def _parse_calendar_pdf(pdf_path, collection_day):
     }
     target_weekday = day_map.get(collection_day.upper())
     if target_weekday is None:
-        return []
+        raise ValueError(f"Unknown collection day: {collection_day}")
 
     COL_BOUNDARIES = [(0, 145), (145, 275), (275, 420)]
 
@@ -180,7 +180,9 @@ def _parse_calendar_pdf(pdf_path, collection_day):
             elif _color_in_list(bg, HEADER_BG_COLORS):
                 continue
             else:
-                bin_type = "Collection"
+                raise ValueError(
+                    f"Unknown calendar colour {bg} at day {day_num} {year}-{month:02d}"
+                )
 
             results.append((dt, bin_type))
 
@@ -190,7 +192,7 @@ def _parse_calendar_pdf(pdf_path, collection_day):
 
 def _download_pdf_cached(pdf_url, cookies=None, headers=None):
     os.makedirs(PDF_CACHE_DIR, exist_ok=True)
-    url_hash = hashlib.md5(pdf_url.encode()).hexdigest()[:12]
+    url_hash = hashlib.md5(pdf_url.encode(), usedforsecurity=False).hexdigest()[:12]
     pdf_path = os.path.join(PDF_CACHE_DIR, f"iow_{url_hash}.pdf")
 
     if os.path.exists(pdf_path):
@@ -209,8 +211,10 @@ def _download_pdf_cached(pdf_url, cookies=None, headers=None):
     if resp.status_code != 200 or resp.content[:4] != b"%PDF":
         raise ValueError(f"Could not download PDF from {pdf_url} (status {resp.status_code})")
 
-    with open(pdf_path, "wb") as f:
+    tmp_path = pdf_path + ".tmp"
+    with open(tmp_path, "wb") as f:
         f.write(resp.content)
+    os.replace(tmp_path, pdf_path)
 
     return pdf_path
 
@@ -351,7 +355,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 os.makedirs(PDF_CACHE_DIR, exist_ok=True)
                 cache_key = hashlib.md5(
-                    f"{user_postcode}_{collection_day}".encode()
+                    f"{user_postcode}_{target_label}_{collection_day}".encode(),
+                    usedforsecurity=False,
                 ).hexdigest()[:12]
                 pdf_path = os.path.join(PDF_CACHE_DIR, f"iow_{cache_key}.pdf")
 
