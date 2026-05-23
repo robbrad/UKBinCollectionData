@@ -18,7 +18,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         data = {"bins": []}
 
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         postcode = kwargs.get("postcode")
 
         suggest_url = f"https://api.eu.recollect.net/api/areas/{AREA}/services/{SERVICE}/address-suggest"
@@ -51,8 +51,13 @@ class CouncilClass(AbstractGetBinDataClass):
                         if name.lower().startswith(user_paon.lower()):
                             place_id = p["place_id"]
                             break
-                if not place_id and parcels:
-                    place_id = parcels[0]["place_id"]
+                if not place_id:
+                    if len(parcels) == 1:
+                        place_id = parcels[0]["place_id"]
+                    elif user_paon:
+                        raise ValueError(
+                            f"Address '{user_paon}' not found among {len(parcels)} results for {postcode}"
+                        )
 
             # If postcode returns qualifiers, get all addresses for that postcode
             if not place_id:
@@ -84,8 +89,13 @@ class CouncilClass(AbstractGetBinDataClass):
                                 place_id = addr["place_id"]
                                 break
 
-                    if not place_id and addresses:
-                        place_id = addresses[0]["place_id"]
+                    if not place_id:
+                        if len(addresses) == 1:
+                            place_id = addresses[0]["place_id"]
+                        elif user_paon and addresses:
+                            raise ValueError(
+                                f"Address '{user_paon}' not found among {len(addresses)} results for {postcode}"
+                            )
 
         # Strategy 3: Try combining paon + postcode as search
         if not place_id and user_paon and postcode:
@@ -120,6 +130,9 @@ class CouncilClass(AbstractGetBinDataClass):
         response = requests.get(events_url, headers=HEADERS, params=params, timeout=60)
         response.raise_for_status()
         events_data = response.json()
+
+        if "events" not in events_data or not isinstance(events_data["events"], list):
+            raise ValueError("Unexpected events format from Bassetlaw API")
 
         seen = set()
         for event in events_data.get("events", []):
