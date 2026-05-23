@@ -46,7 +46,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
 
             service_name = h3.text.strip()
-            next_date = next_date_h4.text.split(": ")[1]
+            _, _, next_date = next_date_h4.text.partition(": ")
+            if not next_date:
+                raise ValueError(f"Unexpected date format: {next_date_h4.text!r}")
 
             dict_data = {
                 "type": service_name,
