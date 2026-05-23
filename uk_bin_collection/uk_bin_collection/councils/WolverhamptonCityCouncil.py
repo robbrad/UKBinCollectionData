@@ -79,7 +79,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         check_postcode(user_postcode)
         bindata = {"bins": []}
 
