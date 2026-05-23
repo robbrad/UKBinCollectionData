@@ -1,5 +1,3 @@
-import re
-import time
 from datetime import datetime, timedelta
 
 import requests
@@ -43,51 +41,49 @@ def _resolve_uprn(postcode, uprn=None, paon=None):
             if paon_norm in text.upper():
                 return val
 
+    if paon:
+        raise ValueError(
+            f"Address not found for PAON={paon} in postcode {postcode}"
+        )
     return options[0][0]
 
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            data = {"bins": []}
+        data = {"bins": []}
 
-            user_uprn = kwargs.get("uprn")
-            user_postcode = kwargs.get("postcode")
-            user_paon = kwargs.get("paon")
+        user_uprn = kwargs.get("uprn")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
 
-            resolved_uprn = _resolve_uprn(user_postcode, uprn=user_uprn, paon=user_paon)
+        resolved_uprn = _resolve_uprn(user_postcode, uprn=user_uprn, paon=user_paon)
 
-            ics_url = f"{ICS_BASE}/{resolved_uprn}"
+        ics_url = f"{ICS_BASE}/{resolved_uprn}"
 
-            import requests as req
-            ics_resp = req.get(ics_url, timeout=30)
-            ics_text = ics_resp.text
-            if "<br" in ics_text or "<html" in ics_text.lower() or "VCALENDAR" not in ics_text:
-                return data
+        ics_resp = requests.get(ics_url, timeout=30)
+        ics_resp.raise_for_status()
+        ics_text = ics_resp.text
+        if "<br" in ics_text or "<html" in ics_text.lower() or "VCALENDAR" not in ics_text:
+            raise ValueError(
+                f"ICS feed returned invalid data for UPRN {resolved_uprn} (status {ics_resp.status_code}, url {ics_url})"
+            )
 
-            now = datetime.now()
-            future = now + timedelta(days=60)
+        now = datetime.now()
+        future = now + timedelta(days=60)
 
-            upcoming_events = events(ics_url, start=now, end=future)
+        upcoming_events = events(ics_url, start=now, end=future)
 
-            for event in sorted(upcoming_events, key=lambda e: e.start):
-                if event.summary and event.start:
-                    collections = event.summary.split(",")
-                    for collection in collections:
-                        data["bins"].append(
-                            {
-                                "type": collection.strip(),
-                                "collectionDate": event.start.date().strftime(
-                                    date_format
-                                ),
-                            }
-                        )
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            raise
-        finally:
-            if driver:
-                driver.quit()
+        for event in sorted(upcoming_events, key=lambda e: e.start):
+            if event.summary and event.start:
+                collections = event.summary.split(",")
+                for collection in collections:
+                    data["bins"].append(
+                        {
+                            "type": collection.strip(),
+                            "collectionDate": event.start.date().strftime(
+                                date_format
+                            ),
+                        }
+                    )
 
         return data
