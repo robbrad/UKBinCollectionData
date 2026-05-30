@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
@@ -9,19 +9,11 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
             data = {"bins": []}
-            url = kwargs.get("url")
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
             web_driver = kwargs.get("web_driver")
@@ -29,26 +21,22 @@ class CouncilClass(AbstractGetBinDataClass):
             check_paon(user_paon)
             check_postcode(user_postcode)
 
-            # Use a realistic user agent to help bypass Cloudflare
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(
                 "https://testvalley.gov.uk/wasteandrecycling/when-are-my-bins-collected/when-are-my-bins-collected"
             )
 
-            # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located((By.ID, "postcodeSearch"))
             )
             inputElement_postcode.send_keys(user_postcode)
 
-            # Click search button
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "govuk-button"))
             )
-            findAddress.click()
+            driver.execute_script("arguments[0].click();", findAddress)
 
-            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
             WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable(
                     (
@@ -60,75 +48,66 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
             ).click()
 
-            # Wait for the collections table to appear
-            WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//h2[contains(@class,'mt-4') and contains(@class,'govuk-heading-s') and normalize-space(.)='Your next collections']",
-                    )
-                )
-            )
+            import time
+            time.sleep(8)
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
             collections = soup.find_all("div", {"class": "p-2"})
 
             for collection in collections:
-                bin_type = collection.find("h3").get_text()
+                h3 = collection.find("h3")
+                if not h3:
+                    continue
+                bin_type = h3.get_text(strip=True)
 
-                next_collection = collection.find(
-                    "div", {"class": "fw-bold"}
-                ).get_text()
+                bold_div = collection.find("div", {"class": "fw-bold"})
+                if not bold_div:
+                    continue
+                next_collection_text = bold_div.get_text(strip=True)
 
-                following_collection = collection.find(
+                next_date = self._parse_date(next_collection_text)
+                if next_date:
+                    data["bins"].append({
+                        "type": bin_type,
+                        "collectionDate": next_date.strftime(date_format),
+                    })
+
+                followed_div = collection.find(
                     lambda t: (
                         t.name == "div"
                         and t.get_text(strip=True).lower().startswith("followed by")
                     )
-                ).get_text()
-
-                next_collection_date = datetime.strptime(next_collection, "%A %d %B")
-
-                following_collection_date = datetime.strptime(
-                    following_collection, "followed by %A %d %B"
                 )
-
-                current_date = datetime.now()
-                next_collection_date = next_collection_date.replace(
-                    year=current_date.year
-                )
-                following_collection_date = following_collection_date.replace(
-                    year=current_date.year
-                )
-
-                next_collection_date = get_next_occurrence_from_day_month(
-                    next_collection_date
-                )
-
-                following_collection_date = get_next_occurrence_from_day_month(
-                    following_collection_date
-                )
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": next_collection_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": following_collection_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+                if followed_div:
+                    following_text = followed_div.get_text(strip=True)
+                    following_date = self._parse_date(
+                        following_text.replace("followed by ", "").replace("Followed by ", "")
+                    )
+                    if following_date:
+                        data["bins"].append({
+                            "type": bin_type,
+                            "collectionDate": following_date.strftime(date_format),
+                        })
 
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
         return data
+
+    @staticmethod
+    def _parse_date(text: str):
+        import re
+        text = re.sub(r"(st|nd|rd|th)", "", text).strip()
+        try:
+            parsed = dt.datetime.strptime(text, "%A %d %B").date()
+        except ValueError:
+            return None
+        current_date = dt.date.today()
+        parsed = parsed.replace(year=current_date.year)
+        if parsed < current_date:
+            parsed = parsed.replace(year=current_date.year + 1)
+        return parsed
