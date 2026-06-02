@@ -1,50 +1,56 @@
-import requests
+import json
+import time
+from datetime import datetime
+
+from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        URI = f"https://www.warrington.gov.uk/bin-collections/get-jobs/{user_uprn}"
+        uri = f"https://www.warrington.gov.uk/bin-collections/get-jobs/{user_uprn}"
 
-        # Make the GET request
-        response = requests.get(URI)
+        web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
 
-        # Parse the JSON response
-        bin_collection = response.json()
+        driver = create_webdriver(web_driver, headless, None, __name__)
+        try:
+            driver.get(uri)
+            # Wait for Cloudflare challenge to resolve and JSON to appear
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.TAG_NAME, "pre"))
+            )
+            time.sleep(2)
 
-        # Loop through each collection in bin_collection
-        for collection in bin_collection["schedule"]:
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+            pre = soup.find("pre")
+            if not pre:
+                raise ValueError("No JSON data found on page after Cloudflare challenge")
+
+            bin_collection = json.loads(pre.text)
+        finally:
+            driver.quit()
+
+        for collection in bin_collection.get("schedule", []):
             bin_type = collection["Name"]
-            collection_dates = collection["ScheduledStart"]
-
-            print(f"Bin Type: {bin_type}")
-            print(f"Collection Date: {collection_dates}")
-
-            dict_data = {
+            collection_date = collection["ScheduledStart"]
+            bindata["bins"].append({
                 "type": bin_type,
                 "collectionDate": datetime.strptime(
-                    collection_dates,
-                    "%Y-%m-%dT%H:%M:%S",
+                    collection_date, "%Y-%m-%dT%H:%M:%S"
                 ).strftime(date_format),
-            }
-            bindata["bins"].append(dict_data)
+            })
 
         bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
         )
-
         return bindata

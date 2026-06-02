@@ -1,124 +1,108 @@
-from time import sleep
+import re
 
+import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+SAT_BASE = "https://satellite.horsham.gov.uk/environment/refuse"
 
-# import the wonderful Beautiful Soup and the URL grabber
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+}
 
 
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            page = "https://www.horsham.gov.uk/waste-recycling-and-bins/household-bin-collections/check-your-bin-collection-day"
+        user_uprn = kwargs.get("uprn")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        check_postcode(user_postcode)
 
-            bin_data = {"bins": []}
+        s = requests.Session()
+        s.headers.update(HEADERS)
 
-            user_uprn = kwargs.get("uprn")
-            user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_uprn(user_uprn)
-            check_postcode(user_postcode)
-            # Create Selenium webdriver
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(page)
+        r = s.post(
+            f"{SAT_BASE}/cal2.asp",
+            data={"App": user_postcode, "Submit": "Search"},
+            timeout=30,
+        )
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
 
-            # Accept cookies
-            try:
-                accept_cookies = WebDriverWait(driver, timeout=10).until(
-                    EC.element_to_be_clickable(
-                        (By.XPATH, "//button[@id='ccc-notify-accept']")
-                    )
-                )
-                accept_cookies.click()
-            except:
-                print(
-                    "Accept cookies banner not found or clickable within the specified time."
-                )
-                pass
-            # Wait for postcode entry box
+        select = soup.find("select", {"name": "uprn"})
+        if not select:
+            raise ValueError(f"No addresses found for postcode {user_postcode}")
 
-            postcode_input = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located(
-                    (By.ID, "Text1")
-                )
-            )
+        resolved_uprn = None
 
-            postcode_input.send_keys(user_postcode)
-            search_btn = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located((By.ID, "Submit1"))
-            )
-            driver.execute_script("arguments[0].click();", search_btn)
+        if user_uprn:
+            uprn_str = str(user_uprn).zfill(12)
+            for opt in select.find_all("option"):
+                val = (opt.get("value") or "").strip()
+                if val == uprn_str:
+                    resolved_uprn = val
+                    break
 
-            address_results = Select(
-                WebDriverWait(driver, timeout=15).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//option[contains(text(),'Please select address...')]/parent::select",
-                        )
-                    )
-                )
-            )
+        if not resolved_uprn and user_paon:
+            paon_lower = user_paon.strip().lower()
+            for opt in select.find_all("option"):
+                text = opt.get_text(strip=True).lower()
+                val = (opt.get("value") or "").strip()
+                if val and text.startswith(paon_lower + " "):
+                    resolved_uprn = val
+                    break
+            if not resolved_uprn:
+                for opt in select.find_all("option"):
+                    text = opt.get_text(strip=True).lower()
+                    val = (opt.get("value") or "").strip()
+                    if val and paon_lower in text:
+                        resolved_uprn = val
+                        break
 
-            address_results.select_by_value(user_uprn)
+        if not resolved_uprn:
+            opts = [o for o in select.find_all("option") if o.get("value", "").strip()]
+            if opts:
+                resolved_uprn = opts[0].get("value").strip()
 
-            results = WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//th[contains(text(),'COLLECTION TYPE')]/ancestor::table",
-                    )
-                )
-            )
+        if not resolved_uprn:
+            raise ValueError(f"Could not resolve address for {user_postcode}")
 
-            soup = BeautifulSoup(
-                results.get_attribute("innerHTML"), features="html.parser"
-            )
+        r2 = s.post(
+            f"{SAT_BASE}/cal_details.asp",
+            data={"uprn": resolved_uprn},
+            timeout=30,
+        )
+        r2.raise_for_status()
+        html = r2.text.replace("class='collectionDates' />", "class='collectionDates'>")
+        soup2 = BeautifulSoup(html, "html.parser")
 
-            # Skip the header, loop through each row in tbody
-            for row in soup.find_all("tbody")[0].find_all("tr"):
+        bin_data = {"bins": []}
+
+        table = soup2.find("table", class_="collectionDates")
+        if not table:
+            table = soup2.find("table")
+
+        if table:
+            for row in table.find_all("tr"):
                 cells = row.find_all("td")
-                if len(cells) < 3:
-                    continue
-                date_str = cells[1].get_text(strip=True)
-                collection_type = cells[2].get_text(strip=True)
+                if len(cells) >= 3:
+                    date_str = cells[1].get_text(strip=True)
+                    bin_type = cells[2].get_text(strip=True)
+                    if not date_str or not bin_type or date_str.upper() == "DATE":
+                        continue
+                    try:
+                        dt = datetime.strptime(date_str, "%d/%m/%Y")
+                        bin_data["bins"].append({
+                            "type": bin_type,
+                            "collectionDate": dt.strftime(date_format),
+                        })
+                    except ValueError:
+                        continue
 
-                try:
-                    date = datetime.strptime(date_str, "%d/%m/%Y").strftime(date_format)
-                except ValueError:
-                    continue  # Skip if date is invalid
+        bin_data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
-                bin_data["bins"].append(
-                    {"type": collection_type, "collectionDate": date}
-                )
-
-            # Sort by date
-            bin_data["bins"].sort(
-                key=lambda x: datetime.strptime(x["collectionDate"], date_format)
-            )
-
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
         return bin_data

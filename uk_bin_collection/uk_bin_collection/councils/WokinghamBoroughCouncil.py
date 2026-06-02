@@ -1,132 +1,122 @@
+import re
+import time
+from datetime import datetime
+
+import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
-        """
-        Retrieve bin collection types and dates for a given address from the Wokingham council collection page.
-        
-        This method navigates the Wokingham waste collection site, submits the supplied postcode and PAON, and parses the resulting collection cards to build a dictionary of bin collection entries.
-        
-        Parameters:
-            page (str): Unused by this implementation (kept for interface compatibility).
-            paon (str, in kwargs): Property Address/PAON used to select the exact address option.
-            postcode (str, in kwargs): Postcode used to look up addresses.
-            web_driver (str, in kwargs): Identifier or config used to create the Selenium WebDriver.
-            headless (bool, in kwargs): Whether the WebDriver runs headless.
-        
-        Returns:
-            dict: A dictionary with a single key "bins" whose value is a list of entries. Each entry is a dict with:
-                - "type": waste type name (string).
-                - "collectionDate": collection date as a formatted date string (uses the module's configured date_format).
-        """
-        driver = None
-        try:
-            data = {"bins": []}
-            source_date_format = "%d/%m/%Y"
-            timeout = 10
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
+        user_paon = kwargs.get("paon")
+        user_postcode = kwargs.get("postcode")
+        check_paon(user_paon)
+        check_postcode(user_postcode)
 
-            check_paon(user_paon)
-            check_postcode(user_postcode)
+        url = "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day"
 
-            # Create Selenium webdriver
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(
-                "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day"
-            )
+        session = requests.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+        })
 
-            # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, timeout).until(
-                EC.presence_of_element_located((By.ID, "edit-postcode-search-csv"))
-            )
-            inputElement_postcode.send_keys(user_postcode)
+        # Step 1: GET the page to retrieve Drupal form tokens
+        r = session.get(url, timeout=30)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
 
-            # Simulates hitting the "Enter" key to submit
-            inputElement_postcode.send_keys(Keys.RETURN)
+        form = soup.find("form", id="waste-collection-api-form")
+        if not form:
+            raise ValueError("Could not find waste collection form on page")
 
-            # Select the exact address from the drop down box
-            WebDriverWait(driver, timeout).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        ""
-                        "//*[@id='edit-address-options-csv']//option[starts-with(normalize-space(.), '"
-                        + user_paon
-                        + "')]",
-                    )
-                )
-            ).click()
+        form_build_id = form.find("input", {"name": "form_build_id"})["value"]
+        form_id = form.find("input", {"name": "form_id"})["value"]
 
-            # Wait for the Show collection dates button to appear, then click it to get the collection dates
-            inputElement_show_dates_button = WebDriverWait(driver, timeout).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, '//*[@id="edit-show-collection-dates-csv"]')
-                )
-            )
-            inputElement_show_dates_button.send_keys(Keys.RETURN)
+        # Step 2: POST postcode to get address list
+        data = {
+            "postcode_search": user_postcode,
+            "form_build_id": form_build_id,
+            "form_id": form_id,
+            "op": "Find address",
+        }
+        r2 = session.post(url, data=data, timeout=30)
+        r2.raise_for_status()
+        soup2 = BeautifulSoup(r2.text, "html.parser")
 
-            # Wait for the collection dates elements to load
-            collection_date_cards = WebDriverWait(driver, timeout).until(
-                EC.presence_of_all_elements_located(
-                    (By.XPATH, '//div[@class = "card card--waste card--blue-light"]')
-                )
-            )
+        # Find the address dropdown
+        select = soup2.find("select", id="edit-address-options")
+        if not select:
+            raise ValueError(f"No addresses found for postcode {user_postcode}")
 
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
+        options = select.find_all("option")
 
-            collection_cards = soup.find_all(
-                "div", {"class": "card card--waste card--blue-light"}
-            )
+        # Match by house number (paon)
+        target_value = None
+        paon_upper = user_paon.upper()
+        for opt in options:
+            text = opt.text.strip().upper()
+            if text.startswith(paon_upper + ",") or text.startswith(paon_upper + " "):
+                target_value = opt.get("value")
+                break
 
-            for collection_card in collection_cards:
-                collection_date_cards = collection_card.find_all(
-                    "div", {"class": "card__content"}
-                )
+        if not target_value:
+            # Fallback to first real option (skip placeholder)
+            for opt in options:
+                val = opt.get("value", "")
+                if val and val != "0":
+                    target_value = val
+                    break
 
-                for collection_date_card in collection_date_cards:
+        if not target_value:
+            raise ValueError(f"Could not match address for {user_paon}, {user_postcode}")
 
-                    waste_type = collection_date_card.find(
-                        "h3", {"class": "heading heading--sub heading--tiny"}
-                    )
+        # Step 3: POST with selected address to get collection dates
+        form2 = soup2.find("form", id="waste-collection-api-form")
+        form_build_id2 = form2.find("input", {"name": "form_build_id"})["value"]
 
-                    collection_date = collection_date_card.find(
-                        "span", {"class": "card__date"}
-                    )
+        data2 = {
+            "postcode_search": user_postcode,
+            "address_options": target_value,
+            "form_build_id": form_build_id2,
+            "form_id": form_id,
+            "op": "Show collection dates",
+        }
+        r3 = session.post(url, data=data2, timeout=30)
+        r3.raise_for_status()
+        soup3 = BeautifulSoup(r3.text, "html.parser")
 
-                    dt_collection_date = datetime.strptime(
-                        collection_date.text.strip().split(" ")[1], source_date_format
-                    )
-                    dict_data = {
-                        "type": waste_type.text.strip().split("(")[0].strip(),
-                        "collectionDate": dt_collection_date.strftime(date_format),
-                    }
-                    data["bins"].append(dict_data)
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
-        return data
+        # Parse collection cards
+        data_out = {"bins": []}
+        current_year = datetime.now().year
+        cards = soup3.find_all("div", class_="card")
+
+        for card in cards:
+            h3 = card.find("h3")
+            if not h3:
+                continue
+            bin_type = h3.get_text(strip=True)
+
+            date_span = card.find("span", class_="card__date")
+            if not date_span:
+                continue
+
+            date_text = date_span.get_text(strip=True)
+            # Date format: "Tuesday 09/06/2026" or "Today 02/06/2026"
+            match = re.search(r"(\d{2}/\d{2})(?:/(\d{4}))?", date_text)
+            if match:
+                day_month = match.group(1)
+                year = match.group(2) or str(current_year)
+                full_date = f"{day_month}/{year}"
+                parsed = datetime.strptime(full_date, "%d/%m/%Y")
+                if parsed.date() < datetime.now().date():
+                    parsed = parsed.replace(year=current_year + 1)
+                data_out["bins"].append({
+                    "type": bin_type,
+                    "collectionDate": parsed.strftime(date_format),
+                })
+
+        return data_out

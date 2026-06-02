@@ -1,11 +1,11 @@
-from bs4 import BeautifulSoup
-import urllib.parse
+from datetime import datetime
+
+import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -15,46 +15,57 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         data = {"bins": []}
-        collections = []
-        selected_collections = kwargs.get("paon").split(",")
-        calendar_urls = []
+
+        user_paon = kwargs.get("paon")
+        user_postcode = kwargs.get("postcode")
+
+        address_query = ""
+        if user_paon and user_postcode:
+            address_query = f"{user_paon} {user_postcode}"
+        elif user_postcode:
+            address_query = user_postcode
+        elif user_paon:
+            address_query = user_paon
+
+        if not address_query:
+            raise ValueError(
+                "Supply a postcode, or house number + postcode, to look up "
+                "your Gedling bin collection schedule."
+            )
+
+        response = requests.get(
+            "https://api.gbcbincalendars.co.uk/get-bin-collection-calendar",
+            params={"address": address_query},
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/134.0.0.0 Safari/537.36",
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+        result = response.json()
+
+        if not result.get("collections"):
+            return data
+
         run_date = datetime.now().date()
 
-        # For each collection, check if there's a number. Garden bins have no numbers, so we can generate the needed
-        # URLs this way
-        for item in selected_collections:
-            item = item.strip().lower().replace(" ", "_")
-            if has_numbers(item):
-                calendar_urls.append(
-                    f"https://www.gbcbincalendars.co.uk/json/gedling_borough_council_{item}_bin_schedule.json"
-                )
-            else:
-                calendar_urls.append(
-                    f"https://www.gbcbincalendars.co.uk/json/gedling_borough_council_{item}_garden_bin_schedule.json"
-                )
+        for month_block in result["collections"]:
+            for entry in month_block.get("dates", []):
+                bin_date = datetime.strptime(entry["date"], "%Y-%m-%d").date()
+                if bin_date < run_date:
+                    continue
+                for service in entry.get("collections", []):
+                    data["bins"].append(
+                        {
+                            "type": service,
+                            "collectionDate": bin_date.strftime(date_format),
+                        }
+                    )
 
-        # Parse each URL and load future data
-        for url in calendar_urls:
-            response = requests.get(url)
-            if response.status_code != 200:
-                raise ConnectionError(f"Could not get response from: {url}")
-            json_data = response.json()["collectionDates"]
-            for col in json_data:
-                bin_date = datetime.strptime(
-                    col.get("collectionDate"), "%Y-%m-%d"
-                ).date()
-                if bin_date >= run_date:
-                    collections.append((col.get("alternativeName"), bin_date))
-
-        # Sort the data
-        ordered_data = sorted(collections, key=lambda x: x[1])
-        data = {"bins": []}
-        for bin in ordered_data:
-            dict_data = {
-                "type": bin[0],
-                "collectionDate": bin[1].strftime(date_format),
-            }
-            data["bins"].append(dict_data)
-        print()
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
         return data
