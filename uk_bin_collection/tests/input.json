@@ -738,6 +738,15 @@
         "wiki_note": "Pass postcode and house number or full address. Uses the ReCollect API.",
         "LAD24CD": "S12000008"
     },
+    "EastHampshireDC": {
+        "paon": "3",
+        "postcode": "GU31 4AU",
+        "skip_get_url": true,
+        "url": "https://maps.easthants.gov.uk",
+        "wiki_name": "East Hampshire",
+        "wiki_note": "Pass the postcode and house number/name in their respective parameters.",
+        "LAD24CD": "E07000085"
+    },
     "EastbourneBoroughCouncil": {
         "uprn": "100060011258",
         "url": "https://www.lewes-eastbourne.gov.uk/article/1158/When-is-my-bin-collection-day",
@@ -881,7 +890,7 @@
         "url": "https://environmentfirst.co.uk/house.php?uprn=100060055444",
         "wiki_command_url_override": "https://environmentfirst.co.uk/house.php?uprn=XXXXXXXXXX",
         "wiki_name": "Environment First",
-        "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne. Replace the XXXXXXXXXX with the UPRN of your property\u2014you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
+        "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne. Replace the XXXXXXXXXX with the UPRN of your property—you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
     },
     "EppingForestDistrictCouncil": {
         "postcode": "IG9 6EP",
@@ -1756,14 +1765,14 @@
         "LAD24CD": "E06000012"
     },
     "NorthHertfordshireDistrictCouncil": {
-            "house_number": "Stewards Flat",
-            "postcode": "SG5 1PZ",
-            "skip_get_url": true,
-            "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
-            "web_driver": "http://selenium:4444",
-            "wiki_name": "North Hertfordshire",
-            "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
-            "LAD24CD": "E07000099"
+        "house_number": "Stewards Flat",
+        "postcode": "SG5 1PZ",
+        "skip_get_url": true,
+        "url": "https://waste.nc.north-herts.gov.uk/w/webpage/find-bin-collection-day-input-address",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "North Hertfordshire",
+        "wiki_note": "Pass a postcode (with space) and house_number/name. The scraper performs the Liberty Create typeahead lookup and matches house_number as a case-insensitive substring.",
+        "LAD24CD": "E07000099"
     },
     "NorthKestevenDistrictCouncil": {
         "skip_get_url": true,
