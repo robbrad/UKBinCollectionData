@@ -2835,7 +2835,6 @@
         "postcode": "RG40 2HR",
         "skip_get_url": true,
         "url": "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Wokingham",
         "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
         "LAD24CD": "E06000041"
