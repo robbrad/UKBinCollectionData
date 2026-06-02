@@ -44,10 +44,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 collectiondate = datetime.strptime(day, "%d")
                 collectiondate = collectiondate.replace(month=collectionmonth)
                 bintype = collectionday.find(
-                    "span", {"class": "waste-collection__day--colour"}
-                ).text
+                    "span", {"class": "waste-collection__day--type"}
+                ).text.strip()
 
-                if (current_month > 9) and (collectiondate.month < 4):
+                # The calendar shows the next 12 months, so if the month steps back in
+                # time, assume it is for the following year.
+                if (collectiondate.month < current_month):
                     collectiondate = collectiondate.replace(year=(current_year + 1))
                 else:
                     collectiondate = collectiondate.replace(year=current_year)
