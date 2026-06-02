@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 
-import pandas as pd
+import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -20,6 +20,8 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             user_uprn = kwargs.get("uprn")
             check_uprn(user_uprn)
+            # East Devon requires 12-digit zero-padded UPRNs
+            user_uprn = user_uprn.zfill(12)
             url = f"https://eastdevon.gov.uk/recycling-and-waste/recycling-waste-information/when-is-my-bin-collected/future-collections-calendar/?UPRN={user_uprn}"
             if not user_uprn:
                 # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
