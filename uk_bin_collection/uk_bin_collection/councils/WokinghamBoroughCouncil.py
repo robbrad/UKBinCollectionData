@@ -21,23 +21,21 @@ class CouncilClass(AbstractGetBinDataClass):
 
         web_driver = kwargs.get("web_driver")
         headless = kwargs.get("headless")
-        user_agent = (
-            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-        )
-        driver = create_webdriver(web_driver, headless, user_agent, __name__)
+
+        driver = create_webdriver(web_driver, headless, None, __name__)
         try:
             driver.get(
                 "https://www.wokingham.gov.uk/rubbish-and-recycling/"
                 "waste-collection/find-your-bin-collection-day"
             )
-            time.sleep(2)
+            time.sleep(5)
 
             # Remove cookie overlays that intercept clicks
             driver.execute_script(
                 "document.querySelectorAll('[id*=ccc],[class*=cookie]')"
                 ".forEach(e => e.remove());"
             )
+            time.sleep(1)
 
             inp = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located((By.ID, "edit-postcode-search"))
