@@ -2925,5 +2925,91 @@
         "wiki_name": "Scottish Borders",
         "wiki_note": "Uses Bartec Municipal Portal. Pass postcode and Bartec UPRN (different from OS UPRN). You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search) or by searching your postcode on the portal.",
         "LAD24CD": "S12000026"
+    },
+    "TamworthBoroughCouncil": {
+        "uprn": "394021043",
+        "skip_get_url": true,
+        "url": "https://www.lichfielddc.gov.uk",
+        "wiki_name": "Tamworth Borough Council",
+        "wiki_note": "Pass the Tamworth UPRN (starts with 394). Uses Lichfield DC portal as Tamworth waste services are operated by Lichfield.",
+        "LAD24CD": "E07000199"
+    },
+    "ShetlandIslandsCouncil": {
+        "postcode": "ZE1 0PW",
+        "skip_get_url": true,
+        "url": "https://www.shetland.gov.uk/directory/12/collection-calendar",
+        "wiki_name": "Shetland Islands",
+        "wiki_note": "Pass postcode. Uses Jadu directory module.",
+        "LAD24CD": "S12000027"
+    },
+    "TowerHamletsCouncil": {
+        "house_number": "225",
+        "postcode": "E14 0EG",
+        "skip_get_url": true,
+        "url": "https://www.towerhamlets.gov.uk",
+        "web_driver": "http://selenium:4444",
+        "wiki_name": "Tower Hamlets",
+        "wiki_note": "Pass postcode and house number. Selenium required (AchieveForms with Whitespace backend). Only covers timebanded streets.",
+        "LAD24CD": "E09000030"
+    },
+    "BridgendCountyBoroughCouncil": {
+        "house_number": "1",
+        "postcode": "CF31 3DP",
+        "skip_get_url": true,
+        "url": "https://bridgendportal.azurewebsites.net",
+        "wiki_name": "Bridgend County Borough Council",
+        "wiki_note": "Pass postcode and house number, or pass UPRN directly.",
+        "LAD24CD": "W06000013"
+    },
+    "MerthyrTydfilCountyBoroughCouncil": {
+        "postcode": "CF48 3BN",
+        "skip_get_url": true,
+        "url": "https://www.merthyr.gov.uk",
+        "wiki_name": "Merthyr Tydfil County Borough Council",
+        "wiki_note": "Pass postcode. Area-based collection by postcode.",
+        "LAD24CD": "W06000024"
+    },
+    "CaerphillyCountyBoroughCouncil": {
+        "house_number": "100",
+        "postcode": "CF83 1AP",
+        "skip_get_url": true,
+        "url": "https://www.caerphilly.gov.uk",
+        "wiki_name": "Caerphilly County Borough Council",
+        "wiki_note": "Pass postcode and house number. Uses ReCollect API.",
+        "LAD24CD": "W06000018"
+    },
+    "InverclydeCouncil": {
+        "postcode": "PA16 8AA",
+        "skip_get_url": true,
+        "url": "https://www.inverclyde.gov.uk",
+        "wiki_name": "Inverclyde Council",
+        "wiki_note": "Pass postcode. Parses PDF street schedule with pdfplumber.",
+        "LAD24CD": "S12000018"
+    },
+    "SouthendOnSeaCityCouncil": {
+        "uprn": "010013362780",
+        "skip_get_url": true,
+        "url": "https://apps.cloud9technologies.com",
+        "wiki_name": "Southend-on-Sea City Council",
+        "wiki_note": "Pass UPRN. Uses Cloud9 Technologies API (same as council mobile app).",
+        "LAD24CD": "E06000074"
+    },
+    "OrkneyIslandsCouncil": {
+        "postcode": "KW15 1HP",
+        "house_number": "Albert Street",
+        "skip_get_url": true,
+        "url": "https://www.orkney.gov.uk",
+        "wiki_name": "Orkney Islands Council",
+        "wiki_note": "Pass postcode and street/area name as house_number. Uses Jadu FAQ search with embedded Google Calendar iCal feeds.",
+        "LAD24CD": "S12000023"
+    },
+    "ComhairleNanEileanSiar": {
+        "postcode": "HS2 0LQ",
+        "house_number": "Back",
+        "skip_get_url": true,
+        "url": "https://www.cne-siar.gov.uk",
+        "wiki_name": "Comhairle nan Eilean Siar (Western Isles)",
+        "wiki_note": "Pass postcode and village/area/street name as house_number. Parses static HTML schedule pages.",
+        "LAD24CD": "S12000013"
     }
 }
