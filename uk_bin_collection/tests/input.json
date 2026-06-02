@@ -1700,6 +1700,7 @@
         "postcode": "EH19 2EB",
         "skip_get_url": true,
         "url": "https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Midlothian",
         "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter."
     },
