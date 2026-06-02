@@ -39,12 +39,20 @@ class CouncilClass(AbstractGetBinDataClass):
             else:
                 continue
 
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": datetime.strptime(
+            if not collection_date:
+                continue
+
+            try:
+                parsed_date = datetime.strptime(
                     collection_date,
                     "%A %d/%m/%Y",
-                ).strftime("%d/%m/%Y"),
+                ).strftime("%d/%m/%Y")
+            except ValueError:
+                continue
+
+            dict_data = {
+                "type": bin_type,
+                "collectionDate": parsed_date,
             }
             bindata["bins"].append(dict_data)
 
