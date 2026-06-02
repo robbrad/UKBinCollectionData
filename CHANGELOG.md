@@ -1,4 +1,131 @@
 =======
+## 0.167.0 (2026-06-02)
+
+### Feat
+
+- add west devon borough council scraper
+- add postcode lookup for wolverhampton city council
+- add postcode lookup for lincoln council
+- add postcode lookup for vale of glamorgan council
+- add postcode lookup for south derbyshire district council
+- add postcode + house number lookup for westmorland and furness
+- add postcode + house number lookup for dumfries and galloway
+- add postcode + house number lookup for east devon
+- add postcode + house number lookup for calderdale, remove selenium
+- add postcode + house number lookup for sheffield council
+- add postcode + house number lookup for camden council
+- **BassetlawDistrictCouncil**: add new scraper using ReCollect API
+- add ClackmannanshireCouncil scraper
+- update Royal Borough of Greenwich collection dates automatically for bank holidays
+- **GedlingBoroughCouncil**: rewrite to use address lookup API
+- add comhairle nan eilean siar (western isles) scraper
+- add orkney islands council scraper
+- add southend-on-sea city council scraper
+- add inverclyde council scraper
+- add caerphilly county borough council scraper
+- add merthyr tydfil county borough council scraper
+- add bridgend county borough council scraper
+- add tower hamlets council scraper
+- add shetland islands council scraper
+- add tamworth borough council scraper
+- add scottish borders council scraper
+- add postcode auto-resolve for westminster (usrn lookup)
+- add westminster city council scraper
+- add torfaen council scraper via itouchvision portal
+- add isle of wight council scraper
+- rewrite north west leicestershire as pure http scraper
+- add postcode lookup for malvern hills district council
+
+### Fix
+
+- update test data - MerthyrTydfil working postcode, notes for Southend/Tamworth
+- correct test params for 6 councils in input.json (house_number, postcode, uprn)
+- add 15 missing council entries to input.json for parity check
+- address CodeRabbit review feedback
+- harden forest of dean address search and data extraction
+- address CodeRabbit review feedback
+- harden cotswold address search and data extraction
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- stratford upon avon - add postcode lookup via council api
+- address CodeRabbit review feedback
+- wirral council - rewrite for new localgov drupal site
+- address CodeRabbit review feedback
+- **WolverhamptonCityCouncil**: fix CSS class match and skip non-bin divs
+- address CodeRabbit review feedback
+- **MorayCouncil**: add postcode-based property lookup
+- **LincolnCouncil**: zero-pad UPRN to 12 digits
+- **EastDevonDC**: zero-pad UPRN to 12 digits
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- dover district council - rewrite for new portal api
+- address CodeRabbit review feedback
+- vale of glamorgan - add user-agent header to api request
+- address CodeRabbit review feedback
+- south derbyshire - add ssl bypass and user-agent header
+- address CodeRabbit review feedback
+- london borough of richmond - support uprn directly as pid
+- address CodeRabbit review feedback
+- mole valley - fix html parsing broken by nested strong tags
+- **BroxtoweBoroughCouncil**: update test address to residential
+- address CodeRabbit review feedback
+- **CeredigionCountyCouncil**: fuzzy address matching in dropdown
+- **HorshamDistrictCouncil**: rewrite as pure requests, no Selenium
+- **BlackpoolCouncil**: add Premises lookup for address-based UPRN resolution
+- **MertonCouncil**: add postcode search for property ID resolution
+- **LondonBoroughSutton**: add postcode search and fix HTML parsing
+- **WyreForestDistrictCouncil**: rewrite to scrape actual council site
+- add timeout to requests in RoyalBoroughofGreenwich.py
+- **MiddlesbroughCouncil**: initialise place_id before address loop
+- **BlackpoolCouncil**: handle null jobsField from Bartec API
+- **DumfriesandGallowayCouncil**: detect HTML error before iCal parse
+- **FolkestoneandHytheDistrictCouncil**: strip leading zeros from UPRN
+- **CarmarthenshireCountyCouncil**: guard against empty date strings
+- exeter city council - remove unnecessary skip_get_url
+- swale borough council - handle relative date strings
+- bexley council - adapt to async page loading
+- remove debug code from Wokingham scraper, increase page load wait
+- add all new council entries to input.json after merge conflicts
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- address CodeRabbit review feedback
+- log malformed South Lanarkshire schedule rows
+- make South Lanarkshire schedule parsing defensive
+- add playwright path for warrington cloudflare bypass
+- add session priming for east cambridgeshire
+- add EastHampshireDC to input.json for parity check
+- update east hampshire to new ishare endpoint
+- rewrite fenland to use imactivate bins api
+- update wokingham form selectors and add playwright path
+- search by postcode only in newark and sherwood scraper
+- rewrite blackburn as pure http (remove selenium dependency)
+- handle missing followed-by div in test valley scraper
+- rewrite east ayrshire council scraper for recollect api
+- BaberghDistrictCouncil - fail loud on unparseable collection lines
+- BaberghDistrictCouncil - handle "Today - " / "Tomorrow - " date prefix
+
+### Refactor
+
+- rewrite Wokingham as pure HTTP (no Selenium/Playwright needed)
+- remove Playwright dependency from Warrington, Wokingham, and Isle of Wight scrapers
+- tighten DurhamCouncil scraper
+
 ## 0.166.1 (2026-05-02)
 
 ### Fix
