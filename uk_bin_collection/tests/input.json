@@ -422,6 +422,7 @@
         "wiki_note": "Pass the postcode and house number in their respective arguments, both wrapped in quotes."
     },
     "CaerphillyCountyBoroughCouncil": {
+        "house_number": "1",
         "postcode": "CF83 1EP",
         "skip_get_url": true,
         "url": "https://www.caerphilly.gov.uk",
@@ -578,6 +579,7 @@
         "wiki_name": "Clackmannanshire"
     },
     "CneSiarCouncil": {
+        "house_number": "1",
         "postcode": "HS1 2BJ",
         "skip_get_url": true,
         "url": "https://www.cne-siar.gov.uk",
@@ -1325,6 +1327,7 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search). This parser requires a Selenium webdriver."
     },
     "InverclydeCouncil": {
+        "house_number": "Cartsburn Street",
         "postcode": "PA15 1UL",
         "skip_get_url": true,
         "url": "https://www.inverclyde.gov.uk",
@@ -1622,7 +1625,8 @@
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MerthyrTydfilCountyBoroughCouncil": {
-        "postcode": "CF47 8XF",
+        "house_number": "2",
+        "postcode": "CF48 1UT",
         "skip_get_url": true,
         "url": "https://www.merthyr.gov.uk",
         "wiki_name": "Merthyr Tydfil County Borough"
@@ -2190,6 +2194,8 @@
         "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "ScottishBordersCouncil": {
+        "house_number": "1",
+        "postcode": "TD1 1QN",
         "skip_get_url": true,
         "uprn": "10006781473",
         "url": "https://www.scotborders.gov.uk",
@@ -2892,8 +2898,8 @@
     },
     "WestminsterCityCouncil": {
         "skip_get_url": true,
+        "uprn": "8401095",
         "url": "https://transact.westminster.gov.uk/env/streetsearch.aspx",
-        "usrn": "8401095",
         "wiki_name": "Westminster City"
     },
     "WiganBoroughCouncil": {
