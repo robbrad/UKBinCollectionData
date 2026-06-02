@@ -19,8 +19,6 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
         check_postcode(user_postcode)
-        # Lincoln's AchieveForms API requires 12-digit zero-padded UPRNs
-        user_uprn = user_uprn.zfill(12)
         bindata = {"bins": []}
 
         # Lincoln's AchieveForms API requires 12-digit zero-padded UPRNs

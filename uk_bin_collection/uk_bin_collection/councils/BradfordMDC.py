@@ -116,7 +116,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 ).strftime(date_format),
             }
             data["bins"].append(dict_data)
-        for bin in soup.find_all(attrs={"id": re.compile(r"CTID-L8OidMPA-\d+-A")}):
+        for bin in soup.find_all(attrs={"id": re.compile(r"CTID-(L8OidMPA|JFhRyRPU)-\d+-A")}):
             dict_data = {
                 "type": "Garden Waste (Subscription Only)",
                 "collectionDate": datetime.strptime(
