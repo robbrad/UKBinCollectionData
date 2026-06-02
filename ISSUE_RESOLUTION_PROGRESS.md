@@ -1,43 +1,48 @@
 # Issue Resolution Progress
 
-## Next Issue: #1560 (Gateshead Council)
+## Next Issue: #1960 (Dudley Council - Additional Bins)
 
-## Issues Already Fixed by June Release (#2110)
+## Issues Closed This Session: 17
 
 | Issue | Council | Status | Notes |
 |-------|---------|--------|-------|
-| #1517 | Southend-on-Sea | Fixed (scraper added) | API may need update post Oct 2025 service change |
-| #1546 | Westminster | Fixed | WestminsterCityCouncil scraper in #2086 |
-| #1825 | Forest of Dean | Fixed | Hardened in PR #2072 |
-| #1839 | Gedling Borough | Fixed | Rewritten to use API in PR #2016 |
-| #1912 | Westmorland & Furness | Fixed | CSS class + postcode lookup in PR #2064 |
-| #1965 | Westmorland & Furness | Fixed | Same fix as #1912 |
-| #1998 | Bridgend | Fixed | BridgendCountyBoroughCouncil scraper added |
+| #1517 | Southend-on-Sea | Closed | Scraper added in June release |
+| #1546 | Westminster | Closed | Scraper added in June release |
+| #1607 | Lancaster City | Closed | Tested working |
+| #1785 | Lancaster City | Closed | WRP still functional |
+| #1825 | Forest of Dean | Closed | Hardened in June release |
+| #1839 | Gedling Borough | Closed | Rewritten in June release |
+| #1887 | Herefordshire | Closed | Fix already in place |
+| #1901 | Gosport | Closed | Upstream data quality issue |
+| #1903 | West Lindsey | Closed | User PyPI network issue |
+| #1912 | Westmorland & Furness | Closed | Fixed in June release |
+| #1965 | Westmorland & Furness | Closed | Fixed in June release |
+| #1969 | Lincoln | Closed | API doesn't have food waste field |
+| #1997 | Shropshire | Closed | Data correct, HA calendar display issue |
+| #1998 | Bridgend | Closed | Scraper added in June release |
 
-## Remaining Issues (oldest first)
+## Code Fixes Made
 
-| Issue | Council | Type | Priority |
-|-------|---------|------|----------|
-| #1462 | Rochford | Enhancement (week offset) | Low |
-| #1560 | Gateshead | Bug (wrong dates) | High |
-| #1607 | Lancaster City | Bug (stopped pulling) | High |
-| #1668 | South Kesteven | Internal (OCR test framework) | Low |
-| #1670 | South Kesteven | Bug (user config confusion) | Medium |
-| #1672 | Enhancement (garden waste unavailable) | Enhancement | Low |
-| #1784 | Selenium addon removed | HA component | Medium |
-| #1785 | Lancaster City | Bug (provider change) | High |
-| #1850 | North Kesteven | Bug (missing green bin) | Medium |
-| #1874 | Gateshead | Bug (failed setup) | High |
-| #1881 | NE Derbyshire | Bug (form removed) | High |
-| #1884 | Ealing | Bug (duplicate modules) | Medium |
-| #1887 | Herefordshire | Bug (non-date text) | Medium |
-| #1901 | Gosport | Bug (data unavailable) | Medium |
-| #1903 | West Lindsey | Bug (HA loading error) | Low (user PyPI issue) |
-| #1907 | South Kesteven | Bug (incorrect URL) | Medium |
-| #1945 | Bolsover | Bug (round B issue) | Medium |
-| #1960 | Dudley | Bug (additional bins) | Medium |
-| #1969 | Lincoln | Bug (food waste missing) | Medium |
-| #1986 | MSDC | Enhancement (future dates) | Low |
-| #1997 | Shropshire | Bug (double collection) | Medium |
-| #1999 | Midlothian | Bug (selenium required) | Medium |
-| #2000 | South Kesteven | Bug (search method change) | Medium |
+| Commit | Council | Fix |
+|--------|---------|-----|
+| 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) |
+
+## Remaining Issues
+
+| Issue | Council | Type | Notes |
+|-------|---------|------|-------|
+| #1462 | Rochford | Enhancement (week offset) | Low priority |
+| #1560 | Gateshead | Bug (wrong dates) | Needs Selenium grid |
+| #1668 | South Kesteven | Internal (OCR framework) | Rob's internal |
+| #1670 | South Kesteven | Bug (config confusion) | |
+| #1672 | Enhancement (garden waste) | Enhancement | Low priority |
+| #1784 | Selenium addon removed | HA component | |
+| #1850 | North Kesteven | Bug (green bin missing) | Working as designed |
+| #1874 | Gateshead | Bug (failed setup) | Same as #1560 |
+| #1881 | NE Derbyshire | Bug (form removed) | Needs full rewrite |
+| #1884 | Ealing | Bug (duplicate modules) | Cleanup task |
+| #1907 | South Kesteven | Bug (URL) | |
+| #1945 | Bolsover | Bug (Round B) | Needs lookup ID |
+| #1960 | Dudley | Bug (additional bins) | Needs API investigation |
+| #1999 | Midlothian | Bug (selenium required) | |
+| #2000 | South Kesteven | Bug (search changed) | |
