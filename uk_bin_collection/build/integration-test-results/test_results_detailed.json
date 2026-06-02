@@ -1,0 +1,1438 @@
+{
+  "aberdeencitycouncil": {
+    "status": "pass",
+    "duration": "4.930"
+  },
+  "ardsandnorthdowncouncil": {
+    "status": "pass",
+    "duration": "4.189"
+  },
+  "adurandworthingcouncils": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: No bin collection rows found in HTML",
+    "duration": "21.692"
+  },
+  "belfastcitycouncil": {
+    "status": "pass",
+    "duration": "3.180"
+  },
+  "anguscouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "56.260"
+  },
+  "armaghbanbridgecraigavoncouncil": {
+    "status": "fail",
+    "error_category": "connection_error",
+    "error_summary": "requests.exceptions.ConnectionError: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))",
+    "duration": "3.644"
+  },
+  "bedfordboroughcouncil": {
+    "status": "pass",
+    "duration": "5.122"
+  },
+  "ashfielddistrictcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "19.363"
+  },
+  "barnsleymbcouncil": {
+    "status": "pass",
+    "duration": "4.287"
+  },
+  "boltoncouncil": {
+    "status": "pass",
+    "duration": "5.079"
+  },
+  "barkingdagenham": {
+    "status": "pass",
+    "duration": "6.660"
+  },
+  "chichesterdistrictcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "62.838"
+  },
+  "bristolcitycouncil": {
+    "status": "pass",
+    "duration": "4.944"
+  },
+  "birminghamcitycouncil": {
+    "status": "pass",
+    "duration": "9.607"
+  },
+  "bromleyboroughcouncil": {
+    "status": "pass",
+    "duration": "7.599"
+  },
+  "basingstokecouncil": {
+    "status": "pass",
+    "duration": "3.653"
+  },
+  "chelmsfordcitycouncil": {
+    "status": "pass",
+    "duration": "7.058"
+  },
+  "bcpcouncil": {
+    "status": "pass",
+    "duration": "2.099"
+  },
+  "brentcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "4.154"
+  },
+  "burycouncil": {
+    "status": "pass",
+    "duration": "5.050"
+  },
+  "cherwelldistrictcouncil": {
+    "status": "pass",
+    "duration": "3.022"
+  },
+  "carmarthenshirecountycouncil": {
+    "status": "pass",
+    "duration": "4.358"
+  },
+  "braintreedistrictcouncil": {
+    "status": "pass",
+    "duration": "10.853"
+  },
+  "bracknellforestcouncil": {
+    "status": "pass",
+    "duration": "4.817"
+  },
+  "blackburncouncil": {
+    "status": "pass",
+    "duration": "2.203"
+  },
+  "broxbournecouncil": {
+    "status": "pass",
+    "duration": "33.182"
+  },
+  "buckinghamshirecouncil": {
+    "status": "pass",
+    "duration": "3.787"
+  },
+  "blaenaugwentcountyboroughcouncil": {
+    "status": "pass",
+    "duration": "16.067"
+  },
+  "canterburycitycouncil": {
+    "status": "pass",
+    "duration": "4.392"
+  },
+  "ceredigioncountycouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "32.229"
+  },
+  "cambridgecitycouncil": {
+    "status": "pass",
+    "duration": "2.521"
+  },
+  "cheshirewestandchestercouncil": {
+    "status": "pass",
+    "duration": "3.183"
+  },
+  "baberghdistrictcouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: unconverted data remains: , Mon 27 Apr 2026",
+    "duration": "40.159"
+  },
+  "blackpoolcouncil": {
+    "status": "pass",
+    "duration": "7.209"
+  },
+  "cannockchasedistrictcouncil": {
+    "status": "pass",
+    "duration": "4.765"
+  },
+  "cheshireeastcouncil": {
+    "status": "pass",
+    "duration": "2.066"
+  },
+  "bexleycouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "60.127"
+  },
+  "chesterfieldboroughcouncil": {
+    "status": "pass",
+    "duration": "1.694"
+  },
+  "bathandnortheastsomersetcouncil": {
+    "status": "pass",
+    "duration": "0.894"
+  },
+  "burnleyboroughcouncil": {
+    "status": "pass",
+    "duration": "2.614"
+  },
+  "argyllandbutecouncil": {
+    "status": "pass",
+    "duration": "58.163"
+  },
+  "basildoncouncil": {
+    "status": "pass",
+    "duration": "1.153"
+  },
+  "aruncouncil": {
+    "status": "pass",
+    "duration": "41.049"
+  },
+  "castlepointdistrictcouncil": {
+    "status": "pass",
+    "duration": "0.494"
+  },
+  "cardiffcouncil": {
+    "status": "pass",
+    "duration": "3.787"
+  },
+  "brightonandhovecitycouncil": {
+    "status": "pass",
+    "duration": "57.441"
+  },
+  "dudleycouncil": {
+    "status": "pass",
+    "duration": "1.979"
+  },
+  "bradfordmdc": {
+    "status": "pass",
+    "duration": "1.133"
+  },
+  "easthertscouncil": {
+    "status": "pass",
+    "duration": "1.985"
+  },
+  "dorsetcouncil": {
+    "status": "pass",
+    "duration": "2.436"
+  },
+  "aberdeenshirecouncil": {
+    "status": "pass",
+    "duration": "1.779"
+  },
+  "broadlanddistrictcouncil": {
+    "status": "pass",
+    "duration": "63.430"
+  },
+  "calderdalecouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "88.394"
+  },
+  "bostonboroughcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "79.627"
+  },
+  "darlingtonboroughcouncil": {
+    "status": "pass",
+    "duration": "0.997"
+  },
+  "bedfordshirecouncil": {
+    "status": "pass",
+    "duration": "1.634"
+  },
+  "eastbourneboroughcouncil": {
+    "status": "pass",
+    "duration": "1.247"
+  },
+  "eastsuffolkcouncil": {
+    "status": "pass",
+    "duration": "72.150"
+  },
+  "dartfordboroughcouncil": {
+    "status": "pass",
+    "duration": "1.209"
+  },
+  "dundeecitycouncil": {
+    "status": "pass",
+    "duration": "1.545"
+  },
+  "dumfriesandgallowaycouncil": {
+    "status": "pass",
+    "duration": "2.431"
+  },
+  "barnetcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "85.256"
+  },
+  "eastcambridgeshirecouncil": {
+    "status": "pass",
+    "duration": "1.225"
+  },
+  "edendistrictcouncil": {
+    "status": "pass",
+    "duration": "7.767"
+  },
+  "exetercitycouncil": {
+    "status": "pass",
+    "duration": "1.121"
+  },
+  "eastlindseydistrictcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "102.372"
+  },
+  "cheltenhamboroughcouncil": {
+    "status": "pass",
+    "duration": "3.490"
+  },
+  "croydoncouncil": {
+    "status": "pass",
+    "duration": "87.016"
+  },
+  "denbighshirecouncil": {
+    "status": "pass",
+    "duration": "2.415"
+  },
+  "doverdistrictcouncil": {
+    "status": "pass",
+    "duration": "1.979"
+  },
+  "bromsgrovedistrictcouncil": {
+    "status": "pass",
+    "duration": "1.142"
+  },
+  "falkirkcouncil": {
+    "status": "pass",
+    "duration": "1.235"
+  },
+  "flintshirecountycouncil": {
+    "status": "pass",
+    "duration": "2.021"
+  },
+  "durhamcouncil": {
+    "status": "pass",
+    "duration": "3.557"
+  },
+  "eastlothiancouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: No streets found for postcode EH21 6QA",
+    "duration": "1.134"
+  },
+  "graveshamboroughcouncil": {
+    "status": "pass",
+    "duration": "5.018"
+  },
+  "farehamboroughcouncil": {
+    "status": "pass",
+    "duration": "9.412"
+  },
+  "guildfordcouncil": {
+    "status": "pass",
+    "duration": "89.692"
+  },
+  "gosportboroughcouncil": {
+    "status": "pass",
+    "duration": "0.963"
+  },
+  "cotswolddistrictcouncil": {
+    "status": "fail",
+    "error_category": "click_intercepted",
+    "error_summary": "selenium.common.exceptions.ElementClickInterceptedException: Message: element click intercepted: Element <button lwc-40a585din3p=\"\" class=\"slds-button slds-button_brand\" aria-disabled=\"false\" type=\"bu",
+    "duration": "107.753"
+  },
+  "eastrenfrewshirecouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "115.845"
+  },
+  "blabydistrictcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "0.377"
+  },
+  "glasgowcitycouncil": {
+    "status": "pass",
+    "duration": "1.198"
+  },
+  "folkestoneandhythedistrictcouncil": {
+    "status": "pass",
+    "duration": "0.997"
+  },
+  "harlowcouncil": {
+    "status": "pass",
+    "duration": "5.795"
+  },
+  "googlepubliccalendarcouncil": {
+    "status": "pass",
+    "duration": "0.592"
+  },
+  "gatesheadcouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: Could not find bin collections table in page source - saved debug_page.html",
+    "duration": "113.712"
+  },
+  "brecklandcouncil": {
+    "status": "pass",
+    "duration": "0.844"
+  },
+  "hastingsboroughcouncil": {
+    "status": "pass",
+    "duration": "2.838"
+  },
+  "hartdistrictcouncil": {
+    "status": "pass",
+    "duration": "0.668"
+  },
+  "gloucestercitycouncil": {
+    "status": "fail",
+    "error_category": "element_not_found",
+    "error_summary": "selenium.common.exceptions.NoSuchElementException: Message: Cannot locate option with value: 100120479507; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriv",
+    "duration": "104.296"
+  },
+  "hackneycouncil": {
+    "status": "pass",
+    "duration": "7.800"
+  },
+  "hartlepoolboroughcouncil": {
+    "status": "pass",
+    "duration": "1.138"
+  },
+  "hertsmereboroughcouncil": {
+    "status": "pass",
+    "duration": "106.591"
+  },
+  "hinckleyandbosworthboroughcouncil": {
+    "status": "pass",
+    "duration": "1.160"
+  },
+  "herefordshirecouncil": {
+    "status": "pass",
+    "duration": "1.005"
+  },
+  "greatyarmouthboroughcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "114.222"
+  },
+  "horshamdistrictcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "130.468"
+  },
+  "edinburghcitycouncil": {
+    "status": "pass",
+    "duration": "0.022"
+  },
+  "ipswichboroughcouncil": {
+    "status": "pass",
+    "duration": "0.580"
+  },
+  "hullcitycouncil": {
+    "status": "pass",
+    "duration": "0.611"
+  },
+  "isleofangleseycouncil": {
+    "status": "pass",
+    "duration": "1.181"
+  },
+  "islingtoncouncil": {
+    "status": "pass",
+    "duration": "2.048"
+  },
+  "harrogateboroughcouncil": {
+    "status": "pass",
+    "duration": "3.275"
+  },
+  "bolsovercouncil": {
+    "status": "pass",
+    "duration": "3.751"
+  },
+  "kingslynnandwestnorfolkbc": {
+    "status": "pass",
+    "duration": "1.334"
+  },
+  "kingstonuponthamescouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "124.024"
+  },
+  "lancastercitycouncil": {
+    "status": "pass",
+    "duration": "4.461"
+  },
+  "fenlanddistrictcouncil": {
+    "status": "pass",
+    "duration": "4.667"
+  },
+  "kirkleescouncil": {
+    "status": "pass",
+    "duration": "1.240"
+  },
+  "haltonboroughcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "125.887"
+  },
+  "ashfordboroughcouncil": {
+    "status": "pass",
+    "duration": "124.545"
+  },
+  "knowsleymbcouncil": {
+    "status": "pass",
+    "duration": "131.540"
+  },
+  "lichfielddistrictcouncil": {
+    "status": "pass",
+    "duration": "0.824"
+  },
+  "londonboroughcamdencouncil": {
+    "status": "pass",
+    "duration": "2.076"
+  },
+  "ambervalleyboroughcouncil": {
+    "status": "pass",
+    "duration": "0.710"
+  },
+  "leicestercitycouncil": {
+    "status": "pass",
+    "duration": "2.434"
+  },
+  "londonboroughhammersmithandfulham": {
+    "status": "pass",
+    "duration": "1.431"
+  },
+  "lewesdistrictcouncil": {
+    "status": "pass",
+    "duration": "0.908"
+  },
+  "londonboroughealing": {
+    "status": "pass",
+    "duration": "0.489"
+  },
+  "londonboroughlambeth": {
+    "status": "pass",
+    "duration": "1.991"
+  },
+  "londonboroughhounslow": {
+    "status": "pass",
+    "duration": "3.039"
+  },
+  "londonboroughhavering": {
+    "status": "pass",
+    "duration": "0.663"
+  },
+  "londonboroughharrow": {
+    "status": "pass",
+    "duration": "12.111"
+  },
+  "londonboroughredbridge": {
+    "status": "pass",
+    "duration": "134.912"
+  },
+  "londonboroughlewisham": {
+    "status": "pass",
+    "duration": "126.886"
+  },
+  "londonboroughofrichmonduponthames": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: Richmond: supply a URL that already has ?pid=... OR put PID in the House Number field.",
+    "duration": "0.009"
+  },
+  "maldondistrictcouncil": {
+    "status": "pass",
+    "duration": "1.039"
+  },
+  "malvernhillsdc": {
+    "status": "pass",
+    "duration": "0.394"
+  },
+  "manchestercitycouncil": {
+    "status": "pass",
+    "duration": "0.995"
+  },
+  "mansfielddistrictcouncil": {
+    "status": "pass",
+    "duration": "0.571"
+  },
+  "medwaycouncil": {
+    "status": "pass",
+    "duration": "0.163"
+  },
+  "meltonboroughcouncil": {
+    "status": "pass",
+    "duration": "3.158"
+  },
+  "charnwoodboroughcouncil": {
+    "status": "pass",
+    "duration": "1.064"
+  },
+  "broxtoweboroughcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "113.874"
+  },
+  "midandeastantrimboroughcouncil": {
+    "status": "pass",
+    "duration": "127.758"
+  },
+  "mertoncouncil": {
+    "status": "pass",
+    "duration": "8.403"
+  },
+  "londonboroughsutton": {
+    "status": "pass",
+    "duration": "16.626"
+  },
+  "midsussexdistrictcouncil": {
+    "status": "pass",
+    "duration": "4.065"
+  },
+  "colchestercitycouncil": {
+    "status": "pass",
+    "duration": "117.478"
+  },
+  "eastdevondc": {
+    "status": "pass",
+    "duration": "0.585"
+  },
+  "eastdunbartonshirecouncil": {
+    "status": "pass",
+    "duration": "1.642"
+  },
+  "midlothiancouncil": {
+    "status": "pass",
+    "duration": "1.245"
+  },
+  "miltonkeynescitycouncil": {
+    "status": "pass",
+    "duration": "1.660"
+  },
+  "midulsterdistrictcouncil": {
+    "status": "pass",
+    "duration": "120.111"
+  },
+  "molevalleydistrictcouncil": {
+    "status": "pass",
+    "duration": "0.589"
+  },
+  "moraycouncil": {
+    "status": "pass",
+    "duration": "0.969"
+  },
+  "neathporttalbotcouncil": {
+    "status": "pass",
+    "duration": "113.082"
+  },
+  "middlesbroughcouncil": {
+    "status": "pass",
+    "duration": "0.961"
+  },
+  "newarkandsherwooddc": {
+    "status": "pass",
+    "duration": "0.711"
+  },
+  "newcastlecitycouncil": {
+    "status": "pass",
+    "duration": "2.611"
+  },
+  "antrimandnewtonabbeycouncil": {
+    "status": "pass",
+    "duration": "0.489"
+  },
+  "newhamcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "21.183"
+  },
+  "newcastleunderlymecouncil": {
+    "status": "pass",
+    "duration": "0.887"
+  },
+  "northayrshirecouncil": {
+    "status": "pass",
+    "duration": "0.928"
+  },
+  "northdevoncountycouncil": {
+    "status": "pass",
+    "duration": "120.420"
+  },
+  "eastridingcouncil": {
+    "status": "pass",
+    "duration": "104.242"
+  },
+  "ealingcouncil": {
+    "status": "pass",
+    "duration": "0.552"
+  },
+  "eastayrshirecouncil": {
+    "status": "pass",
+    "duration": "1.039"
+  },
+  "chorleycouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: Final bin table not found. Server said: Unknown Error",
+    "duration": "0.708"
+  },
+  "derbycitycouncil": {
+    "status": "pass",
+    "duration": "1.421"
+  },
+  "northhertfordshiredistrictcouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: No valid bin collection data could be extracted from the API response",
+    "duration": "0.483"
+  },
+  "northeastlincs": {
+    "status": "pass",
+    "duration": "2.549"
+  },
+  "northkestevendistrictcouncil": {
+    "status": "pass",
+    "duration": "1.012"
+  },
+  "derbyshiredalesdistrictcouncil": {
+    "status": "pass",
+    "duration": "1.872"
+  },
+  "northlincolnshirecouncil": {
+    "status": "pass",
+    "duration": "2.450"
+  },
+  "northlanarkshirecouncil": {
+    "status": "pass",
+    "duration": "0.588"
+  },
+  "doncastercouncil": {
+    "status": "pass",
+    "duration": "1.004"
+  },
+  "northnorthamptonshirecouncil": {
+    "status": "pass",
+    "duration": "0.599"
+  },
+  "northtynesidecouncil": {
+    "status": "pass",
+    "duration": "2.283"
+  },
+  "northnorfolkdistrictcouncil": {
+    "status": "fail",
+    "error_category": "element_not_found",
+    "error_summary": "selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[id=\"F_Address_subform:Postcode\"]\"}",
+    "duration": "96.746"
+  },
+  "northsomersetcouncil": {
+    "status": "pass",
+    "duration": "1.173"
+  },
+  "elmbridgeboroughcouncil": {
+    "status": "pass",
+    "duration": "2.368"
+  },
+  "northumberlandcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "116.705"
+  },
+  "northwestleicestershire": {
+    "status": "pass",
+    "duration": "98.176"
+  },
+  "enfieldcouncil": {
+    "status": "pass",
+    "duration": "145.353"
+  },
+  "eastleighboroughcouncil": {
+    "status": "pass",
+    "duration": "92.475"
+  },
+  "newportcitycouncil": {
+    "status": "pass",
+    "duration": "0.483"
+  },
+  "oadbyandwigstonboroughcouncil": {
+    "status": "pass",
+    "duration": "1.111"
+  },
+  "oldhamcouncil": {
+    "status": "pass",
+    "duration": "1.518"
+  },
+  "oxfordcitycouncil": {
+    "status": "pass",
+    "duration": "7.997"
+  },
+  "epsomandewellboroughcouncil": {
+    "status": "pass",
+    "duration": "93.612"
+  },
+  "pembrokeshirecountycouncil": {
+    "status": "pass",
+    "duration": "1.574"
+  },
+  "peterboroughcitycouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "149.109"
+  },
+  "fermanaghomaghdistrictcouncil": {
+    "status": "pass",
+    "duration": "0.748"
+  },
+  "fifecouncil": {
+    "status": "pass",
+    "duration": "104.236"
+  },
+  "environmentfirst": {
+    "status": "pass",
+    "duration": "0.716"
+  },
+  "cumberlandcouncil": {
+    "status": "pass",
+    "duration": "1.840"
+  },
+  "eppingforestdistrictcouncil": {
+    "status": "pass",
+    "duration": "107.421"
+  },
+  "dacorumboroughcouncil": {
+    "status": "pass",
+    "duration": "105.694"
+  },
+  "gwyneddcouncil": {
+    "status": "pass",
+    "duration": "0.849"
+  },
+  "prestoncitycouncil": {
+    "status": "pass",
+    "duration": "105.721"
+  },
+  "forestofdeandistrictcouncil": {
+    "status": "pass",
+    "duration": "100.092"
+  },
+  "highlandcouncil": {
+    "status": "pass",
+    "duration": "1.048"
+  },
+  "hillingdon": {
+    "status": "pass",
+    "duration": "110.261"
+  },
+  "coventrycitycouncil": {
+    "status": "pass",
+    "duration": "0.766"
+  },
+  "crawleyboroughcouncil": {
+    "status": "pass",
+    "duration": "3.712"
+  },
+  "highpeakcouncil": {
+    "status": "pass",
+    "duration": "97.373"
+  },
+  "redditchboroughcouncil": {
+    "status": "pass",
+    "duration": "0.994"
+  },
+  "renfrewshirecouncil": {
+    "status": "pass",
+    "duration": "3.370"
+  },
+  "gedlingboroughcouncil": {
+    "status": "pass",
+    "duration": "0.938"
+  },
+  "rochdalecouncil": {
+    "status": "pass",
+    "duration": "2.849"
+  },
+  "harboroughdistrictcouncil": {
+    "status": "pass",
+    "duration": "0.817"
+  },
+  "haringeycouncil": {
+    "status": "pass",
+    "duration": "2.968"
+  },
+  "rhonddacynontaffcouncil": {
+    "status": "pass",
+    "duration": "2.028"
+  },
+  "huntingdondistrictcouncil": {
+    "status": "pass",
+    "duration": "0.752"
+  },
+  "rochfordcouncil": {
+    "status": "pass",
+    "duration": "0.259"
+  },
+  "rotherhamcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "0.973"
+  },
+  "rugbyboroughcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "106.935"
+  },
+  "royalboroughofgreenwich": {
+    "status": "pass",
+    "duration": "1.725"
+  },
+  "rotherdistrictcouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: time data 'No data found' does not match format '%A %d %B'",
+    "duration": "2.790"
+  },
+  "runnymedeboroughcouncil": {
+    "status": "pass",
+    "duration": "2.055"
+  },
+  "rushmoorcouncil": {
+    "status": "pass",
+    "duration": "0.602"
+  },
+  "seftoncouncil": {
+    "status": "pass",
+    "duration": "1.698"
+  },
+  "sandwellboroughcouncil": {
+    "status": "pass",
+    "duration": "2.231"
+  },
+  "salfordcitycouncil": {
+    "status": "pass",
+    "duration": "0.668"
+  },
+  "shropshirecouncil": {
+    "status": "pass",
+    "duration": "2.826"
+  },
+  "sevenoaksdistrictcouncil": {
+    "status": "pass",
+    "duration": "86.877"
+  },
+  "sheffieldcitycouncil": {
+    "status": "pass",
+    "duration": "1.746"
+  },
+  "somersetcouncil": {
+    "status": "pass",
+    "duration": "87.972"
+  },
+  "sloughboroughcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "98.402"
+  },
+  "leedscitycouncil": {
+    "status": "pass",
+    "duration": "1.344"
+  },
+  "southderbyshiredistrictcouncil": {
+    "status": "pass",
+    "duration": "1.309"
+  },
+  "lisburncastlereaghcitycouncil": {
+    "status": "pass",
+    "duration": "0.877"
+  },
+  "southgloucestershirecouncil": {
+    "status": "fail",
+    "error_category": "connection_error",
+    "error_summary": "requests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.southglos.gov.uk', port=443): Max retries exceeded with url: /wastecomp/GetCollectionDetails?uprn=566419 (Caused by NameResolutionErr",
+    "duration": "9.080"
+  },
+  "hyndburnboroughcouncil": {
+    "status": "pass",
+    "duration": "91.803"
+  },
+  "southhamsdistrictcouncil": {
+    "status": "pass",
+    "duration": "1.667"
+  },
+  "lincolncouncil": {
+    "status": "pass",
+    "duration": "3.655"
+  },
+  "southlanarkshirecouncil": {
+    "status": "pass",
+    "duration": "0.299"
+  },
+  "southoxfordshirecouncil": {
+    "status": "pass",
+    "duration": "0.671"
+  },
+  "middevoncouncil": {
+    "status": "pass",
+    "duration": "12.169"
+  },
+  "southribblecouncil": {
+    "status": "pass",
+    "duration": "1.893"
+  },
+  "southnorfolkcouncil": {
+    "status": "pass",
+    "duration": "1.061"
+  },
+  "southtynesidecouncil": {
+    "status": "pass",
+    "duration": "3.306"
+  },
+  "southamptoncitycouncil": {
+    "status": "pass",
+    "duration": "1.876"
+  },
+  "liverpoolcitycouncil": {
+    "status": "pass",
+    "duration": "0.525"
+  },
+  "stalbanscityanddistrictcouncil": {
+    "status": "pass",
+    "duration": "0.953"
+  },
+  "spelthorneboroughcouncil": {
+    "status": "pass",
+    "duration": "3.052"
+  },
+  "maidstoneboroughcouncil": {
+    "status": "pass",
+    "duration": "105.238"
+  },
+  "sthelensbc": {
+    "status": "pass",
+    "duration": "91.814"
+  },
+  "southwarkcouncil": {
+    "status": "pass",
+    "duration": "1.246"
+  },
+  "southhollanddistrictcouncil": {
+    "status": "pass",
+    "duration": "3.021"
+  },
+  "stirlingcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message: Postcode input not found",
+    "duration": "145.619"
+  },
+  "staffordboroughcouncil": {
+    "status": "pass",
+    "duration": "0.416"
+  },
+  "stokeontrentcitycouncil": {
+    "status": "pass",
+    "duration": "1.763"
+  },
+  "stockportboroughcouncil": {
+    "status": "pass",
+    "duration": "0.549"
+  },
+  "strouddistrictcouncil": {
+    "status": "pass",
+    "duration": "2.302"
+  },
+  "stratforduponavoncouncil": {
+    "status": "pass",
+    "duration": "1.336"
+  },
+  "surreyheathboroughcouncil": {
+    "status": "pass",
+    "duration": "4.282"
+  },
+  "sunderlandcitycouncil": {
+    "status": "pass",
+    "duration": "86.789"
+  },
+  "southstaffordshiredistrictcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "0.764"
+  },
+  "lutonboroughcouncil": {
+    "status": "pass",
+    "duration": "2.774"
+  },
+  "conwycountyborough": {
+    "status": "pass",
+    "duration": "0.935"
+  },
+  "swindonboroughcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "0.859"
+  },
+  "cornwallcouncil": {
+    "status": "pass",
+    "duration": "0.647"
+  },
+  "tandridgedistrictcouncil": {
+    "status": "pass",
+    "duration": "3.148"
+  },
+  "midsuffolkdistrictcouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: unconverted data remains: , Tue 28 Apr 2026",
+    "duration": "92.923"
+  },
+  "teignbridgecouncil": {
+    "status": "pass",
+    "duration": "86.738"
+  },
+  "tamesidembcouncil": {
+    "status": "pass",
+    "duration": "0.259"
+  },
+  "testvalleyboroughcouncil": {
+    "status": "pass",
+    "duration": "88.989"
+  },
+  "swaleboroughcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "109.623"
+  },
+  "newforestcouncil": {
+    "status": "pass",
+    "duration": "95.081"
+  },
+  "telfordandwrekincouncil": {
+    "status": "pass",
+    "duration": "0.897"
+  },
+  "northyorkshire": {
+    "status": "pass",
+    "duration": "1.402"
+  },
+  "tonbridgeandmallingbc": {
+    "status": "pass",
+    "duration": "1.477"
+  },
+  "torbaycouncil": {
+    "status": "pass",
+    "duration": "100.261"
+  },
+  "eaststaffordshireboroughcouncil": {
+    "status": "pass",
+    "duration": "2.024"
+  },
+  "torridgedistrictcouncil": {
+    "status": "pass",
+    "duration": "1.068"
+  },
+  "monmouthshirecountycouncil": {
+    "status": "pass",
+    "duration": "4.855"
+  },
+  "valeofglamorgancouncil": {
+    "status": "pass",
+    "duration": "1.871"
+  },
+  "norwichcitycouncil": {
+    "status": "pass",
+    "duration": "4.223"
+  },
+  "uttlesforddistrictcouncil": {
+    "status": "pass",
+    "duration": "91.791"
+  },
+  "wakefieldcitycouncil": {
+    "status": "pass",
+    "duration": "93.947"
+  },
+  "nuneatonbedworthboroughcouncil": {
+    "status": "pass",
+    "duration": "1.013"
+  },
+  "warringtonboroughcouncil": {
+    "status": "pass",
+    "duration": "1.519"
+  },
+  "walsallcouncil": {
+    "status": "pass",
+    "duration": "2.803"
+  },
+  "valeofwhitehorsecouncil": {
+    "status": "pass",
+    "duration": "0.825"
+  },
+  "warwickdistrictcouncil": {
+    "status": "pass",
+    "duration": "0.762"
+  },
+  "waverleyboroughcouncil": {
+    "status": "pass",
+    "duration": "3.466"
+  },
+  "wealdendistrictcouncil": {
+    "status": "pass",
+    "duration": "1.203"
+  },
+  "westberkshirecouncil": {
+    "status": "pass",
+    "duration": "93.791"
+  },
+  "watfordboroughcouncil": {
+    "status": "pass",
+    "duration": "2.174"
+  },
+  "welhatcouncil": {
+    "status": "pass",
+    "duration": "1.662"
+  },
+  "westlancashireboroughcouncil": {
+    "status": "pass",
+    "duration": "2.291"
+  },
+  "westlindseydistrictcouncil": {
+    "status": "pass",
+    "duration": "1.033"
+  },
+  "erewashboroughcouncil": {
+    "status": "pass",
+    "duration": "1.070"
+  },
+  "westmorlandandfurness": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "1.392"
+  },
+  "westnorthamptonshirecouncil": {
+    "status": "pass",
+    "duration": "0.627"
+  },
+  "westlothiancouncil": {
+    "status": "pass",
+    "duration": "93.179"
+  },
+  "northeastderbyshiredistrictcouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "121.283"
+  },
+  "westsuffolkcouncil": {
+    "status": "pass",
+    "duration": "14.257"
+  },
+  "westoxfordshiredistrictcouncil": {
+    "status": "pass",
+    "duration": "99.663"
+  },
+  "northwarwickshireboroughcouncil": {
+    "status": "pass",
+    "duration": "4.495"
+  },
+  "wirralcouncil": {
+    "status": "fail",
+    "error_category": "attribute_error",
+    "error_summary": "AttributeError: 'NoneType' object has no attribute 'lower'",
+    "duration": "85.348"
+  },
+  "winchestercitycouncil": {
+    "status": "pass",
+    "duration": "84.519"
+  },
+  "plymouthcouncil": {
+    "status": "pass",
+    "duration": "1.106"
+  },
+  "wolverhamptoncitycouncil": {
+    "status": "pass",
+    "duration": "2.565"
+  },
+  "worcestercitycouncil": {
+    "status": "pass",
+    "duration": "0.601"
+  },
+  "wrexhamcountyboroughcouncil": {
+    "status": "pass",
+    "duration": "87.964"
+  },
+  "portsmouthcitycouncil": {
+    "status": "pass",
+    "duration": "92.484"
+  },
+  "powyscouncil": {
+    "status": "pass",
+    "duration": "92.123"
+  },
+  "readingboroughcouncil": {
+    "status": "pass",
+    "duration": "0.217"
+  },
+  "yorkcouncil": {
+    "status": "pass",
+    "duration": "1.320"
+  },
+  "fyldecouncil": {
+    "status": "fail",
+    "error_category": "other",
+    "error_summary": "Exception: Unexpected response from fylde.gov.uk",
+    "duration": "4.437"
+  },
+  "reigateandbansteadboroughcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "88.317"
+  },
+  "nottinghamcitycouncil": {
+    "status": "pass",
+    "duration": "1.656"
+  },
+  "solihullcouncil": {
+    "status": "pass",
+    "duration": "0.881"
+  },
+  "southayrshirecouncil": {
+    "status": "pass",
+    "duration": "1.651"
+  },
+  "redcarandclevelandcouncil": {
+    "status": "pass",
+    "duration": "1.246"
+  },
+  "southcambridgeshirecouncil": {
+    "status": "pass",
+    "duration": "1.024"
+  },
+  "rushcliffeboroughcouncil": {
+    "status": "pass",
+    "duration": "61.542"
+  },
+  "southkestevendistrictcouncil": {
+    "status": "fail",
+    "error_category": "value_error",
+    "error_summary": "ValueError: No bin type found for 30/03/2026 (Week 5 of 3/2026)",
+    "duration": "2.420"
+  },
+  "perthandkinrosscouncil": {
+    "status": "pass",
+    "duration": "1.165"
+  },
+  "stevenageboroughcouncil": {
+    "status": "pass",
+    "duration": "4.247"
+  },
+  "swanseacouncil": {
+    "status": "pass",
+    "duration": "0.649"
+  },
+  "tendringdistrictcouncil": {
+    "status": "pass",
+    "duration": "57.726"
+  },
+  "thanetdistrictcouncil": {
+    "status": "pass",
+    "duration": "49.665"
+  },
+  "tewkesburyboroughcouncil": {
+    "status": "pass",
+    "duration": "0.671"
+  },
+  "staffordshiremoorlandsdistrictcouncil": {
+    "status": "pass",
+    "duration": "48.777"
+  },
+  "thurrockcouncil": {
+    "status": "pass",
+    "duration": "0.021"
+  },
+  "walthamforest": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "107.790"
+  },
+  "wandsworthcouncil": {
+    "status": "pass",
+    "duration": "31.191"
+  },
+  "tunbridgewellscouncil": {
+    "status": "pass",
+    "duration": "1.221"
+  },
+  "westdunbartonshirecouncil": {
+    "status": "pass",
+    "duration": "0.669"
+  },
+  "threeriversdistrictcouncil": {
+    "status": "pass",
+    "duration": "45.171"
+  },
+  "wiganboroughcouncil": {
+    "status": "pass",
+    "duration": "3.378"
+  },
+  "wokingboroughcouncil": {
+    "status": "pass",
+    "duration": "3.783"
+  },
+  "wokinghamboroughcouncil": {
+    "status": "pass",
+    "duration": "29.915"
+  },
+  "windsorandmaidenheadcouncil": {
+    "status": "fail",
+    "error_category": "empty_bins",
+    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
+    "duration": "26.638"
+  },
+  "wychavondistrictcouncil": {
+    "status": "pass",
+    "duration": "81.405"
+  },
+  "wyreforestdistrictcouncil": {
+    "status": "pass",
+    "duration": "0.015"
+  },
+  "wyrecouncil": {
+    "status": "pass",
+    "duration": "1.275"
+  },
+  "stocktononteescouncil": {
+    "status": "fail",
+    "error_category": "selenium_timeout",
+    "error_summary": "selenium.common.exceptions.TimeoutException: Message:",
+    "duration": "40.235"
+  },
+  "wiltshirecouncil": {
+    "status": "pass",
+    "duration": "2.775"
+  }
+}
