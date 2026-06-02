@@ -1625,8 +1625,7 @@
         "wiki_note": "To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "MerthyrTydfilCountyBoroughCouncil": {
-        "house_number": "2",
-        "postcode": "CF48 1UT",
+        "postcode": "CF47 0HY",
         "skip_get_url": true,
         "url": "https://www.merthyr.gov.uk",
         "wiki_name": "Merthyr Tydfil County Borough"
@@ -2388,7 +2387,7 @@
     },
     "SouthendOnSeaCityCouncil": {
         "skip_get_url": true,
-        "uprn": "100091450580",
+        "uprn": "100090632281",
         "url": "https://www.southend.gov.uk",
         "wiki_name": "Southend-on-Sea City"
     },
@@ -2557,7 +2556,8 @@
         "skip_get_url": true,
         "uprn": "100031767448",
         "url": "https://www.tamworth.gov.uk",
-        "wiki_name": "Tamworth Borough"
+        "wiki_name": "Tamworth Borough",
+        "wiki_note": "Uses the Lichfield District Council shared portal. Provide your UPRN."
     },
     "TandridgeDistrictCouncil": {
         "LAD24CD": "E07000215",
