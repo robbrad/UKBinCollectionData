@@ -8,9 +8,15 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 
 def parse_collection_date(date_string) -> datetime:
+    from datetime import timedelta
+
     now = datetime.now()
-    if date_string == "is due today":
+    normalised = date_string.strip().lower()
+
+    if "today" in normalised:
         return now
+    if "tomorrow" in normalised:
+        return now + timedelta(days=1)
 
     parsed_date = datetime.strptime(date_string, "%A, %d %B").replace(year=now.year)
 
