@@ -729,23 +729,12 @@
         "LAD24CD": "E09000009"
     },
     "EastAyrshireCouncil": {
-        "house_number": "57 Whatriggs Road",
-        "postcode": "KA1 3RB",
-        "skip_get_url": true,
+        "uprn": "127074727",
         "url": "https://www.east-ayrshire.gov.uk",
         "wiki_command_url_override": "https://www.east-ayrshire.gov.uk",
         "wiki_name": "East Ayrshire",
-        "wiki_note": "Pass postcode and house number or full address. Uses the ReCollect API.",
+        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
         "LAD24CD": "S12000008"
-    },
-    "EastHampshireDC": {
-        "paon": "3",
-        "postcode": "GU31 4AU",
-        "skip_get_url": true,
-        "url": "https://maps.easthants.gov.uk",
-        "wiki_name": "East Hampshire",
-        "wiki_note": "Pass the postcode and house number/name in their respective parameters.",
-        "LAD24CD": "E07000085"
     },
     "EastbourneBoroughCouncil": {
         "uprn": "100060011258",
@@ -890,7 +879,7 @@
         "url": "https://environmentfirst.co.uk/house.php?uprn=100060055444",
         "wiki_command_url_override": "https://environmentfirst.co.uk/house.php?uprn=XXXXXXXXXX",
         "wiki_name": "Environment First",
-        "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne. Replace the XXXXXXXXXX with the UPRN of your property - you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
+        "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne. Replace the XXXXXXXXXX with the UPRN of your property—you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
     },
     "EppingForestDistrictCouncil": {
         "postcode": "IG9 6EP",
@@ -924,9 +913,7 @@
         "url": "https://www.exeter.gov.uk",
         "wiki_name": "Exeter",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
-        "LAD24CD": "E07000041",
-        "postcode": "EX2 4NT",
-        "house_number": "5"
+        "LAD24CD": "E07000041"
     },
     "FalkirkCouncil": {
         "uprn": "136065818",
@@ -1016,11 +1003,11 @@
         "LAD24CD": "E08000037"
     },
     "GedlingBoroughCouncil": {
-        "postcode": "NG4 4HE",
-        "house_number": "101",
-        "url": "https://www.gedling.gov.uk",
+        "house_number": "Friday G4, Friday J",
+        "skip_get_url": true,
+        "url": "https://www.gedling.gov.uk/",
         "wiki_name": "Gedling",
-        "wiki_note": "Provide your house number and postcode.",
+        "wiki_note": "Use [this site](https://www.gbcbincalendars.co.uk/) to find the collections for your address. Use the `-n` parameter to add them in a comma-separated list inside quotes, such as: 'Friday G4, Friday J'.",
         "LAD24CD": "E07000173"
     },
     "GlasgowCityCouncil": {
@@ -1305,15 +1292,6 @@
         "skip_get_url": true,
         "uprn": "200002649711"
     },
-    "IsleOfWightCouncil": {
-        "house_number": "101",
-        "postcode": "PO31 7LE",
-        "skip_get_url": true,
-        "url": "https://digitalservices.iow.gov.uk/wasteday",
-        "wiki_name": "Isle of Wight",
-        "wiki_note": "Pass postcode and house number. Uses Playwright for Blazor Server app. Downloads and parses PDF calendar for collection dates.",
-        "LAD24CD": "E06000046"
-    },
     "IslingtonCouncil": {
         "uprn": "5300094897",
         "postcode": "N1 1XR",
@@ -1542,12 +1520,10 @@
     },
     "MalvernHillsDC": {
         "skip_get_url": true,
-        "postcode": "WR14 1AA",
-        "house_number": "148",
-        "uprn": "100120606212",
+        "uprn": "100121348457",
         "url": "https://swict.malvernhills.gov.uk/mhdcroundlookup/HandleSearchScreen",
         "wiki_name": "Malvern Hills",
-        "wiki_note": "Pass postcode and house number, or just the UPRN. The scraper resolves the UPRN from the council's own address lookup API.",
+        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search).",
         "LAD24CD": "E07000235"
     },
     "ManchesterCityCouncil": {
@@ -1849,11 +1825,12 @@
     },
     "NorthWestLeicestershire": {
         "postcode": "DE74 2FZ",
-        "house_number": "1",
         "skip_get_url": true,
-        "url": "https://my.nwleics.gov.uk/",
+        "uprn": "100030572613",
+        "url": "https://www.nwleics.gov.uk/pages/collection_information",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "North West Leicestershire",
-        "wiki_note": "Pass the postcode and house number. No UPRN or Selenium needed.",
+        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver.",
         "LAD24CD": "E07000134"
     },
     "NorthYorkshire": {
@@ -2652,9 +2629,7 @@
         "wiki_command_url_override": "https://www.warrington.gov.uk",
         "wiki_name": "Warrington",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000007",
-        "web_driver": "http://selenium:4444",
-        "skip_get_url": true
+        "LAD24CD": "E06000007"
     },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
@@ -2837,6 +2812,7 @@
         "postcode": "RG40 2HR",
         "skip_get_url": true,
         "url": "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Wokingham",
         "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter.",
         "LAD24CD": "E06000041"
@@ -2902,117 +2878,10 @@
         "wiki_note": "Provide your UPRN.",
         "LAD24CD": "E06000014"
     },
-    "TorfaenCouncil": {
-        "house_number": "44 Wayfield Crescent",
-        "postcode": "NP44 1NH",
+    "ClackmannanshireCouncil": {
+        "postcode": "FK10 1EB",
         "skip_get_url": true,
-        "url": "https://www.torfaen.gov.uk",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "Torfaen",
-        "wiki_note": "Pass house number and street as house_number, plus postcode. Uses iTouchVision portal with Selenium.",
-        "LAD24CD": "W06000020"
-    },
-    "WestminsterCityCouncil": {
-        "postcode": "SW1P 3BU",
-        "skip_get_url": true,
-        "url": "https://transact.westminster.gov.uk/env/streetreport.aspx",
-        "wiki_name": "Westminster City Council",
-        "wiki_note": "Pass postcode for auto USRN resolution, or pass USRN directly as uprn. Street-level (not address-level) collection schedules.",
-        "LAD24CD": "E09000033"
-    },
-    "ScottishBordersCouncil": {
-        "postcode": "TD6 9QQ",
-        "skip_get_url": true,
-        "uprn": "116043056",
-        "url": "https://scotborders-live-portal.bartecmunicipal.com/Embeddable/CollectionCalendar",
-        "wiki_name": "Scottish Borders",
-        "wiki_note": "Uses Bartec Municipal Portal. Pass postcode and Bartec UPRN (different from OS UPRN). You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search) or by searching your postcode on the portal.",
-        "LAD24CD": "S12000026"
-    },
-    "TamworthBoroughCouncil": {
-        "uprn": "394021043",
-        "skip_get_url": true,
-        "url": "https://www.lichfielddc.gov.uk",
-        "wiki_name": "Tamworth Borough Council",
-        "wiki_note": "Pass the Tamworth UPRN (starts with 394). Uses Lichfield DC portal as Tamworth waste services are operated by Lichfield.",
-        "LAD24CD": "E07000199"
-    },
-    "ShetlandIslandsCouncil": {
-        "postcode": "ZE1 0PW",
-        "skip_get_url": true,
-        "url": "https://www.shetland.gov.uk/directory/12/collection-calendar",
-        "wiki_name": "Shetland Islands",
-        "wiki_note": "Pass postcode. Uses Jadu directory module.",
-        "LAD24CD": "S12000027"
-    },
-    "TowerHamletsCouncil": {
-        "house_number": "225",
-        "postcode": "E14 0EG",
-        "skip_get_url": true,
-        "url": "https://www.towerhamlets.gov.uk",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "Tower Hamlets",
-        "wiki_note": "Pass postcode and house number. Selenium required (AchieveForms with Whitespace backend). Only covers timebanded streets.",
-        "LAD24CD": "E09000030"
-    },
-    "BridgendCountyBoroughCouncil": {
-        "house_number": "1",
-        "postcode": "CF31 3DP",
-        "skip_get_url": true,
-        "url": "https://bridgendportal.azurewebsites.net",
-        "wiki_name": "Bridgend County Borough Council",
-        "wiki_note": "Pass postcode and house number, or pass UPRN directly.",
-        "LAD24CD": "W06000013"
-    },
-    "MerthyrTydfilCountyBoroughCouncil": {
-        "postcode": "CF48 3BN",
-        "skip_get_url": true,
-        "url": "https://www.merthyr.gov.uk",
-        "wiki_name": "Merthyr Tydfil County Borough Council",
-        "wiki_note": "Pass postcode. Area-based collection by postcode.",
-        "LAD24CD": "W06000024"
-    },
-    "CaerphillyCountyBoroughCouncil": {
-        "house_number": "100",
-        "postcode": "CF83 1AP",
-        "skip_get_url": true,
-        "url": "https://www.caerphilly.gov.uk",
-        "wiki_name": "Caerphilly County Borough Council",
-        "wiki_note": "Pass postcode and house number. Uses ReCollect API.",
-        "LAD24CD": "W06000018"
-    },
-    "InverclydeCouncil": {
-        "postcode": "PA16 8AA",
-        "skip_get_url": true,
-        "url": "https://www.inverclyde.gov.uk",
-        "wiki_name": "Inverclyde Council",
-        "wiki_note": "Pass postcode. Parses PDF street schedule with pdfplumber.",
-        "LAD24CD": "S12000018"
-    },
-    "SouthendOnSeaCityCouncil": {
-        "uprn": "010013362780",
-        "skip_get_url": true,
-        "url": "https://apps.cloud9technologies.com",
-        "wiki_name": "Southend-on-Sea City Council",
-        "wiki_note": "Pass UPRN. Uses Cloud9 Technologies API (same as council mobile app).",
-        "LAD24CD": "E06000074"
-    },
-    "OrkneyIslandsCouncil": {
-        "postcode": "KW15 1HP",
-        "house_number": "Albert Street",
-        "skip_get_url": true,
-        "url": "https://www.orkney.gov.uk",
-        "wiki_name": "Orkney Islands Council",
-        "wiki_note": "Pass postcode and street/area name as house_number. Uses Jadu FAQ search with embedded Google Calendar iCal feeds.",
-        "LAD24CD": "S12000023"
-    },
-    "CneSiarCouncil": {
-        "postcode": "HS2 0LQ",
-        "house_number": "Back",
-        "skip_get_url": true,
-        "url": "https://www.cne-siar.gov.uk",
-        "wiki_name": "Comhairle nan Eilean Siar (Western Isles)",
-        "wiki_note": "Pass postcode and village/area/street name as house_number. Parses static HTML schedule pages.",
-        "LAD24CD": "S12000013"
+        "url": "https://www.clacks.gov.uk",
+        "wiki_name": "Clackmannanshire"
     }
 }
