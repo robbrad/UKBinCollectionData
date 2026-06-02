@@ -1,5 +1,3 @@
-import re
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -15,68 +13,51 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    # Constants specific to IBC
-    IBC_INCOMING_DATE_FORMAT = (
-        r"\b(?:on\s+)?([A-Za-z]+ \d{1,2}(?:st|nd|rd|th)? [A-Za-z]+ \d{4})\b"
-    )
-
     IBC_SUPPORTED_BINS_DICT = {
-        "black": "General Waste",
-        "blue": "Recycling Waste",
-        "brown": "Garden Waste",
+        "black": "Black Refuse",
+        "blue": "Blue Recycling",
+        "brown": "Brown Garden Waste",
+        "green": "Green Recycling",
+        "food": "Food Caddy",
     }
 
-    IBC_DIV_MARKER = "ibc-page-content-section"
-
     IBC_ENDPOINT = "https://app.ipswich.gov.uk/bin-collection/"
-
-    def transform_date(self, date_str):
-        date_str = re.sub(
-            r"(\d{1,2})(st|nd|rd|th)", r"\1", date_str
-        )  # Remove ordinal suffixes
-        date_obj = datetime.strptime(date_str, "%A %d %B %Y")
-        return date_obj.strftime(date_format)
 
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_paon = kwargs.get("paon")
         check_paon(user_paon)
 
-        # Make the request
-        form_data = {"street-input": user_paon}
+        form_data = {"street-name": user_paon, "submit-button": ""}
         response = requests.post(self.IBC_ENDPOINT, data=form_data, timeout=10)
         soup = BeautifulSoup(response.content, features="html.parser")
 
         data = {"bins": []}
 
-        # Start scarping
-        div_section = soup.find("div", class_=self.IBC_DIV_MARKER)
+        dl = soup.find("dl", class_="ibc-calendar-grid")
+        if not dl:
+            return data
 
-        if div_section:
-            li_elements = div_section.find_all(
-                "li"
-            )  # li element exists for each day a bin or bins will be collected.
+        for div in dl.find_all("div", recursive=False):
+            dt = div.find("dt", class_="ibc-calendar-entry")
+            dd = div.find("dd", class_="ibc-calendar-entry__details")
+            if not (dt and dd):
+                continue
 
-            date_pattern = re.compile(self.IBC_INCOMING_DATE_FORMAT)
+            day = dt.find("div", class_="ibc-calendar-entry__day").get_text(strip=True)
+            date_div = dt.find("div", class_="ibc-calendar-entry__date")
+            date_num = date_div.contents[0].strip()
+            month_year = dt.find("div", class_="ibc-calendar-entry__month").get_text(strip=True)
 
-            for li in li_elements:
-                distinct_collection_info = li.get_text()
-                date_match = date_pattern.search(distinct_collection_info)
+            date_obj = datetime.strptime(f"{day} {date_num} {month_year}", "%A %d %B %Y")
+            collection_date = date_obj.strftime(date_format)
 
-                if date_match:
-                    date = date_match.group(1)
+            for li in dd.find_all("li"):
+                bin_class = li.get("class", [None])[0]
+                if bin_class in self.IBC_SUPPORTED_BINS_DICT:
+                    data["bins"].append({
+                        "type": self.IBC_SUPPORTED_BINS_DICT[bin_class],
+                        "collectionDate": collection_date,
+                    })
 
-                    for supported_bin in self.IBC_SUPPORTED_BINS_DICT:
-                        if supported_bin in distinct_collection_info:
-                            # Transform the date from council format to expected UKBCD format
-                            date_transformed = self.transform_date(date)
-
-                            dict_data = {
-                                "type": supported_bin.capitalize()
-                                + " - "
-                                + self.IBC_SUPPORTED_BINS_DICT[supported_bin],
-                                "collectionDate": date_transformed,
-                            }
-
-                            data["bins"].append(dict_data)
         return data
