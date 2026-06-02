@@ -2650,7 +2650,9 @@
         "wiki_command_url_override": "https://www.warrington.gov.uk",
         "wiki_name": "Warrington",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN.",
-        "LAD24CD": "E06000007"
+        "LAD24CD": "E06000007",
+        "web_driver": "http://selenium:4444",
+        "skip_get_url": true
     },
     "WarwickDistrictCouncil": {
         "url": "https://estates7.warwickdc.gov.uk/PropertyPortal/Property/Recycling/100070263793",
@@ -3003,7 +3005,7 @@
         "wiki_note": "Pass postcode and street/area name as house_number. Uses Jadu FAQ search with embedded Google Calendar iCal feeds.",
         "LAD24CD": "S12000023"
     },
-    "ComhairleNanEileanSiar": {
+    "CneSiarCouncil": {
         "postcode": "HS2 0LQ",
         "house_number": "Back",
         "skip_get_url": true,

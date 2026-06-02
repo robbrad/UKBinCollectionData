@@ -1,22 +1,15 @@
 import re
+import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
-PLAYWRIGHT_AVAILABLE = False
-try:
-    from playwright.sync_api import sync_playwright
-    PLAYWRIGHT_AVAILABLE = True
-except ImportError:
-    pass
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+
+from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -26,9 +19,71 @@ class CouncilClass(AbstractGetBinDataClass):
         check_paon(user_paon)
         check_postcode(user_postcode)
 
-        if PLAYWRIGHT_AVAILABLE:
-            return self._parse_playwright(user_postcode, user_paon)
-        return self._parse_selenium(user_postcode, user_paon, kwargs)
+        web_driver = kwargs.get("web_driver")
+        headless = kwargs.get("headless")
+        user_agent = (
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+        )
+        driver = create_webdriver(web_driver, headless, user_agent, __name__)
+        try:
+            driver.get(
+                "https://www.wokingham.gov.uk/rubbish-and-recycling/"
+                "waste-collection/find-your-bin-collection-day"
+            )
+            time.sleep(2)
+
+            # Remove cookie overlays that intercept clicks
+            driver.execute_script(
+                "document.querySelectorAll('[id*=ccc],[class*=cookie]')"
+                ".forEach(e => e.remove());"
+            )
+
+            inp = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.ID, "edit-postcode-search"))
+            )
+            inp.send_keys(user_postcode)
+            inp.send_keys(Keys.RETURN)
+
+            # Wait for address dropdown to populate
+            WebDriverWait(driver, 15).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "#edit-address-options option:nth-child(2)")
+                )
+            )
+
+            # Match address by house number
+            options = driver.find_elements(
+                By.CSS_SELECTOR, "#edit-address-options option"
+            )
+            paon_upper = user_paon.upper()
+            matched = False
+            for opt in options:
+                text = opt.text.strip().upper()
+                if text.startswith(paon_upper + ",") or text.startswith(
+                    paon_upper + " "
+                ):
+                    opt.click()
+                    matched = True
+                    break
+            if not matched and options:
+                options[1].click()
+
+            show_btn = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "edit-show-collection-dates"))
+            )
+            driver.execute_script("arguments[0].click();", show_btn)
+
+            WebDriverWait(driver, 15).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "span.card__date"))
+            )
+            time.sleep(2)
+
+            soup = BeautifulSoup(driver.page_source, "html.parser")
+        finally:
+            driver.quit()
+
+        return self._extract_bins(soup)
 
     @staticmethod
     def _extract_bins(soup):
@@ -57,85 +112,3 @@ class CouncilClass(AbstractGetBinDataClass):
                     "collectionDate": parsed.strftime(date_format),
                 })
         return data
-
-    def _parse_playwright(self, postcode, paon):
-        import time
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            page.goto(
-                "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day",
-                wait_until="networkidle",
-                timeout=30000,
-            )
-            time.sleep(2)
-
-            page.fill("#edit-postcode-search", postcode)
-            page.press("#edit-postcode-search", "Enter")
-            page.wait_for_selector("#edit-address-options option:nth-child(2)", state="attached", timeout=15000)
-
-            options = page.query_selector_all("#edit-address-options option")
-            paon_upper = paon.upper()
-            matched = False
-            for opt in options:
-                text = (opt.text_content() or "").strip().upper()
-                if text.startswith(paon_upper + ",") or text.startswith(paon_upper + " "):
-                    page.select_option("#edit-address-options", value=opt.get_attribute("value"))
-                    matched = True
-                    break
-            if not matched and options:
-                page.select_option("#edit-address-options", index=1)
-
-            page.click("#edit-show-collection-dates")
-            page.wait_for_selector("span.card__date", timeout=15000)
-            time.sleep(2)
-
-            soup = BeautifulSoup(page.content(), "html.parser")
-            browser.close()
-
-        return self._extract_bins(soup)
-
-    def _parse_selenium(self, postcode, paon, kwargs):
-        import time
-        driver = None
-        try:
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(
-                "https://www.wokingham.gov.uk/rubbish-and-recycling/waste-collection/find-your-bin-collection-day"
-            )
-            time.sleep(2)
-            driver.execute_script("document.querySelectorAll([id*=ccc],[class*=cookie]).forEach(e => e.remove());")
-
-            inp = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "edit-postcode-search"))
-            )
-            inp.send_keys(postcode)
-            inp.send_keys(Keys.RETURN)
-
-            WebDriverWait(driver, 15).until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, f"//select[@id=edit-address-options]//option[starts-with(normalize-space(.), {paon})]")
-                )
-            ).click()
-
-            show_btn = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.ID, "edit-show-collection-dates"))
-            )
-            driver.execute_script("arguments[0].click();", show_btn)
-
-            WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "span.card__date"))
-            )
-            time.sleep(2)
-
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-            return self._extract_bins(soup)
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            raise
-        finally:
-            if driver:
-                driver.quit()

@@ -1,5 +1,5 @@
-import os
 import hashlib
+import os
 import re
 import time
 from collections import defaultdict
@@ -209,7 +209,9 @@ def _download_pdf_cached(pdf_url, cookies=None, headers=None):
     )
 
     if resp.status_code != 200 or resp.content[:4] != b"%PDF":
-        raise ValueError(f"Could not download PDF from {pdf_url} (status {resp.status_code})")
+        raise ValueError(
+            f"Could not download PDF from {pdf_url} (status {resp.status_code})"
+        )
 
     tmp_path = pdf_path + ".tmp"
     with open(tmp_path, "wb") as f:
@@ -224,7 +226,9 @@ def _select_address(options_text, user_paon):
     if user_paon:
         paon_lower = user_paon.lower().strip()
         for label in options_text:
-            if label.lower().startswith(paon_lower + ",") or label.lower().startswith(paon_lower + " "):
+            if label.lower().startswith(
+                paon_lower + ","
+            ) or label.lower().startswith(paon_lower + " "):
                 return label
 
     for label in options_text:
@@ -240,7 +244,11 @@ def _extract_collection_info(html):
 
     collection_day_el = soup.find("strong", string=re.compile(r"Collection Day:"))
     if collection_day_el:
-        collection_day = collection_day_el.parent.get_text().replace("Collection Day:", "").strip()
+        collection_day = (
+            collection_day_el.parent.get_text()
+            .replace("Collection Day:", "")
+            .strip()
+        )
     else:
         raise ValueError("Could not find collection day in page")
 
@@ -272,115 +280,12 @@ def _build_bins(collection_dates):
 
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Isle of Wight Council scraper.
+    Uses Selenium to navigate a Blazor Server form, then downloads and
+    parses the colour-coded PDF collection calendar.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        if os.environ.get("UKBCD_USE_PLAYWRIGHT"):
-            return self._parse_with_playwright(**kwargs)
-        return self._parse_with_selenium(**kwargs)
-
-    def _parse_with_playwright(self, **kwargs) -> dict:
-        from playwright.sync_api import sync_playwright
-
-        user_postcode = kwargs.get("postcode")
-        user_paon = kwargs.get("paon")
-        check_postcode(user_postcode)
-
-        with sync_playwright() as pw:
-            # Full Chromium required — headless shell can't run Blazor Server.
-            # Must be launched under Xvfb (xvfb-run or DISPLAY set).
-            pw_chromium = os.path.expanduser(
-                "~/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome"
-            )
-            launch_kwargs = {
-                "headless": False,
-                "args": ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
-            }
-            if os.path.exists(pw_chromium):
-                launch_kwargs["executable_path"] = pw_chromium
-            browser = pw.chromium.launch(**launch_kwargs)
-            context = browser.new_context(
-                user_agent=(
-                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                    "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-                )
-            )
-            page = context.new_page()
-            try:
-                page.goto(
-                    "https://digitalservices.iow.gov.uk/wasteday",
-                    wait_until="domcontentloaded",
-                    timeout=30000,
-                )
-
-                page.wait_for_timeout(5000)
-
-                page.locator("#Postcode").fill(user_postcode)
-                page.wait_for_timeout(500)
-                page.get_by_role("button", name="Find address").click()
-
-                addr_select = page.locator("select")
-                addr_select.wait_for(timeout=30000)
-                page.wait_for_timeout(2000)
-
-                options = page.locator("select option").all_text_contents()
-
-                target_label = _select_address(options, user_paon)
-                if not target_label:
-                    raise ValueError(f"No addresses found for {user_postcode}")
-
-                addr_select.select_option(label=target_label)
-
-                page.get_by_role("heading", name="Collection Details").wait_for(
-                    timeout=30000
-                )
-                page.wait_for_timeout(1000)
-
-                html = page.content()
-                soup = BeautifulSoup(html, features="html.parser")
-
-                collection_day_el = soup.find(
-                    "strong", string=re.compile(r"Collection Day:")
-                )
-                if not collection_day_el:
-                    raise ValueError("Could not find collection day in page")
-                collection_day = (
-                    collection_day_el.parent.get_text()
-                    .replace("Collection Day:", "")
-                    .strip()
-                )
-
-                os.makedirs(PDF_CACHE_DIR, exist_ok=True)
-                cache_key = hashlib.md5(
-                    f"{user_postcode}_{target_label}_{collection_day}".encode(),
-                    usedforsecurity=False,
-                ).hexdigest()[:12]
-                pdf_path = os.path.join(PDF_CACHE_DIR, f"iow_{cache_key}.pdf")
-
-                need_download = True
-                if os.path.exists(pdf_path):
-                    age = time.time() - os.path.getmtime(pdf_path)
-                    if age < PDF_CACHE_MAX_AGE:
-                        need_download = False
-
-                if need_download:
-                    with page.expect_download(timeout=30000) as download_info:
-                        page.get_by_role(
-                            "button", name="View Collection Calendar"
-                        ).click()
-                    download = download_info.value
-                    download.save_as(pdf_path)
-
-                collection_dates = _parse_calendar_pdf(pdf_path, collection_day)
-                return _build_bins(collection_dates)
-
-            finally:
-                browser.close()
-
-    def _parse_with_selenium(self, **kwargs) -> dict:
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions as EC
         from selenium.webdriver.support.ui import Select, WebDriverWait
@@ -416,7 +321,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             address_select = wait.until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//select[contains(@aria-label, 'Select an address')]")
+                    (
+                        By.XPATH,
+                        "//select[contains(@aria-label, 'Select an address')]",
+                    )
                 )
             )
 
@@ -441,13 +349,15 @@ class CouncilClass(AbstractGetBinDataClass):
             collection_day, pdf_url = _extract_collection_info(html)
 
             cookies = {c["name"]: c["value"] for c in driver.get_cookies()}
-            user_agent = driver.execute_script("return navigator.userAgent;")
+            ua = driver.execute_script("return navigator.userAgent;")
             headers = {
-                "User-Agent": user_agent,
+                "User-Agent": ua,
                 "Referer": "https://digitalservices.iow.gov.uk/wasteday",
             }
 
-            pdf_path = _download_pdf_cached(pdf_url, cookies=cookies, headers=headers)
+            pdf_path = _download_pdf_cached(
+                pdf_url, cookies=cookies, headers=headers
+            )
             collection_dates = _parse_calendar_pdf(pdf_path, collection_day)
             return _build_bins(collection_dates)
 
