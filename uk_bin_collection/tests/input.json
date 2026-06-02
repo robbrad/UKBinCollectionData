@@ -2916,6 +2916,14 @@
         "wiki_name": "Westminster City Council",
         "wiki_note": "Pass postcode for auto USRN resolution, or pass USRN directly as uprn. Street-level (not address-level) collection schedules.",
         "LAD24CD": "E09000033"
-    }
+    },
+    "ScottishBordersCouncil": {
+        "postcode": "TD6 9QQ",
+        "skip_get_url": true,
+        "uprn": "116043056",
+        "url": "https://scotborders-live-portal.bartecmunicipal.com/Embeddable/CollectionCalendar",
+        "wiki_name": "Scottish Borders",
+        "wiki_note": "Uses Bartec Municipal Portal. Pass postcode and Bartec UPRN (different from OS UPRN). You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search) or by searching your postcode on the portal.",
+        "LAD24CD": "S12000026"
     }
 }
