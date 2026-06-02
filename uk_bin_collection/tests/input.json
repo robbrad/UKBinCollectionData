@@ -882,7 +882,7 @@
         "url": "https://environmentfirst.co.uk/house.php?uprn=100060055444",
         "wiki_command_url_override": "https://environmentfirst.co.uk/house.php?uprn=XXXXXXXXXX",
         "wiki_name": "Environment First",
-        "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne. Replace the XXXXXXXXXX with the UPRN of your property—you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
+        "wiki_note": "For properties with collections managed by Environment First, such as Lewes and Eastbourne. Replace the XXXXXXXXXX with the UPRN of your propertyï¿½you can use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find this."
     },
     "EppingForestDistrictCouncil": {
         "postcode": "IG9 6EP",
@@ -2891,5 +2891,14 @@
         "skip_get_url": true,
         "url": "https://www.clacks.gov.uk",
         "wiki_name": "Clackmannanshire"
+    },
+    "BassetlawDistrictCouncil": {
+        "LAD24CD": "E07000171",
+        "house_number": "2 Albert Road",
+        "postcode": "DN22 6JD",
+        "skip_get_url": true,
+        "uprn": "",
+        "url": "https://www.bassetlaw.gov.uk",
+        "wiki_name": "Bassetlaw"
     }
 }
