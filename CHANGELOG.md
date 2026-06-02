@@ -1,4 +1,13 @@
 =======
+## 0.167.1 (2026-06-02)
+
+### Fix
+
+- #2010 #2019 Edinburgh/Thurrock - update wiki_note to reflect new postcode-based config
+- #2006 BradfordMDC - add new garden waste element ID (CTID-JFhRyRPU)
+- #1999 MidlothianCouncil - add web_driver to input.json for HA config flow
+- #1969 LincolnCouncil - fix NoneType error when UPRN not provided
+
 ## 0.167.0 (2026-06-02)
 
 ### Feat
