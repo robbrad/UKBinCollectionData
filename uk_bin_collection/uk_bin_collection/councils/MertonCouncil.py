@@ -1,4 +1,3 @@
-# This script pulls (in one hit) the data from Merton Council Bins Data
 import time
 from datetime import datetime
 
@@ -8,168 +7,116 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+BASE_URL = "https://fixmystreet.merton.gov.uk"
 
-# Council class for Merton Council
+
+def _resolve_property_id(s, postcode, paon):
+    resp = s.post(f"{BASE_URL}/waste", data={"postcode": postcode}, timeout=30)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, "html.parser")
+    select = soup.find("select", {"id": "address"})
+    if not select:
+        return None
+
+    paon_lower = (paon or "").strip().lower()
+    best = None
+    for opt in select.find_all("option"):
+        val = opt.get("value", "")
+        if not val or val == "missing":
+            continue
+        text = opt.get_text(strip=True).lower()
+        if paon_lower and text.startswith(paon_lower):
+            return val
+        if not best and val:
+            best = val
+
+    return best
+
+
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Bin collection scraper for Merton Council.
-
-    This scraper retrieves bin collection schedules from the Merton Council
-    FixMyStreet-based website (fixmystreet.merton.gov.uk). The site uses
-    JavaScript to dynamically load data, requiring polling until content
-    is fully loaded.
-
-    Required Parameters:
-        uprn (str): Unique Property Reference Number (numeric only)
-
-    Example:
-        >>> council = CouncilClass()
-        >>> data = council.run(uprn="4328213")
-    """
-
-    # Polling configuration for JavaScript-loaded data
     MAX_POLLING_ATTEMPTS = 10
-    POLLING_SLEEP_SECONDS = 2
+    POLLING_SLEEP_SECONDS = 3
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        """
-        Parse bin collection data from Merton Council's FixMyStreet website.
-
-        The Merton Council website uses JavaScript to dynamically load collection data.
-        This method polls the page until the data is fully loaded, then extracts
-        bin collection information including type and next collection date.
-
-        Args:
-            page (str): Unused - maintained for interface compatibility
-            **kwargs: Keyword arguments including:
-                - uprn (str): Unique Property Reference Number (numeric only)
-
-        Returns:
-            dict: A dictionary containing a list of bins with their collection dates:
-                {
-                    "bins": [
-                        {
-                            "type": str,  # Capitalized bin type (e.g., "Food waste")
-                            "collectionDate": str  # Formatted date string
-                        },
-                        ...
-                    ]
-                }
-
-        Raises:
-            ValueError: If uprn is not provided or contains non-numeric characters
-            Exception: If timeout occurs waiting for data or if collections div not found
-
-        Note:
-            - Skips booking services like "Bulky waste" and "Garden waste"
-            - Handles year-boundary dates (e.g., December dates for January collections)
-            - Results are sorted by collection date
-        """
         uprn = kwargs.get("uprn")
-        if not uprn:
-            raise ValueError("uprn is required")
+        postcode = kwargs.get("postcode")
+        paon = kwargs.get("paon")
 
-        # Validate UPRN format (must be numeric only)
-        if not str(uprn).isdigit():
-            raise ValueError("uprn must contain only numeric characters")
+        s = requests.Session()
+        s.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            }
+        )
 
-        # The new Merton site uses JavaScript to load data dynamically.
-        # We poll the page until the loading indicator disappears.
-        url = f"https://fixmystreet.merton.gov.uk/waste/{uprn}?page_loading=1"
-        headers = {
-            "x-requested-with": "fetch",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-        }
+        property_id = None
+
+        if uprn and str(uprn).isdigit():
+            r = s.get(f"{BASE_URL}/waste/{uprn}?page_loading=1",
+                      headers={"x-requested-with": "fetch"}, timeout=10)
+            if r.status_code == 200 and not r.url.endswith("/waste"):
+                property_id = uprn
+
+        if not property_id and postcode:
+            property_id = _resolve_property_id(s, postcode, paon)
+
+        if not property_id:
+            raise ValueError("Could not resolve property. Provide postcode+address or valid Merton UPRN.")
+
+        url = f"{BASE_URL}/waste/{property_id}?page_loading=1"
+        headers = {"x-requested-with": "fetch"}
 
         data = {"bins": []}
         collections = []
-
-        # Poll until data is loaded
-        soup = None
-        for attempt in range(1, self.MAX_POLLING_ATTEMPTS + 1):
-            response = requests.get(url, headers=headers, timeout=10)
-            soup = BeautifulSoup(response.text, features="html.parser")
-
-            # Check if still loading
-            if soup.find(id="loading-indicator"):
-                if attempt < self.MAX_POLLING_ATTEMPTS:
-                    time.sleep(self.POLLING_SLEEP_SECONDS)
-                    continue
-                else:
-                    raise Exception("Timeout waiting for bin collection data to load")
-            break
-
-        # Data loaded, parse it
-        collections_div = soup.find("div", class_="waste__collections")
-        if not collections_div:
-            raise Exception("Collections div not found")
-
-        possible_formats = [
-            "%d %B %Y",
-            "%A %d %B %Y",
-        ]
-
-        # Skip services that are not scheduled collections (booking services)
         skip_services = ["Bulky waste", "Garden waste"]
 
-        govuk_grid_column_two_thirds = soup.find(
-            "div", class_="govuk-grid-column-two-thirds"
-        )
-        waste_service_grids = govuk_grid_column_two_thirds.find_all(
-            "div", class_="waste-service-grid"
-        )
+        soup = None
+        for attempt in range(self.MAX_POLLING_ATTEMPTS):
+            response = s.get(url, headers=headers, timeout=10)
+            soup = BeautifulSoup(response.text, features="html.parser")
+            if soup.find_all("h3", class_="waste-service-name"):
+                break
+            time.sleep(self.POLLING_SLEEP_SECONDS)
+        else:
+            raise RuntimeError("Timeout waiting for bin collection data to load")
 
-        for waste_service_grid in waste_service_grids:
+        grid_parent = soup.find("div", class_="govuk-grid-column-two-thirds")
+        if not grid_parent:
+            grid_parent = soup
 
-            h3 = waste_service_grid.find("h3", class_="waste-service-name")
-
-            bin_type = h3.get_text().strip()
-
-            # Skip booking services
+        for grid in grid_parent.find_all("div", class_="waste-service-grid"):
+            h3 = grid.find("h3", class_="waste-service-name")
+            if not h3:
+                continue
+            bin_type = h3.get_text(strip=True)
             if bin_type in skip_services:
                 continue
 
-            rows = waste_service_grid.find_all("div", class_="govuk-summary-list__row")
-            for row in rows:
-                key = row.find("dt", class_="govuk-summary-list__key")
-                value = row.find("dd", class_="govuk-summary-list__value")
+            for row in grid.find_all("div", class_="govuk-summary-list__row"):
+                key = row.find("dt")
+                value = row.find("dd")
+                if not key or not value or "Next collection" not in key.get_text():
+                    continue
+                date_text = value.get_text(strip=True)
+                parts = date_text.split()
+                if len(parts) < 3:
+                    continue
+                day_str = parts[1]
+                month_str = parts[2]
+                year = datetime.now().year
+                try:
+                    dt = datetime.strptime(f"{day_str} {month_str} {year}", "%d %B %Y")
+                    if dt.date() < datetime.now().date():
+                        dt = dt.replace(year=year + 1)
+                    collections.append((bin_type, dt))
+                except ValueError:
+                    continue
 
-                if key and value and "Next collection" in key.get_text():
-                    collection_date_str = value.get_text().strip()
-
-                    # Parse the date - format is like "Saturday 15 November"
-                    collectionDate = None
-                    # Try with day of week
-                    date_parts = collection_date_str.split()
-                    if len(date_parts) >= 3:
-                        # Try parsing with day name, day, month
-                        day = date_parts[1]
-                        month = date_parts[2]
-                        year = datetime.now().year
-                        date_str = f"{day} {month} {year}"
-
-                        for format in possible_formats:
-                            try:
-                                collectionDate = datetime.strptime(date_str, format)
-                                # Handle year boundary: if parsed date is in the past, assume next year
-                                if collectionDate.date() < datetime.now().date():
-                                    collectionDate = collectionDate.replace(
-                                        year=year + 1
-                                    )
-                                break
-                            except ValueError:
-                                continue
-
-                    if collectionDate:
-                        # Add each collection to the list as a tuple
-                        collections.append((bin_type, collectionDate))
-
-        ordered_data = sorted(collections, key=lambda x: x[1])
-        for item in ordered_data:
-            dict_data = {
-                "type": item[0].capitalize(),
-                "collectionDate": item[1].strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+        ordered = sorted(collections, key=lambda x: x[1])
+        for bin_type, dt in ordered:
+            data["bins"].append({
+                "type": bin_type.capitalize(),
+                "collectionDate": dt.strftime(date_format),
+            })
 
         return data
