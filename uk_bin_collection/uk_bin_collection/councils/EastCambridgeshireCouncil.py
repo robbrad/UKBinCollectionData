@@ -4,40 +4,37 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
-
     def parse_data(self, page: str, **kwargs) -> dict:
         uprn = kwargs.get("uprn")
-        # Check the UPRN is valid
         check_uprn(uprn)
 
-        # Request URL
         url = f"https://eastcambs-self.achieveservice.com/appshost/firmstep/self/apps/custompage/bincollections?language=en&uprn={uprn}"
 
-        # Make Request
         requests.packages.urllib3.disable_warnings()
         s = requests.Session()
-        page = s.get(url)
+        s.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        })
 
-        # Make a BS4 object
+        # Session priming — required since site update
+        s.get("https://eastcambs-self.achieveservice.com/bincollections", timeout=30)
+
+        page = s.get(url, timeout=30)
+
         soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
-
-        # Form a JSON wrapper
         data = {"bins": []}
 
         for bins in soup.find_all("div", {"class": "row collectionsrow"}):
-            # Find the collection dates
-            _, bin_type, date = bins.find_all("div")
-            bin_type = bin_type.text
-            date = datetime.strptime(date.text, "%a - %d %b %Y").date()
-
+            divs = bins.find_all("div")
+            if len(divs) < 3:
+                continue
+            _, bin_type_div, date_div = divs[:3]
+            bin_type = bin_type_div.text.strip()
+            date_text = date_div.text.strip()
+            if not bin_type or not date_text:
+                continue
+            date = datetime.strptime(date_text, "%a - %d %b %Y").date()
             data["bins"].append(
                 {"type": bin_type, "collectionDate": date.strftime(date_format)}
             )
