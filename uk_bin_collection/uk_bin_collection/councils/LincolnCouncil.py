@@ -20,6 +20,8 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         check_uprn(user_uprn)
         check_postcode(user_postcode)
+        # Lincoln's AchieveForms API requires 12-digit zero-padded UPRNs
+        user_uprn = user_uprn.zfill(12)
         bindata = {"bins": []}
 
         SESSION_URL = "https://contact.lincoln.gov.uk/authapi/isauthenticated?uri=https://contact.lincoln.gov.uk/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196/AF-Stage-a1c0af0f-fec1-4419-80c0-0dd4e1d965c9/definition.json&process=1&process_uri=sandbox-processes://AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196&process_id=AF-Process-503f9daf-4db9-4dd8-876a-6f2029f11196&hostname=contact.lincoln.gov.uk&withCredentials=true"
