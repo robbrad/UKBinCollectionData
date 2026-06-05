@@ -63,6 +63,14 @@ class UKBinCollectionApp:
             required=False,
         )
         self.parser.add_argument(
+            "--artifact-dir",
+            "--artifact_dir",
+            dest="artifact_dir",
+            type=str,
+            help="Directory for council-specific debug artifacts when a live scrape fails",
+            required=False,
+        )
+        self.parser.add_argument(
             "--headless",
             dest="headless",
             action="store_true",
@@ -106,6 +114,7 @@ class UKBinCollectionApp:
             uprn=self.parsed_args.uprn,
             skip_get_url=self.parsed_args.skip_get_url,
             web_driver=self.parsed_args.web_driver,
+            artifact_dir=self.parsed_args.artifact_dir,
             headless=self.parsed_args.headless,
             local_browser=self.parsed_args.local_browser,
             dev_mode=self.parsed_args.dev_mode,

@@ -2324,11 +2324,13 @@
     },
     "SouthKestevenDistrictCouncil": {
         "LAD24CD": "E07000141",
-        "postcode": "PE68BL",
+        "house_number": "43",
+        "postcode": "NG31 8XG",
         "skip_get_url": true,
-        "url": "https://pre.southkesteven.gov.uk/skdcNext/tempforms/checkmybin.aspx",
+        "url": "https://www.southkesteven.gov.uk/binday",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "South Kesteven District Council",
-        "wiki_note": "Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns."
+        "wiki_note": "Provide your house number or house name in the `house_number` parameter and your postcode in the `postcode` parameter. The parser navigates the postcode bin day checker on the council's `binday` page using Selenium and parses the resulting \"Your Collections\" tables. The returned bin types are normalized to `Grey Bin`, `Food Bin`, `Black Bin`, and `Purple Bin` for Home Assistant compatibility."
     },
     "SouthLanarkshireCouncil": {
         "LAD24CD": "S12000029",
