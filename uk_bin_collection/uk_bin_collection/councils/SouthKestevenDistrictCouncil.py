@@ -1123,8 +1123,18 @@ class CouncilClass(AbstractGetBinDataClass):
             if year in calendar_data and month in calendar_data[year] and week_of_month in calendar_data[year][month]:
                 return calendar_data[year][month][week_of_month]
             else:
-                # Raise error if not found in calendar instead of fallback
-                raise ValueError(f"No bin type found for {collection_date} (Week {week_of_month} of {month}/{year})")
+                # Fallback: 3-week rotation derived from known anchor
+                # Oct 2025 week 2 (day 8-14) = Silver, week 3 = Black, week 4 = Purple
+                # Anchor: 2025-10-13 (start of week 2) = Silver (index 0)
+                ROTATION = [
+                    "Silver bin (Recycling)",
+                    "Black bin (General waste)",
+                    "Purple-lidded bin (Paper & Card)",
+                ]
+                anchor = datetime(2025, 10, 13)
+                days_diff = (date_obj - anchor).days
+                weeks_diff = days_diff // 7
+                return ROTATION[weeks_diff % 3]
                 
         except Exception as e:
             print(f"Error determining bin type for {collection_date}: {e}")
