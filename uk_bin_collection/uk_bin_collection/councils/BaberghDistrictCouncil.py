@@ -1,6 +1,4 @@
-import datetime
 import re
-import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
@@ -11,13 +9,9 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
-# Matches the council's date format e.g. "Thu 14 May 2026". A single <p>
-# can contain multiple dates separated by commas, and "Next Collection:" can
-# be prefixed with "Today - <date>" / "Tomorrow - <date>".
-_DATE_RE = re.compile(
-    r"\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) \d{1,2} "
-    r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}\b"
+# Liferay portlet namespace used to build element ids on the page.
+PORTLET_NS = (
+    "_com_placecube_digitalplace_local_waste_portlet_CollectionDayFinderPortlet_"
 )
 
 
@@ -30,6 +24,20 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """Scrape Babergh's collection-day finder and return bin collections.
+
+        Drives the Selenium-based postcode/address lookup, submits the
+        "Find collection days" form and parses the resulting table into a
+        dict of ``{"bins": [{"type", "collectionDate"}, ...]}``.
+
+        Args:
+            page: Unused; the council requires a live Selenium session.
+            **kwargs: Expects ``postcode`` and ``paon`` (house name/number),
+                plus optional ``web_driver`` and ``headless`` settings.
+
+        Returns:
+            A dict with a ``bins`` list of collection type/date entries.
+        """
         driver = None
         try:
             web_driver = kwargs.get("web_driver")
@@ -53,53 +61,48 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(url)
 
             wait = WebDriverWait(driver, 30)
-            wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, '[aria-label="Postcode"]')
-                )
-            )
 
             # Enter postcode
-            postcode_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, '[aria-label="Postcode"]')
-                )
+            postcode_input = wait.until(
+                EC.presence_of_element_located((By.ID, f"{PORTLET_NS}postcode"))
             )
             postcode_input.send_keys(user_postcode)
 
             # Click find address
-            find_address_button = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "lfr-btn-label"))
+            find_address_button = wait.until(
+                EC.element_to_be_clickable((By.ID, f"{PORTLET_NS}btnAddressLookup"))
             )
             driver.execute_script("arguments[0].scrollIntoView();", find_address_button)
             driver.execute_script("arguments[0].click();", find_address_button)
 
-            time.sleep(5)
-            # Wait for address dropdown
-            select_address_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "select"))
+            # Wait for the address dropdown to be populated with addresses
+            select_address_input = wait.until(
+                EC.presence_of_element_located((By.ID, f"{PORTLET_NS}uprn"))
             )
+            wait.until(lambda d: len(Select(select_address_input).options) > 1)
 
-            # Select address based on postcode and house number
+            # Select address based on postcode and house name/number
             select = Select(select_address_input)
             selected = False
 
             for addr_option in select.options:
-                if not addr_option.text or addr_option.text == "Please Select...":
+                # Skip the placeholder option (e.g. "7 addresses found for ...")
+                if not addr_option.get_attribute("value"):
                     continue
 
                 option_text = addr_option.text.upper()
                 postcode_upper = user_postcode.upper()
                 paon_str = str(user_paon).upper()
 
-                # Check if this option contains both postcode and house number
-                if postcode_upper in option_text and (
-                    f"{paon_str} " in option_text
-                    or f", {paon_str}," in option_text
-                    or f", {paon_str} " in option_text
-                    or f", {paon_str}A," in option_text
-                    or option_text.endswith(f", {paon_str}")
-                ):
+                # Match the house name/number as a whole token, allowing an
+                # optional single-letter suffix (e.g. "1A", "1B") and either a
+                # space or comma as the surrounding separator.
+                paon_pattern = re.compile(
+                    rf"(^|[ ,]){re.escape(paon_str)}[A-Z]?([ ,]|$)"
+                )
+
+                # Check if this option contains both postcode and house name/number
+                if postcode_upper in option_text and paon_pattern.search(option_text):
                     select.select_by_value(addr_option.get_attribute("value"))
                     selected = True
                     break
@@ -109,59 +112,70 @@ class CouncilClass(AbstractGetBinDataClass):
                     f"Address not found for postcode {user_postcode} and house number {user_paon}"
                 )
 
-            wait = WebDriverWait(driver, 30)
-            wait.until(EC.presence_of_element_located((By.ID, "collection-cards")))
+            # Selecting an address reveals the "Find collection days" submit
+            # button; click it to load the collection day results.
+            find_days_button = wait.until(
+                EC.element_to_be_clickable((By.ID, f"{PORTLET_NS}fcd_submit"))
+            )
+            driver.execute_script("arguments[0].scrollIntoView();", find_days_button)
+            driver.execute_script("arguments[0].click();", find_days_button)
+
+            # Wait for the results table to load
+            wait.until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "div.collection-days-page table")
+                )
+            )
 
             # Parse the HTML content
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
-            collection_cards = soup.find("div", class_="collection-cards")
-            if collection_cards:
-                cards = collection_cards.find_all("div", class_="card")
-                for card in cards:
-                    collection_type = (card.find("h3")).get_text()
-                    # print(collection_type)
-                    p_tags = card.find_all("p")  # any <p>
-
-                    for p_tag in p_tags:
-                        text = p_tag.get_text()
-                        if text.startswith("Frequency"):
+            results_page = soup.find("div", class_="collection-days-page")
+            if results_page:
+                table = results_page.find("table")
+                if table:
+                    body = table.find("tbody") or table
+                    for row in body.find_all("tr"):
+                        cells = row.find_all("td")
+                        if len(cells) < 2:
                             continue
 
-                        # A single <p> can contain multiple dates — the
-                        # "Following Collections:" tag renders comma-separated
-                        # dates when the council has 3 upcoming collections,
-                        # and "Next Collection:" can be prefixed with
-                        # "Today - <date>". Pull every well-formed date out
-                        # of the text and emit one entry per date.
-                        matches = _DATE_RE.findall(text)
+                        collection_type = cells[0].get_text(strip=True)
+                        if not collection_type:
+                            continue
 
-                        # Fail loud if a collection-labelled line yields no
-                        # parseable dates. Silent drops here would freeze
-                        # downstream sensors on a future format change (a
-                        # bare regex miss is otherwise indistinguishable
-                        # from "no upcoming collection").
-                        if not matches and (
-                            text.startswith("Next Collection")
-                            or text.startswith("Following Collections")
-                        ):
-                            raise ValueError(
-                                f"No parseable dates in {collection_type!r} "
-                                f"collection line: {text!r}"
-                            )
+                        # The "Next collection" date is in the second column;
+                        # an optional "Following Collection Date" may appear in
+                        # the fourth column. Capture any populated dates.
+                        date_cells = [cells[1]]
+                        if len(cells) >= 4:
+                            date_cells.append(cells[3])
 
-                        for date_str in matches:
+                        for date_cell in date_cells:
+                            date_text = date_cell.get_text(strip=True)
+                            if not date_text:
+                                continue
+
+                            # Dates are formatted like "Monday 08 Jun 2026"
                             collection_date = datetime.strptime(
-                                date_str, "%a %d %b %Y"
+                                date_text, "%A %d %b %Y"
                             )
-                            data["bins"].append(
-                                {
-                                    "type": collection_type,
-                                    "collectionDate": collection_date.strftime(
-                                        date_format
-                                    ),
-                                }
-                            )
+
+                            dict_data = {
+                                "type": collection_type,
+                                "collectionDate": collection_date.strftime(date_format),
+                            }
+                            data["bins"].append(dict_data)
+
+            # Fail loud if no collections were parsed. The results table was
+            # present, so an empty result means the page format has changed
+            # rather than there being genuinely no upcoming collections;
+            # silently returning no bins would freeze downstream sensors.
+            if not data["bins"]:
+                raise ValueError(
+                    "No bin collections found - the Babergh results page "
+                    "format may have changed."
+                )
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
