@@ -779,7 +779,7 @@
     "EastCambridgeshireCouncil": {
         "LAD24CD": "E07000009",
         "skip_get_url": true,
-        "uprn": "10002597178",
+        "uprn": "100091190587",
         "url": "https://www.eastcambs.gov.uk/",
         "wiki_name": "East Cambridgeshire",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
