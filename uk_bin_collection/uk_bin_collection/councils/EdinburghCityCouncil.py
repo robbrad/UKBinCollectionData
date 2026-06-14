@@ -198,6 +198,10 @@ def _get_three_bins(street_name):
 def _get_food_bin(street_name):
     best_url = _get_best_url(street_name, 10248)
     food_collection_day = _get_collection_day(best_url)
+    if not food_collection_day:
+        raise ValueError(
+            f"No food waste collection day found for '{street_name}' at {best_url}"
+        )
     food_offset_day = days_of_week.index(food_collection_day)
 
     return food_offset_day
@@ -205,6 +209,10 @@ def _get_food_bin(street_name):
 def _get_garden_bin(street_name):
     best_url = _get_best_url(street_name, 10250)
     calendar_code = _get_garden_calendar_code(best_url)
+    if not calendar_code:
+        raise ValueError(
+            f"No calendar code found for '{street_name}' at {best_url}"
+        )
 
     day_name, week_index = _parse_garden_calendar_code(calendar_code)
     if not day_name:
