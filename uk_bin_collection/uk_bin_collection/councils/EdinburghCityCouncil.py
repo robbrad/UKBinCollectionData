@@ -108,7 +108,7 @@ def _get_collection_day(record_url):
     return None
 
 def _get_garden_calendar_code(record_url):
-    """Fetch a directory record page and extract the collection day."""
+    """Fetch a directory record page and extract the calendar code."""
     resp = requests.get(record_url, headers=HEADERS, timeout=15)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -122,7 +122,7 @@ def _get_garden_calendar_code(record_url):
                     cal_url = cal_link['href'].strip()
                     cal_target = "garden-waste-calendar-"
                     target_idx = cal_url.find(cal_target)
-                    if target_idx > 0:
+                    if target_idx >= 0:
                         return cal_url[(target_idx+len(cal_target)):]
     return None
 
