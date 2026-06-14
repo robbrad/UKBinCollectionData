@@ -148,6 +148,7 @@ def _parse_garden_calendar_code(code):
     return day_name, week_num - 1
 
 def _get_best_url(street_name, record):
+    """Extract best URL for a street and target record number."""
     records = _search_directory(street_name, record)
     if not records:
         raise ValueError(
@@ -170,6 +171,8 @@ days_of_week = [
 ]
 
 def _get_three_bins(street_name):
+    """Extract start dates and offsets for the three bins (general waste, recycling,
+    glass) which come from a single record on the Edinburgh council site."""
     best_url = _get_best_url(street_name, 10251)
 
     calendar_code = _get_calendar_code(best_url)
@@ -196,6 +199,7 @@ def _get_three_bins(street_name):
     return recycling_start, glass_start, refuse_start, three_offset_days
 
 def _get_food_bin(street_name):
+    """Extract the start offset day for food waste, which is collected every week."""
     best_url = _get_best_url(street_name, 10248)
     food_collection_day = _get_collection_day(best_url)
     if not food_collection_day:
@@ -207,6 +211,7 @@ def _get_food_bin(street_name):
     return food_offset_day
 
 def _get_garden_bin(street_name):
+    """Extract the start date, offset, and holiday break days for garden waste bins."""
     best_url = _get_best_url(street_name, 10250)
     calendar_code = _get_garden_calendar_code(best_url)
     if not calendar_code:
