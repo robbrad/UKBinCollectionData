@@ -1,56 +1,42 @@
-import json
-import time
 from datetime import datetime
+import requests
 
-from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120 Safari/537.36"
+    ),
+    "Accept": "application/json, text/plain, */*",
+    "Referer": "https://www.warrington.gov.uk/bin-collections",
+}
 
-from uk_bin_collection.uk_bin_collection.common import *
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+class CouncilClass:
+    def parse_data(self, page, **kwargs):
+        url = kwargs.get("url")
 
+        response = requests.get(url, headers=HEADERS, timeout=30)
+        response.raise_for_status()
+        data = response.json()
 
-class CouncilClass(AbstractGetBinDataClass):
-    def parse_data(self, page: str, **kwargs) -> dict:
-        user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
-        bindata = {"bins": []}
+        bins = {
+            "green": "Green",
+            "blue": "Blue",
+            "foodwaste": "Food Waste",
+            "black": "Black",
+        }
 
-        uri = f"https://www.warrington.gov.uk/bin-collections/get-jobs/{user_uprn}"
+        entries = []
 
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
+        for key, label in bins.items():
+            timestamp = data.get(key)
+            if not timestamp:
+                continue
 
-        driver = create_webdriver(web_driver, headless, None, __name__)
-        try:
-            driver.get(uri)
-            # Wait for Cloudflare challenge to resolve and JSON to appear
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.TAG_NAME, "pre"))
-            )
-            time.sleep(2)
+            collection_date = datetime.fromtimestamp(timestamp).strftime("%d/%m/%Y")
 
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-            pre = soup.find("pre")
-            if not pre:
-                raise ValueError("No JSON data found on page after Cloudflare challenge")
-
-            bin_collection = json.loads(pre.text)
-        finally:
-            driver.quit()
-
-        for collection in bin_collection.get("schedule", []):
-            bin_type = collection["Name"]
-            collection_date = collection["ScheduledStart"]
-            bindata["bins"].append({
-                "type": bin_type,
-                "collectionDate": datetime.strptime(
-                    collection_date, "%Y-%m-%dT%H:%M:%S"
-                ).strftime(date_format),
+            entries.append({
+                "type": label,
+                "collectionDate": collection_date,
             })
 
-        bindata["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
-        )
-        return bindata
+        return entries
