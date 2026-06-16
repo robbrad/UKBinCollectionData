@@ -1,5 +1,7 @@
-from datetime import datetime
 import requests
+from datetime import datetime
+
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinData
 
 HEADERS = {
     "User-Agent": (
@@ -10,7 +12,8 @@ HEADERS = {
     "Referer": "https://www.warrington.gov.uk/bin-collections",
 }
 
-class CouncilClass:
+
+class CouncilClass(AbstractGetBinData):
     def parse_data(self, page, **kwargs):
         url = kwargs.get("url")
 
@@ -32,11 +35,9 @@ class CouncilClass:
             if not timestamp:
                 continue
 
-            collection_date = datetime.fromtimestamp(timestamp).strftime("%d/%m/%Y")
-
             entries.append({
                 "type": label,
-                "collectionDate": collection_date,
+                "collectionDate": datetime.fromtimestamp(timestamp).strftime("%d/%m/%Y"),
             })
 
         return entries
