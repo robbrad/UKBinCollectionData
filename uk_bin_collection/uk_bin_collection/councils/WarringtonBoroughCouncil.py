@@ -1,7 +1,8 @@
 import requests
 from datetime import datetime
 
-from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinData
+from uk_bin_collection.uk_bin_collection.common import check_uprn, date_format
+from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 HEADERS = {
     "User-Agent": (
@@ -13,31 +14,30 @@ HEADERS = {
 }
 
 
-class CouncilClass(AbstractGetBinData):
-    def parse_data(self, page, **kwargs):
-        url = kwargs.get("url")
+class CouncilClass(AbstractGetBinDataClass):
+    def parse_data(self, page: str, **kwargs) -> dict:
+        user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
 
-        response = requests.get(url, headers=HEADERS, timeout=30)
+        uri = f"https://www.warrington.gov.uk/bin-collections/get-jobs/{user_uprn}"
+
+        response = requests.get(uri, headers=HEADERS, timeout=30)
         response.raise_for_status()
-        data = response.json()
+        bin_collection = response.json()
 
-        bins = {
-            "green": "Green",
-            "blue": "Blue",
-            "foodwaste": "Food Waste",
-            "black": "Black",
-        }
+        bindata = {"bins": []}
 
-        entries = []
-
-        for key, label in bins.items():
-            timestamp = data.get(key)
-            if not timestamp:
-                continue
-
-            entries.append({
-                "type": label,
-                "collectionDate": datetime.fromtimestamp(timestamp).strftime("%d/%m/%Y"),
+        for collection in bin_collection.get("schedule", []):
+            bindata["bins"].append({
+                "type": collection["Name"],
+                "collectionDate": datetime.strptime(
+                    collection["ScheduledStart"],
+                    "%Y-%m-%dT%H:%M:%S",
+                ).strftime(date_format),
             })
 
-        return entries
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+        )
+
+        return bindata
