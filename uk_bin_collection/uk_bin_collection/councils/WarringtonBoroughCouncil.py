@@ -20,8 +20,6 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
 
         uri = f"https://www.warrington.gov.uk/bin-collections/get-jobs/{user_uprn}"
-        if not isinstance(schedule, list):
-            raise ValueError("Unexpected Warrington response: missing/invalid 'schedule'")
 
         response = requests.get(uri, headers=HEADERS, timeout=30)
         response.raise_for_status()
