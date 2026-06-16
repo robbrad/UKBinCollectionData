@@ -353,7 +353,7 @@ def create_webdriver(
             driver = webdriver.Remote(command_executor=web_driver, options=options)
         else:
             driver = webdriver.Chrome(
-                service=ChromeService(options=options)
+                service=ChromeService(ChromeDriverManager().install()), options=options
             )
         
         # Set window position to ensure it's visible on screen
