@@ -20,14 +20,19 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
 
         uri = f"https://www.warrington.gov.uk/bin-collections/get-jobs/{user_uprn}"
+        if not isinstance(schedule, list):
+            raise ValueError("Unexpected Warrington response: missing/invalid 'schedule'")
 
         response = requests.get(uri, headers=HEADERS, timeout=30)
         response.raise_for_status()
         bin_collection = response.json()
 
         bindata = {"bins": []}
+        schedule = bin_collection.get("schedule")
+        if not isinstance(schedule, list):
+            raise ValueError("Unexpected Warrington response: missing/invalid 'schedule'")
 
-        for collection in bin_collection.get("schedule", []):
+        for collection in schedule:
             bindata["bins"].append({
                 "type": collection["Name"],
                 "collectionDate": datetime.strptime(
