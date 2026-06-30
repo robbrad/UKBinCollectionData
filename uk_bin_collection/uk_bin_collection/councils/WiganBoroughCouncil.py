@@ -16,6 +16,32 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+       """Fetch and parse bin collection dates for a property.
+
+        The method submits the council's postcode search form, selects the
+        requested property using its UPRN, and extracts the next collection
+        date for each waste stream.
+
+        Args:
+            page: Unused parameter required by the common scraper interface.
+            **kwargs: Expected to contain:
+                uprn: The property's Unique Property Reference Number.
+                postcode: The property's postcode.
+
+        Returns:
+            A dictionary containing a ``bins`` list. Each entry contains:
+
+            * ``type``: The bin or waste collection type.
+            * ``collectionDate``: The next scheduled collection date, formatted
+              using the project's standard ``date_format``.
+
+        Raises:
+            ValueError: If the supplied UPRN or postcode is invalid.
+            requests.RequestException: If a network request fails.
+            AttributeError: If the council website changes and expected HTML
+                elements cannot be found.
+        """
+
         # Get and check UPRN
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
