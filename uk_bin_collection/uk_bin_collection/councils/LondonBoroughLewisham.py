@@ -1,16 +1,30 @@
-import re
-import time
+import html
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+BASE_URL = "https://lewisham.gov.uk"
+COLLECTION_PAGE_URL = (
+    f"{BASE_URL}/myservices/recycling-and-rubbish/your-bins/collection"
+)
+ROUNDS_INFORMATION_PATH = "/api/roundsinformation"
+# Identifies the "rounds information" widget on the collection page in Lewisham's
+# CMS (Sitecore). The site's JS calls this same endpoint+id to render the
+# schedule text, so we call it directly instead of driving a browser.
+ROUNDS_INFORMATION_ITEM_GUID = "{23423835-d2a6-41b1-9637-29e5e8cc2df7}"
 
-# import the wonderful Beautiful Soup and the URL grabber
+_DAY_PATTERN = re.compile(
+    r"on\s*(?P<day>Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)",
+    re.IGNORECASE,
+)
+_NEXT_DATE_PATTERN = re.compile(
+    r"your\s+next\s+collection\s+date\s+is\s*(?P<date>\d{2}/\d{2}/\d{4})",
+    re.IGNORECASE,
+)
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -19,122 +33,86 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_uprn(user_uprn)
+        if not user_uprn:
+            raise ValueError(
+                "Could not resolve UPRN. Provide a valid UPRN, e.g. via FindMyAddress."
+            )
+
+        session = build_retry_session(
+            headers={
+                "User-Agent": get_scraper_user_agent(),
+                "Accept": "application/json, text/html, */*",
+                "Accept-Language": "en-GB,en;q=0.9",
+                "X-Requested-With": "XMLHttpRequest",
+                "Referer": COLLECTION_PAGE_URL,
+            },
+            retry_methods=("POST",),
+        )
+
+        resp = session.post(
+            f"{BASE_URL}{ROUNDS_INFORMATION_PATH}",
+            params={"item": ROUNDS_INFORMATION_ITEM_GUID, "uprn": user_uprn},
+            timeout=30,
+        )
+        resp.raise_for_status()
+
+        # The API response body is itself a JSON string containing an HTML fragment,
+        # e.g. "<strong>Food waste</strong>&nbsp;is collected <span ...>WEEKLY</span>
+        # on Thursday...". json.loads unwraps that outer string; html.unescape then
+        # decodes entities like &nbsp; so the regexes below can match plain text.
+        try:
+            raw_html = json.loads(resp.text)
+        except json.JSONDecodeError as ex:
+            raise ValueError(
+                "Unexpected response from Lewisham roundsinformation API (not JSON)."
+            ) from ex
+
+        normalised = html.unescape(raw_html).replace("\xa0", " ")
+        soup = BeautifulSoup(normalised, "html.parser")
+
+        # Each bin type is a <strong> tag; the day/frequency/date for that bin
+        # follows as plain text and <span> markup up until the next <strong> tag.
+        strong_tags = soup.find_all("strong")
+        if not strong_tags:
+            raise ValueError("No collection entries found for this UPRN.")
+
         bindata = {"bins": []}
+        for strong in strong_tags:
+            bin_type = strong.get_text(strip=True)
 
-        # Initialize the WebDriver (Chrome in this case)
-        with create_webdriver(
-            web_driver,
-            headless,
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
-            __name__,
-        ) as driver:
-
-            # Step 1: Navigate to the form page
-            driver.get(
-                "https://lewisham.gov.uk/myservices/recycling-and-rubbish/your-bins/collection"
-            )
-
-            try:
-                cookie_accept_button = WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable(
-                        (By.ID, "CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")
-                    )
+            segment = ""
+            for sibling in strong.next_siblings:
+                if getattr(sibling, "name", None) == "strong":
+                    break
+                # Tags have get_text(); loose text nodes (NavigableString) don't.
+                segment += (
+                    sibling.get_text() if hasattr(sibling, "get_text") else str(sibling)
                 )
-                cookie_accept_button.click()
-            except Exception:
-                print("No cookie consent banner found or already dismissed.")
 
-            # Wait for the form to load
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "address-finder"))
-            )
+            date_match = _NEXT_DATE_PATTERN.search(segment)
+            day_match = _DAY_PATTERN.search(segment)
 
-            # Step 2: Locate the input field for the postcode
-            postcode_input = driver.find_element(
-                By.CLASS_NAME, "js-address-finder-input"
-            )
-
-            # Enter the postcode
-            postcode_input.send_keys(
-                user_postcode
-            )  # Replace with your desired postcode
-            time.sleep(1)  # Optional: Wait for the UI to react
-
-            # Step 4: Click the "Find address" button with retry logic
-            find_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (By.CLASS_NAME, "js-address-finder-step-address")
+            if date_match:
+                # An explicit "your next collection date is dd/mm/yyyy" was given.
+                next_collection_date = date_match.group("date")
+            elif day_match:
+                # No explicit date (e.g. fortnightly collections without one) -
+                # fall back to the next occurrence of the named weekday. .title()
+                # normalises case, since get_next_day_of_week does an exact match.
+                next_collection_date = get_next_day_of_week(
+                    day_match.group("day").title(), date_format
                 )
-            )
-            find_button.click()
-
-            # Wait for the address selector to appear and options to load
-            WebDriverWait(driver, 10).until(
-                lambda d: len(
-                    d.find_element(By.ID, "address-selector").find_elements(
-                        By.TAG_NAME, "option"
-                    )
-                )
-                > 1
-            )
-
-            # Select the dropdown and print available options
-            address_selector = driver.find_element(By.ID, "address-selector")
-
-            # Use Select class to interact with the dropdown
-            select = Select(address_selector)
-            if len(select.options) > 1:
-                select.select_by_value(user_uprn)
             else:
-                print("No additional addresses available to select")
+                raise ValueError(
+                    f"Could not determine a collection day or date for '{bin_type}'."
+                )
 
-            # Wait until the URL contains the expected substring
-            WebDriverWait(driver, 10).until(
-                EC.url_contains("/find-your-collection-day-result")
+            bindata["bins"].append(
+                {"type": bin_type, "collectionDate": next_collection_date}
             )
 
-            # Parse the HTML
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-
-            # Extract the main container
-            collection_result = soup.find("div", class_="js-find-collection-result")
-
-            # Extract each collection type and its frequency/day
-            for strong_tag in collection_result.find_all("strong"):
-                bin_type = strong_tag.text.strip()  # e.g., "Food waste"
-                # Extract the sibling text
-                schedule_text = (
-                    strong_tag.next_sibling.next_sibling.next_sibling.text.strip()
-                    .replace("\n", " ")
-                    .replace("\t", " ")
-                )
-
-                # Extract the day using regex
-                print(schedule_text)
-                day_match = re.search(r"on\s*(\w+day)", schedule_text)
-                print(day_match)
-                day = day_match.group(1) if day_match else None
-
-                # Extract the next collection date using regex
-                date_match = re.search(
-                    r"Your next collection date is\s*(\d{2}/\d{2}/\d{4})(.?)",
-                    schedule_text,
-                )
-                if date_match:
-                    next_collection_date = date_match.group(1)
-                else:
-                    next_collection_date = get_next_day_of_week(day, date_format)
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": next_collection_date,
-                }
-                bindata["bins"].append(dict_data)
-
-            return bindata
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+        )
+        return bindata

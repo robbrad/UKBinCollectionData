@@ -2399,15 +2399,13 @@ Note: Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyadd
 
 ### Lewisham
 ```commandline
-python collect_data.py LondonBoroughLewisham https://www.lewisham.gov.uk -s -u XXXXXXXX -p "XXXX XXX" -w http://HOST:PORT/
+python collect_data.py LondonBoroughLewisham https://www.lewisham.gov.uk -s -u XXXXXXXX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-u` - UPRN
-- `-p` - postcode
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
+Note: Pass the UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 

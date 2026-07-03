@@ -1523,13 +1523,11 @@
     },
     "LondonBoroughLewisham": {
         "LAD24CD": "E09000023",
-        "postcode": "SE12 9QF",
         "skip_get_url": true,
         "uprn": "100021954849",
         "url": "https://www.lewisham.gov.uk",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Lewisham",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Pass the UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "LondonBoroughOfRichmondUponThames": {
         "LAD24CD": "E09000027",
