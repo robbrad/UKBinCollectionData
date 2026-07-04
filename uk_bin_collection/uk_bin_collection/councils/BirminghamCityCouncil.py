@@ -4,7 +4,6 @@ import requests
 from datetime import datetime
 from dateutil.parser import parse as dateutil_parse
 from dateutil.parser import ParserError
-from uk_bin_collection.uk_bin_collection.common import *
 from yarl import URL
 
 from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
@@ -16,7 +15,7 @@ HEADERS = {
 }
 
 
-def _parse_collection_date(raw_date: str, today: datetime) -> datetime | None:
+def _parse_collection_date(raw_date: str, today: datetime) -> datetime:
     """
     Parse a 'Weekday DD Month' string (year omitted). Schedules only ever
     contain current/future dates plus a just-completed entry from the past
@@ -25,8 +24,11 @@ def _parse_collection_date(raw_date: str, today: datetime) -> datetime | None:
     """
     try:
         parsed = dateutil_parse(raw_date, default=today, fuzzy=True)
-    except (ParserError, ValueError, OverflowError):
-        return None
+    except (ParserError, ValueError, OverflowError) as exc:
+        raise ValueError(
+            f"Could not parse Birmingham collection date: {raw_date!r}"
+        ) from exc        
+
 
     # Only treat as "next year" if the month has actually wrapped around
     # (e.g. today=Dec, parsed=Jan) - not just "an earlier month this year".
@@ -89,17 +91,22 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(response.text, "html.parser")
 
         bins_data = {"bins": []}
-        table = soup.find("table", class_="data-table")
-        rows = table.find("tbody").find_all("tr")
+        if not (table := soup.find("table", class_="data-table")):
+            raise ValueError("Could not find the collection dates table in the council page.")
+        if not (body := table.find("tbody")):
+            raise ValueError("Could not find the table body in the collection dates table.")
+        rows = body.find_all("tr")
 
         today = datetime.now()
         for row in rows:
             cells = row.find_all(["th", "td"])
+            if cells is None or len(cells) < 2:
+                raise ValueError("Unexpected table row structure; expected at least two cells.")
             date_str = cells[0].get_text(strip=True)
             bin_type = cells[1].get_text(strip=True)
 
             parsed_date = _parse_collection_date(date_str, today)
-            if not parsed_date or parsed_date.date() < today.date():
+            if parsed_date.date() < today.date():
                 continue
 
             bins_data["bins"].append(

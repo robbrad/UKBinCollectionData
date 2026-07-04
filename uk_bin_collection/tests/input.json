@@ -217,9 +217,10 @@
     },
     "BirminghamCityCouncil": {
         "LAD24CD": "E08000025",
+        "skip_get_url": true,
         "postcode": "B5 7XE",
         "uprn": "100070445256",
-        "url": "https://www.birmingham.gov.uk/xfp/form/619",
+        "url": "https://www.birmingham.gov.uk/info/50388/check_your_collection_day",
         "wiki_name": "Birmingham",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
