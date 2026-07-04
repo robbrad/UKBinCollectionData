@@ -30,10 +30,13 @@ def _parse_collection_date(raw_date: str, today: datetime) -> datetime:
         ) from exc        
 
 
-    # Only treat as "next year" if the month has actually wrapped around
-    # (e.g. today=Dec, parsed=Jan) - not just "an earlier month this year".
-    if parsed.month < today.month and today.month - parsed.month > 6:
+    # We only have day and month so handle year crossover boundaries
+    # If we are in Jan/Feb/Mar and the parsed date is in Oct/Nov/Dec assume date is last year
+    # If we are in Oct/Nov/Dec and the parsed date is in Jan/Feb/Mar assume date is next year
+    if parsed.month <= 3 and today.month >= 10:
         parsed = parsed.replace(year=parsed.year + 1)
+    elif parsed.month >= 10 and today.month <= 3:
+        parsed = parsed.replace(year=parsed.year - 1)
 
     return parsed
 
