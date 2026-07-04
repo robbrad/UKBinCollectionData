@@ -1,28 +1,39 @@
 from typing import Dict, List, Any, Optional
 from bs4 import BeautifulSoup
-from dateutil.relativedelta import relativedelta
 import requests
-import logging
-import re
 from datetime import datetime
+from dateutil.parser import parse as dateutil_parse
+from dateutil.parser import ParserError
 from uk_bin_collection.uk_bin_collection.common import *
-from dateutil.parser import parse
+from yarl import URL
 
 from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-def get_token(page) -> str:
-    """
-    Get a __token to include in the form data
-        :param page: Page html
-        :return: Form __token
-    """
-    soup = BeautifulSoup(page.text, features="html.parser")
-    soup.prettify()
-    token = soup.find("input", {"name": "__token"}).get("value")
-    return token
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+}
 
+
+def _parse_collection_date(raw_date: str, today: datetime) -> datetime | None:
+    """
+    Parse a 'Weekday DD Month' string (year omitted). Schedules only ever
+    contain current/future dates plus a just-completed entry from the past
+    week, so year rollover only ever happens at the Dec->Jan boundary -
+    never mid-year.
+    """
+    try:
+        parsed = dateutil_parse(raw_date, default=today, fuzzy=True)
+    except (ParserError, ValueError, OverflowError):
+        return None
+
+    # Only treat as "next year" if the month has actually wrapped around
+    # (e.g. today=Dec, parsed=Jan) - not just "an earlier month this year".
+    if parsed.month < today.month and today.month - parsed.month > 6:
+        parsed = parsed.replace(year=parsed.year + 1)
+
+    return parsed
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -30,39 +41,6 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
-
-    def get_data(self, url: str) -> str:
-        """This method makes the request to the council
-
-        Keyword arguments:
-        url -- the url to get the data from
-        """
-        # Set a user agent so we look like a browser ;-)
-        user_agent = (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/134.0.0.0 Safari/537.36"
-        )
-        headers = {"User-Agent": user_agent}
-        requests.packages.urllib3.disable_warnings()
-
-        # Make the Request - change the URL - find out your property number
-        try:
-            session = requests.Session()
-            session.headers.update(headers)
-            full_page = session.get(url)
-            return full_page
-        except requests.exceptions.HTTPError as errh:
-            logging.error(f"Http Error: {errh}")
-            raise
-        except requests.exceptions.ConnectionError as errc:
-            logging.error(f"Error Connecting: {errc}")
-            raise
-        except requests.exceptions.Timeout as errt:
-            logging.error(f"Timeout Error: {errt}")
-            raise
-        except requests.exceptions.RequestException as err:
-            logging.error(f"Oops: Something Else {err}")
-            raise
 
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
         """
@@ -93,44 +71,43 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(uprn)
         check_postcode(postcode)
 
-        values = {
-            "__token": get_token(page),
-            "page": "491",
-            "locale": "en_GB",
-            "q1f8ccce1d1e2f58649b4069712be6879a839233f_0_0": postcode,
-            "q1f8ccce1d1e2f58649b4069712be6879a839233f_1_0": uprn,
-            "next": "Next",
-        }
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"}
         requests.packages.urllib3.disable_warnings()
-        response = requests.request(
-            "POST",
-            "https://www.birmingham.gov.uk/xfp/form/619",
-            headers=headers,
-            data=values,
-        )
 
-        soup = BeautifulSoup(response.text, features="html.parser")
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+        }
 
-        rows = soup.find("table", class_="data-table").find("tbody").find_all("tr")
 
-        # Form a JSON wrapper
-        data: Dict[str, List[Dict[str, str]]] = {"bins": []}
+        query_string = {
+            "postcode": postcode,
+            "uprn": uprn,
+        }
+        url = URL("https://www.birmingham.gov.uk/info/50388/check_your_collection_day").with_query(query_string)
+        response = requests.get(url, headers=HEADERS, timeout=30)
+        response.raise_for_status()
 
-        # Loops the Rows
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        bins_data = {"bins": []}
+        table = soup.find("table", class_="data-table")
+        rows = table.find("tbody").find_all("tr")
+
+        today = datetime.now()
         for row in rows:
-            bin_type = row.find("th").get_text(strip=True)
-            collection_next = row.find("td").get_text(strip=True)
+            cells = row.find_all(["th", "td"])
+            date_str = cells[0].get_text(strip=True)
+            bin_type = cells[1].get_text(strip=True)
 
-            collection_date_obj = datetime.strptime(collection_next, "%a %d/%m/%Y")
+            parsed_date = _parse_collection_date(date_str, today)
+            if not parsed_date or parsed_date.date() < today.date():
+                continue
 
-            # Make each Bin element in the JSON
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": collection_date_obj.strftime(date_format),
-            }
+            bins_data["bins"].append(
+                {"type": bin_type, "collectionDate": parsed_date.strftime(date_format)}
+            )
 
-            # Add data to the main JSON Wrapper
-            data["bins"].append(dict_data)
-
-        return data
+        bins_data["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+        )
+        return bins_data
+    
