@@ -19,7 +19,9 @@ class CouncilClass(AbstractGetBinDataClass):
             "https://apps.cloud9technologies.com/rugby/citizenmobile/webapi/"
             f"wastecollections/{user_uprn}"
         )
-        json_data = requests.get(api_url).json()
+        response = requests.get(api_url, timeout=30)
+        response.raise_for_status()
+        json_data = response.json()
 
         waste_collection_dates = json_data["wasteCollectionDates"]
 
