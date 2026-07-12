@@ -26,49 +26,47 @@ class CouncilClass(AbstractGetBinDataClass):
             }
         )
 
-        # Step 1: Lookup addresses by postcode via API
-        if not user_postcode:
-            raise ValueError("Postcode is required")
-        postcode_stripped = user_postcode.replace(" ", "")
-        params = {"national": "false", "includeNonPostal": "false"}
-        r1 = s.get(f"{api_base}/{postcode_stripped}", params=params, timeout=30)
-        r1.raise_for_status()
-        result = r1.json()
-
-        addresses = result.get("data", [])
-        if not addresses:
-            raise ValueError(f"No addresses found for postcode {user_postcode}")
-
-        # Step 2: Match address by UPRN or house number
-        selected_uprn = None
-
-        if user_uprn:
-            for addr in addresses:
-                if str(addr.get("uprn")) == str(user_uprn):
-                    selected_uprn = str(addr["uprn"])
-                    break
-
-        if not selected_uprn and user_paon:
-            paon_lower = user_paon.lower().strip()
-            for addr in addresses:
-                line1 = (addr.get("addressLine1") or "").lower()
-                full = (addr.get("fullAddress") or "").lower()
-                if line1.startswith(paon_lower) or full.startswith(paon_lower):
-                    selected_uprn = str(addr["uprn"])
-                    break
-            if not selected_uprn:
-                for addr in addresses:
-                    full = (addr.get("fullAddress") or "").lower()
-                    if paon_lower in full:
-                        selected_uprn = str(addr["uprn"])
-                        break
+        # If a UPRN is already supplied, the calendar lookup in Step 3 only
+        # needs that UPRN - the postcode-based address search below exists
+        # solely to resolve a UPRN from a postcode/house number, so it can
+        # be skipped entirely for UPRN-only configs.
+        selected_uprn = str(user_uprn) if user_uprn else None
 
         if not selected_uprn:
-            if user_uprn or user_paon:
-                raise ValueError(
-                    f"Address not found for UPRN={user_uprn} PAON={user_paon} in postcode {user_postcode}"
-                )
-            selected_uprn = str(addresses[0]["uprn"])
+            # Step 1: Lookup addresses by postcode via API
+            if not user_postcode:
+                raise ValueError("Postcode is required")
+            postcode_stripped = user_postcode.replace(" ", "")
+            params = {"national": "false", "includeNonPostal": "false"}
+            r1 = s.get(f"{api_base}/{postcode_stripped}", params=params, timeout=30)
+            r1.raise_for_status()
+            result = r1.json()
+
+            addresses = result.get("data", [])
+            if not addresses:
+                raise ValueError(f"No addresses found for postcode {user_postcode}")
+
+            # Step 2: Match address by house number
+            if user_paon:
+                paon_lower = user_paon.lower().strip()
+                for addr in addresses:
+                    line1 = (addr.get("addressLine1") or "").lower()
+                    full = (addr.get("fullAddress") or "").lower()
+                    if line1.startswith(paon_lower) or full.startswith(paon_lower):
+                        selected_uprn = str(addr["uprn"])
+                        break
+                if not selected_uprn:
+                    for addr in addresses:
+                        full = (addr.get("fullAddress") or "").lower()
+                        if paon_lower in full:
+                            selected_uprn = str(addr["uprn"])
+                            break
+                if not selected_uprn:
+                    raise ValueError(
+                        f"Address not found for PAON={user_paon} in postcode {user_postcode}"
+                    )
+            else:
+                selected_uprn = str(addresses[0]["uprn"])
 
         # Step 3: POST to calendar with UPRN
         payload = {
