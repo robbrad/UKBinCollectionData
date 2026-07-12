@@ -644,9 +644,10 @@ Note: Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/sea
 
 ### Birmingham
 ```commandline
-python collect_data.py BirminghamCityCouncil https://www.birmingham.gov.uk/xfp/form/619 -u XXXXXXXX -p "XXXX XXX"
+python collect_data.py BirminghamCityCouncil https://www.birmingham.gov.uk/info/50388/check_your_collection_day -s -u XXXXXXXX -p "XXXX XXX"
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-u` - UPRN
 - `-p` - postcode
 
