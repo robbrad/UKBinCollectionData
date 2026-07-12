@@ -55,13 +55,24 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             inputElement_postcode.send_keys(user_postcode)
 
+            # The cookie consent dialog can still be present/animating in
+            # at this point and intercepts a plain click on Find address,
+            # so dismiss it again defensively and click via JS to avoid
+            # any remaining overlay.
+            cookie_prompts = driver.find_elements(By.ID, "cookie-consent-prompt")
+            if cookie_prompts and cookie_prompts[0].is_displayed():
+                driver.find_element(By.NAME, "acceptall").click()
+                WebDriverWait(driver, 10).until(
+                    EC.invisibility_of_element(cookie_prompts[0])
+                )
+
             # Click search button
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
                     (By.ID, "BINDAYLOOKUP_ADDRESSLOOKUP_ADDRESSLOOKUPSEARCH")
                 )
             )
-            findAddress.click()
+            driver.execute_script("arguments[0].click();", findAddress)
 
             # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
             WebDriverWait(driver, 10).until(
