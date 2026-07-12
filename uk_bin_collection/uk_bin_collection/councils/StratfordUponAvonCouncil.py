@@ -10,7 +10,8 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
         user_uprn = kwargs.get("uprn")
-        check_postcode(user_postcode)
+        if user_postcode:
+            check_postcode(user_postcode)
 
         api_base = "https://api.stratford.gov.uk/v1/addresses/postcode"
         calendar_url = "https://www.stratford.gov.uk/waste-recycling/when-we-collect.cfm/part/calendar"
