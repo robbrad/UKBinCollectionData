@@ -1263,7 +1263,7 @@
         "house_number": "9 Ellison Street, Glossop",
         "postcode": "SK13 8BX",
         "skip_get_url": true,
-        "url": "https://www.highpeak.gov.uk/findyourbinday",
+        "url": "https://bins.highpeak.gov.uk/PublicDashboard",
         "web_driver": "http://selenium:4444",
         "wiki_name": "High Peak",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
