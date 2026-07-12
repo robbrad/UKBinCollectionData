@@ -122,7 +122,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Find the list elements
         u1_block = soup.find_all(
-            "u1",
+            "ul",
             {
                 "class": "displayinlineblock justifycontentleft alignitemscenter margin0 padding0"
             },
