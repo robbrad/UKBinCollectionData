@@ -56,9 +56,12 @@ class CouncilClass(AbstractGetBinDataClass):
         r.raise_for_status()
 
         data = r.json()
-        rows_data = data["integration"]["transformed"]["rows_data"]
-        if not isinstance(rows_data, dict):
-            raise ValueError("Invalid data returned from API")
+        if data.get("status") == "error":
+            msg = data.get("error", {}).get("message", "Unknown API error")
+            raise ValueError(f"Milton Keynes API error: {msg}")
+        rows_data = data.get("integration", {}).get("transformed", {}).get("rows_data")
+        if not rows_data or not isinstance(rows_data, dict):
+            raise ValueError("No collection data returned from API")
 
         # Extract each service's relevant details for the bin schedule
         for item in rows_data.values():
