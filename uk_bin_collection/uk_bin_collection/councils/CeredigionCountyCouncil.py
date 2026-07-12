@@ -94,7 +94,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 hn_upper = house_number.strip().upper()
                 for option in address_dropdown.options:
                     opt_text = option.text.strip().upper()
-                    if opt_text and (opt_text.startswith(hn_upper) or hn_upper.startswith(opt_text)):
+                    if opt_text and (
+                        opt_text.startswith(hn_upper) or hn_upper.startswith(opt_text)
+                    ):
                         option.click()
                         matched = True
                         break
@@ -129,8 +131,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
             data = {"bins": []}
 
-            # Find all panels containing collection info
-            collection_panels = soup.find_all("div", class_="eb-OL2RoeVH-panel")
+            # Find all panels containing collection info. The page's builder
+            # assigns each panel its own auto-generated "eb-<hash>-panel"
+            # class, so matching on a specific hash (as before) only ever
+            # catches one schedule (e.g. "Weekly"), silently dropping any
+            # others (e.g. "Every 3 weeks"). All schedule panels share the
+            # stable Bootstrap "mb-3" utility class instead.
+            collection_panels = [
+                div
+                for div in soup.find_all("div", class_="mb-3")
+                if "Next collection:" in div.get_text()
+            ]
 
             for panel in collection_panels:
                 try:
