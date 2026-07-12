@@ -1767,10 +1767,12 @@
     },
     "NewcastleCityCouncil": {
         "LAD24CD": "E08000021",
-        "url": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=004510730634",
-        "wiki_command_url_override": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX",
+        "house_number": "1 Northumberland Avenue",
+        "postcode": "NE3 4XE",
+        "skip_get_url": true,
+        "url": "https://new.newcastle.gov.uk/recycling-waste/check-your-bin-collection-day",
         "wiki_name": "Newcastle upon Tyne",
-        "wiki_note": "Replace XXXXXXXX with your UPRN. UPRNs need to be 12 digits long so please pad the left hand side with 0s if your UPRN is not long enough"
+        "wiki_note": "Pass postcode and house number or full address. Uses the ReCollect API."
     },
     "NewcastleUnderLymeCouncil": {
         "LAD24CD": "E07000195",
