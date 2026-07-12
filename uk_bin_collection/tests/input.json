@@ -2676,7 +2676,7 @@
         "LAD24CD": "E07000046",
         "skip_get_url": true,
         "uprn": "10091078762",
-        "url": "https://collections-torridge.azurewebsites.net/WebService2.asmx",
+        "url": "https://torridgedc-self.achieveservice.com",
         "wiki_name": "Torridge",
         "wiki_note": "Provide your UPRN."
     },
