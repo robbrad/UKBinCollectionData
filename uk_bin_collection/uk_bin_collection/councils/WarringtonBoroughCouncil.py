@@ -28,16 +28,20 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata = {"bins": []}
         schedule = bin_collection.get("schedule")
         if not isinstance(schedule, list):
-            raise ValueError("Unexpected Warrington response: missing/invalid 'schedule'")
+            raise ValueError(
+                "Unexpected Warrington response: missing/invalid 'schedule'"
+            )
 
         for collection in schedule:
-            bindata["bins"].append({
-                "type": collection["Name"],
-                "collectionDate": datetime.strptime(
-                    collection["ScheduledStart"],
-                    "%Y-%m-%dT%H:%M:%S",
-                ).strftime(date_format),
-            })
+            bindata["bins"].append(
+                {
+                    "type": collection["Name"],
+                    "collectionDate": datetime.strptime(
+                        collection["ScheduledStart"],
+                        "%Y-%m-%dT%H:%M:%S",
+                    ).strftime(date_format),
+                }
+            )
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x["collectionDate"], date_format)

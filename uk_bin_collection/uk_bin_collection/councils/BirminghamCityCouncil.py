@@ -9,7 +9,6 @@ from yarl import URL
 from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
 }
@@ -27,8 +26,7 @@ def _parse_collection_date(raw_date: str, today: datetime) -> datetime:
     except (ParserError, ValueError, OverflowError) as exc:
         raise ValueError(
             f"Could not parse Birmingham collection date: {raw_date!r}"
-        ) from exc        
-
+        ) from exc
 
     # We only have day and month so handle year crossover boundaries
     # If we are in Jan/Feb/Mar and the parsed date is in Oct/Nov/Dec assume date is last year
@@ -40,6 +38,7 @@ def _parse_collection_date(raw_date: str, today: datetime) -> datetime:
 
     return parsed
 
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -50,18 +49,18 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
         """
         Parse the council HTML page and return upcoming bin collection dates for the given address.
-        
+
         Parameters:
             page (str): HTML content of the initial council page used to extract the form token.
             uprn (str): Unique Property Reference Number for the address; required.
             postcode (str): Postal code for the address; required.
-        
+
         Returns:
             Dict[str, List[Dict[str, str]]]: A dictionary with a single key "bins" mapping to a list of bin objects.
                 Each bin object contains:
                     - "type": the bin type as displayed on the site (e.g., "General waste").
                     - "collectionDate": the next collection date formatted according to the module's `date_format`.
-        
+
         Raises:
             ValueError: If `uprn` or `postcode` is not provided.
         """
@@ -82,12 +81,13 @@ class CouncilClass(AbstractGetBinDataClass):
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
         }
 
-
         query_string = {
             "postcode": postcode,
             "uprn": uprn,
         }
-        url = URL("https://www.birmingham.gov.uk/info/50388/check_your_collection_day").with_query(query_string)
+        url = URL(
+            "https://www.birmingham.gov.uk/info/50388/check_your_collection_day"
+        ).with_query(query_string)
         response = requests.get(url, headers=HEADERS, timeout=30)
         response.raise_for_status()
 
@@ -95,16 +95,22 @@ class CouncilClass(AbstractGetBinDataClass):
 
         bins_data = {"bins": []}
         if not (table := soup.find("table", class_="data-table")):
-            raise ValueError("Could not find the collection dates table in the council page.")
+            raise ValueError(
+                "Could not find the collection dates table in the council page."
+            )
         if not (body := table.find("tbody")):
-            raise ValueError("Could not find the table body in the collection dates table.")
+            raise ValueError(
+                "Could not find the table body in the collection dates table."
+            )
         rows = body.find_all("tr")
 
         today = datetime.now()
         for row in rows:
             cells = row.find_all(["th", "td"])
             if cells is None or len(cells) < 2:
-                raise ValueError("Unexpected table row structure; expected at least two cells.")
+                raise ValueError(
+                    "Unexpected table row structure; expected at least two cells."
+                )
             date_str = cells[0].get_text(strip=True)
             bin_type = cells[1].get_text(strip=True)
 
@@ -120,4 +126,3 @@ class CouncilClass(AbstractGetBinDataClass):
             key=lambda x: datetime.strptime(x["collectionDate"], date_format)
         )
         return bins_data
-    

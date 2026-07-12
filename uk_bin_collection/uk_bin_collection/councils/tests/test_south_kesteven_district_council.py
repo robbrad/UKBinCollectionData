@@ -10,7 +10,9 @@ from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil i
     CouncilClass,
 )
 
-MODULE_PATH = "uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil"
+MODULE_PATH = (
+    "uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil"
+)
 CHECKER_URL = (
     "https://selfservice.southkesteven.gov.uk/renderform?"
     "t=213&k=2074C945A63DDC0D18F1EB74DA230AC3122958B1"
@@ -107,7 +109,9 @@ def test_address_options_ready_requires_visible_populated_dropdown(council):
     mock_driver.find_element.return_value = visible_select
 
     with patch(f"{MODULE_PATH}.Select") as mock_select_cls:
-        mock_select_cls.return_value.options = [make_option("43 Pembroke Avenue, Grantham")]
+        mock_select_cls.return_value.options = [
+            make_option("43 Pembroke Avenue, Grantham")
+        ]
 
         assert council._address_options_ready(mock_driver) is visible_select
 
@@ -174,7 +178,9 @@ def test_capture_debug_artifacts_writes_files(council, tmp_path):
     )
 
     assert artifact_path is not None
-    assert (artifact_path / "page.html").read_text(encoding="utf-8") == mock_driver.page_source
+    assert (artifact_path / "page.html").read_text(
+        encoding="utf-8"
+    ) == mock_driver.page_source
     metadata = json.loads((artifact_path / "metadata.json").read_text(encoding="utf-8"))
     assert metadata["current_url"] == CHECKER_URL
     assert metadata["postcode"] == "NG31 8XG"

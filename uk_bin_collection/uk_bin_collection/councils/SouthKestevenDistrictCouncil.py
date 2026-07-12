@@ -55,7 +55,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 "Property number or name (paon) is required for South Kesteven."
             )
 
-        checker_url = self._resolve_checker_url(binday_url, page=page, user_agent=user_agent)
+        checker_url = self._resolve_checker_url(
+            binday_url, page=page, user_agent=user_agent
+        )
 
         driver = create_webdriver(web_driver, headless, user_agent, __name__)
         try:
@@ -123,7 +125,10 @@ class CouncilClass(AbstractGetBinDataClass):
             raise RuntimeError(error_message) from exc
 
     def _resolve_checker_url(
-        self, binday_url: str, page: str | object | None = None, user_agent: str | None = None
+        self,
+        binday_url: str,
+        page: str | object | None = None,
+        user_agent: str | None = None,
     ) -> str:
         html = self._get_binday_html(binday_url, page=page, user_agent=user_agent)
         soup = BeautifulSoup(html, "html.parser")
@@ -138,7 +143,10 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
     def _get_binday_html(
-        self, binday_url: str, page: str | object | None = None, user_agent: str | None = None
+        self,
+        binday_url: str,
+        page: str | object | None = None,
+        user_agent: str | None = None,
     ) -> str:
         if hasattr(page, "text"):
             html = str(page.text)
@@ -181,7 +189,9 @@ class CouncilClass(AbstractGetBinDataClass):
         if not address_select.is_displayed():
             return False
 
-        options = [option for option in Select(address_select).options if option.text.strip()]
+        options = [
+            option for option in Select(address_select).options if option.text.strip()
+        ]
         return address_select if options else False
 
     def _wait_for_address_confirmation(self, wait):
@@ -239,10 +249,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
         current_section_id = self._get_current_section_id(driver)
         section_changed = bool(
-            initial_section_id and current_section_id and current_section_id != initial_section_id
+            initial_section_id
+            and current_section_id
+            and current_section_id != initial_section_id
         )
         address_form_gone = self.POSTCODE_INPUT_ID not in body_markup
-        has_collection_markup = "alloy-table" in body_markup.lower() or "your collections" in body_markup.lower()
+        has_collection_markup = (
+            "alloy-table" in body_markup.lower()
+            or "your collections" in body_markup.lower()
+        )
 
         return address_form_gone and (section_changed or has_collection_markup)
 
@@ -262,7 +277,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def _get_current_section_id(self, driver) -> str | None:
         try:
-            return driver.find_element(By.ID, self.CURRENT_SECTION_ID).get_attribute("value")
+            return driver.find_element(By.ID, self.CURRENT_SECTION_ID).get_attribute(
+                "value"
+            )
         except NoSuchElementException:
             return None
 
@@ -270,7 +287,9 @@ class CouncilClass(AbstractGetBinDataClass):
         try:
             body_content = driver.find_element(By.ID, self.BODY_CONTENT_ID)
         except NoSuchElementException as exc:
-            raise RuntimeError("Unable to find the body-content container on the checker page.") from exc
+            raise RuntimeError(
+                "Unable to find the body-content container on the checker page."
+            ) from exc
 
         return body_content.get_attribute("innerHTML") or ""
 
@@ -304,7 +323,9 @@ class CouncilClass(AbstractGetBinDataClass):
             metadata["page_html_error"] = str(exc)
 
         try:
-            metadata["screenshot_saved"] = bool(driver.save_screenshot(str(screenshot_path)))
+            metadata["screenshot_saved"] = bool(
+                driver.save_screenshot(str(screenshot_path))
+            )
         except Exception as exc:
             metadata["screenshot_error"] = str(exc)
 

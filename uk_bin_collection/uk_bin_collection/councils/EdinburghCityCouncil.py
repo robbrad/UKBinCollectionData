@@ -14,8 +14,13 @@ HEADERS = {
 }
 
 CALENDAR_CODES = {
-    "Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday",
-    "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday",
+    "Mon": "Monday",
+    "Tue": "Tuesday",
+    "Wed": "Wednesday",
+    "Thu": "Thursday",
+    "Fri": "Friday",
+    "Sat": "Saturday",
+    "Sun": "Sunday",
 }
 
 
@@ -42,7 +47,8 @@ def _resolve_street(postcode, paon):
         pc_clean = postcode.replace(" ", "")
         pc_resp = requests.get(
             f"https://api.postcodes.io/postcodes/{pc_clean}",
-            headers=HEADERS, timeout=10,
+            headers=HEADERS,
+            timeout=10,
         )
         if pc_resp.status_code == 200:
             pc_data = pc_resp.json()
@@ -51,8 +57,14 @@ def _resolve_street(postcode, paon):
                 lng = pc_data["result"]["longitude"]
                 rev_resp = requests.get(
                     NOMINATIM_URL.replace("/search", "/reverse"),
-                    params={"lat": lat, "lon": lng, "format": "json", "addressdetails": 1},
-                    headers=HEADERS, timeout=10,
+                    params={
+                        "lat": lat,
+                        "lon": lng,
+                        "format": "json",
+                        "addressdetails": 1,
+                    },
+                    headers=HEADERS,
+                    timeout=10,
                 )
                 if rev_resp.status_code == 200:
                     addr = rev_resp.json().get("address", {})
@@ -62,6 +74,7 @@ def _resolve_street(postcode, paon):
     except Exception:
         pass
     return None
+
 
 def _search_directory(street_name, record):
     """Search Edinburgh's waste collection directory for a street name.
@@ -94,6 +107,7 @@ def _get_calendar_code(record_url):
                 return dd.get_text(strip=True)
     return None
 
+
 def _get_collection_day(record_url):
     """Fetch a directory record page and extract the collection day."""
     resp = requests.get(record_url, headers=HEADERS, timeout=15)
@@ -107,6 +121,7 @@ def _get_collection_day(record_url):
                 return dd.get_text(strip=True)
     return None
 
+
 def _get_garden_calendar_code(record_url):
     """Fetch a directory record page and extract the calendar code."""
     resp = requests.get(record_url, headers=HEADERS, timeout=15)
@@ -117,14 +132,15 @@ def _get_garden_calendar_code(record_url):
         if "calendar" in dt.get_text(strip=True).lower():
             dd = dt.find_next_sibling("dd")
             if dd:
-                cal_link = dd.find('a', href=True)
+                cal_link = dd.find("a", href=True)
                 if cal_link:
-                    cal_url = cal_link['href'].strip()
+                    cal_url = cal_link["href"].strip()
                     cal_target = "garden-waste-calendar-"
                     target_idx = cal_url.find(cal_target)
                     if target_idx >= 0:
-                        return cal_url[(target_idx+len(cal_target)):]
+                        return cal_url[(target_idx + len(cal_target)) :]
     return None
+
 
 def _parse_calendar_code(code):
     """Parse a calendar code like 'Tue_2' into (day_name, week_index).
@@ -137,15 +153,19 @@ def _parse_calendar_code(code):
     day_name = CALENDAR_CODES.get(day_abbr)
     return day_name, week_num - 1
 
+
 def _parse_garden_calendar_code(code):
     """Parse a calendar code like 'friday-1' into (day_name, week_index).
     Returns (day_name, week_index) where week_index is 0-based."""
-    m = re.match(r"(monday|tuesday|wednesday|thursday|friday|saturday|sunday)-(\d)", code)
+    m = re.match(
+        r"(monday|tuesday|wednesday|thursday|friday|saturday|sunday)-(\d)", code
+    )
     if not m:
         return None, None
     day_name = m.group(1).capitalize()
     week_num = int(m.group(2))
     return day_name, week_num - 1
+
 
 def _get_best_url(street_name, record):
     """Extract best URL for a street and target record number."""
@@ -165,10 +185,17 @@ def _get_best_url(street_name, record):
 
     return best_url
 
+
 days_of_week = [
-    "Monday", "Tuesday", "Wednesday", "Thursday",
-    "Friday", "Saturday", "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
 ]
+
 
 def _get_three_bins(street_name):
     """Extract start dates and offsets for the three bins (general waste, recycling,
@@ -177,9 +204,7 @@ def _get_three_bins(street_name):
 
     calendar_code = _get_calendar_code(best_url)
     if not calendar_code:
-        raise ValueError(
-            f"No calendar code found for '{street_name}' at {best_url}"
-        )
+        raise ValueError(f"No calendar code found for '{street_name}' at {best_url}")
 
     day_name, week_index = _parse_calendar_code(calendar_code)
     if not day_name:
@@ -198,6 +223,7 @@ def _get_three_bins(street_name):
 
     return recycling_start, glass_start, refuse_start, three_offset_days
 
+
 def _get_food_bin(street_name):
     """Extract the start offset day for food waste, which is collected every week."""
     best_url = _get_best_url(street_name, 10248)
@@ -210,14 +236,13 @@ def _get_food_bin(street_name):
 
     return food_offset_day
 
+
 def _get_garden_bin(street_name):
     """Extract the start date, offset, and holiday break days for garden waste bins."""
     best_url = _get_best_url(street_name, 10250)
     calendar_code = _get_garden_calendar_code(best_url)
     if not calendar_code:
-        raise ValueError(
-            f"No calendar code found for '{street_name}' at {best_url}"
-        )
+        raise ValueError(f"No calendar code found for '{street_name}' at {best_url}")
 
     day_name, week_index = _parse_garden_calendar_code(calendar_code)
     if not day_name:
@@ -235,6 +260,7 @@ def _get_garden_bin(street_name):
 
     return garden_start, garden_offset_day, no_garden_waste_start, no_garden_waste_end
 
+
 class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -248,9 +274,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 f"Could not resolve street name for {user_paon}, {user_postcode}"
             )
 
-        recycling_start, glass_start, refuse_start, three_offset_days = _get_three_bins(street_name)
+        recycling_start, glass_start, refuse_start, three_offset_days = _get_three_bins(
+            street_name
+        )
         food_offset_day = _get_food_bin(street_name)
-        garden_start, garden_offset_day, no_garden_waste_start, no_garden_waste_end = _get_garden_bin(street_name)
+        garden_start, garden_offset_day, no_garden_waste_start, no_garden_waste_end = (
+            _get_garden_bin(street_name)
+        )
 
         bindata = {"bins": []}
 
@@ -258,22 +288,27 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for base_date in get_dates_every_x_days(food_start, 7, 56):
             collection_date = (
-                datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=food_offset_day)
+                datetime.strptime(base_date, "%d/%m/%Y")
+                + timedelta(days=food_offset_day)
             ).strftime(date_format)
             bindata["bins"].append(
                 {"type": "Food Waste Bin", "collectionDate": collection_date}
             )
 
         for base_date in get_dates_every_x_days(garden_start, 14, 28):
-            collection_date = datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=garden_offset_day)
-            if (no_garden_waste_start is not None) and (no_garden_waste_end is not None):
+            collection_date = datetime.strptime(base_date, "%d/%m/%Y") + timedelta(
+                days=garden_offset_day
+            )
+            if (no_garden_waste_start is not None) and (
+                no_garden_waste_end is not None
+            ):
                 # No garden waste collection between these dates
-                if (collection_date >= no_garden_waste_start) and (collection_date <= no_garden_waste_end):
+                if (collection_date >= no_garden_waste_start) and (
+                    collection_date <= no_garden_waste_end
+                ):
                     continue
 
-            collection_date = (
-                collection_date
-            ).strftime(date_format)
+            collection_date = (collection_date).strftime(date_format)
 
             bindata["bins"].append(
                 {"type": "Brown Garden Waste Bin", "collectionDate": collection_date}
@@ -281,7 +316,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for base_date in get_dates_every_x_days(refuse_start, 14, 28):
             collection_date = (
-                datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=three_offset_days)
+                datetime.strptime(base_date, "%d/%m/%Y")
+                + timedelta(days=three_offset_days)
             ).strftime(date_format)
             bindata["bins"].append(
                 {"type": "Grey Bin", "collectionDate": collection_date}
@@ -289,7 +325,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for base_date in get_dates_every_x_days(recycling_start, 14, 28):
             collection_date = (
-                datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=three_offset_days)
+                datetime.strptime(base_date, "%d/%m/%Y")
+                + timedelta(days=three_offset_days)
             ).strftime(date_format)
             bindata["bins"].append(
                 {"type": "Green Bin", "collectionDate": collection_date}
@@ -297,7 +334,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
         for base_date in get_dates_every_x_days(glass_start, 14, 28):
             collection_date = (
-                datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=three_offset_days)
+                datetime.strptime(base_date, "%d/%m/%Y")
+                + timedelta(days=three_offset_days)
             ).strftime(date_format)
             bindata["bins"].append(
                 {"type": "Glass Box", "collectionDate": collection_date}

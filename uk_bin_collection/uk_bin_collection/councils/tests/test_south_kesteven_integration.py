@@ -8,6 +8,7 @@ from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil i
     CouncilClass,
 )
 
+
 class TestSouthKestevenIntegration:
     """Integration tests for South Kesteven District Council."""
 
@@ -18,7 +19,13 @@ class TestSouthKestevenIntegration:
 
     @pytest.mark.integration
     def test_real_binday_lookup(
-        self, test_postcode, test_paon, test_url, test_web_driver, test_headless, tmp_path
+        self,
+        test_postcode,
+        test_paon,
+        test_url,
+        test_web_driver,
+        test_headless,
+        tmp_path,
     ):
         try:
             result = self.council.parse_data(
@@ -36,7 +43,9 @@ class TestSouthKestevenIntegration:
         assert "bins" in result
         assert isinstance(result["bins"], list)
         assert result["bins"]
-        assert {bin_entry["type"] for bin_entry in result["bins"]} <= self.EXPECTED_BIN_TYPES
+        assert {
+            bin_entry["type"] for bin_entry in result["bins"]
+        } <= self.EXPECTED_BIN_TYPES
 
         for bin_entry in result["bins"]:
             assert "type" in bin_entry
