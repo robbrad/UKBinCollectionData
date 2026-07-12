@@ -6,7 +6,11 @@ from dateutil.parser import parse as dateutil_parse
 from dateutil.parser import ParserError
 from yarl import URL
 
-from uk_bin_collection.uk_bin_collection.common import check_uprn, check_postcode
+from uk_bin_collection.uk_bin_collection.common import (
+    check_uprn,
+    check_postcode,
+    date_format,
+)
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 HEADERS = {
