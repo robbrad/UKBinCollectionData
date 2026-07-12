@@ -4,14 +4,17 @@ import os
 import re
 from datetime import datetime, timedelta
 from enum import Enum
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
 
 import holidays
 import pandas as pd
 import requests
 from dateutil.parser import parse
+from requests.adapters import HTTPAdapter
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from urllib3.exceptions import MaxRetryError
+from urllib3.util.retry import Retry
 from webdriver_manager.chrome import ChromeDriverManager
 
 date_format = "%d/%m/%Y"
@@ -259,6 +262,10 @@ def update_input_json(council: str, url: str, input_file_path: str, **kwargs):
     try:
         data = load_data(input_file_path)
         council_data = data.get(council, {"wiki_name": council})
+        # kwargs holds every CLI flag (postcode, uprn, web_driver, ...), but a flag
+        # not passed on this run still shows up here as None. Without this filter,
+        # that None would overwrite the real value already saved from a previous run.
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
         council_data.update({"url": url, **kwargs})
         data[council] = council_data
 
@@ -267,6 +274,42 @@ def update_input_json(council: str, url: str, input_file_path: str, **kwargs):
         print(f"Error updating the JSON file: {e}")
     except json.JSONDecodeError:
         print("Failed to decode JSON, check the integrity of the input file.")
+
+
+def get_scraper_user_agent(fallback_version="1.0"):
+    """
+    Build a polite User-Agent string of the form "uk-bin-collection/<version> (+repo url)"
+    for requests-based scrapers, using the installed package's real version where
+    available. Falls back to fallback_version if the package isn't installed with
+    metadata (e.g. running directly from source without `pip install`/`poetry install`),
+    since importlib.metadata.version() would otherwise raise in that case.
+        :param fallback_version: Version string to use when package metadata isn't available
+    """
+    try:
+        pkg_version = _pkg_version("uk_bin_collection")
+    except PackageNotFoundError:
+        pkg_version = fallback_version
+    return f"uk-bin-collection/{pkg_version} (+https://github.com/robbrad/UKBinCollectionData)"
+
+
+def build_retry_session(headers=None, retry_methods=("GET",)):
+    """
+    Build a requests.Session with retry/backoff configured for transient failures.
+        :param headers: Optional dict of headers to set on the session
+        :param retry_methods: HTTP methods the retry adapter should apply to
+    """
+    session = requests.Session()
+    if headers:
+        session.headers.update(headers)
+    retry = Retry(
+        total=5,
+        backoff_factor=1.5,
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=retry_methods,
+        respect_retry_after_header=True,
+    )
+    session.mount("https://", HTTPAdapter(max_retries=retry))
+    return session
 
 
 def load_data(file_path):
@@ -355,10 +398,10 @@ def create_webdriver(
             driver = webdriver.Chrome(
                 service=ChromeService(ChromeDriverManager().install()), options=options
             )
-        
+
         # Set window position to ensure it's visible on screen
         driver.set_window_position(0, 0)
-        
+
         return driver
     except MaxRetryError as e:
         print(f"Failed to create WebDriver: {e}")
