@@ -1,15 +1,17 @@
 # Issue Resolution Progress
 
-## Next Issue: #2140 (Sunderland - Cloudflare bypass) or #2113 (Haringey - WAF bypass)
+## Next Issue: nightly integration suite triage (in progress) or #1560 (Gateshead - now have a local Selenium grid)
 
 ## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154)
 
-20 open community/dependabot PRs consolidated onto `july-release-26`, plus 9 additional
+20 open community/dependabot PRs consolidated onto `july-release-26`, plus 10 additional
 issues fixed while validating the branch. All fixes verified live (pure HTTP directly,
-or Selenium-based ones against a local Docker Selenium grid). Issues below are commented
-with a link to the PR but left **open** until the PR is merged to master.
+Selenium-based ones against a local Docker Selenium grid, or undetected-chromedriver
+against a local Chrome for Cloudflare-gated sites). Issues below are commented with a
+link to the PR and are wired up (`fixes #NNNN` in the PR body) to auto-close when the
+PR is merged to master.
 
-## Issues Fixed This Session: 17 (9 direct fixes + 8 covered by merged PRs)
+## Issues Fixed This Session: 18 (10 direct fixes + 8 covered by merged PRs)
 
 | Issue | Council | Status | Notes |
 |-------|---------|--------|-------|
@@ -21,6 +23,7 @@ with a link to the PR but left **open** until the PR is merged to master.
 | #2146 | Newcastle | Fixed | Rewritten for the ReCollect widget API (old AJAX endpoint retired) |
 | #2150 | Torridge | Fixed | Same webservice, now reached via the council's AchieveForms broker instead of the retired SOAP endpoint |
 | #2141 | Ceredigion | Fixed | "Every 3 weeks" panel used a different auto-generated class than the hardcoded one |
+| #2140 | Sunderland | Fixed | Cloudflare-gated; rewritten with undetected-chromedriver (new dependency) - needs local Chrome, not remote grid; see CI note below |
 | #2147 | Rugby | Fixed | Merged via #2148 |
 | #2136 | Wigan | Fixed | Merged via #2145 (supersedes #2131) |
 | #2114 | Warrington | Fixed | Merged via #2134 |
@@ -33,6 +36,18 @@ with a link to the PR but left **open** until the PR is merged to master.
 
 Also fixed while validating merged PRs (no separate issue): a `NameError: date_format`
 crash left in BirminghamCityCouncil by PR #2144.
+
+**CI note (Sunderland):** the GitHub Actions integration-test workflow runs councils
+against a remote `selenium/standalone-chrome` grid service. Sunderland's new
+undetected-chromedriver-based scraper can't use that - it needs a real local Chrome +
+display (e.g. Xvfb). It will fail in the current CI harness until that's addressed;
+this is a maintainer decision, not made in this session.
+
+## Investigated, not fixed
+
+| Issue | Council | Notes |
+|-------|---------|-------|
+| #2113 | Haringey | New site is behind AWS WAF Bot Control (CloudFront), not Cloudflare. Plain Selenium blocked; undetected-chromedriver also blocked (5/5 attempts). A pure-HTTP rewrite isn't feasible either - the site is a Next.js app using server actions, not a discoverable REST API. Needs a more specialized bypass (e.g. residential-IP browser farm) or a different data source. Findings posted on the issue. |
 
 ## Code Fixes Made
 
@@ -47,20 +62,18 @@ crash left in BirminghamCityCouncil by PR #2144.
 | c3ed3a5a | NewcastleCityCouncil | Rewrite for ReCollect API |
 | 34aa0faf | TorridgeDistrictCouncil | Reach getRoundCalendarForUPRN via AchieveForms broker |
 | f629330f | CeredigionCountyCouncil | Capture all schedule panels, not just "Weekly" |
+| 22390ee6 | SunderlandCityCouncil | Bypass Cloudflare with undetected-chromedriver |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 
 ## Remaining Issues
 
 | Issue | Council | Type | Notes |
 |-------|---------|------|-------|
-| #2153 | Lincoln | Bug (no repro) | Works fine with known-good test UPRN; report has no error/UPRN/postcode to reproduce against |
-| #2140 | Sunderland | Bug (Cloudflare) | Site now behind Cloudflare bot management; needs undetected-chromedriver / stealth approach, same class as #2113 |
-| #2113 | Haringey | Bug (WAF) | New site (wastecollections2, Next.js) intermittently blocks headless Selenium (works via plain curl); needs the same stealth-browser approach as Sunderland |
-| #2139 | Staffordshire Moorlands | Bug (no repro) | Report cuts off with no URL or specifics given |
+| #2153 | Lincoln | Bug (no repro) | Works fine with known-good test UPRN; asked reporter for error/UPRN/postcode |
+| #2139 | Staffordshire Moorlands | Bug (no repro) | Report cuts off with no URL or specifics; asked reporter for detail |
 | #2127 | Lewes/Eastbourne/Seaford | Info only | Reporter already diagnosed as upstream DB outage, not a code bug |
 | #2118 | Flintshire | Enhancement | Add Brown/Garden waste entity |
-| #2113 | Haringey | See #2140 note above | |
-| #2111 | Bedford | Bug (no repro) | Only an attached log file, not fetched this session |
+| #2111 | Bedford | Bug (no repro) | Only an attached log file; asked reporter to paste the actual error text |
 | #2109 | Mid Suffolk | Bug | Selenium stacktrace crash, needs live investigation |
 | #2098 | Wiltshire | Bug (logic) | Alternating fortnightly bins showing only 1 of 2 same-day bins |
 | #2079 | Slough | Bug (Selenium timeout) | Cookie banner element never appears in headless mode |
@@ -72,3 +85,9 @@ crash left in BirminghamCityCouncil by PR #2144.
 | #1672 | (garden waste) | Enhancement | Show "No Collections Scheduled" instead of Unavailable |
 | #1560 | Gateshead | Bug (wrong dates) | Now have a local Selenium grid available - worth revisiting next session |
 | #1462 | Rochford | Enhancement (week offset) | Low priority |
+
+## Nightly integration suite
+
+Full `uk_bin_collection/tests/step_defs/` run in progress against all ~350 councils
+using a local Docker Selenium grid. Results to be triaged in the next update to this
+file.
