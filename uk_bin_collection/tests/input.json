@@ -986,10 +986,10 @@
     "FenlandDistrictCouncil": {
         "LAD24CD": "E07000010",
         "skip_get_url": true,
-        "uprn": "200002981143",
+        "uprn": "10273",
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Fenland's API only understands its own numeric PremiseID, not a national UPRN. Look up your PremiseID at https://bins.azurewebsites.net/api/getaddress?postcode={your postcode} and pass it in the uprn parameter, or pass postcode (and optionally house_number/paon) instead."
     },
     "FermanaghOmaghDistrictCouncil": {
         "LAD24CD": "N09000006",

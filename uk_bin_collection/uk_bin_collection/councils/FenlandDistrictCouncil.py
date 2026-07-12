@@ -44,12 +44,14 @@ class CouncilClass(AbstractGetBinDataClass):
             date_str = c.get("CollectionDate", "")
             if not bin_type or not date_str:
                 continue
-            data["bins"].append({
-                "type": bin_type.title(),
-                "collectionDate": datetime.strptime(
-                    date_str, "%Y-%m-%d"
-                ).strftime(date_format),
-            })
+            data["bins"].append(
+                {
+                    "type": bin_type.title(),
+                    "collectionDate": datetime.strptime(date_str, "%Y-%m-%d").strftime(
+                        date_format
+                    ),
+                }
+            )
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x["collectionDate"], date_format)
@@ -58,7 +60,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def _resolve_premise(self, postcode, paon, uprn):
         if not postcode:
-            raise ValueError("Postcode required for Fenland lookup")
+            # Fenland has no national UPRN lookup - its API only knows its
+            # own PremiseID. Users are guided (see project docs) to put
+            # that PremiseID straight into the UPRN field, so use it
+            # directly rather than requiring a postcode.
+            if uprn:
+                return uprn
+            raise ValueError(
+                "Postcode or PremiseID (as UPRN) required for Fenland lookup"
+            )
 
         response = requests.get(
             f"{self.API_BASE}/getaddress",
