@@ -770,12 +770,14 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastAyrshireCouncil": {
-        "LAD24CD": "S12000008",
-        "uprn": "127074727",
+        "house_number": "57 Whatriggs Road",
+        "postcode": "KA1 3RB",
+        "skip_get_url": true,
         "url": "https://www.east-ayrshire.gov.uk",
         "wiki_command_url_override": "https://www.east-ayrshire.gov.uk",
         "wiki_name": "East Ayrshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+        "wiki_note": "Pass postcode and house number or full address. Uses the ReCollect API.",
+        "LAD24CD": "S12000008"
     },
     "EastCambridgeshireCouncil": {
         "LAD24CD": "E07000009",
