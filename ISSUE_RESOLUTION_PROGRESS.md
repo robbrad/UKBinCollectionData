@@ -2,8 +2,7 @@
 
 ## Next Issue: FyldeCouncil needs a full rewrite for its new login-gated "personal
 waste account" system (if feasible without real user credentials), or GedlingBoroughCouncil's
-upstream API needs re-checking for stability, or continue the 59-council
-"page-ignoring" audit (see below)
+upstream API needs re-checking for stability
 
 ## Deep-dive triage round 2 (2026-07-13, PR #2165)
 
@@ -62,12 +61,21 @@ on a couple of previously-confirmed-broken ones.
 - **FyldeCouncil**: re-checked, still on the login-gated "personal waste account"
   system with no public lookup.
 
-**Broader finding from Aberdeenshire's regression (see PR #2159/#2163):** while
-fixing that, found 59 other councils sharing the same shape (scraper ignores the
-fetched page and makes its own request, but `skip_get_url` isn't set) via an AST
-scan of the whole `councils/` directory. Only Aberdeenshire is currently affected;
-the rest have `url` fields pointing somewhere healthy today, so this is a latent
-risk, not an active bug. Worth a slow systematic audit at some point.
+**Systematic audit completed (2026-07-13, same PR #2165):** followed up on the
+Aberdeenshire "page-ignoring" risk class rather than leaving it as noted latent
+risk. Re-ran the AST scan (fixed a bug in the first pass - it missed councils that
+reassign `page = requests.get(...)` immediately, which discards the framework's
+fetch just as completely as never referencing `page` at all) and found **79**
+councils with the same shape, not 59. Spot-checked a sample and confirmed the
+overwhelming majority are a single shared AchieveForms/apibroker template
+(`SESSION_URL` + `API_URL`, e.g. Bolsover, Dudley, Aberdeen City) that never needed
+the framework's fetch. Marked all 79 `skip_get_url: true`, closing off the
+regression risk class entirely. Verified via a full live BDD run of all 79 (had to
+route around an unrelated pytest-xdist worker-crash flake under parallel execution
+by using a plain Python driver script calling `pytest.main()` directly instead of
+the `-k "A or B or ..."` shell expression, which also turned out to be silently
+truncating itself under Windows Git Bash) - 78 passed, 1 failed (FyldeCouncil, the
+same pre-existing unrelated failure documented above).
 
 ## Post-#2154-merge full-suite triage (2026-07-13)
 
