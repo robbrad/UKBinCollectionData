@@ -24,8 +24,10 @@ class CouncilClass(AbstractGetBinDataClass):
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
 
-        # Make a BS4 object
-        page = requests.get(url)
+        # The site serves a stripped-down page with no results table for
+        # requests without a browser-like User-Agent.
+        headers = {"User-Agent": get_scraper_user_agent()}
+        page = requests.get(url, headers=headers)
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
@@ -35,21 +37,23 @@ class CouncilClass(AbstractGetBinDataClass):
         # Find the table containing the bin collection data
         table = soup.find("table", {"class": "eb-EVDNdR1G-tableContent"})
 
-        if table:
-            rows = table.find_all("tr", class_="eb-EVDNdR1G-tableRow")
+        if not table:
+            raise ValueError("Could not find bin collections table in page source")
 
-            for row in rows:
-                columns = row.find_all("td")
-                if len(columns) >= 4:
-                    collection_type = columns[1].get_text(strip=True)
-                    collection_date = columns[3].get_text(strip=True)
+        rows = table.find_all("tr", class_="eb-EVDNdR1G-tableRow")
 
-                    # Validate collection_date format
-                    if re.match(r"\d{2}/\d{2}/\d{4}", collection_date):
-                        bin_entry = {
-                            "type": collection_type,
-                            "collectionDate": collection_date,
-                        }
-                        bin_data["bins"].append(bin_entry)
+        for row in rows:
+            columns = row.find_all("td")
+            if len(columns) >= 4:
+                collection_type = columns[1].get_text(strip=True)
+                collection_date = columns[3].get_text(strip=True)
+
+                # Validate collection_date format
+                if re.match(r"\d{2}/\d{2}/\d{4}", collection_date):
+                    bin_entry = {
+                        "type": collection_type,
+                        "collectionDate": collection_date,
+                    }
+                    bin_data["bins"].append(bin_entry)
 
         return bin_data
