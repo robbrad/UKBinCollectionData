@@ -7,6 +7,10 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+# eastdevon.gov.uk 403s any request using the default python-requests
+# User-Agent - identify the scraper honestly instead.
+_HEADERS = {"User-Agent": get_scraper_user_agent()}
+
 
 def _match_address(addresses, uprn=None, paon=None):
     """Match an address from addressfinder results by UPRN or house number/name."""
@@ -28,15 +32,13 @@ def _match_address(addresses, uprn=None, paon=None):
                 return addr
 
     if uprn or paon:
-        raise ValueError(
-            f"Address not found for UPRN={uprn} PAON={paon}"
-        )
+        raise ValueError(f"Address not found for UPRN={uprn} PAON={paon}")
     return addresses[0]
 
 
 def _parse_calendar_page(url):
     """Parse the existing calendar page by UPRN (legacy path)."""
-    page = requests.get(url, timeout=30)
+    page = requests.get(url, headers=_HEADERS, timeout=30)
     page.raise_for_status()
     soup = BeautifulSoup(page.text, features="html.parser")
 
@@ -109,6 +111,7 @@ class CouncilClass(AbstractGetBinDataClass):
             resp = requests.get(
                 "https://eastdevon.gov.uk/addressfinder",
                 params={"qtype": "bins", "term": user_postcode},
+                headers=_HEADERS,
                 timeout=30,
             )
             resp.raise_for_status()
@@ -119,9 +122,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 user_uprn = matched.get("UPRN")
 
         if not user_uprn:
-            raise ValueError(
-                "Could not resolve address. Provide a postcode or UPRN."
-            )
+            raise ValueError("Could not resolve address. Provide a postcode or UPRN.")
 
         # East Devon requires 12-digit zero-padded UPRNs
         user_uprn = str(user_uprn).zfill(12)

@@ -20,8 +20,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_paon = kwargs.get("paon")
         check_postcode(user_postcode)
 
-        s = requests.Session()
-        s.headers.update(HEADERS)
+        s = build_retry_session(headers=HEADERS, retry_methods=("GET", "POST"))
 
         r = s.post(
             f"{SAT_BASE}/cal2.asp",
@@ -94,10 +93,12 @@ class CouncilClass(AbstractGetBinDataClass):
                         continue
                     try:
                         dt = datetime.strptime(date_str, "%d/%m/%Y")
-                        bin_data["bins"].append({
-                            "type": bin_type,
-                            "collectionDate": dt.strftime(date_format),
-                        })
+                        bin_data["bins"].append(
+                            {
+                                "type": bin_type,
+                                "collectionDate": dt.strftime(date_format),
+                            }
+                        )
                     except ValueError:
                         continue
 
