@@ -81,6 +81,8 @@ class CouncilClass(AbstractGetBinDataClass):
             ("recyclenextdate", "Brown Bin", "recycle_freq"),
             ("gardennextdate", "Green Bin", "garden_freq"),
         ]
+        FREQ_DAYS = {"weekly": 7, "fortnightly": 14}
+        today = datetime.now().date()
 
         for uprn, data in rows_data.items():
             if uprn != target_uprn:
@@ -88,12 +90,21 @@ class CouncilClass(AbstractGetBinDataClass):
             for key, bin_type, freq in BIN_TYPES:
                 if not data[key]:
                     continue
-                offsets = [0]
-                if data[freq] == "fortnightly":
-                    offsets.extend(list(range(14, 30, 14)))
-                elif data[freq] == "weekly":
-                    offsets.extend(list(range(7, 30, 7)))
                 date = datetime.strptime(data[key], "%Y-%m-%d").date()
+                step = FREQ_DAYS.get(data[freq])
+                if step:
+                    # The council's "next date" field can lag behind reality
+                    # by weeks - roll it forward by the collection frequency
+                    # until it's genuinely upcoming, rather than trusting it
+                    # as always being the next one.
+                    while date < today:
+                        date += timedelta(days=step)
+                    occurrences = 3 if step == 14 else 5
+                    offsets = [step * n for n in range(occurrences)]
+                else:
+                    if date < today:
+                        continue
+                    offsets = [0]
                 for offset in offsets:
                     dict_data = {
                         "type": bin_type,
@@ -113,7 +124,11 @@ class CouncilClass(AbstractGetBinDataClass):
         for uprn, data in rows_data.items():
             display = str(data.get("display", "")).upper()
             first_line = display.split("\n")[0].strip()
-            if first_line.startswith(paon_norm + " ") or first_line.startswith(paon_norm + ",") or first_line == paon_norm:
+            if (
+                first_line.startswith(paon_norm + " ")
+                or first_line.startswith(paon_norm + ",")
+                or first_line == paon_norm
+            ):
                 return uprn
 
         for uprn, data in rows_data.items():
@@ -121,4 +136,6 @@ class CouncilClass(AbstractGetBinDataClass):
             if paon_norm in display:
                 return uprn
 
-        raise ValueError(f"Could not match house number/name '{paon}' in address results")
+        raise ValueError(
+            f"Could not match house number/name '{paon}' in address results"
+        )
