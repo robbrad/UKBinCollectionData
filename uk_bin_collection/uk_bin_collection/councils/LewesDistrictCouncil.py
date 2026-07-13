@@ -28,6 +28,17 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError(f"Error getting identifier: {str(e)}")
 
         page = requests.get(url)
+        if "mysqli_sql_exception" in page.text or "Fatal error" in page.text:
+            # The site occasionally returns HTTP 200 with a PHP fatal error
+            # in the body instead of any markup, when EnvironmentFirst's own
+            # database is unreachable - see #2127. That's an outage on their
+            # end, not something a UPRN retry can fix, so raise a clear
+            # message rather than silently returning no bins.
+            raise ConnectionError(
+                "EnvironmentFirst's bin lookup service is returning a server "
+                "error (their database is unreachable) - this is an outage "
+                "on their end, not this scraper. Try again later."
+            )
         soup = BeautifulSoup(page.text, features="html.parser")
         soup.prettify()
 
@@ -36,9 +47,7 @@ class CouncilClass(AbstractGetBinDataClass):
         if collect_div is None:
             return data
 
-        date_pattern = re.compile(
-            r"(\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+\s+\d{4})"
-        )
+        date_pattern = re.compile(r"(\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+\s+\d{4})")
 
         for p in collect_div.find_all("p"):
             strong = p.find("strong")
@@ -58,9 +67,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
             cleaned = remove_ordinal_indicator_from_date_string(match.group(1))
             try:
-                collection_date = datetime.strptime(
-                    cleaned, "%d %B %Y"
-                ).strftime(date_format)
+                collection_date = datetime.strptime(cleaned, "%d %B %Y").strftime(
+                    date_format
+                )
             except ValueError:
                 continue
             data["bins"].append(
