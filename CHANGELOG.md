@@ -1,4 +1,22 @@
 =======
+## 0.169.0 (2026-07-13)
+
+### BREAKING CHANGE
+
+- automations checking for sensor.<name>_<bin_type> state
+== "unavailable" to mean "no data for this bin type" will stop firing;
+check for state == "No collections scheduled" instead.
+
+### Fix
+
+- #2127 detect EnvironmentFirst DB outage, raise a clear error
+- #1672 BREAKING CHANGE - bin sensor no longer goes Unavailable for "no scheduled date"
+- #1672 show "No collections scheduled" instead of Unavailable
+- #1462 RochfordCouncil - use end of collection week, not the start
+- #2073 retry transient connection failures in the shared HTTP fetch
+- #2098 WiltshireCouncil - capture all same-day collection events
+- #2109 MidSuffolkDistrictCouncil - fix selectors and parsing for redesigned results page
+
 ## 0.168.0 (2026-07-13)
 
 ### Feat
