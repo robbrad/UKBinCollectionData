@@ -13,6 +13,15 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
+    @classmethod
+    def get_data(cls, url) -> str:
+        # parse_data() below ignores the fetched page entirely and makes its
+        # own request to a different, specific endpoint. The bare root URL
+        # (online.aberdeenshire.gov.uk/) this would otherwise fetch can
+        # itself return 500 even while the real data endpoint is healthy -
+        # skip the unused fetch so that doesn't take the scraper down.
+        return ""
+
     def parse_data(self, page: str, **kwargs) -> dict:
 
         user_uprn = kwargs.get("uprn")
