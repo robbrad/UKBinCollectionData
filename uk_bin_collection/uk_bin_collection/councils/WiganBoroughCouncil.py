@@ -31,7 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
         s = requests.Session()
 
         # Get our initial session running
-        response = s.get("https://apps.wigan.gov.uk/MyNeighbourhood/")
+        response = s.get("https://apps.wigan.gov.uk/MyNeighbourhood/MyArea.aspx")
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -49,8 +49,12 @@ class CouncilClass(AbstractGetBinDataClass):
             "ctl00$ContentPlaceHolder1$btnPostcodeSearch": ("Search"),
         }
 
-        # Use the above to get to the next page with address selection
-        response = s.post("https://apps.wigan.gov.uk/MyNeighbourhood/", payload)
+        # Use the above to get to the next page with address selection.
+        # Note: the postcode form's action now points at Search.aspx
+        # rather than posting back to MyArea.aspx itself.
+        response = s.post(
+            "https://apps.wigan.gov.uk/MyNeighbourhood/Search.aspx", payload
+        )
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -72,7 +76,9 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Get the final page with the actual dates
-        response = s.post("https://apps.wigan.gov.uk/MyNeighbourhood/", payload)
+        response = s.post(
+            "https://apps.wigan.gov.uk/MyNeighbourhood/Search.aspx", payload
+        )
 
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
@@ -82,9 +88,17 @@ class CouncilClass(AbstractGetBinDataClass):
         # Get the dates.
         for bins in soup.find_all("div", {"class": "BinsRecycling"}):
             bin_type = bins.find("h2").text
-            binCollection = bins.find("div", {"class": "dateWrap-next"}).get_text(
-                strip=True
-            )
+            date_wrap = bins.find("div", {"class": "dateWrapper-next"})
+            if date_wrap is None:
+                # Fall back to the old class name in case the council
+                # reverts, and raise a clearer error if neither is found.
+                date_wrap = bins.find("div", {"class": "dateWrap-next"})
+            if date_wrap is None:
+                raise ValueError(
+                    f"Could not find next-collection date for bin type "
+                    f"'{bin_type}' - Wigan's page markup may have changed again."
+                )
+            binCollection = date_wrap.get_text(strip=True)
             binData = datetime.strptime(
                 re.sub(r"(\d)(st|nd|rd|th)", r"\1", binCollection), "%A%d%b%Y"
             )

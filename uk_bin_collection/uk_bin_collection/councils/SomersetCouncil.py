@@ -72,51 +72,58 @@ class CouncilClass(AbstractGetBinDataClass):
 
             collections = soup.find_all("div", {"class": "p-2"})
 
+            current_date = datetime.now()
+
             for collection in collections:
-                bin_type = collection.find("h3").get_text()
+                bin_type_el = collection.find("h3")
+                next_collection_el = collection.find("div", {"class": "fw-bold"})
+                if not bin_type_el or not next_collection_el:
+                    continue
+                bin_type = bin_type_el.get_text()
 
-                next_collection = soup.find("div", {"class": "fw-bold"}).get_text()
-
-                following_collection = soup.find(
+                # A second, "followed by" date isn't always present (e.g.
+                # when a stream only has one upcoming collection shown).
+                following_collection_el = collection.find(
                     lambda t: (
                         t.name == "div"
                         and t.get_text(strip=True).lower().startswith("followed by")
                     )
-                ).get_text()
-
-                next_collection_date = datetime.strptime(next_collection, "%A %d %B")
-
-                following_collection_date = datetime.strptime(
-                    following_collection, "followed by %A %d %B"
                 )
 
-                current_date = datetime.now()
+                next_collection_date = datetime.strptime(
+                    next_collection_el.get_text(), "%A %d %B"
+                )
                 next_collection_date = next_collection_date.replace(
                     year=current_date.year
                 )
-                following_collection_date = following_collection_date.replace(
-                    year=current_date.year
-                )
-
                 next_collection_date = get_next_occurrence_from_day_month(
                     next_collection_date
                 )
-
-                following_collection_date = get_next_occurrence_from_day_month(
-                    following_collection_date
+                data["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": next_collection_date.strftime(date_format),
+                    }
                 )
 
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": next_collection_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": following_collection_date.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
+                if following_collection_el:
+                    following_collection_date = datetime.strptime(
+                        following_collection_el.get_text(), "followed by %A %d %B"
+                    )
+                    following_collection_date = following_collection_date.replace(
+                        year=current_date.year
+                    )
+                    following_collection_date = get_next_occurrence_from_day_month(
+                        following_collection_date
+                    )
+                    data["bins"].append(
+                        {
+                            "type": bin_type,
+                            "collectionDate": following_collection_date.strftime(
+                                date_format
+                            ),
+                        }
+                    )
 
         except Exception as e:
             # Here you can log the exception if needed

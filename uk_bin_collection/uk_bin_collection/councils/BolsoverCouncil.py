@@ -137,131 +137,28 @@ class CouncilClass(AbstractGetBinDataClass):
         WeekBlack = rows_data["WeekBlack"]
         WeekBandG = rows_data["WeekBandG"]
 
-        if WeekBlack == "1":
-            WeekBandG = ""
-        if WeekBandG == "1":
-            WeekBlack = ""
+        def determine_bin_collection(week_number, txtBlack, txtBurgGreen, week_in_sus):
+            # WeekBlack/WeekBandG aren't booleans - they hold "1" or "2" to
+            # say which of the two alternating weeks (odd/even relative to
+            # week1) that stream is collected on. Round A addresses have
+            # WeekBlack == "1"; Round B addresses have WeekBlack == "2"
+            # (and WeekBandG the complementary value).
+            parity = "1" if week_number % 2 == 1 else "2"
 
-        def determine_bin_collection_week1(
-            txtBlack, txtBurgGreen, dtDay0, today, week1InSus
-        ):
-            # Check for empty values
-            if txtBlack == "" and txtBurgGreen == "":
-                return ""
-
-            # Black Bin Collection
-            if txtBlack == "1" and dtDay0 >= today:
+            if txtBlack == parity:
                 return "Black Bin"
 
-            # Burgundy Bin Collection
-            if txtBurgGreen == "1" and dtDay0 > today:
-                if week1InSus == "Yes":
+            if txtBurgGreen == parity:
+                if week_in_sus == "Yes":
                     return "Burgundy Bin"
-                elif week1InSus == "No":
-                    return "Burgundy Bin & Green Bin"
+                return "Burgundy Bin & Green Bin"
 
-            # Default cases based on week1InSus
-            if txtBlack == "" and dtDay0 >= today:
-                if week1InSus == "Yes":
-                    return "Burgundy Bin"
-                elif week1InSus == "No":
-                    return "Burgundy Bin & Green Bin"
+            return ""
 
-            return ""  # Default empty case
-
-        def determine_bin_collection_week2(
-            txtBlack, txtBurgGreen, dtDay7, today, week2InSus
-        ):
-            # Check for empty values
-            if txtBlack == "" and txtBurgGreen == "":
-                return ""
-
-            # Black Bin Collection
-            if txtBlack == "" and dtDay7 >= today:
-                return "Black Bin"
-
-            # Burgundy Bin Collection (week2InSus check)
-            if txtBurgGreen == "1" and dtDay7 > today:
-                if week2InSus == "Yes":
-                    return "Burgundy Bin"
-                elif week2InSus == "No":
-                    return "Burgundy Bin & Green Bin"
-
-            # Burgundy Bin Collection for txtBlack = '1'
-            if txtBlack == "1" and dtDay7 >= today:
-                if week2InSus == "Yes":
-                    return "Burgundy Bin"
-                elif week2InSus == "No":
-                    return "Burgundy Bin & Green Bin"
-
-            return ""  # Default empty case
-
-        def determine_bin_collection_week3(
-            txtBlack, txtBurgGreen, dtDay14, today, week3InSus
-        ):
-            # Check for empty values
-            if txtBlack == "" and txtBurgGreen == "":
-                return ""
-
-            # Black Bin Collection
-            if txtBlack == "1" and dtDay14 >= today:
-                return "Black Bin"
-
-            # Burgundy Bin Collection (week3InSus check)
-            if txtBurgGreen == "1" and dtDay14 > today:
-                if week3InSus == "Yes":
-                    return "Burgundy Bin"
-                elif week3InSus == "No":
-                    return "Burgundy Bin & Green Bin"
-
-            # Burgundy Bin Collection for txtBlack = ''
-            if txtBlack == "" and dtDay14 >= today:
-                if week3InSus == "Yes":
-                    return "Burgundy Bin"
-                elif week3InSus == "No":
-                    return "Burgundy Bin & Green Bin"
-
-            return ""  # Default empty case
-
-        def determine_bin_collection_week4(
-            txtBlack, txtBurgGreen, dtDay21, today, week4InSus
-        ):
-            # Check for empty values
-            if txtBlack == "" and txtBurgGreen == "":
-                return ""
-
-            # Black Bin Collection
-            if txtBlack == "" and dtDay21 >= today:
-                return "Black Bin"
-
-            # Burgundy Bin Collection (week4InSus check)
-            if txtBurgGreen == "1" and dtDay21 > today:
-                if week4InSus == "Yes":
-                    return "Burgundy Bin"
-                elif week4InSus == "No":
-                    return "Burgundy Bin & Green Bin"
-
-            # Burgundy Bin Collection for txtBlack = '1'
-            if txtBlack == "1" and dtDay21 >= today:
-                if week4InSus == "Yes":
-                    return "Burgundy Bin"
-                elif week4InSus == "No":
-                    return "Burgundy Bin & Green Bin"
-
-            return ""  # Default empty case
-
-        week1Text = determine_bin_collection_week1(
-            WeekBlack, WeekBandG, week1, today, week1InSus
-        )
-        week2Text = determine_bin_collection_week2(
-            WeekBlack, WeekBandG, week2, today, week2InSus
-        )
-        week3Text = determine_bin_collection_week3(
-            WeekBlack, WeekBandG, week3, today, week3InSus
-        )
-        week4Text = determine_bin_collection_week4(
-            WeekBlack, WeekBandG, week4, today, week4InSus
-        )
+        week1Text = determine_bin_collection(1, WeekBlack, WeekBandG, week1InSus)
+        week2Text = determine_bin_collection(2, WeekBlack, WeekBandG, week2InSus)
+        week3Text = determine_bin_collection(3, WeekBlack, WeekBandG, week3InSus)
+        week4Text = determine_bin_collection(4, WeekBlack, WeekBandG, week4InSus)
 
         # print(week1Text)
         # print(week2Text)

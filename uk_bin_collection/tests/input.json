@@ -217,9 +217,10 @@
     },
     "BirminghamCityCouncil": {
         "LAD24CD": "E08000025",
+        "skip_get_url": true,
         "postcode": "B5 7XE",
         "uprn": "100070445256",
-        "url": "https://www.birmingham.gov.uk/xfp/form/619",
+        "url": "https://www.birmingham.gov.uk/info/50388/check_your_collection_day",
         "wiki_name": "Birmingham",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
@@ -769,17 +770,19 @@
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastAyrshireCouncil": {
-        "LAD24CD": "S12000008",
-        "uprn": "127074727",
+        "house_number": "57 Whatriggs Road",
+        "postcode": "KA1 3RB",
+        "skip_get_url": true,
         "url": "https://www.east-ayrshire.gov.uk",
         "wiki_command_url_override": "https://www.east-ayrshire.gov.uk",
         "wiki_name": "East Ayrshire",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+        "wiki_note": "Pass postcode and house number or full address. Uses the ReCollect API.",
+        "LAD24CD": "S12000008"
     },
     "EastCambridgeshireCouncil": {
         "LAD24CD": "E07000009",
         "skip_get_url": true,
-        "uprn": "10002597178",
+        "uprn": "100091190587",
         "url": "https://www.eastcambs.gov.uk/",
         "wiki_name": "East Cambridgeshire",
         "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
@@ -983,10 +986,10 @@
     "FenlandDistrictCouncil": {
         "LAD24CD": "E07000010",
         "skip_get_url": true,
-        "uprn": "200002981143",
+        "uprn": "10273",
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Fenland's API only understands its own numeric PremiseID, not a national UPRN. Look up your PremiseID at https://bins.azurewebsites.net/api/getaddress?postcode={your postcode} and pass it in the uprn parameter, or pass postcode (and optionally house_number/paon) instead."
     },
     "FermanaghOmaghDistrictCouncil": {
         "LAD24CD": "N09000006",
@@ -1260,7 +1263,7 @@
         "house_number": "9 Ellison Street, Glossop",
         "postcode": "SK13 8BX",
         "skip_get_url": true,
-        "url": "https://www.highpeak.gov.uk/findyourbinday",
+        "url": "https://bins.highpeak.gov.uk/PublicDashboard",
         "web_driver": "http://selenium:4444",
         "wiki_name": "High Peak",
         "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
@@ -1523,13 +1526,11 @@
     },
     "LondonBoroughLewisham": {
         "LAD24CD": "E09000023",
-        "postcode": "SE12 9QF",
         "skip_get_url": true,
         "uprn": "100021954849",
         "url": "https://www.lewisham.gov.uk",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Lewisham",
-        "wiki_note": "Pass the UPRN and postcode. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Pass the UPRN. To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "LondonBoroughOfRichmondUponThames": {
         "LAD24CD": "E09000027",
@@ -1766,10 +1767,12 @@
     },
     "NewcastleCityCouncil": {
         "LAD24CD": "E08000021",
-        "url": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=004510730634",
-        "wiki_command_url_override": "https://community.newcastle.gov.uk/my-neighbourhood/ajax/getBinsNew.php?uprn=XXXXXXXX",
+        "house_number": "1 Northumberland Avenue",
+        "postcode": "NE3 4XE",
+        "skip_get_url": true,
+        "url": "https://new.newcastle.gov.uk/recycling-waste/check-your-bin-collection-day",
         "wiki_name": "Newcastle upon Tyne",
-        "wiki_note": "Replace XXXXXXXX with your UPRN. UPRNs need to be 12 digits long so please pad the left hand side with 0s if your UPRN is not long enough"
+        "wiki_note": "Pass postcode and house number or full address. Uses the ReCollect API."
     },
     "NewcastleUnderLymeCouncil": {
         "LAD24CD": "E07000195",
@@ -2324,11 +2327,13 @@
     },
     "SouthKestevenDistrictCouncil": {
         "LAD24CD": "E07000141",
-        "postcode": "PE68BL",
+        "house_number": "43",
+        "postcode": "NG31 8XG",
         "skip_get_url": true,
-        "url": "https://pre.southkesteven.gov.uk/skdcNext/tempforms/checkmybin.aspx",
+        "url": "https://www.southkesteven.gov.uk/binday",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "South Kesteven District Council",
-        "wiki_note": "Provide your postcode in the `postcode` parameter. The scraper uses requests-based form submission and OCR to parse calendar images for accurate bin type determination and green bin collection patterns."
+        "wiki_note": "Provide your house number or house name in the `house_number` parameter and your postcode in the `postcode` parameter. The parser navigates the postcode bin day checker on the council's `binday` page using Selenium and parses the resulting \"Your Collections\" tables. The returned bin types are normalized to `Grey Bin`, `Food Bin`, `Black Bin`, and `Purple Bin` for Home Assistant compatibility."
     },
     "SouthLanarkshireCouncil": {
         "LAD24CD": "S12000029",
@@ -2501,13 +2506,12 @@
     },
     "SunderlandCityCouncil": {
         "LAD24CD": "E08000024",
-        "house_number": "13",
-        "postcode": "SR4 6BJ",
+        "house_number": "10",
+        "postcode": "SR4 0NP",
         "skip_get_url": true,
-        "url": "https://webapps.sunderland.gov.uk/WEBAPPS/WSS/Sunderland_Portal/Forms/bindaychecker.aspx",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.sunderland.gov.uk/article/12142/Find-your-bin-collection-day",
         "wiki_name": "Sunderland",
-        "wiki_note": "Provide your house number (without quotes) and postcode (wrapped in double quotes with a space)."
+        "wiki_note": "Provide your house number and postcode. The council's site is behind Cloudflare bot management, so this parser needs a real local, non-headless Chrome (via undetected-chromedriver) rather than a remote Selenium grid - it will not work with the usual web_driver/headless config."
     },
     "SurreyHeathBoroughCouncil": {
         "LAD24CD": "E07000214",
@@ -2671,7 +2675,7 @@
         "LAD24CD": "E07000046",
         "skip_get_url": true,
         "uprn": "10091078762",
-        "url": "https://collections-torridge.azurewebsites.net/WebService2.asmx",
+        "url": "https://torridgedc-self.achieveservice.com",
         "wiki_name": "Torridge",
         "wiki_note": "Provide your UPRN."
     },

@@ -17,7 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        api_url = f"https://bbaz-as-prod-bartecapi.azurewebsites.net/api/bincollections/residential/getbyuprn/{user_uprn}/35"
+        api_url = f"https://bbaz-as-prod-bartecapi.azurewebsites.net/api/bincollections/residential/getbyuprn/{user_uprn}"
 
         requests.packages.urllib3.disable_warnings()
         response = requests.get(api_url)
@@ -28,6 +28,7 @@ class CouncilClass(AbstractGetBinDataClass):
         json_data = json.loads(response.text)["BinCollections"]
         data = {"bins": []}
         collections = []
+        today = datetime.now().date()
 
         for day in json_data:
             for bin in day:
@@ -35,6 +36,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 next_date = datetime.strptime(
                     bin["JobScheduledStart"], "%Y-%m-%dT%H:%M:%S"
                 )
+                if next_date.date() < today:
+                    continue
                 collections.append((bin_type, next_date))
 
         ordered_data = sorted(collections, key=lambda x: x[1])

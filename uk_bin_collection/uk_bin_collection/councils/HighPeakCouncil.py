@@ -1,134 +1,106 @@
-from bs4 import BeautifulSoup
+import re
+from datetime import datetime
+
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+# aria-label example: "Organic Begin From Wednesday, July 1, 2026 at 12:00:00 AM ..."
+APPOINTMENT_LABEL_RE = re.compile(r"^(.+?) Begin From \w+, (\w+ \d{1,2}, \d{4})")
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    High Peak Borough Council moved from the old FindYourBinDay form to a
+    Syncfusion-based "Public Dashboard" (bins.highpeak.gov.uk) that shows
+    collections as calendar appointments for a selected premises.
     """
-
-    def get_data(self, page) -> dict:
-        # Make a BS4 object
-        soup = BeautifulSoup(page, features="html.parser")
-        soup.prettify()
-
-        data = {"bins": []}
-
-        for month in soup.select('div[class*="bin-collection__month"]'):
-            monthName = month.select('h3[class*="bin-collection__title"]')[
-                0
-            ].text.strip()
-            for collectionDay in month.select('li[class*="bin-collection__item"]'):
-                bin_type = collectionDay.select('span[class*="bin-collection__type"]')[
-                    0
-                ].text.strip()
-                binCollection = (
-                    collectionDay.select('span[class*="bin-collection__day"]')[
-                        0
-                    ].text.strip()
-                    + ", "
-                    + collectionDay.select('span[class*="bin-collection__number"]')[
-                        0
-                    ].text.strip()
-                    + " "
-                    + monthName
-                )
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": datetime.strptime(
-                        binCollection, "%A, %d %B %Y"
-                    ).strftime(date_format),
-                }
-
-                data["bins"].append(dict_data)
-
-        return data
 
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            page = "https://www.highpeak.gov.uk/findyourbinday"
-
-            # Assign user info
             user_postcode = kwargs.get("postcode")
             user_paon = kwargs.get("paon")
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
 
-            # Create Selenium webdriver
+            check_postcode(user_postcode)
+
             user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(page)
+            driver.get("https://bins.highpeak.gov.uk/PublicDashboard")
 
-            # Enter postcode in text box and wait
-            inputElement_pc = driver.find_element(
-                By.ID, "FINDBINDAYSHIGHPEAK_POSTCODESELECT_POSTCODE"
+            wait = WebDriverWait(driver, 20)
+
+            postcode_input = wait.until(
+                EC.presence_of_element_located((By.ID, "SelectedPostcode"))
             )
-            inputElement_pc.send_keys(user_postcode)
-            inputElement_pc.send_keys(Keys.ENTER)
+            postcode_input.send_keys(user_postcode)
 
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "FINDBINDAYSHIGHPEAK_ADDRESSSELECT_ADDRESS")
-                )
-            )
-
-            # Select address from dropdown and wait
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        "//select[@id='FINDBINDAYSHIGHPEAK_ADDRESSSELECT_ADDRESS']//option[contains(., '"
-                        + user_paon
-                        + "')]",
-                    )
-                )
-            ).click()
-
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.ID,
-                        "FINDBINDAYSHIGHPEAK_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT",
-                    )
-                )
-            )
-
-            # Submit address information and wait
             driver.find_element(
-                By.ID, "FINDBINDAYSHIGHPEAK_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT"
+                By.CSS_SELECTOR, 'button[formaction*="handler=SearchPostcode"]'
             ).click()
 
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "FINDBINDAYSHIGHPEAK_CALENDAR_MAINCALENDAR")
-                )
+            # The premises dropdown is a Syncfusion combobox - it must be
+            # opened before its option list is rendered into the DOM.
+            wait.until(EC.presence_of_element_located((By.ID, "Premises")))
+            # The dropdown's wrapper span is the actual designed click
+            # target and overlaps the readonly input itself.
+            premises_wrapper = driver.find_element(
+                By.CSS_SELECTOR, 'span[aria-labelledby="Premises_hidden"]'
+            )
+            premises_wrapper.click()
+
+            wait.until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "li.e-list-item"))
             )
 
-            # Read next collection information into Pandas
-            table = driver.find_element(
-                By.ID, "FINDBINDAYSHIGHPEAK_CALENDAR_MAINCALENDAR"
-            ).get_attribute("outerHTML")
+            options = driver.find_elements(By.CSS_SELECTOR, "li.e-list-item")
+            selected_option = None
+            if user_paon:
+                paon_lower = user_paon.lower().strip()
+                for option in options:
+                    if option.text.strip().lower().startswith(paon_lower):
+                        selected_option = option
+                        break
+            if not selected_option:
+                selected_option = options[0]
+            selected_option.click()
 
-            # Parse data into dict
-            data = self.get_data(table)
+            driver.find_element(
+                By.CSS_SELECTOR, 'button[formaction*="handler=SelectPrem"]'
+            ).click()
+
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, "e-appointment")))
+
+            data = {"bins": []}
+            today = datetime.now().date()
+            for appointment in driver.find_elements(By.CLASS_NAME, "e-appointment"):
+                label = appointment.get_attribute("aria-label") or ""
+                match = APPOINTMENT_LABEL_RE.match(label)
+                if not match:
+                    continue
+                bin_type, date_str = match.groups()
+                collection_date = datetime.strptime(date_str, "%B %d, %Y")
+                if collection_date.date() < today:
+                    continue
+                data["bins"].append(
+                    {
+                        "type": bin_type.strip(),
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
+                )
+
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+            )
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
         return data

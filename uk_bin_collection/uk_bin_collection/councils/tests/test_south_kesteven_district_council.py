@@ -1,249 +1,322 @@
-"""
-Tests for South Kesteven District Council implementation.
-"""
+"""Unit tests for the South Kesteven District Council live checker flow."""
+
+import json
+from unittest.mock import ANY, MagicMock, patch
 
 import pytest
-from datetime import datetime, timedelta
-from unittest.mock import Mock, patch, MagicMock
-from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
 
-from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil import CouncilClass
+from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil import (
+    CouncilClass,
+)
+
+MODULE_PATH = (
+    "uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil"
+)
+CHECKER_URL = (
+    "https://selfservice.southkesteven.gov.uk/renderform?"
+    "t=213&k=2074C945A63DDC0D18F1EB74DA230AC3122958B1"
+)
+BINDAY_HTML = f"""
+    <html>
+        <body>
+            <a href="{CHECKER_URL}">
+                <span>Postcode bin day checker</span>
+            </a>
+        </body>
+    </html>
+"""
+RESULTS_HTML = """
+    <html>
+        <div id="body-content">
+            <h1>Your Collections</h1>
+            <table class="Alloy-table">
+                <tr>
+                    <td>Thursday 16 April, 2026</td>
+                    <td>240 Litre Refuse</td>
+                </tr>
+                <tr>
+                    <td>Thursday 23 April, 2026</td>
+                    <td>240 Litre Recycling</td>
+                </tr>
+                <tr>
+                    <td>Thursday 30 April, 2026</td>
+                    <td>23lt Food Caddy</td>
+                </tr>
+                <tr>
+                    <td>Thursday 07 May, 2026</td>
+                    <td>240 Litre Paper and Card</td>
+                </tr>
+            </table>
+        </div>
+    </html>
+"""
+UNKNOWN_RESULTS_HTML = """
+    <html>
+        <div id="body-content">
+            <h1>Your Collections</h1>
+            <table class="Alloy-table">
+                <tr>
+                    <td>Thursday 30 April, 2026</td>
+                    <td>Glass Box Collection</td>
+                </tr>
+            </table>
+        </div>
+    </html>
+"""
 
 
-class TestSouthKestevenDistrictCouncil:
-    """Test cases for South Kesteven District Council implementation."""
+@pytest.fixture
+def council():
+    return CouncilClass()
 
-    def setup_method(self):
-        """Set up test fixtures."""
-        self.council = CouncilClass()
 
-    def test_get_next_collection_dates_monday(self):
-        """Test collection date calculation for Monday collections."""
-        # Mock today as a Wednesday (weekday 2)
-        with patch('uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil.datetime') as mock_datetime:
-            mock_datetime.now.return_value = datetime(2024, 1, 10)  # Wednesday
-            mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
-            
-            dates = self.council.get_next_collection_dates("Monday", 4)
-            
-            # Should return next 4 Mondays: Jan 15, 22, 29, Feb 5
-            expected_dates = ["15/01/2024", "22/01/2024", "29/01/2024", "05/02/2024"]
-            assert dates == expected_dates
+def make_option(text: str) -> MagicMock:
+    option = MagicMock()
+    option.text = text
+    return option
 
-    def test_get_next_collection_dates_friday(self):
-        """Test collection date calculation for Friday collections."""
-        # Mock today as a Monday (weekday 0)
-        with patch('uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil.datetime') as mock_datetime:
-            mock_datetime.now.return_value = datetime(2024, 1, 8)  # Monday
-            mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
-            
-            dates = self.council.get_next_collection_dates("Friday", 3)
-            
-            # Should return next 3 Fridays: Jan 12, 19, 26
-            expected_dates = ["12/01/2024", "19/01/2024", "26/01/2024"]
-            assert dates == expected_dates
 
-    def test_get_next_collection_dates_same_day(self):
-        """Test collection date calculation when today is the collection day."""
-        # Mock today as a Tuesday (weekday 1)
-        with patch('uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil.datetime') as mock_datetime:
-            mock_datetime.now.return_value = datetime(2024, 1, 9)  # Tuesday
-            mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
-            
-            dates = self.council.get_next_collection_dates("Tuesday", 3)
-            
-            # Should return next 3 Tuesdays: Jan 16, 23, 30 (not today)
-            expected_dates = ["16/01/2024", "23/01/2024", "30/01/2024"]
-            assert dates == expected_dates
+def test_parse_data_requires_postcode(council):
+    with pytest.raises(ValueError, match="Postcode is required for South Kesteven."):
+        council.parse_data("", paon="43")
 
-    def test_get_green_bin_collection_dates_week_1(self):
-        """Test green bin collection date calculation for Week 1."""
-        green_bin_info = {"day": "Tuesday", "week": 1}
-        
-        # Mock today as January 1, 2024 (Monday, Week 1)
-        with patch('uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil.datetime') as mock_datetime:
-            mock_datetime.now.return_value = datetime(2024, 1, 1)  # Monday
-            mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
-            
-            dates = self.council.get_green_bin_collection_dates(green_bin_info, 3)
-            
-            # Should return Tuesdays in Week 1: Jan 2, Feb 6, Mar 5
-            expected_dates = ["02/01/2024", "06/02/2024", "05/03/2024"]
-            assert dates == expected_dates
 
-    def test_get_green_bin_collection_dates_week_2(self):
-        """Test green bin collection date calculation for Week 2."""
-        green_bin_info = {"day": "Tuesday", "week": 2}
-        
-        # Mock today as January 1, 2024 (Monday, Week 1)
-        with patch('uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil.datetime') as mock_datetime:
-            mock_datetime.now.return_value = datetime(2024, 1, 1)  # Monday
-            mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
-            
-            dates = self.council.get_green_bin_collection_dates(green_bin_info, 3)
-            
-            # Should return Tuesdays in Week 2: Jan 9, Feb 13, Mar 12
-            expected_dates = ["09/01/2024", "13/02/2024", "12/03/2024"]
-            assert dates == expected_dates
+def test_parse_data_requires_paon(council):
+    with pytest.raises(
+        ValueError,
+        match="Property number or name \\(paon\\) is required for South Kesteven.",
+    ):
+        council.parse_data("", postcode="NG31 8XG")
 
-    def test_get_green_bin_collection_dates_no_info(self):
-        """Test green bin collection date calculation with no info."""
-        dates = self.council.get_green_bin_collection_dates(None, 3)
-        assert dates == []
 
-    def test_get_collection_day_from_postcode_success(self):
-        """Test successful collection day extraction from postcode."""
-        # Mock the requests-based approach
-        with patch.object(self.council, '_get_collection_day_requests') as mock_requests:
-            mock_requests.return_value = "Monday"
-            
-            result = self.council.get_collection_day_from_postcode(None, "PE6 8BL")
-            
-            assert result == "Monday"
-            mock_requests.assert_called_once_with("PE6 8BL")
+def test_resolve_checker_url_extracts_live_cta_link(council):
+    checker_url = council._resolve_checker_url(council.BIN_DAY_URL, page=BINDAY_HTML)
 
-    def test_get_collection_day_from_postcode_failure(self):
-        """Test collection day extraction failure."""
-        # Mock the requests-based approach to return None
-        with patch.object(self.council, '_get_collection_day_requests') as mock_requests:
-            mock_requests.return_value = None
-            
-            result = self.council.get_collection_day_from_postcode(None, "INVALID")
-            
-            assert result is None
-            mock_requests.assert_called_once_with("INVALID")
+    assert checker_url == CHECKER_URL
 
-    def test_get_green_bin_info_from_postcode_success(self):
-        """Test successful green bin info extraction from postcode."""
-        # Mock the requests-based approach
-        with patch.object(self.council, '_get_green_bin_info_requests') as mock_requests:
-            mock_requests.return_value = {"day": "Tuesday", "week": 2}
-            
-            result = self.council.get_green_bin_info_from_postcode(None, "PE6 8BL")
-            
-            expected = {"day": "Tuesday", "week": 2}
-            assert result == expected
-            mock_requests.assert_called_once_with("PE6 8BL")
 
-    def test_get_green_bin_info_from_postcode_failure(self):
-        """Test green bin info extraction failure."""
-        # Mock the requests-based approach to return None
-        with patch.object(self.council, '_get_green_bin_info_requests') as mock_requests:
-            mock_requests.return_value = None
-            
-            result = self.council.get_green_bin_info_from_postcode(None, "INVALID")
-            
-            assert result is None
-            mock_requests.assert_called_once_with("INVALID")
+def test_address_options_ready_requires_visible_populated_dropdown(council):
+    mock_driver = MagicMock()
+    hidden_select = MagicMock()
+    hidden_select.is_displayed.return_value = False
+    mock_driver.find_element.return_value = hidden_select
 
-    def test_parse_data_success_with_green_bin(self):
-        """Test successful parse_data with both regular and green bin collections."""
-        # Mock the collection day lookup and calendar parsing
-        with patch.object(self.council, 'get_collection_day_from_postcode') as mock_get_day:
-            with patch.object(self.council, 'get_green_bin_info_from_postcode') as mock_get_green:
-                with patch.object(self.council, 'get_next_collection_dates') as mock_get_dates:
-                    with patch.object(self.council, 'get_green_bin_collection_dates') as mock_get_green_dates:
-                        with patch.object(self.council, 'parse_calendar_images') as mock_calendar:
-                            with patch.object(self.council, 'get_bin_type_from_calendar') as mock_bin_type:
-    
-                                mock_get_day.return_value = "Monday"
-                                mock_get_green.return_value = {"day": "Tuesday", "week": 2}
-                                mock_get_dates.return_value = ["15/01/2025", "22/01/2025"]
-                                mock_get_green_dates.return_value = ["09/01/2025", "13/02/2025"]
-                                mock_calendar.return_value = {"2025": {"1": {"1": "Black bin", "2": "Silver bin"}}}
-                                mock_bin_type.return_value = "Black bin (General waste)"
-    
-                                result = self.council.parse_data("", postcode="PE6 8BL")
-    
-                                expected = {
-                                    "bins": [
-                                        {"type": "Black bin (General waste)", "collectionDate": "15/01/2025"},
-                                        {"type": "Black bin (General waste)", "collectionDate": "22/01/2025"},
-                                        {"type": "Green bin (Garden waste)", "collectionDate": "22/01/2025"},
-                                        {"type": "Green bin (Garden waste)", "collectionDate": "09/01/2025"},
-                                        {"type": "Green bin (Garden waste)", "collectionDate": "13/02/2025"}
-                                    ]
-                                }
-                                assert result == expected
+    assert council._address_options_ready(mock_driver) is False
 
-    def test_parse_data_success_without_green_bin(self):
-        """Test successful parse_data with only regular bin collections."""
-        with patch.object(self.council, 'get_collection_day_from_postcode') as mock_get_day:
-            with patch.object(self.council, 'get_green_bin_info_from_postcode') as mock_get_green:
-                with patch.object(self.council, 'get_next_collection_dates') as mock_get_dates:
-                    with patch.object(self.council, 'parse_calendar_images') as mock_calendar:
-                        with patch.object(self.council, 'get_bin_type_from_calendar') as mock_bin_type:
-    
-                            mock_get_day.return_value = "Friday"
-                            mock_get_green.return_value = None  # No green bin service
-                            mock_get_dates.return_value = ["12/01/2025", "19/01/2025"]
-                            mock_calendar.return_value = {"2025": {"1": {"1": "Black bin", "2": "Silver bin"}}}
-                            mock_bin_type.return_value = "Black bin (General waste)"
-    
-                            result = self.council.parse_data("", postcode="PE6 8BL")
-    
-                            expected = {
-                                "bins": [
-                                    {"type": "Black bin (General waste)", "collectionDate": "12/01/2025"},
-                                    {"type": "Black bin (General waste)", "collectionDate": "19/01/2025"}
-                                ]
-                            }
-                            assert result == expected
+    visible_select = MagicMock()
+    visible_select.is_displayed.return_value = True
+    mock_driver.find_element.return_value = visible_select
 
-    def test_parse_data_no_postcode(self):
-        """Test parse_data with no postcode provided."""
-        with pytest.raises(ValueError, match="Postcode is required for South Kesteven"):
-            self.council.parse_data("", web_driver="http://localhost:4444")
-
-    def test_parse_data_collection_day_failure(self):
-        """Test parse_data when collection day lookup fails."""
-        with patch.object(self.council, 'get_collection_day_from_postcode') as mock_get_day:
-            mock_get_day.return_value = None
-        
-            with pytest.raises(ValueError, match="Could not determine collection day for postcode INVALID"):
-                self.council.parse_data("", postcode="INVALID")
-
-    def test_parse_data_exception_handling(self):
-        """Test parse_data exception handling."""
-        # Mock an exception during collection day lookup
-        with patch.object(self.council, 'get_collection_day_from_postcode') as mock_get_day:
-            mock_get_day.side_effect = Exception("Network error")
-        
-            with pytest.raises(Exception, match="Network error"):
-                self.council.parse_data("", postcode="PE6 8BL")
-
-    def test_week_of_month_calculation(self):
-        """Test the week of month calculation logic."""
-        # Test various dates to ensure week calculation is correct
-        test_cases = [
-            (datetime(2024, 1, 1), 1),   # Jan 1 - Week 1
-            (datetime(2024, 1, 7), 1),   # Jan 7 - Week 1
-            (datetime(2024, 1, 8), 2),   # Jan 8 - Week 2
-            (datetime(2024, 1, 14), 2),  # Jan 14 - Week 2
-            (datetime(2024, 1, 15), 3),  # Jan 15 - Week 3
-            (datetime(2024, 1, 21), 3),  # Jan 21 - Week 3
-            (datetime(2024, 1, 22), 4),  # Jan 22 - Week 4
-            (datetime(2024, 1, 28), 4),  # Jan 28 - Week 4
-            (datetime(2024, 1, 29), 5),  # Jan 29 - Week 5
-            (datetime(2024, 1, 31), 5),  # Jan 31 - Week 5
+    with patch(f"{MODULE_PATH}.Select") as mock_select_cls:
+        mock_select_cls.return_value.options = [
+            make_option("43 Pembroke Avenue, Grantham")
         ]
-        
-        for date, expected_week in test_cases:
-            week_of_month = ((date.day - 1) // 7) + 1
-            assert week_of_month == expected_week, f"Date {date} should be week {expected_week}, got {week_of_month}"
 
-    def test_days_of_week_mapping(self):
-        """Test the days of week mapping is correct."""
-        days_of_week = {
-            "Monday": 0, "Tuesday": 1, "Wednesday": 2, "Thursday": 3,
-            "Friday": 4, "Saturday": 5, "Sunday": 6
+        assert council._address_options_ready(mock_driver) is visible_select
+
+
+def test_select_address_raises_when_property_not_found(council):
+    mock_select = MagicMock()
+    mock_select.options = [
+        make_option("41 Pembroke Avenue, Grantham, NG31 8XG"),
+        make_option("45 Pembroke Avenue, Grantham, NG31 8XG"),
+    ]
+
+    with patch(f"{MODULE_PATH}.Select", return_value=mock_select):
+        with pytest.raises(
+            RuntimeError,
+            match="Unable to find the property '99' in the address dropdown.",
+        ):
+            council._select_address(MagicMock(), "99")
+
+
+def test_parse_collection_rows_parses_multiple_bins(council):
+    result = council._parse_collection_rows(RESULTS_HTML)
+
+    assert result == [
+        {
+            "type": "Black Bin",
+            "collectionDate": "16/04/2026",
+        },
+        {
+            "type": "Grey Bin",
+            "collectionDate": "23/04/2026",
+        },
+        {
+            "type": "Food Bin",
+            "collectionDate": "30/04/2026",
+        },
+        {
+            "type": "Purple Bin",
+            "collectionDate": "07/05/2026",
+        },
+    ]
+
+
+def test_parse_collection_rows_leaves_unknown_bin_labels_unchanged(council):
+    result = council._parse_collection_rows(UNKNOWN_RESULTS_HTML)
+
+    assert result == [
+        {
+            "type": "Glass Box Collection",
+            "collectionDate": "30/04/2026",
         }
-        
-        # Test that our mapping matches Python's weekday() method
-        test_date = datetime(2024, 1, 8)  # Monday
-        for day_name, expected_weekday in days_of_week.items():
-            # Find a date that falls on this weekday
-            days_to_add = (expected_weekday - test_date.weekday()) % 7
-            test_date_for_day = test_date + timedelta(days=days_to_add)
-            
-            assert test_date_for_day.weekday() == expected_weekday, f"{day_name} should map to weekday {expected_weekday}"
+    ]
+
+
+def test_capture_debug_artifacts_writes_files(council, tmp_path):
+    mock_driver = MagicMock()
+    mock_driver.current_url = CHECKER_URL
+    mock_driver.page_source = "<html><body>debug</body></html>"
+    mock_driver.save_screenshot.return_value = True
+
+    artifact_path = council._capture_debug_artifacts(
+        mock_driver,
+        tmp_path,
+        {"postcode": "NG31 8XG", "paon": "43"},
+    )
+
+    assert artifact_path is not None
+    assert (artifact_path / "page.html").read_text(
+        encoding="utf-8"
+    ) == mock_driver.page_source
+    metadata = json.loads((artifact_path / "metadata.json").read_text(encoding="utf-8"))
+    assert metadata["current_url"] == CHECKER_URL
+    assert metadata["postcode"] == "NG31 8XG"
+    assert metadata["screenshot_saved"] is True
+
+
+def test_parse_data_uses_live_checker_url_and_form_ids(council):
+    mock_driver = MagicMock()
+    mock_driver.page_source = RESULTS_HTML
+
+    current_section = MagicMock()
+    current_section.get_attribute.return_value = "488"
+    body_content = MagicMock()
+    body_content.get_attribute.return_value = "<div>Collection Address</div>"
+
+    def find_element_side_effect(by, value):
+        if (by, value) == (By.ID, council.CURRENT_SECTION_ID):
+            return current_section
+        if (by, value) == (By.ID, council.BODY_CONTENT_ID):
+            return body_content
+        raise AssertionError(f"Unexpected find_element lookup: {(by, value)}")
+
+    mock_driver.find_element.side_effect = find_element_side_effect
+
+    postcode_input = MagicMock()
+    search_button = MagicMock()
+    submit_button = MagicMock()
+    address_select = MagicMock()
+
+    matched_option = make_option("43 Pembroke Avenue, Grantham, NG31 8XG")
+    mock_select = MagicMock()
+    mock_select.options = [
+        make_option("41 Pembroke Avenue, Grantham, NG31 8XG"),
+        matched_option,
+    ]
+
+    with patch(f"{MODULE_PATH}.create_webdriver", return_value=mock_driver), patch(
+        f"{MODULE_PATH}.WebDriverWait", return_value=MagicMock()
+    ), patch.object(
+        council, "_resolve_checker_url", return_value=CHECKER_URL
+    ), patch.object(
+        council,
+        "_wait_for_clickable",
+        side_effect=[postcode_input, search_button, submit_button],
+    ) as wait_clickable, patch.object(
+        council, "_wait_for_address_options", return_value=address_select
+    ) as wait_for_address, patch.object(
+        council, "_wait_for_address_confirmation"
+    ) as wait_for_confirmation, patch.object(
+        council, "_wait_for_results_container"
+    ) as wait_for_results, patch(
+        f"{MODULE_PATH}.Select", return_value=mock_select
+    ):
+        result = council.parse_data("", postcode="NG31 8XG", paon="43")
+
+    assert result["bins"][0]["type"] == "Black Bin"
+    assert result["bins"][0]["collectionDate"] == "16/04/2026"
+    mock_driver.get.assert_called_once_with(CHECKER_URL)
+    postcode_input.clear.assert_called_once()
+    postcode_input.send_keys.assert_called_once_with("NG31 8XG")
+    search_button.click.assert_called_once()
+    submit_button.click.assert_called_once()
+    wait_clickable.assert_any_call(
+        ANY,
+        (By.ID, council.POSTCODE_INPUT_ID),
+        "Unable to find the postcode input on the South Kesteven checker.",
+    )
+    wait_clickable.assert_any_call(
+        ANY,
+        (By.ID, council.SUBMIT_BUTTON_ID),
+        "Unable to find the submit button after selecting the address.",
+    )
+    wait_for_address.assert_called_once()
+    wait_for_confirmation.assert_called_once()
+    wait_for_results.assert_called_once_with(
+        ANY,
+        "488",
+        "<div>Collection Address</div>",
+    )
+    mock_select.select_by_visible_text.assert_called_once_with(matched_option.text)
+    mock_driver.quit.assert_called_once()
+
+
+def test_parse_data_appends_artifact_path_on_failure(council, tmp_path):
+    mock_driver = MagicMock()
+    mock_driver.current_url = CHECKER_URL
+    mock_driver.page_source = "<html><body>lookup failed</body></html>"
+    mock_driver.save_screenshot.return_value = True
+
+    current_section = MagicMock()
+    current_section.get_attribute.return_value = "488"
+    body_content = MagicMock()
+    body_content.get_attribute.return_value = "<div>Collection Address</div>"
+
+    def find_element_side_effect(by, value):
+        if (by, value) == (By.ID, council.CURRENT_SECTION_ID):
+            return current_section
+        if (by, value) == (By.ID, council.BODY_CONTENT_ID):
+            return body_content
+        raise AssertionError(f"Unexpected find_element lookup: {(by, value)}")
+
+    mock_driver.find_element.side_effect = find_element_side_effect
+
+    postcode_input = MagicMock()
+    search_button = MagicMock()
+
+    with patch(f"{MODULE_PATH}.create_webdriver", return_value=mock_driver), patch(
+        f"{MODULE_PATH}.WebDriverWait", return_value=MagicMock()
+    ), patch.object(
+        council, "_resolve_checker_url", return_value=CHECKER_URL
+    ), patch.object(
+        council,
+        "_wait_for_clickable",
+        side_effect=[postcode_input, search_button],
+    ), patch.object(
+        council,
+        "_wait_for_address_options",
+        side_effect=RuntimeError(
+            "Unable to find the address dropdown after searching for the postcode."
+        ),
+    ):
+        with pytest.raises(
+            RuntimeError,
+            match="Unable to find the address dropdown after searching for the postcode.",
+        ) as exc_info:
+            council.parse_data(
+                "",
+                postcode="NG31 8XG",
+                paon="43",
+                artifact_dir=str(tmp_path),
+            )
+
+    assert "Debug artifacts saved to:" in str(exc_info.value)
+    created_artifacts = list(tmp_path.iterdir())
+    assert created_artifacts
+    artifact_run_dir = next(path for path in created_artifacts if path.is_dir())
+    assert (artifact_run_dir / "page.html").exists()
+    assert (artifact_run_dir / "metadata.json").exists()
+    mock_driver.quit.assert_called_once()

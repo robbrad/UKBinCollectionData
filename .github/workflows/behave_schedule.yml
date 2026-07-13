@@ -10,7 +10,7 @@ jobs:
     name: Setup Environment
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install Poetry
         run: pipx install poetry==1.8.4
@@ -43,7 +43,7 @@ jobs:
         python-version: [3.12]
         poetry-version: [1.8.4]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v6
         with:
@@ -59,7 +59,7 @@ jobs:
         run: make unit-tests
 
       - name: Upload Test Results to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -74,7 +74,7 @@ jobs:
         python-version: [3.12]
         poetry-version: [1.8.4]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v6
         with:
@@ -107,7 +107,7 @@ jobs:
         ports:
           - 4444:4444
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v6
         with:
@@ -127,7 +127,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload Integration Test Results to Codecov
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}

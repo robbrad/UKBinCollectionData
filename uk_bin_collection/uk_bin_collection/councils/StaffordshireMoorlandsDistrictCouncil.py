@@ -1,117 +1,107 @@
-from bs4 import BeautifulSoup
+import re
+from datetime import datetime
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+# aria-label example: "Organic Begin From Wednesday, July 1, 2026 at 12:00:00 AM ..."
+APPOINTMENT_LABEL_RE = re.compile(r"^(.+?) Begin From \w+, (\w+ \d{1,2}, \d{4})")
 
-# import the wonderful Beautiful Soup and the URL grabber
+
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Staffordshire Moorlands District Council moved from the old
+    FindYourBinDay form to the same Syncfusion-based "Public Dashboard"
+    platform (bins.staffsmoorlands.gov.uk) that High Peak Borough Council
+    also migrated to, which shows collections as calendar appointments
+    for a selected premises.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        data = {"bins": []}
-        user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
-        web_driver = kwargs.get("web_driver")
-        headless = kwargs.get("headless")
-        check_uprn(user_uprn)
-        check_postcode(user_postcode)
+        driver = None
+        try:
+            user_postcode = kwargs.get("postcode")
+            user_uprn = kwargs.get("uprn")
+            web_driver = kwargs.get("web_driver")
+            headless = kwargs.get("headless")
 
-        # Create Selenium webdriver
-        user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-        driver = create_webdriver(web_driver, headless, user_agent, __name__)
-        driver.get("https://www.staffsmoorlands.gov.uk/findyourbinday")
+            check_postcode(user_postcode)
 
-        # Close cookies banner
-        # cookieAccept = WebDriverWait(driver, 10).until(
-        #    EC.presence_of_element_located(
-        #        (By.CSS_SELECTOR, ".cookiemessage__link--close")
-        #    )
-        # )
-        # cookieAccept.click()
+            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+            driver.get("https://bins.staffsmoorlands.gov.uk/PublicDashboard")
 
-        # Wait for the postcode field to appear then populate it
-        inputElement_postcode = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_POSTCODE")
+            wait = WebDriverWait(driver, 20)
+
+            postcode_input = wait.until(
+                EC.presence_of_element_located((By.ID, "SelectedPostcode"))
             )
-        )
-        inputElement_postcode.send_keys(user_postcode)
+            postcode_input.send_keys(user_postcode)
 
-        # Click search button
-        findAddress = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.ID,
-                    "FINDBINDAYSSTAFFORDSHIREMOORLANDS_POSTCODESELECT_PAGE1NEXT_NEXT",
+            driver.find_element(
+                By.CSS_SELECTOR, 'button[formaction*="handler=SearchPostcode"]'
+            ).click()
+
+            # The premises dropdown is a Syncfusion combobox - it must be
+            # opened before its option list is rendered into the DOM.
+            wait.until(EC.presence_of_element_located((By.ID, "Premises")))
+            # The dropdown's wrapper span is the actual designed click
+            # target and overlaps the readonly input itself.
+            premises_wrapper = driver.find_element(
+                By.CSS_SELECTOR, 'span[aria-labelledby="Premises_hidden"]'
+            )
+            premises_wrapper.click()
+
+            wait.until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "li.e-list-item"))
+            )
+
+            options = driver.find_elements(By.CSS_SELECTOR, "li.e-list-item")
+            selected_option = None
+            if user_uprn:
+                for option in options:
+                    if option.get_attribute("data-value") == str(user_uprn):
+                        selected_option = option
+                        break
+            if not selected_option:
+                selected_option = options[0]
+            selected_option.click()
+
+            driver.find_element(
+                By.CSS_SELECTOR, 'button[formaction*="handler=SelectPrem"]'
+            ).click()
+
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, "e-appointment")))
+
+            data = {"bins": []}
+            today = datetime.now().date()
+            for appointment in driver.find_elements(By.CLASS_NAME, "e-appointment"):
+                label = appointment.get_attribute("aria-label") or ""
+                match = APPOINTMENT_LABEL_RE.match(label)
+                if not match:
+                    continue
+                bin_type, date_str = match.groups()
+                collection_date = datetime.strptime(date_str, "%B %d, %Y")
+                if collection_date.date() < today:
+                    continue
+                data["bins"].append(
+                    {
+                        "type": bin_type.strip(),
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
                 )
+
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x["collectionDate"], date_format)
             )
-        )
-        findAddress.click()
-
-        # Wait for the 'Select address' dropdown to appear and select option matching UPRN
-        dropdown = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (By.ID, "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESS")
-            )
-        )
-        # Create a 'Select' for it, then select the matching URPN option
-        dropdownSelect = Select(dropdown)
-        dropdownSelect.select_by_value(user_uprn)
-
-        # Wait for the submit button to appear, then click it to get the collection dates
-        submit = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.ID,
-                    "FINDBINDAYSSTAFFORDSHIREMOORLANDS_ADDRESSSELECT_ADDRESSSELECTNEXTBTN_NEXT",
-                )
-            )
-        )
-        submit.click()
-
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "bin-collection__month"))
-        )
-
-        soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-        # Quit Selenium webdriver to release session
-        driver.quit()
-
-        # Get months
-        for month_wrapper in soup.find_all("div", {"class": "bin-collection__month"}):
-            if month_wrapper:
-                month_year = month_wrapper.find(
-                    "h3", {"class": "bin-collection__title"}
-                ).get_text(strip=True)
-                # Get collections
-                for collection in month_wrapper.find_all(
-                    "li", {"class": "bin-collection__item"}
-                ):
-                    day = collection.find(
-                        "span", {"class": "bin-collection__number"}
-                    ).get_text(strip=True)
-                    if month_year and day:
-                        bin_date = datetime.strptime(day + " " + month_year, "%d %B %Y")
-                        dict_data = {
-                            "type": collection.find(
-                                "span", {"class": "bin-collection__type"}
-                            ).get_text(strip=True),
-                            "collectionDate": bin_date.strftime(date_format),
-                        }
-                        data["bins"].append(dict_data)
-
-        data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-        )
-
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise
+        finally:
+            if driver:
+                driver.quit()
         return data

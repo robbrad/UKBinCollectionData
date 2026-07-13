@@ -1,107 +1,178 @@
+import platform
+import re
+import subprocess
+import time
+from datetime import datetime
+
+import undetected_chromedriver as uc
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import Select, WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import (
+    check_paon,
+    check_postcode,
+    date_format,
+)
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
+def _installed_chrome_major_version() -> int | None:
+    """
+    undetected-chromedriver's own auto-detection sometimes grabs the
+    latest chromedriver release instead of one matching the locally
+    installed Chrome, causing a version-mismatch failure. Asking the
+    local Chrome binary directly is more reliable.
+    """
+    exe = uc.find_chrome_executable()
+    if not exe:
+        return None
+
+    if platform.system() == "Windows":
+        # On Windows, `chrome.exe --version` launches the browser rather
+        # than printing to stdout and returning, so read the file's
+        # version resource instead.
+        try:
+            output = subprocess.check_output(
+                [
+                    "powershell",
+                    "-NoProfile",
+                    "-Command",
+                    f"(Get-Item '{exe}').VersionInfo.FileVersion",
+                ],
+                stderr=subprocess.DEVNULL,
+                timeout=10,
+            ).decode()
+        except Exception:
+            return None
+    else:
+        try:
+            output = subprocess.check_output(
+                [exe, "--version"], stderr=subprocess.DEVNULL, timeout=10
+            ).decode()
+        except Exception:
+            return None
+
+    match = re.search(r"(\d+)\.", output)
+    return int(match.group(1)) if match else None
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Sunderland City Council moved its bin-day checker onto a GOSS iCM form
+    behind Cloudflare bot management. Plain Selenium (headless or not,
+    local or remote grid, fully stealthed) is reliably blocked - only a
+    genuine, local, non-headless Chrome driven by undetected-chromedriver
+    clears the challenge. That means this council cannot use the shared
+    remote-grid `web_driver` pattern the other scrapers use: it always
+    launches its own local, visible Chrome (e.g. under Xvfb on Linux).
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
-            data = {"bins": []}
-            collections = []
-
             user_paon = kwargs.get("paon")
             user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
             check_paon(user_paon)
             check_postcode(user_postcode)
 
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+            options = uc.ChromeOptions()
+            driver = uc.Chrome(
+                options=options,
+                headless=False,
+                version_main=_installed_chrome_major_version(),
+            )
+
             driver.get(
-                "https://webapps.sunderland.gov.uk/WEBAPPS/WSS/Sunderland_Portal/Forms/bindaychecker.aspx"
+                "https://www.sunderland.gov.uk/article/12142/Find-your-bin-collection-day"
             )
 
-            inputElement_postcode = WebDriverWait(driver, 30).until(
+            try:
+                WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, "//button[contains(., 'Accept all')]")
+                    )
+                ).click()
+            except Exception:
+                pass
+
+            postcode_input = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.ID, "ContentPlaceHolder1_tbPostCode_controltext")
+                    (By.ID, "BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_SCCPOSTCODE")
                 )
             )
-            inputElement_postcode.send_keys(user_postcode)
+            postcode_input.send_keys(user_postcode)
+            driver.find_element(
+                By.ID, "BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_POSTCODETRIGGER_NEXT"
+            ).click()
 
-            inputElement_submit_button = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable((By.ID, "ContentPlaceHolder1_btnLLPG"))
-            )
-            inputElement_submit_button.click()
-
-            addressList = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.ID, "ContentPlaceHolder1_ddlAddresses")
+            address_select = Select(
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located(
+                        (
+                            By.ID,
+                            "BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_SCCLISTOFADDRESSES",
+                        )
+                    )
                 )
             )
-            selected_addressList = Select(addressList)
-            for idx, addr_option in enumerate(selected_addressList.options):
-                option_name = addr_option.accessible_name[0 : len(user_paon)]
-                if option_name == user_paon:
+            paon_upper = user_paon.strip().upper()
+            matched_value = None
+            for option in address_select.options:
+                if option.text.strip().upper().startswith(paon_upper):
+                    matched_value = option.get_attribute("value")
                     break
-            selected_addressList.select_by_index(idx)
+            if not matched_value:
+                raise ValueError(f"Address not found in dropdown: {user_paon}")
+            address_select.select_by_value(matched_value)
 
-            # Make a BS4 object
+            WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, ".myaccount-block__item--bin")
+                )
+            )
+            # The result grid renders its bin blocks (waste, recycling,
+            # garden) in separate async steps with no reliable DOM signal
+            # for "all done" - a fixed settle delay is more reliable here
+            # than polling, since slower blocks (e.g. Garden Waste) can
+            # still be mid-render when a stable-count check would fire.
+            time.sleep(8)
+
             soup = BeautifulSoup(driver.page_source, features="html.parser")
-            soup.prettify()
+            data = {"bins": []}
+            for item in soup.select(".myaccount-block__item--bin"):
+                title_el = item.select_one(".myaccount-block__title")
+                if not title_el:
+                    continue
+                bin_type = title_el.get_text(strip=True)
 
-            try:
-                household_bin_date = datetime.strptime(
-                    soup.find(
-                        "span", {"id": "ContentPlaceHolder1_LabelHouse"}
-                    ).get_text(strip=True),
-                    "%A %d %B %Y",
+                # The waste/recycling blocks wrap their date in a
+                # "myaccount-block__date" <p>, but the Garden Waste block
+                # just puts it in a plain <p> with no distinguishing
+                # class, so search the whole item's text instead of a
+                # specific date element.
+                date_match = re.search(
+                    r"[A-Za-z]{3} [A-Za-z]{3} \d{1,2} \d{4}", item.get_text()
                 )
-                collections.append(("Household bin", household_bin_date))
-            except AttributeError:
-                pass
+                if not date_match:
+                    continue
 
-            try:
-                recycling_bin_date = datetime.strptime(
-                    soup.find(
-                        "span", {"id": "ContentPlaceHolder1_LabelRecycle"}
-                    ).get_text(strip=True),
-                    "%A %d %B %Y",
+                collection_date = datetime.strptime(date_match.group(), "%a %b %d %Y")
+                data["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
                 )
-                collections.append(("Recycling bin", recycling_bin_date))
-            except AttributeError:
-                pass
 
-            ordered_data = sorted(collections, key=lambda x: x[1])
-            for item in ordered_data:
-                dict_data = {
-                    "type": item[0].capitalize(),
-                    "collectionDate": item[1].strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-
+            data["bins"].sort(
+                key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+            )
         except Exception as e:
-            # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
             raise
-
         finally:
-            # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
-
         return data

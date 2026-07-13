@@ -463,3 +463,50 @@ def test_get_next_day_of_week(today_str, day_name, expected):
         mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
         result = get_next_day_of_week(day_name, date_format="%m/%d/%Y")
         assert result == expected
+
+
+def test_build_retry_session_defaults():
+    session = build_retry_session()
+    adapter = session.get_adapter("https://example.com")
+    retry = adapter.max_retries
+    assert retry.total == 5
+    assert retry.backoff_factor == 1.5
+    assert retry.status_forcelist == (429, 500, 502, 503, 504)
+    assert retry.allowed_methods == ("GET",)
+
+
+def test_build_retry_session_custom_headers_and_methods():
+    session = build_retry_session(
+        headers={"User-Agent": "test-agent"}, retry_methods=("POST",)
+    )
+    assert session.headers["User-Agent"] == "test-agent"
+    adapter = session.get_adapter("https://example.com")
+    assert adapter.max_retries.allowed_methods == ("POST",)
+
+
+def test_get_scraper_user_agent_uses_installed_version():
+    with patch("uk_bin_collection.common._pkg_version", return_value="1.2.3"):
+        result = get_scraper_user_agent()
+    assert result == (
+        "uk-bin-collection/1.2.3 (+https://github.com/robbrad/UKBinCollectionData)"
+    )
+
+
+def test_get_scraper_user_agent_falls_back_when_not_installed():
+    with patch(
+        "uk_bin_collection.common._pkg_version", side_effect=PackageNotFoundError
+    ):
+        result = get_scraper_user_agent()
+    assert result == (
+        "uk-bin-collection/1.0 (+https://github.com/robbrad/UKBinCollectionData)"
+    )
+
+
+def test_get_scraper_user_agent_custom_fallback():
+    with patch(
+        "uk_bin_collection.common._pkg_version", side_effect=PackageNotFoundError
+    ):
+        result = get_scraper_user_agent(fallback_version="dev")
+    assert result == (
+        "uk-bin-collection/dev (+https://github.com/robbrad/UKBinCollectionData)"
+    )

@@ -43,10 +43,10 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
 
         # Loop over each date card
-        card_blocks = soup.select("#detailsDisplay .refuse-results")
+        card_blocks = soup.select(".refuse-results")
 
         for card in card_blocks:
-            bin_date_tag = card.select_one(".card-footer h3")
+            bin_date_tag = card.select_one(".card-footer .collectionDate p")
             if not bin_date_tag:
                 continue
 

@@ -18,9 +18,6 @@ class CouncilClass(AbstractGetBinDataClass):
         check_uprn(user_uprn)
 
         # UPRN is passed in via a cookie. Set cookies/params and GET the page
-        cookies = {
-            "SVBINZONE": f"VALE%3AUPRN%40{user_uprn}",
-        }
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "Accept-Language": "en-GB,en;q=0.7",
@@ -40,11 +37,23 @@ class CouncilClass(AbstractGetBinDataClass):
             "ebd": "0",
         }
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(
+        # Azure App Gateway intermittently returns 403 on direct requests.
+        # Establishing a JSESSIONID by visiting the page first (without the
+        # SVBINZONE cookie) avoids this.
+        session = requests.Session()
+        session.headers.update(headers)
+        session.get(
+            "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb?SOVA_TAG=VALE&ebd=0&ebz=1_1780529431339",
+            verify=False,
+            timeout=15,
+        )
+        session.cookies.set("SVBINZONE", f"VALE%3AUPRN%40{user_uprn}")
+        response = session.get(
             "https://eform.whitehorsedc.gov.uk/ebase/BINZONE_DESKTOP.eb",
             params=params,
             headers=headers,
-            cookies=cookies,
+            verify=False,
+            timeout=15,
         )
 
         # Parse response text for super speedy finding
