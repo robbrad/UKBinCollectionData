@@ -3,7 +3,7 @@
 ## Next Issue: continue nightly-suite triage (Halton/Mid & East Antrim/West Oxfordshire genuine
 Selenium timeouts, or #1560 Gateshead - now have a local Selenium grid)
 
-## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154)
+## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154) (merged) + [PR #2155](https://github.com/robbrad/UKBinCollectionData/pull/2155) (follow-up)
 
 20 open community/dependabot PRs consolidated onto `july-release-26`, plus 29 additional
 issues/bugs fixed while validating the branch and triaging a full nightly integration
@@ -11,6 +11,48 @@ run. All fixes verified live (pure HTTP directly, Selenium-based ones against a 
 Docker Selenium grid, or undetected-chromedriver against a local Chrome for
 Cloudflare-gated sites). Issues below are commented with a link to the PR and are wired
 up (`fixes #NNNN` in the PR body) to auto-close when the PR is merged to master.
+
+**Note:** #2154 was merged as a regular (non-squash) merge from a snapshot of
+`july-release-26` that predated the last 5 fixes below (Mid Suffolk, Wiltshire,
+Pembrokeshire retry, Rochford, HA sensor availability) - those are carried to
+`master` by the follow-up [PR #2155](https://github.com/robbrad/UKBinCollectionData/pull/2155)
+instead.
+
+### ⚠️ Breaking change: automations keyed on the bin sensor's `unavailable` state
+
+The HA sensor availability fix (#1672, in PR #2155) changes when the **main bin
+sensor** (`sensor.<name>_<bin_type>`) reports `unavailable`, for **every council**,
+not just the ones it was filed against - this is generic integration code, not
+council-specific.
+- **Before:** went `unavailable` whenever that bin type had no upcoming date in the
+  current data (e.g. a seasonal service currently out of season) - indistinguishable
+  from a real fetch failure.
+- **After:** only goes `unavailable` when the coordinator update itself genuinely
+  fails. No date for a bin type now shows the state `"No collections scheduled"`
+  and stays available.
+- **Action needed:** any automation triggering on this sensor's state being
+  `unavailable` to detect "this bin type isn't in service right now" must be
+  updated to check for `"No collections scheduled"` instead once #2155 merges.
+  Automations reacting to `unavailable` to catch a genuine integration failure are
+  unaffected and should be more reliable than before.
+
+### Other side effects worth knowing about
+
+- **Shared HTTP fetch retry** (#2073 fix, PR #2155): affects **101 of the 352**
+  councils in `input.json` (the ones using the default `requests`-based fetch path -
+  149 handle their own requests via `skip_get_url`, 102 use Selenium, neither
+  affected). Adds resilience against transient errors, but a genuinely-down council
+  site now takes longer to fail (up to ~46s of retry backoff alone, on top of each
+  attempt's own connection time) instead of failing immediately - and may surface
+  as a generic HA "Timeout while updating data" instead of a more specific
+  connection error, since the retries can outlast HA's own per-update timeout.
+- **Lewes/Eastbourne DB-outage detection** (#2127 fix, PR #2157): during a future
+  EnvironmentFirst outage, sensors for these two councils will now go `unavailable`
+  with a clear log message instead of silently continuing to show the last known
+  good (stale) collection dates. Scoped to just these two councils.
+- **Removing the unused `ocr` extra** (PR #2156): no functional change for any
+  council (nothing used it); only affects anyone with `pip install
+  uk_bin_collection[ocr]` pinned externally.
 
 ## Issues Fixed This Session: 24 (16 direct fixes + 8 covered by merged PRs)
 
