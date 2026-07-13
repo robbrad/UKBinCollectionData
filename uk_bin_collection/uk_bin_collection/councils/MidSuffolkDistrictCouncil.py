@@ -1,5 +1,3 @@
-import datetime
-import re
 from datetime import datetime
 
 from bs4 import BeautifulSoup
@@ -10,15 +8,7 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
-# Matches the council's date format e.g. "Wed 27 May 2026". Used to extract
-# every date in a <p> tag — a single tag can contain multiple dates separated
-# by commas when the council renders "Following Collections:" with two
-# upcoming dates, and may be prefixed "Today - <date>".
-_DATE_RE = re.compile(
-    r"\b(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) \d{1,2} "
-    r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}\b"
-)
+_NS = "_com_placecube_digitalplace_local_waste_portlet_CollectionDayFinderPortlet_"
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -51,34 +41,31 @@ class CouncilClass(AbstractGetBinDataClass):
             driver = create_webdriver(web_driver, headless, None, __name__)
             driver.get(url)
 
-            # Enter postcode
+            # Enter postcode. The field no longer has an aria-label, so
+            # target it by its stable namespaced id instead.
             postcode_input = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, '[aria-label="Postcode"]')
-                )
+                EC.presence_of_element_located((By.ID, f"{_NS}postcode"))
             )
             postcode_input.send_keys(user_postcode)
 
             # Click find address
             find_address_button = WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "lfr-btn-label"))
+                EC.element_to_be_clickable((By.ID, f"{_NS}btnAddressLookup"))
             )
             driver.execute_script("arguments[0].scrollIntoView();", find_address_button)
             driver.execute_script("arguments[0].click();", find_address_button)
 
-            # Wait for address dropdown to appear AND populate. Polling for a
-            # populated <select> beats a fixed sleep — the dropdown typically
-            # renders in <1s, so a 5s sleep just held Chrome idle and let the
-            # parallel Grid+local Chromes overlap memory peaks. On a busy
-            # Selenium Grid that overlap is what triggered the
-            # `__clone` / OOM crash inside the Grid container. Now we exit as
-            # soon as options are available.
+            # Wait for the address dropdown to appear and populate.
             def _populated_select(d):
-                selects = d.find_elements(By.CSS_SELECTOR, "select")
-                for s in selects:
-                    if len(s.find_elements(By.TAG_NAME, "option")) > 1:
-                        return s
-                return False
+                try:
+                    select_el = d.find_element(By.ID, f"{_NS}uprn")
+                except Exception:
+                    return False
+                return (
+                    select_el
+                    if len(select_el.find_elements(By.TAG_NAME, "option")) > 1
+                    else False
+                )
 
             select_address_input = WebDriverWait(driver, 30).until(_populated_select)
 
@@ -127,56 +114,42 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
             select.select_by_value(best_value)
 
-            WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((By.ID, "collection-cards"))
+            submit_button = WebDriverWait(driver, 30).until(
+                EC.element_to_be_clickable((By.ID, f"{_NS}fcd_submit"))
             )
-            # Wait until at least one card has populated — the JS observer
-            # builds cards asynchronously after the select change, and reading
-            # page_source the instant #collection-cards appears can return an
-            # empty container. Bound on cards rather than a fixed sleep.
+            driver.execute_script("arguments[0].click();", submit_button)
+
+            # The results now render as a table (Collection type / Next
+            # collection / Frequency / Following Collection Date) rather
+            # than the old collection-cards layout.
             WebDriverWait(driver, 30).until(
-                lambda d: len(
-                    d.find_elements(
-                        By.CSS_SELECTOR, "#collection-cards .card h3"
-                    )
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "table.table tbody tr")
                 )
-                > 0
             )
 
             # Parse the HTML content
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
-            collection_cards = soup.find("div", class_="collection-cards")
-            if collection_cards:
-                cards = collection_cards.find_all("div", class_="card")
-                for card in cards:
-                    collection_type = (card.find("h3")).get_text()
-                    # print(collection_type)
-                    p_tags = card.find_all("p")  # any <p>
+            table = soup.select_one("table.table")
+            if table:
+                for row in table.select("tbody tr"):
+                    cells = row.find_all("td")
+                    if len(cells) < 2:
+                        continue
 
-                    for p_tag in p_tags:
-                        text = p_tag.get_text()
-                        if text.startswith("Frequency"):
-                            continue
+                    collection_type = cells[0].get_text(strip=True)
+                    date_text = cells[1].get_text(strip=True)
+                    if not date_text:
+                        continue
 
-                        # A single <p> can contain multiple dates — the
-                        # "Following Collections:" tag renders comma-separated
-                        # dates when the council has 3 upcoming collections,
-                        # and "Next Collection:" can be prefixed with
-                        # "Today - <date>". Pull every well-formed date out
-                        # of the text and emit one entry per date.
-                        for date_str in _DATE_RE.findall(text):
-                            collection_date = datetime.strptime(
-                                date_str, "%a %d %b %Y"
-                            )
-                            data["bins"].append(
-                                {
-                                    "type": collection_type,
-                                    "collectionDate": collection_date.strftime(
-                                        date_format
-                                    ),
-                                }
-                            )
+                    collection_date = datetime.strptime(date_text, "%A %d %b %Y")
+                    data["bins"].append(
+                        {
+                            "type": collection_type,
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                    )
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
