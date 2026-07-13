@@ -1,4 +1,38 @@
 =======
+## 0.168.0 (2026-07-13)
+
+### Feat
+
+- LondonBoroughLewisham - replace Selenium scraper with requests-based API client
+
+### Fix
+
+- SomersetCouncil - scope date lookups per-bin, handle missing 'followed by' date
+- #2111 BedfordBoroughCouncil - drop stale /35 path segment, filter past dates
+- WaverleyBoroughCouncil - fix 'u1' tag-name typo, should be 'ul'
+- DarlingtonBoroughCouncil - update selectors for redesigned results page
+- #2139 StaffordshireMoorlandsDistrictCouncil - rewrite for new Syncfusion Public Dashboard
+- EdenDistrictCouncil - delegate to WestMorlandAndFurness backend
+- #2140 SunderlandCityCouncil - bypass Cloudflare with undetected-chromedriver
+- #2141 CeredigionCountyCouncil - capture all schedule panels, not just 'Weekly'
+- #2150 TorridgeDistrictCouncil - reach getRoundCalendarForUPRN via AchieveForms broker
+- #2146 NewcastleCityCouncil - rewrite for ReCollect API
+- #1945 BolsoverCouncil - correctly handle Round B (WeekBlack/WeekBandG=2)
+- #2120 PowysCouncil - dismiss cookie consent prompt before Find address click
+- #2149 HighPeakCouncil - rewrite for new Syncfusion Public Dashboard
+- #2126 FenlandDistrictCouncil - accept PremiseID directly via uprn param
+- BirminghamCityCouncil - import missing date_format from common
+- #2125 StratfordUponAvonCouncil - skip postcode lookup when UPRN already known
+- #2125 StratfordUponAvonCouncil - guard check_postcode for UPRN-only configs
+- guard milton keynes scraper against api error responses
+- update South Kesteven binday scraper
+- #2116 fix SSL errors and session cookies for Vale of White Horse
+- support Babergh's new collection-day table format
+- East Cambs: Use new API backend
+- birmingham city council
+- handle Rugby Council API errors
+- update Rugby Borough Council scraper
+
 ## 0.167.1 (2026-06-02)
 
 ### Fix
