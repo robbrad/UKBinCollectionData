@@ -5,14 +5,14 @@ Selenium timeouts, or #1560 Gateshead - now have a local Selenium grid)
 
 ## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154)
 
-20 open community/dependabot PRs consolidated onto `july-release-26`, plus 24 additional
+20 open community/dependabot PRs consolidated onto `july-release-26`, plus 25 additional
 issues/bugs fixed while validating the branch and triaging a full nightly integration
 run. All fixes verified live (pure HTTP directly, Selenium-based ones against a local
 Docker Selenium grid, or undetected-chromedriver against a local Chrome for
 Cloudflare-gated sites). Issues below are commented with a link to the PR and are wired
 up (`fixes #NNNN` in the PR body) to auto-close when the PR is merged to master.
 
-## Issues Fixed This Session: 19 (11 direct fixes + 8 covered by merged PRs)
+## Issues Fixed This Session: 20 (12 direct fixes + 8 covered by merged PRs)
 
 | Issue | Council | Status | Notes |
 |-------|---------|--------|-------|
@@ -27,6 +27,7 @@ up (`fixes #NNNN` in the PR body) to auto-close when the PR is merged to master.
 | #2140 | Sunderland | Fixed | Cloudflare-gated; rewritten with undetected-chromedriver (new dependency) - needs local Chrome, not remote grid; see CI note below |
 | #2139 | Staffordshire Moorlands | Fixed | Same Syncfusion Public Dashboard migration as High Peak (#2149) |
 | #2111 | Bedford | Fixed | API dropped the trailing `/{days}` path segment; now also returns past jobs, added a date filter |
+| #2109 | Mid Suffolk | Fixed | Postcode field lost its `aria-label`; results moved from cards to a `<table>`. Rewritten to target stable ids and parse the new table |
 | #2147 | Rugby | Fixed | Merged via #2148 |
 | #2136 | Wigan | Fixed | Merged via #2145 (supersedes #2131) |
 | #2114 | Warrington | Fixed | Merged via #2134 |
@@ -77,6 +78,7 @@ this is a maintainer decision, not made in this session.
 | f766bc2f | WaverleyBoroughCouncil | Fix `"u1"` tag-name typo, should be `"ul"` |
 | b37921d9 | BedfordBoroughCouncil | Drop stale `/35` path segment, filter past dates |
 | 7c13317e | SomersetCouncil | Scope date lookups per-bin, handle missing "followed by" date |
+| e60ccc54 | MidSuffolkDistrictCouncil | Rewrite selectors for redesigned postcode form; parse new results table |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 
 ## Nightly integration suite triage
@@ -103,14 +105,13 @@ Somerset.
 - WalsallCouncil - API 504 Gateway Timeout at time of testing (their server, not us)
 - NorthWestLeicestershire, OrkneyIslandsCouncil - test fixtures missing required disambiguation params (house_number / area name)
 
-**Confirmed genuine remaining bugs, not yet fixed (26 councils):**
+**Confirmed genuine remaining bugs, not yet fixed (25 councils):**
 HaltonBoroughCouncil, MidAndEastAntrimBoroughCouncil, WestOxfordshireDistrictCouncil
 (genuine Selenium timeouts, confirmed real via sequential re-run), GlasgowCityCouncil
 (`AttributeError`), FyldeCouncil ("Unexpected response"), HackneyCouncil
 (`JSONDecodeError`), EastDevonDC (403 Forbidden), IsleOfWightCouncil /
 NewarkAndSherwoodDC ("Invalid postcode Status: 404" - same symptom, worth checking
-together), Hillingdon (`StaleElementReferenceException`), MidSuffolkDistrictCouncil
-(matches open issue #2109), SwaleBoroughCouncil, EastLindseyDistrictCouncil,
+together), Hillingdon (`StaleElementReferenceException`), SwaleBoroughCouncil, EastLindseyDistrictCouncil,
 AngusCouncil, AshfieldDistrictCouncil (Selenium `TimeoutException`), BarkingDagenham
 (`ElementNotInteractableException`), GedlingBoroughCouncil, IslingtonCouncil
 (`ReadTimeout` - possibly transient, worth a retry), PembrokeshireCountyCouncil,
@@ -130,7 +131,6 @@ investigated), ForestOfDeanDistrictCouncil (Selenium, empty bins, not yet invest
 | #2153 | Lincoln | Bug (no repro) | Works fine with known-good test UPRN; asked reporter for error/UPRN/postcode |
 | #2127 | Lewes/Eastbourne/Seaford | Info only | Reporter already diagnosed as upstream DB outage, not a code bug |
 | #2118 | Flintshire | Enhancement | Add Brown/Garden waste entity |
-| #2109 | Mid Suffolk | Bug | Confirmed failing in nightly suite (Selenium timeout); needs live investigation |
 | #2098 | Wiltshire | Bug (logic) | Alternating fortnightly bins showing only 1 of 2 same-day bins |
 | #2079 | Slough | Bug (Selenium timeout) | Cookie banner element never appears in headless mode |
 | #2073 | Pembrokeshire | Bug (session expiry) | Data goes unavailable every ~12hrs, needs HA-side investigation |
