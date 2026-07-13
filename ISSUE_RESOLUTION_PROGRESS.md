@@ -1,9 +1,73 @@
 # Issue Resolution Progress
 
-## Next Issue: individual investigation of the remaining Selenium timeouts (EastLindsey,
-Angus, Ashfield, Halton, BarkingDagenham, MidAndEastAntrim) - each needs its own
-selector/page-change archaeology, not done yet; or #1560 Gateshead - now have a local
-Selenium grid
+## Next Issue: FyldeCouncil needs a full rewrite for its new login-gated "personal
+waste account" system (if feasible without real user credentials), or GedlingBoroughCouncil's
+upstream API needs re-checking for stability, or continue the 59-council
+"page-ignoring" audit (see below)
+
+## Deep-dive triage round 2 (2026-07-13, PR #2165)
+
+Worked through every council flagged as "genuinely broken, needs individual
+investigation" from the previous triage pass, plus Gateshead (#1560) and re-checks
+on a couple of previously-confirmed-broken ones.
+
+**6 real fixes:**
+- **EastLindseyDistrictCouncil**: form element ids are year-versioned
+  (`WASTECOLLECTIONDAYS202526`); the council rolled to `202627`. Matched on the
+  stable id suffix instead of hardcoding a year, so this won't break again at the
+  next rollover.
+- **AngusCouncil**: AchieveForms form rebuilt - `searchString`→`search`,
+  `customerAddress`→`select_NewAddress`, plus a new required "Show Calendar" button
+  click. Results markup unchanged.
+- **BarkingDagenham**: a promotional overlay (`.prefix-overlay`) sits on top of the
+  page and intercepts clicks/typing on everything below it, including the cookie
+  banner - `ElementNotInteractableException` on the postcode field. Now dismisses
+  both overlays explicitly.
+- **MidAndEastAntrimBoroughCouncil**: the embedded iframe widget is gone entirely -
+  moved to a linked-out WhiteSpace WRP portal (same platform as 8 other councils
+  already in this repo, e.g. WaverleyBoroughCouncil). Rewrote as pure HTTP, no
+  Selenium needed. **Breaking change**: now takes postcode + house number as
+  separate parameters instead of the whole address crammed into postcode (a quirk
+  of the old iframe's free-text search that no longer applies).
+- **SwaleBoroughCouncil**: not a Cloudflare block - the old fallback message was a
+  guess, not a diagnosis (verified the page loads completely normally). The Squiz
+  Matrix form was rebuilt with new field ids; results page structure unchanged.
+- **DartfordBoroughCouncil**: the site silently serves a stripped-down page with no
+  results table for requests without a browser-like User-Agent - the scraper sent
+  none, always got the empty variant, and silently returned zero bins instead of
+  erroring. Sent the project's UA string and made a missing table a hard error.
+  This was never actually a dead backend, as the earlier triage pass (using a
+  UA-less request) concluded - worth remembering when re-checking "confirmed dead
+  backend" verdicts, since a missing User-Agent can look identical to a genuine
+  outage.
+
+**Hardening only, live issue not resolved:**
+- **HorshamDistrictCouncil**: switched to `build_retry_session()` for consistency,
+  but verified live it still fails after 5 retries - a sustained connection reset,
+  not a transient blip.
+- **GatesheadCouncil** (#1560): removed a stray unconditional debug file write
+  (`debug_page.html` to cwd on every run) and a stale error message referencing it.
+  Could not reproduce the reported "stuck date" symptom live - scraper currently
+  produces correctly advancing dates. Commented on the issue asking for more detail.
+
+**Confirmed not fixable here:**
+- **HaltonBoroughCouncil**: genuine Google reCAPTCHA v2 - confirmed blocked even
+  with `undetected-chromedriver` against a real local, non-headless Chrome. Same
+  class of problem as Haringey (#2113).
+- **AshfieldDistrictCouncil**: a genuine client-side JS error on the council's own
+  portal (`Cannot read properties of null (reading 'id')`) leaves the page stuck on
+  "Loading..." for every visitor, not just automation.
+- **GedlingBoroughCouncil**: re-checked, still unstable (3 different failures across
+  3 live attempts this pass too).
+- **FyldeCouncil**: re-checked, still on the login-gated "personal waste account"
+  system with no public lookup.
+
+**Broader finding from Aberdeenshire's regression (see PR #2159/#2163):** while
+fixing that, found 59 other councils sharing the same shape (scraper ignores the
+fetched page and makes its own request, but `skip_get_url` isn't set) via an AST
+scan of the whole `councils/` directory. Only Aberdeenshire is currently affected;
+the rest have `url` fields pointing somewhere healthy today, so this is a latent
+risk, not an active bug. Worth a slow systematic audit at some point.
 
 ## Post-#2154-merge full-suite triage (2026-07-13)
 
