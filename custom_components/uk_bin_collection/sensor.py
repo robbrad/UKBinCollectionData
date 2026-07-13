@@ -159,10 +159,15 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
             self._days = (bin_date - now).days
             self._state = self.calculate_state()
         else:
-            _LOGGER.warning(
-                f"{LOG_PREFIX} Data for bin type '{self._bin_type}' is missing."
+            # Not every bin type has an upcoming date every update - e.g. a
+            # council-run garden waste service that's out of season. That's
+            # not an error, so show a friendly state rather than going
+            # Unavailable (availability itself is driven by whether the
+            # coordinator update as a whole succeeded).
+            _LOGGER.debug(
+                f"{LOG_PREFIX} No upcoming date for bin type '{self._bin_type}'."
             )
-            self._state = "Unknown"
+            self._state = "No collections scheduled"
             self._days = None
             self._next_collection = None
 
@@ -231,7 +236,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
     @property
     def available(self) -> bool:
         """Return the availability of the sensor."""
-        return self._state != "Unknown"
+        return self.coordinator.last_update_success
 
     @property
     def unique_id(self) -> str:

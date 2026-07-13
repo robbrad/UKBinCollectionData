@@ -838,8 +838,11 @@ async def test_bin_sensor_missing_data(hass, mock_config_entry):
         coordinator, "Non-Existent Bin", "test_non_existent_bin", {}
     )
 
-    assert sensor.state == "Unknown"
-    assert sensor.available is False
+    # The coordinator update itself succeeded (no bins is a valid result),
+    # so the sensor should show a friendly state rather than going
+    # Unavailable.
+    assert sensor.state == "No collections scheduled"
+    assert sensor.available is True
     assert sensor.extra_state_attributes["days"] is None
     assert sensor.extra_state_attributes["next_collection"] is None
 
@@ -913,7 +916,8 @@ async def test_sensor_available_property(hass, mock_config_entry):
 
     assert sensor_valid.available is True
 
-    # Case 2: State is "Unknown"
+    # Case 2: coordinator succeeds but this bin type has no upcoming date -
+    # still available, just showing a friendly "no data" state.
     data_unknown = {"bins": []}
 
     with patch(
@@ -937,7 +941,35 @@ async def test_sensor_available_property(hass, mock_config_entry):
         coordinator_unknown, "Garden Waste", "test_garden_waste_unavailable", {}
     )
 
-    assert sensor_unknown.available is False
+    assert sensor_unknown.state == "No collections scheduled"
+    assert sensor_unknown.available is True
+
+    # Case 3: the coordinator update itself failed - the sensor should go
+    # Unavailable regardless of any previously cached state.
+    with patch(
+        "custom_components.uk_bin_collection.sensor.UKBinCollectionApp"
+    ) as mock_app_failed:
+        mock_app_failed_instance = mock_app_failed.return_value
+        mock_app_failed_instance.run.return_value = json.dumps(data_valid)
+
+        with patch.object(
+            hass,
+            "async_add_executor_job",
+            side_effect=ConnectionResetError("Connection reset by peer"),
+        ):
+            coordinator_failed = HouseholdBinCoordinator(
+                hass, mock_app_failed_instance, "Test Name", timeout=60
+            )
+
+            await coordinator_failed.async_refresh()
+
+    assert coordinator_failed.last_update_success is False
+
+    sensor_failed = UKBinCollectionDataSensor(
+        coordinator_failed, "Recycling", "test_recycling_failed", {}
+    )
+
+    assert sensor_failed.available is False
 
 
 @pytest.mark.asyncio
@@ -1400,7 +1432,7 @@ def test_load_icon_color_mapping_invalid_json():
 
 @pytest.mark.asyncio
 async def test_bin_sensor_missing_bin_type(hass, mock_config_entry):
-    """Test that we log a warning and set state to Unknown when the bin type is missing."""
+    """Test that we log and show a friendly state when a bin type has no upcoming date."""
     # Suppose your coordinator’s data only has "Recycling"
     data = {"Recycling": datetime(2025, 2, 1).date()}
     # but the sensor is for "General Waste"
@@ -1408,20 +1440,21 @@ async def test_bin_sensor_missing_bin_type(hass, mock_config_entry):
     # Create the coordinator
     coordinator = MagicMock()
     coordinator.data = data
+    coordinator.last_update_success = True
     coordinator.name = "Test Name"
 
     sensor = UKBinCollectionDataSensor(
         coordinator, "General Waste", "test_general_waste", {}
     )
 
-    with patch("logging.Logger.warning") as mock_warn:
+    with patch("logging.Logger.debug") as mock_debug:
         sensor.update_state()
 
-    assert sensor.state == "Unknown"
+    assert sensor.state == "No collections scheduled"
     assert sensor.extra_state_attributes["days"] is None
-    assert sensor.available is False
-    mock_warn.assert_called_once_with(
-        "[UKBinCollection] Data for bin type 'General Waste' is missing."
+    assert sensor.available is True
+    mock_debug.assert_called_once_with(
+        "[UKBinCollection] No upcoming date for bin type 'General Waste'."
     )
 
 
@@ -1485,13 +1518,26 @@ def test_raw_json_sensor_partial_data():
     assert state == '{"General Waste": null, "Recycling": "01/01/2025"}'
 
 
-def test_data_sensor_unavailable_if_unknown_state():
+def test_data_sensor_available_if_coordinator_succeeded_with_no_date():
     coordinator = MagicMock()
     coordinator.data = {}  # no bins
+    coordinator.last_update_success = True
     coordinator.name = "Test Coordinator"
 
     sensor = UKBinCollectionDataSensor(coordinator, "General Waste", "test_gw", {})
-    sensor.update_state()  # triggers "Unknown"
+    sensor.update_state()  # no date for this bin type, but the update succeeded
+    assert sensor.state == "No collections scheduled"
+    assert sensor.available is True
+
+
+def test_data_sensor_unavailable_if_coordinator_failed():
+    coordinator = MagicMock()
+    coordinator.data = {"Recycling": datetime(2025, 1, 1).date()}
+    coordinator.last_update_success = False
+    coordinator.name = "Test Coordinator"
+
+    sensor = UKBinCollectionDataSensor(coordinator, "Recycling", "test_recycling", {})
+    sensor.update_state()
     assert sensor.available is False
 
 
@@ -1994,14 +2040,15 @@ def test_raw_json_sensor_partial_data():
     assert state == expected
 
 
-def test_data_sensor_unavailable_if_unknown_state():
-    """Test that the sensor is marked unavailable when its state is 'Unknown'."""
+def test_data_sensor_available_if_no_date_but_coordinator_succeeded():
+    """A missing date for one bin type shouldn't make the sensor unavailable."""
     coordinator = MagicMock()
     coordinator.data = {}  # no bin data provided
+    coordinator.last_update_success = True
     coordinator.name = "Test Coordinator"
     sensor = UKBinCollectionDataSensor(coordinator, "General Waste", "uid_unavail", {})
-    sensor.update_state()  # This should set state to "Unknown"
-    assert sensor.available is False
+    sensor.update_state()
+    assert sensor.available is True
 
 
 def test_attribute_sensor_unavailable_if_coordinator_failed():
@@ -2020,7 +2067,7 @@ def test_attribute_sensor_unavailable_if_coordinator_failed():
 
 
 def test_data_sensor_state_unknown_and_extra_attributes():
-    """Test that if no bin data is provided the state is 'Unknown' and extra_state_attributes are set correctly."""
+    """Test that if no bin data is provided the state is a friendly 'no data' message and extra_state_attributes are set correctly."""
     # Create a coordinator with no data for the requested bin type.
     coordinator = MagicMock()
     coordinator.data = {}  # No data available.
@@ -2029,10 +2076,10 @@ def test_data_sensor_state_unknown_and_extra_attributes():
     sensor = UKBinCollectionDataSensor(
         coordinator, "Nonexistent Bin", "device_unknown", {}
     )
-    sensor.update_state()  # This should set the state to "Unknown"
+    sensor.update_state()
 
     # Verify the state fallback
-    assert sensor.state == "Unknown"
+    assert sensor.state == "No collections scheduled"
 
     # Verify extra_state_attributes returns default values:
     # The colour is determined by get_color()—with no mapping it returns "black"
