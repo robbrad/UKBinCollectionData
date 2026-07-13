@@ -1,3 +1,5 @@
+import re
+
 from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -33,7 +35,16 @@ class CouncilClass(AbstractGetBinDataClass):
                     "tr", {"class": "govuk-table__row"}
                 ):
                     week_text = week.get_text().strip().split("\n")
-                    date_str = week_text[0].split(" - ")[0].split("–")[0].strip()
+                    # The site publishes a date *range* for the collection
+                    # week (e.g. "Monday 6th July - Friday 10th July"), not
+                    # the resident's actual collection day. Take the last
+                    # (latest) date in the range rather than the first, so a
+                    # week isn't treated as "already passed" - and therefore
+                    # skipped ahead to the next occurrence - as soon as its
+                    # Monday goes by, even though the real collection day
+                    # (any day up to Friday) hasn't happened yet.
+                    date_parts = re.split(r"\s*[-–�]\s*", week_text[0])
+                    date_str = date_parts[-1].strip()
                     collection_date = datetime.strptime(
                         remove_ordinal_indicator_from_date_string(date_str),
                         "%A %d %B",
