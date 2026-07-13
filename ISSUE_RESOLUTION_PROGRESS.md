@@ -1,7 +1,88 @@
 # Issue Resolution Progress
 
-## Next Issue: continue nightly-suite triage (Halton/Mid & East Antrim/West Oxfordshire genuine
-Selenium timeouts, or #1560 Gateshead - now have a local Selenium grid)
+## Next Issue: individual investigation of the remaining Selenium timeouts (EastLindsey,
+Angus, Ashfield, Halton, BarkingDagenham, MidAndEastAntrim) - each needs its own
+selector/page-change archaeology, not done yet; or #1560 Gateshead - now have a local
+Selenium grid
+
+## Post-#2154-merge full-suite triage (2026-07-13)
+
+Reconfigured the local Docker Selenium grid for real concurrency (was capped at
+`SE_NODE_MAX_SESSIONS=1`, causing most of the earlier "66 failed" run to be pure
+session-contention noise) - recreated with `SE_NODE_MAX_SESSIONS=8`,
+`SE_NODE_OVERRIDE_MAX_SESSIONS=true`, `--shm-size 4g` (host has 32 CPU/32GB available
+to Docker). Ran the full 352-council suite at `-n 8` (matched to the grid's real
+capacity, not `-n logical`/32 which would just recreate the contention problem): **26
+failed, 326 passed in 5m21s** - a much cleaner signal than the previous run.
+
+**Found and fixed a self-inflicted regression** from the #2073 retry fix (shipped in
+0.168.0): `AberdeenshireCouncil`'s `parse_data()` ignores the page it's given and
+makes its own request to a working endpoint, but the generic framework fetch to an
+*unused* root URL ran first regardless - that URL happens to return a persistent 500
+on the council's own end, and the new retry logic correctly (if unfortunately) turned
+that into a hard failure, breaking every user's sensors (reported live as #2158).
+Fixed by overriding `get_data()` for that council to skip the pointless fetch - see
+[PR #2159](https://github.com/robbrad/UKBinCollectionData/pull/2159). Found 59 other
+councils with the same *shape* (page ignored, own request made, no `skip_get_url`)
+via AST scan, but cross-referenced against real failures and only Aberdeenshire is
+currently affected - the rest have `url` fields that happen to point somewhere
+healthy. Worth a slower systematic audit sometime, not urgent.
+
+Triage of the 26 failures:
+- **2 transient** (CheltenhamBoroughCouncil, BoltonCouncil) - DNS failures during the
+  run, hosts resolve fine on recheck.
+- **4 stale test fixtures** - NorthWestLeicestershire/OrkneyIslandsCouncil (missing
+  disambiguation params), SouthendOnSeaCityCouncil/TamworthBoroughCouncil (fixture
+  UPRN has no live collections). Also newly found: **IsleOfWightCouncil and
+  NewarkAndSherwoodDC's "Invalid postcode Status: 404"** turned out to be the same
+  root cause - both fixtures are missing the required `postcode` field entirely
+  (only `uprn` is set), so `check_postcode(None)` queries
+  `api.postcodes.io/postcodes/None` and legitimately 404s. Not a scraper bug; needs
+  a maintainer to supply a real postcode for the existing UPRN (couldn't resolve one
+  via free public UPRN-lookup APIs).
+- **3 fixed:**
+  - AberdeenshireCouncil (#2158) - see above, [PR #2159](https://github.com/robbrad/UKBinCollectionData/pull/2159)
+  - EastDevonDC - 403 was purely a missing User-Agent header (default
+    `python-requests/x.x` UA gets blocked; the project's own polite scraper UA
+    string works fine). [PR #2160](https://github.com/robbrad/UKBinCollectionData/pull/2160)
+  - GlasgowCityCouncil, KnowsleyMBCouncil, Hillingdon - re-ran clean on retest
+    (KnowsleyMBCouncil 3/3, GlasgowCityCouncil and Hillingdon both passed on a
+    sequential re-run with no worker contention) - these were flakes from the old
+    single-session grid, not real bugs. No code change needed.
+- **1 hardened, not fixed:** HorshamDistrictCouncil - switched to
+  `build_retry_session()` for consistency ([PR #2161](https://github.com/robbrad/UKBinCollectionData/pull/2161)),
+  but verified live it still fails after 5 retries - a sustained block/outage on
+  their end, not a transient blip. Live issue remains unfixed.
+- **16 confirmed genuinely broken, not fixed this pass:**
+  - **GedlingBoroughCouncil** - `api.gbcbincalendars.co.uk` is unstable right now:
+    3 separate live attempts gave 3 different failures (500, 500, ReadTimeout).
+    Not us; their backend.
+  - **DartfordBoroughCouncil** - the scraper's endpoint
+    (`windmz.dartford.gov.uk/ufs/...`) now 404s under a bare default IIS placeholder
+    page - the whole legacy "Universal Form Service" subsystem looks decommissioned.
+    The council's *own* current site still links to this dead endpoint, so there's
+    no alternative URL to fall back to yet. Needs the council to actually publish a
+    working replacement before this is fixable.
+  - **FyldeCouncil** - the page no longer has the `bartec-iframe` the scraper looks
+    for; the whole page has moved to a login-gated "personal waste account" system
+    with no public UPRN-based lookup visible anymore. Likely needs a much bigger
+    rework (if even feasible without real user credentials), not a quick selector
+    fix.
+  - **SwaleBoroughCouncil** - confirmed Cloudflare bot-check blocking page load
+    (the scraper's own diagnostic print already says so). Same class of problem as
+    Sunderland (#2140, fixed with undetected-chromedriver) / Haringey (#2113,
+    still unfixed - AWS WAF, not Cloudflare). Not attempted this pass.
+  - **EastLindseyDistrictCouncil, AngusCouncil, HaltonBoroughCouncil,
+    AshfieldDistrictCouncil, BarkingDagenham, MidAndEastAntrimBoroughCouncil** -
+    confirmed genuinely broken on a sequential re-run (not contention), each with a
+    generic Selenium `TimeoutException` (or `ElementNotInteractableException` /
+    `NoSuchFrameException`) - needs individual selector/page-change investigation
+    per council, not done this pass given time already spent.
+  - **HaringeyCouncil, NorthEastDerbyshireDistrictCouncil** - already deeply
+    investigated earlier this session (see "Investigated, not fixed" below);
+    unchanged.
+
+## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154) (merged) + [PR #2155](https://github.com/robbrad/UKBinCollectionData/pull/2155) (follow-up)
 
 ## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154) (merged) + [PR #2155](https://github.com/robbrad/UKBinCollectionData/pull/2155) (follow-up)
 
@@ -131,6 +212,9 @@ this is a maintainer decision, not made in this session.
 | 3d61f3d6 | get_bin_data.py (shared) | Use build_retry_session() for the default HTTP fetch |
 | d3af17bd | RochfordCouncil | Use end of collection-week range; harden mojibake separator parsing |
 | 16df19e8 | custom_components/sensor.py | Base bin sensor availability on coordinator.last_update_success |
+| 28627dc3 | AberdeenshireCouncil | Skip unused root-URL fetch that was breaking the whole scraper (#2158) |
+| 29a242d0 | EastDevonDC | Send scraper User-Agent header to get past a 403 block |
+| 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 
 ## Nightly integration suite triage
@@ -182,8 +266,8 @@ investigated), ForestOfDeanDistrictCouncil (Selenium, empty bins, not yet invest
 |-------|---------|------|-------|
 | #2153 | Lincoln | Bug (no repro) | Works fine with known-good test UPRN; asked reporter for error/UPRN/postcode |
 | #2127 | Lewes/Eastbourne/Seaford | Info only | Reporter already diagnosed as upstream DB outage, not a code bug |
-| #2118 | Flintshire | Enhancement | Add Brown/Garden waste entity |
-| #2079 | Slough | Bug (Selenium timeout) | Cookie banner element never appears in headless mode |
+| #2118 | Flintshire | Enhancement | Scraper already correctly extracts "Brown Bin" when present (verified live) - likely an opt-in subscription question, not a code gap. Also found an unrelated minor bug: a schedule-note row (`*New Round* - Tuesday AHP`) gets parsed as if it were a bin type. Asked reporter to confirm subscription status. |
+| #2079 | Slough | Bug (Selenium timeout) | Could not reproduce: exact production config succeeded 5/5 live runs, <1.1s each. The community-proposed fix's diagnosis (Cloudflare, zero window size) doesn't hold up - no Cloudflare signature in headers, and window-size is already hardcoded to 1920x1080 regardless of council code. Likely transient or reporter-environment-specific (e.g. cloud/CI IP). Commented asking reporter to confirm it's still happening. |
 | #1986 | Mid Suffolk | Enhancement | Expose additional future collection dates |
 | #1784 | Selenium Addon Removed | HA ecosystem | Not a code bug - HA's Selenium add-on repo was removed; needs a docs/wiki note about running `selenium/standalone-chrome` via Docker instead |
 | #1560 | Gateshead | Bug (wrong dates) | Now have a local Selenium grid available - worth revisiting next session |
