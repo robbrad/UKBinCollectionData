@@ -41,7 +41,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Additional wait for page to fully load after Cloudflare
             time.sleep(3)
-            
+
             # Try to accept cookies if the banner appears
             try:
                 accept_button = WebDriverWait(driver, 10).until(
@@ -84,7 +84,9 @@ class CouncilClass(AbstractGetBinDataClass):
             try:
                 # Check for Cloudflare Turnstile "Verify you are human" checkbox
                 turnstile_checkbox = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type='checkbox']"))
+                    EC.element_to_be_clickable(
+                        (By.CSS_SELECTOR, "input[type='checkbox']")
+                    )
                 )
                 turnstile_checkbox.click()
                 # Wait for verification to complete
@@ -97,11 +99,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for page to change after address selection and handle dynamic loading
             time.sleep(5)
-            
+
             # Wait for any content that indicates results are loaded
             try:
                 WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'collection') or contains(text(), 'Collection') or contains(text(), 'bin') or contains(text(), 'Bin') or contains(text(), 'refuse') or contains(text(), 'Refuse') or contains(text(), 'recycling') or contains(text(), 'Recycling')]"))
+                    EC.presence_of_element_located(
+                        (
+                            By.XPATH,
+                            "//*[contains(text(), 'collection') or contains(text(), 'Collection') or contains(text(), 'bin') or contains(text(), 'Bin') or contains(text(), 'refuse') or contains(text(), 'Refuse') or contains(text(), 'recycling') or contains(text(), 'Recycling')]",
+                        )
+                    )
                 )
             except:
                 # If no specific text found, just wait for page to stabilize
@@ -109,20 +116,16 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            # Save page source for debugging
-            with open("debug_page.html", "w", encoding="utf-8") as f:
-                f.write(driver.page_source)
-            
             # Find the bin collections table
             table = soup.find("table", class_="bincollections__table")
-            
+
             if not table:
-                raise ValueError("Could not find bin collections table in page source - saved debug_page.html")
-            
+                raise ValueError("Could not find bin collections table in page source")
+
             # Get current year for date parsing
             current_year = datetime.now().year
             current_month = None
-            
+
             # Parse the table rows
             rows = table.find_all("tr")
             for row in rows:
@@ -132,7 +135,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     # This is a month header
                     current_month = th.get_text(strip=True)
                     continue
-                
+
                 # Parse data rows
                 cells = row.find_all("td")
                 if len(cells) >= 3:
@@ -140,7 +143,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     day = cells[0].get_text(strip=True)
                     weekday = cells[1].get_text(strip=True)
                     bin_cell = cells[2]
-                    
+
                     # Extract all bin types from the cell (may contain multiple links)
                     bin_links = bin_cell.find_all("a")
                     bin_types = []
@@ -148,24 +151,24 @@ class CouncilClass(AbstractGetBinDataClass):
                         bin_type = link.get_text(strip=True)
                         if bin_type:
                             bin_types.append(bin_type)
-                    
+
                     # If no links found, try getting text directly
                     if not bin_types:
                         bin_text = bin_cell.get_text(strip=True)
                         if bin_text:
                             bin_types = [bin_text]
-                    
+
                     # Parse the date
                     if current_month and day:
                         try:
                             # Construct date string: "day month year"
                             date_str = f"{day} {current_month} {current_year}"
                             parsed_date = datetime.strptime(date_str, "%d %B %Y")
-                            
+
                             # If the parsed date is more than 6 months in the past, it's probably next year
                             if (datetime.now() - parsed_date).days > 180:
                                 parsed_date = parsed_date.replace(year=current_year + 1)
-                            
+
                             # Add each bin type as a separate entry
                             for bin_type in bin_types:
                                 dict_data = {
