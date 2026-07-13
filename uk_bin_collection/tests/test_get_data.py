@@ -83,7 +83,7 @@ def test_setup_logging_valid_config():
     assert logger.level == logging.DEBUG
 
 
-@mock.patch("requests.get", side_effect=mocked_requests_get)
+@mock.patch("requests.Session.get", side_effect=mocked_requests_get)
 def test_get_data(mock_get):
     page_data = agbdc.get_data("aurl")
     assert page_data.text == {"test_data": "test"}
@@ -92,7 +92,7 @@ def test_get_data(mock_get):
 @pytest.mark.parametrize(
     "url", ["HTTPError", "ConnectionError", "Timeout", "RequestException"]
 )
-@mock.patch("requests.get", side_effect=mocked_requests_get)
+@mock.patch("requests.Session.get", side_effect=mocked_requests_get)
 def test_get_data_error(mock_get, url):
     with pytest.raises(Exception) as exc_info:
         result = agbdc.get_data(url)

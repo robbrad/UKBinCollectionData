@@ -11,7 +11,10 @@ import os
 import requests
 import urllib3
 
-from uk_bin_collection.uk_bin_collection.common import update_input_json
+from uk_bin_collection.uk_bin_collection.common import (
+    build_retry_session,
+    update_input_json,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -121,7 +124,8 @@ class AbstractGetBinDataClass(ABC):
         urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
         try:
-            full_page = requests.get(url, headers=headers, verify=False, timeout=120)
+            session = build_retry_session(headers=headers)
+            full_page = session.get(url, verify=False, timeout=120)
             return full_page
         except requests.exceptions.RequestException as err:
             _LOGGER.error(f"Request Error: {err}")
