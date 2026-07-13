@@ -1,4 +1,24 @@
 =======
+## 0.170.0 (2026-07-13)
+
+### BREAKING CHANGE
+
+- the scraper now takes a real postcode and house
+number/name as separate parameters, matching every other council's
+convention, instead of the whole address crammed into the postcode
+field (a quirk of the old iframe's free-text search box that no longer
+applies now the platform has changed entirely). Updated the wiki_note
+and test fixture accordingly.
+
+### Fix
+
+- DartfordBoroughCouncil - send a User-Agent, fail loudly if no table
+- SwaleBoroughCouncil - update form field ids, not a Cloudflare block
+- MidAndEastAntrimBoroughCouncil - rewrite for WhiteSpace WRP platform
+- BarkingDagenham - dismiss overlays blocking the postcode field
+- AngusCouncil - update selectors for redesigned AchieveForms flow
+- EastLindseyDistrictCouncil - match form fields by stable suffix
+
 ## 0.169.1 (2026-07-13)
 
 ### Fix
