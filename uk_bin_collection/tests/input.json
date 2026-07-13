@@ -1643,12 +1643,12 @@
     },
     "MidAndEastAntrimBoroughCouncil": {
         "LAD24CD": "N09000008",
-        "postcode": "100 Galgorm Road",
+        "house_number": "29A",
+        "postcode": "BT42 1AA",
         "skip_get_url": true,
         "url": "https://www.midandeastantrim.gov.uk/resident/waste-recycling/collection-dates/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Mid and East Antrim",
-        "wiki_note": "Pass the house name/number plus the name of the street with the postcode parameter, wrapped in double quotes. Check the address on the website first. This version will only pick the first SHOW button returned by the search or if it is fully unique."
+        "wiki_note": "Pass the postcode and house name/number in their respective parameters. No Selenium needed."
     },
     "MidDevonCouncil": {
         "LAD24CD": "E07000042",
