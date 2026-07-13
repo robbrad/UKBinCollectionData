@@ -16,19 +16,19 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Extract upcoming bin collection dates and their types for the supplied postcode or UPRN.
-        
+
         Queries the council waste collection calendar for the current month and the next two months, parses the HTML response, and returns a dictionary with a "bins" list containing collection entries.
-        
+
         Parameters:
             page (str): Unused parameter retained for interface compatibility.
             postcode (str, optional): Provided via kwargs["postcode"]; the postcode to query.
             uprn (str|int, optional): Provided via kwargs["uprn"]; will be converted to a 12-character zero-padded string.
-        
+
         Returns:
             dict: A dictionary with key "bins" mapping to a list of dictionaries. Each entry contains:
                 - "type": the collection type as a string.
                 - "collectionDate": the collection date as a string formatted according to the module's `date_format`.
-        
+
         Raises:
             SystemError: If an HTTP request to the council calendar endpoint does not return status code 200.
         """
@@ -121,18 +121,23 @@ class CouncilClass(AbstractGetBinDataClass):
                         result.find("span", class_="day-no")["data-cal-date"],
                         "%Y-%m-%dT%H:%M:%S",
                     ).strftime(date_format)
-                    collection_type = result.select_one(
-                        ".rc-event-container span"
-                    ).text.strip()
 
-                    collection_types = collection_type.split(" and ")
+                    # A day can have more than one event container (e.g. a
+                    # garden waste subscriber whose garden collection falls
+                    # on the same day as recycling) - collect all of them,
+                    # not just the first.
+                    for event_container in event.select(".rc-event-container"):
+                        span = event_container.select_one("span")
+                        if not span:
+                            continue
 
-                    for type in collection_types:
+                        collection_types = span.text.strip().split(" and ")
 
-                        dict_data = {
-                            "type": type,
-                            "collectionDate": collectiondate,
-                        }
-                        data_bins["bins"].append(dict_data)
+                        for type in collection_types:
+                            dict_data = {
+                                "type": type,
+                                "collectionDate": collectiondate,
+                            }
+                            data_bins["bins"].append(dict_data)
 
         return data_bins

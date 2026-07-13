@@ -1663,7 +1663,7 @@
         "house_number": "91",
         "postcode": "IP23 8EF",
         "skip_get_url": true,
-        "url": "https://www.midsuffolk.gov.uk",
+        "url": "https://www.midsuffolk.gov.uk/check-your-collection-day",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Mid Suffolk",
         "wiki_note": "Pass the house number and postcode in their respective parameters. This parser requires a Selenium webdriver."
