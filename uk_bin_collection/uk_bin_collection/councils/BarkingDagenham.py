@@ -45,10 +45,34 @@ class CouncilClass(AbstractGetBinDataClass):
                 lambda d: d.execute_script("return document.readyState") == "complete"
             )
 
-            # Close popup if it exists
-            driver.switch_to.active_element.send_keys(Keys.ESCAPE)
-
             wait = WebDriverWait(driver, 10)
+
+            # Dismiss the promotional overlay if it appears - it sits on top
+            # of the page and intercepts clicks/typing on everything below
+            # it, including the cookie banner's own buttons.
+            try:
+                dismiss_btn = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable(
+                        (By.CSS_SELECTOR, ".prefix-overlay-action-dismiss")
+                    )
+                )
+                dismiss_btn.click()
+            except TimeoutException:
+                pass
+
+            # Dismiss the EU cookie compliance banner if it appears.
+            try:
+                agree_btn = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable(
+                        (
+                            By.CSS_SELECTOR,
+                            ".agree-button.eu-cookie-compliance-secondary-button",
+                        )
+                    )
+                )
+                agree_btn.click()
+            except TimeoutException:
+                pass
 
             # Enter postcode
             print("Looking for postcode input...")
