@@ -53,17 +53,14 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(council_url)
 
             # Wait for the postcode field to appear then populate it
-            try:
-                inputElement_postcode = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.ID, "q499089_q1"))
-                )
-                inputElement_postcode.send_keys(user_postcode)
-            except Exception:
-                print("Page failed to load. Probably due to Cloudflare robot check!")
+            inputElement_postcode = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "q535679_q1"))
+            )
+            inputElement_postcode.send_keys(user_postcode)
 
             # Click search button
             findAddress = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "form_email_499078_submit"))
+                EC.presence_of_element_located((By.ID, "form_email_535662_submit"))
             )
             driver.execute_script("arguments[0].click();", findAddress)
 
@@ -72,7 +69,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.element_to_be_clickable(
                     (
                         By.XPATH,
-                        "//select[@name='q499093:q1']//option[contains(., '"
+                        "//select[@name='q535685:q1']//option[contains(., '"
                         + user_paon
                         + "')]",
                     )
@@ -81,7 +78,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Click search button
             getBins = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "form_email_499078_submit"))
+                EC.presence_of_element_located((By.ID, "form_email_535662_submit"))
             )
             driver.execute_script("arguments[0].click();", getBins)
 

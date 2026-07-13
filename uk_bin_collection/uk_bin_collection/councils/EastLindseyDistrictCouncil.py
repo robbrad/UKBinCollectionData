@@ -31,10 +31,14 @@ class CouncilClass(AbstractGetBinDataClass):
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get("https://www.e-lindsey.gov.uk/mywastecollections")
 
+            # The form's element ids are prefixed with the service year (e.g.
+            # WASTECOLLECTIONDAYS202526), which the council rolls forward
+            # each year - match on the stable suffix instead of hardcoding
+            # a year that will go stale.
             # Wait for the postcode field to appear then populate it
             inputElement_postcode = WebDriverWait(driver, 30).until(
                 EC.presence_of_element_located(
-                    (By.ID, "WASTECOLLECTIONDAYS202526_LOOKUP_ADDRESSLOOKUPPOSTCODE")
+                    (By.CSS_SELECTOR, "[id$='_LOOKUP_ADDRESSLOOKUPPOSTCODE']")
                 )
             )
             inputElement_postcode.send_keys(user_postcode)
@@ -42,7 +46,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Click search button
             findAddress = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "WASTECOLLECTIONDAYS202526_LOOKUP_ADDRESSLOOKUPSEARCH")
+                    (By.CSS_SELECTOR, "[id$='_LOOKUP_ADDRESSLOOKUPSEARCH']")
                 )
             )
             findAddress.click()
@@ -52,7 +56,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.element_to_be_clickable(
                     (
                         By.XPATH,
-                        "//select[@id='WASTECOLLECTIONDAYS202526_LOOKUP_ADDRESSLOOKUPADDRESS']//option[contains(., '"
+                        "//select[contains(@id, '_LOOKUP_ADDRESSLOOKUPADDRESS')]//option[contains(., '"
                         + user_paon
                         + "')]",
                     )
@@ -62,7 +66,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the submit button to appear, then click it to get the collection dates
             submit = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.ID, "WASTECOLLECTIONDAYS202526_LOOKUP_FIELD2_NEXT")
+                    (By.CSS_SELECTOR, "[id$='_LOOKUP_FIELD2_NEXT']")
                 )
             )
             submit.click()
