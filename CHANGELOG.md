@@ -1,4 +1,11 @@
 =======
+## 0.169.1 (2026-07-13)
+
+### Fix
+
+- EastDevonDC - identify scraper with a User-Agent header
+- #2158 AberdeenshireCouncil - stop fetching the unused root URL
+
 ## 0.169.0 (2026-07-13)
 
 ### BREAKING CHANGE
