@@ -175,8 +175,27 @@ def _assert_fixture_request_contract(mode: str) -> dict[str, int | bool]:
 
 
 def _assert_no_selenium_sessions() -> None:
-    sessions = _wait_for_url("http://127.0.0.1:4444/sessions", 15)
-    if not isinstance(sessions, dict) or sessions.get("value") != []:
+    # Selenium 4.45 removed the legacy GET /sessions route.  The supported
+    # status payload exposes every node slot and its current session, which is
+    # also a stronger cleanup assertion for a bounded one-node test grid.
+    status = _wait_for_url("http://127.0.0.1:4444/status", 15)
+    value = status.get("value") if isinstance(status, dict) else None
+    nodes = value.get("nodes") if isinstance(value, dict) else None
+    if not isinstance(nodes, list) or not value.get("ready"):
+        raise RuntimeError("Selenium returned an invalid status payload")
+
+    active_sessions = 0
+    for node in nodes:
+        slots = node.get("slots") if isinstance(node, dict) else None
+        if not isinstance(slots, list):
+            raise RuntimeError("Selenium returned an invalid node-slot payload")
+        active_sessions += sum(
+            1
+            for slot in slots
+            if not isinstance(slot, dict) or slot.get("session") is not None
+        )
+
+    if active_sessions:
         raise RuntimeError("A Selenium session remained active after the HA lookup")
 
 
