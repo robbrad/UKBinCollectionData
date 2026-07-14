@@ -1,4 +1,11 @@
 =======
+## 0.170.3 (2026-07-14)
+
+### Fix
+
+- **councils**: rewrite Slough and Sunderland as pure HTTP, no browser
+- **councils**: rewrite HaringeyCouncil for the new JSON API (#2113)
+
 ## 0.170.2 (2026-07-14)
 
 ### Fix
