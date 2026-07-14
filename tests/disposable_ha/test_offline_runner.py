@@ -2,9 +2,22 @@
 
 from __future__ import annotations
 
+import importlib.util
+from pathlib import Path
+
 import pytest
 
-from tests.disposable_ha import offline_runner
+
+# Some Home Assistant dependencies install an unrelated top-level ``tests``
+# package.  Load the sibling runner directly so this isolated harness test does
+# not depend on site-packages ordering.
+_RUNNER_PATH = Path(__file__).with_name("offline_runner.py")
+_RUNNER_SPEC = importlib.util.spec_from_file_location(
+    "ukbcd_disposable_offline_runner", _RUNNER_PATH
+)
+assert _RUNNER_SPEC is not None and _RUNNER_SPEC.loader is not None
+offline_runner = importlib.util.module_from_spec(_RUNNER_SPEC)
+_RUNNER_SPEC.loader.exec_module(offline_runner)
 
 
 def test_session_cleanup_accepts_empty_selenium_status_slots(monkeypatch) -> None:
