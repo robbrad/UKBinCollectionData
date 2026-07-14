@@ -1,10 +1,6 @@
-from bs4 import BeautifulSoup
 import requests
-import logging
-import re
-from typing import Dict, List, Any, Optional
 
-from uk_bin_collection.uk_bin_collection.common import check_uprn
+from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
@@ -15,53 +11,95 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
-        data: Dict[str, List[Dict[str, str]]] = {"bins": []}
+    def parse_data(self, page: str, **kwargs) -> dict:
 
-        uprn: Optional[str] = kwargs.get("uprn")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        user_uprn = kwargs.get("uprn")
+        check_postcode(user_postcode)
+        bindata = {"bins": []}
 
-        if uprn is None:
-            raise ValueError("UPRN is required and must be a non-empty string.")
+        COUNCIL_ID = "45"
+        SEARCH_URL = "https://wastecollections.haringey.gov.uk/api/getPropertySearch"
+        DAYS_URL = "https://wastecollections.haringey.gov.uk/api/getCollectionDays"
 
-        check_uprn(uprn)  # Assuming check_uprn() raises an exception if UPRN is invalid
+        headers = {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0",
+        }
 
-        try:
-            response = requests.post(
-                f"https://wastecollections.haringey.gov.uk/property/{uprn}",
-                timeout=10,  # Set a timeout for the request
+        s = requests.session()
+        r = s.post(
+            SEARCH_URL,
+            json={"councilId": COUNCIL_ID, "searchQuery": user_postcode},
+            headers=headers,
+        )
+        r.raise_for_status()
+        results = r.json().get("data", [])
+        if not results:
+            raise ValueError("No addresses found for this postcode")
+
+        if user_uprn:
+            check_uprn(user_uprn)
+            match = next((a for a in results if a.get("uprn") == user_uprn), None)
+            if not match:
+                raise ValueError(
+                    f"Could not match UPRN '{user_uprn}' in address results"
+                )
+        elif user_paon:
+            check_paon(user_paon)
+            paon_norm = str(user_paon).strip().upper()
+            match = next(
+                (a for a in results if a["name"].upper().startswith(paon_norm + " ")),
+                None,
             )
-            response.raise_for_status()  # This will raise an exception for HTTP errors
-        except requests.RequestException as e:
-            logging.error(f"Network or HTTP error occurred: {e}")
-            raise ConnectionError("Failed to retrieve data.") from e
+            if not match:
+                raise ValueError(
+                    f"Could not match house number '{user_paon}' in address results"
+                )
+        elif len(results) == 1:
+            match = results[0]
+        else:
+            raise ValueError(
+                "Multiple addresses found for this postcode; provide a UPRN or house number to disambiguate"
+            )
 
-        try:
-            soup = BeautifulSoup(response.text, features="html.parser")
-            soup.prettify()
+        r = s.post(
+            DAYS_URL,
+            json={
+                "pointId": match["id"],
+                "pointType": "PointAddress",
+                "councilId": COUNCIL_ID,
+            },
+            headers=headers,
+        )
+        r.raise_for_status()
+        services = r.json().get("activeServices", [])
 
-            sections = soup.find_all("div", {"class": "property-service-wrapper"})
-
-            date_regex = re.compile(r"\d{2}/\d{2}/\d{4}")
-            for section in sections:
-                service_name_element = section.find("h3", {"class": "service-name"})
-                next_service_element = section.find("tbody").find(
-                    "td", {"class": "next-service"}
+        today = datetime.now().date()
+        for service in services:
+            bin_type = service.get("taskTypeName")
+            for schedule in service.get("serviceSchedules", []):
+                # Each service returns its last completed collection alongside
+                # the next one - skip completed entries and anything in the past.
+                if schedule.get("coreStateName") == "Complete":
+                    continue
+                date_str = schedule.get("currentScheduledDate")
+                if not date_str:
+                    continue
+                collection_date = datetime.fromisoformat(date_str).date()
+                if collection_date < today:
+                    continue
+                bindata["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
                 )
 
-                if service_name_element and next_service_element:
-                    service = service_name_element.text
-                    next_collection = next_service_element.find(string=date_regex)
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
-                    if next_collection:
-                        dict_data = {
-                            "type": service.replace("Collect ", "")
-                            .replace("Paid ", "")
-                            .strip(),
-                            "collectionDate": next_collection.strip(),
-                        }
-                        data["bins"].append(dict_data)
-        except Exception as e:
-            logging.error(f"Error parsing data: {e}")
-            raise ValueError("Error processing the HTML data.") from e
-
-        return data
+        return bindata

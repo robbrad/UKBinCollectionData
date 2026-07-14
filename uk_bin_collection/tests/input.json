@@ -1226,11 +1226,12 @@
     },
     "HaringeyCouncil": {
         "LAD24CD": "E09000014",
+        "postcode": "N22 6ET",
         "skip_get_url": true,
         "uprn": "100021203052",
         "url": "https://wastecollections.haringey.gov.uk/property",
         "wiki_name": "Haringey",
-        "wiki_note": "Pass the UPRN, which can be found at `https://wastecollections.haringey.gov.uk/property/{uprn}`."
+        "wiki_note": "Pass the postcode, and either the UPRN or the house number to disambiguate. Find your UPRN by searching your postcode at `https://wastecollections.haringey.gov.uk`."
     },
     "HarlowCouncil": {
         "LAD24CD": "E07000073",
@@ -2309,12 +2310,12 @@
     },
     "SloughBoroughCouncil": {
         "LAD24CD": "E06000039",
+        "house_number": "149",
         "postcode": "SL2 2EW",
         "skip_get_url": true,
-        "url": "https://www.slough.gov.uk/bin-collections",
-        "web_driver": "http://selenium:4444",
+        "url": "https://waste.slough.gov.uk/PublicDashboard",
         "wiki_name": "Slough",
-        "wiki_note": "Pass the UPRN and postcode in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the postcode, and either the UPRN or the house number to disambiguate."
     },
     "SolihullCouncil": {
         "LAD24CD": "E08000029",
@@ -2578,7 +2579,7 @@
         "skip_get_url": true,
         "url": "https://www.sunderland.gov.uk/article/12142/Find-your-bin-collection-day",
         "wiki_name": "Sunderland",
-        "wiki_note": "Provide your house number and postcode. The council's site is behind Cloudflare bot management, so this parser needs a real local, non-headless Chrome (via undetected-chromedriver) rather than a remote Selenium grid - it will not work with the usual web_driver/headless config."
+        "wiki_note": "Provide your house number and postcode."
     },
     "SurreyHeathBoroughCouncil": {
         "LAD24CD": "E07000214",
