@@ -71,10 +71,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     next_collection = dd.get_text(strip=True)
                     try:
-                        if "collected today" in next_collection.lower() or "could not be collected today" in next_collection.lower():
+                        if (
+                            "collected today" in next_collection.lower()
+                            or "could not be collected today" in next_collection.lower()
+                        ):
                             parsed_date = datetime.now()
                         else:
-                            cleaned = remove_ordinal_indicator_from_date_string(next_collection)
+                            cleaned = remove_ordinal_indicator_from_date_string(
+                                next_collection
+                            )
                             try:
                                 parsed_date = datetime.strptime(cleaned, "%A, %d %B %Y")
                             except ValueError:
@@ -87,7 +92,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             }
                         )
                     except ValueError as e:
-                        print(f"Error parsing date for {bin_type}: {e}")
+                        print(f"Collection date parsing failed ({type(e).__name__})")
                     break
 
         return data

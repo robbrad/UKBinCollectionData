@@ -937,7 +937,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 output = bin_data[filename]
             else:
-                print(bin_day_response.content)
+                print("Bin data download link was not found.")
                 Exception("Bin data Download link not found.")
 
         else:

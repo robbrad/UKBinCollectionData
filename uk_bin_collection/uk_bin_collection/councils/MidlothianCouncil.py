@@ -1,9 +1,8 @@
+from __future__ import annotations
+
 import time
 from datetime import datetime
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -34,6 +33,16 @@ class CouncilClass(AbstractGetBinDataClass):
     }
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+
         house_identifier = (kwargs.get("paon") or kwargs.get("number") or "").strip()
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
@@ -51,11 +60,13 @@ class CouncilClass(AbstractGetBinDataClass):
         # undetected_chromedriver in non-headless mode via the Xvfb display
         # available on the VPS.
         import os
+
         driver = None
         try:
             if os.environ.get("DISPLAY") and web_driver is None:
                 try:
                     import undetected_chromedriver as uc
+
                     uc_opts = uc.ChromeOptions()
                     uc_opts.add_argument("--no-sandbox")
                     uc_opts.add_argument("--disable-dev-shm-usage")
@@ -126,9 +137,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     }
                 )
 
-            bins.sort(
-                key=lambda x: datetime.strptime(x["collectionDate"], date_format)
-            )
+            bins.sort(key=lambda x: datetime.strptime(x["collectionDate"], date_format))
             return {"bins": bins}
 
         finally:

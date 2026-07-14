@@ -32,10 +32,10 @@ class CouncilClass(AbstractGetBinDataClass):
     def encode_body(self, newport_input: NewportInput):
         """
         Encrypt a NewportInput dataclass using AES-CBC and encode the resulting ciphertext as a hex string.
-        
+
         Parameters:
             newport_input (NewportInput): Dataclass instance to serialize to JSON and encrypt. The instance is converted to a dict via `asdict()` before serialization.
-        
+
         Returns:
             str: Hex-encoded AES-CBC ciphertext of the JSON-serialized input. Encryption uses the module-level `key_hex` and `iv_hex` values and applies PKCS#7 padding.
         """
@@ -56,13 +56,12 @@ class CouncilClass(AbstractGetBinDataClass):
         return ciphertext.hex()
 
     def decode_response(self, hex_input: str):
-
         """
         Decrypts a hex-encoded AES-CBC ciphertext and returns the parsed JSON payload.
-        
+
         Parameters:
             hex_input (str): Hex-encoded AES-CBC ciphertext to decrypt.
-        
+
         Returns:
             The Python object produced by JSON decoding the decrypted UTF-8 plaintext (typically a dict).
         """
@@ -84,13 +83,13 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, _: str, **kwargs) -> dict:
         """
         Fetch collection-day information for a given UPRN and return it as a normalized bins dictionary.
-        
+
         Parameters:
             _: str
                 Unused placeholder parameter kept for signature compatibility.
             kwargs:
                 uprn (str): Unique Property Reference Number to query; this value is validated before use.
-        
+
         Returns:
             dict: A dictionary with a "bins" key containing a list of mappings:
                 - "type": the bin type string from the service response.
@@ -116,10 +115,12 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
             output = response.text
-            
+
             # Check if API returned HTML error page instead of encrypted data
-            if output.strip().startswith('<'):
-                raise ValueError(f"API returned HTML error page instead of encrypted data. Status: {response.status_code}")
+            if output.strip().startswith("<"):
+                raise ValueError(
+                    f"API returned HTML error page instead of encrypted data. Status: {response.status_code}"
+                )
 
             decoded_bins = self.decode_response(output)
             data: dict[str, list[dict[str, str]]] = {}
@@ -135,7 +136,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         return data

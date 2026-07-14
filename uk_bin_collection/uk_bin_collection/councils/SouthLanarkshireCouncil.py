@@ -9,6 +9,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 logger = logging.getLogger(__name__)
 
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -76,7 +77,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     td_cell = row.find("td")
 
                     if th_cell is None or td_cell is None:
-                        logger.warning("Skipping schedule row with missing th or td cell")
+                        logger.warning(
+                            "Skipping schedule row with missing th or td cell"
+                        )
                         continue
 
                     schedule_type = th_cell.get_text().strip()
@@ -91,8 +94,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     if " " not in td_text:
                         logger.warning(
-                            "Skipping schedule cadence parsing for unexpected schedule text: %s",
-                            td_text,
+                            "Skipping schedule cadence parsing for unexpected schedule text"
                         )
                         schedule_cadence = ""
                     else:

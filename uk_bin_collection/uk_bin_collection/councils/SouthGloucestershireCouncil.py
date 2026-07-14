@@ -7,9 +7,9 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 def format_bin_data(key: str, date: datetime):
     formatted_date = date.strftime(date_format)
     servicename = key.get("hso_servicename")
-    print(servicename)
+    print("Processing collection service")
     if re.match(r"^Recycl", servicename) is not None:
-        return [ ("Recycling", formatted_date) ]
+        return [("Recycling", formatted_date)]
     elif re.match(r"^Refuse", servicename) is not None:
         return [("General Waste (Black Bin)", formatted_date)]
     elif re.match(r"^Garden", servicename) is not None:
@@ -24,16 +24,16 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Parse waste collection data for the given UPRN and return upcoming bin collections within the next eight weeks.
-        
+
         Parameters:
             page (str): Raw page content (unused by this implementation; included for signature compatibility).
             uprn (str, keyword): Unique Property Reference Number used to query the South Gloucestershire collection API.
-        
+
         Returns:
             dict: A mapping with a "bins" key containing a list of collection entries. Each entry is a dict with:
                 - "type" (str): Human-friendly bin type (e.g., "Recycling", "General Waste (Black Bin)").
                 - "collectionDate" (str): Formatted collection date string.
-        
+
         Raises:
             ValueError: If the API returns no collection data for the provided UPRN.
         """
@@ -53,15 +53,15 @@ class CouncilClass(AbstractGetBinDataClass):
         if not json_response:
             raise ValueError("No collection data found for provided UPRN.")
 
-        collection_data = json_response.get('value')
+        collection_data = json_response.get("value")
 
         today = datetime.today()
         eight_weeks = datetime.today() + timedelta(days=8 * 7)
         data = {"bins": []}
         collection_tuple = []
         for collection in collection_data:
-            print(collection)
-            item = collection.get('hso_nextcollection')
+            print("Processing collection entry")
+            item = collection.get("hso_nextcollection")
 
             if not item:
                 continue

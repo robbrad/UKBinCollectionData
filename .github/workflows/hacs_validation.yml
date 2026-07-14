@@ -11,15 +11,15 @@ jobs:
     name: HassFest Validation
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v7"
-      - uses: home-assistant/actions/hassfest@master
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - uses: home-assistant/actions/hassfest@f4ca6f671bd429efb108c0f2fa0ae8af0215986c # master
   
   hacs:
     name: HACS Action Validation
     runs-on: "ubuntu-latest"
     steps:
       - name: HACS Action
-        uses: "hacs/action@main"
+        uses: hacs/action@1ebf01c408f29afcb6406bd431bc98fd8cbb15aa # main
         with:
           category: "integration"
 

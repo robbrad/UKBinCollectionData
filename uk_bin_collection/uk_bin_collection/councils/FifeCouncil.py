@@ -1,11 +1,9 @@
+from __future__ import annotations
+
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -21,22 +19,33 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Parse bin collection data for a given postcode and house identifier by driving the council bin-calendar web UI and returning structured collection entries.
-        
+
         Parameters:
             page (str): Unused; kept for API compatibility.
             postcode (str, in kwargs): The postcode to search for.
             paon (str, in kwargs): The property identifier (house number or name) used to pick the best address option from the dropdown.
             web_driver (str, optional, in kwargs): WebDriver backend identifier passed to the webdriver factory.
             headless (bool, optional, in kwargs): Whether to run the browser in headless mode.
-        
+
         Returns:
             dict: A dictionary with a "bins" key containing a list of entries. Each entry is a dict with:
                 - "type": the collection colour/name extracted from the image alt text (or None if missing).
                 - "collectionDate": the collection date string formatted according to the module's date_format.
-        
+
         Raises:
             ValueError: If the provided paon cannot be matched to any dropdown address or if the collections table cannot be found.
         """
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             # Get and check UPRN
@@ -92,9 +101,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 # Prefer exact contains on visible text; fallback to casefold contains
                 """
                 Selects the first dropdown option whose visible text contains the normalized PAON.
-                
+
                 Performs a case-insensitive containment check using the precomputed `paon_norm` against each option's visible text and returns the first match.
-                
+
                 Returns:
                     `WebElement` of the first matching option if found, `None` otherwise.
                 """
@@ -159,7 +168,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

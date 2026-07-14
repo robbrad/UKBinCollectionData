@@ -1,12 +1,10 @@
+from __future__ import annotations
+
 import re
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -28,13 +26,22 @@ def _parse_date(text):
             return parsed
         except ValueError:
             continue
-    raise ValueError(
-        f"Could not parse date '{text}' with any known format"
-    )
+    raise ValueError(f"Could not parse date '{text}' with any known format")
 
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -89,7 +96,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
-            collections_div = soup.find("h2", string=re.compile(r"Your next collections", re.I))
+            collections_div = soup.find(
+                "h2", string=re.compile(r"Your next collections", re.I)
+            )
             if not collections_div:
                 raise ValueError("Collection results not found on page")
 
@@ -100,7 +109,9 @@ class CouncilClass(AbstractGetBinDataClass):
             cards = parent.find_all("h3")
             for card_heading in cards:
                 bin_type = card_heading.get_text(strip=True)
-                card = card_heading.find_parent("div", class_=re.compile(r"ant-col|col"))
+                card = card_heading.find_parent(
+                    "div", class_=re.compile(r"ant-col|col")
+                )
                 if not card:
                     card = card_heading.find_parent("div")
 
@@ -108,7 +119,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 date_matches = re.findall(
                     r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+\d{1,2}\s+\w+",
-                    card_text, re.I
+                    card_text,
+                    re.I,
                 )
 
                 seen = set()
@@ -121,15 +133,15 @@ class CouncilClass(AbstractGetBinDataClass):
                     key = (bin_type, cd)
                     if key not in seen:
                         seen.add(key)
-                        data["bins"].append({
-                            "type": bin_type,
-                            "collectionDate": cd,
-                        })
+                        data["bins"].append(
+                            {
+                                "type": bin_type,
+                                "collectionDate": cd,
+                            }
+                        )
 
             if not data["bins"]:
-                raise ValueError(
-                    "No bin collection data found for this address"
-                )
+                raise ValueError("No bin collection data found for this address")
 
             data["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
@@ -138,7 +150,7 @@ class CouncilClass(AbstractGetBinDataClass):
             return data
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:

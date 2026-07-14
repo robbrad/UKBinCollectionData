@@ -9,7 +9,6 @@ from uk_bin_collection.uk_bin_collection.common import check_uprn, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 import urllib3
 
-
 # Suppress only the single warning from urllib3 needed.
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -159,7 +158,10 @@ class CouncilClass(AbstractGetBinDataClass):
                     dt_local = dt_utc.astimezone(None)
                     collection_date = dt_local.date()
                 except (IndexError, KeyError, ValueError) as e:
-                    _LOGGER.warning(f"Failed to parse date for {waste_type}: {e}")
+                    _LOGGER.warning(
+                        "Failed to parse a collection date (%s).",
+                        type(e).__name__,
+                    )
                     continue
 
                 # Append to bin_schedule
@@ -179,10 +181,10 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         except requests.RequestException as e:
-            _LOGGER.error(f"Network error occurred: {e}")
+            _LOGGER.error(f"Network error occurred: {type(e).__name__}")
         except json.JSONDecodeError as e:
-            _LOGGER.error(f"JSON decoding failed: {e}")
+            _LOGGER.error(f"JSON decoding failed: {type(e).__name__}")
         except Exception as e:
-            _LOGGER.error(f"An unexpected error occurred: {e}")
+            _LOGGER.error(f"An unexpected error occurred: {type(e).__name__}")
 
         return bindata

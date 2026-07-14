@@ -1,22 +1,148 @@
 import argparse
+import ast
 import importlib
-import os
-import sys
 import logging
+import os
+import re
+import sys
+from functools import lru_cache
+from importlib import util as import_util
+from pathlib import Path
+
 from uk_bin_collection.uk_bin_collection.get_bin_data import (
     setup_logging,
     LOGGING_CONFIG,
 )
+from uk_bin_collection.uk_bin_collection.exceptions import (
+    InvalidCouncilModuleError,
+    MissingDependencyError,
+)
+from uk_bin_collection.uk_bin_collection.dependency_validation import (
+    validate_websocket_client,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
+_COUNCIL_NAME_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+_COUNCILS_PACKAGE = "uk_bin_collection.uk_bin_collection.councils"
+_COUNCILS_DIRECTORY = Path(__file__).resolve().parent / "councils"
 
-def import_council_module(module_name, src_path="councils"):
-    """Dynamically import the council processor module."""
-    module_path = os.path.realpath(os.path.join(os.path.dirname(__file__), src_path))
-    if module_path not in sys.path:
-        sys.path.append(module_path)
-    return importlib.import_module(module_name)
+
+def _normalised_path(path: os.PathLike[str] | str) -> str:
+    """Return a real, case-normalised path for import-origin comparisons."""
+    return os.path.normcase(os.path.realpath(os.fspath(path)))
+
+
+def _council_file(module_name: str) -> Path:
+    """Return the trusted source location for a registered council."""
+    return _COUNCILS_DIRECTORY / f"{module_name}.py"
+
+
+@lru_cache(maxsize=None)
+def council_requires_selenium(module_name: str) -> bool:
+    """Return whether a trusted council imports Selenium at any runtime scope.
+
+    Older adapters use both eager and function-local imports. Inspecting the full
+    trusted source before import lets the loader validate Selenium's
+    collision-prone ``websocket`` dependency before either form can execute.
+    """
+    council_file = _council_file(module_name)
+    try:
+        syntax_tree = ast.parse(
+            council_file.read_text(encoding="utf-8"), filename=str(council_file)
+        )
+    except (OSError, SyntaxError, UnicodeError) as exc:
+        raise InvalidCouncilModuleError(
+            f"Council module {module_name!r} cannot be inspected safely."
+        ) from exc
+
+    for node in ast.walk(syntax_tree):
+        if isinstance(node, ast.Import) and any(
+            imported.name == "selenium" or imported.name.startswith("selenium.")
+            for imported in node.names
+        ):
+            return True
+        if (
+            isinstance(node, ast.ImportFrom)
+            and node.module
+            and (node.module == "selenium" or node.module.startswith("selenium."))
+        ):
+            return True
+    return False
+
+
+@lru_cache(maxsize=1)
+def registered_council_modules() -> frozenset[str]:
+    """Return council module names shipped in the installed core package."""
+    return frozenset(
+        council_file.stem
+        for council_file in _COUNCILS_DIRECTORY.iterdir()
+        if council_file.is_file()
+        and council_file.suffix == ".py"
+        and _COUNCIL_NAME_PATTERN.fullmatch(council_file.stem)
+    )
+
+
+def import_council_module(module_name: str, src_path: str = "councils"):
+    """Import an allowlisted council by its fully qualified package name."""
+    if src_path != "councils":
+        raise InvalidCouncilModuleError(
+            "Custom council import paths are not supported."
+        )
+    if not isinstance(module_name, str) or not _COUNCIL_NAME_PATTERN.fullmatch(
+        module_name
+    ):
+        raise InvalidCouncilModuleError(
+            "Council names must be simple Python identifiers."
+        )
+
+    if module_name not in registered_council_modules():
+        raise InvalidCouncilModuleError(
+            f"Council module {module_name!r} is not present in the installed registry."
+        )
+
+    if council_requires_selenium(module_name):
+        try:
+            selenium_spec = import_util.find_spec("selenium")
+        except (AttributeError, ImportError, ValueError) as exc:
+            raise MissingDependencyError(
+                "Python cannot safely resolve the optional 'selenium' dependency."
+            ) from exc
+        if selenium_spec is None:
+            raise MissingDependencyError(
+                "The optional dependency 'selenium' is required for this council."
+            )
+        validate_websocket_client()
+
+    qualified_name = f"{_COUNCILS_PACKAGE}.{module_name}"
+    expected_file = _normalised_path(_council_file(module_name))
+    try:
+        specification = import_util.find_spec(qualified_name)
+    except (AttributeError, ImportError, ValueError) as exc:
+        raise InvalidCouncilModuleError(
+            f"Council module {module_name!r} cannot be resolved safely."
+        ) from exc
+
+    if (
+        specification is None
+        or specification.origin is None
+        or _normalised_path(specification.origin) != expected_file
+    ):
+        raise InvalidCouncilModuleError(
+            f"Council module {module_name!r} resolves outside the installed registry."
+        )
+
+    council_module = importlib.import_module(qualified_name)
+    module_file = getattr(council_module, "__file__", None)
+    if module_file is None or _normalised_path(module_file) != expected_file:
+        raise InvalidCouncilModuleError(
+            f"Council module {module_name!r} loaded from an unexpected location."
+        )
+    if not hasattr(council_module, "CouncilClass"):
+        raise InvalidCouncilModuleError(
+            f"Council module {module_name!r} does not expose CouncilClass."
+        )
+    return council_module
 
 
 class UKBinCollectionApp:
@@ -56,6 +182,9 @@ class UKBinCollectionApp:
             "-u", "--uprn", type=str, help="UPRN to parse", required=False
         )
         self.parser.add_argument(
+            "-us", "--usrn", type=str, help="USRN to parse", required=False
+        )
+        self.parser.add_argument(
             "-w",
             "--web_driver",
             type=str,
@@ -68,6 +197,14 @@ class UKBinCollectionApp:
             dest="artifact_dir",
             type=str,
             help="Directory for council-specific debug artifacts when a live scrape fails",
+            required=False,
+        )
+        self.parser.add_argument(
+            "--user-agent",
+            "--user_agent",
+            dest="user_agent",
+            type=str,
+            help="Optional HTTP/browser user agent for council requests",
             required=False,
         )
         self.parser.add_argument(
@@ -112,9 +249,11 @@ class UKBinCollectionApp:
             postcode=self.parsed_args.postcode,
             paon=self.parsed_args.number,
             uprn=self.parsed_args.uprn,
+            usrn=self.parsed_args.usrn,
             skip_get_url=self.parsed_args.skip_get_url,
             web_driver=self.parsed_args.web_driver,
             artifact_dir=self.parsed_args.artifact_dir,
+            user_agent=self.parsed_args.user_agent,
             headless=self.parsed_args.headless,
             local_browser=self.parsed_args.local_browser,
             dev_mode=self.parsed_args.dev_mode,

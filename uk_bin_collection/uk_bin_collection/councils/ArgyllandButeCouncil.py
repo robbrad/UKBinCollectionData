@@ -1,9 +1,8 @@
+from __future__ import annotations
+
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -20,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Fetch upcoming bin collection types and dates for an Argyll and Bute address.
-        
+
         Parameters:
             page (str): Unused; the function always targets the Argyll and Bute bin collection page.
             **kwargs:
@@ -28,12 +27,22 @@ class CouncilClass(AbstractGetBinDataClass):
                 postcode (str): The postcode to search.
                 web_driver: Optional webdriver configuration or path passed to create_webdriver.
                 headless (bool): Whether to run the browser in headless mode.
-        
+
         Returns:
             dict: A dictionary with a "bins" key containing a list of collections. Each collection is a dict with:
                 - "type" (str): Human-readable bin type (e.g., "General waste").
                 - "collectionDate" (str): Collection date formatted according to the module's `date_format`.
         """
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             page = "https://www.argyll-bute.gov.uk/rubbish-and-recycling/household-waste/bin-collection"
@@ -146,7 +155,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

@@ -1,12 +1,10 @@
+from __future__ import annotations
+
 import re
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import (
     check_postcode,
@@ -28,19 +26,30 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Scrape Tendring District Council's rubbish and recycling collection days for a given address and return upcoming collections.
-        
+
         This navigates the council's canonical service page, enters the supplied postcode, selects the address by UPRN, parses the resulting waste collection table, and returns a list of future collection entries. Entries with collection dates on or before today are excluded.
-        
+
         Parameters:
             page (str): Ignored; the method always uses the canonical Tendring service URL.
             uprn (int | str, via kwargs["uprn"]): Unique Property Reference Number used to select the address.
             postcode (str, via kwargs["postcode"]): Postcode to populate the address search field.
             web_driver (optional, via kwargs["web_driver"]): Selenium driver configuration or remote endpoint; if omitted a local driver is created.
             headless (bool, via kwargs["headless"]): Whether to run the browser headlessly; defaults to True when not provided.
-        
+
         Returns:
             dict: {"bins": [{"type": <string>, "collectionDate": <string>}, ...]} where each entry describes a waste type and its upcoming collection date. `collectionDate` is formatted using the module's configured `date_format`.
         """
+        global By, EC, Select, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.common.exceptions import TimeoutException
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         bin_data: dict[str, list[dict]] = {"bins": []}
 
@@ -101,16 +110,16 @@ class CouncilClass(AbstractGetBinDataClass):
             input_postcode.clear()
             input_postcode.send_keys(user_postcode)
             # Wait for dropdown to appear and be populated
-            dropdown = wait.until(EC.element_to_be_clickable((By.NAME, "selectAddress")))
+            dropdown = wait.until(
+                EC.element_to_be_clickable((By.NAME, "selectAddress"))
+            )
             wait.until(lambda _: len(Select(dropdown).options) > 1)
 
             # Select address by UPRN
             Select(dropdown).select_by_value(str(user_uprn))
 
             # Wait for results table
-            wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "wasteTable"))
-            )
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, "wasteTable")))
 
             # Parse HTML
             soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -145,9 +154,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     continue
 
                 # Normalise bin type (strip parentheses)
-                bin_type = re.sub(
-                    r"\([^)]*\)", "", cols[type_idx].get_text(strip=True)
-                )
+                bin_type = re.sub(r"\([^)]*\)", "", cols[type_idx].get_text(strip=True))
 
                 # Extract a dd/mm/YYYY from the 'Next collection' cell
                 cell_txt = cols[next_idx].get_text(" ", strip=True)

@@ -1,11 +1,9 @@
+from __future__ import annotations
+
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -20,6 +18,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             user_uprn = kwargs.get("uprn")
@@ -106,7 +115,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 try:
                     # Parse the date text
-                    date_obj = datetime.strptime(date_text + " " + str(datetime.today().year), "%A %d %B %Y")
+                    date_obj = datetime.strptime(
+                        date_text + " " + str(datetime.today().year), "%A %d %B %Y"
+                    )
                     if date_obj.date() < datetime.today().date():
                         continue  # Skip past dates
                 except ValueError:
@@ -131,21 +142,19 @@ class CouncilClass(AbstractGetBinDataClass):
                             )
                         ):
                             next_collections[name] = bin_entry
-                            print(
-                                f"Found next collection for {name}: {formatted_date}"
-                            )  # Debug output
+                            print("Next collection parsed successfully")
                         break
 
             # Add the next collections to the bin_data
             bin_data["bins"] = list(next_collections.values())
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:
                 driver.quit()
 
         print("\nFinal bin data:")
-        print(bin_data)  # Debug output
+        print(f"Parsed {len(bin_data.get('bins', []))} collections")
         return bin_data

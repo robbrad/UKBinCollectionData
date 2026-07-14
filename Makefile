@@ -1,4 +1,4 @@
-.PHONY: install pre-build build black pycodestyle update-wiki
+.PHONY: install pre-build build black pycodestyle update-wiki unit-tests parser-contract-tests integration-tests
 
 ## @CI_actions Installs the checked out version of the code to your poetry managed venv
 install:
@@ -26,31 +26,25 @@ pycodestyle:
 
 ## @Testing runs unit tests
 integration-tests:
-	# Ensure directory exists
 	mkdir -p build/$(matrix)/integration-test-results
-
-	# Turn off "exit on error" so we can capture the code
-	set +e; \
+	@result=0; \
 	if [ -z "$(councils)" ]; then \
 		poetry run pytest uk_bin_collection/tests/step_defs/ \
 			-n logical \
-			--junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
+			--junit-xml=build/$(matrix)/integration-test-results/junit.xml \
+			|| result=$$?; \
 	else \
 		poetry run pytest uk_bin_collection/tests/step_defs/ \
 			-k "$(councils)" \
 			-n logical \
-			--junit-xml=build/$(matrix)/integration-test-results/junit.xml; \
+			--junit-xml=build/$(matrix)/integration-test-results/junit.xml \
+			|| result=$$?; \
 	fi; \
-	RESULT=$$?; \
-	set -e; \
-	
-	# Double-check that the file exists (in case of a really early crash)
-	if [ ! -f build/$(matrix)/integration-test-results/junit.xml ]; then \
+	if [ ! -f "build/$(matrix)/integration-test-results/junit.xml" ]; then \
 		echo "<testsuite tests='0'></testsuite>" \
-		     > build/$(matrix)/integration-test-results/junit.xml; \
+			> "build/$(matrix)/integration-test-results/junit.xml"; \
 	fi; \
-	
-	exit $$RESULT
+	exit $$result
 
 generate-test-map-test-results:
 	poetry run python uk_bin_collection/tests/generate_map_test_results.py build/integration-test-results/junit.xml > build/integration-test-results/test_results.json
@@ -60,8 +54,14 @@ parity-check:
 
 unit-tests:
 	poetry run coverage erase
-	- poetry run coverage run --append --omit "*/tests/*" -m pytest -vv -s --log-cli-level=DEBUG uk_bin_collection/tests custom_components/uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/ 
+	poetry run coverage run --append --omit "*/tests/*" -m pytest -vv -s --log-cli-level=DEBUG -m "not integration" uk_bin_collection/tests uk_bin_collection/uk_bin_collection/councils/tests tests --ignore=uk_bin_collection/tests/step_defs/
 	poetry run coverage xml
+
+parser-contract-tests:
+	mkdir -p build/$(matrix)/parser-contract-test-results
+	poetry run pytest uk_bin_collection/uk_bin_collection/councils/tests \
+		-m "not integration" \
+		--junit-xml=build/$(matrix)/parser-contract-test-results/junit.xml
 
 update-wiki:
 	poetry run python wiki/generate_wiki.py

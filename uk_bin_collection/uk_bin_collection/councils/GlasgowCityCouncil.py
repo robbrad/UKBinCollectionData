@@ -55,7 +55,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 collection_date = (datetime.today() + timedelta(days=1)).strftime(
                     date_format
                 )
-                print(collection_date)
+                print("Collection date parsed")
             else:
                 collection_date = datetime.strptime(
                     collection_date,

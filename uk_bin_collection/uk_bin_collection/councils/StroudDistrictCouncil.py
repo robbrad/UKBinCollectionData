@@ -67,7 +67,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         date = item.find_all("strong")[1].text.strip()
                         extracted_data[key] = date
 
-            print("Extracted data:", extracted_data)
+            print(f"Extracted {len(extracted_data)} collection entries")
 
             # Transform the data to the required schema
             bin_data = {"bins": []}

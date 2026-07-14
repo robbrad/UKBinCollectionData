@@ -1,8 +1,6 @@
+from __future__ import annotations
+
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -17,6 +15,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             page = "https://selfservice.broxtowe.gov.uk/renderform.aspx?t=217&k=9D2EF214E144EE796430597FB475C3892C43C528"
@@ -70,7 +79,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 paon_lower = user_paon.strip().lower()
                 for option in dropdownSelect.options:
                     text = option.text.strip().lower()
-                    if text and paon_lower and (text.startswith(paon_lower + " ") or text.startswith(paon_lower + ",")):
+                    if (
+                        text
+                        and paon_lower
+                        and (
+                            text.startswith(paon_lower + " ")
+                            or text.startswith(paon_lower + ",")
+                        )
+                    ):
                         option.click()
                         matched = True
                         break
@@ -126,7 +142,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             )
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

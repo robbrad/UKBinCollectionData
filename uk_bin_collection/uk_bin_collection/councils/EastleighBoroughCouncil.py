@@ -1,7 +1,6 @@
+from __future__ import annotations
+
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -16,6 +15,16 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         try:
             uprn = kwargs.get("uprn")
             # Check the UPRN is valid
@@ -81,7 +90,7 @@ class CouncilClass(AbstractGetBinDataClass):
             import traceback
 
             error_message = f"Error fetching/parsing data for Eastleigh: {str(e)}\n{traceback.format_exc()}"
-            print(error_message)
+            print(f"Eastleigh data retrieval failed ({type(e).__name__}).")
             # Use the correct date format for the error fallback
             today = datetime.now().strftime("%d/%m/%Y")
             return {"bins": [{"type": "Error", "collectionDate": today}]}

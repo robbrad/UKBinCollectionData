@@ -30,6 +30,12 @@ class MockConfigEntry:
         self.entry_id = entry_id or uuid.uuid4().hex
         self.version = version
         self.state = config_entries.ConfigEntryState.NOT_LOADED
+        self._on_unload_callbacks = []
+
+    def async_on_unload(self, callback):
+        """Register an unload callback using the ConfigEntry contract."""
+        self._on_unload_callbacks.append(callback)
+        return callback
 
     def add_to_hass(self, hass):
         """Add the mock config entry to Home Assistant."""

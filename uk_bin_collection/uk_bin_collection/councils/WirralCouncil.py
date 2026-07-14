@@ -154,7 +154,11 @@ class CouncilClass(AbstractGetBinDataClass):
                                 continue
                             try:
                                 parsed_month = datetime.strptime(month_name, "%B").month
-                                year = current_year + 1 if parsed_month < current_month else current_year
+                                year = (
+                                    current_year + 1
+                                    if parsed_month < current_month
+                                    else current_year
+                                )
                                 collection_date = datetime(
                                     year,
                                     parsed_month,
@@ -169,7 +173,10 @@ class CouncilClass(AbstractGetBinDataClass):
                                     }
                                 )
                             except ValueError as e:
-                                logging.warning(f"Failed to parse date {day} {month_name}: {e}")
+                                logging.warning(
+                                    "Failed to parse a primary date (%s).",
+                                    type(e).__name__,
+                                )
                             j += 1
                     else:
                         i += 1
@@ -182,15 +189,17 @@ class CouncilClass(AbstractGetBinDataClass):
                 if parent:
                     text = parent.get_text(separator="\n", strip=True)
                     # Parse "Friday 15 May\nNon-recyclable waste" pattern
-                    date_match = re.search(
-                        r"(\w+day)\s+(\d{1,2})\s+(\w+)", text
-                    )
+                    date_match = re.search(r"(\w+day)\s+(\d{1,2})\s+(\w+)", text)
                     if date_match:
                         day = int(date_match.group(2))
                         month = date_match.group(3)
                         try:
                             parsed_month = datetime.strptime(month, "%B").month
-                            year = current_year + 1 if parsed_month < current_month else current_year
+                            year = (
+                                current_year + 1
+                                if parsed_month < current_month
+                                else current_year
+                            )
                             collection_date = datetime.strptime(
                                 f"{day} {month} {year}", "%d %B %Y"
                             )
@@ -210,7 +219,10 @@ class CouncilClass(AbstractGetBinDataClass):
                                     }
                                 )
                         except ValueError as e:
-                            logging.warning(f"Failed to parse fallback date {day} {month}: {e}")
+                            logging.warning(
+                                "Failed to parse a fallback date (%s).",
+                                type(e).__name__,
+                            )
 
         if not data["bins"]:
             raise ValueError("No collection data found on page")

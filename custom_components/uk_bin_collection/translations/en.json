@@ -1,59 +1,130 @@
 {
-    "title": "UK Bin Collection Data",
-    "config": {
-        "step": {
-            "user": {
-                "title": "Select the council",
-                "data": {
-                    "name": "Location name",
-                    "council": "Council",
-                    "manual_refresh_only":"Automatically refresh the sensor",
-                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon (see documentation)"
-                },
-                "description": "Please see the documentation if your council isn't listed"
-            },
-            "council": {
-                "title": "Provide council details",
-                "data": {
-                    "url": "URL to fetch bin collection data",
-                    "timeout": "The time in seconds for how long the sensor should wait for data",
-                    "update_interval": "Time in hours between updates",
-                    "uprn": "UPRN (Unique Property Reference Number)",
-                    "postcode": "Postcode of the address",
-                    "number": "House number of the address",
-                    "usrn": "USRN (Unique Street Reference Number)",
-                    "web_driver": "To run on a remote Selenium Server add the Selenium Server URL",
-                    "headless": "Run Selenium in headless mode (recommended)",
-                    "local_browser": "Don't run on remote Selenium server, use local install of Chrome instead",
-                    "submit": "Submit"
-                },
-                "description": "Please refer to your council's wiki entry for details on what to enter.\n{selenium_message}"
-                        },
-            "reconfigure_confirm": {
-                "title": "Update council details",
-                "data": {
-                    "url": "URL to fetch bin collection data",
-                    "timeout": "The time in seconds for how long the sensor should wait for data",
-                    "update_interval": "Time in hours between updates",
-                    "uprn": "UPRN (Unique Property Reference Number)",
-                    "postcode": "Postcode of the address",
-                    "number": "House number of the address",
-                    "usrn": "USRN (Unique Street Reference Number)",
-                    "web_driver": "To run on a remote Selenium Server add the Selenium Server URL",
-                    "headless": "Run Selenium in headless mode (recommended)",
-                    "local_browser": "Don't run on remote Selenium server, use local install of Chrome instead",
-                    "manual_refresh_only":"Automatically refresh the sensor",
-                    "icon_color_mapping": "JSON to map Bin Type for Colour and Icon (see documentation)",
-                    "submit": "Submit"
-                },
-                "description": "Please refer to your council's wiki entry for details on what to enter."
-            }
+  "title": "UK Bin Collection Data",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Select the council",
+        "data": {
+          "name": "Location name",
+          "council": "Council",
+          "manual_refresh_only": "Manual refresh only",
+          "icon_color_mapping": "JSON to map bin type to colour and icon"
         },
-        "error": {
-            "name": "Please enter a location name",
-            "council": "Please select a council",
-            "selenium_unavailable": "Selenium server is not accessible. Please ensure it is running at localhost:4444 or selenium:4444",
-            "chromium_not_found": "Chromium browser is not installed. Please install Chromium or Google Chrome"
-        }
+        "description": "Please see the documentation if your council is not listed."
+      },
+      "council": {
+        "title": "Provide council details",
+        "data": {
+          "url": "URL to fetch bin collection data",
+          "timeout": "Maximum lookup time in seconds",
+          "update_interval": "Time in hours between updates",
+          "uprn": "UPRN (Unique Property Reference Number)",
+          "postcode": "Postcode of the address",
+          "number": "House number or name",
+          "usrn": "USRN (Unique Street Reference Number)",
+          "web_driver": "Remote Selenium WebDriver URL",
+          "headless": "Run Selenium in headless mode (recommended)",
+          "local_browser": "Use a locally installed Chrome browser",
+          "user_agent": "Optional browser user agent",
+          "submit": "Submit"
+        },
+        "description": "Please refer to your council's wiki entry for details on what to enter.\n{selenium_message}"
+      },
+      "reconfigure_confirm": {
+        "title": "Update council details",
+        "data": {
+          "name": "Location name",
+          "council": "Council",
+          "url": "URL to fetch bin collection data",
+          "timeout": "Maximum lookup time in seconds",
+          "update_interval": "Time in hours between updates",
+          "uprn": "UPRN (Unique Property Reference Number)",
+          "postcode": "Postcode of the address",
+          "number": "House number or name",
+          "usrn": "USRN (Unique Street Reference Number)",
+          "web_driver": "Remote Selenium WebDriver URL",
+          "headless": "Run Selenium in headless mode (recommended)",
+          "local_browser": "Use a locally installed Chrome browser",
+          "user_agent": "Optional browser user agent",
+          "manual_refresh_only": "Manual refresh only",
+          "icon_color_mapping": "JSON to map bin type to colour and icon",
+          "submit": "Submit"
+        },
+        "description": "Please refer to your council's wiki entry for details on what to enter."
+      }
+    },
+    "error": {
+      "name": "Please enter a location name",
+      "council": "Please select a council",
+      "selenium_unavailable": "The Selenium server is not accessible",
+      "chromium_not_found": "Chromium or Google Chrome is not installed",
+      "required": "This field is required",
+      "invalid_json": "Enter valid JSON",
+      "invalid_update_interval": "Enter an update interval of at least one hour",
+      "browser_required": "Enter a remote Selenium WebDriver URL or select local browser",
+      "browser_conflict": "Choose either a remote Selenium WebDriver or local browser, not both",
+      "remote_browser_required": "South Kesteven requires a remote Selenium WebDriver; enter its HTTP(S) URL and turn off local browser",
+      "invalid_webdriver_url": "Enter a valid HTTP or HTTPS Selenium WebDriver URL with a host",
+      "council_change_not_supported": "An existing entry cannot change council. Add a new integration entry for a different council",
+      "duplicate_entry": "An equivalent UK Bin Collection entry already exists"
+    },
+    "abort": {
+      "council_data_unavailable": "Council metadata is currently unavailable",
+      "reconfigure_failed": "The integration entry could not be found",
+      "reconfigure_successful": "The integration entry was updated successfully"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update UK Bin Collection options",
+        "data": {
+          "name": "Location name",
+          "council": "Council",
+          "url": "URL to fetch bin collection data",
+          "timeout": "Maximum lookup time in seconds",
+          "update_interval": "Time in hours between updates",
+          "uprn": "UPRN (Unique Property Reference Number)",
+          "postcode": "Postcode of the address",
+          "number": "House number or name",
+          "usrn": "USRN (Unique Street Reference Number)",
+          "web_driver": "Remote Selenium WebDriver URL",
+          "headless": "Run Selenium in headless mode (recommended)",
+          "local_browser": "Use a locally installed Chrome browser",
+          "user_agent": "Optional browser user agent",
+          "manual_refresh_only": "Manual refresh only",
+          "icon_color_mapping": "JSON to map bin type to colour and icon"
+        },
+        "description": "Update scheduling, address, and browser settings for this entry."
+      }
+    },
+    "error": {
+      "council": "Please select a council",
+      "required": "This field is required",
+      "invalid_json": "Enter valid JSON",
+      "invalid_update_interval": "Enter an update interval of at least one hour",
+      "browser_required": "Enter a remote Selenium WebDriver URL or select local browser",
+      "browser_conflict": "Choose either a remote Selenium WebDriver or local browser, not both",
+      "remote_browser_required": "South Kesteven requires a remote Selenium WebDriver; enter its HTTP(S) URL and turn off local browser",
+      "invalid_webdriver_url": "Enter a valid HTTP or HTTPS Selenium WebDriver URL with a host",
+      "council_change_not_supported": "An existing entry cannot change council. Add a new integration entry for a different council"
+    },
+    "abort": {
+      "council_data_unavailable": "Council metadata is currently unavailable"
+    }
+  },
+  "issues": {
+    "dependency_error": {
+      "title": "A Python dependency is missing or shadowed",
+      "description": "UK Bin Collection could not safely load a browser dependency. {details} Check the reported module path; a package placed directly in /config can shadow the installed Python package. Move the conflicting folder out of /config, restart Home Assistant, and reload this entry."
+    },
+    "missing_required_configuration": {
+      "title": "UK Bin Collection configuration is incomplete",
+      "description": "This entry is missing: {fields}. Use Reconfigure on the integration entry and supply the missing address/browser values."
+    },
+    "browser_unavailable": {
+      "title": "The Selenium browser is unavailable",
+      "description": "UK Bin Collection could not reach or start its configured browser. {details} Check the WebDriver address or local browser, then reload this entry."
+    }
+  }
 }

@@ -78,13 +78,12 @@ class CouncilClass(AbstractGetBinDataClass):
                                     bin_date = bin_date.replace(year=current_year + 1)
 
                                 collections.append((bin_type, bin_date))
-                                print(
-                                    f"Successfully parsed date for {bin_type}: {bin_date}"
-                                )
+                                print("Collection date parsed successfully")
 
                             except ValueError as e:
                                 print(
-                                    f"Failed to parse date '{date_str}' for {bin_type}: {e}"
+                                    "Failed to parse a collection date:",
+                                    type(e).__name__,
                                 )
                                 continue
 
@@ -92,7 +91,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         break
 
             except Exception as e:
-                print(f"Error processing bin row: {e}")
+                print(f"Error processing bin row: {type(e).__name__}")
                 continue
 
         if not collections:

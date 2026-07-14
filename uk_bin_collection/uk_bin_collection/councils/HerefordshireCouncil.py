@@ -48,7 +48,9 @@ class CouncilClass(AbstractGetBinDataClass):
         soup = BeautifulSoup(page.text, "html.parser")
         soup.prettify
 
-        checkValid = any("Your next collection days" in h2.get_text() for h2 in soup.find_all("h2"))
+        checkValid = any(
+            "Your next collection days" in h2.get_text() for h2 in soup.find_all("h2")
+        )
         if not checkValid:
             raise ValueError("Address/UPRN not found")
 
@@ -74,12 +76,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
             next_date = li.get_text(strip=True).replace(" (next collection)", "")
 
-            logging.info(f"Bin type: {bin_type} - Collection date: {next_date}")
+            logging.info("Collection entry parsed successfully")
 
             data["bins"].append(
                 {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(next_date, "%A %d %B %Y").strftime(date_format),
+                    "collectionDate": datetime.strptime(
+                        next_date, "%A %d %B %Y"
+                    ).strftime(date_format),
                 }
             )
 

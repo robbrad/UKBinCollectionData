@@ -59,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
             if user_paon is None:
                 raise ValueError("Invalid house number")
         except Exception as ex:
-            print(f"Exception encountered: {ex}")
+            print(f"Exception encountered: {type(ex).__name__}")
             print(
                 "Please check the provided house number. If this error continues, please first trying setting the "
                 "house number manually on line 25 before raising an issue."

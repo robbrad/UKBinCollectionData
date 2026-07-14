@@ -1,7 +1,6 @@
+from __future__ import annotations
+
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -18,7 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Parse Winchester council bin calendar and extract upcoming collection types and dates.
-        
+
         Parameters:
             page (str): Unused by this implementation; kept for interface compatibility.
             **kwargs:
@@ -26,15 +25,25 @@ class CouncilClass(AbstractGetBinDataClass):
                 postcode (str): Postcode to search for addresses.
                 web_driver: Optional identifier or configuration for the Selenium webdriver.
                 headless (bool): Whether to run the webdriver in headless mode.
-        
+
         Returns:
             dict: A dictionary with a single key "bins" whose value is a list of dictionaries, each containing:
                 - "type" (str): The bin type/name.
                 - "collectionDate" (str): Collection date formatted as "dd/mm/YYYY".
-        
+
         Raises:
             ValueError: If the page does not contain the expected collections container.
         """
+        global By, EC, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -92,7 +101,9 @@ class CouncilClass(AbstractGetBinDataClass):
             # Find the main container and then each card. Use class contains so small CSS changes don't break parsing.
             recyclingcalendar = soup.find(
                 "div",
-                class_=lambda c: c and "ant-row" in c and "justify-content-between" in c,
+                class_=lambda c: c
+                and "ant-row" in c
+                and "justify-content-between" in c,
             )
 
             if not recyclingcalendar:
@@ -135,7 +146,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

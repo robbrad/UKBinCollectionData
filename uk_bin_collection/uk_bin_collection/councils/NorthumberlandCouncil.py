@@ -1,13 +1,10 @@
+from __future__ import annotations
+
 import datetime
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -23,10 +20,10 @@ class CouncilClass(AbstractGetBinDataClass):
     def extract_styles(self, style_str: str) -> dict:
         """
         Parse an inline CSS style string into a dictionary of property-value pairs.
-        
+
         Parameters:
             style_str (str): Inline CSS style text with semicolon-separated declarations (e.g. "color: red; margin: 0;").
-        
+
         Returns:
             dict: Mapping of CSS property names to their values, with surrounding whitespace removed from both keys and values.
         """
@@ -40,7 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Fetches bin collection dates from the Northumberland council postcode lookup and returns them as structured entries.
-        
+
         Parameters:
             page (str): Ignored; the method uses the council postcode lookup URL.
             **kwargs:
@@ -48,12 +45,24 @@ class CouncilClass(AbstractGetBinDataClass):
                 uprn (str|int): Property UPRN; will be padded to 12 digits before use.
                 web_driver: Optional Selenium WebDriver factory or identifier passed to create_webdriver.
                 headless (bool): Optional flag controlling headless browser creation.
-        
+
         Returns:
             dict: A dictionary with a "bins" key mapping to a list of entries. Each entry is a dict with:
                 - "type" (str): The bin type (e.g., "General waste", "Recycling", "Garden waste").
                 - "collectionDate" (str): The collection date formatted according to the module's date_format.
         """
+        global By, EC, Keys, Select, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.common.exceptions import TimeoutException
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             page = "https://bincollection.northumberland.gov.uk/postcode"
@@ -166,7 +175,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     }
                 )
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:

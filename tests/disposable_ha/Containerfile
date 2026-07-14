@@ -1,0 +1,34 @@
+ARG HA_IMAGE
+FROM ${HA_IMAGE}
+
+COPY tests/disposable_ha/candidate.whl \
+    /tmp/uk_bin_collection-0.170.0-py3-none-any.whl
+COPY tests/disposable_ha/pytest_asyncio-1.3.0-py3-none-any.whl \
+    /tmp/pytest_asyncio-1.3.0-py3-none-any.whl
+COPY tests/disposable_ha/freezegun-1.5.1-py3-none-any.whl \
+    /tmp/freezegun-1.5.1-py3-none-any.whl
+COPY tests/disposable_ha/pytest_freezer-0.4.9-py3-none-any.whl \
+    /tmp/pytest_freezer-0.4.9-py3-none-any.whl
+COPY tests/disposable_ha/import-wheelhouse/*.whl /tmp/runtime-wheelhouse/
+RUN PIP_NO_INDEX=1 python -m pip install --no-deps --force-reinstall \
+    /tmp/uk_bin_collection-0.170.0-py3-none-any.whl \
+    /tmp/pytest_asyncio-1.3.0-py3-none-any.whl \
+    /tmp/freezegun-1.5.1-py3-none-any.whl \
+    /tmp/pytest_freezer-0.4.9-py3-none-any.whl \
+    /tmp/runtime-wheelhouse/*.whl \
+    && rm -f /tmp/uk_bin_collection-0.170.0-py3-none-any.whl \
+        /tmp/pytest_asyncio-1.3.0-py3-none-any.whl \
+        /tmp/freezegun-1.5.1-py3-none-any.whl \
+        /tmp/pytest_freezer-0.4.9-py3-none-any.whl \
+    && rm -rf /tmp/runtime-wheelhouse
+
+COPY . /workspace
+RUN python /workspace/tests/disposable_ha/verify_runtime_requirements.py \
+    --distribution uk-bin-collection
+COPY tests/disposable_ha/FixtureCouncil.py \
+    /usr/local/lib/python3.14/site-packages/uk_bin_collection/uk_bin_collection/councils/FixtureCouncil.py
+COPY tests/disposable_ha/SouthKestevenFixtureCouncil.py \
+    /usr/local/lib/python3.14/site-packages/uk_bin_collection/uk_bin_collection/councils/SouthKestevenFixtureCouncil.py
+
+LABEL org.opencontainers.image.title="UKBCD disposable HA validation image"
+LABEL org.opencontainers.image.source="local-only"

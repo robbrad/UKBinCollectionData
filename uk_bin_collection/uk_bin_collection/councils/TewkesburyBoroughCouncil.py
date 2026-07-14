@@ -10,7 +10,9 @@ class CouncilClass(AbstractGetBinDataClass):
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
 
-        url = f"https://api-2.tewkesbury.gov.uk/incab/rounds/{user_uprn}/next-collection"
+        url = (
+            f"https://api-2.tewkesbury.gov.uk/incab/rounds/{user_uprn}/next-collection"
+        )
         response = requests.get(url, timeout=30)
         response.raise_for_status()
 
@@ -19,17 +21,23 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
 
         # Legacy format: {"status":"OK","body":[{"collectionType":"...","NextCollection":"YYYY-MM-DD"}]}
-        if isinstance(json_data, dict) and json_data.get("status") == "OK" and "body" in json_data:
+        if (
+            isinstance(json_data, dict)
+            and json_data.get("status") == "OK"
+            and "body" in json_data
+        ):
             for entry in json_data["body"]:
                 bin_type = entry.get("collectionType")
                 date_str = entry.get("NextCollection")
                 if bin_type and date_str:
                     try:
                         collection_date = datetime.strptime(date_str, "%Y-%m-%d")
-                        data["bins"].append({
-                            "type": bin_type,
-                            "collectionDate": collection_date.strftime(date_format)
-                        })
+                        data["bins"].append(
+                            {
+                                "type": bin_type,
+                                "collectionDate": collection_date.strftime(date_format),
+                            }
+                        )
                     except ValueError:
                         continue
         # Current format: {"food":{"nextCollectionDate":"...Z"},"garden":{...},"recycling":{...},"refuse":{...}}
@@ -50,10 +58,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 try:
                     # "2026-04-23T01:00:00.000Z"
                     collection_date = datetime.strptime(date_str[:10], "%Y-%m-%d")
-                    data["bins"].append({
-                        "type": display_name,
-                        "collectionDate": collection_date.strftime(date_format)
-                    })
+                    data["bins"].append(
+                        {
+                            "type": display_name,
+                            "collectionDate": collection_date.strftime(date_format),
+                        }
+                    )
                 except ValueError:
                     continue
 
@@ -61,5 +71,5 @@ class CouncilClass(AbstractGetBinDataClass):
             key=lambda x: datetime.strptime(x["collectionDate"], date_format)
         )
 
-        print(json.dumps(data, indent=2))
+        print(f"Parsed {len(data.get('bins', []))} collections")
         return data

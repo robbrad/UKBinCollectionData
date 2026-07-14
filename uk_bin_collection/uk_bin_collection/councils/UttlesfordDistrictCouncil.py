@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 import pickle
 import time
@@ -5,12 +7,6 @@ from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -24,6 +20,19 @@ logging.basicConfig(
 class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, Select, WebDriverWait, webdriver
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             user_paon = kwargs.get("paon")
@@ -72,15 +81,21 @@ class CouncilClass(AbstractGetBinDataClass):
                 paon_lower = str(user_paon).strip().lower()
                 for option in drop_down_values.options:
                     text = option.text.strip().lower()
-                    if text and paon_lower and (text.startswith(paon_lower + " ") or text.startswith(paon_lower + ",") or text == paon_lower):
+                    if (
+                        text
+                        and paon_lower
+                        and (
+                            text.startswith(paon_lower + " ")
+                            or text.startswith(paon_lower + ",")
+                            or text == paon_lower
+                        )
+                    ):
                         option.click()
                         matched = True
                         break
 
             if not matched:
-                raise ValueError(
-                    f"Address '{user_paon}' not found in dropdown"
-                )
+                raise ValueError(f"Address '{user_paon}' not found in dropdown")
 
             input_element_address_btn = wait.until(
                 EC.element_to_be_clickable(
@@ -135,7 +150,7 @@ class CouncilClass(AbstractGetBinDataClass):
             return bin_data
 
         except Exception as e:
-            logging.error(f"An error occurred: {e}")
+            logging.error(f"An error occurred: {type(e).__name__}")
             raise
 
         finally:

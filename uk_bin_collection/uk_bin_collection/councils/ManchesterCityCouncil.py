@@ -64,12 +64,12 @@ class CouncilClass(AbstractGetBinDataClass):
         r.raise_for_status()
 
         result = r.json()
-        print(result["data"])
+        print("Council response decoded successfully.")
 
         for key, value in result["data"].items():
             if key.startswith("ahtm_dates_"):
-                print(key)
-                print(value)
+                print("Collection field parsed")
+                print("Collection field value parsed")
 
                 dates_list = [
                     datetime.strptime(date.strip(), "%d/%m/%Y %H:%M:%S").date()

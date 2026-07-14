@@ -1,7 +1,6 @@
+from __future__ import annotations
+
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -16,6 +15,16 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -81,17 +90,30 @@ class CouncilClass(AbstractGetBinDataClass):
                 if strong_element:
                     BinType = strong_element.text.strip()
                     # Skip if this is not a bin type (e.g., informational text)
-                    if BinType and not any(skip_text in BinType.lower() for skip_text in 
-                                         ["please note", "we may collect", "bank holiday", "different day"]):
-                        date_cells = Collection.find_all("div", {"style": "display:table-cell;"})
+                    if BinType and not any(
+                        skip_text in BinType.lower()
+                        for skip_text in [
+                            "please note",
+                            "we may collect",
+                            "bank holiday",
+                            "different day",
+                        ]
+                    ):
+                        date_cells = Collection.find_all(
+                            "div", {"style": "display:table-cell;"}
+                        )
                         if len(date_cells) > 1:
                             date_text = date_cells[1].get_text().strip()
                             if date_text:
                                 try:
-                                    CollectionDate = datetime.strptime(date_text, "%a, %d %b %Y")
+                                    CollectionDate = datetime.strptime(
+                                        date_text, "%a, %d %b %Y"
+                                    )
                                     dict_data = {
                                         "type": BinType,
-                                        "collectionDate": CollectionDate.strftime("%d/%m/%Y"),
+                                        "collectionDate": CollectionDate.strftime(
+                                            "%d/%m/%Y"
+                                        ),
                                     }
                                     # Check for duplicates before adding
                                     if dict_data not in data["bins"]:
@@ -102,7 +124,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

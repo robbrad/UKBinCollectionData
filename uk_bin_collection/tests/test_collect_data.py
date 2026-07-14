@@ -1,7 +1,10 @@
 from unittest.mock import MagicMock, patch
 import argparse
 import pytest
-from uk_bin_collection.collect_data import UKBinCollectionApp, import_council_module
+from uk_bin_collection.uk_bin_collection.collect_data import (
+    UKBinCollectionApp,
+    import_council_module,
+)
 
 
 # Test UKBinCollectionApp setup_arg_parser
@@ -21,7 +24,9 @@ def test_setup_arg_parser():
         "number",
         "skip_get_url",
         "uprn",
+        "usrn",
         "web_driver",
+        "user_agent",
         "headless",
         "local_browser",
         "dev_mode",
@@ -56,11 +61,11 @@ def test_client_code():
 
 
 # Test the run() function with logging setup
-@patch("uk_bin_collection.collect_data.setup_logging")  # Correct patch path
-@patch("uk_bin_collection.collect_data.UKBinCollectionApp.run")  # Correct patch path
+@patch("uk_bin_collection.uk_bin_collection.collect_data.setup_logging")
+@patch("uk_bin_collection.uk_bin_collection.collect_data.UKBinCollectionApp.run")
 @patch("sys.argv", ["uk_bin_collection.py", "council_module", "http://example.com"])
 def test_run_function(mock_app_run, mock_setup_logging):
-    from uk_bin_collection.collect_data import run
+    from uk_bin_collection.uk_bin_collection.collect_data import run
 
     mock_setup_logging.return_value = MagicMock()
     mock_app_run.return_value = None
@@ -70,3 +75,32 @@ def test_run_function(mock_app_run, mock_setup_logging):
     # Ensure logging was set up and the app run method was called
     mock_setup_logging.assert_called_once()
     mock_app_run.assert_called_once()
+
+
+def test_run_propagates_usrn_user_agent_and_boolean_flags():
+    app = UKBinCollectionApp()
+    app.set_args(
+        [
+            "ExampleCouncil",
+            "https://example.invalid/collections",
+            "--usrn=200012345",
+            "--user-agent=UKBCD contract test",
+            "--skip_get_url",
+            "--local_browser",
+        ]
+    )
+    council = MagicMock()
+    module = MagicMock()
+    module.CouncilClass.return_value = council
+
+    with patch(
+        "uk_bin_collection.uk_bin_collection.collect_data.import_council_module",
+        return_value=module,
+    ):
+        app.run()
+
+    kwargs = council.template_method.call_args.kwargs
+    assert kwargs["usrn"] == "200012345"
+    assert kwargs["user_agent"] == "UKBCD contract test"
+    assert kwargs["skip_get_url"] is True
+    assert kwargs["local_browser"] is True

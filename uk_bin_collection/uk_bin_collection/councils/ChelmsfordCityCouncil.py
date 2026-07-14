@@ -37,9 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode = kwargs.get("postcode")
             user_paon = kwargs.get("paon")
 
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-            }
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
             session = requests.Session()
             base_url = "https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/"
 
@@ -142,7 +140,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             }
                         )
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
 
         return data

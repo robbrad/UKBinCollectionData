@@ -1,10 +1,8 @@
+from __future__ import annotations
+
 from time import sleep
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -19,6 +17,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, NoSuchElementException, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.common.exceptions import NoSuchElementException
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             house_number = kwargs.get("paon")
@@ -178,14 +187,14 @@ class CouncilClass(AbstractGetBinDataClass):
                             }
                             data["bins"].append(dict_data)
                 except Exception as e:
-                    print(f"Skipping one panel due to: {e}")
+                    print(f"Skipping one panel due to: {type(e).__name__}")
 
             data["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
             )
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

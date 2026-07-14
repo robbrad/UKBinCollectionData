@@ -112,7 +112,9 @@ class CouncilClass(AbstractGetBinDataClass):
                         original_collection_date, "%A %d %B"
                     )
 
-                    original_collection_date = self._set_year_from_month(original_collection_date)
+                    original_collection_date = self._set_year_from_month(
+                        original_collection_date
+                    )
 
                     new_collection_date = row.find_all("td")[1].get_text(strip=True)
                     new_collection_date = new_collection_date.replace(
@@ -131,7 +133,7 @@ class CouncilClass(AbstractGetBinDataClass):
             IndexError,
             ValueError,
         ) as e:
-            logger.warning(f"Failed to scrape bank holiday dates: {e}")
+            logger.warning(f"Failed to scrape bank holiday dates: {type(e).__name__}")
 
         greenstartDate = datetime(2025, 12, 29)
         bluestartDate = datetime(2025, 12, 29)

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 # alternative implementation for retrieving bin data from Kingston Upon Thames Council
 # principal URL is https://waste-services.kingston.gov.uk/waste/[uprn]
-# https://www.kingston.gov.uk/bins-and-recycling/collections/check-your-bin-collection-day 
+# https://www.kingston.gov.uk/bins-and-recycling/collections/check-your-bin-collection-day
 
 # switched to using Selenium as the htmx elements are not rendered reliably with requests
 # updated Jan 2026 due to small website formatting changes
@@ -8,10 +10,6 @@
 import re
 
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -26,6 +24,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+
+        global By, EC, WebDriverWait, webdriver
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import WebDriverWait
 
         driver = None
         try:
@@ -65,7 +74,9 @@ class CouncilClass(AbstractGetBinDataClass):
                         f"Kingston parser: missing dl.govuk-summary-list for {service_name}"
                     )
 
-                rows = summary_list.find_all("div", {"class": "govuk-summary-list__row"})
+                rows = summary_list.find_all(
+                    "div", {"class": "govuk-summary-list__row"}
+                )
                 for row in rows:
                     dt = row.find("dt")
                     if dt and dt.get_text().strip().lower() == "next collection":
@@ -74,9 +85,11 @@ class CouncilClass(AbstractGetBinDataClass):
                             raise ValueError(
                                 f"Kingston parser: missing dd element for 'next collection' in {service_name}"
                             )
-                        collection_date = remove_ordinal_indicator_from_date_string(
-                            dd.get_text()
-                        ).strip().replace(" (In progress)", "")
+                        collection_date = (
+                            remove_ordinal_indicator_from_date_string(dd.get_text())
+                            .strip()
+                            .replace(" (In progress)", "")
+                        )
                         # strip out any text inside of the date string
                         collection_date = re.sub(
                             r"\n\s*\(this.*?\)", "", collection_date
@@ -100,7 +113,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

@@ -11,17 +11,17 @@ jobs:
     name: Validate Release Prerequisites
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
           cache: 'pip'
 
       - name: Cache Poetry
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.local/pipx
           key: ${{ runner.os }}-pipx-poetry-1.8.4
@@ -32,9 +32,32 @@ jobs:
         run: pipx install poetry==1.8.4
 
       - name: Validate pyproject.toml
-        run: poetry check
+        run: poetry check --lock
+
+      - name: Validate component and core versions agree
+        run: >-
+          python scripts/validate_release_contract.py
+          --version "$(poetry version -s)"
+
+      - name: Prove the release manifest can be pinned atomically
+        run: >-
+          python scripts/pin_release_manifest.py
+          --version "$(poetry version -s)"
+          --check
+
+      - name: Build wheel on Python 3.12
+        run: poetry build --format wheel
+
+      - name: Validate candidate wheel metadata
+        run: |
+          set -euo pipefail
+          WHEEL=$(find dist -maxdepth 1 -type f -name '*.whl' -print -quit)
+          test -n "$WHEEL"
+          python scripts/validate_release_contract.py \
+            --version "$(poetry version -s)" \
+            --wheel "$WHEEL"
 
       - name: Check for conventional commits
-        uses: wagoid/commitlint-github-action@v6
+        uses: wagoid/commitlint-github-action@b948419dd99f3fd78a6548d48f94e3df7f6bf3ed # v6
         with:
           configFile: commitlint.config.mjs

@@ -56,7 +56,7 @@ class UKBinCollectionCalendar(CoordinatorEntity, CalendarEntity):
         collection_date = self.coordinator.data.get(self._bin_type)
         if not collection_date:
             _LOGGER.debug(
-                f"{LOG_PREFIX} No collection date available for '{self._bin_type}'."
+                "%s No collection date available for this entity.", LOG_PREFIX
             )
             return None
 
@@ -127,9 +127,6 @@ async def async_setup_entry(
         "coordinator"
     ]
 
-    # Wait for the first refresh. This will raise if the update fails.
-    await coordinator.async_config_entry_first_refresh()
-
     # Create calendar entities only for bin types that have a valid date
     entities = []
     for bin_type, collection_date in coordinator.data.items():
@@ -148,9 +145,7 @@ async def async_setup_entry(
 
     # Register all calendar entities with Home Assistant
     async_add_entities(entities)
-    _LOGGER.debug(
-        f"{LOG_PREFIX} Calendar entities added: {[entity.name for entity in entities]}"
-    )
+    _LOGGER.debug("%s Calendar entities added: %s", LOG_PREFIX, len(entities))
 
 
 async def async_unload_entry(

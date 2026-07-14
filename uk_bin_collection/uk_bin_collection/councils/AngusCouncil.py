@@ -1,11 +1,9 @@
+from __future__ import annotations
+
 import re
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -13,6 +11,17 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, NoSuchElementException, Select, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+        from selenium.common.exceptions import TimeoutException, NoSuchElementException
+
         driver = None
         try:
             user_postcode = kwargs.get("postcode")
@@ -59,7 +68,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         )
                     except NoSuchElementException:
                         # Print page source for debugging
-                        print("Page source:", driver.page_source[:1000])
+                        print("Page source omitted from diagnostics.")
                         raise ValueError("Could not find postcode input field")
             postcode_input.clear()
             postcode_input.send_keys(user_postcode)
@@ -170,7 +179,7 @@ class CouncilClass(AbstractGetBinDataClass):
             return bin_data
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
 
         finally:

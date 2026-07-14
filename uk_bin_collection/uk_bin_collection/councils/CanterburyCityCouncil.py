@@ -45,7 +45,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         # Loop through each collection in bin_collection
         for collection in collections:
-            print(collection)
+            print("Processing collection entry")
 
             if len(collections[collection]) <= 0:
                 continue

@@ -50,6 +50,12 @@ class AbstractGetBinDataClass(ABC):
     Keyword arguments: None
     """
 
+    # Councils whose complete flow is browser/API driven can opt out of the
+    # template's legacy HTTP preflight.  Keeping this on the adapter makes the
+    # behaviour consistent for the CLI, API and Home Assistant callers even if
+    # they do not know to pass ``skip_get_url``.
+    skip_generic_get = False
+
     def template_method(self, address_url: str, **kwargs) -> None:  # pragma: no cover
         """The main template method that is constructed
 
@@ -80,7 +86,7 @@ class AbstractGetBinDataClass(ABC):
         Keyword arguments:
         address_url -- the URL to get the data from
         """
-        if not kwargs.get("skip_get_url"):
+        if not (kwargs.get("skip_get_url") or self.skip_generic_get):
             page = self.get_data(address_url)
             bin_data_dict = self.parse_data(page, url=address_url, **kwargs)
         else:
@@ -128,7 +134,7 @@ class AbstractGetBinDataClass(ABC):
             full_page = session.get(url, verify=False, timeout=120)
             return full_page
         except requests.exceptions.RequestException as err:
-            _LOGGER.error(f"Request Error: {err}")
+            _LOGGER.error("Council request failed (%s).", type(err).__name__)
             raise
 
     @abstractmethod

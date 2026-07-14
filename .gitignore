@@ -30,6 +30,7 @@
 !.github/ISSUE_TEMPLATE/*.yaml
 !.github/workflows
 !.github/workflows/*.yml
+!.github/commitizen-requirements.txt
 !uk_bin_collection
 !uk_bin_collection/**/*
 !uk_bin_collection_api_server
@@ -45,5 +46,12 @@ __pycache__
 uk_bin_collection/.DS_Store
 uk_bin_collection/uk_bin_collection/.DS_Store
 !scripts
+!tests/
+!tests/disposable_ha/
+!tests/disposable_ha/*.py
+!tests/disposable_ha/Containerfile
+!tests/disposable_ha/*.Containerfile
+!tests/disposable_ha/containerignore
+tests/disposable_ha/*.whl
 !.kiro
 ISSUE_RESOLUTION_PROGRESS.md

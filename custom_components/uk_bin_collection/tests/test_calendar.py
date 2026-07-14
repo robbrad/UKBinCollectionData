@@ -199,11 +199,13 @@ def test_calendar_update_on_coordinator_change(hass_instance, mock_coordinator):
 
     # Update the coordinator's data
     mock_coordinator.data["Recycling"] = collection_date_updated
-    mock_coordinator.async_write_ha_state = AsyncMock()
+    mock_coordinator.async_write_ha_state = MagicMock()
 
     # Simulate coordinator update by calling the update handler
-    with patch.object(calendar, "async_write_ha_state", new=AsyncMock()) as mock_write:
+    with patch.object(calendar, "async_write_ha_state", new=MagicMock()) as mock_write:
         calendar._handle_coordinator_update()
+
+    mock_write.assert_called_once_with()
 
     # The event should now be updated to April 26
     expected_event_updated = CalendarEvent(
@@ -288,14 +290,15 @@ async def test_async_setup_entry_handles_empty_data(hass_instance, mock_config_e
 
 
 @pytest.mark.asyncio
-async def test_async_setup_entry_handles_coordinator_failure(
+async def test_async_setup_entry_does_not_refresh_coordinator(
     hass_instance, mock_config_entry
 ):
-    """Test that async_setup_entry raises ConfigEntryNotReady on coordinator failure."""
+    """The integration setup owns the one and only initial refresh."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
     mock_coordinator.async_config_entry_first_refresh.side_effect = Exception(
         "Update failed"
     )
+    mock_coordinator.data = {}
     mock_coordinator.name = "Test Council"
 
     # Patch the hass.data to include the coordinator
@@ -303,8 +306,8 @@ async def test_async_setup_entry_handles_coordinator_failure(
         "coordinator": mock_coordinator,
     }
 
-    with pytest.raises(Exception, match="Update failed"):
-        await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+    await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+    mock_coordinator.async_config_entry_first_refresh.assert_not_called()
 
 
 @pytest.mark.asyncio
@@ -372,14 +375,15 @@ async def test_async_setup_entry_creates_no_calendar_entities_on_empty_data(
 
 
 @pytest.mark.asyncio
-async def test_async_setup_entry_with_coordinator_failure(
+async def test_async_setup_entry_ignores_stale_refresh_side_effect(
     hass_instance, mock_config_entry
 ):
-    """Test that async_setup_entry handles coordinator failures gracefully."""
+    """Calendar setup consumes coordinator data without refreshing it."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
     mock_coordinator.async_config_entry_first_refresh.side_effect = Exception(
         "Update failed"
     )
+    mock_coordinator.data = {}
     mock_coordinator.name = "Test Council"
 
     # Patch the hass.data to include the coordinator
@@ -387,15 +391,15 @@ async def test_async_setup_entry_with_coordinator_failure(
         "coordinator": mock_coordinator,
     }
 
-    with pytest.raises(Exception, match="Update failed"):
-        await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+    await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+    mock_coordinator.async_config_entry_first_refresh.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_async_setup_entry_handles_coordinator_failure(
+async def test_async_setup_entry_never_calls_refresh_mock(
     hass_instance, mock_config_entry
 ):
-    """Test that async_setup_entry raises an exception when coordinator refresh fails."""
+    """A configured failing refresh mock is not touched by calendar setup."""
     mock_coordinator = MagicMock(spec=DataUpdateCoordinator)
     # Provide an empty data dictionary so that accessing .data does not fail immediately.
     mock_coordinator.data = {}
@@ -409,8 +413,8 @@ async def test_async_setup_entry_handles_coordinator_failure(
         "coordinator": mock_coordinator
     }
 
-    with pytest.raises(Exception, match="Update failed"):
-        await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+    await async_setup_entry(hass_instance, mock_config_entry, lambda entities: None)
+    mock_coordinator.async_config_entry_first_refresh.assert_not_called()
 
 
 @pytest.mark.asyncio

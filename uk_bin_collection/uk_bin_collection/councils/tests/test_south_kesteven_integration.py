@@ -1,11 +1,13 @@
 """Integration tests for the South Kesteven binday Selenium flow."""
 
 import pytest
-from selenium.common.exceptions import WebDriverException
-from urllib3.exceptions import MaxRetryError
 
 from uk_bin_collection.uk_bin_collection.councils.SouthKestevenDistrictCouncil import (
     CouncilClass,
+)
+from uk_bin_collection.uk_bin_collection.exceptions import (
+    AddressMismatchError,
+    BrowserUnavailableError,
 )
 
 
@@ -37,7 +39,7 @@ class TestSouthKestevenIntegration:
                 headless=test_headless,
                 artifact_dir=str(tmp_path),
             )
-        except (MaxRetryError, WebDriverException) as exc:
+        except BrowserUnavailableError as exc:
             pytest.skip(f"Selenium unavailable for integration test: {exc}")
 
         assert "bins" in result
@@ -62,7 +64,8 @@ class TestSouthKestevenIntegration:
     ):
         try:
             with pytest.raises(
-                RuntimeError, match="Unable to find the property 'NOT_A_REAL_PROPERTY'"
+                AddressMismatchError,
+                match="configured property was not found",
             ):
                 self.council.parse_data(
                     "",
@@ -73,5 +76,5 @@ class TestSouthKestevenIntegration:
                     headless=test_headless,
                     artifact_dir=str(tmp_path),
                 )
-        except (MaxRetryError, WebDriverException) as exc:
+        except BrowserUnavailableError as exc:
             pytest.skip(f"Selenium unavailable for integration test: {exc}")

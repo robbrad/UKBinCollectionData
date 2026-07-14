@@ -35,8 +35,8 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Loop through the dates for each collection type
             for date in collection_dates:
-                print(f"Bin Type: {bin_type}")
-                print(f"Collection Date: {date}")
+                print("Collection type parsed")
+                print("Collection date parsed")
 
                 dict_data = {
                     "type": bin_type,

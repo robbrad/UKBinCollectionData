@@ -27,7 +27,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def __init__(self):
         """
         Initialize the CouncilClass instance.
-        
+
         Calls the superclass initializer, creates a requests.Session assigned to self._session, and sets self._have_session to False to indicate that an authenticated session has not yet been established.
         """
         super().__init__()
@@ -37,9 +37,9 @@ class CouncilClass(AbstractGetBinDataClass):
     def _initialise_session(self) -> None:
         """
         Establish an authenticated session with the remote service and mark the instance as having a valid session.
-        
+
         Performs an HTTP GET to the configured session endpoint and verifies the JSON response contains an "auth-session" indicator. On success sets the instance flag that a session is available.
-        
+
         Raises:
             requests.HTTPError: If the session request returned an HTTP error status.
             ValueError: If the response JSON cannot be decoded or does not contain an "auth-session" key.
@@ -58,14 +58,14 @@ class CouncilClass(AbstractGetBinDataClass):
     def _run_lookup(self, lookup_id: str, payload: dict) -> dict:
         """
         Run a lookup request and return the lookup's transformed rows data.
-        
+
         Parameters:
             lookup_id (str): Lookup identifier appended as the `id` query parameter to the lookup endpoint.
             payload (dict): JSON body sent with the POST request.
-        
+
         Returns:
             The `rows_data` value extracted from the response's `integration.transformed` object.
-        
+
         Raises:
             ValueError: If the response is not valid JSON or does not contain the expected `integration.transformed.rows_data` structure.
         """
@@ -83,20 +83,20 @@ class CouncilClass(AbstractGetBinDataClass):
         except requests.exceptions.JSONDecodeError as e:
             raise ValueError("Failed to decode lookup response as JSON") from e
         except KeyError as e:
-            logger.debug(f"Lookup response content: {response.text}")
+            logger.debug("Lookup response content omitted after schema mismatch.")
             raise ValueError("Unexpected response structure from lookup") from e
 
     def _get_uprn_from_postcode_and_paon(self, postcode: str, paon: str) -> str:
         """
         Return the UPRN for the address at the given postcode matching the provided PAON.
-        
+
         Parameters:
             postcode (str): Postcode to search.
             paon (str): Primary Addressable Object Name — house number or name to match.
-        
+
         Returns:
             str: The matching UPRN.
-        
+
         Raises:
             ValueError: If no addresses are found for the postcode or no address matches the PAON.
         """
@@ -135,7 +135,7 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Obtain the bin collection schedule for a property identified by UPRN or by postcode and house number/name.
-        
+
         Parameters:
             page (str): Unused but required by the interface.
             **kwargs: Identification parameters — provide either:
@@ -143,10 +143,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 OR
                 postcode (str): The property's postcode.
                 paon (str) or number (str): The property's primary addressable object name/number (required with postcode).
-        
+
         Returns:
             dict: A dictionary with a "bins" key mapping to a list of collection entries, each containing `type` and `collectionDate`.
-        
+
         Raises:
             ValueError: If required identification parameters are missing, input validation fails, or the remote lookup cannot resolve the property.
         """
@@ -191,16 +191,16 @@ class CouncilClass(AbstractGetBinDataClass):
     def _extract_bin_data(schedule: dict) -> dict:
         """
         Convert a schedule response into the standardized bins list.
-        
+
         Parameters:
             schedule (dict): Mapping of schedule rows returned by the API where each value is a dict containing at least the keys "Service" and "Date".
-        
+
         Returns:
             dict: {"bins": [ {"type": <service name>, "collectionDate": <date string formatted by date_format>} , ... ]}
-        
+
         Raises:
             ValueError: If `schedule` is empty.
-        
+
         Notes:
             - Rows missing required fields or containing unparsable dates are skipped and a warning is logged.
         """
@@ -232,6 +232,6 @@ class CouncilClass(AbstractGetBinDataClass):
                     }
                 )
             except (KeyError, ValueError) as e:
-                logger.warning(f"Skipping invalid row: {e}", exc_info=True)
+                logger.warning("Skipping invalid row (%s).", type(e).__name__)
 
         return {"bins": bins}

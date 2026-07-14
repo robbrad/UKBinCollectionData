@@ -1,12 +1,10 @@
+from __future__ import annotations
+
 import re
 import time
 from datetime import timedelta
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -20,6 +18,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -79,9 +88,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Select matching address
             address_select = Select(address_dropdown)
             matching_options = [
-                o
-                for o in address_select.options
-                if user_paon.lower() in o.text.lower()
+                o for o in address_select.options if user_paon.lower() in o.text.lower()
             ]
             if not matching_options:
                 raise ValueError(
@@ -96,9 +103,7 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(2)
 
             # Click Next to get bin results
-            next_btn2 = wait.until(
-                EC.element_to_be_clickable((By.ID, "NextButton"))
-            )
+            next_btn2 = wait.until(EC.element_to_be_clickable((By.ID, "NextButton")))
             next_btn2.click()
 
             # Wait for results page
@@ -146,7 +151,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 raise ValueError("No bin collection data found on the results page.")
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:

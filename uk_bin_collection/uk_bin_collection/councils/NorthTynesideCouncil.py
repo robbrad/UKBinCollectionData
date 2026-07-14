@@ -55,14 +55,14 @@ class CouncilClass(AbstractGetBinDataClass):
         if getattr(response, "raise_for_status", None):
             response.raise_for_status()
 
-
         # Parse form page and get the day of week and week offsets
         soup = BeautifulSoup(response.text, features="html.parser")
         schedule = soup.find("div", {"class": "waste-collection__schedule"})
 
         if schedule is None:
-            raise ValueError("No waste-collection schedule found. The page structure may have changed.")
-
+            raise ValueError(
+                "No waste-collection schedule found. The page structure may have changed."
+            )
 
         # Find days of form:
         #
@@ -94,13 +94,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 type_span = day.find("span", {"class": "waste-collection__day--type"})
                 # Direct text only (exclude nested spans, e.g., bank-holiday note)
-                bin_type_text = type_span.find(text=True, recursive=False) if type_span else None
+                bin_type_text = (
+                    type_span.find(text=True, recursive=False) if type_span else None
+                )
                 if not bin_type_text:
                     logger.warning("Skipping day: missing type")
                     continue
                 bin_type = bin_type_text.strip()
 
-                colour_span = day.find("span", {"class": "waste-collection__day--colour"})
+                colour_span = day.find(
+                    "span", {"class": "waste-collection__day--colour"}
+                )
                 if not colour_span:
                     logger.warning("Skipping day: missing colour")
                     continue
@@ -108,7 +112,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 collections.append((f"{bin_type} ({bin_colour})", collection_date))
             except (AttributeError, KeyError, TypeError, ValueError) as e:
-                logger.warning(f"Skipping unparsable day node: {e}")
+                logger.warning(f"Skipping unparsable day node: {type(e).__name__}")
                 continue
 
         return {

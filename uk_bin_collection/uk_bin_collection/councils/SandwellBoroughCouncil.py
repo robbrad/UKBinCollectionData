@@ -94,14 +94,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 rows_data = result["integration"]["transformed"]["rows_data"]
 
                 if not isinstance(rows_data, dict):
-                    logger.warning("Unexpected rows_data format: %s", rows_data)
+                    logger.warning("Unexpected rows_data format.")
                     continue
 
                 for row in rows_data.values():
                     date = row.get(date_key)
                     if not date:
                         logger.warning(
-                            "Date key '%s' missing in row: %s", date_key, row
+                            "Required collection date field missing from parsed row"
                         )
                         continue
 
@@ -111,11 +111,11 @@ class CouncilClass(AbstractGetBinDataClass):
                         )
 
             except requests.RequestException as e:
-                logger.error("API request failed: %s", e)
+                logger.error("API request failed: %s", type(e).__name__)
                 continue
             except (KeyError, ValueError, TypeError) as e:
-                logger.warning("Unexpected structure in response: %s", e)
+                logger.warning("Unexpected structure in response: %s", type(e).__name__)
                 continue
 
-        logger.info("Parsed bins: %s", bindata["bins"])
+        logger.info("Parsed %s bins", len(bindata["bins"]))
         return bindata

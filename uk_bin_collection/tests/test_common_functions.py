@@ -5,20 +5,34 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 from selenium.common.exceptions import WebDriverException
-from uk_bin_collection.common import *
-from urllib3.exceptions import MaxRetryError
+from uk_bin_collection.uk_bin_collection.common import *
 
 
 def test_check_postcode_valid():
     valid_postcode = "SW1A 1AA"
-    result = check_postcode(valid_postcode)
+    response = MagicMock(status_code=200)
+    with patch(
+        "uk_bin_collection.uk_bin_collection.common.requests.get", return_value=response
+    ) as get:
+        result = check_postcode(valid_postcode)
     assert result is True
+    get.assert_called_once_with(
+        "https://api.postcodes.io/postcodes/SW1A 1AA", timeout=(3.05, 10)
+    )
 
 
 def test_check_postcode_invalid():
     invalid_postcode = "BADPOSTCODE"
-    with pytest.raises(ValueError) as exc_info:
-        result = check_postcode(invalid_postcode)
+    response = MagicMock(status_code=404)
+    response.json.return_value = {"error": "Invalid postcode", "status": 404}
+    with (
+        patch(
+            "uk_bin_collection.uk_bin_collection.common.requests.get",
+            return_value=response,
+        ),
+        pytest.raises(ValueError) as exc_info,
+    ):
+        check_postcode(invalid_postcode)
     assert exc_info._excinfo[1].args[0] == "Exception: Invalid postcode Status: 404"
     assert exc_info.type == ValueError
 
@@ -34,7 +48,7 @@ def test_check_paon_invalid(capfd):
     with pytest.raises(SystemExit) as exc_info:
         result = check_paon(invalid_house_num)
     out, err = capfd.readouterr()
-    assert out.startswith("Exception encountered: Invalid house number")
+    assert out.startswith("Exception encountered: ValueError")
     assert exc_info.type == SystemExit
     assert exc_info.value.code == 1
 
@@ -222,8 +236,8 @@ def test_get_next_occurrence_from_day_month_true():
     assert result == pd.Timestamp("2024-01-01 00:00:00")
 
 
-@patch("uk_bin_collection.common.load_data", return_value={})
-@patch("uk_bin_collection.common.save_data")
+@patch("uk_bin_collection.uk_bin_collection.common.load_data", return_value={})
+@patch("uk_bin_collection.uk_bin_collection.common.save_data")
 def test_update_input_json(mock_save_data, mock_load_data):
     update_input_json(
         "test_council",
@@ -248,20 +262,18 @@ def test_update_input_json(mock_save_data, mock_load_data):
     mock_save_data.assert_called_once_with("path/to/input.json", expected_data)
 
 
-@patch("uk_bin_collection.common.load_data")
-@patch("uk_bin_collection.common.save_data")
+@patch("uk_bin_collection.uk_bin_collection.common.load_data")
+@patch("uk_bin_collection.uk_bin_collection.common.save_data")
 def test_update_input_json_ioerror(mock_save_data, mock_load_data):
     mock_load_data.side_effect = IOError("Unable to access file")
 
     with patch("builtins.print") as mock_print:
         update_input_json("test_council", "TEST_URL", "path/to/input.json")
-        mock_print.assert_called_once_with(
-            "Error updating the JSON file: Unable to access file"
-        )
+        mock_print.assert_called_once_with("Error updating the JSON file: OSError")
 
 
-@patch("uk_bin_collection.common.load_data")
-@patch("uk_bin_collection.common.save_data")
+@patch("uk_bin_collection.uk_bin_collection.common.load_data")
+@patch("uk_bin_collection.uk_bin_collection.common.save_data")
 def test_update_input_json_jsondecodeerror(mock_save_data, mock_load_data):
     mock_load_data.side_effect = json.JSONDecodeError("Expecting value", "doc", 0)
 
@@ -295,8 +307,12 @@ def test_load_data_non_existing_file():
 def test_load_data_invalid_json():
     # Create a mock file with invalid JSON content
     mock_file_data = '{"key": "value"'
-    with patch("builtins.open", mock_open(read_data=mock_file_data)), patch(
-        "json.load", side_effect=json.JSONDecodeError("Expecting ',' delimiter", "", 0)
+    with (
+        patch("builtins.open", mock_open(read_data=mock_file_data)),
+        patch(
+            "json.load",
+            side_effect=json.JSONDecodeError("Expecting ',' delimiter", "", 0),
+        ),
     ):
         data = load_data("path/to/invalid.json")
         assert data == {}  # Modify based on your desired behavior
@@ -359,16 +375,67 @@ def test_contains_date_with_mixed_content():
 
 
 def test_create_webdriver_local():
-    result = create_webdriver(
-        None, headless=True, user_agent="FireFox", session_name="test-session"
-    )
+    mock_webdriver = mock.MagicMock()
+    mock_options = mock.MagicMock()
+    mock_webdriver.ChromeOptions.return_value = mock_options
+    mock_driver = mock.MagicMock(name="local-driver")
+    mock_driver.name = "chrome"
+    mock_webdriver.Chrome.return_value = mock_driver
+    mock_service = mock.MagicMock()
+    mock_manager = mock.MagicMock()
+    mock_manager.return_value.install.return_value = "/drivers/chromedriver"
+
+    with (
+        mock.patch(
+            "uk_bin_collection.uk_bin_collection.common._load_selenium_dependencies",
+            return_value=(mock_webdriver, WebDriverException),
+        ),
+        mock.patch(
+            "uk_bin_collection.uk_bin_collection.common._load_local_chrome_dependencies",
+            return_value=(mock_service, mock_manager),
+        ),
+    ):
+        result = create_webdriver(
+            None, headless=True, user_agent="FireFox", session_name="test-session"
+        )
+
     assert result.name in ["chrome", "chrome-headless-shell"]
+    mock_webdriver.Chrome.assert_called_once()
 
 
 def test_create_webdriver_remote_failure():
     # Test the scenario where the remote server is not available
-    with pytest.raises(MaxRetryError) as exc_info:
+    mock_webdriver = mock.MagicMock()
+    mock_webdriver.ChromeOptions.return_value = mock.MagicMock()
+    mock_webdriver.Remote.side_effect = WebDriverException("server unavailable")
+    with (
+        mock.patch(
+            "uk_bin_collection.uk_bin_collection.common._load_selenium_dependencies",
+            return_value=(mock_webdriver, WebDriverException),
+        ),
+        pytest.raises(BrowserUnavailableError),
+    ):
         create_webdriver("http://invalid-url:4444", False)
+
+
+@pytest.mark.parametrize(
+    "web_driver",
+    ["/path/to/webdriver", "selenium:4444", "ftp://selenium:4444", "http://:4444"],
+)
+def test_create_webdriver_rejects_malformed_remote_url(web_driver):
+    mock_webdriver = mock.MagicMock()
+    mock_webdriver.ChromeOptions.return_value = mock.MagicMock()
+
+    with (
+        mock.patch(
+            "uk_bin_collection.uk_bin_collection.common._load_selenium_dependencies",
+            return_value=(mock_webdriver, WebDriverException),
+        ),
+        pytest.raises(BrowserUnavailableError, match="WebDriver URL"),
+    ):
+        create_webdriver(web_driver)
+
+    mock_webdriver.Remote.assert_not_called()
 
 
 def test_create_webdriver_remote_with_session_name():
@@ -378,20 +445,61 @@ def test_create_webdriver_remote_with_session_name():
         "http://localhost:4444/wd/hub"  # Use a valid remote WebDriver URL for testing
     )
 
-    # Mock the Remote WebDriver
-    with mock.patch("uk_bin_collection.common.webdriver.Remote") as mock_remote:
+    # Mock the lazily loaded Remote WebDriver
+    mock_webdriver = mock.MagicMock()
+    mock_options = mock.MagicMock()
+    mock_options._caps = {}
+    mock_options.set_capability.side_effect = mock_options._caps.__setitem__
+    mock_webdriver.ChromeOptions.return_value = mock_options
+    mock_service = mock.MagicMock()
+    mock_manager = mock.MagicMock()
+    with mock.patch(
+        "uk_bin_collection.uk_bin_collection.common._load_selenium_dependencies",
+        return_value=(mock_webdriver, WebDriverException),
+    ):
         mock_instance = mock.MagicMock()
         mock_instance.name = "chrome"
-        mock_remote.return_value = mock_instance
+        mock_webdriver.Remote.return_value = mock_instance
 
         # Call the function with the test parameters
         result = create_webdriver(web_driver=web_driver_url, session_name=session_name)
 
         # Check if the session name was set in capabilities
-        args, kwargs = mock_remote.call_args
+        args, kwargs = mock_webdriver.Remote.call_args
         options = kwargs["options"]
         assert options._caps.get("se:name") == session_name
         assert result.name == "chrome"
+
+
+def test_create_webdriver_remote_uses_bounded_client_config():
+    mock_webdriver = mock.MagicMock()
+    mock_webdriver.ChromeOptions.return_value = mock.MagicMock()
+    mock_driver = mock.MagicMock(name="remote-driver")
+    mock_webdriver.Remote.return_value = mock_driver
+    client_config = object()
+
+    with (
+        mock.patch(
+            "uk_bin_collection.uk_bin_collection.common._load_selenium_dependencies",
+            return_value=(mock_webdriver, WebDriverException),
+        ),
+        mock.patch(
+            "uk_bin_collection.uk_bin_collection.common._build_remote_client_config",
+            return_value=client_config,
+        ) as build_config,
+        mock.patch(
+            "uk_bin_collection.uk_bin_collection.common._load_local_chrome_dependencies",
+            side_effect=AssertionError(
+                "remote WebDriver must not require local Chrome dependencies"
+            ),
+        ) as local_dependencies,
+    ):
+        result = create_webdriver(web_driver="http://selenium:4444", command_timeout=17)
+
+    assert result is mock_driver
+    local_dependencies.assert_not_called()
+    build_config.assert_called_once_with("http://selenium:4444", 17)
+    assert mock_webdriver.Remote.call_args.kwargs["client_config"] is client_config
 
 
 def test_string_with_numbers():
@@ -457,7 +565,7 @@ def test_string_with_whitespace_and_numbers():
 def test_get_next_day_of_week(today_str, day_name, expected):
     mock_today = datetime.strptime(today_str, "%Y-%m-%d")
     with patch(
-        "uk_bin_collection.common.datetime"
+        "uk_bin_collection.uk_bin_collection.common.datetime"
     ) as mock_datetime:  # replace 'your_module' with the actual module name
         mock_datetime.now.return_value = mock_today
         mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)
@@ -485,7 +593,10 @@ def test_build_retry_session_custom_headers_and_methods():
 
 
 def test_get_scraper_user_agent_uses_installed_version():
-    with patch("uk_bin_collection.common._pkg_version", return_value="1.2.3"):
+    with patch(
+        "uk_bin_collection.uk_bin_collection.common._pkg_version",
+        return_value="1.2.3",
+    ):
         result = get_scraper_user_agent()
     assert result == (
         "uk-bin-collection/1.2.3 (+https://github.com/robbrad/UKBinCollectionData)"
@@ -494,7 +605,8 @@ def test_get_scraper_user_agent_uses_installed_version():
 
 def test_get_scraper_user_agent_falls_back_when_not_installed():
     with patch(
-        "uk_bin_collection.common._pkg_version", side_effect=PackageNotFoundError
+        "uk_bin_collection.uk_bin_collection.common._pkg_version",
+        side_effect=PackageNotFoundError,
     ):
         result = get_scraper_user_agent()
     assert result == (
@@ -504,7 +616,8 @@ def test_get_scraper_user_agent_falls_back_when_not_installed():
 
 def test_get_scraper_user_agent_custom_fallback():
     with patch(
-        "uk_bin_collection.common._pkg_version", side_effect=PackageNotFoundError
+        "uk_bin_collection.uk_bin_collection.common._pkg_version",
+        side_effect=PackageNotFoundError,
     ):
         result = get_scraper_user_agent(fallback_version="dev")
     assert result == (

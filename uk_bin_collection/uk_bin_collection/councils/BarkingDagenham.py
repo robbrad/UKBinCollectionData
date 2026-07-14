@@ -1,15 +1,11 @@
+from __future__ import annotations
+
 # This script pulls bin collection data from Barking and Dagenham Council
 # Example URL: https://www.lbbd.gov.uk/rubbish-recycling/household-bin-collection/check-your-bin-collection-days
 import time
 
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -18,6 +14,19 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, NoSuchElementException, Select, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.common.exceptions import NoSuchElementException, TimeoutException
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -28,16 +37,12 @@ class CouncilClass(AbstractGetBinDataClass):
             headless = kwargs.get("headless")
             url = kwargs.get("url")
 
-            print(
-                f"Starting parse_data with parameters: postcode={postcode}, paon={user_paon}"
-            )
-            print(
-                f"Creating webdriver with: web_driver={web_driver}, headless={headless}"
-            )
+            print("Starting parse_data with configured address parameters")
+            print(f"Creating configured webdriver (headless={headless})")
 
             user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            print(f"Navigating to URL: {url}")
+            print("Navigating to the configured council page")
             driver.get(url)
             print("Successfully loaded the page")
 
@@ -82,7 +87,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             post_code_input.clear()
             post_code_input.send_keys(postcode)
-            print(f"Entered postcode: {postcode}")
+            print("Postcode entered")
 
             driver.switch_to.active_element.send_keys(Keys.TAB + Keys.ENTER)
             print("Pressed ENTER on Search button")
@@ -152,13 +157,13 @@ class CouncilClass(AbstractGetBinDataClass):
                             "collectionDate": bin_date,
                         }
                         data["bins"].append(dict_data)
-                        print(f"Successfully added collection: {dict_data}")
+                        print("Collection added successfully")
 
                 except Exception as e:
-                    print(f"Error processing item: {e}")
+                    print(f"Error processing item ({type(e).__name__})")
                     continue
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred ({type(e).__name__})")
             raise
         finally:
             print("Cleaning up webdriver...")

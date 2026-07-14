@@ -1,9 +1,8 @@
+from __future__ import annotations
+
 import time
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 import pdb
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -19,6 +18,16 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             user_postcode = kwargs.get("postcode")
@@ -42,18 +51,20 @@ class CouncilClass(AbstractGetBinDataClass):
             for attempt in range(max_attempts):
                 try:
                     WebDriverWait(driver, 60).until(
-                        lambda d: "Just a moment" not in d.title and d.title != "" and len(d.find_elements(By.TAG_NAME, "input")) > 1
+                        lambda d: "Just a moment" not in d.title
+                        and d.title != ""
+                        and len(d.find_elements(By.TAG_NAME, "input")) > 1
                     )
-                    print(f"Page loaded: {driver.title}")
+                    print("Page loaded successfully.")
                     break
                 except:
-                    print(f"Attempt {attempt + 1}: Timeout waiting for page load. Current title: {driver.title}")
+                    print(f"Attempt {attempt + 1}: timeout waiting for page load.")
                     if attempt < max_attempts - 1:
                         time.sleep(10)
                         driver.refresh()
                     else:
                         print("Failed to bypass Cloudflare after multiple attempts")
-            
+
             time.sleep(8)
 
             try:
@@ -70,27 +81,30 @@ class CouncilClass(AbstractGetBinDataClass):
             # Check for multiple iframes and find the correct one
             try:
                 iframes = driver.find_elements(By.TAG_NAME, "iframe")
-                
+
                 # Try each iframe to find the one with the bin collection form
                 for i, iframe in enumerate(iframes):
                     try:
                         driver.switch_to.frame(iframe)
-                        
+
                         # Check if this iframe has the postcode input
                         time.sleep(2)
                         inputs = driver.find_elements(By.TAG_NAME, "input")
-                        
+
                         # Look for address-related inputs
                         for inp in inputs:
-                            aria_label = inp.get_attribute('aria-label') or ''
-                            placeholder = inp.get_attribute('placeholder') or ''
-                            if 'address' in aria_label.lower() or 'postcode' in placeholder.lower():
+                            aria_label = inp.get_attribute("aria-label") or ""
+                            placeholder = inp.get_attribute("placeholder") or ""
+                            if (
+                                "address" in aria_label.lower()
+                                or "postcode" in placeholder.lower()
+                            ):
                                 break
                         else:
                             # This iframe doesn't have the form, try the next one
                             driver.switch_to.default_content()
                             continue
-                        
+
                         # Found the right iframe, break out of the loop
                         break
                     except Exception as e:
@@ -108,9 +122,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 '[aria-label="Enter your address"]',
                 'input[placeholder*="postcode"]',
                 'input[placeholder*="address"]',
-                'input[type="text"]'
+                'input[type="text"]',
             ]
-            
+
             for selector in selectors:
                 try:
                     postcode_input = WebDriverWait(driver, 5).until(
@@ -119,7 +133,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     break
                 except:
                     continue
-            
+
             if not postcode_input:
                 raise ValueError("Could not find postcode input field")
 
@@ -214,7 +228,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

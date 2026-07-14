@@ -1,12 +1,9 @@
+from __future__ import annotations
+
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -24,19 +21,31 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Query West Oxfordshire's waste collection site for a property's bin types and upcoming collection dates.
-        
+
         Parameters:
             page (str): Ignored; the function always queries the West Oxfordshire waste collection enquiry page.
             paon (str, in kwargs): Property house number or name.
             postcode (str, in kwargs): Property postcode.
             web_driver (str or WebDriver, in kwargs): WebDriver identifier or instance used to create the Selenium driver.
             headless (bool, in kwargs): Whether to run the browser in headless mode.
-        
+
         Returns:
             dict: A dictionary with a "bins" key mapping to a list of objects, each containing:
                 - "type" (str): Bin/container type (e.g., "General waste", "Recycling").
                 - "collectionDate" (str): Next collection date formatted as "DD/MM/YYYY".
         """
+        global By, EC, Keys, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             page = "https://community.westoxon.gov.uk/s/waste-collection-enquiry"
@@ -53,7 +62,7 @@ class CouncilClass(AbstractGetBinDataClass):
             user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(page)
-            
+
             # Scroll to top-left to ensure components are visible
             driver.execute_script("window.scrollTo(0, 0);")
 
@@ -67,7 +76,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             address_entry_field.click()
             address_entry_field.send_keys(str(full_address))
-            
+
             # Trigger dropdown by sending backspace and re-typing last character
             time.sleep(1)  # Give the search a moment to process
             address_entry_field.send_keys(Keys.BACKSPACE)
@@ -77,7 +86,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # The second item contains the actual address (first is "Show more results")
             first_found_address = wait.until(
                 EC.element_to_be_clickable(
-                    (By.XPATH, '(//lightning-base-combobox-item)[2]')
+                    (By.XPATH, "(//lightning-base-combobox-item)[2]")
                 )
             )
             first_found_address.click()
@@ -129,7 +138,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
