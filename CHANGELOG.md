@@ -1,4 +1,11 @@
 =======
+## 0.170.1 (2026-07-14)
+
+### Fix
+
+- FlintshireCountyCouncil - skip schedule-note rows, not a bin type
+- #2153 LincolnCouncil - roll forward a stale anchor date
+
 ## 0.170.0 (2026-07-13)
 
 ### BREAKING CHANGE
