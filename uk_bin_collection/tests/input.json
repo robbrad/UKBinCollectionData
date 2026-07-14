@@ -1969,13 +1969,12 @@
     },
     "NorthWestLeicestershire": {
         "LAD24CD": "E07000134",
+        "house_number": "9",
         "postcode": "DE74 2FZ",
         "skip_get_url": true,
-        "uprn": "100030572613",
         "url": "https://www.nwleics.gov.uk/pages/collection_information",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "North West Leicestershire",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the postcode and house number. No UPRN or Selenium webdriver needed."
     },
     "NorthYorkshire": {
         "LAD24CD": "E06000065",
