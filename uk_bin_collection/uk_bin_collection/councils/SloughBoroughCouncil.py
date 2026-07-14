@@ -1,158 +1,129 @@
-import re
-import time
-from datetime import datetime
+import json
 
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+BASE_URL = "https://waste.slough.gov.uk/PublicDashboard"
 
-def get_street_from_postcode(postcode: str, api_key: str) -> str:
-    url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {"address": postcode, "key": api_key}
-    response = requests.get(url, params=params)
-    data = response.json()
 
-    if data["status"] != "OK":
-        raise ValueError(f"API error: {data['status']}")
-
-    for component in data["results"][0]["address_components"]:
-        if "route" in component["types"]:
-            return component["long_name"]
-
-    raise ValueError("No street (route) found in the response.")
+def _extract_json_array(text: str, marker: str, start_from: int = 0):
+    """Pull the JSON array passed to ejs.data.DataUtil.parse.isJson(...) after marker."""
+    idx = text.index(marker, start_from) + len(marker)
+    start = text.index("[", idx)
+    array, _ = json.JSONDecoder().raw_decode(text, start)
+    return array
 
 
 class CouncilClass(AbstractGetBinDataClass):
+    """
+    Slough Borough Council uses a Syncfusion-based "Public Dashboard"
+    (waste.slough.gov.uk) that renders premises and the collection schedule
+    as plain server-rendered JSON embedded in the page - no browser needed.
+    """
+
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        bin_data = {"bins": []}
-        try:
-            user_postcode = kwargs.get("postcode")
-            if not user_postcode:
-                raise ValueError("No postcode provided.")
-            check_postcode(user_postcode)
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        user_uprn = kwargs.get("uprn")
+        check_postcode(user_postcode)
+        bindata = {"bins": []}
 
-            headless = kwargs.get("headless")
-            web_driver = kwargs.get("web_driver")
-            UserAgent = "Mozilla/5.0"
-            driver = create_webdriver(web_driver, headless, UserAgent, __name__)
-            page = "https://www.slough.gov.uk/bin-collections"
-            driver.get(page)
-            # Accept cookies
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.ID, "ccc-recommended-settings"))
-            ).click()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        }
 
-            # Enter the street name into the address search
-            address_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "keyword_directory30"))
+        s = requests.Session()
+        r = s.get(BASE_URL, headers=headers, timeout=15)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        token = soup.find("input", {"name": "__RequestVerificationToken"})["value"]
+
+        post_headers = {
+            **headers,
+            "Referer": BASE_URL,
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        r = s.post(
+            f"{BASE_URL}?handler=SearchPostcode",
+            data={
+                "SelectedPostcode": user_postcode,
+                "__RequestVerificationToken": token,
+            },
+            headers=post_headers,
+            timeout=15,
+        )
+        r.raise_for_status()
+        premises = _extract_json_array(r.text, "ejs.data.DataUtil.parse.isJson(")
+        if not premises:
+            raise ValueError("No addresses found for this postcode")
+
+        soup = BeautifulSoup(r.text, "html.parser")
+        token = soup.find("input", {"name": "__RequestVerificationToken"})["value"]
+
+        if user_uprn:
+            check_uprn(user_uprn)
+            match = next(
+                (p for p in premises if str(int(p["UPRN"])) == str(user_uprn)), None
             )
-            user_address = get_street_from_postcode(
-                user_postcode, "AIzaSyBDLULT7EIlNtHerswPtfmL15Tt3Oc0bV8"
-            )
-            address_input.send_keys(user_address + Keys.ENTER)
-
-            # Wait for address results to load
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_all_elements_located(
-                    (By.CSS_SELECTOR, "span.list__link-text")
+            if not match:
+                raise ValueError(
+                    f"Could not match UPRN '{user_uprn}' in address results"
                 )
+        elif user_paon:
+            check_paon(user_paon)
+            paon_norm = str(user_paon).strip().upper()
+            match = next(
+                (
+                    p
+                    for p in premises
+                    if p["Premises"].upper().startswith(paon_norm + " ")
+                ),
+                None,
             )
-            span_elements = driver.find_elements(
-                By.CSS_SELECTOR, "span.list__link-text"
-            )
-
-            for span in span_elements:
-                if user_address.lower() in span.text.lower():
-                    span.click()
-                    break
-            else:
-                raise Exception(f"No link found containing address: {user_address}")
-
-            # Wait for address detail page
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "section.site-content")
+            if not match:
+                raise ValueError(
+                    f"Could not match house number '{user_paon}' in address results"
                 )
+        elif len(premises) == 1:
+            match = premises[0]
+        else:
+            raise ValueError(
+                "Multiple addresses found for this postcode; provide a UPRN or house number to disambiguate"
             )
-            soup = BeautifulSoup(driver.page_source, "html.parser")
 
-            # Extract each bin link and type
-            for heading in soup.select("dt.definition__heading"):
-                heading_text = heading.get_text(strip=True)
-                if "bin day details" in heading_text.lower():
-                    bin_type = heading_text.split()[0].capitalize() + " bin"
-                    dd = heading.find_next_sibling("dd")
-                    link = dd.find("a", href=True)
+        r = s.post(
+            f"{BASE_URL}?handler=SelectPrem",
+            data={
+                "SelectedPostcode": user_postcode,
+                "SelectedPremises": str(int(match["UPRN"])),
+                "__RequestVerificationToken": token,
+            },
+            headers=post_headers,
+            timeout=15,
+        )
+        r.raise_for_status()
+        events = _extract_json_array(
+            r.text, "ejs.data.DataUtil.parse.isJson(", r.text.index("eventSettings")
+        )
 
-                    if link:
-                        bin_url = link["href"]
-                        if not bin_url.startswith("http"):
-                            bin_url = "https://www.slough.gov.uk" + bin_url
+        today = datetime.now().date()
+        for event in events:
+            collection_date = datetime.fromisoformat(event["StartTime"]).date()
+            if collection_date < today:
+                continue
+            bindata["bins"].append(
+                {
+                    "type": event["Subject"].title(),
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+            )
 
-                        # Visit the child page
-                        # print(f"Navigating to {bin_url}")
-                        driver.get(bin_url)
-                        WebDriverWait(driver, 10).until(
-                            EC.presence_of_element_located(
-                                (By.CSS_SELECTOR, "div.page-content")
-                            )
-                        )
-                        child_soup = BeautifulSoup(driver.page_source, "html.parser")
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
 
-                        editor_div = child_soup.find("div", class_="editor")
-                        if not editor_div:
-                            # print("No editor div found on bin detail page.")
-                            continue
-
-                        ul = editor_div.find("ul")
-                        if not ul:
-                            # print("No <ul> with dates found in editor div.")
-                            continue
-
-                    for li in ul.find_all("li"):
-                        raw_text = li.get_text(strip=True).replace(".", "")
-
-                        if (
-                            "no collection" in raw_text.lower()
-                            or "no collections" in raw_text.lower()
-                        ):
-                            # print(f"Ignoring non-collection note: {raw_text}")
-                            continue
-
-                        raw_date = raw_text
-
-                        try:
-                            parsed_date = datetime.strptime(raw_date, "%d %B %Y")
-                        except ValueError:
-                            raw_date_cleaned = raw_date.split("(")[0].strip()
-                            try:
-                                parsed_date = datetime.strptime(
-                                    raw_date_cleaned, "%d %B %Y"
-                                )
-                            except Exception:
-                                print(f"Could not parse date: {raw_text}")
-                                continue
-
-                        formatted_date = parsed_date.strftime("%d/%m/%Y")
-                        contains_date(formatted_date)
-                        bin_data["bins"].append(
-                            {"type": bin_type, "collectionDate": formatted_date}
-                        )
-
-                        # print(f"Type: {bin_type}, Date: {formatted_date}")
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            raise
-        finally:
-            if driver:
-                driver.quit()
-        return bin_data
+        return bindata
