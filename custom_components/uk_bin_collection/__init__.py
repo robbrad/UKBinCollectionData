@@ -125,7 +125,11 @@ def _release_collector_run_state(
         return
 
     state = run_states.get(entry_id)
-    if state is None or (expected is not None and state is not expected):
+    if state is None:
+        if not run_states:
+            domain_data.pop(_COLLECTOR_RUN_STATES, None)
+        return
+    if expected is not None and state is not expected:
         return
 
     active_run = state.active_run

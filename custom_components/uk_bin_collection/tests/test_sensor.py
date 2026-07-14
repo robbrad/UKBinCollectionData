@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch, Mock
 import pytest
 from freezegun import freeze_time
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryError, ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.util import dt as dt_util
 from homeassistant.core import ServiceCall
@@ -670,11 +670,12 @@ async def test_coordinator_general_exception(hass, mock_config_entry):
             config_entry=mock_config_entry,
         )
 
-        # Expect ConfigEntryNotReady instead of UpdateFailed
+        # Initial setup converts the redacted unexpected-error category into a
+        # retryable Home Assistant setup error without exposing exception text.
         with pytest.raises(ConfigEntryNotReady) as exc_info:
             await coordinator.async_config_entry_first_refresh()
 
-        assert "Unexpected error" in str(exc_info.value)
+        assert str(exc_info.value) == "Unexpected collector error (Exception)."
 
 
 def process_bin_data_duplicate_bin_types(freezer):
@@ -1335,7 +1336,7 @@ async def test_async_setup_entry_missing_required_fields(hass):
         mock_app_instance.run.return_value = "{}"
         hass.async_add_executor_job = AsyncMock(return_value="{}")
 
-        with pytest.raises(ConfigEntryNotReady) as exc_info:
+        with pytest.raises(ConfigEntryError) as exc_info:
             # Call the domain-level function
             await async_setup_entry_domain(hass, mock_config_entry)
 
@@ -1504,10 +1505,9 @@ def test_load_icon_color_mapping_invalid_json():
         result = load_icon_color_mapping(invalid_json)
         # The function should return {}
         assert result == {}
-        # Note the double space after the prefix – adjust to match the actual log message.
         mock_warn.assert_called_once_with(
-            "[UKBinCollection] Invalid icon_color_mapping JSON: "
-            f"{invalid_json}. Using default settings."
+            "%s Invalid icon_color_mapping JSON. Using default settings.",
+            LOG_PREFIX,
         )
 
 
@@ -1535,7 +1535,7 @@ async def test_bin_sensor_missing_bin_type(hass, mock_config_entry):
     assert sensor.extra_state_attributes["days"] is None
     assert sensor.available is True
     mock_debug.assert_called_once_with(
-        "[UKBinCollection] No upcoming date for bin type 'General Waste'."
+        "%s No upcoming date for this entity.", LOG_PREFIX
     )
 
 
@@ -1558,7 +1558,7 @@ async def test_attribute_sensor_undefined_attribute_type(hass, mock_config_entry
         state = sensor.state
     assert state == "Undefined"
     mock_warn.assert_called_once_with(
-        "[UKBinCollection] Undefined attribute type: Bogus Attribute"
+        "%s Entity has an undefined attribute type.", LOG_PREFIX
     )
 
 

@@ -1127,7 +1127,8 @@ def test_load_icon_color_mapping_invalid():
         result = load_icon_color_mapping(invalid_json)
         assert result == {}
         mock_warn.assert_called_once_with(
-            f"{LOG_PREFIX} Invalid icon_color_mapping JSON: {invalid_json}. Using default settings."
+            "%s Invalid icon_color_mapping JSON. Using default settings.",
+            LOG_PREFIX,
         )
 
 
@@ -1570,7 +1571,7 @@ def test_south_kesteven_registry_metadata_and_browser_validation():
     assert data["skip_get_url"] is True
     assert data["url"] == "https://www.southkesteven.gov.uk/binday"
     assert validate_council_input(council_info, data) == {
-        "web_driver": "browser_required"
+        "web_driver": "remote_browser_required"
     }
 
     data["web_driver"] = "http://selenium:4444"
@@ -1587,7 +1588,11 @@ def test_webdriver_url_validation_rejects_non_http_or_missing_host():
     for value in ("/path/to/webdriver", "selenium:4444", "http://:4444"):
         assert validate_council_input(
             council_info,
-            {"council": "ExampleCouncil", "web_driver": value},
+            {
+                "council": "ExampleCouncil",
+                "url": "https://example.test/collections",
+                "web_driver": value,
+            },
         ) == {"web_driver": "invalid_webdriver_url"}
 
 

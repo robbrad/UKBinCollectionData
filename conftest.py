@@ -37,6 +37,9 @@ def hass():
     from homeassistant.core import HomeAssistant
 
     hass = MagicMock(spec=HomeAssistant)
+    # ``data`` is an instance attribute on a real HomeAssistant object, so it
+    # is not created by ``MagicMock(spec=HomeAssistant)`` automatically.
+    hass.data = {}
 
     # Mock the event loop with create_task as AsyncMock
     hass.loop = MagicMock()
