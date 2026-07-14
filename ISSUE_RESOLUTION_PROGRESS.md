@@ -287,7 +287,7 @@ this is a maintainer decision, not made in this session.
 | 29a242d0 | EastDevonDC | Send scraper User-Agent header to get past a 403 block |
 | 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
-| (pending) | EalingCouncil / LondonBoroughEaling | Dedupe #1884 - see note below |
+| 82886007 | EalingCouncil / LondonBoroughEaling | Dedupe #1884 - see note below |
 
 **Dedupe (Ealing, #1884):** both modules hit the same
 `WasteCollectionWS/home/FindCollection` API and, per the maintainer's own earlier
