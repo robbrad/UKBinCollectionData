@@ -285,8 +285,8 @@ this is a maintainer decision, not made in this session.
 | 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 | 54c04e21 | HaringeyCouncil | Rewrite for `wastecollections.haringey.gov.uk` JSON API - corrects earlier "AWS WAF, unfixable" conclusion, see note below |
-| (pending) | SloughBoroughCouncil | Rewrite for `waste.slough.gov.uk` Public Dashboard, pure HTTP, drops Selenium entirely - see note below |
-| (pending) | SunderlandCityCouncil | Rewrite the GOSS iCM form flow as pure HTTP, drops undetected-chromedriver entirely - see note below |
+| 2c1b9095 | SloughBoroughCouncil | Rewrite for `waste.slough.gov.uk` Public Dashboard, pure HTTP, drops Selenium entirely - see note below |
+| 2c1b9095 | SunderlandCityCouncil | Rewrite the GOSS iCM form flow as pure HTTP, drops undetected-chromedriver entirely - see note below |
 
 **Correction (Haringey, #2113):** the earlier "Investigated, not fixed" entry above
 was wrong. Re-investigated live: the *old* `/property/{uprn}` URL the scraper POSTed
