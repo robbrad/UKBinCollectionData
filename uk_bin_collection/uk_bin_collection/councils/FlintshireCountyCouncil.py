@@ -47,6 +47,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Loop through the dates for each collection type
             for bin_type in bin_types:
+                # Rows like "*New Round* - Tuesday AHP" are schedule notices,
+                # not an actual bin type - skip them.
+                if bin_type.startswith("*"):
+                    continue
 
                 dict_data = {
                     "type": bin_type,
