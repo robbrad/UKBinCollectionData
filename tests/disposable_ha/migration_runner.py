@@ -21,6 +21,16 @@ ENTRY_IDS = (
     "ddddddddddddddddddddddddddddddd2",
     "ddddddddddddddddddddddddddddddd3",
 )
+EXPECTED_ENTITY_SUFFIXES = (
+    "Fixture Bin",
+    "Fixture Bin_bin_type",
+    "Fixture Bin_calendar",
+    "Fixture Bin_colour",
+    "Fixture Bin_days_until_collection",
+    "Fixture Bin_next_collection_date",
+    "Fixture Bin_next_collection_human_readable",
+    "raw_json",
+)
 SNAPSHOT_PATH = EVIDENCE / "migration_v4_snapshot.json"
 SENSITIVE_SENTINELS = (
     "Synthetic Address V1",
@@ -220,12 +230,9 @@ def _entity_ids() -> set[str | None]:
 
 def _assert_entity_contract(timeout: float) -> int:
     expected = {
-        unique_id
+        f"{entry_id}_{suffix}"
         for entry_id in ENTRY_IDS
-        for unique_id in (
-            f"{entry_id}_Fixture Bin",
-            f"{entry_id}_Fixture Bin_calendar",
-        )
+        for suffix in EXPECTED_ENTITY_SUFFIXES
     }
     deadline = time.monotonic() + timeout
     actual: set[str | None] = set()
