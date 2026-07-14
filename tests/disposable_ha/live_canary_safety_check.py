@@ -427,10 +427,20 @@ def _reviewed_image_process_sha256(image: dict) -> str:
     entrypoint = config.get("Entrypoint") or []
     command = config.get("Cmd") or []
     _require(
-        isinstance(entrypoint, list) and isinstance(command, list),
+        isinstance(entrypoint, list)
+        and all(isinstance(value, str) for value in entrypoint)
+        and isinstance(command, list)
+        and all(isinstance(value, str) for value in command),
         "reviewed Selenium image process metadata is malformed",
     )
-    process = [str(value) for value in [*entrypoint, *command]]
+    if entrypoint:
+        process = [*entrypoint, *command]
+    else:
+        # Podman 4.9 represents a Cmd-only image with the command's first value
+        # as Path and the complete command (including argv[0]) as Args. Bind to
+        # that exact inspected representation instead of assuming Docker's
+        # Path/Args normalization.
+        process = [command[0], *command] if command else []
     _require(
         bool(process) and bool(process[0].strip()),
         "reviewed Selenium image has no default process",

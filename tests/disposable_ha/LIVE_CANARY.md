@@ -125,6 +125,9 @@ complete expected drop set in container state; a merely non-empty drop list does
 not pass. The full local image IDs must match the three separately recorded
 immutable values; mutable image names and short IDs do not pass. Host PID, IPC,
 user, UTS, or cgroup namespace modes do not pass where the runtime exposes them.
+For a `Cmd`-only image, Podman 4.9 reports the command's first value as `Path`
+and repeats the complete command in `Args`; the validator derives and binds that
+exact runtime representation from the immutable reviewed image metadata.
 
 After that check passes, start the proxy and Selenium, wait only for Selenium's
 internal `/status` endpoint, and attach to the runner once. Do not use `podman

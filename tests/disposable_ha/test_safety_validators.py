@@ -343,6 +343,20 @@ def test_live_validator_binds_selenium_entrypoint_and_arguments_by_digest() -> N
         live._require_expected_process("selenium", reviewed, "reviewed-command")
 
 
+def test_live_validator_normalizes_podman_cmd_only_process_metadata() -> None:
+    command = "/opt/bin/entry_point.sh"
+    image = {"Config": {"Entrypoint": None, "Cmd": [command]}}
+    podman_inspect = {"Path": command, "Args": [command]}
+
+    expected = live._process_sha256(podman_inspect)
+
+    assert live._reviewed_image_process_sha256(image) == expected
+    assert (
+        live._require_expected_process("selenium", podman_inspect, expected)
+        == expected
+    )
+
+
 @pytest.mark.parametrize(
     "image",
     [
