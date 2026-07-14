@@ -256,7 +256,6 @@ this is a maintainer decision, not made in this session.
 | Issue | Council | Notes |
 |-------|---------|-------|
 | #2113 | Haringey | New site is behind AWS WAF Bot Control (CloudFront), not Cloudflare. Plain Selenium blocked; undetected-chromedriver also blocked (5/5 attempts). A pure-HTTP rewrite isn't feasible either - the site is a Next.js app using server actions, not a discoverable REST API. Needs a more specialized bypass (e.g. residential-IP browser farm) or a different data source. Findings posted on the issue. |
-| #1884 | Ealing | Re-verified live: the previously-reported bug (`collectionDateString` vs `collectionDate`) is already fixed in both `EalingCouncil.py` and `LondonBoroughEaling.py` (commit 57c8b1a9); both return correct data today. Only the module-duplication cleanup remains, deliberately deferred (deleting/merging either would break existing users' saved config). |
 | #1881 | NE Derbyshire | Re-checked live: self-service form still redirects to the homepage, only PDF calendars available, no postcode/address lookup exists. No change since the last update on the issue. Holding off on a PDF+area-list rewrite per earlier guidance - large, fragile, and possibly throwaway if the council republishes the form. |
 
 ## Code Fixes Made
@@ -288,6 +287,31 @@ this is a maintainer decision, not made in this session.
 | 29a242d0 | EastDevonDC | Send scraper User-Agent header to get past a 403 block |
 | 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
+| (pending) | EalingCouncil / LondonBoroughEaling | Dedupe #1884 - see note below |
+
+**Dedupe (Ealing, #1884):** both modules hit the same
+`WasteCollectionWS/home/FindCollection` API and, per the maintainer's own earlier
+comment on the issue, deleting either would break existing users' saved config (the
+council module name is stored verbatim and dynamically imported - see
+`collect_data.py`'s `import_council_module`). Picked `LondonBoroughEaling` as
+canonical on the merits rather than by fiat: it matches this repo's own established
+naming convention for London boroughs (10 other councils use the
+`LondonBorough<Name>` pattern; `EalingCouncil` is the outlier), and its
+implementation was slightly more complete (explicit JSON `Content-Type` + a real
+`status_code` check, vs. `EalingCouncil.py`'s vestigial
+`requests.packages.urllib3.disable_warnings()` call that had no effect since nothing
+in that file ever passed `verify=False`). `EalingCouncil.py` is now a two-line shim
+that delegates to `LondonBoroughEaling.CouncilClass` - same behaviour, zero
+duplicated logic, still importable under its old name.
+
+Also found and fixed a latent bug this surfaced: both `input.json` entries shared the
+identical `wiki_name` ("Ealing"), and the Home Assistant config flow builds its
+council dropdown from `wiki_name` then maps a selection back to a council key via
+`list.index()` (`config_flow.py`'s `map_wiki_name_to_council_key`) - a linear search
+that always resolves to whichever entry happens to come first, so new users picking
+"Ealing" from the dropdown had no reliable way to choose between the two. Renamed
+`EalingCouncil`'s `wiki_name` to `"Ealing (deprecated, use LondonBoroughEaling)"` so
+it's distinguishable and existing users' saved selections are unaffected.
 
 ## Nightly integration suite triage
 
