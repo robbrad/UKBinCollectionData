@@ -1,4 +1,10 @@
 =======
+## 0.170.2 (2026-07-14)
+
+### Fix
+
+- #2168 NorthWestLeicestershire - sync HA config metadata with scraper
+
 ## 0.170.1 (2026-07-14)
 
 ### Fix
