@@ -51,8 +51,7 @@ on a couple of previously-confirmed-broken ones.
 
 **Confirmed not fixable here:**
 - **HaltonBoroughCouncil**: genuine Google reCAPTCHA v2 - confirmed blocked even
-  with `undetected-chromedriver` against a real local, non-headless Chrome. Same
-  class of problem as Haringey (#2113).
+  with `undetected-chromedriver` against a real local, non-headless Chrome.
 - **AshfieldDistrictCouncil**: a genuine client-side JS error on the council's own
   portal (`Cannot read properties of null (reading 'id')`) leaves the page stuck on
   "Loading..." for every visitor, not just automation.
@@ -142,17 +141,15 @@ Triage of the 26 failures:
     fix.
   - **SwaleBoroughCouncil** - confirmed Cloudflare bot-check blocking page load
     (the scraper's own diagnostic print already says so). Same class of problem as
-    Sunderland (#2140, fixed with undetected-chromedriver) / Haringey (#2113,
-    still unfixed - AWS WAF, not Cloudflare). Not attempted this pass.
+    Sunderland (#2140, fixed with undetected-chromedriver). Not attempted this pass.
   - **EastLindseyDistrictCouncil, AngusCouncil, HaltonBoroughCouncil,
     AshfieldDistrictCouncil, BarkingDagenham, MidAndEastAntrimBoroughCouncil** -
     confirmed genuinely broken on a sequential re-run (not contention), each with a
     generic Selenium `TimeoutException` (or `ElementNotInteractableException` /
     `NoSuchFrameException`) - needs individual selector/page-change investigation
     per council, not done this pass given time already spent.
-  - **HaringeyCouncil, NorthEastDerbyshireDistrictCouncil** - already deeply
-    investigated earlier this session (see "Investigated, not fixed" below);
-    unchanged.
+  - **NorthEastDerbyshireDistrictCouncil** - already deeply investigated earlier
+    this session (see "Investigated, not fixed" below); unchanged.
 
 ## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154) (merged) + [PR #2155](https://github.com/robbrad/UKBinCollectionData/pull/2155) (follow-up)
 
@@ -255,7 +252,6 @@ this is a maintainer decision, not made in this session.
 
 | Issue | Council | Notes |
 |-------|---------|-------|
-| #2113 | Haringey | New site is behind AWS WAF Bot Control (CloudFront), not Cloudflare. Plain Selenium blocked; undetected-chromedriver also blocked (5/5 attempts). A pure-HTTP rewrite isn't feasible either - the site is a Next.js app using server actions, not a discoverable REST API. Needs a more specialized bypass (e.g. residential-IP browser farm) or a different data source. Findings posted on the issue. |
 | #1884 | Ealing | Re-verified live: the previously-reported bug (`collectionDateString` vs `collectionDate`) is already fixed in both `EalingCouncil.py` and `LondonBoroughEaling.py` (commit 57c8b1a9); both return correct data today. Only the module-duplication cleanup remains, deliberately deferred (deleting/merging either would break existing users' saved config). |
 | #1881 | NE Derbyshire | Re-checked live: self-service form still redirects to the homepage, only PDF calendars available, no postcode/address lookup exists. No change since the last update on the issue. Holding off on a PDF+area-list rewrite per earlier guidance - large, fragile, and possibly throwaway if the council republishes the form. |
 
@@ -288,6 +284,21 @@ this is a maintainer decision, not made in this session.
 | 29a242d0 | EastDevonDC | Send scraper User-Agent header to get past a 403 block |
 | 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
+| (pending) | HaringeyCouncil | Rewrite for `wastecollections.haringey.gov.uk` JSON API - corrects earlier "AWS WAF, unfixable" conclusion, see note below |
+
+**Correction (Haringey, #2113):** the earlier "Investigated, not fixed" entry above
+was wrong. Re-investigated live: the *old* `/property/{uprn}` URL the scraper POSTed
+to genuinely 404s (a real Next.js `not-found` route, not a WAF block), which is what
+produced the appearance of blocking. The current site
+(`https://wastecollections.haringey.gov.uk`) is not behind Cloudflare or AWS WAF at
+all - `curl`/plain `requests` reach it with no `cf-ray`/challenge headers whatsoever.
+Its postcode-search UI calls two undocumented but fully public JSON endpoints with no
+auth, cookies, or session state required: `POST /api/getPropertySearch`
+(`{"councilId":"45","searchQuery":"<postcode>"}` → list of addresses with `id`/`uprn`)
+and `POST /api/getCollectionDays` (`{"pointId":"<id>","pointType":"PointAddress","councilId":"45"}`
+→ per-service `serviceSchedules` with real dates). Verified with a bare
+`requests.post()`, zero prior GET/cookie needed. Rewrote `HaringeyCouncil.py` to use
+this API; `input.json` now also carries `postcode` alongside the existing `uprn`.
 
 ## Nightly integration suite triage
 

@@ -1226,11 +1226,12 @@
     },
     "HaringeyCouncil": {
         "LAD24CD": "E09000014",
+        "postcode": "N22 6ET",
         "skip_get_url": true,
         "uprn": "100021203052",
         "url": "https://wastecollections.haringey.gov.uk/property",
         "wiki_name": "Haringey",
-        "wiki_note": "Pass the UPRN, which can be found at `https://wastecollections.haringey.gov.uk/property/{uprn}`."
+        "wiki_note": "Pass the postcode, and either the UPRN or the house number to disambiguate. Find your UPRN by searching your postcode at `https://wastecollections.haringey.gov.uk`."
     },
     "HarlowCouncil": {
         "LAD24CD": "E07000073",
