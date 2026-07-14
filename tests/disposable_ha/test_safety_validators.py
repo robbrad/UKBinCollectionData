@@ -8,6 +8,21 @@ from tests.disposable_ha import live_canary_safety_check as live
 from tests.disposable_ha import pod_safety_check as offline
 
 VALIDATORS = (offline, live)
+ROOTLESS_CAPABILITIES = frozenset(
+    {
+        "CHOWN",
+        "DAC_OVERRIDE",
+        "FOWNER",
+        "FSETID",
+        "KILL",
+        "NET_BIND_SERVICE",
+        "SETFCAP",
+        "SETGID",
+        "SETPCAP",
+        "SETUID",
+        "SYS_CHROOT",
+    }
+)
 
 SENSITIVE_ENVIRONMENT_NAMES = (
     "HA_TOKEN",
@@ -33,7 +48,7 @@ def _container_with_drops(drops: list[str], command: list[str] | None = None) ->
                 else ["podman", "create", "--cap-drop", "all", "image"]
             ),
         },
-        "HostConfig": {"CapDrop": drops},
+        "HostConfig": {"CapAdd": [], "CapDrop": drops},
     }
 
 
@@ -66,8 +81,8 @@ def test_validator_rejects_missing_or_conflicting_rootless_status(validator) -> 
 def test_validator_rejects_partial_capability_drop(validator) -> None:
     partial = _container_with_drops(["CAP_CHOWN", "CAP_NET_RAW"])
 
-    with pytest.raises(RuntimeError, match="complete capability drop set"):
-        validator._require_cap_drop_all("partial", partial)
+    with pytest.raises(RuntimeError, match="complete rootless capability drop set"):
+        validator._require_cap_drop_all("partial", partial, ROOTLESS_CAPABILITIES)
 
 
 @pytest.mark.parametrize("validator", VALIDATORS)
@@ -78,20 +93,153 @@ def test_validator_requires_create_command_cap_drop_all(validator) -> None:
     )
 
     with pytest.raises(RuntimeError, match="not created with --cap-drop all"):
-        validator._require_cap_drop_all("wrong-command", full_report)
+        validator._require_cap_drop_all(
+            "wrong-command", full_report, ROOTLESS_CAPABILITIES
+        )
 
 
 @pytest.mark.parametrize("validator", VALIDATORS)
 def test_validator_accepts_all_sentinel_and_expanded_drop_set(validator) -> None:
-    validator._require_cap_drop_all("sentinel", _container_with_drops(["ALL"]))
-    expanded = [f"CAP_{name}" for name in validator.EXPECTED_DEFAULT_CAPABILITIES]
+    validator._require_cap_drop_all(
+        "sentinel", _container_with_drops(["ALL"]), ROOTLESS_CAPABILITIES
+    )
+
+    expanded_runtime = ROOTLESS_CAPABILITIES | {
+        "AUDIT_WRITE",
+        "MKNOD",
+        "NET_RAW",
+        "FUTURE_CONCRETE_CAPABILITY",
+    }
+    validator._require_cap_drop_all(
+        "expanded-runtime",
+        _container_with_drops([f"CAP_{name}" for name in expanded_runtime]),
+        expanded_runtime,
+    )
+    expanded = [f"CAP_{name}" for name in ROOTLESS_CAPABILITIES]
     validator._require_cap_drop_all(
         "expanded",
         _container_with_drops(
             expanded,
             command=["podman", "create", "--cap-drop=ALL", "image"],
         ),
+        ROOTLESS_CAPABILITIES,
     )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+def test_validator_uses_rootless_engine_capability_universe(validator) -> None:
+    actual = ",".join(f"CAP_{name}" for name in sorted(ROOTLESS_CAPABILITIES))
+    assert (
+        validator._rootless_capabilities(
+            {"host": {"security": {"capabilities": actual}}}
+        )
+        == ROOTLESS_CAPABILITIES
+    )
+    assert (
+        validator._rootless_capabilities(
+            {
+                "Host": {
+                    "Security": {
+                        "Capabilities": [
+                            name.casefold() for name in ROOTLESS_CAPABILITIES
+                        ]
+                    }
+                }
+            }
+        )
+        == ROOTLESS_CAPABILITIES
+    )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+@pytest.mark.parametrize(
+    "info",
+    [
+        {},
+        {"host": {"security": {"capabilities": 7}}},
+        {"host": {"security": {"capabilities": ["CAP_CHOWN", 7]}}},
+        {"host": {"security": {"capabilities": "CAP_CHOWN,"}}},
+        {"host": {"security": {"capabilities": "ALL"}}},
+        {"host": {"security": {"capabilities": "CAP_ALL"}}},
+        {"host": {"security": {"capabilities": "CAP_CHOWN;CAP_SETUID"}}},
+    ],
+)
+def test_validator_rejects_missing_or_malformed_capability_universe(
+    validator, info
+) -> None:
+    with pytest.raises(RuntimeError):
+        validator._rootless_capabilities(info)
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+def test_validator_rejects_conflicting_capability_schemas(validator) -> None:
+    with pytest.raises(RuntimeError, match="conflicting"):
+        validator._rootless_capabilities(
+            {
+                "host": {"security": {"capabilities": "CAP_CHOWN"}},
+                "Host": {"Security": {"Capabilities": "CAP_SETUID"}},
+            }
+        )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+def test_validator_rejects_missing_advertised_capability(validator) -> None:
+    missing_one = ROOTLESS_CAPABILITIES - {"SETUID"}
+    drops = [f"CAP_{name}" for name in missing_one | {"NET_RAW"}]
+    with pytest.raises(RuntimeError, match="complete rootless capability drop set"):
+        validator._require_cap_drop_all(
+            "missing-setuid", _container_with_drops(drops), ROOTLESS_CAPABILITIES
+        )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+def test_validator_rejects_empty_drop_for_nonempty_universe(validator) -> None:
+    with pytest.raises(RuntimeError, match="complete rootless capability drop set"):
+        validator._require_cap_drop_all(
+            "empty-drop", _container_with_drops([]), ROOTLESS_CAPABILITIES
+        )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+def test_validator_accepts_explicitly_empty_capability_universe(validator) -> None:
+    info = {"host": {"security": {"capabilities": ""}}}
+    available = validator._rootless_capabilities(info)
+    assert available == frozenset()
+    validator._require_cap_drop_all(
+        "already-empty", _container_with_drops([]), available
+    )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+def test_validator_rejects_capability_addition(validator) -> None:
+    container = _container_with_drops(["ALL"])
+    container["HostConfig"]["CapAdd"] = ["CAP_NET_ADMIN"]
+    with pytest.raises(RuntimeError, match="adds Linux capabilities"):
+        validator._require_cap_drop_all(
+            "added-capability", container, ROOTLESS_CAPABILITIES
+        )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+@pytest.mark.parametrize("cap_add", [None, "", "CAP_NET_ADMIN"])
+def test_validator_rejects_malformed_capability_additions(validator, cap_add) -> None:
+    container = _container_with_drops(["ALL"])
+    container["HostConfig"]["CapAdd"] = cap_add
+    with pytest.raises(RuntimeError, match="malformed added capabilities"):
+        validator._require_cap_drop_all(
+            "malformed-cap-add", container, ROOTLESS_CAPABILITIES
+        )
+
+
+@pytest.mark.parametrize("validator", VALIDATORS)
+@pytest.mark.parametrize("cap_drop", [None, "ALL", ["CAP_CHOWN", 7], ["CAP_CHOWN,"]])
+def test_validator_rejects_malformed_capability_drops(validator, cap_drop) -> None:
+    container = _container_with_drops([])
+    container["HostConfig"]["CapDrop"] = cap_drop
+    with pytest.raises(RuntimeError, match="malformed dropped capabilities"):
+        validator._require_cap_drop_all(
+            "malformed-cap-drop", container, ROOTLESS_CAPABILITIES
+        )
 
 
 @pytest.mark.parametrize("validator", VALIDATORS)

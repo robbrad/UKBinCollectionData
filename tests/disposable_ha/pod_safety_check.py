@@ -9,24 +9,6 @@ import re
 import subprocess
 from pathlib import Path
 
-EXPECTED_DEFAULT_CAPABILITIES = frozenset(
-    {
-        "AUDIT_WRITE",
-        "CHOWN",
-        "DAC_OVERRIDE",
-        "FOWNER",
-        "FSETID",
-        "KILL",
-        "MKNOD",
-        "NET_BIND_SERVICE",
-        "NET_RAW",
-        "SETFCAP",
-        "SETGID",
-        "SETPCAP",
-        "SETUID",
-        "SYS_CHROOT",
-    }
-)
 HOST_NAMESPACE_FIELDS = (
     "PidMode",
     "IpcMode",
@@ -36,6 +18,7 @@ HOST_NAMESPACE_FIELDS = (
     "CgroupMode",
 )
 _SHA256_PATTERN = re.compile(r"^(?:sha256:)?([0-9a-fA-F]{64})$")
+_CAPABILITY_PATTERN = re.compile(r"^(?:CAP_)?[A-Z][A-Z0-9_]*$")
 SENSITIVE_ENVIRONMENT_NAME_MARKERS = frozenset(
     {
         "token",
@@ -125,6 +108,49 @@ def _normalise_capability(value: object) -> str:
     return capability.removeprefix("CAP_")
 
 
+def _parse_capabilities(value: object) -> frozenset[str]:
+    """Parse one concrete capability universe reported by Podman."""
+    if isinstance(value, str):
+        raw_capabilities = [] if not value.strip() else value.split(",")
+    elif isinstance(value, list) and all(isinstance(item, str) for item in value):
+        raw_capabilities = value
+    else:
+        raise RuntimeError("Podman reports malformed rootless capabilities")
+
+    capabilities: set[str] = set()
+    for raw_capability in raw_capabilities:
+        normalized_input = raw_capability.strip().upper()
+        _require(
+            bool(_CAPABILITY_PATTERN.fullmatch(normalized_input)),
+            "Podman reports malformed rootless capabilities",
+        )
+        capability = _normalise_capability(normalized_input)
+        _require(
+            capability != "ALL",
+            "Podman rootless capability universe must contain concrete names",
+        )
+        capabilities.add(capability)
+    return frozenset(capabilities)
+
+
+def _rootless_capabilities(info: dict) -> frozenset[str]:
+    """Return the exact capability universe advertised by the rootless engine."""
+    reported: list[frozenset[str]] = []
+    lower_security = info.get("host", {}).get("security", {})
+    if "capabilities" in lower_security:
+        reported.append(_parse_capabilities(lower_security["capabilities"]))
+    upper_security = info.get("Host", {}).get("Security", {})
+    if "Capabilities" in upper_security:
+        reported.append(_parse_capabilities(upper_security["Capabilities"]))
+
+    _require(bool(reported), "Podman does not report rootless capabilities")
+    _require(
+        all(value == reported[0] for value in reported[1:]),
+        "Podman reports conflicting rootless capability universes",
+    )
+    return reported[0]
+
+
 def _create_command_requests_cap_drop_all(container: dict) -> bool:
     command = container.get("Config", {}).get("CreateCommand") or []
     if not isinstance(command, list):
@@ -138,20 +164,46 @@ def _create_command_requests_cap_drop_all(container: dict) -> bool:
     )
 
 
-def _cap_drop_covers_default_set(container: dict) -> bool:
-    raw_drops = container.get("HostConfig", {}).get("CapDrop") or []
-    drops = {_normalise_capability(value) for value in raw_drops}
-    return "ALL" in drops or EXPECTED_DEFAULT_CAPABILITIES <= drops
+def _cap_drop_covers_available_set(
+    container: dict, available_capabilities: frozenset[str]
+) -> bool:
+    host = container.get("HostConfig", {})
+    raw_drops = host.get("CapDrop")
+    _require(
+        isinstance(raw_drops, list)
+        and all(isinstance(value, str) for value in raw_drops),
+        "Podman reports malformed dropped capabilities",
+    )
+    drops: set[str] = set()
+    for value in raw_drops:
+        normalized_input = value.strip().upper()
+        _require(
+            bool(_CAPABILITY_PATTERN.fullmatch(normalized_input)),
+            "Podman reports malformed dropped capabilities",
+        )
+        drops.add(_normalise_capability(normalized_input))
+    return "ALL" in drops or available_capabilities <= drops
 
 
-def _require_cap_drop_all(name: str, container: dict) -> None:
+def _require_cap_drop_all(
+    name: str, container: dict, available_capabilities: frozenset[str]
+) -> None:
+    cap_add = container.get("HostConfig", {}).get("CapAdd")
+    _require(
+        isinstance(cap_add, list),
+        f"{name} reports malformed added capabilities",
+    )
     _require(
         _create_command_requests_cap_drop_all(container),
         f"{name} was not created with --cap-drop all",
     )
     _require(
-        _cap_drop_covers_default_set(container),
-        f"{name} does not report the expected complete capability drop set",
+        not cap_add,
+        f"{name} adds Linux capabilities",
+    )
+    _require(
+        _cap_drop_covers_available_set(container, available_capabilities),
+        f"{name} does not report the complete rootless capability drop set",
     )
 
 
@@ -296,6 +348,7 @@ def main() -> None:
 
     info = _podman_json("info", "--format", "json")
     _require(_is_rootless(info), "Podman is not running rootless")
+    available_capabilities = _rootless_capabilities(info)
 
     pod = _inspect(args.pod)
     infra = _inspect(args.infra)
@@ -361,8 +414,7 @@ def main() -> None:
         _require(not host.get("PortBindings"), f"{name} publishes a host port")
         _require(not host.get("PublishAllPorts"), f"{name} publishes all ports")
         _require(not host.get("Devices"), f"{name} has a host device")
-        _require(not host.get("CapAdd"), f"{name} adds Linux capabilities")
-        _require_cap_drop_all(name, container)
+        _require_cap_drop_all(name, container, available_capabilities)
         _require_no_host_namespaces(name, container)
         _require(
             "no-new-privileges" in host.get("SecurityOpt", []),
@@ -402,6 +454,7 @@ def main() -> None:
             "devices": 0,
             "capabilities_added": 0,
             "capabilities_dropped": "all",
+            "rootless_capabilities_dropped": sorted(available_capabilities),
             "cap_drop_all": True,
             "host_namespaces": [],
             "no_new_privileges": True,
@@ -418,6 +471,7 @@ def main() -> None:
     report = {
         "status": "passed",
         "rootless": True,
+        "rootless_capability_universe": sorted(available_capabilities),
         "pod": args.pod,
         "pod_members": sorted(pod_members),
         "pod_state_before_test": "Created",
