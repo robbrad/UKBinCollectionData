@@ -110,11 +110,16 @@ python tests/disposable_ha/live_canary_safety_check.py \
 ```
 
 The safety check must pass while all three application containers are still in
-`created` state. It fails if Podman is not rootless; either application container
-has egress; the proxy lacks either network; any host port, mount, device, socket,
-added capability, writable root, restart policy, or missing resource limit is
-found; Chrome has a bypass; or the total limits exceed 6 CPUs/7 GiB. Membership
-comes from the two network-inspect results and must be exact. Capability removal
+`created` state. Podman 4.9 does not expose unstarted endpoints in the container
+map returned by `network inspect`, so the validator also inventories every local
+container and resolves its planned networks from `container inspect`. That
+complete planned membership must be exact; if `network inspect` reports any
+members, its runtime view must also agree exactly. This detects an extra
+unstarted container without starting any reviewed payload. The check fails if
+Podman is not rootless; either application container has egress; the proxy lacks
+either network; any host port, mount, device, socket, added capability, writable
+root, restart policy, or missing resource limit is found; Chrome has a bypass;
+or the total limits exceed 6 CPUs/7 GiB. Capability removal
 must be present as `--cap-drop all` in each inspected create command and as the
 complete expected drop set in container state; a merely non-empty drop list does
 not pass. The full local image IDs must match the three separately recorded

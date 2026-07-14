@@ -170,6 +170,59 @@ def _network_members(network: dict) -> set[str]:
     return members
 
 
+def _all_container_names() -> set[str]:
+    """Return every local container name from Podman's JSON inventory."""
+    rows = _podman_json("ps", "--all", "--format", "json")
+    _require(
+        isinstance(rows, list), "Podman returned a malformed container inventory"
+    )
+
+    names: set[str] = set()
+    for row in rows:
+        _require(isinstance(row, dict), "Podman returned a malformed container row")
+        raw_names = row.get("Names", row.get("names"))
+        if isinstance(raw_names, str):
+            row_names = [raw_names]
+        elif isinstance(raw_names, list) and all(
+            isinstance(name, str) for name in raw_names
+        ):
+            row_names = raw_names
+        else:
+            raise RuntimeError("Podman returned malformed container names")
+        names.update(name for name in row_names if name)
+    return names
+
+
+def _planned_network_members(network_name: str) -> set[str]:
+    """Resolve unstarted network intent from every container inspect record.
+
+    Podman 4.9 does not populate ``network inspect``'s container map until a
+    container starts. Scanning the complete local inventory retains exact
+    extra-container detection while the reviewed application containers remain
+    in the required ``created`` state.
+    """
+    return {
+        name
+        for name in _all_container_names()
+        if network_name in _attached_networks(_inspect_container(name))
+    }
+
+
+def _validated_network_members(
+    network_name: str, network: dict, expected: set[str]
+) -> tuple[set[str], set[str], str]:
+    """Validate exact planned membership and reconcile runtime membership."""
+    planned = _planned_network_members(network_name)
+    reported = _network_members(network)
+    _require_exact_members(network_name, planned, expected)
+    if reported:
+        _require_exact_members(f"{network_name} runtime", reported, planned)
+        source = "network-inspect-and-container-inspect"
+    else:
+        source = "all-container-inspect-unstarted-intent"
+    return planned, reported, source
+
+
 def _require_exact_members(boundary: str, actual: set[str], expected: set[str]) -> None:
     missing = expected - actual
     extra = actual - expected
@@ -480,14 +533,20 @@ def main() -> None:
         egress.get("driver", egress.get("Driver")) == "bridge",
         "proxy egress network is not a rootless bridge",
     )
-    internal_members = _network_members(internal)
-    egress_members = _network_members(egress)
-    _require_exact_members(
-        args.internal_network,
-        internal_members,
-        {args.runner, args.selenium, args.proxy},
+    internal_members, internal_reported_members, internal_membership_source = (
+        _validated_network_members(
+            args.internal_network,
+            internal,
+            {args.runner, args.selenium, args.proxy},
+        )
     )
-    _require_exact_members(args.egress_network, egress_members, {args.proxy})
+    egress_members, egress_reported_members, egress_membership_source = (
+        _validated_network_members(
+            args.egress_network,
+            egress,
+            {args.proxy},
+        )
+    )
 
     runner = _inspect_container(args.runner)
     selenium = _inspect_container(args.selenium)
@@ -583,11 +642,15 @@ def main() -> None:
             "name": args.internal_network,
             "internal": True,
             "members": sorted(internal_members),
+            "runtime_reported_members": sorted(internal_reported_members),
+            "membership_source": internal_membership_source,
         },
         "egress_network": {
             "name": args.egress_network,
             "internal": False,
             "members": sorted(egress_members),
+            "runtime_reported_members": sorted(egress_reported_members),
+            "membership_source": egress_membership_source,
         },
         "allowlisted_origins": [
             "selfservice.southkesteven.gov.uk",

@@ -531,6 +531,74 @@ def test_live_network_members_come_from_network_inspect() -> None:
     )
 
 
+def test_live_planned_members_scan_every_unstarted_container(monkeypatch) -> None:
+    containers = {
+        "runner": {"NetworkSettings": {"Networks": {"internal": {}}}},
+        "selenium": {"NetworkSettings": {"Networks": {"internal": {}}}},
+        "proxy": {
+            "NetworkSettings": {"Networks": {"internal": {}, "egress": {}}}
+        },
+        "unrelated": {"NetworkSettings": {"Networks": {"other": {}}}},
+    }
+    monkeypatch.setattr(live, "_all_container_names", lambda: set(containers))
+    monkeypatch.setattr(live, "_inspect_container", containers.__getitem__)
+
+    assert live._planned_network_members("internal") == {
+        "runner",
+        "selenium",
+        "proxy",
+    }
+    assert live._planned_network_members("egress") == {"proxy"}
+
+
+def test_live_accepts_empty_runtime_members_for_exact_unstarted_plan(
+    monkeypatch,
+) -> None:
+    expected = {"runner", "selenium", "proxy"}
+    monkeypatch.setattr(live, "_planned_network_members", lambda name: expected)
+
+    planned, reported, source = live._validated_network_members(
+        "internal", {"containers": {}}, expected
+    )
+
+    assert planned == expected
+    assert reported == set()
+    assert source == "all-container-inspect-unstarted-intent"
+
+
+def test_live_rejects_extra_unstarted_member_when_runtime_map_is_empty(
+    monkeypatch,
+) -> None:
+    monkeypatch.setattr(
+        live,
+        "_planned_network_members",
+        lambda name: {"runner", "selenium", "proxy", "unexpected"},
+    )
+
+    with pytest.raises(RuntimeError, match="membership mismatch"):
+        live._validated_network_members(
+            "internal",
+            {"containers": {}},
+            {"runner", "selenium", "proxy"},
+        )
+
+
+def test_live_rejects_runtime_membership_that_disagrees_with_the_plan(
+    monkeypatch,
+) -> None:
+    expected = {"runner", "selenium", "proxy"}
+    monkeypatch.setattr(live, "_planned_network_members", lambda name: expected)
+    network = {
+        "containers": {
+            "runner-id": {"name": "runner"},
+            "selenium-id": {"name": "selenium"},
+        }
+    }
+
+    with pytest.raises(RuntimeError, match="membership mismatch"):
+        live._validated_network_members("internal", network, expected)
+
+
 @pytest.mark.parametrize(
     ("network", "expected"),
     [
