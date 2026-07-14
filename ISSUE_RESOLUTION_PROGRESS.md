@@ -285,6 +285,8 @@ this is a maintainer decision, not made in this session.
 | 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 | 54c04e21 | HaringeyCouncil | Rewrite for `wastecollections.haringey.gov.uk` JSON API - corrects earlier "AWS WAF, unfixable" conclusion, see note below |
+| 2c1b9095 | SloughBoroughCouncil | Rewrite for `waste.slough.gov.uk` Public Dashboard, pure HTTP, drops Selenium entirely - see note below |
+| 2c1b9095 | SunderlandCityCouncil | Rewrite the GOSS iCM form flow as pure HTTP, drops undetected-chromedriver entirely - see note below |
 
 **Correction (Haringey, #2113):** the earlier "Investigated, not fixed" entry above
 was wrong. Re-investigated live: the *old* `/property/{uprn}` URL the scraper POSTed
@@ -299,6 +301,44 @@ and `POST /api/getCollectionDays` (`{"pointId":"<id>","pointType":"PointAddress"
 → per-service `serviceSchedules` with real dates). Verified with a bare
 `requests.post()`, zero prior GET/cookie needed. Rewrote `HaringeyCouncil.py` to use
 this API; `input.json` now also carries `postcode` alongside the existing `uprn`.
+
+**Slough (no issue number, found while re-auditing the same "behind a WAF" class of
+problem):** the existing scraper drove the old Jadu directory search on
+`www.slough.gov.uk` via Selenium + a hardcoded Google Maps geocoding API key, and
+open bug #2079 reports it timing out waiting for the cookie-consent button. The
+council actually has a separate, modern portal at `waste.slough.gov.uk` (a Syncfusion
+"Public Dashboard", the same system already handled for HighPeakCouncil and
+StaffordshireMoorlandsDistrictCouncil) that renders both the premises list and the
+full collection schedule as plain JSON embedded in server-rendered HTML - no
+Selenium needed. It's a standard ASP.NET Razor Pages form
+(`__RequestVerificationToken` + session cookie, same pattern as
+`DerbyshireDalesDistrictCouncil.py`): `POST /PublicDashboard?handler=SearchPostcode`
+returns a premises array (`id`, `UPRN`, `Premises` address string), then
+`POST /PublicDashboard?handler=SelectPrem` (keyed by `UPRN`, not `id`) returns the
+`eventSettings.dataSource` array with real collection dates. Rewrote
+`SloughBoroughCouncil.py` to use this directly; `input.json` now carries `postcode` +
+`house_number` instead of relying on Selenium/`web_driver`.
+
+**Sunderland (#2140, re-investigated):** the original fix (commit 22390ee6) was
+correct for what was true at the time - a previous investigation (documented on the
+issue) rigorously confirmed the `/bindays` GOSS iCM flow was hard-blocked by
+Cloudflare Bot Management for every plain-Selenium configuration tried (headless,
+headed, remote grid, fully stealthed), and only `undetected-chromedriver` driving a
+real local Chrome got through. Re-tested live just now: the same flow now completes
+with **zero Cloudflare challenge**, via both a plain browser session and a bare
+`requests.Session()` with no special fingerprinting at all - either Cloudflare's bot
+management config for this site has been relaxed since, or it was keyed specifically
+off Selenium's automation fingerprint rather than the request pattern itself. The
+form is a classic GOSS iCM postback wizard: `GET` the form page for
+`BINCOLLECTIONCHECKERNEWV3_*` hidden fields, `POST` back to
+`/apiserver/formsservice/http/processsubmission?...` with the postcode to get an
+address `<select>`, then `POST` again with the selected option's value copied into
+the `UPRN`/`ADDRESSTEXT` hidden fields (mirroring what the page's own `onchange`
+handler does) to get the results page, and parse `.myaccount-block__item--bin`
+exactly as the old Selenium version did. Rewrote `SunderlandCityCouncil.py` as pure
+`requests` - drops the `undetected-chromedriver` dependency and the "needs a real
+local, non-headless Chrome, can't use the remote Selenium grid" CI limitation
+entirely. Worth re-verifying periodically in case Cloudflare's config reverts.
 
 ## Nightly integration suite triage
 
