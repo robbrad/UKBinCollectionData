@@ -78,3 +78,43 @@ def test_session_cleanup_rejects_malformed_status(monkeypatch, status) -> None:
 
     with pytest.raises(RuntimeError, match="invalid"):
         offline_runner._assert_no_selenium_sessions()
+
+
+def test_dependency_repair_waits_for_persisted_startup_registry(monkeypatch) -> None:
+    observed: dict[str, object] = {}
+
+    def storage_data(name: str, timeout: float) -> dict:
+        observed.update(name=name, timeout=timeout)
+        return {
+            "issues": [
+                {
+                    "domain": "uk_bin_collection",
+                    "issue_id": (
+                        f"dependency_{offline_runner.COLLISION_ENTRY_ID}"
+                    ),
+                    "is_persistent": False,
+                }
+            ]
+        }
+
+    monkeypatch.setattr(offline_runner, "_storage_data", storage_data)
+
+    offline_runner._assert_one_dependency_repair(210)
+
+    assert observed == {"name": "repairs.issue_registry", "timeout": 210}
+
+
+def test_dependency_repair_rejects_duplicate_matches(monkeypatch) -> None:
+    issue = {
+        "domain": "uk_bin_collection",
+        "issue_id": f"dependency_{offline_runner.COLLISION_ENTRY_ID}",
+        "is_persistent": False,
+    }
+    monkeypatch.setattr(
+        offline_runner,
+        "_storage_data",
+        lambda name, timeout: {"issues": [issue, issue.copy()]},
+    )
+
+    with pytest.raises(RuntimeError, match="observed 2"):
+        offline_runner._assert_one_dependency_repair(210)

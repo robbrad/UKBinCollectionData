@@ -17,6 +17,7 @@ from urllib.request import urlopen
 CONFIG = Path("/config")
 EVIDENCE = Path(os.environ.get("UKBCD_TEST_EVIDENCE_DIR", "/evidence"))
 HA_VERSION = "2026.7.2"
+REPAIR_PERSIST_TIMEOUT = 210
 SUCCESS_ENTRY_ID = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 CONTROL_ENTRY_ID = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 COLLISION_ENTRY_ID = "cccccccccccccccccccccccccccccccc"
@@ -100,25 +101,25 @@ def _assert_entity_ids(expected: set[str]) -> int:
     )
 
 
-def _assert_one_dependency_repair() -> None:
+def _assert_one_dependency_repair(timeout: float) -> None:
     expected_id = f"dependency_{COLLISION_ENTRY_ID}"
-    deadline = time.monotonic() + 30
-    matches: list[dict] = []
-    while time.monotonic() < deadline:
-        issues = _storage_data("repairs.issue_registry").get("issues", [])
-        matches = [
-            issue
-            for issue in issues
-            if issue.get("domain") == "uk_bin_collection"
-            and issue.get("issue_id") == expected_id
-            and issue.get("translation_key") == "dependency_error"
-        ]
-        if len(matches) == 1:
-            return
-        time.sleep(0.5)
-    raise RuntimeError(
-        f"Expected exactly one structured dependency Repair, observed {len(matches)}"
-    )
+    # HA intentionally delays registry writes created during startup by 180
+    # seconds.  Read the persisted registry only after that bounded delay; the
+    # in-memory issue is already visible to the Repairs UI immediately.
+    issues = _storage_data("repairs.issue_registry", timeout).get("issues", [])
+    # Transient HA Repairs deliberately persist only their stable domain and
+    # issue id; their translation metadata is regenerated in memory at startup.
+    matches = [
+        issue
+        for issue in issues
+        if issue.get("domain") == "uk_bin_collection"
+        and issue.get("issue_id") == expected_id
+    ]
+    if len(matches) != 1:
+        raise RuntimeError(
+            "Expected exactly one structured dependency Repair, "
+            f"observed {len(matches)}"
+        )
 
 
 def _redaction_variants() -> set[str]:
@@ -283,7 +284,7 @@ def _run(mode: str, timeout: float) -> dict:
             raise RuntimeError("The collision entry retried unexpectedly")
         if (EVIDENCE / "ha_poison_executed").exists():
             raise RuntimeError("The top-level shadow package executed inside HA")
-        _assert_one_dependency_repair()
+        _assert_one_dependency_repair(max(timeout, REPAIR_PERSIST_TIMEOUT))
         if "attempted relative import beyond top-level package" in log_text:
             raise RuntimeError("The raw relative-import failure escaped into HA")
         if "Unexpected coordinator error" in log_text:
