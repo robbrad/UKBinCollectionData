@@ -1,4 +1,10 @@
 =======
+## 0.170.5 (2026-07-15)
+
+### Fix
+
+- **councils**: anchor Babergh address regex; clear error on backend fault (#2173)
+
 ## 0.170.4 (2026-07-15)
 
 ### Fix
