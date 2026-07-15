@@ -2,6 +2,7 @@ import re
 from datetime import datetime
 
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
@@ -94,12 +95,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 postcode_upper = user_postcode.upper()
                 paon_str = str(user_paon).upper()
 
-                # Match the house name/number as a whole token, allowing an
-                # optional single-letter suffix (e.g. "1A", "1B") and either a
-                # space or comma as the surrounding separator.
-                paon_pattern = re.compile(
-                    rf"(^|[ ,]){re.escape(paon_str)}[A-Z]?([ ,]|$)"
-                )
+                # Match the house name/number at the very start of the
+                # address (options are formatted "<PAON> <STREET> <TOWN>
+                # <POSTCODE>" with no separator between fields), allowing an
+                # optional single-letter suffix (e.g. "1A", "1B"). Anchoring
+                # to the start avoids matching it as a substring elsewhere,
+                # e.g. paon "ELM COTTAGE" wrongly matching an option for
+                # "THE OLD ELM COTTAGE ...".
+                paon_pattern = re.compile(rf"^{re.escape(paon_str)}[A-Z]?([ ,]|$)")
 
                 # Check if this option contains both postcode and house name/number
                 if postcode_upper in option_text and paon_pattern.search(option_text):
@@ -120,12 +123,26 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.execute_script("arguments[0].scrollIntoView();", find_days_button)
             driver.execute_script("arguments[0].click();", find_days_button)
 
-            # Wait for the results table to load
-            wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "div.collection-days-page table")
+            # Wait for the results table to load. The council's own backend
+            # sometimes errors for specific addresses (unrelated to this
+            # scraper), rendering "Collection day finder is temporarily
+            # unavailable" instead of a results table - detect that and
+            # raise a clear error rather than a bare timeout.
+            try:
+                wait.until(
+                    EC.presence_of_element_located(
+                        (By.CSS_SELECTOR, "div.collection-days-page table")
+                    )
                 )
-            )
+            except TimeoutException:
+                if "temporarily unavailable" in driver.page_source.lower():
+                    raise ValueError(
+                        "Babergh's collection day finder is reporting "
+                        "'temporarily unavailable' for this address - this "
+                        "is an error on the council's own backend, not this "
+                        "scraper. Try again later."
+                    )
+                raise
 
             # Parse the HTML content
             soup = BeautifulSoup(driver.page_source, "html.parser")

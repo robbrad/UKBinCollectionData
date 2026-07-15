@@ -285,6 +285,7 @@ this is a maintainer decision, not made in this session.
 | 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 | 82886007 | EalingCouncil / LondonBoroughEaling | Dedupe #1884 - see note below |
+| f86f8c87 | BaberghDistrictCouncil | Anchor paon regex to string start; clear error on backend "temporarily unavailable" (#2173) |
 
 **Dedupe (Ealing, #1884):** both modules hit the same
 `WasteCollectionWS/home/FindCollection` API and, per the maintainer's own earlier
@@ -309,6 +310,58 @@ that always resolves to whichever entry happens to come first, so new users pick
 "Ealing" from the dropdown had no reliable way to choose between the two. Renamed
 `EalingCouncil`'s `wiki_name` to `"Ealing (deprecated, use LondonBoroughEaling)"` so
 it's distinguishable and existing users' saved selections are unaffected.
+
+## Post-release triage (2026-07-15, three new issues)
+
+**Fixed - BaberghDistrictCouncil (#2173):** the reporter found two real problems.
+(1) The `paon_pattern` regex used to select an address from the dropdown wasn't
+anchored to the start of the option text (`(^|[ ,])PAON[A-Z]?([ ,]|$)`), so it could
+match a house name as a substring of a *different* property's name later in the
+string (verified live: Babergh's dropdown options have no separator between fields,
+e.g. `"LITTLE CHANGES BLUNDENS CORNER STOKE BY NAYLAND COLCHESTER CO6 4RA"` - a paon
+of `"ELM COTTAGE"` would wrongly match an option for `"THE OLD ELM COTTAGE ..."`
+since the pattern allowed the match anywhere after a space). Anchored to `^` only.
+(2) The council's own backend errors for specific addresses with "Collection day
+finder is temporarily unavailable" instead of rendering results, which the scraper
+had no way to distinguish from "something changed" - it just burned the full 30s
+Selenium wait and raised an unhelpful bare timeout. Now detects that text and raises
+a clear error identifying it as an upstream fault. Couldn't run the live BDD test for
+this one (no local Selenium grid available this session) - verified the regex fix
+with standalone unit-style checks against the reporter's exact scenario, and walked
+the live site's postcode/address selectors end-to-end via browser automation to
+confirm the DOM structure the scraper depends on is unchanged.
+
+**Investigated, not a code bug - PowysCouncil (#2175):** reporter hit a generic
+`[UKBinCollection] Timeout while updating data` during first setup. Drove the exact
+same flow live (postcode → address dropdown → next → results table) end-to-end via
+browser automation using the project's own selectors - every element ID still
+resolves correctly and the full flow completes in ~3 seconds. No selector/site change
+found. Most likely cause is environment-specific (their Selenium remote webdriver
+being slow, unreachable, or under resource contention at setup time) rather than a
+scraper regression - commented on the issue asking for their `web_driver`/`timeout`
+config to narrow it down further.
+
+**Investigated, not a code bug - FenlandDistrictCouncil (#2174):** reporter saw 500
+errors from `bins.azurewebsites.net/api/getcollections`. Reproduced the exact error
+live: an empty/invalid `premisesid` param produces that same 500
+(`System.FormatException: The input string '...' was not in a correct format.`),
+while a valid PremiseID returns 200 with real data - confirming Fenland's API itself
+is healthy and this is a param-plumbing issue on the reporter's end, not a backend
+outage. Also checked their two suspected `custom_components/uk_bin_collection/
+__init__.py` bugs: `build_ukbcd_args` already forwards arbitrary `config_data` keys
+(including `postcode`/`number`) unless excluded, so no fix needed there. Their other
+claim - that `manual_refresh_only`'s branch logic is inverted - turned out to be
+**not a bug**: the config UI's own field label for that key is literally
+`"Automatically refresh the sensor"` (`strings.json`/`translations/en.json`) and
+defaults to `True` for new installs, which is exactly what the current code does
+when the flag is set. The *key name* `manual_refresh_only` is just confusingly worded
+relative to its own UI label and behaviour, but "fixing" the branch to match the key
+name would have silently disabled automatic refresh for every existing user relying
+on the current (correct, UI-matching) behaviour - did not touch it. Commented on the
+issue pointing at the existing `input.json` guidance (use the 5-digit Fenland
+PremiseID directly in the `uprn` field) as the actual fix for their symptom, and
+noted the council's own comment thread that Fenland is migrating to a new site
+(`yourbins.fenland.gov.uk`) which may supersede this entirely.
 
 ## Nightly integration suite triage
 
