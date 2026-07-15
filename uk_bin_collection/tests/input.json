@@ -787,8 +787,8 @@
         "skip_get_url": true,
         "uprn": "12073883",
         "url": "https://www.ealing.gov.uk/site/custom_scripts/WasteCollectionWS/home/FindCollection",
-        "wiki_name": "Ealing",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_name": "Ealing (deprecated, use LondonBoroughEaling)",
+        "wiki_note": "Deprecated duplicate of LondonBoroughEaling (#1884) - kept only for existing users' saved config. New setups should pick \"Ealing\" (LondonBoroughEaling) instead."
     },
     "EastAyrshireCouncil": {
         "house_number": "57 Whatriggs Road",

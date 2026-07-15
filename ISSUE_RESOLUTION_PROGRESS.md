@@ -252,7 +252,7 @@ this is a maintainer decision, not made in this session.
 
 | Issue | Council | Notes |
 |-------|---------|-------|
-| #1884 | Ealing | Re-verified live: the previously-reported bug (`collectionDateString` vs `collectionDate`) is already fixed in both `EalingCouncil.py` and `LondonBoroughEaling.py` (commit 57c8b1a9); both return correct data today. Only the module-duplication cleanup remains, deliberately deferred (deleting/merging either would break existing users' saved config). |
+| #2113 | Haringey | New site is behind AWS WAF Bot Control (CloudFront), not Cloudflare. Plain Selenium blocked; undetected-chromedriver also blocked (5/5 attempts). A pure-HTTP rewrite isn't feasible either - the site is a Next.js app using server actions, not a discoverable REST API. Needs a more specialized bypass (e.g. residential-IP browser farm) or a different data source. Findings posted on the issue. |
 | #1881 | NE Derbyshire | Re-checked live: self-service form still redirects to the homepage, only PDF calendars available, no postcode/address lookup exists. No change since the last update on the issue. Holding off on a PDF+area-list rewrite per earlier guidance - large, fragile, and possibly throwaway if the council republishes the form. |
 
 ## Code Fixes Made
@@ -284,61 +284,31 @@ this is a maintainer decision, not made in this session.
 | 29a242d0 | EastDevonDC | Send scraper User-Agent header to get past a 403 block |
 | 7a5a585e | HorshamDistrictCouncil | Use build_retry_session() for resilience (hardening, not a fix) |
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
-| 54c04e21 | HaringeyCouncil | Rewrite for `wastecollections.haringey.gov.uk` JSON API - corrects earlier "AWS WAF, unfixable" conclusion, see note below |
-| 2c1b9095 | SloughBoroughCouncil | Rewrite for `waste.slough.gov.uk` Public Dashboard, pure HTTP, drops Selenium entirely - see note below |
-| 2c1b9095 | SunderlandCityCouncil | Rewrite the GOSS iCM form flow as pure HTTP, drops undetected-chromedriver entirely - see note below |
+| 82886007 | EalingCouncil / LondonBoroughEaling | Dedupe #1884 - see note below |
 
-**Correction (Haringey, #2113):** the earlier "Investigated, not fixed" entry above
-was wrong. Re-investigated live: the *old* `/property/{uprn}` URL the scraper POSTed
-to genuinely 404s (a real Next.js `not-found` route, not a WAF block), which is what
-produced the appearance of blocking. The current site
-(`https://wastecollections.haringey.gov.uk`) is not behind Cloudflare or AWS WAF at
-all - `curl`/plain `requests` reach it with no `cf-ray`/challenge headers whatsoever.
-Its postcode-search UI calls two undocumented but fully public JSON endpoints with no
-auth, cookies, or session state required: `POST /api/getPropertySearch`
-(`{"councilId":"45","searchQuery":"<postcode>"}` → list of addresses with `id`/`uprn`)
-and `POST /api/getCollectionDays` (`{"pointId":"<id>","pointType":"PointAddress","councilId":"45"}`
-→ per-service `serviceSchedules` with real dates). Verified with a bare
-`requests.post()`, zero prior GET/cookie needed. Rewrote `HaringeyCouncil.py` to use
-this API; `input.json` now also carries `postcode` alongside the existing `uprn`.
+**Dedupe (Ealing, #1884):** both modules hit the same
+`WasteCollectionWS/home/FindCollection` API and, per the maintainer's own earlier
+comment on the issue, deleting either would break existing users' saved config (the
+council module name is stored verbatim and dynamically imported - see
+`collect_data.py`'s `import_council_module`). Picked `LondonBoroughEaling` as
+canonical on the merits rather than by fiat: it matches this repo's own established
+naming convention for London boroughs (10 other councils use the
+`LondonBorough<Name>` pattern; `EalingCouncil` is the outlier), and its
+implementation was slightly more complete (explicit JSON `Content-Type` + a real
+`status_code` check, vs. `EalingCouncil.py`'s vestigial
+`requests.packages.urllib3.disable_warnings()` call that had no effect since nothing
+in that file ever passed `verify=False`). `EalingCouncil.py` is now a two-line shim
+that delegates to `LondonBoroughEaling.CouncilClass` - same behaviour, zero
+duplicated logic, still importable under its old name.
 
-**Slough (no issue number, found while re-auditing the same "behind a WAF" class of
-problem):** the existing scraper drove the old Jadu directory search on
-`www.slough.gov.uk` via Selenium + a hardcoded Google Maps geocoding API key, and
-open bug #2079 reports it timing out waiting for the cookie-consent button. The
-council actually has a separate, modern portal at `waste.slough.gov.uk` (a Syncfusion
-"Public Dashboard", the same system already handled for HighPeakCouncil and
-StaffordshireMoorlandsDistrictCouncil) that renders both the premises list and the
-full collection schedule as plain JSON embedded in server-rendered HTML - no
-Selenium needed. It's a standard ASP.NET Razor Pages form
-(`__RequestVerificationToken` + session cookie, same pattern as
-`DerbyshireDalesDistrictCouncil.py`): `POST /PublicDashboard?handler=SearchPostcode`
-returns a premises array (`id`, `UPRN`, `Premises` address string), then
-`POST /PublicDashboard?handler=SelectPrem` (keyed by `UPRN`, not `id`) returns the
-`eventSettings.dataSource` array with real collection dates. Rewrote
-`SloughBoroughCouncil.py` to use this directly; `input.json` now carries `postcode` +
-`house_number` instead of relying on Selenium/`web_driver`.
-
-**Sunderland (#2140, re-investigated):** the original fix (commit 22390ee6) was
-correct for what was true at the time - a previous investigation (documented on the
-issue) rigorously confirmed the `/bindays` GOSS iCM flow was hard-blocked by
-Cloudflare Bot Management for every plain-Selenium configuration tried (headless,
-headed, remote grid, fully stealthed), and only `undetected-chromedriver` driving a
-real local Chrome got through. Re-tested live just now: the same flow now completes
-with **zero Cloudflare challenge**, via both a plain browser session and a bare
-`requests.Session()` with no special fingerprinting at all - either Cloudflare's bot
-management config for this site has been relaxed since, or it was keyed specifically
-off Selenium's automation fingerprint rather than the request pattern itself. The
-form is a classic GOSS iCM postback wizard: `GET` the form page for
-`BINCOLLECTIONCHECKERNEWV3_*` hidden fields, `POST` back to
-`/apiserver/formsservice/http/processsubmission?...` with the postcode to get an
-address `<select>`, then `POST` again with the selected option's value copied into
-the `UPRN`/`ADDRESSTEXT` hidden fields (mirroring what the page's own `onchange`
-handler does) to get the results page, and parse `.myaccount-block__item--bin`
-exactly as the old Selenium version did. Rewrote `SunderlandCityCouncil.py` as pure
-`requests` - drops the `undetected-chromedriver` dependency and the "needs a real
-local, non-headless Chrome, can't use the remote Selenium grid" CI limitation
-entirely. Worth re-verifying periodically in case Cloudflare's config reverts.
+Also found and fixed a latent bug this surfaced: both `input.json` entries shared the
+identical `wiki_name` ("Ealing"), and the Home Assistant config flow builds its
+council dropdown from `wiki_name` then maps a selection back to a council key via
+`list.index()` (`config_flow.py`'s `map_wiki_name_to_council_key`) - a linear search
+that always resolves to whichever entry happens to come first, so new users picking
+"Ealing" from the dropdown had no reliable way to choose between the two. Renamed
+`EalingCouncil`'s `wiki_name` to `"Ealing (deprecated, use LondonBoroughEaling)"` so
+it's distinguishable and existing users' saved selections are unaffected.
 
 ## Nightly integration suite triage
 
