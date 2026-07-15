@@ -51,8 +51,7 @@ on a couple of previously-confirmed-broken ones.
 
 **Confirmed not fixable here:**
 - **HaltonBoroughCouncil**: genuine Google reCAPTCHA v2 - confirmed blocked even
-  with `undetected-chromedriver` against a real local, non-headless Chrome. Same
-  class of problem as Haringey (#2113).
+  with `undetected-chromedriver` against a real local, non-headless Chrome.
 - **AshfieldDistrictCouncil**: a genuine client-side JS error on the council's own
   portal (`Cannot read properties of null (reading 'id')`) leaves the page stuck on
   "Loading..." for every visitor, not just automation.
@@ -142,17 +141,15 @@ Triage of the 26 failures:
     fix.
   - **SwaleBoroughCouncil** - confirmed Cloudflare bot-check blocking page load
     (the scraper's own diagnostic print already says so). Same class of problem as
-    Sunderland (#2140, fixed with undetected-chromedriver) / Haringey (#2113,
-    still unfixed - AWS WAF, not Cloudflare). Not attempted this pass.
+    Sunderland (#2140, fixed with undetected-chromedriver). Not attempted this pass.
   - **EastLindseyDistrictCouncil, AngusCouncil, HaltonBoroughCouncil,
     AshfieldDistrictCouncil, BarkingDagenham, MidAndEastAntrimBoroughCouncil** -
     confirmed genuinely broken on a sequential re-run (not contention), each with a
     generic Selenium `TimeoutException` (or `ElementNotInteractableException` /
     `NoSuchFrameException`) - needs individual selector/page-change investigation
     per council, not done this pass given time already spent.
-  - **HaringeyCouncil, NorthEastDerbyshireDistrictCouncil** - already deeply
-    investigated earlier this session (see "Investigated, not fixed" below);
-    unchanged.
+  - **NorthEastDerbyshireDistrictCouncil** - already deeply investigated earlier
+    this session (see "Investigated, not fixed" below); unchanged.
 
 ## July 2026 Release: [PR #2154](https://github.com/robbrad/UKBinCollectionData/pull/2154) (merged) + [PR #2155](https://github.com/robbrad/UKBinCollectionData/pull/2155) (follow-up)
 
