@@ -1,4 +1,10 @@
 =======
+## 0.170.4 (2026-07-15)
+
+### Fix
+
+- **councils**: dedupe EalingCouncil into LondonBoroughEaling (#1884)
+
 ## 0.170.3 (2026-07-14)
 
 ### Fix
