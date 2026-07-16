@@ -286,7 +286,7 @@ this is a maintainer decision, not made in this session.
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 | 82886007 | EalingCouncil / LondonBoroughEaling | Dedupe #1884 - see note below |
 | f86f8c87 | BaberghDistrictCouncil | Anchor paon regex to string start; clear error on backend "temporarily unavailable" (#2173) |
-| (pending) | PowysCouncil | Rewrite as pure HTTP (GOSS iCM postback + JSONP postcode lookup), drops Selenium entirely - see note below |
+| ba9739de | PowysCouncil | Rewrite as pure HTTP (GOSS iCM postback + JSONP postcode lookup), drops Selenium entirely - see note below |
 
 **Dedupe (Ealing, #1884):** both modules hit the same
 `WasteCollectionWS/home/FindCollection` API and, per the maintainer's own earlier
