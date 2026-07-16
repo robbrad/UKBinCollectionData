@@ -1,167 +1,121 @@
-import time
+import json
 
+import requests
 from bs4 import BeautifulSoup
-from dateutil.relativedelta import relativedelta
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+FORM_PAGE = "https://en.powys.gov.uk/binday"
+FORM_ID = "BINDAYLOOKUP_FORM"
+NEXT_TRIGGER = "BINDAYLOOKUP_ADDRESSLOOKUP_ADDRESSLOOKUPBUTTONS"
 
-# import the wonderful Beautiful Soup and the URL grabber
+BIN_CARDS = [
+    ("bdl-card--refuse", "General Rubbish / Wheelie bin"),
+    ("bdl-card--recycling", "Recycling and Food Waste"),
+    ("bdl-card--garden", "Garden Waste"),
+]
+
+
+def _form_fields(soup: BeautifulSoup) -> dict:
+    form = soup.find("form", id=FORM_ID)
+    return {
+        inp.get("name"): inp.get("value") or ""
+        for inp in form.find_all("input")
+        if inp.get("name")
+    }, form.get("action")
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Powys County Council's bin-day finder is a GOSS iCM form, the same
+    platform as Sunderland's - a plain HTTP postback wizard, plus a
+    JSONP postcode-lookup endpoint the form calls client-side. No
+    Selenium needed.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            data = {"bins": []}
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_paon(user_paon)
-            check_postcode(user_postcode)
+        user_paon = kwargs.get("paon")
+        user_postcode = kwargs.get("postcode")
+        check_paon(user_paon)
+        check_postcode(user_postcode)
+        data = {"bins": []}
 
-            user_paon = user_paon.upper()
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        }
 
-            # Create Selenium webdriver
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get("https://en.powys.gov.uk/binday")
+        s = requests.Session()
+        r = s.get(FORM_PAGE, headers=headers, timeout=15)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        fields, action = _form_fields(soup)
 
-            accept_button = WebDriverWait(driver, timeout=10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.NAME,
-                        "acceptall",
-                    )
-                )
-            )
-            accept_button.click()
+        jsonrpc = {
+            "id": 1,
+            "method": "postcodeSearch",
+            "params": {"provider": "", "postcode": user_postcode},
+        }
+        r = s.get(
+            "https://en.powys.gov.uk/apiserver/postcode",
+            params={"jsonrpc": json.dumps(jsonrpc), "callback": "cb"},
+            headers=headers,
+            timeout=15,
+        )
+        r.raise_for_status()
+        body = r.text
+        if body.startswith("cb(") and body.endswith(")"):
+            body = body[3:-1]
+        addresses = json.loads(body).get("result") or []
+        if len(addresses) == 1 and "Error" in addresses[0]:
+            raise ValueError(addresses[0].get("Description", "Invalid postcode"))
+        if not addresses:
+            raise ValueError("No addresses found for this postcode")
 
-            # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "BINDAYLOOKUP_ADDRESSLOOKUP_ADDRESSLOOKUPPOSTCODE")
-                )
-            )
-            inputElement_postcode.send_keys(user_postcode)
-
-            # The cookie consent dialog can still be present/animating in
-            # at this point and intercepts a plain click on Find address,
-            # so dismiss it again defensively and click via JS to avoid
-            # any remaining overlay.
-            cookie_prompts = driver.find_elements(By.ID, "cookie-consent-prompt")
-            if cookie_prompts and cookie_prompts[0].is_displayed():
-                driver.find_element(By.NAME, "acceptall").click()
-                WebDriverWait(driver, 10).until(
-                    EC.invisibility_of_element(cookie_prompts[0])
-                )
-
-            # Click search button
-            findAddress = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "BINDAYLOOKUP_ADDRESSLOOKUP_ADDRESSLOOKUPSEARCH")
-                )
-            )
-            driver.execute_script("arguments[0].click();", findAddress)
-
-            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        "//select[@id='BINDAYLOOKUP_ADDRESSLOOKUP_ADDRESSLOOKUPADDRESS']//option[contains(., '"
-                        + user_paon
-                        + "')]",
-                    )
-                )
-            ).click()
-
-            # Wait for the submit button to appear, then click it to get the collection dates
-            WebDriverWait(driver, 30).until(
-                EC.element_to_be_clickable(
-                    (By.ID, "BINDAYLOOKUP_ADDRESSLOOKUP_ADDRESSLOOKUPBUTTONS_NEXT")
-                )
-            ).click()
-
-            # Wait for the collections table to appear
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "BINDAYLOOKUP_COLLECTIONDATES_COLLECTIONDATES")
-                )
+        paon_upper = user_paon.strip().upper()
+        match = next(
+            (a for a in addresses if a["line1"].strip().upper() == paon_upper),
+            None,
+        ) or next(
+            (a for a in addresses if a["line1"].strip().upper().startswith(paon_upper)),
+            None,
+        )
+        if not match:
+            raise ValueError(
+                f"Could not match house name/number '{user_paon}' in address results"
             )
 
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
+        fields["BINDAYLOOKUP_ADDRESSLOOKUP_ADDRESSLOOKUPPOSTCODE"] = user_postcode
+        fields["BINDAYLOOKUP_ADDRESSLOOKUP_POSTALADDRESS"] = match["postalAddress"]
+        fields["BINDAYLOOKUP_ADDRESSLOOKUP_UPRN"] = match["udprn"]
+        fields["BINDAYLOOKUP_FORMACTION_NEXT"] = NEXT_TRIGGER
 
-            # General rubbish collection dates
-            general_rubbish_section = soup.find(
-                "div", class_="bdl-card bdl-card--refuse"
-            )
-            general_rubbish_dates = [
-                li.text for li in general_rubbish_section.find_next("ul").find_all("li")
-            ]
+        post_headers = {**headers, "Referer": FORM_PAGE}
+        r = s.post(action, data=fields, headers=post_headers, timeout=15)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
 
-            for date in general_rubbish_dates:
-                dict_data = {
-                    "type": "General Rubbish / Wheelie bin",
-                    "collectionDate": datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(date.split(" (")[0]),
-                        "%A %d %B %Y",
-                    ).strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-
-            # Recycling and food waste collection dates
-            recycling_section = soup.find("div", class_="bdl-card bdl-card--recycling")
-            recycling_dates = [
-                li.text for li in recycling_section.find_next("ul").find_all("li")
-            ]
-
-            for date in recycling_dates:
-                dict_data = {
-                    "type": "Recycling and Food Waste",
-                    "collectionDate": datetime.strptime(
-                        remove_ordinal_indicator_from_date_string(date.split(" (")[0]),
-                        "%A %d %B %Y",
-                    ).strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-
-            # Garden waste collection dates
-            garden_waste_section = soup.find("div", class_="bdl-card bdl-card--garden")
-            garden_waste_dates = [
-                li.text for li in garden_waste_section.find_next("ul").find_all("li")
-            ]
-            for date in garden_waste_dates:
+        for card_class, bin_type in BIN_CARDS:
+            card = soup.find("div", class_=f"bdl-card {card_class}")
+            if not card:
+                continue
+            for li in card.find_all("li"):
+                date_text = li.get_text(strip=True).split(" (")[0]
                 try:
-                    dict_data = {
-                        "type": "Garden Waste",
-                        "collectionDate": datetime.strptime(
-                            remove_ordinal_indicator_from_date_string(
-                                date.split(" (")[0]
-                            ),
-                            "%A %d %B %Y",
-                        ).strftime(date_format),
-                    }
-                    data["bins"].append(dict_data)
-                except:
+                    collection_date = datetime.strptime(
+                        remove_ordinal_indicator_from_date_string(date_text),
+                        "%A %d %B %Y",
+                    )
+                except ValueError:
                     continue
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
+                data["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
+                )
+
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+        )
         return data

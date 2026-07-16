@@ -286,6 +286,7 @@ this is a maintainer decision, not made in this session.
 | 65261e47 | LincolnCouncil | Fix NoneType error when UPRN not provided (zfill on None) [prior session] |
 | 82886007 | EalingCouncil / LondonBoroughEaling | Dedupe #1884 - see note below |
 | f86f8c87 | BaberghDistrictCouncil | Anchor paon regex to string start; clear error on backend "temporarily unavailable" (#2173) |
+| (pending) | PowysCouncil | Rewrite as pure HTTP (GOSS iCM postback + JSONP postcode lookup), drops Selenium entirely - see note below |
 
 **Dedupe (Ealing, #1884):** both modules hit the same
 `WasteCollectionWS/home/FindCollection` API and, per the maintainer's own earlier
@@ -340,6 +341,26 @@ found. Most likely cause is environment-specific (their Selenium remote webdrive
 being slow, unreachable, or under resource contention at setup time) rather than a
 scraper regression - commented on the issue asking for their `web_driver`/`timeout`
 config to narrow it down further.
+
+**Follow-up - PowysCouncil moved off Selenium entirely.** While investigating #2175,
+noticed the site's element ids (`BINDAYLOOKUP_ADDRESSLOOKUP_...`) match the exact
+same GOSS iCM platform naming convention as Sunderland's form
+(`BINCOLLECTIONCHECKERNEWV3_...`). Confirmed live: the postcode search is a JSONP
+call to `/apiserver/postcode` (`{"id":.., "method":"postcodeSearch", "params":
+{"provider":"", "postcode":...}}`, wrapped in a callback - trivially strippable),
+returning clean address JSON (`line1`, `postalAddress`, `udprn`); submitting the
+selected address's `udprn`/`postalAddress` to the same
+`/apiserver/formsservice/http/processsubmission` postback endpoint the initial page
+load points at returns the full results page - including all three bin-type cards -
+in a single POST, no separate "Find collection days" step needed via pure HTTP (the
+Selenium version's extra click was for a client-side-only page transition). No
+Cloudflare/WAF involved at any point. Rewrote `PowysCouncil.py` to use this directly;
+`input.json`'s `web_driver` field is no longer needed. This also incidentally fixes a
+pre-existing under-counting bug: the old Selenium version's `find_next("ul")` only
+ever grabbed the *first* `<ul>` after each bin-card heading, but the site wraps each
+individual date in its own separate `<ul><li>`, so only one date per bin type was
+ever being captured; the new version collects every `<li>` under each card and now
+correctly returns all 5.
 
 **Investigated, not a code bug - FenlandDistrictCouncil (#2174):** reporter saw 500
 errors from `bins.azurewebsites.net/api/getcollections`. Reproduced the exact error
