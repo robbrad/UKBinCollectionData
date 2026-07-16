@@ -41,8 +41,25 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
         data = {"bins": []}
 
+        # A full, realistic browser header set (not just User-Agent) - the
+        # site is fronted by Cloudflare, which scores requests on header
+        # completeness/consistency alongside IP reputation. This alone
+        # won't clear an IP-based block (e.g. flagged datacenter IPs like
+        # CI runners), but reduces the chance of also being flagged on
+        # fingerprint grounds.
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
         }
 
         s = requests.Session()
