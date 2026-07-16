@@ -1,4 +1,10 @@
 =======
+## 0.170.6 (2026-07-16)
+
+### Fix
+
+- **councils**: rewrite PowysCouncil as pure HTTP, no browser (#2175)
+
 ## 0.170.5 (2026-07-15)
 
 ### Fix
