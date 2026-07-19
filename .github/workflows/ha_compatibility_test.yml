@@ -58,8 +58,20 @@ jobs:
             | map({
                 ha_version: .,
                 expected_python: (
-                  if (split(".")[0] | tonumber) >= 2026 then "3.14"
-                  elif (split(".")[0] == "2025" and (split(".")[1] | tonumber) >= 2)
+                  if (
+                    (split(".")[0] | tonumber) > 2026
+                    or (
+                      (split(".")[0] == "2026")
+                      and ((split(".")[1] | tonumber) >= 3)
+                    )
+                  ) then "3.14"
+                  elif (
+                    (split(".")[0] | tonumber) > 2025
+                    or (
+                      (split(".")[0] == "2025")
+                      and ((split(".")[1] | tonumber) >= 2)
+                    )
+                  )
                   then "3.13"
                   else "3.12"
                   end
