@@ -1,10 +1,8 @@
+from __future__ import annotations
+
 import time
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -19,6 +17,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             user_postcode = kwargs.get("postcode")
@@ -123,19 +132,19 @@ class CouncilClass(AbstractGetBinDataClass):
                     bin_info = {"type": bin_type, "collectionDate": formatted_date}
                     bin_data["bins"].append(bin_info)
                 except ValueError as e:
-                    print(f"Error parsing date {collection_date_string}: {e}")
+                    print("Collection date parsing failed " f"({type(e).__name__})")
                     continue
 
             if not bin_data["bins"]:
                 raise ValueError("No collection data found")
 
-            print(bin_data)
+            print(f"Parsed {len(bin_data.get('bins', []))} collections")
 
             return bin_data
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

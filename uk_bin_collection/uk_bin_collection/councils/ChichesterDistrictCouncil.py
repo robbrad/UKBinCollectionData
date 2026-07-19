@@ -1,16 +1,9 @@
+from __future__ import annotations
+
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait, Select
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import (
-    StaleElementReferenceException,
-    TimeoutException,
-    NoSuchElementException,
-)
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -36,6 +29,22 @@ class CouncilClass(AbstractGetBinDataClass):
     DROPDOWN_ID = "WASTECOLLECTIONCALENDARV7_CALENDAR_ADDRESSLOOKUPADDRESS"
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, NoSuchElementException, Select, StaleElementReferenceException, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support.ui import WebDriverWait, Select
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.common.exceptions import (
+            StaleElementReferenceException,
+            TimeoutException,
+            NoSuchElementException,
+        )
+
         driver = None
         try:
             start_url = "https://www.chichester.gov.uk/checkyourbinday"
@@ -171,9 +180,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 sel_element = driver.find_element(By.ID, self.DROPDOWN_ID)
                 select = Select(sel_element)
 
-        raise Exception(
-            f"Failed to select '{target_text}' after retries"
-        )
+        raise Exception(f"Failed to select '{target_text}' after retries")
 
     @staticmethod
     def _pick_option(options, house_number: str):
@@ -182,8 +189,10 @@ class CouncilClass(AbstractGetBinDataClass):
         for opt in options:
             text = opt.text.strip()
             low = text.lower()
-            if low == target or low.startswith(f"{target},") or low.startswith(
-                f"{target} "
+            if (
+                low == target
+                or low.startswith(f"{target},")
+                or low.startswith(f"{target} ")
             ):
                 return text
         # Fuzzy: substring match

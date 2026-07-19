@@ -40,9 +40,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_url = "https://cag.walsall.gov.uk" + item.contents[1]["href"]
                 r = requests.get(bin_url, headers=headers)
                 if r.status_code != 200:
-                    print(
-                        f"Collection details for {bin_colour.lower()} bin could not be retrieved."
-                    )
+                    print("Collection details could not be retrieved")
                     break
                 soup = BeautifulSoup(r.text, "html.parser")
                 table = soup.findAll("tr")

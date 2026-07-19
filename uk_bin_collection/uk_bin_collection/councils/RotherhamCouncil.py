@@ -46,9 +46,7 @@ class CouncilClass(AbstractGetBinDataClass):
         target = str(paon).strip().lower()
         if not target:
             if not rows:
-                raise ValueError(
-                    f"No addresses found for postcode {postcode}"
-                )
+                raise ValueError(f"No addresses found for postcode {postcode}")
             return str(rows[0].get("PremiseID"))
 
         # Match against Address2 (house number/name) first, then Street.
@@ -64,15 +62,12 @@ class CouncilClass(AbstractGetBinDataClass):
         # against a paon of "22A".
         for row in rows:
             blob = " ".join(
-                str(row.get(k, "")).strip()
-                for k in ("Address1", "Address2", "Street")
+                str(row.get(k, "")).strip() for k in ("Address1", "Address2", "Street")
             ).lower()
             if target and target in blob:
                 return str(row.get("PremiseID"))
 
-        raise ValueError(
-            f"No address matching '{paon}' for postcode {postcode}"
-        )
+        raise ValueError(f"No address matching '{paon}' for postcode {postcode}")
 
     def parse_data(self, page: str, **kwargs) -> dict:
         premises = kwargs.get("premisesid")
@@ -104,14 +99,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 timeout=15,
             )
         except Exception as exc:
-            print(f"Error contacting Rotherham API: {exc}")
+            print(f"Error contacting Rotherham API ({type(exc).__name__}).")
             return {"bins": []}
 
         if resp.status_code != 200:
-            print(
-                f"Rotherham API request failed ({resp.status_code}). "
-                f"URL: {resp.url}"
-            )
+            print(f"Rotherham API request failed ({resp.status_code}).")
             return {"bins": []}
 
         try:
@@ -123,12 +115,8 @@ class CouncilClass(AbstractGetBinDataClass):
         data = {"bins": []}
         seen = set()
         for item in collections:
-            bin_type = (
-                item.get("BinType") or item.get("bintype") or "Unknown"
-            )
-            date_str = (
-                item.get("CollectionDate") or item.get("collectionDate")
-            )
+            bin_type = item.get("BinType") or item.get("bintype") or "Unknown"
+            date_str = item.get("CollectionDate") or item.get("collectionDate")
             if not date_str:
                 continue
             try:
@@ -141,13 +129,9 @@ class CouncilClass(AbstractGetBinDataClass):
             if key in seen:
                 continue
             seen.add(key)
-            data["bins"].append(
-                {"type": bin_type, "collectionDate": formatted}
-            )
+            data["bins"].append({"type": bin_type, "collectionDate": formatted})
 
         data["bins"].sort(
-            key=lambda x: datetime.strptime(
-                x["collectionDate"], date_format
-            )
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
         )
         return data

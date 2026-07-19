@@ -103,7 +103,8 @@ def load_icon_color_mapping(icon_color_mapping: str) -> Dict[str, Any]:
         return json.loads(icon_color_mapping) if icon_color_mapping else {}
     except JSONDecodeError:
         _LOGGER.warning(
-            f"{LOG_PREFIX} Invalid icon_color_mapping JSON: {icon_color_mapping}. Using default settings."
+            "%s Invalid icon_color_mapping JSON. Using default settings.",
+            LOG_PREFIX,
         )
         return {}
 
@@ -164,9 +165,7 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
             # not an error, so show a friendly state rather than going
             # Unavailable (availability itself is driven by whether the
             # coordinator update as a whole succeeded).
-            _LOGGER.debug(
-                f"{LOG_PREFIX} No upcoming date for bin type '{self._bin_type}'."
-            )
+            _LOGGER.debug("%s No upcoming date for this entity.", LOG_PREFIX)
             self._state = "No collections scheduled"
             self._days = None
             self._next_collection = None
@@ -287,9 +286,7 @@ class UKBinCollectionAttributeSensor(CoordinatorEntity, SensorEntity):
         elif self._attribute_type == "Days Until Collection":
             return self.calculate_days_until()
         else:
-            _LOGGER.warning(
-                f"{LOG_PREFIX} Undefined attribute type: {self._attribute_type}"
-            )
+            _LOGGER.warning("%s Entity has an undefined attribute type.", LOG_PREFIX)
             return "Undefined"
 
     def calculate_human_readable(self) -> str:

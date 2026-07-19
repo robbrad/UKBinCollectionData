@@ -1,11 +1,10 @@
+from __future__ import annotations
+
 import json
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -19,6 +18,16 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import WebDriverWait
+
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
@@ -32,7 +41,7 @@ class CouncilClass(AbstractGetBinDataClass):
         driver = create_webdriver(web_driver, headless, user_agent, __name__)
 
         try:
-            print(f"Navigating to URL: {url}")
+            print("Navigating to the configured council page")
             driver.get(url)
 
             # Wait for Cloudflare to complete its check
@@ -67,10 +76,10 @@ class CouncilClass(AbstractGetBinDataClass):
             bindata["bins"].sort(
                 key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
             )
-            print(bindata)
+            print(f"Parsed {len(bindata.get('bins', []))} collections")
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             print("Cleaning up WebDriver...")

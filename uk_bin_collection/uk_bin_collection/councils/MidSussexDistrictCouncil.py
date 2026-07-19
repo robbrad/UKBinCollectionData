@@ -49,8 +49,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             alink = soup.find(
                 "a",
-                string=lambda s: s
-                and "View my collections" in s,
+                string=lambda s: s and "View my collections" in s,
             )
 
             if alink is None:
@@ -114,5 +113,5 @@ class CouncilClass(AbstractGetBinDataClass):
             return bindata
 
         except Exception as e:
-            logging.error(f"An error occurred: {e}")
+            logging.error(f"An error occurred: {type(e).__name__}")
             raise

@@ -79,7 +79,7 @@ def get_jwt() -> str:
             raise ValueError("Invalid server response code getting JWT!")
 
     except Exception as ex:
-        print(f"Exception encountered: {ex}")
+        print(f"Exception encountered: {type(ex).__name__}")
         exit(1)
     token = parse_token(response.text)
     options.close()
@@ -144,7 +144,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 raise ValueError("Invalid server response code finding UPRN!")
 
         except Exception as ex:
-            print(f"Exception encountered: {ex}")
+            print(f"Exception encountered: {type(ex).__name__}")
             exit(1)
 
         result = json.loads(response.text)

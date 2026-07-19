@@ -1,19 +1,11 @@
+from __future__ import annotations
+
 import json
 from datetime import datetime, timedelta
 from typing import Any, Dict
 
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    StaleElementReferenceException,
-    TimeoutException,
-)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -86,17 +78,37 @@ def get_bank_holiday_changes(driver: WebDriver) -> Dict[str, str]:
                             )
                             changes[normal_date] = revised_date
                         except Exception as e:
-                            print(f"Error parsing dates: {e}")
+                            print(f"Error parsing dates: {type(e).__name__}")
                             continue
 
     except Exception as e:
-        print(f"An error occurred while fetching bank holiday changes: {e}")
+        print(
+            "An error occurred while fetching bank holiday changes "
+            f"({type(e).__name__})."
+        )
 
     return changes
 
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, Any]:
+        global By, EC, Keys, NoSuchElementException, StaleElementReferenceException, TimeoutException, WebDriver, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.common.exceptions import (
+            NoSuchElementException,
+            StaleElementReferenceException,
+            TimeoutException,
+        )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.remote.webdriver import WebDriver
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data: Dict[str, Any] = {"bins": []}
@@ -264,7 +276,7 @@ class CouncilClass(AbstractGetBinDataClass):
                             }
                         )
                 except Exception as e:
-                    print(f"Error processing item: {e}")
+                    print(f"Error processing item: {type(e).__name__}")
                     continue
 
             # Get bank holiday changes
@@ -276,13 +288,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 original_date = bin_data["collectionDate"]
                 if original_date in bank_holiday_changes:
                     new_date = bank_holiday_changes[original_date]
-                    print(
-                        f"Bank holiday change: {bin_data['type']} collection moved from {original_date} to {new_date}"
-                    )
+                    print("Applied a bank-holiday collection-date adjustment.")
                     bin_data["collectionDate"] = new_date
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:
@@ -290,6 +300,6 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Print the final data dictionary for debugging
         print("\nFinal data dictionary:")
-        print(json.dumps(data, indent=2))
+        print(f"Parsed {len(data.get('bins', []))} collections")
 
         return data

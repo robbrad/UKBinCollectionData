@@ -74,7 +74,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
             month_txt = container.find("tr", class_="calendar").get_text(strip=True)
             month = datetime.strptime(month_txt, "%B").strftime("%m")
-            print(month_txt)
+            print("Collection month parsed")
 
             pink_days = [
                 td.get_text(strip=True)

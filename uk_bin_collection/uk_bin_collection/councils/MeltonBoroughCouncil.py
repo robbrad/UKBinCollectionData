@@ -77,6 +77,6 @@ class CouncilClass(AbstractGetBinDataClass):
             }
             data["bins"].append(dict_data)
 
-        print(json.dumps(data, indent=2))
+        print(f"Parsed {len(data.get('bins', []))} collections")
 
         return data

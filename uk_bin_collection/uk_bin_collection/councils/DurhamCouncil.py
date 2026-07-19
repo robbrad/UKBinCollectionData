@@ -78,9 +78,7 @@ class CouncilClass(AbstractGetBinDataClass):
         # volume suffix. Whitespace is flexible throughout. fullmatch() is
         # used so unexpected leading/trailing content surfaces as a warning
         # rather than being silently absorbed.
-        name_pattern = re.compile(
-            r"(?:Empty\s+Bin\s+)?(.+?)(?:\s+\d+\s*[Ll])?"
-        )
+        name_pattern = re.compile(r"(?:Empty\s+Bin\s+)?(.+?)(?:\s+\d+\s*[Ll])?")
 
         next_dates = {}
         for job in soup.find_all("job"):
@@ -92,7 +90,7 @@ class CouncilClass(AbstractGetBinDataClass):
             raw_name = name_tag.get_text(strip=True)
             match = name_pattern.fullmatch(raw_name)
             if not match:
-                _LOGGER.warning("Could not parse bin name %r", raw_name)
+                _LOGGER.warning("Could not parse a collection type")
                 continue
             label = match.group(1).strip()
 
@@ -101,11 +99,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     start_tag.get_text(strip=True)[:10], "%Y-%m-%d"
                 )
             except ValueError:
-                _LOGGER.warning(
-                    "Could not parse scheduled date %r for bin %r",
-                    start_tag.get_text(strip=True),
-                    raw_name,
-                )
+                _LOGGER.warning("Could not parse a scheduled collection date")
                 continue
 
             if scheduled < today:
@@ -115,9 +109,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
         for bin_type, collection_date in next_dates.items():
-            data["bins"].append({
-                "type": bin_type,
-                "collectionDate": collection_date.strftime(date_format),
-            })
+            data["bins"].append(
+                {
+                    "type": bin_type,
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+            )
 
         return data

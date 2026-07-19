@@ -1,14 +1,8 @@
+from __future__ import annotations
+
 import time
 
 from bs4 import BeautifulSoup
-from selenium.common.exceptions import (
-    ElementClickInterceptedException,
-    NoSuchElementException,
-    TimeoutException,
-)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -24,19 +18,34 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Retrieve bin collection types and upcoming collection dates for the given address.
-        
+
         Parameters:
             page (str): Unused by this implementation (kept for interface compatibility).
             paon (str, in kwargs): Property/PAON text used to select the correct address option.
             postcode (str, in kwargs): Postcode to search for addresses.
             web_driver (optional, in kwargs): Selenium WebDriver instance or web driver identifier to use when creating the driver.
             headless (bool, optional, in kwargs): Whether to run the browser in headless mode.
-        
+
         Returns:
             data (dict): Dictionary with a single key "bins" whose value is a list of dictionaries. Each entry contains:
                 - "type" (str): The bin/collection type name.
                 - "collectionDate" (str): The next collection date formatted according to the module's date_format.
         """
+        global By, EC, ElementClickInterceptedException, NoSuchElementException, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.common.exceptions import (
+            ElementClickInterceptedException,
+            NoSuchElementException,
+            TimeoutException,
+        )
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -98,9 +107,11 @@ class CouncilClass(AbstractGetBinDataClass):
             # pattern as a fallback in case the council re-renames it again.
             WebDriverWait(driver, 15).until(
                 EC.presence_of_element_located(
-                    (By.XPATH,
-                     "//select[contains(@id, 'ADDRESSUPRN') or contains(@id, 'ADDRESSSELECTION')]"
-                     " | //div[contains(@id, 'ADDRESSUPRN_chosen') or contains(@id, 'ADDRESSSELECTION_chosen') or contains(@class, 'chosen-container')]")
+                    (
+                        By.XPATH,
+                        "//select[contains(@id, 'ADDRESSUPRN') or contains(@id, 'ADDRESSSELECTION')]"
+                        " | //div[contains(@id, 'ADDRESSUPRN_chosen') or contains(@id, 'ADDRESSSELECTION_chosen') or contains(@class, 'chosen-container')]",
+                    )
                 )
             )
 
@@ -110,11 +121,13 @@ class CouncilClass(AbstractGetBinDataClass):
             dropdown_containers = driver.find_elements(
                 By.XPATH,
                 "//div[contains(@id, 'ADDRESSUPRN_chosen') or contains(@id, 'ADDRESSSELECTION_chosen')]"
-                " | //div[contains(@class, 'chosen-container')]"
+                " | //div[contains(@class, 'chosen-container')]",
             )
             if dropdown_containers:
                 dropdown = dropdown_containers[0]
-                driver.execute_script("arguments[0].scrollIntoView({block:'center'});", dropdown)
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({block:'center'});", dropdown
+                )
                 try:
                     dropdown.click()
                 except ElementClickInterceptedException:
@@ -125,7 +138,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 try:
                     search_input = driver.find_element(
                         By.XPATH,
-                        "//div[contains(@class, 'chosen-container')]//input[contains(@class, 'chosen-search-input') or @type='text']"
+                        "//div[contains(@class, 'chosen-container')]//input[contains(@class, 'chosen-search-input') or @type='text']",
                     )
                     search_input.clear()
                     search_input.send_keys(user_paon)
@@ -138,10 +151,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
 
                 desired_option = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((
-                        By.XPATH,
-                        f"//li[contains(@class, 'active-result') and contains(., '{user_paon}')]"
-                    ))
+                    EC.element_to_be_clickable(
+                        (
+                            By.XPATH,
+                            f"//li[contains(@class, 'active-result') and contains(., '{user_paon}')]",
+                        )
+                    )
                 )
                 desired_option.click()
             else:
@@ -164,7 +179,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Click the next button to proceed
             next_button = WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//button[contains(@id, 'NEXT') and contains(@id, 'BBCWASTECOLLECTIONSV2')]")
+                    (
+                        By.XPATH,
+                        "//button[contains(@id, 'NEXT') and contains(@id, 'BBCWASTECOLLECTIONSV2')]",
+                    )
                 )
             )
             next_button.click()
@@ -172,7 +190,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Wait for the collections information to appear
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//div[contains(@class, 'item__title') or contains(@class, 'grid__cell--listitem')]")
+                    (
+                        By.XPATH,
+                        "//div[contains(@class, 'item__title') or contains(@class, 'grid__cell--listitem')]",
+                    )
                 )
             )
 
@@ -192,18 +213,18 @@ class CouncilClass(AbstractGetBinDataClass):
                 bin_type_elem = bin_div.find("h2", class_="item__title")
                 if not bin_type_elem:
                     continue
-                    
+
                 bin_type = bin_type_elem.text.strip()
 
                 # Find the next collection date
                 content_div = bin_div.find("div", class_="item__content")
                 if not content_div:
                     continue
-                    
+
                 date_div = content_div.find("div")
                 if not date_div:
                     continue
-                    
+
                 next_collection = date_div.text.strip().replace("Next: ", "")
 
                 next_collection = datetime.strptime(
@@ -224,7 +245,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

@@ -1,12 +1,10 @@
+from __future__ import annotations
+
 import re
 import time
 
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -21,6 +19,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             user_paon = kwargs.get("paon")
@@ -51,11 +60,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for results to appear
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "ul.result_list li")
-                )
+                EC.presence_of_element_located((By.CSS_SELECTOR, "ul.result_list li"))
             )
-            
+
             # Use JavaScript to click the correct address
             # Add space after house number to match exactly (e.g., "1 " not "10", "11", etc.)
             driver.execute_script(f"""
@@ -96,16 +103,14 @@ class CouncilClass(AbstractGetBinDataClass):
             table_data = []
             for row in table.find("tbody").find_all("tr"):
                 # Extract cell data from each <td> tag
-                row_data = [
-                    cell.get_text(strip=True) for cell in row.find_all("td")
-                ]
+                row_data = [cell.get_text(strip=True) for cell in row.find_all("td")]
                 table_data.append(row_data)
 
             # The table structure is: [Bin Type, Collection Day, Round Code]
             # All bins are collected on the same day (e.g., "Thursday")
             if not table_data or len(table_data[0]) < 2:
                 raise Exception("Unable to parse collection schedule from table.")
-            
+
             collection_day = table_data[0][1]  # e.g., "Thursday"
 
             # Extract all bin types
@@ -116,7 +121,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Calculate next collection dates based on the collection day
             from datetime import datetime, timedelta
-            
+
             days_of_week = [
                 "Monday",
                 "Tuesday",
@@ -138,7 +143,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 next_day = today + timedelta(days=days_until_target)
 
             # Generate collection dates for the next 12 weeks (all bins collected weekly)
-            all_dates = get_dates_every_x_days(next_day, 7, 12)  # 12 collections, every 7 days
+            all_dates = get_dates_every_x_days(
+                next_day, 7, 12
+            )  # 12 collections, every 7 days
 
             # Assign all bin types to each collection date
             for date in all_dates:
@@ -155,7 +162,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

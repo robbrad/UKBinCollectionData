@@ -15,13 +15,12 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-
         """
         Fetch bin collection data for a property and return normalized bin types with formatted dates.
-        
+
         Parameters:
             uprn (str): Unique Property Reference Number used to query the council's bin collections endpoint (passed via kwargs).
-        
+
         Returns:
             dict: A dictionary with a "bins" key mapping to a list of collection records. Each record is a dict with:
                 - "type" (str): Bin type.
@@ -45,7 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
         for collection in bin_collection["results"]["collections"]["all"]:
 
             CollectTime = (collection["eventTime"]).split("T")[0]
-            print(CollectTime)
+            print("Collection schedule parsed")
 
             dict_data = {
                 "type": collection["binType"],

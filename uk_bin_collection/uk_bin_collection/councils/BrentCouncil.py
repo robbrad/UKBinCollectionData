@@ -27,9 +27,11 @@ class CouncilClass(AbstractGetBinDataClass):
         payload = {"postcode": user_postcode}
 
         s = requests.Session()
-        s.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
-        })
+        s.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
+            }
+        )
 
         # Make the POST request
         response = s.post(URI, data=payload)
@@ -125,8 +127,11 @@ class CouncilClass(AbstractGetBinDataClass):
                                     ),
                                 }
                                 data["bins"].append(dict_data)
-                                print(dict_data)
+                                print("Collection added successfully")
                             except ValueError as e:
-                                print(f"Error parsing date {next_collection}: {e}")
+                                print(
+                                    "Collection date parsing failed "
+                                    f"({type(e).__name__})"
+                                )
 
         return data

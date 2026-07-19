@@ -91,6 +91,6 @@ class CouncilClass(AbstractGetBinDataClass):
             key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
         )
 
-        print(data)
+        print(f"Parsed {len(data.get('bins', []))} collections")
 
         return data

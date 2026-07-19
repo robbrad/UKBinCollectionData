@@ -1,12 +1,9 @@
+from __future__ import annotations
+
 import time
 from typing import Any
 
 from dateutil.parser import parse
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import create_webdriver, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -21,6 +18,18 @@ class CouncilClass(AbstractGetBinDataClass):
             raise
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, NoSuchElementException, Select, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.common.exceptions import NoSuchElementException, TimeoutException
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select, WebDriverWait
+
         driver = None
         try:
             web_driver = kwargs.get("web_driver")
@@ -83,7 +92,10 @@ class CouncilClass(AbstractGetBinDataClass):
                     )[1].text
 
                     # Skip if the message indicates service suspension
-                    if "suspended" in raw_next_collection_date.lower() or "restarting" in raw_next_collection_date.lower():
+                    if (
+                        "suspended" in raw_next_collection_date.lower()
+                        or "restarting" in raw_next_collection_date.lower()
+                    ):
                         continue
 
                     parsed_bin_date = parse(
@@ -101,7 +113,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     print("Error finding element for bin")
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

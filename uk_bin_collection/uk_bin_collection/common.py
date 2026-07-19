@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import calendar
 import json
 import os
@@ -5,17 +7,28 @@ import re
 from datetime import datetime, timedelta
 from enum import Enum
 from importlib.metadata import PackageNotFoundError, version as _pkg_version
+from importlib.util import find_spec
+from typing import TYPE_CHECKING, Any
+from urllib.parse import urlsplit
 
 import holidays
 import pandas as pd
 import requests
 from dateutil.parser import parse
 from requests.adapters import HTTPAdapter
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from urllib3.exceptions import MaxRetryError
 from urllib3.util.retry import Retry
-from webdriver_manager.chrome import ChromeDriverManager
+
+from uk_bin_collection.uk_bin_collection.dependency_validation import (
+    validate_websocket_client,
+)
+from uk_bin_collection.uk_bin_collection.exceptions import (
+    BrowserUnavailableError,
+    MissingDependencyError,
+)
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webdriver import WebDriver
 
 date_format = "%d/%m/%Y"
 days_of_week = {
@@ -42,13 +55,20 @@ def check_postcode(postcode: str):
         :param postcode: Postcode to parse
     """
     postcode_api_url = "https://api.postcodes.io/postcodes/"
-    postcode_api_response = requests.get(f"{postcode_api_url}{postcode}")
+    postcode_api_response = requests.get(
+        f"{postcode_api_url}{postcode}", timeout=(3.05, 10)
+    )
 
     if postcode_api_response.status_code != 200:
-        val_error = json.loads(postcode_api_response.text)
-        raise ValueError(
-            f"Exception: {val_error['error']} Status: {val_error['status']}"
+        try:
+            val_error = postcode_api_response.json()
+        except (ValueError, TypeError):
+            val_error = {}
+        error = val_error.get(
+            "error", "Postcode validation service rejected the request"
         )
+        status = val_error.get("status", postcode_api_response.status_code)
+        raise ValueError(f"Exception: {error} Status: {status}")
     return True
 
 
@@ -62,7 +82,7 @@ def check_paon(paon: str):
             raise ValueError("Invalid house number")
         return True
     except Exception as ex:
-        print(f"Exception encountered: {ex}")
+        print(f"Exception encountered: {type(ex).__name__}")
         print("Please check the provided house number.")
         exit(1)
 
@@ -77,7 +97,7 @@ def check_uprn(uprn: str):
             raise ValueError("Invalid UPRN")
         return True
     except Exception as ex:
-        print(f"Exception encountered: {ex}")
+        print(f"Exception encountered: {type(ex).__name__}")
         print("Please check the provided UPRN.")
 
 
@@ -91,7 +111,7 @@ def check_usrn(usrn: str):
             raise ValueError("Invalid USRN")
         return True
     except Exception as ex:
-        print(f"Exception encountered: {ex}")
+        print(f"Exception encountered: {type(ex).__name__}")
         print("Please check the provided USRN.")
 
 
@@ -271,7 +291,7 @@ def update_input_json(council: str, url: str, input_file_path: str, **kwargs):
 
         save_data(input_file_path, data)
     except IOError as e:
-        print(f"Error updating the JSON file: {e}")
+        print(f"Error updating the JSON file: {type(e).__name__}")
     except json.JSONDecodeError:
         print("Failed to decode JSON, check the integrity of the input file.")
 
@@ -366,7 +386,8 @@ def create_webdriver(
     headless: bool = True,
     user_agent: str = None,
     session_name: str = None,
-) -> webdriver.Chrome:
+    command_timeout: float | None = None,
+) -> WebDriver:
     """
     Create and return a Chrome WebDriver configured for optional headless operation.
 
@@ -374,9 +395,14 @@ def create_webdriver(
     :param headless: Whether to run the browser in headless mode.
     :param user_agent: Optional custom user agent string.
     :param session_name: Optional custom session name string.
+    :param command_timeout: Optional bound for remote WebDriver HTTP/WebSocket calls.
     :return: An instance of a Chrome WebDriver.
-    :raises WebDriverException: If the WebDriver cannot be created.
+    :raises DependencyError: If Selenium's dependencies cannot be imported safely.
+    :raises BrowserUnavailableError: If the WebDriver cannot be created.
     """
+    webdriver, WebDriverException = _load_selenium_dependencies()
+    if web_driver:
+        web_driver = _validate_remote_webdriver_url(web_driver)
     options = webdriver.ChromeOptions()
     if headless:
         options.add_argument("--headless")
@@ -391,10 +417,20 @@ def create_webdriver(
     if session_name and web_driver:
         options.set_capability("se:name", session_name)
 
+    driver = None
     try:
         if web_driver:
-            driver = webdriver.Remote(command_executor=web_driver, options=options)
+            remote_kwargs = {
+                "command_executor": web_driver,
+                "options": options,
+            }
+            if command_timeout is not None:
+                remote_kwargs["client_config"] = _build_remote_client_config(
+                    web_driver, command_timeout
+                )
+            driver = webdriver.Remote(**remote_kwargs)
         else:
+            ChromeService, ChromeDriverManager = _load_local_chrome_dependencies()
             driver = webdriver.Chrome(
                 service=ChromeService(ChromeDriverManager().install()), options=options
             )
@@ -403,6 +439,110 @@ def create_webdriver(
         driver.set_window_position(0, 0)
 
         return driver
-    except MaxRetryError as e:
-        print(f"Failed to create WebDriver: {e}")
-        raise
+    except (
+        MaxRetryError,
+        WebDriverException,
+        requests.exceptions.RequestException,
+        OSError,
+    ) as exc:
+        if driver is not None:
+            try:
+                driver.quit()
+            except Exception:
+                # Preserve the browser-creation failure as the actionable cause.
+                pass
+        raise BrowserUnavailableError(
+            "Unable to create or reach the configured Selenium WebDriver."
+        ) from exc
+
+
+def _validate_remote_webdriver_url(web_driver: str) -> str:
+    """Return a normalized HTTP(S) WebDriver URL or fail with a typed error."""
+    normalized = str(web_driver).strip().rstrip("/")
+    try:
+        parsed = urlsplit(normalized)
+        # Accessing hostname/port performs urllib's bracket and port validation.
+        hostname = parsed.hostname
+        parsed.port
+    except (TypeError, ValueError) as exc:
+        raise BrowserUnavailableError(
+            "The configured Selenium WebDriver URL is invalid."
+        ) from exc
+
+    if (
+        parsed.scheme.casefold() not in {"http", "https"}
+        or not hostname
+        or any(character.isspace() for character in normalized)
+    ):
+        raise BrowserUnavailableError(
+            "The configured Selenium WebDriver URL must use HTTP or HTTPS and "
+            "include a host."
+        )
+    return normalized
+
+
+def _build_remote_client_config(web_driver: str, timeout: float):
+    """Build Selenium's bounded remote connection config lazily."""
+    validate_websocket_client()
+    try:
+        from selenium.webdriver.remote.client_config import ClientConfig
+    except ImportError as exc:
+        raise MissingDependencyError(
+            "Selenium's remote client configuration support is unavailable."
+        ) from exc
+
+    timeout_seconds = max(1, int(timeout))
+    return ClientConfig(
+        remote_server_addr=web_driver,
+        timeout=timeout_seconds,
+        websocket_timeout=float(timeout_seconds),
+    )
+
+
+def _load_selenium_dependencies() -> tuple[Any, type[Exception]]:
+    """Import Selenium only when a caller actually needs a browser."""
+    try:
+        selenium_spec = find_spec("selenium")
+    except (AttributeError, ImportError, ValueError) as exc:
+        raise MissingDependencyError(
+            "Python cannot safely resolve the optional 'selenium' dependency."
+        ) from exc
+
+    if selenium_spec is None:
+        raise MissingDependencyError(
+            "The optional dependency 'selenium' is required for this council."
+        )
+
+    # Selenium's remote driver imports ``websocket``. Validate its ownership before
+    # allowing that import to execute potentially conflicting top-level code.
+    validate_websocket_client()
+
+    try:
+        from selenium import webdriver
+        from selenium.common.exceptions import WebDriverException
+    except ImportError as exc:
+        # Recheck the most security-sensitive transitive dependency in case import
+        # state changed between validation and Selenium's own import.
+        validate_websocket_client()
+        raise MissingDependencyError("Selenium is installed incompletely.") from exc
+
+    return webdriver, WebDriverException
+
+
+def ensure_selenium_dependencies() -> None:
+    """Validate and import Selenium before a council performs lazy imports."""
+    _load_selenium_dependencies()
+
+
+def _load_local_chrome_dependencies() -> tuple[Any, Any]:
+    """Import dependencies needed only when launching a local Chrome driver."""
+    try:
+        from selenium.webdriver.chrome.service import Service as ChromeService
+        from webdriver_manager.chrome import ChromeDriverManager
+    except ImportError as exc:
+        raise MissingDependencyError(
+            "The optional dependency 'webdriver-manager' is required for a local "
+            "browser, but is not required for a remote WebDriver."
+        ) from exc
+
+    return ChromeService, ChromeDriverManager

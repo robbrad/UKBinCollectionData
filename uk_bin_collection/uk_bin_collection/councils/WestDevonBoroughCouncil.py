@@ -1,12 +1,10 @@
+from __future__ import annotations
+
 import json
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -20,6 +18,17 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, WebDriverWait, webdriver
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import WebDriverWait
+
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
@@ -34,9 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(base_url)
 
             WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "input[type='text']")
-                )
+                EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='text']"))
             )
 
             fcc_token = None
@@ -65,9 +72,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 addresses = result.get("addresses", {})
 
                 if not addresses:
-                    raise ValueError(
-                        f"No addresses found for postcode {user_postcode}"
-                    )
+                    raise ValueError(f"No addresses found for postcode {user_postcode}")
 
                 paon_lower = user_paon.lower().strip()
                 matched_uprn = None
@@ -123,9 +128,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 for coll in collections:
                     service_name = coll.find("h3").text.strip()
 
-                    det_wrap = coll.find(
-                        "div", class_="wdshDetWrap"
-                    ) or coll.find("div", class_="detWrap")
+                    det_wrap = coll.find("div", class_="wdshDetWrap") or coll.find(
+                        "div", class_="detWrap"
+                    )
                     if not det_wrap:
                         continue
 
@@ -141,9 +146,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     if next_collection.startswith("today"):
                         next_collection = next_collection.split("today, ")[1]
                     elif next_collection.startswith("tomorrow"):
-                        next_collection = next_collection.split(
-                            "tomorrow, "
-                        )[1]
+                        next_collection = next_collection.split("tomorrow, ")[1]
 
                     collection_date = datetime.strptime(
                         next_collection, "%A, %d %B %Y"
@@ -161,9 +164,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     bindata["bins"].append(dict_data)
 
             bindata["bins"].sort(
-                key=lambda x: datetime.strptime(
-                    x.get("collectionDate"), "%d/%m/%Y"
-                )
+                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
             )
 
         finally:

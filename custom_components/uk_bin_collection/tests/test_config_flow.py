@@ -4,6 +4,7 @@
 
 import asyncio
 import json
+import logging
 from datetime import date, datetime, timedelta
 from json import JSONDecodeError
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -19,19 +20,15 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from custom_components.uk_bin_collection.config_flow import (
     UkBinCollectionConfigFlow,
     UkBinCollectionOptionsFlowHandler,
-    async_get_options_flow,
+    apply_registry_metadata,
+    merge_council_data,
+    normalize_council_registry,
+    validate_council_input,
 )
 from custom_components.uk_bin_collection.const import DOMAIN, LOG_PREFIX
 from custom_components.uk_bin_collection.sensor import load_icon_color_mapping
 
 from .common_utils import MockConfigEntry
-
-
-@pytest.fixture
-def hass_with_loop(hass, event_loop):
-    hass.loop = event_loop
-    return hass
-
 
 # Mock council data representing different scenarios
 MOCK_COUNCILS_DATA = {
@@ -86,17 +83,17 @@ MOCK_COUNCILS_DATA = {
 
 # Create a dummy HomeAssistant object.
 class DummyHass:
-    def __init__(self, loop):
+    def __init__(self):
         self.data = {}
         self.config_entries = MagicMock()
         self.config_entries.async_update_entry = AsyncMock()
         self.config_entries.async_reload = AsyncMock()
-        self.loop = loop
+        self.loop = MagicMock()
 
 
 @pytest.fixture
-def dummy_hass(event_loop):
-    return DummyHass(event_loop)
+def dummy_hass():
+    return DummyHass()
 
 
 # A sample councils data for the options flow tests.
@@ -117,6 +114,8 @@ def options_flow(dummy_hass):
         data={
             "name": "Test Options",
             "council": "CouncilTest",
+            "url": "https://example.com/council_test",
+            "uprn": "1234567890",
             "update_interval": 12,
             "icon_color_mapping": '{"CouncilTest": {"icon": "mdi:trash", "color": "green"}}',
         },
@@ -124,8 +123,11 @@ def options_flow(dummy_hass):
         unique_id="options_unique",
     )
     config_entry.add_to_hass(dummy_hass)
-    flow = UkBinCollectionOptionsFlowHandler(config_entry)
+    flow = UkBinCollectionOptionsFlowHandler()
     flow.hass = dummy_hass
+    flow.handler = config_entry.entry_id
+    dummy_hass.config_entries.async_get_known_entry.return_value = config_entry
+    flow.councils_data = MOCK_COUNCILS_DATA_OPTIONS
     return flow, config_entry
 
 
@@ -144,7 +146,7 @@ async def proceed_through_config_flow(
     # Start the flow and complete the `user` step
     result = await flow.async_step_user(user_input=user_input_initial)
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "council"
 
     # Complete the `council` step
@@ -168,6 +170,7 @@ async def test_config_flow_with_uprn(hass: HomeAssistant):
             "council": "Council with UPRN",
         }
         user_input_council = {
+            "url": "https://example.com/uprn",
             "uprn": "1234567890",
             "timeout": 60,
         }
@@ -181,6 +184,7 @@ async def test_config_flow_with_uprn(hass: HomeAssistant):
         assert result["data"] == {
             "name": "Test Name",
             "council": "CouncilWithUPRN",
+            "url": "https://example.com/uprn",
             "uprn": "1234567890",
             "timeout": 60,
         }
@@ -200,6 +204,7 @@ async def test_config_flow_with_postcode_and_number(hass: HomeAssistant):
             "council": "Council with Postcode and Number",
         }
         user_input_council = {
+            "url": "https://example.com/postcode",
             "postcode": "AB1 2CD",
             "number": "42",
             "timeout": 60,
@@ -214,6 +219,7 @@ async def test_config_flow_with_postcode_and_number(hass: HomeAssistant):
         assert result["data"] == {
             "name": "Test Name",
             "council": "CouncilWithPostcodeNumber",
+            "url": "https://example.com/postcode",
             "postcode": "AB1 2CD",
             "number": "42",
             "timeout": 60,
@@ -234,7 +240,8 @@ async def test_config_flow_with_web_driver(hass: HomeAssistant):
             "council": "Council with Web Driver",
         }
         user_input_council = {
-            "web_driver": "/path/to/webdriver",
+            "url": "https://example.com/webdriver",
+            "web_driver": "http://selenium:4444",
             "headless": True,
             "local_browser": False,
             "timeout": 60,
@@ -249,7 +256,8 @@ async def test_config_flow_with_web_driver(hass: HomeAssistant):
         assert result["data"] == {
             "name": "Test Name",
             "council": "CouncilWithWebDriver",
-            "web_driver": "/path/to/webdriver",
+            "url": "https://example.com/webdriver",
+            "web_driver": "http://selenium:4444",
             "headless": True,
             "local_browser": False,
             "timeout": 60,
@@ -336,9 +344,9 @@ async def test_config_flow_missing_name(hass: HomeAssistant):
 
         result = await flow.async_step_user(user_input=user_input_initial)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
-        assert result["errors"] == {"name": "Name is required."}
+        assert result["errors"] == {"name": "name"}
 
 
 async def test_config_flow_invalid_icon_color_mapping(hass: HomeAssistant):
@@ -359,9 +367,9 @@ async def test_config_flow_invalid_icon_color_mapping(hass: HomeAssistant):
         result = await flow.async_step_user(user_input=user_input_initial)
 
         # Should return to the user step with an error
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
-        assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+        assert result["errors"] == {"icon_color_mapping": "invalid_json"}
 
 
 async def test_config_flow_with_usrn(hass: HomeAssistant):
@@ -378,6 +386,7 @@ async def test_config_flow_with_usrn(hass: HomeAssistant):
             "council": "Council with USRN",
         }
         user_input_council = {
+            "url": "https://example.com/usrn",
             "usrn": "9876543210",
             "timeout": 60,
         }
@@ -391,6 +400,7 @@ async def test_config_flow_with_usrn(hass: HomeAssistant):
         assert result["data"] == {
             "name": "Test Name",
             "council": "CouncilWithUSRN",
+            "url": "https://example.com/usrn",
             "usrn": "9876543210",
             "timeout": 60,
         }
@@ -421,7 +431,7 @@ async def test_reconfigure_flow(hass):
         # Configure async_init to return a FlowResultType.FORM with step_id 'reconfigure_confirm'
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "reconfigure_confirm",
         }
 
@@ -437,7 +447,7 @@ async def test_reconfigure_flow(hass):
             flow, "async_step_reconfigure_confirm", new=AsyncMock()
         ) as mock_step:
             mock_step.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_CREATE_ENTRY,
+                "type": data_entry_flow.FlowResultType.CREATE_ENTRY,
                 "title": "Test Name",
                 "data": {
                     "name": "Test Name",
@@ -485,11 +495,11 @@ async def test_get_councils_json_failure(hass: HomeAssistant):
     ) as mock_session_cls:
         # Configure the mock session to simulate a network error
         mock_session = mock_session_cls.return_value.__aenter__.return_value
-        mock_session.get.side_effect = Exception("Network error")
+        mock_session.get = MagicMock(side_effect=Exception("Network error"))
 
         # Configure async_init to simulate flow abort due to council data being unavailable
         hass.config_entries.flow.async_init.return_value = {
-            "type": data_entry_flow.RESULT_TYPE_ABORT,
+            "type": data_entry_flow.FlowResultType.ABORT,
             "reason": "council_data_unavailable",
         }
 
@@ -518,7 +528,7 @@ async def test_config_flow_user_input_none(hass: HomeAssistant):
 
         result = await flow.async_step_user(user_input=None)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
 
 
@@ -543,8 +553,9 @@ async def test_config_flow_with_optional_fields(hass: HomeAssistant):
             "council": "Council with Optional Fields",
         }
         user_input_council = {
+            "url": "https://example.com/optional",
             "uprn": "1234567890",
-            "web_driver": "/path/to/webdriver",
+            "web_driver": "http://selenium:4444",
             "headless": True,
             "local_browser": False,
             "timeout": 60,
@@ -559,8 +570,9 @@ async def test_config_flow_with_optional_fields(hass: HomeAssistant):
         assert result["data"] == {
             "name": "Test Name",
             "council": "CouncilWithOptionalFields",
+            "url": "https://example.com/optional",
             "uprn": "1234567890",
-            "web_driver": "/path/to/webdriver",
+            "web_driver": "http://selenium:4444",
             "headless": True,
             "local_browser": False,
             "timeout": 60,
@@ -579,7 +591,7 @@ async def test_get_councils_json_session_creation_failure(hass):
 
         # Configure async_init to simulate flow abort due to council data being unavailable
         hass.config_entries.flow.async_init.return_value = {
-            "type": data_entry_flow.RESULT_TYPE_ABORT,
+            "type": data_entry_flow.FlowResultType.ABORT,
             "reason": "council_data_unavailable",
         }
 
@@ -615,13 +627,13 @@ async def test_config_flow_council_without_url(hass):
         # Configure async_init to return a FlowResultType.FORM with step_id 'council'
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "council",
         }
 
         # Configure async_configure to return a FlowResultType.CREATE_ENTRY
         hass.config_entries.flow.async_configure.return_value = {
-            "type": data_entry_flow.RESULT_TYPE_CREATE_ENTRY,
+            "type": data_entry_flow.FlowResultType.CREATE_ENTRY,
             "title": "Test Name",
             "data": {
                 "name": "Test Name",
@@ -672,9 +684,9 @@ async def test_config_flow_missing_council(hass: HomeAssistant):
         result = await flow.async_step_user(user_input=user_input_initial)
 
         # Should return to the user step with an error
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
-        assert result["errors"] == {"council": "Council is required."}
+        assert result["errors"] == {"council": "council"}
 
 
 @pytest.mark.asyncio
@@ -702,7 +714,7 @@ async def test_reconfigure_flow_with_errors(hass):
         # Configure async_init to return a FlowResultType.FORM with step_id 'reconfigure_confirm'
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "reconfigure_confirm",
         }
 
@@ -718,7 +730,7 @@ async def test_reconfigure_flow_with_errors(hass):
             flow, "async_step_reconfigure_confirm", new=AsyncMock()
         ) as mock_step:
             mock_step.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_FORM,
+                "type": data_entry_flow.FlowResultType.FORM,
                 "step_id": "reconfigure_confirm",
                 "errors": {"icon_color_mapping": "invalid_json"},
             }
@@ -740,7 +752,7 @@ async def test_reconfigure_flow_with_errors(hass):
 
             # Configure async_configure to return an error
             hass.config_entries.flow.async_configure.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_FORM,
+                "type": data_entry_flow.FlowResultType.FORM,
                 "step_id": "reconfigure_confirm",
                 "errors": {"icon_color_mapping": "invalid_json"},
             }
@@ -774,7 +786,7 @@ async def test_reconfigure_flow_entry_missing(hass):
 
         # Assert that the flow aborts due to the missing config entry
         assert result["type"] == data_entry_flow.FlowResultType.ABORT
-        assert result["reason"] == "Reconfigure Failed"
+        assert result["reason"] == "reconfigure_failed"
 
 
 @pytest.mark.asyncio
@@ -796,13 +808,13 @@ async def test_reconfigure_flow_no_user_input(hass):
         )
         existing_entry.add_to_hass(hass)
 
-        # Mock async_get_entry to return the entry directly, avoiding coroutine issues
-        hass.config_entries.async_get_entry = AsyncMock(return_value=existing_entry)
+        # async_get_entry is a synchronous lookup in Home Assistant.
+        hass.config_entries.async_get_entry = MagicMock(return_value=existing_entry)
 
         # Mock async_init and start the reconfigure flow
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "reconfigure_confirm",
         }
 
@@ -815,7 +827,7 @@ async def test_reconfigure_flow_no_user_input(hass):
             flow, "async_step_reconfigure_confirm", new=AsyncMock()
         ) as mock_step:
             mock_step.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_FORM,
+                "type": data_entry_flow.FlowResultType.FORM,
                 "step_id": "reconfigure_confirm",
                 "errors": {},
             }
@@ -846,6 +858,23 @@ async def test_check_selenium_server_exception(hass: HomeAssistant):
 
 
 @pytest.mark.asyncio
+async def test_selenium_preflight_logs_redact_configured_url(hass, caplog):
+    caplog.set_level(logging.DEBUG)
+    sentinel = "http://user:secret@selenium.internal:4444/?uprn=100012345678"
+    with patch(
+        "aiohttp.ClientSession.get",
+        side_effect=Exception(f"Connection error for {sentinel}"),
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+        await flow.check_selenium_server(sentinel)
+
+    assert sentinel not in caplog.text
+    assert "100012345678" not in caplog.text
+    assert "user:secret" not in caplog.text
+
+
+@pytest.mark.asyncio
 async def test_get_councils_json_exception(hass: HomeAssistant):
     """Test exception handling in get_councils_json."""
     with patch(
@@ -872,7 +901,7 @@ async def test_async_step_user_council_data_unavailable(hass: HomeAssistant):
         result = await flow.async_step_user(user_input={})
 
         assert result["type"] == data_entry_flow.FlowResultType.ABORT
-        assert result["reason"] == "Council Data Unavailable"
+        assert result["reason"] == "council_data_unavailable"
 
 
 @pytest.mark.asyncio
@@ -891,6 +920,7 @@ async def test_async_step_council_invalid_icon_color_mapping(hass: HomeAssistant
         flow.councils_data = MOCK_COUNCILS_DATA
 
         user_input = {
+            "url": "https://example.com/uprn",
             "uprn": "1234567890",
             "icon_color_mapping": "invalid json",
             "timeout": 60,
@@ -898,9 +928,9 @@ async def test_async_step_council_invalid_icon_color_mapping(hass: HomeAssistant
 
         result = await flow.async_step_council(user_input=user_input)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "council"
-        assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+        assert result["errors"] == {"icon_color_mapping": "invalid_json"}
 
 
 @pytest.mark.asyncio
@@ -916,7 +946,7 @@ async def test_async_step_reconfigure_entry_none(hass: HomeAssistant):
     result = await flow.async_step_reconfigure()
 
     assert result["type"] == data_entry_flow.FlowResultType.ABORT
-    assert result["reason"] == "Reconfigure Failed"
+    assert result["reason"] == "reconfigure_failed"
 
 
 async def test_async_step_reconfigure_confirm_user_input_none(hass: HomeAssistant):
@@ -929,6 +959,7 @@ async def test_async_step_reconfigure_confirm_user_input_none(hass: HomeAssistan
         data={
             "name": "Test Name",
             "council": "CouncilWithUPRN",
+            "url": "https://example.com/uprn",
             "uprn": "1234567890",
             "timeout": 60,
         },
@@ -943,7 +974,7 @@ async def test_async_step_reconfigure_confirm_user_input_none(hass: HomeAssistan
     hass.config_entries.async_get_entry = MagicMock(return_value=config_entry)
 
     result = await flow.async_step_reconfigure_confirm(user_input=None)
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "reconfigure_confirm"
 
 
@@ -960,7 +991,7 @@ async def test_async_step_council_missing_council_key(hass: HomeAssistant):
 
     result = await flow.async_step_council(user_input=None)
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "council"
 
 
@@ -1019,9 +1050,9 @@ async def test_async_step_reconfigure_confirm_invalid_json(hass: HomeAssistant):
         result = await flow.async_step_reconfigure_confirm(user_input=user_input)
 
         # Should return to the reconfigure_confirm step with an error
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "reconfigure_confirm"
-        assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+        assert result["errors"] == {"icon_color_mapping": "invalid_json"}
 
 
 @pytest.mark.asyncio
@@ -1052,6 +1083,7 @@ async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
         # Step 2: council details
         # minimal fields needed for council requiring UPRN
         user_input_council = {
+            "url": "https://example.com/uprn",
             "uprn": "1234567890",
             "timeout": 45,
             # note that if skip_get_url is False, you might need "url" or not
@@ -1059,18 +1091,19 @@ async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
 
         # Start user step
         result = await flow.async_step_user(user_input=user_input_initial)
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "council"
 
         # Complete council step
         result = await flow.async_step_council(user_input=user_input_council)
-        assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+        assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
         assert result["title"] == "Test Manual Refresh"
 
         # Confirm the config entry data now includes manual_refresh_only
         assert result["data"] == {
             "name": "Test Manual Refresh",
             "council": "CouncilWithUPRN",
+            "url": "https://example.com/uprn",
             "uprn": "1234567890",
             "timeout": 45,
             "manual_refresh_only": True,
@@ -1094,7 +1127,8 @@ def test_load_icon_color_mapping_invalid():
         result = load_icon_color_mapping(invalid_json)
         assert result == {}
         mock_warn.assert_called_once_with(
-            f"{LOG_PREFIX} Invalid icon_color_mapping JSON: {invalid_json}. Using default settings."
+            "%s Invalid icon_color_mapping JSON. Using default settings.",
+            LOG_PREFIX,
         )
 
 
@@ -1161,7 +1195,7 @@ async def test_async_step_user_invalid_icon_mapping(hass):
         }
     )
     assert result["type"] == "form"
-    assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
+    assert result["errors"] == {"icon_color_mapping": "invalid_json"}
 
 
 @pytest.mark.asyncio
@@ -1175,7 +1209,7 @@ async def test_async_step_user_no_councils(hass):
             user_input={"name": "Test", "council": "CouncilTest"}
         )
         assert result["type"] == "abort"
-        assert result["reason"] == "Council Data Unavailable"
+        assert result["reason"] == "council_data_unavailable"
 
 
 # ---------------------------
@@ -1281,7 +1315,7 @@ async def test_get_councils_json_failure(hass):
     with patch("aiohttp.ClientSession") as mock_session_cls:
         # Simulate network error.
         mock_session = mock_session_cls.return_value.__aenter__.return_value
-        mock_session.get.side_effect = Exception("Network error")
+        mock_session.get = MagicMock(side_effect=Exception("Network error"))
         result = await flow.get_councils_json()
         assert result == {}
 
@@ -1309,6 +1343,37 @@ async def test_get_council_schema(hass):
     required_fields = ["url", "uprn", "postcode", "number", "usrn", "timeout"]
     for field in required_fields:
         assert field in schema.schema
+
+
+@pytest.mark.asyncio
+async def test_council_schema_preserves_values_after_validation_error(hass):
+    flow = UkBinCollectionConfigFlow()
+    flow.hass = hass
+    flow.councils_data = {
+        "CouncilTest": {
+            "wiki_name": "Council Test",
+            "skip_get_url": False,
+            "postcode": True,
+            "house_number": True,
+            "web_driver": True,
+        }
+    }
+    entered = {
+        "url": "https://example.com/collections",
+        "postcode": "NG31 8XG",
+        "number": "43",
+        "web_driver": "http://selenium:4444",
+        "headless": False,
+        "local_browser": False,
+        "timeout": 75,
+        "update_interval": 24,
+    }
+
+    schema = await flow.get_council_schema("CouncilTest", entered)
+    restored = schema({})
+
+    for key, value in entered.items():
+        assert restored[key] == value
 
 
 # ---------------------------
@@ -1359,14 +1424,15 @@ async def test_options_flow_no_councils(dummy_hass):
         domain=DOMAIN, data={"name": "Test Options"}, entry_id="opt_test"
     )
     config_entry.add_to_hass(dummy_hass)
-    flow = UkBinCollectionOptionsFlowHandler(config_entry)
+    flow = UkBinCollectionOptionsFlowHandler()
     flow.hass = dummy_hass
+    flow.handler = config_entry.entry_id
+    dummy_hass.config_entries.async_get_known_entry.return_value = config_entry
 
     # Patch get_councils_json to return an empty dict
     flow.get_councils_json = AsyncMock(return_value={})
     result = await flow.async_step_init(user_input=None)
-    # Expect an abort with reason "Council Data Unavailable"
-    assert result["reason"] == "Council Data Unavailable"
+    assert result["reason"] == "council_data_unavailable"
 
 
 def test_build_options_schema(options_flow):
@@ -1378,18 +1444,26 @@ def test_build_options_schema(options_flow):
     existing_data = {
         "name": "Test Options",
         "council": "CouncilTest",
+        "url": "https://example.com/council_test",
+        "uprn": "1234567890",
         "update_interval": 12,
         "icon_color_mapping": '{"CouncilTest": {"icon": "mdi:trash", "color": "green"}}',
     }
     schema = flow.build_options_schema(existing_data)
     sample = schema(
-        {"name": "Test Options", "council": "Council Test", "update_interval": 12}
+        {
+            "name": "Test Options",
+            "council": "Council Test",
+            "url": "https://example.com/council_test",
+            "update_interval": 12,
+        }
     )
     assert isinstance(sample, dict)
     sample_with_optional = schema(
         {
             "name": "Test Options",
             "council": "Council Test",
+            "url": "https://example.com/council_test",
             "update_interval": 12,
             "icon_color_mapping": '{"key": "value"}',
         }
@@ -1424,3 +1498,231 @@ def test_is_valid_json_options():
     invalid = '{"key": "value",}'  # trailing comma
     assert UkBinCollectionOptionsFlowHandler.is_valid_json(valid) is True
     assert UkBinCollectionOptionsFlowHandler.is_valid_json(invalid) is False
+
+
+def test_shared_registry_normalizes_aliases_for_every_flow():
+    registry = normalize_council_registry(
+        {
+            "CalendarParser": {
+                "wiki_name": "Calendar parser",
+                "supported_councils": ["AliasCouncil"],
+            }
+        }
+    )
+
+    assert registry["AliasCouncil"]["original_parser"] == "CalendarParser"
+    assert registry["AliasCouncil"]["wiki_name"].endswith("(via Google Calendar)")
+
+
+def test_south_kesteven_fields_are_exposed_when_entry_is_incomplete(hass):
+    council_info = {
+        "wiki_name": "South Kesteven District Council",
+        "postcode": "example",
+        "house_number": "example",
+        "web_driver": "http://selenium:4444",
+        "skip_get_url": True,
+        "url": "https://www.southkesteven.gov.uk/binday",
+    }
+    existing = {
+        "name": "Bins",
+        "council": "SouthKestevenDistrictCouncil",
+        "update_interval": 12,
+    }
+
+    flow = UkBinCollectionConfigFlow()
+    flow.hass = hass
+    flow.councils_data = {"SouthKestevenDistrictCouncil": council_info}
+    flow.council_names = ["SouthKestevenDistrictCouncil"]
+    flow.council_options = ["South Kesteven District Council"]
+    reconfigure = flow.build_reconfigure_schema(
+        existing, "South Kesteven District Council"
+    )
+
+    entry = MagicMock(data=existing)
+    options = UkBinCollectionOptionsFlowHandler()
+    options._config_entry = entry
+    options.councils_data = flow.councils_data
+    options.council_names = flow.council_names
+    options.council_options = flow.council_options
+    options_schema = options.build_options_schema(existing)
+
+    for schema in (reconfigure, options_schema):
+        assert "postcode" in schema.schema
+        assert "number" in schema.schema
+        assert "web_driver" in schema.schema
+        assert "local_browser" in schema.schema
+
+
+def test_south_kesteven_registry_metadata_and_browser_validation():
+    council_info = {
+        "postcode": True,
+        "house_number": True,
+        "web_driver": True,
+        "skip_get_url": True,
+        "url": "https://www.southkesteven.gov.uk/binday",
+    }
+    data = {
+        "postcode": "NG31 8XG",
+        "number": "43",
+        "local_browser": False,
+    }
+    apply_registry_metadata(data, "SouthKestevenDistrictCouncil", council_info)
+
+    assert data["skip_get_url"] is True
+    assert data["url"] == "https://www.southkesteven.gov.uk/binday"
+    assert validate_council_input(council_info, data) == {
+        "web_driver": "remote_browser_required"
+    }
+
+    data["web_driver"] = "http://selenium:4444"
+    assert validate_council_input(council_info, data) == {}
+    data["local_browser"] = True
+    assert validate_council_input(council_info, data) == {
+        "web_driver": "remote_browser_required"
+    }
+
+
+def test_webdriver_url_validation_rejects_non_http_or_missing_host():
+    council_info = {"web_driver": True}
+
+    for value in ("/path/to/webdriver", "selenium:4444", "http://:4444"):
+        assert validate_council_input(
+            council_info,
+            {
+                "council": "ExampleCouncil",
+                "url": "https://example.test/collections",
+                "web_driver": value,
+            },
+        ) == {"web_driver": "invalid_webdriver_url"}
+
+
+def test_registry_normalizes_paon_to_number_field():
+    registry = normalize_council_registry(
+        {
+            "RotherhamCouncil": {
+                "wiki_name": "Rotherham Council",
+                "paon": "77",
+                "postcode": "S60 1AA",
+                "skip_get_url": True,
+            }
+        }
+    )
+
+    assert registry["RotherhamCouncil"]["house_number"] == "77"
+    assert validate_council_input(
+        registry["RotherhamCouncil"], {"postcode": "S60 1AA"}
+    ) == {"number": "required"}
+
+
+def test_council_change_drops_stale_household_and_browser_fields():
+    old = {
+        "name": "Bins",
+        "council": "OldCouncil",
+        "url": "https://old.invalid/?uprn=100012345678",
+        "postcode": "NG31 8XG",
+        "number": "43",
+        "uprn": "100012345678",
+        "usrn": "200012345",
+        "web_driver": "http://user:secret@selenium:4444",
+        "user_agent": "private-user-agent",
+        "manual_refresh_only": True,
+    }
+
+    merged = merge_council_data(
+        old,
+        {"council": "New Council", "url": "https://new.invalid/collections"},
+        previous_council="OldCouncil",
+        selected_council="NewCouncil",
+    )
+
+    assert merged["manual_refresh_only"] is True
+    assert merged["url"] == "https://new.invalid/collections"
+    for field in (
+        "postcode",
+        "number",
+        "uprn",
+        "usrn",
+        "web_driver",
+        "user_agent",
+    ):
+        assert field not in merged
+
+
+def test_existing_entry_schemas_do_not_offer_a_different_council(hass, options_flow):
+    """A saved address contract cannot be reused for another council."""
+    config_flow = UkBinCollectionConfigFlow()
+    config_flow.hass = hass
+    config_flow.council_options = ["Council Test", "Other Council"]
+    reconfigure_schema = config_flow.build_reconfigure_schema(
+        {
+            "name": "Bins",
+            "council": "CouncilTest",
+            "update_interval": 12,
+        },
+        "Council Test",
+    )
+
+    with pytest.raises(vol.Invalid):
+        reconfigure_schema(
+            {
+                "name": "Bins",
+                "council": "Other Council",
+                "update_interval": 12,
+            }
+        )
+
+    options, _ = options_flow
+    options.council_names = ["CouncilTest", "OtherCouncil"]
+    options.council_options = ["Council Test", "Other Council"]
+    options_schema = options.build_options_schema(options.config_entry.data)
+
+    with pytest.raises(vol.Invalid):
+        options_schema(
+            {
+                "name": "Bins",
+                "council": "Other Council",
+                "url": "https://example.com/council_test",
+                "uprn": "1234567890",
+                "update_interval": 12,
+            }
+        )
+
+
+@pytest.mark.asyncio
+async def test_options_flow_rejects_forged_council_switch(options_flow):
+    """Even a direct form submission cannot carry old address data to a new parser."""
+    flow, config_entry = options_flow
+    registry = {
+        **MOCK_COUNCILS_DATA_OPTIONS,
+        "OtherCouncil": {
+            "wiki_name": "Other Council",
+            "postcode": True,
+            "house_number": True,
+            "skip_get_url": True,
+        },
+    }
+    flow.get_councils_json = AsyncMock(return_value=registry)
+
+    result = await flow.async_step_init(
+        user_input={
+            "name": "Bins",
+            "council": "Other Council",
+            "url": "https://example.com/council_test",
+            "uprn": "1234567890",
+            "update_interval": 12,
+        }
+    )
+
+    assert result["type"] is data_entry_flow.FlowResultType.FORM
+    assert result["errors"]["council"] == "council_change_not_supported"
+    flow.hass.config_entries.async_update_entry.assert_not_awaited()
+    assert config_entry.data["council"] == "CouncilTest"
+
+
+def test_options_flow_callback_uses_framework_owned_entry():
+    entry = MagicMock()
+
+    flow = UkBinCollectionConfigFlow.async_get_options_flow(entry)
+
+    assert isinstance(flow, UkBinCollectionOptionsFlowHandler)
+    assert getattr(flow, "_config_entry", None) is not entry

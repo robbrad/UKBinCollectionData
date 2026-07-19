@@ -1,24 +1,40 @@
+from __future__ import annotations
+
 import time
 import re
 from datetime import datetime, timedelta
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 _BIN_TYPES = {
-    "180 litre refuse", "black recycling box", "blue bag", "white bag",
-    "outdoor food caddy", "indoor food caddy", "garden waste",
-    "240 litre refuse", "recycling box", "food caddy",
+    "180 litre refuse",
+    "black recycling box",
+    "blue bag",
+    "white bag",
+    "outdoor food caddy",
+    "indoor food caddy",
+    "garden waste",
+    "240 litre refuse",
+    "recycling box",
+    "food caddy",
 }
 
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import WebDriverWait
+
         driver = None
         try:
             page = "https://community.cotswold.gov.uk/s/waste-collection-enquiry"
@@ -26,7 +42,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
             house_number = kwargs.get("paon")
             postcode = kwargs.get("postcode")
-            if house_number and postcode and postcode.upper() not in house_number.upper():
+            if (
+                house_number
+                and postcode
+                and postcode.upper() not in house_number.upper()
+            ):
                 full_address = f"{house_number}, {postcode}"
             else:
                 full_address = house_number or postcode or ""
@@ -41,9 +61,7 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(8)
 
             address_entry_field = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//input[@role='combobox']")
-                )
+                EC.presence_of_element_located((By.XPATH, "//input[@role='combobox']"))
             )
 
             address_entry_field.click()
@@ -52,9 +70,7 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(4)
 
             wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, "//li[@role='presentation']")
-                )
+                EC.element_to_be_clickable((By.XPATH, "//li[@role='presentation']"))
             )
             all_opts = driver.find_elements(By.XPATH, "//li[@role='presentation']")
             if not all_opts:
@@ -78,7 +94,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             for _ in range(8):
                 time.sleep(5)
-                if driver.find_elements(By.XPATH, "//*[contains(text(), 'Collection day')]"):
+                if driver.find_elements(
+                    By.XPATH, "//*[contains(text(), 'Collection day')]"
+                ):
                     break
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -92,23 +110,23 @@ class CouncilClass(AbstractGetBinDataClass):
                         td = row.find("td")
                         if not th or not td:
                             continue
-                        container_type = (
-                            th.get("data-cell-value", "").strip()
-                            or th.get_text(strip=True)
-                        )
-                        raw_date = (
-                            td.get("data-cell-value", "").strip()
-                            or td.get_text(strip=True)
+                        container_type = th.get(
+                            "data-cell-value", ""
+                        ).strip() or th.get_text(strip=True)
+                        raw_date = td.get("data-cell-value", "").strip() or td.get_text(
+                            strip=True
                         )
                         if container_type and raw_date:
                             try:
                                 parsed_date = self._parse_date(raw_date, current_year)
                             except (ValueError, AttributeError):
                                 continue
-                            data["bins"].append({
-                                "type": container_type,
-                                "collectionDate": parsed_date,
-                            })
+                            data["bins"].append(
+                                {
+                                    "type": container_type,
+                                    "collectionDate": parsed_date,
+                                }
+                            )
                     except (ValueError, AttributeError):
                         continue
             else:
@@ -122,13 +140,15 @@ class CouncilClass(AbstractGetBinDataClass):
                                 parsed_date = self._parse_date(raw_date, current_year)
                             except (ValueError, AttributeError):
                                 continue
-                            data["bins"].append({
-                                "type": line,
-                                "collectionDate": parsed_date,
-                            })
+                            data["bins"].append(
+                                {
+                                    "type": line,
+                                    "collectionDate": parsed_date,
+                                }
+                            )
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:
@@ -138,7 +158,9 @@ class CouncilClass(AbstractGetBinDataClass):
     @staticmethod
     def _looks_like_date(text):
         t = text.lower().strip()
-        return t in ("today", "tomorrow") or bool(re.match(r"^(mon|tue|wed|thu|fri|sat|sun)", t))
+        return t in ("today", "tomorrow") or bool(
+            re.match(r"^(mon|tue|wed|thu|fri|sat|sun)", t)
+        )
 
     @staticmethod
     def _parse_date(raw_date, current_year):

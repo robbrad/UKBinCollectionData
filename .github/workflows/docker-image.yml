@@ -22,9 +22,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
     - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@v5
+      uses: elgohr/Publish-Docker-Github-Action@1c2f28ccd9476e8a936ac9a1f287405504c93304 # v5
       with:
         name: robbrad182/uk-bin-collection
         username: ${{ secrets.DOCKER_USERNAME }}

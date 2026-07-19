@@ -20,7 +20,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
           ssh-key: ${{ secrets.DEPLOY_KEY }}
@@ -65,28 +65,10 @@ jobs:
             echo "⚠️ Tag ${{ inputs.version }} not found locally"
           fi
 
-      - name: Setup Python (if PyPI yank requested)
-        if: inputs.delete_pypi == true
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      - name: Install Poetry (if PyPI yank requested)
-        if: inputs.delete_pypi == true
-        uses: abatilo/actions-poetry@v4.0.0
-        with:
-          poetry-version: '1.8.4'
-
-      - name: Yank from PyPI
+      - name: Record manual PyPI yank requirement
         if: inputs.delete_pypi == true
         run: |
-          echo "⚠️ Yanking version ${{ inputs.version }} from PyPI..."
-          echo "Note: This marks the release as unsuitable for installation but doesn't delete it"
-          poetry config pypi-token.pypi "${{ secrets.PYPI_API_KEY }}"
-          # PyPI doesn't support yanking via poetry directly, need to use twine
-          pip install twine
-          # Note: You'll need to manually yank via PyPI web interface or use:
-          # twine upload --repository pypi --skip-existing dist/*
+          echo "No PyPI credentials are loaded by this rollback workflow."
           echo "⚠️ PyPI yanking must be done manually at: https://pypi.org/manage/project/uk-bin-collection/releases/"
           echo "Go to the release and click 'Options' -> 'Yank release'"
 

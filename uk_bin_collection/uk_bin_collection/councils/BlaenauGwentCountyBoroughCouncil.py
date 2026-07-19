@@ -1,8 +1,6 @@
+from __future__ import annotations
+
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 import re
 import time
 
@@ -12,6 +10,17 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -25,10 +34,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # Create Selenium webdriver
             user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            
+
             # Navigate to the main page first
             driver.get("https://www.blaenau-gwent.gov.uk/en/resident/waste-recycling/")
-            
+
             # Handle cookie overlay if present
             try:
                 # Wait a moment for any overlays to appear
@@ -40,7 +49,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     "//button[contains(text(), 'Accept')]",
                     "//button[contains(text(), 'OK')]",
                     "//button[@id='ccc-recommended-settings']",
-                    "//button[contains(@class, 'cookie')]"
+                    "//button[contains(@class, 'cookie')]",
                 ]
                 for button_xpath in cookie_buttons:
                     try:
@@ -52,13 +61,15 @@ class CouncilClass(AbstractGetBinDataClass):
                         continue
             except:
                 pass  # No cookie overlay found
-            
+
             # Find and extract the collection day URL
             find_collection_link = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Find Your Collection Day')]"))
+                EC.presence_of_element_located(
+                    (By.XPATH, "//a[contains(text(), 'Find Your Collection Day')]")
+                )
             )
             collection_url = find_collection_link.get_attribute("href")
-            
+
             # Navigate to the collection portal
             driver.get(collection_url)
 
@@ -70,7 +81,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Click Find button
             find_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Find')]"))
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//button[contains(text(), 'Find')]")
+                )
             )
             find_button.click()
 
@@ -83,42 +96,47 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for collection data to load
             time.sleep(3)  # Give JavaScript time to process the selection
-            
+
             # Wait for the actual collection data to appear
             WebDriverWait(driver, 20).until(
-                lambda d: "Your next collections" in d.page_source and ("Recycling" in d.page_source or "Refuse" in d.page_source)
+                lambda d: "Your next collections" in d.page_source
+                and ("Recycling" in d.page_source or "Refuse" in d.page_source)
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
             page_text = soup.get_text()
-            
+
             # Find the collections section in the text
             if "Your next collections" in page_text:
                 # Extract the section after "Your next collections"
                 collections_section = page_text.split("Your next collections")[1]
-                collections_section = collections_section.split("Related content")[0]  # Stop at Related content
-                
+                collections_section = collections_section.split("Related content")[
+                    0
+                ]  # Stop at Related content
+
                 # Use regex to find collection patterns
                 # Pattern to match: "Collection Type" followed by "Day Date Month" (stopping before 'followed')
-                pattern = r'(Recycling collection|Refuse Bin)([A-Za-z]+ \d+ [A-Za-z]+)(?=followed|$|[A-Z])'
+                pattern = r"(Recycling collection|Refuse Bin)([A-Za-z]+ \d+ [A-Za-z]+)(?=followed|$|[A-Z])"
                 matches = re.findall(pattern, collections_section)
-                
+
                 for bin_type, date_text in matches:
                     try:
                         # Clean up the date text
                         date_text = date_text.strip()
                         if "followed by" in date_text:
                             date_text = date_text.split("followed by")[0].strip()
-                        
+
                         # Parse the date
                         collection_date = datetime.strptime(date_text, "%A %d %B")
-                        
+
                         # Set the correct year
                         current_year = datetime.now().year
                         current_month = datetime.now().month
-                        
+
                         if (current_month > 10) and (collection_date.month < 3):
-                            collection_date = collection_date.replace(year=(current_year + 1))
+                            collection_date = collection_date.replace(
+                                year=(current_year + 1)
+                            )
                         else:
                             collection_date = collection_date.replace(year=current_year)
 
@@ -131,7 +149,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         pass  # Skip if date parsing fails
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:

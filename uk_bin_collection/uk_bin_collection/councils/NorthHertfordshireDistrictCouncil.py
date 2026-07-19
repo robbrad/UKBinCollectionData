@@ -1,16 +1,13 @@
+from __future__ import annotations
+
 import re
 import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
-
 
 _ORDINAL_RE = re.compile(r"(\d+)(?:st|nd|rd|th)", re.IGNORECASE)
 
@@ -35,6 +32,17 @@ class CouncilClass(AbstractGetBinDataClass):
                            against the typeahead list item text.
             web_driver, headless: passed through to create_webdriver.
         """
+        global By, EC, Keys, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             user_postcode = kwargs.get("postcode")
@@ -57,10 +65,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Typeahead input — Liberty's visible field uses this class
             search_input = wait.until(
-                EC.element_to_be_clickable((
-                    By.CSS_SELECTOR,
-                    "input.relation_path_type_ahead_search",
-                ))
+                EC.element_to_be_clickable(
+                    (
+                        By.CSS_SELECTOR,
+                        "input.relation_path_type_ahead_search",
+                    )
+                )
             )
             search_input.click()
             search_input.clear()
@@ -101,23 +111,25 @@ class CouncilClass(AbstractGetBinDataClass):
             time.sleep(0.5)
 
             submit_btn = wait.until(
-                EC.element_to_be_clickable((
-                    By.CSS_SELECTOR,
-                    'input[type="submit"][aria-label="Select address and continue"]',
-                ))
+                EC.element_to_be_clickable(
+                    (
+                        By.CSS_SELECTOR,
+                        'input[type="submit"][aria-label="Select address and continue"]',
+                    )
+                )
             )
             submit_btn.click()
 
             # Wait for the result page — URL pattern ends in "show-details"
-            WebDriverWait(driver, 30).until(
-                lambda d: "show-details" in d.current_url
-            )
+            WebDriverWait(driver, 30).until(lambda d: "show-details" in d.current_url)
             # Wait for the bin content to render
             WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located((
-                    By.XPATH,
-                    "//strong[normalize-space()='Next collection']",
-                ))
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//strong[normalize-space()='Next collection']",
+                    )
+                )
             )
 
             soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -173,10 +185,12 @@ class CouncilClass(AbstractGetBinDataClass):
                             parsed = datetime.strptime(raw, "%A %d %B %Y")
                         except ValueError:
                             continue
-                        data["bins"].append({
-                            "type": current_type,
-                            "collectionDate": parsed.strftime(date_format),
-                        })
+                        data["bins"].append(
+                            {
+                                "type": current_type,
+                                "collectionDate": parsed.strftime(date_format),
+                            }
+                        )
 
             # Dedupe while preserving order
             seen = set()

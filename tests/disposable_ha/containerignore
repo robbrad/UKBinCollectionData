@@ -1,0 +1,9 @@
+.git
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.coverage
+build
+dist
+test_results_map.png
+SwaggerUI.png

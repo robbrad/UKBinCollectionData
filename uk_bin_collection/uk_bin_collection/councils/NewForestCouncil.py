@@ -1,14 +1,9 @@
+from __future__ import annotations
+
 import logging
 import time
 
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -42,7 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         "collectionDate": next_collection,
                     }
                 )
-                logging.info(f"Rubbish and Recycling: {str(next_collection)}")
+                logging.info("Rubbish and recycling date parsed.")
 
         # Glass collection
         glass_collection = soup.find("span", class_="CTID-78-_ eb-78-textControl")
@@ -54,7 +49,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 legacy_bins.append(
                     {"type": "Glass collection", "collectionDate": match.group(1)}
                 )
-                logging.info(f"Glass: {str(match.group(1))}")
+                logging.info("Glass collection date parsed.")
 
         # Garden waste
         garden_waste = soup.find("div", class_="eb-2HIpCnWC-Override-EditorInput")
@@ -64,12 +59,26 @@ class CouncilClass(AbstractGetBinDataClass):
                 legacy_bins.append(
                     {"type": "Garden waste", "collectionDate": match.group(1)}
                 )
-                logging.info(f"Garden: {str(match.group(1))}")
+                logging.info("Garden-waste collection date parsed.")
 
         # return bins
         return legacy_bins
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, NoSuchElementException, Select, WebDriverWait, webdriver
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium import webdriver
+        from selenium.common.exceptions import NoSuchElementException
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             bins = []
@@ -106,7 +115,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "arguments[0].scrollIntoView();", input_element_postcode
             )
 
-            logging.info(f"Entering postcode '{str(user_postcode)}'")
+            logging.info("Entering the configured postcode.")
             # Force the value through the DOM cos send_keys just don't work for some reason :(
             driver.execute_script(
                 f"arguments[0].value='{str(user_postcode)}'", input_element_postcode
@@ -193,7 +202,7 @@ class CouncilClass(AbstractGetBinDataClass):
             return {"bins": bins}
 
         except Exception as e:
-            logging.error(f"An error occurred: {e}")
+            logging.error(f"An error occurred: {type(e).__name__}")
             raise
 
         finally:

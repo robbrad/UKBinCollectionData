@@ -1,13 +1,9 @@
+from __future__ import annotations
+
 import time
 
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -16,6 +12,19 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, NoSuchElementException, Select, TimeoutException, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.common.exceptions import NoSuchElementException, TimeoutException
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -28,16 +37,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
             check_postcode(user_postcode)
 
-            print(
-                f"Starting parse_data with parameters: postcode={user_postcode}, uprn={user_uprn}"
-            )
-            print(
-                f"Creating webdriver with: web_driver={web_driver}, headless={headless}"
-            )
+            print("Starting parse_data with configured address parameters")
+            print(f"Creating configured webdriver (headless={headless})")
 
             user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            print(f"Navigating to URL: {url}")
+            print("Navigating to the configured council page")
             driver.get("https://www.torbay.gov.uk/recycling/bin-collections/")
             print("Successfully loaded the page")
 
@@ -96,7 +101,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             post_code_input.clear()
             post_code_input.send_keys(user_postcode)
-            print(f"Entered postcode: {user_postcode}")
+            print("Postcode entered")
 
             post_code_input.send_keys(Keys.TAB + Keys.ENTER)
             # driver.switch_to.active_element.send_keys(Keys.TAB + Keys.ENTER)
@@ -116,28 +121,28 @@ class CouncilClass(AbstractGetBinDataClass):
             options = address_select.find_elements(By.TAG_NAME, "option")
             print(f"Found {len(options)} options in dropdown")
 
-            # Print all options first for debugging
-            print("\nAvailable options:")
+            # Inspect all options without writing their household data to diagnostics.
+            print("Inspecting available address options")
             for opt in options:
                 value = opt.get_attribute("value")
                 text = opt.text
-                print(f"Value: '{value}', Text: '{text}'")
+                print("Address option inspected")
 
             # Try to find our specific UPRN
             target_uprn = f"U{user_uprn}|"
-            print(f"\nLooking for UPRN pattern: {target_uprn}")
+            print("Looking for the configured property identifier")
 
             found = False
             for option in options:
                 value = option.get_attribute("value")
                 if value and target_uprn in value:
-                    print(f"Found matching address with value: {value}")
+                    print("Found a matching address")
                     option.click()
                     found = True
                     break
 
             if not found:
-                print(f"No matching address found for UPRN: {user_uprn}")
+                print("No matching address found")
                 return data
 
             print("Address selected successfully")
@@ -209,18 +214,18 @@ class CouncilClass(AbstractGetBinDataClass):
                             "collectionDate": bin_date,
                         }
                         data["bins"].append(dict_data)
-                        print(f"Successfully added collection: {dict_data}")
+                        print("Collection added successfully")
 
                 except Exception as e:
-                    print(f"Error processing collection row: {e}")
+                    print(f"Error processing collection row ({type(e).__name__})")
                     continue
 
             # Debug: Print the complete dict_data
             print("\nFinal bin collection data:")
-            print(data)
+            print(f"Parsed {len(data.get('bins', []))} collections")
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred ({type(e).__name__})")
             raise
         finally:
             print("Cleaning up webdriver...")

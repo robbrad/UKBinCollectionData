@@ -40,7 +40,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Send GET request
             response = requests.get(URI, params=params, headers=headers)
 
-            print(response.content)
+            print(f"Council response received (HTTP {response.status_code}).")
 
             collections = json.loads(response.content)
 
@@ -59,7 +59,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

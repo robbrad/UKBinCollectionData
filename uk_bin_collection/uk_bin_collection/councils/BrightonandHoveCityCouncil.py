@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
 import re
@@ -6,11 +8,6 @@ from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -27,9 +24,9 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Fetch and parse bin collection data for a given address from Brighton & Hove's collections page.
-        
+
         This function drives a Selenium browser to the fixed Brighton & Hove collections URL, submits the provided postcode, selects the matching PAON (primary addressable object name) from the resulting address dropdown, submits the selection, and parses the resulting list view into structured bin collection entries.
-        
+
         Parameters:
             page (str): Unused; included for compatibility with caller signature.
             uprn (str, optional): Unique Property Reference Number for the address (passed via kwargs).
@@ -37,15 +34,27 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode (str, optional): Postcode to search on the council site (passed via kwargs).
             web_driver (str or WebDriver, optional): Specification or instance used by create_webdriver to start the browser (passed via kwargs).
             headless (bool, optional): Whether to run the browser in headless mode (passed via kwargs).
-        
+
         Returns:
             dict: A dictionary with a single key "bins" whose value is a list of objects each containing:
                 - "type": bin type string
                 - "collectionDate": collection date string formatted according to the module's date_format
-        
+
         Raises:
             Exception: If no dropdown option matching `paon` is found or any other error occurs during navigation or parsing.
         """
+        global By, EC, Keys, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -137,7 +146,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 data["bins"].append(dict_data)
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

@@ -68,7 +68,7 @@ class CouncilClass(AbstractGetBinDataClass):
                                         data["bins"].append(dict_data)
                                     except ValueError:
                                         # Skip if the date isn't a valid date
-                                        print(f"Skipping invalid date: {date_text}")
+                                        print("Skipping an invalid collection date")
 
                             # Get future collections
                             future_collections_section = row.find("ul", class_="u-mt-4")
@@ -98,7 +98,7 @@ class CouncilClass(AbstractGetBinDataClass):
                                     except ValueError:
                                         # Skip if the future collection date isn't valid
                                         print(
-                                            f"Skipping invalid future date: {future_date_text}"
+                                            "Skipping an invalid future collection date"
                                         )
 
             # Sort the collections by date
@@ -106,7 +106,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
             )
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:

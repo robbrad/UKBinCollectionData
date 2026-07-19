@@ -19,52 +19,166 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 0
           ssh-key: ${{ secrets.DEPLOY_KEY }}
           persist-credentials: true
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
           cache: 'pip'
 
       - name: Cache Commitizen
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-commitizen-${{ hashFiles('**/pyproject.toml') }}
+          key: ${{ runner.os }}-pip-commitizen-${{ hashFiles('.github/commitizen-requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-commitizen-
 
-      - name: Install Commitizen
-        run: pip install commitizen
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@3765cf608f2d4a72178a9fc5b918668e542b89b1 # v4.0.0
+        with:
+          poetry-version: '1.8.4'
+
+      - name: Install hash-locked Commitizen toolchain
+        run: >-
+          python -m pip install
+          --require-hashes
+          --only-binary=:all:
+          --requirement .github/commitizen-requirements.txt
 
       - name: Configure git identity
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump version and create tag
+      - name: Bump version and prepare atomic release tag
         id: bump
         run: |
+          set -euo pipefail
           # Check if there are commits to bump
-          if cz bump --yes --changelog --dry-run 2>&1 | grep -q "No commits found"; then
+          DRY_RUN_OUTPUT=""
+          if ! DRY_RUN_OUTPUT=$(cz bump --yes --changelog --dry-run 2>&1); then
+            if ! grep -q "No commits found" <<< "$DRY_RUN_OUTPUT"; then
+              printf '%s\n' "$DRY_RUN_OUTPUT" >&2
+              exit 1
+            fi
+          fi
+          if grep -q "No commits found" <<< "$DRY_RUN_OUTPUT"; then
             echo "No version bump needed - no conventional commits since last release"
             echo "skip=true" >> $GITHUB_OUTPUT
             exit 0
           fi
           cz bump --yes --changelog
-          echo "version=$(cz version --project)" >> $GITHUB_OUTPUT
+          VERSION=$(cz version --project)
+
+          # Commitizen creates its commit and local annotated tag before the HA
+          # requirement can be changed from the development range. Amend that
+          # unpushed commit, then recreate the still-local tag on the exact tree.
+          python scripts/pin_release_manifest.py --version "$VERSION"
+          git add custom_components/uk_bin_collection/manifest.json
+          git commit --amend --no-edit
+          git tag --force --annotate "$VERSION" --message "Release $VERSION" HEAD
+
+          python scripts/validate_release_contract.py \
+            --version "$VERSION" \
+            --require-exact
+          test "$(git rev-parse HEAD)" = "$(git rev-list -n 1 "$VERSION")"
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "skip=false" >> $GITHUB_OUTPUT
 
-      - name: Push changes and tags
+      - name: Build and validate core artifact before repository writes
         if: steps.bump.outputs.skip != 'true'
         run: |
-          git push origin master
-          git push origin --tags
+          set -euo pipefail
+          poetry check --lock
+          export SOURCE_DATE_EPOCH=315532800
+          poetry build --format wheel
+          WHEEL=$(find dist -maxdepth 1 -type f -name '*.whl' -print -quit)
+          test -n "$WHEEL"
+          python scripts/validate_release_contract.py \
+            --version "${{ steps.bump.outputs.version }}" \
+            --require-exact \
+            --wheel "$WHEEL"
+
+      - name: Determine whether the exact core artifact already exists
+        if: steps.bump.outputs.skip != 'true'
+        id: pypi
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.bump.outputs.version }}"
+          WHEEL=$(find dist -maxdepth 1 -type f -name '*.whl' -print -quit)
+          STATUS=$(curl --silent --show-error --output /dev/null \
+            --write-out '%{http_code}' \
+            "https://pypi.org/pypi/uk-bin-collection/$VERSION/json")
+          case "$STATUS" in
+            404)
+              echo "publish=true" >> "$GITHUB_OUTPUT"
+              ;;
+            200)
+              curl --fail --silent --show-error \
+                "https://pypi.org/pypi/uk-bin-collection/$VERSION/json" \
+                > dist/pypi-release.json
+              python scripts/validate_release_contract.py \
+                --version "$VERSION" \
+                --require-exact \
+                --wheel "$WHEEL" \
+                --pypi-json dist/pypi-release.json
+              echo "publish=false" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Could not prove PyPI release state (HTTP $STATUS)" >&2
+              exit 1
+              ;;
+          esac
+
+      # The core artifact is deliberately published and digest-verified before
+      # master can expose a manifest that requires it. A rerun after a partial
+      # failure accepts only the byte-identical wheel checked in the step above.
+      - name: Publish core to PyPI before repository writes
+        if: steps.bump.outputs.skip != 'true' && steps.pypi.outputs.publish == 'true'
+        uses: nick-fields/retry@ad984534de44a9489a53aefd81eb77f87c70dc60 # v4
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_wait_seconds: 30
+          command: |
+            poetry config pypi-token.pypi "${{ secrets.PYPI_API_KEY }}"
+            poetry publish
+
+      - name: Verify published core bytes before repository writes
+        if: steps.bump.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.bump.outputs.version }}"
+          WHEEL=$(find dist -maxdepth 1 -type f -name '*.whl' -print -quit)
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error \
+              "https://pypi.org/pypi/uk-bin-collection/$VERSION/json" \
+              > dist/pypi-release.json; then
+              if python scripts/validate_release_contract.py \
+                --version "$VERSION" \
+                --require-exact \
+                --wheel "$WHEEL" \
+                --pypi-json dist/pypi-release.json; then
+                exit 0
+              fi
+            fi
+            sleep 15
+          done
+          echo "Exact core artifact did not become verifiably available" >&2
+          exit 1
+
+      - name: Push installable release commit and tag
+        if: steps.bump.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          git push --atomic origin master "refs/tags/${{ steps.bump.outputs.version }}"
 
       - name: Create workflow summary
         if: always()

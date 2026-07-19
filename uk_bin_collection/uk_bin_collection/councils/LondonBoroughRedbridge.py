@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # This script pulls (in one hit) the data from Bromley Council Bins Data
 import datetime
 import re
@@ -6,11 +8,6 @@ from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -25,6 +22,18 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        global By, EC, Keys, Select, WebDriverWait
+        from uk_bin_collection.uk_bin_collection.common import (
+            ensure_selenium_dependencies,
+        )
+
+        ensure_selenium_dependencies()
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import Select
+        from selenium.webdriver.support.wait import WebDriverWait
+
         driver = None
         try:
             data = {"bins": []}
@@ -96,7 +105,9 @@ class CouncilClass(AbstractGetBinDataClass):
                             )  # e.g., "February 2026 "
 
                             # Parse the date string (format: "04 February 2026 ")
-                            date_string = f"{collection_date} {collection_month.strip()}"
+                            date_string = (
+                                f"{collection_date} {collection_month.strip()}"
+                            )
 
                             try:
                                 # Convert the date string to a datetime object
@@ -121,13 +132,12 @@ class CouncilClass(AbstractGetBinDataClass):
                             except ValueError as e:
                                 # Handle the case where the date format is invalid
                                 print(
-                                    f"Error parsing date '{date_string}' for {collection_type}: {e}"
+                                    "Collection date parsing failed "
+                                    f"({type(e).__name__})"
                                 )
 
             # Extract Refuse collection data
-            refuse_div = soup.find(
-                "div", class_="container-fluid RegularCollectionDay"
-            )
+            refuse_div = soup.find("div", class_="container-fluid RegularCollectionDay")
             if refuse_div and refuse_div.find(class_="refuse-container"):
                 extract_collection_data(refuse_div, "Refuse", "refuse")
 
@@ -150,7 +160,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Print the extracted data
         except Exception as e:
             # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:

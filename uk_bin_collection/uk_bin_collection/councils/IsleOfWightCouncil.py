@@ -13,22 +13,32 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 RECYCLING_COLORS = [
-    (0.5, 0.0, 1.0, 0.0),      # CMYK purple (2024-25 PDF)
-    (0.584, 0.757, 0.12),       # RGB green (2025-26 PDF)
+    (0.5, 0.0, 1.0, 0.0),  # CMYK purple (2024-25 PDF)
+    (0.584, 0.757, 0.12),  # RGB green (2025-26 PDF)
 ]
 NON_RECYCLABLE_COLORS = [
-    (0.0, 0.0, 0.0, 0.383),    # CMYK grey (2024-25 PDF)
-    (0.713, 0.713, 0.712),      # RGB grey (2025-26 PDF)
+    (0.0, 0.0, 0.0, 0.383),  # CMYK grey (2024-25 PDF)
+    (0.713, 0.713, 0.712),  # RGB grey (2025-26 PDF)
 ]
 HEADER_BG_COLORS = [
     (0.527, 0.323, 0.0, 0.0),  # CMYK brown (2024-25 PDF)
-    (0.525, 0.628, 0.828),      # RGB blue (2025-26 PDF)
+    (0.525, 0.628, 0.828),  # RGB blue (2025-26 PDF)
 ]
 COLOR_TOLERANCE = 0.08
 
 MONTHS = [
-    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER",
+    "JANUARY",
+    "FEBRUARY",
+    "MARCH",
+    "APRIL",
+    "MAY",
+    "JUNE",
+    "JULY",
+    "AUGUST",
+    "SEPTEMBER",
+    "OCTOBER",
+    "NOVEMBER",
+    "DECEMBER",
 ]
 
 PDF_CACHE_DIR = "/tmp/iow-pdf-cache"
@@ -76,12 +86,14 @@ def _parse_calendar_pdf(pdf_path, collection_day):
     for w in words:
         upper = w["text"].upper()
         if upper in MONTHS:
-            month_headers.append({
-                "month": MONTHS.index(upper) + 1,
-                "x0": w["x0"],
-                "top": w["top"],
-                "bottom": w.get("bottom", w["top"] + 12),
-            })
+            month_headers.append(
+                {
+                    "month": MONTHS.index(upper) + 1,
+                    "x0": w["x0"],
+                    "top": w["top"],
+                    "bottom": w.get("bottom", w["top"] + 12),
+                }
+            )
 
     if not month_headers:
         raise ValueError("No month headers found in PDF calendar")
@@ -91,8 +103,13 @@ def _parse_calendar_pdf(pdf_path, collection_day):
         mh["year"] = start_year if mh["month"] >= first_month else start_year + 1
 
     day_map = {
-        "MONDAY": 0, "TUESDAY": 1, "WEDNESDAY": 2,
-        "THURSDAY": 3, "FRIDAY": 4, "SATURDAY": 5, "SUNDAY": 6,
+        "MONDAY": 0,
+        "TUESDAY": 1,
+        "WEDNESDAY": 2,
+        "THURSDAY": 3,
+        "FRIDAY": 4,
+        "SATURDAY": 5,
+        "SUNDAY": 6,
     }
     target_weekday = day_map.get(collection_day.upper())
     if target_weekday is None:
@@ -226,9 +243,9 @@ def _select_address(options_text, user_paon):
     if user_paon:
         paon_lower = user_paon.lower().strip()
         for label in options_text:
-            if label.lower().startswith(
-                paon_lower + ","
-            ) or label.lower().startswith(paon_lower + " "):
+            if label.lower().startswith(paon_lower + ",") or label.lower().startswith(
+                paon_lower + " "
+            ):
                 return label
 
     for label in options_text:
@@ -245,9 +262,7 @@ def _extract_collection_info(html):
     collection_day_el = soup.find("strong", string=re.compile(r"Collection Day:"))
     if collection_day_el:
         collection_day = (
-            collection_day_el.parent.get_text()
-            .replace("Collection Day:", "")
-            .strip()
+            collection_day_el.parent.get_text().replace("Collection Day:", "").strip()
         )
     else:
         raise ValueError("Could not find collection day in page")
@@ -270,10 +285,12 @@ def _build_bins(collection_dates):
 
     for dt, bin_type in collection_dates:
         if dt >= today:
-            data["bins"].append({
-                "type": bin_type,
-                "collectionDate": dt.strftime(date_format),
-            })
+            data["bins"].append(
+                {
+                    "type": bin_type,
+                    "collectionDate": dt.strftime(date_format),
+                }
+            )
 
     return data
 
@@ -286,6 +303,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        ensure_selenium_dependencies()
         from selenium.webdriver.common.by import By
         from selenium.webdriver.support import expected_conditions as EC
         from selenium.webdriver.support.ui import Select, WebDriverWait
@@ -355,14 +373,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 "Referer": "https://digitalservices.iow.gov.uk/wasteday",
             }
 
-            pdf_path = _download_pdf_cached(
-                pdf_url, cookies=cookies, headers=headers
-            )
+            pdf_path = _download_pdf_cached(pdf_url, cookies=cookies, headers=headers)
             collection_dates = _parse_calendar_pdf(pdf_path, collection_day)
             return _build_bins(collection_dates)
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {type(e).__name__}")
             raise
         finally:
             if driver:

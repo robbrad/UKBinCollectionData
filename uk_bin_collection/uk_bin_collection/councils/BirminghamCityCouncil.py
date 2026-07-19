@@ -4,7 +4,6 @@ import requests
 from datetime import datetime
 from dateutil.parser import parse as dateutil_parse
 from dateutil.parser import ParserError
-from yarl import URL
 
 from uk_bin_collection.uk_bin_collection.common import (
     check_uprn,
@@ -89,10 +88,13 @@ class CouncilClass(AbstractGetBinDataClass):
             "postcode": postcode,
             "uprn": uprn,
         }
-        url = URL(
-            "https://www.birmingham.gov.uk/info/50388/check_your_collection_day"
-        ).with_query(query_string)
-        response = requests.get(url, headers=HEADERS, timeout=30)
+        url = "https://www.birmingham.gov.uk/info/50388/check_your_collection_day"
+        response = requests.get(
+            url,
+            params=query_string,
+            headers=HEADERS,
+            timeout=30,
+        )
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
