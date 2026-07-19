@@ -227,6 +227,38 @@ def test_wait_timeout_is_classified_as_site_change(council):
 
 
 @pytest.mark.parametrize(
+    ("wait_kind", "expected"),
+    [
+        ("checker", "checker link is missing"),
+        ("address_options", "address dropdown did not appear"),
+        ("address_confirmation", "selected address was not confirmed"),
+        ("results", "Collection results did not load"),
+    ],
+)
+def test_each_wait_timeout_has_an_actionable_site_change(council, wait_kind, expected):
+    driver = MagicMock()
+    driver.page_source = "<html><body>Still loading</body></html>"
+    wait = MagicMock(_driver=driver)
+    wait.until.side_effect = FakeTimeout("delayed")
+    support = make_support()
+
+    with pytest.raises(SiteChanged, match=expected):
+        if wait_kind == "checker":
+            council._wait_for_checker_url(wait, support, council.BIN_DAY_URL)
+        elif wait_kind == "address_options":
+            council._wait_for_address_options(wait, support)
+        elif wait_kind == "address_confirmation":
+            council._wait_for_address_confirmation(wait, support)
+        else:
+            council._wait_for_results_container(
+                wait,
+                support,
+                "488",
+                "<div>initial form</div>",
+            )
+
+
+@pytest.mark.parametrize(
     "wait_kind",
     ["checker", "clickable", "address_options", "address_confirmation", "results"],
 )
@@ -259,6 +291,104 @@ def test_wait_timeouts_preserve_browser_access_denial(council, wait_kind):
                 "488",
                 "<div>initial form</div>",
             )
+
+
+def test_address_option_selector_polls_until_a_visible_nonempty_select(council):
+    support = make_support()
+    driver = MagicMock()
+    driver.find_element.side_effect = FakeNoSuchElement("not rendered")
+    assert council._address_options_ready(driver, support) is False
+
+    address_control = MagicMock()
+    address_control.is_displayed.return_value = False
+    driver.find_element.side_effect = None
+    driver.find_element.return_value = address_control
+    assert council._address_options_ready(driver, support) is False
+    support.Select.assert_not_called()
+
+    address_control.is_displayed.return_value = True
+    support.Select.return_value.options = [make_option("  ")]
+    assert council._address_options_ready(driver, support) is False
+
+    support.Select.return_value.options = [make_option("43 High Street")]
+    assert council._address_options_ready(driver, support) is address_control
+
+
+def test_address_confirmation_accepts_value_or_display_name(council):
+    support = make_support()
+    driver = MagicMock()
+    driver.find_element.side_effect = FakeNoSuchElement("not rendered")
+    assert council._address_confirmation_ready(driver, support) is False
+
+    address_value = MagicMock()
+    address_value.get_attribute.return_value = "selected-id"
+    change_button = MagicMock()
+    change_button.is_displayed.return_value = True
+    driver.find_element.side_effect = [address_value, change_button]
+    assert council._address_confirmation_ready(driver, support) is True
+
+    address_value.get_attribute.return_value = ""
+    display_name = MagicMock()
+    display_name.text = "43 High Street"
+    driver.find_element.side_effect = [address_value, change_button, display_name]
+    assert council._address_confirmation_ready(driver, support) is True
+
+    driver.find_element.side_effect = [
+        address_value,
+        change_button,
+        FakeNoSuchElement("display name missing"),
+    ]
+    assert council._address_confirmation_ready(driver, support) is False
+
+
+def test_results_selector_requires_a_real_transition(council):
+    driver = MagicMock()
+    support = make_support()
+
+    with patch.object(
+        council, "_get_body_markup", side_effect=SiteChanged("body missing")
+    ):
+        assert (
+            council._results_container_ready(
+                driver, support, "488", "<div>initial</div>"
+            )
+            is False
+        )
+
+    with patch.object(council, "_get_body_markup", return_value="<div>initial</div>"):
+        assert (
+            council._results_container_ready(
+                driver, support, "488", "<div>initial</div>"
+            )
+            is False
+        )
+
+    still_address_form = f'<input id="{council.POSTCODE_INPUT_ID}">'
+    with patch.object(
+        council, "_get_body_markup", return_value=still_address_form
+    ), patch.object(council, "_get_current_section_id", return_value="489"):
+        assert (
+            council._results_container_ready(
+                driver, support, "488", "<div>initial</div>"
+            )
+            is False
+        )
+
+    with patch.object(
+        council, "_get_body_markup", return_value="<div>new section</div>"
+    ), patch.object(council, "_get_current_section_id", return_value="489"):
+        assert council._results_container_ready(
+            driver, support, "488", "<div>initial</div>"
+        )
+
+    with patch.object(
+        council,
+        "_get_body_markup",
+        return_value="<table class='Alloy-table'></table>",
+    ), patch.object(council, "_get_current_section_id", return_value=None):
+        assert council._results_container_ready(
+            driver, support, None, "<div>initial</div>"
+        )
 
 
 def test_checker_wait_session_loss_is_typed_as_browser_unavailable(council):
@@ -520,11 +650,35 @@ def test_webdriver_creation_failure_is_typed(council):
             )
 
 
+def test_unexpected_flow_error_is_typed_and_cleanup_failure_is_contained(council):
+    driver = MagicMock()
+    driver.quit.side_effect = RuntimeError("cleanup failed")
+
+    with patch(f"{MODULE_PATH}.create_webdriver", return_value=driver), patch.object(
+        council,
+        "_load_selenium_support",
+        side_effect=RuntimeError("unexpected support failure"),
+    ), patch(f"{MODULE_PATH}._LOGGER.warning") as warning:
+        with pytest.raises(
+            SiteChanged, match="did not complete the expected flow"
+        ) as raised:
+            council.parse_data(
+                "",
+                postcode="NG31 8XG",
+                paon="43",
+                web_driver="http://selenium:4444",
+            )
+
+    assert isinstance(raised.value.__cause__, RuntimeError)
+    driver.quit.assert_called_once_with()
+    warning.assert_called_once_with("South Kesteven WebDriver cleanup failed.")
+
+
 def test_total_deadline_is_enforced_and_session_is_closed(council):
     driver = MagicMock()
     support = make_support()
 
-    with patch(f"{MODULE_PATH}.monotonic", side_effect=[0.0, 91.0]), patch(
+    with patch(f"{MODULE_PATH}.monotonic", side_effect=[0.0, 1.0, 91.0]), patch(
         f"{MODULE_PATH}.create_webdriver", return_value=driver
     ) as create, patch.object(council, "_load_selenium_support", return_value=support):
         with pytest.raises(SiteChanged, match="exceeded its total timeout"):
@@ -535,9 +689,9 @@ def test_total_deadline_is_enforced_and_session_is_closed(council):
                 web_driver="http://selenium:4444",
             )
 
-    create.assert_not_called()
+    create.assert_called_once()
     driver.get.assert_not_called()
-    driver.quit.assert_not_called()
+    driver.quit.assert_called_once_with()
 
 
 def test_opt_in_artifacts_are_redacted_and_never_capture_screenshots(council, tmp_path):

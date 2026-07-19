@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 from selenium.common.exceptions import WebDriverException
+from uk_bin_collection.uk_bin_collection import common as common_module
 from uk_bin_collection.uk_bin_collection.common import *
 
 
@@ -35,6 +36,26 @@ def test_check_postcode_invalid():
         check_postcode(invalid_postcode)
     assert exc_info._excinfo[1].args[0] == "Exception: Invalid postcode Status: 404"
     assert exc_info.type == ValueError
+
+
+def test_check_postcode_handles_non_json_rejection():
+    response = MagicMock(status_code=503)
+    response.json.side_effect = ValueError("not JSON")
+
+    with (
+        patch(
+            "uk_bin_collection.uk_bin_collection.common.requests.get",
+            return_value=response,
+        ),
+        pytest.raises(
+            ValueError,
+            match=(
+                "Exception: Postcode validation service rejected the request "
+                "Status: 503"
+            ),
+        ),
+    ):
+        check_postcode("SW1A 1AA")
 
 
 def test_check_paon():
@@ -500,6 +521,85 @@ def test_create_webdriver_remote_uses_bounded_client_config():
     local_dependencies.assert_not_called()
     build_config.assert_called_once_with("http://selenium:4444", 17)
     assert mock_webdriver.Remote.call_args.kwargs["client_config"] is client_config
+
+
+def test_remote_webdriver_url_rejects_invalid_port():
+    with pytest.raises(BrowserUnavailableError, match="URL is invalid"):
+        common_module._validate_remote_webdriver_url("http://selenium:not-a-port")
+
+
+def test_remote_client_config_validates_dependency_and_bounds_timeout():
+    client_config_class = MagicMock()
+    client_config = object()
+    client_config_class.return_value = client_config
+
+    with (
+        patch.object(common_module, "validate_websocket_client") as validate,
+        patch(
+            "selenium.webdriver.remote.client_config.ClientConfig",
+            client_config_class,
+        ),
+    ):
+        result = common_module._build_remote_client_config("http://selenium:4444", 0.25)
+
+    assert result is client_config
+    validate.assert_called_once_with()
+    client_config_class.assert_called_once_with(
+        remote_server_addr="http://selenium:4444",
+        timeout=1,
+        websocket_timeout=1.0,
+    )
+
+
+def test_selenium_dependency_loader_wraps_resolution_errors():
+    resolution_error = ValueError("invalid selenium module metadata")
+
+    with (
+        patch.object(common_module, "find_spec", side_effect=resolution_error),
+        pytest.raises(MissingDependencyError, match="cannot safely resolve") as raised,
+    ):
+        common_module._load_selenium_dependencies()
+
+    assert raised.value.__cause__ is resolution_error
+
+
+def test_selenium_dependency_preflight_delegates_to_lazy_loader():
+    with patch.object(common_module, "_load_selenium_dependencies") as loader:
+        common_module.ensure_selenium_dependencies()
+
+    loader.assert_called_once_with()
+
+
+def test_local_chrome_dependency_loader_returns_runtime_classes():
+    chrome_service, chrome_driver_manager = (
+        common_module._load_local_chrome_dependencies()
+    )
+
+    assert chrome_service.__name__ == "Service"
+    assert chrome_driver_manager.__name__ == "ChromeDriverManager"
+
+
+def test_webdriver_cleanup_failure_preserves_browser_creation_error():
+    mock_webdriver = MagicMock()
+    mock_webdriver.ChromeOptions.return_value = MagicMock()
+    driver = MagicMock()
+    creation_error = WebDriverException("window setup failed")
+    driver.set_window_position.side_effect = creation_error
+    driver.quit.side_effect = RuntimeError("cleanup failed")
+    mock_webdriver.Remote.return_value = driver
+
+    with (
+        patch.object(
+            common_module,
+            "_load_selenium_dependencies",
+            return_value=(mock_webdriver, WebDriverException),
+        ),
+        pytest.raises(BrowserUnavailableError) as raised,
+    ):
+        create_webdriver(web_driver="http://selenium:4444")
+
+    assert raised.value.__cause__ is creation_error
+    driver.quit.assert_called_once_with()
 
 
 def test_string_with_numbers():
