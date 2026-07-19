@@ -241,7 +241,7 @@
         "LAD24CD": "E06000008",
         "skip_get_url": true,
         "uprn": "100010733027",
-        "url": "https://www.blaby.gov.uk",
+        "url": "https://www.blackburn.gov.uk",
         "wiki_name": "Blackburn with Darwen",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
@@ -480,7 +480,7 @@
         "LAD24CD": "W06000015",
         "skip_get_url": true,
         "uprn": "100100112419",
-        "url": "https://www.gov.uk",
+        "url": "https://www.cardiff.gov.uk",
         "wiki_name": "Cardiff",
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
