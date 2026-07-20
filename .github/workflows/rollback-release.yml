@@ -67,7 +67,7 @@ jobs:
 
       - name: Setup Python (if PyPI yank requested)
         if: inputs.delete_pypi == true
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
