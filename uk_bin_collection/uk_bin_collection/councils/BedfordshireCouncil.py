@@ -1,73 +1,72 @@
-from datetime import datetime
-
+import urllib3
 import requests
 from bs4 import BeautifulSoup
-
+from datetime import datetime
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Council: Central Bedfordshire Council
+    Council Website: https://www.centralbedfordshire.gov.uk/
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
-
+        
         check_uprn(user_uprn)
-        check_postcode(user_postcode)
 
-        # Start a new session to walk through the form
-        requests.packages.urllib3.disable_warnings()
-        s = requests.Session()
+        api_url = f"https://www.centralbedfordshire.gov.uk/waste-and-recycling/waste-collection-schedule/view/{user_uprn}"
+                 
+        urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
+        response = requests.get(api_url, timeout=30)
 
-        headers = {
-            "Origin": "https://www.centralbedfordshire.gov.uk",
-            "Referer": "https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day",
+        if response.status_code != 200:
+            raise ConnectionError(f"Failed to fetch data from {api_url}")
 
-            "User-Agent": "Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36",
-        }
-
-        files = {
-            "postcode": (None, user_postcode),
-            "address": (None, user_uprn),
-        }
-
-        response = requests.post(
-            "https://www.centralbedfordshire.gov.uk/info/163/bins_and_waste_collections_-_check_bin_collection_day#my_bin_collections",
-            headers=headers,
-            files=files,
-        )
-
-        # Make that BS4 object and use it to prettify the response
-        soup = BeautifulSoup(response.content, features="html.parser")
+        soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
 
-        collections_div = soup.find(id="collections")
-
-        # Get the collection items on the page and strip the bits of text that we don't care for
-        collections = []
-        for bin in collections_div.find_all("h3"):
-            next_bin = bin.next_sibling
-
-            while next_bin.name != "h3" and next_bin.name != "p":
-                if next_bin.name != "br":
-                    collection_date = datetime.strptime(bin.text, "%A, %d %B %Y")
-                    collections.append((next_bin, collection_date))
-                next_bin = next_bin.next_sibling
-
-        # Sort the collections by date order rather than bin type, then return as a dictionary (with str date)
-        ordered_data = sorted(collections, key=lambda x: x[1])
         data = {"bins": []}
-        for item in ordered_data:
-            dict_data = {
-                "type": item[0],
-                "collectionDate": item[1].strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+        collection_days = soup.find_all("li", class_="waste-collection__day")
+
+        for collection in collection_days:
+            date_element = collection.find("time")
+            if date_element and date_element.has_attr('datetime'):
+                date_str = date_element['datetime']
+                # Using the date_format variable imported from common
+                collection_date = datetime.strptime(date_str, "%d-%m-%Y").strftime(date_format)
+            else:
+                raise ValueError("Could not find a valid date element for collection day.")
+
+            type_element = collection.find("span", class_="waste-collection__day--type")
+            if type_element:
+                raw_type = type_element.text.strip().lower()
+            else:
+                raise ValueError("Could not find a valid type element for collection day.")
+                
+            # Map the raw strings back to the original HA sensor formats
+            extracted_bins = []
+            if "food" in raw_type:
+                extracted_bins.append("Food waste")
+            if "garden" in raw_type:
+                extracted_bins.append("Garden waste")
+            if "recycling" in raw_type:
+                extracted_bins.append("Recycling")
+            if "refuse" in raw_type or "black bin" in raw_type:
+                extracted_bins.append("Refuse (black bin)")
+
+            if not extracted_bins:
+                raise ValueError(f"Unrecognized bin type found: {raw_type}")
+
+            # Append isolated bin types, checking for duplicates
+            for bin_type in extracted_bins:
+                dict_data = {
+                    "type": bin_type,
+                    "collectionDate": collection_date,
+                }
+                if dict_data not in data["bins"]:
+                    data["bins"].append(dict_data)
 
         return data
