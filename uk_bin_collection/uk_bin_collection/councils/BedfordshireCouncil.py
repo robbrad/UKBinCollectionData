@@ -1,8 +1,10 @@
+import urllib3
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -12,15 +14,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
-        user_postcode = kwargs.get("postcode")
         
         check_uprn(user_uprn)
-        check_postcode(user_postcode)
 
         api_url = f"https://www.centralbedfordshire.gov.uk/waste-and-recycling/waste-collection-schedule/view/{user_uprn}"
                  
-        requests.packages.urllib3.disable_warnings()
-        response = requests.get(api_url, verify=False)
+        urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
+        response = requests.get(api_url, timeout=30)
 
         if response.status_code != 200:
             raise ConnectionError(f"Failed to fetch data from {api_url}")
@@ -38,13 +38,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 # Using the date_format variable imported from common
                 collection_date = datetime.strptime(date_str, "%d-%m-%Y").strftime(date_format)
             else:
-                continue
+                raise ValueError("Could not find a valid date element for collection day.")
 
             type_element = collection.find("span", class_="waste-collection__day--type")
             if type_element:
                 raw_type = type_element.text.strip().lower()
             else:
-                continue
+                raise ValueError("Could not find a valid type element for collection day.")
                 
             # Map the raw strings back to the original HA sensor formats
             extracted_bins = []
@@ -56,6 +56,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 extracted_bins.append("Recycling")
             if "refuse" in raw_type or "black bin" in raw_type:
                 extracted_bins.append("Refuse (black bin)")
+
+            if not extracted_bins:
+                raise ValueError(f"Unrecognized bin type found: {raw_type}")
 
             # Append isolated bin types, checking for duplicates
             for bin_type in extracted_bins:
