@@ -166,8 +166,13 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             )
             timeout = 60
 
-        # Decide update interval based on manual_refresh
+        # Decide update interval based on manual_refresh_only
         if manual_refresh:
+            update_interval = None
+            _LOGGER.info(
+                "%s Manual refresh only: no automatic updates scheduled.", LOG_PREFIX
+            )
+        else:
             try:
                 update_interval_hours = int(update_interval_hours)
                 if update_interval_hours < 1:
@@ -179,11 +184,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
                 "%s Automatic refresh every %s hour(s).",
                 LOG_PREFIX,
                 update_interval_hours,
-            )
-        else:
-            update_interval = None
-            _LOGGER.info(
-                "%s Manual refresh only: no automatic updates scheduled.", LOG_PREFIX
             )
 
         # Prepare arguments for UKBinCollectionApp

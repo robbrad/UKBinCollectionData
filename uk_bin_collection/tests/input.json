@@ -1010,11 +1010,12 @@
     },
     "FenlandDistrictCouncil": {
         "LAD24CD": "E07000010",
+        "postcode": "PE15 8NL",
         "skip_get_url": true,
         "uprn": "10273",
         "url": "https://www.fenland.gov.uk/article/13114/",
         "wiki_name": "Fenland",
-        "wiki_note": "Fenland's API only understands its own numeric PremiseID, not a national UPRN. Look up your PremiseID at https://bins.azurewebsites.net/api/getaddress?postcode={your postcode} and pass it in the uprn parameter, or pass postcode (and optionally house_number/paon) instead."
+        "wiki_note": "Fenland's API only understands its own numeric PremiseID, not a national UPRN. Provide your postcode and this integration will resolve it to the PremiseID automatically. The uprn field is only used as a direct PremiseID override when no postcode is set."
     },
     "FermanaghOmaghDistrictCouncil": {
         "LAD24CD": "N09000006",
