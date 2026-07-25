@@ -131,25 +131,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Parse the HTML content
             soup = BeautifulSoup(driver.page_source, "html.parser")
 
-            table = soup.select_one("table.table")
-            if table:
-                for row in table.select("tbody tr"):
-                    cells = row.find_all("td")
-                    if len(cells) < 2:
-                        continue
-
-                    collection_type = cells[0].get_text(strip=True)
-                    date_text = cells[1].get_text(strip=True)
-                    if not date_text:
-                        continue
-
-                    collection_date = datetime.strptime(date_text, "%A %d %b %Y")
-                    data["bins"].append(
-                        {
-                            "type": collection_type,
-                            "collectionDate": collection_date.strftime(date_format),
-                        }
-                    )
+            data = self._parse_collection_table(soup)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
@@ -159,4 +141,41 @@ class CouncilClass(AbstractGetBinDataClass):
             # This block ensures that the driver is closed regardless of an exception
             if driver:
                 driver.quit()
+        return data
+
+    def _parse_collection_table(self, soup: BeautifulSoup) -> dict:
+        """Parse the collection-day table into bin entries.
+
+        Each row is Collection type / Next collection / Frequency /
+        Following Collection Date. MSDC exposes that following date so we
+        surface it as a second entry for the same bin type, alongside the
+        next one, rather than only ever returning the single nearest date.
+        """
+        data = {"bins": []}
+
+        table = soup.select_one("table.table")
+        if not table:
+            return data
+
+        for row in table.select("tbody tr"):
+            cells = row.find_all("td")
+            if len(cells) < 2:
+                continue
+
+            collection_type = cells[0].get_text(strip=True)
+
+            for cell in (cells[1], cells[3] if len(cells) >= 4 else None):
+                if cell is None:
+                    continue
+                date_text = cell.get_text(strip=True)
+                if not date_text:
+                    continue
+                collection_date = datetime.strptime(date_text, "%A %d %b %Y")
+                data["bins"].append(
+                    {
+                        "type": collection_type,
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
+                )
+
         return data

@@ -229,6 +229,41 @@ async def test_async_setup_entry_missing_name(hass, dummy_config_entry):
         await async_setup_entry(hass, dummy_config_entry)
 
 
+@pytest.mark.asyncio
+async def test_async_setup_entry_manual_refresh_only_disables_polling(
+    hass, dummy_config_entry
+):
+    # dummy_config_entry has manual_refresh_only=True: no automatic polling.
+    hass.data.setdefault(DOMAIN, {})
+
+    with patch(
+        "custom_components.uk_bin_collection.UKBinCollectionApp",
+        return_value=DummyUKBinCollectionApp(),
+    ):
+        await async_setup_entry(hass, dummy_config_entry)
+
+    coordinator = hass.data[DOMAIN][dummy_config_entry.entry_id]["coordinator"]
+    assert coordinator.update_interval is None
+
+
+@pytest.mark.asyncio
+async def test_async_setup_entry_automatic_refresh_when_not_manual(
+    hass, dummy_config_entry
+):
+    # manual_refresh_only=False: coordinator should poll on update_interval.
+    dummy_config_entry.data["manual_refresh_only"] = False
+    hass.data.setdefault(DOMAIN, {})
+
+    with patch(
+        "custom_components.uk_bin_collection.UKBinCollectionApp",
+        return_value=DummyUKBinCollectionApp(),
+    ):
+        await async_setup_entry(hass, dummy_config_entry)
+
+    coordinator = hass.data[DOMAIN][dummy_config_entry.entry_id]["coordinator"]
+    assert coordinator.update_interval == timedelta(hours=12)
+
+
 # --- Test async_unload_entry ---
 @pytest.mark.asyncio
 async def test_async_unload_entry_success(hass, dummy_config_entry):
