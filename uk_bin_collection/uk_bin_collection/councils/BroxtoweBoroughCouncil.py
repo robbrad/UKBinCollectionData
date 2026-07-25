@@ -117,16 +117,18 @@ class CouncilClass(AbstractGetBinDataClass):
             # format so the real matching logic can be written from data.
             self._dump_options(dropdownSelect)
 
-            # Try UPRN value match first, fall back to house number text match
+            # Each option's value is "U<uprn>|<full address text>" - match
+            # on the value's UPRN prefix first, falling back to matching
+            # the visible text against the house number/name.
             matched = False
             if user_uprn:
-                for value_candidate in (user_uprn, f"U{user_uprn}"):
-                    try:
-                        dropdownSelect.select_by_value(value_candidate)
+                target_prefix = f"u{user_uprn}|"
+                for option in dropdownSelect.options:
+                    value = (option.get_attribute("value") or "").strip().lower()
+                    if value.startswith(target_prefix):
+                        option.click()
                         matched = True
                         break
-                    except Exception:
-                        continue
 
             if not matched:
                 user_paon = kwargs.get("paon") or ""
@@ -157,7 +159,17 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             submit.click()
 
-            # DIAGNOSTIC: the results container's id isn't known yet either
+            # This form re-renders its section via JS rather than a full
+            # page navigation, so the previous section's elements (e.g.
+            # the dropdown) go stale rather than the URL changing. Wait
+            # for that staleness before reading the DOM again, instead of
+            # racing the transition.
+            try:
+                WebDriverWait(driver, 15).until(EC.staleness_of(dropdown))
+            except TimeoutException:
+                pass
+
+            # DIAGNOSTIC: the results container's id isn't known yet
             # (this is a different page state than the initial dump). Dump
             # it before we know what to look for.
             self._dump_form_fields(driver)
