@@ -1,4 +1,18 @@
 =======
+## 0.171.0 (2026-07-25)
+
+### Feat
+
+- **midsuffolk**: surface the Following Collection Date column
+
+### Fix
+
+- **lichfield,midsuffolk**: address CodeRabbit review findings
+- **ha**: correct inverted manual_refresh_only logic, expose Fenland postcode
+- **lichfield**: pair bin cards with their own date, not by position
+- **bedfordshire**: rewrite parser for council site redesign
+- correct wrong source URLs for Cardiff and Blackburn with Darwen
+
 ## 0.170.6 (2026-07-16)
 
 ### Fix
