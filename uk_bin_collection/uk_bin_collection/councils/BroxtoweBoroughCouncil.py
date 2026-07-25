@@ -59,6 +59,12 @@ class CouncilClass(AbstractGetBinDataClass):
         except Exception as exc:
             print(f"[diagnostic] failed to enumerate page elements: {exc}")
 
+        try:
+            form = driver.find_element(By.ID, "edit-item")
+            print(f"[diagnostic] form visible text:\n{form.text}")
+        except Exception as exc:
+            print(f"[diagnostic] failed to read form text: {exc}")
+
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
         try:
