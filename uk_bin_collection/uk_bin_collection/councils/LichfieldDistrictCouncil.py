@@ -37,15 +37,38 @@ class CouncilClass(AbstractGetBinDataClass):
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        bins = soup.find_all("h3", class_="bin-collection-tasks__heading")
-        dates = soup.find_all("p", class_="bin-collection-tasks__date")
+        def bin_name(heading):
+            # The heading reads "Your next Blue Bin collection", where the
+            # "Your next" and "collection" wrappers are visually-hidden spans.
+            # Dropping those leaves just the bin name, which keeps multi-word
+            # names such as "Food Waste Caddy" intact.
+            parts = [
+                text
+                for text in heading.find_all(string=True)
+                if "visually-hidden" not in (text.parent.get("class") or [])
+            ]
+            name = " ".join(" ".join(parts).split())
+            name = re.sub(r"^Your next\s+", "", name)
+            return re.sub(r"\s+collection$", "", name)
 
         current_year = datetime.now().year
         current_month = datetime.now().month
 
-        for i in range(len(dates)):
-            bint = " ".join(bins[i].text.split()[2:4])
-            date = dates[i].text
+        # Each bin is rendered in its own card. Pair the heading with the date
+        # inside that same card rather than zipping two page-wide lists
+        # together by index - not every card carries a date (a bin with no
+        # scheduled collection shows a "collected every <day>" frequency
+        # instead, and the calendar download link reuses the heading class),
+        # so positional pairing silently shifts every bin onto the wrong date
+        # and drops the last one entirely.
+        for heading in soup.find_all("h3", class_="bin-collection-tasks__heading"):
+            card = heading.parent
+            date_element = card.find("p", class_="bin-collection-tasks__date")
+            if date_element is None:
+                continue
+
+            bint = bin_name(heading)
+            date = date_element.text.strip()
 
             date = datetime.strptime(
                 solve(date),
