@@ -17,37 +17,23 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    # AchieveForms (the council's form builder) assigns each field an id like
-    # ctl00_ContentPlaceHolder1_FF<n><role>, where <n> is a numeric id that is
-    # reassigned whenever the council edits and republishes the form - but the
-    # <role> suffix (TB=textbox, BTN=button, DDL=dropdown, FormGroup=results
-    # container) stays tied to the field's purpose across republishes. Match on
-    # that suffix instead of the exact id so a republish doesn't break this.
-    FIELD_ID_PREFIX = "ctl00_ContentPlaceHolder1_FF"
-
-    def _find_field_by_role(self, driver, role: str, tag: str = "*", timeout: int = 10):
-        selector = f'{tag}[id^="{self.FIELD_ID_PREFIX}"][id$="{role}"]'
+    def _dump_options(self, select_obj) -> None:
+        """Diagnostic only: print every <option>'s value/text/selected
+        state in an address dropdown, to discover the real value format
+        this rebuilt form uses (previous code assumed "U"+UPRN, which
+        was specific to the old ASP.NET page and can no longer be
+        assumed). Remove once #2188 is fixed for real."""
         try:
-            WebDriverWait(driver, timeout).until(
-                lambda d: d.find_elements(By.CSS_SELECTOR, selector)
-            )
-        except TimeoutException:
-            pass
-
-        elements = driver.find_elements(By.CSS_SELECTOR, selector)
-        if len(elements) != 1:
-            # TEMPORARY diagnostic: this council's form has apparently
-            # changed shape entirely (not just renumbered fields), and
-            # there's no way to inspect the live page from this session's
-            # network. Dump what's actually on the page into CI logs so
-            # the real fix can be derived from it, then remove this.
-            self._dump_form_fields(driver)
-            raise ValueError(
-                f"Expected exactly one '{tag}' field ending in '{role}' under "
-                f"'{self.FIELD_ID_PREFIX}*', found {len(elements)}. Broxtowe's "
-                "form layout may have changed."
-            )
-        return elements[0]
+            print(f"[diagnostic] dropdown has {len(select_obj.options)} options")
+            for option in select_obj.options:
+                print(
+                    "[diagnostic] option",
+                    "value=" + repr(option.get_attribute("value")),
+                    "text=" + repr(option.text),
+                    "selected=" + repr(option.is_selected()),
+                )
+        except Exception as exc:
+            print(f"[diagnostic] failed to enumerate dropdown options: {exc}")
 
     def _dump_form_fields(self, driver) -> None:
         """Diagnostic only: print the page's current URL/title and every
@@ -92,25 +78,44 @@ class CouncilClass(AbstractGetBinDataClass):
             driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(page)
 
+            # The council rebuilt this form (confirmed live: the old
+            # ctl00_ContentPlaceHolder1_FF5683* ASP.NET WebForms ids are
+            # gone; the page now redirects renderform.aspx -> renderform
+            # and uses semantic ids like FF5683-text/-find/-list). The
+            # field number (5683) is the same, only the id scheme changed.
+
             # Populate postcode field
-            inputElement_postcode = self._find_field_by_role(driver, "TB", tag="input")
+            inputElement_postcode = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "FF5683-text"))
+            )
             inputElement_postcode.send_keys(user_postcode)
 
             # Click search button
-            self._find_field_by_role(driver, "BTN").click()
+            WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.ID, "FF5683-find"))
+            ).click()
 
             # Wait for the 'Select address' dropdown to appear
-            dropdown = self._find_field_by_role(driver, "DDL", tag="select")
+            dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, "FF5683-list"))
+            )
             dropdownSelect = Select(dropdown)
+
+            # DIAGNOSTIC: the old code assumed option values were "U"+UPRN,
+            # which was specific to the old page. Dump the real value/text
+            # format so the real matching logic can be written from data.
+            self._dump_options(dropdownSelect)
 
             # Try UPRN value match first, fall back to house number text match
             matched = False
             if user_uprn:
-                try:
-                    dropdownSelect.select_by_value("U" + user_uprn)
-                    matched = True
-                except Exception:
-                    pass
+                for value_candidate in (user_uprn, f"U{user_uprn}"):
+                    try:
+                        dropdownSelect.select_by_value(value_candidate)
+                        matched = True
+                        break
+                    except Exception:
+                        continue
 
             if not matched:
                 user_paon = kwargs.get("paon") or ""
@@ -131,20 +136,24 @@ class CouncilClass(AbstractGetBinDataClass):
 
             if not matched:
                 raise ValueError(
-                    f"Address not found for UPRN '{user_uprn}' or house number in dropdown"
+                    f"Address not found for UPRN '{user_uprn}' or house number in "
+                    "dropdown (see [diagnostic] option dump above for the real format)"
                 )
 
             # Wait for the submit button to appear, then click it to get the collection dates
             submit = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "ctl00_ContentPlaceHolder1_btnSubmit")
-                )
+                EC.element_to_be_clickable((By.ID, "submit-button"))
             )
             submit.click()
 
-            results_id = self._find_field_by_role(
-                driver, "FormGroup", tag="div"
-            ).get_attribute("id")
+            # DIAGNOSTIC: the results container's id isn't known yet either
+            # (this is a different page state than the initial dump). Dump
+            # it before we know what to look for.
+            self._dump_form_fields(driver)
+            raise ValueError(
+                "[diagnostic] stopping deliberately after submit - see the "
+                "[diagnostic] dumps above for the real results container"
+            )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
