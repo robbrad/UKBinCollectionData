@@ -95,10 +95,21 @@ class CouncilClass(AbstractGetBinDataClass):
                 EC.element_to_be_clickable((By.ID, "FF5683-find"))
             ).click()
 
-            # Wait for the 'Select address' dropdown to appear
-            dropdown = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "FF5683-list"))
-            )
+            # Wait for the 'Select address' dropdown to appear AND actually
+            # populate - the <select> itself renders before the address
+            # options are filled in asynchronously after the search click.
+            def _populated_select(d):
+                try:
+                    select_el = d.find_element(By.ID, "FF5683-list")
+                except Exception:
+                    return False
+                return (
+                    select_el
+                    if len(select_el.find_elements(By.TAG_NAME, "option")) > 1
+                    else False
+                )
+
+            dropdown = WebDriverWait(driver, 15).until(_populated_select)
             dropdownSelect = Select(dropdown)
 
             # DIAGNOSTIC: the old code assumed option values were "U"+UPRN,
