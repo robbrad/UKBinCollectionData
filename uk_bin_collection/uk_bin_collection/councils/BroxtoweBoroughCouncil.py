@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -15,6 +16,32 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
+
+    # AchieveForms (the council's form builder) assigns each field an id like
+    # ctl00_ContentPlaceHolder1_FF<n><role>, where <n> is a numeric id that is
+    # reassigned whenever the council edits and republishes the form - but the
+    # <role> suffix (TB=textbox, BTN=button, DDL=dropdown, FormGroup=results
+    # container) stays tied to the field's purpose across republishes. Match on
+    # that suffix instead of the exact id so a republish doesn't break this.
+    FIELD_ID_PREFIX = "ctl00_ContentPlaceHolder1_FF"
+
+    def _find_field_by_role(self, driver, role: str, tag: str = "*", timeout: int = 10):
+        selector = f'{tag}[id^="{self.FIELD_ID_PREFIX}"][id$="{role}"]'
+        try:
+            WebDriverWait(driver, timeout).until(
+                lambda d: d.find_elements(By.CSS_SELECTOR, selector)
+            )
+        except TimeoutException:
+            pass
+
+        elements = driver.find_elements(By.CSS_SELECTOR, selector)
+        if len(elements) != 1:
+            raise ValueError(
+                f"Expected exactly one '{tag}' field ending in '{role}' under "
+                f"'{self.FIELD_ID_PREFIX}*', found {len(elements)}. Broxtowe's "
+                "form layout may have changed."
+            )
+        return elements[0]
 
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
@@ -36,24 +63,14 @@ class CouncilClass(AbstractGetBinDataClass):
             driver.get(page)
 
             # Populate postcode field
-            inputElement_postcode = driver.find_element(
-                By.ID,
-                "ctl00_ContentPlaceHolder1_FF5683TB",
-            )
+            inputElement_postcode = self._find_field_by_role(driver, "TB", tag="input")
             inputElement_postcode.send_keys(user_postcode)
 
             # Click search button
-            driver.find_element(
-                By.ID,
-                "ctl00_ContentPlaceHolder1_FF5683BTN",
-            ).click()
+            self._find_field_by_role(driver, "BTN").click()
 
             # Wait for the 'Select address' dropdown to appear
-            dropdown = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "ctl00_ContentPlaceHolder1_FF5683DDL")
-                )
-            )
+            dropdown = self._find_field_by_role(driver, "DDL", tag="select")
             dropdownSelect = Select(dropdown)
 
             # Try UPRN value match first, fall back to house number text match
@@ -70,7 +87,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 paon_lower = user_paon.strip().lower()
                 for option in dropdownSelect.options:
                     text = option.text.strip().lower()
-                    if text and paon_lower and (text.startswith(paon_lower + " ") or text.startswith(paon_lower + ",")):
+                    if (
+                        text
+                        and paon_lower
+                        and (
+                            text.startswith(paon_lower + " ")
+                            or text.startswith(paon_lower + ",")
+                        )
+                    ):
                         option.click()
                         matched = True
                         break
@@ -88,15 +112,13 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             submit.click()
 
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "ctl00_ContentPlaceHolder1_FF5686FormGroup")
-                )
-            )
+            results_id = self._find_field_by_role(
+                driver, "FormGroup", tag="div"
+            ).get_attribute("id")
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-            bins_div = soup.find("div", id="ctl00_ContentPlaceHolder1_FF5686FormGroup")
+            bins_div = soup.find("div", id=results_id)
             if bins_div:
                 bins_table = bins_div.find("table")
                 if bins_table:
