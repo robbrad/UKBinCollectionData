@@ -36,12 +36,42 @@ class CouncilClass(AbstractGetBinDataClass):
 
         elements = driver.find_elements(By.CSS_SELECTOR, selector)
         if len(elements) != 1:
+            # TEMPORARY diagnostic: this council's form has apparently
+            # changed shape entirely (not just renumbered fields), and
+            # there's no way to inspect the live page from this session's
+            # network. Dump what's actually on the page into CI logs so
+            # the real fix can be derived from it, then remove this.
+            self._dump_form_fields(driver)
             raise ValueError(
                 f"Expected exactly one '{tag}' field ending in '{role}' under "
                 f"'{self.FIELD_ID_PREFIX}*', found {len(elements)}. Broxtowe's "
                 "form layout may have changed."
             )
         return elements[0]
+
+    def _dump_form_fields(self, driver) -> None:
+        """Diagnostic only: print the page's current URL/title and every
+        input/select/button/textarea/form element's tag, id, name, type,
+        and class. Not covered by unit tests; remove once #2188 is fixed
+        for real against the live page."""
+        try:
+            print(f"[diagnostic] current_url: {driver.current_url!r}")
+            print(f"[diagnostic] title: {driver.title!r}")
+            elements = driver.find_elements(
+                By.CSS_SELECTOR, "input, select, button, textarea, form"
+            )
+            print(f"[diagnostic] found {len(elements)} candidate elements")
+            for element in elements:
+                print(
+                    "[diagnostic]",
+                    element.tag_name,
+                    "id=" + repr(element.get_attribute("id")),
+                    "name=" + repr(element.get_attribute("name")),
+                    "type=" + repr(element.get_attribute("type")),
+                    "class=" + repr(element.get_attribute("class")),
+                )
+        except Exception as exc:
+            print(f"[diagnostic] failed to enumerate page elements: {exc}")
 
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
