@@ -1,3 +1,4 @@
+import logging
 import re
 
 import requests
@@ -5,6 +6,8 @@ from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+_LOGGER = logging.getLogger(__name__)
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -65,12 +68,21 @@ class CouncilClass(AbstractGetBinDataClass):
 
             date_element = card.find("p", class_="bin-collection-tasks__date")
             if date_element is not None:
-                date = datetime.strptime(
-                    solve(date_element.get_text(strip=True)), "%d %B"
-                )
-                date = date.replace(year=now.year)
-                if date.date() < now.date():
-                    date = date.replace(year=now.year + 1)
+                # Parse against a concrete candidate year rather than
+                # letting strptime default to 1900, which isn't a leap
+                # year and would crash on a genuine 29 February date. If
+                # this year isn't a leap year either, fall back to next
+                # year directly instead of raising.
+                day_month = solve(date_element.get_text(strip=True))
+                try:
+                    date = datetime.strptime(f"{day_month} {now.year}", "%d %B %Y")
+                except ValueError:
+                    date = datetime.strptime(f"{day_month} {now.year + 1}", "%d %B %Y")
+                else:
+                    if date.date() < now.date():
+                        date = datetime.strptime(
+                            f"{day_month} {now.year + 1}", "%d %B %Y"
+                        )
             else:
                 frequency_day = card.select_one(
                     "p.bin-collection-tasks__frequency strong"
@@ -81,6 +93,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 weekday = frequency_day.get_text(strip=True).title()
                 if weekday not in days_of_week:
+                    _LOGGER.warning(
+                        "Lichfield: unrecognized frequency text %r for %s",
+                        weekday,
+                        bin_name(heading),
+                    )
                     continue
 
                 days_until_collection = (days_of_week[weekday] - now.weekday()) % 7

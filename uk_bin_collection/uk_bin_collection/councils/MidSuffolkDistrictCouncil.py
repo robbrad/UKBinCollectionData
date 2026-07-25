@@ -170,10 +170,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 date_text = cell.get_text(strip=True)
                 if not date_text:
                     continue
-                try:
-                    collection_date = datetime.strptime(date_text, "%A %d %b %Y")
-                except ValueError:
-                    continue
+                collection_date = datetime.strptime(date_text, "%A %d %b %Y")
                 data["bins"].append(
                     {
                         "type": collection_type,

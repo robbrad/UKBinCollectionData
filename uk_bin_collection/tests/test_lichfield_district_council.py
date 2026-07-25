@@ -94,6 +94,24 @@ def test_parse_data_rolls_explicit_dates_into_the_next_year():
     assert result["bins"][2]["collectionDate"] == "05/03/2027"
 
 
+def test_parse_data_handles_29_february_in_a_non_leap_current_year():
+    # 2027 is not a leap year; the date must resolve to the next leap year
+    # (2028) instead of crashing on strptime's non-leap default year 1900.
+    html = RESULTS_HTML.replace("23rd July", "29th February")
+    result = parse_fixture(html, real_datetime(2027, 12, 20, 10, 0))
+
+    assert result["bins"][1]["collectionDate"] == "29/02/2028"
+    assert result["bins"][2]["collectionDate"] == "29/02/2028"
+
+
+def test_parse_data_handles_29_february_in_a_leap_current_year():
+    html = RESULTS_HTML.replace("23rd July", "29th February")
+    result = parse_fixture(html, real_datetime(2028, 1, 10, 10, 0))
+
+    assert result["bins"][1]["collectionDate"] == "29/02/2028"
+    assert result["bins"][2]["collectionDate"] == "29/02/2028"
+
+
 def test_parse_data_preserves_multi_word_bin_names_other_than_food_waste():
     html = RESULTS_HTML.replace("Brown Bin", "Garden Waste Bin")
     result = parse_fixture(html, real_datetime(2026, 7, 19, 10, 0))

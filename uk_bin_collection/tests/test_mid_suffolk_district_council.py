@@ -1,5 +1,6 @@
 """Unit tests for the Mid Suffolk District Council collection-table parser."""
 
+import pytest
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.councils.MidSuffolkDistrictCouncil import (
@@ -64,3 +65,13 @@ def test_parse_collection_table_returns_empty_when_table_missing():
     result = CouncilClass()._parse_collection_table(soup)
 
     assert result == {"bins": []}
+
+
+def test_parse_collection_table_raises_on_malformed_date():
+    # A non-empty but unparseable date is format drift, not a missing
+    # value - it should surface loudly rather than being dropped silently.
+    html = TABLE_HTML.replace("Monday 04 Aug 2026", "Not A Real Date")
+    soup = BeautifulSoup(html, "html.parser")
+
+    with pytest.raises(ValueError):
+        CouncilClass()._parse_collection_table(soup)
