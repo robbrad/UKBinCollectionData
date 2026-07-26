@@ -1,4 +1,11 @@
 =======
+## 0.171.1 (2026-07-26)
+
+### Fix
+
+- **broxtowe**: rewrite scraper for the council's rebuilt self-service form
+- **broxtowe**: match form fields by role suffix, not exact generated id
+
 ## 0.171.0 (2026-07-25)
 
 ### Feat
