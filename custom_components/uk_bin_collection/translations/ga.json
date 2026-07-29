@@ -10,6 +10,9 @@
                     "manual_refresh_only": "Athnuachan de láimh amháin (díchumasaigh nuashonruithe uathoibríocha — athnuaigh tríd an tseirbhís uk_bin_collection.manual_refresh)",
                     "icon_color_mapping": "JSON chun Cineál Bin a mhapáil do Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData"
                 },
+                "data_description": {
+                    "manual_refresh_only": "Nuair a bhíonn sé ticeáilte, NÍ dhéanfaidh an chomhtháthú athnuachan go huathoibríoch — ní fhaightear sonraí ach ag am socraithe agus nuair a ghlaonn tú ar an tseirbhís uk_bin_collection.manual_refresh. Nuair nach mbíonn sé ticeáilte, déantar sonraí a athnuachan gach 'update_interval' uair."
+                },
                 "description": "Féach [anseo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura bhfuil do chomhairle liostaithe"
             },
             "council": {
@@ -45,6 +48,9 @@
                     "manual_refresh_only": "Athnuachan de láimh amháin (díchumasaigh nuashonruithe uathoibríocha — athnuaigh tríd an tseirbhís uk_bin_collection.manual_refresh)",
                     "icon_color_mapping": "JSON chun Cineál Bin a mhapáil do Dath agus Deilbhín féach: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir isteach"
+                },
+                "data_description": {
+                    "manual_refresh_only": "Nuair a bhíonn sé ticeáilte, NÍ dhéanfaidh an chomhtháthú athnuachan go huathoibríoch — ní fhaightear sonraí ach ag am socraithe agus nuair a ghlaonn tú ar an tseirbhís uk_bin_collection.manual_refresh. Nuair nach mbíonn sé ticeáilte, déantar sonraí a athnuachan gach 'update_interval' uair."
                 },
                 "description": "Féach ar iontráil [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do chomhairle le haghaidh sonraí ar cad atá le cur isteach."
             }

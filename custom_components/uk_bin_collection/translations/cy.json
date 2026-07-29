@@ -10,6 +10,9 @@
                     "manual_refresh_only": "Adnewyddu â llaw yn unig (analluogi diweddariadau awtomatig — adnewyddwch drwy'r gwasanaeth uk_bin_collection.manual_refresh)",
                     "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData"
                 },
+                "data_description": {
+                    "manual_refresh_only": "Pan fydd wedi'i dicio, NI fydd yr integreiddiad yn adnewyddu'n awtomatig — dim ond wrth osod a phan fyddwch yn galw'r gwasanaeth uk_bin_collection.manual_refresh y caiff data ei nôl. Pan na fydd wedi'i dicio, caiff data ei adnewyddu bob 'update_interval' awr."
+                },
                 "description": "Gweler [yma](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) os nad yw eich cyngor wedi'i restru"
             },
             "council": {
@@ -45,6 +48,9 @@
                     "local_browser": "Peidiwch â rhedeg ar weinydd Selenium o bell, defnyddiwch osodiad lleol o Chrome yn lle",
                     "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cyflwyno"
+                },
+                "data_description": {
+                    "manual_refresh_only": "Pan fydd wedi'i dicio, NI fydd yr integreiddiad yn adnewyddu'n awtomatig — dim ond wrth osod a phan fyddwch yn galw'r gwasanaeth uk_bin_collection.manual_refresh y caiff data ei nôl. Pan na fydd wedi'i dicio, caiff data ei adnewyddu bob 'update_interval' awr."
                 },
                 "description": "Cyfeiriwch at gofnod [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) eich cyngor am fanylion ar beth i'w nodi."
             }

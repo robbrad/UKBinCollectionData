@@ -40,6 +40,17 @@ def _steps_with_key(data: dict) -> dict:
     return found
 
 
+def _steps_with_description(data: dict) -> dict:
+    """Return {step_name: text} for every config.step.*.data_description[KEY]."""
+    found = {}
+    steps = data.get("config", {}).get("step", {})
+    for step_name, step in steps.items():
+        descriptions = step.get("data_description", {})
+        if KEY in descriptions:
+            found[step_name] = descriptions[KEY]
+    return found
+
+
 def test_all_json_files_are_valid():
     """Every strings/translation file must parse as JSON."""
     _load(STRINGS_JSON)
@@ -81,3 +92,22 @@ def test_strings_and_en_translation_stay_in_sync():
     )
     # Guard against the key silently disappearing from both.
     assert strings_steps, "manual_refresh_only missing from strings.json steps"
+
+
+def test_manual_refresh_has_description_in_every_locale():
+    """Every locale must carry data_description for KEY in each step that
+    labels it, so no locale falls back to English helper text."""
+    files = [STRINGS_JSON, *_all_translation_files()]
+    for path in files:
+        data = _load(path)
+        label_steps = set(_steps_with_key(data))
+        description_steps = set(_steps_with_description(data))
+        assert label_steps, f"{path.name}: expected at least one '{KEY}' label"
+        missing = label_steps - description_steps
+        assert not missing, (
+            f"{path.name}: missing data_description.{KEY} in step(s) "
+            f"{sorted(missing)}"
+        )
+        for step_name, text in _steps_with_description(data).items():
+            where = f"{path.name} :: config.step.{step_name}.data_description.{KEY}"
+            assert text.strip(), f"{where}: description must not be empty"

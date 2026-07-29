@@ -10,6 +10,9 @@
                     "manual_refresh_only": "Apenas atualização manual (desativa as atualizações automáticas — atualize através do serviço uk_bin_collection.manual_refresh)",
                     "icon_color_mapping": "JSON para mapear Tipo de Lixo para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData"
                 },
+                "data_description": {
+                    "manual_refresh_only": "Quando marcada, a integração NÃO será atualizada automaticamente — os dados só são obtidos na configuração e quando chama o serviço uk_bin_collection.manual_refresh. Quando desmarcada, os dados são atualizados a cada 'update_interval' horas."
+                },
                 "description": "Por favor, veja [aqui](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) se o seu conselho não estiver listado"
             },
             "council": {
@@ -45,6 +48,9 @@
                     "local_browser": "Não execute no servidor Selenium remoto, use a instalação local do Chrome em vez disso",
                     "icon_color_mapping": "JSON para mapear Tipo de Lixo para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Enviar"
+                },
+                "data_description": {
+                    "manual_refresh_only": "Quando marcada, a integração NÃO será atualizada automaticamente — os dados só são obtidos na configuração e quando chama o serviço uk_bin_collection.manual_refresh. Quando desmarcada, os dados são atualizados a cada 'update_interval' horas."
                 },
                 "description": "Por favor, consulte a entrada [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) do seu conselho para detalhes sobre o que inserir."
             }

@@ -11,6 +11,9 @@
                     "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData"
                 },
+                "data_description": {
+                    "manual_refresh_only": "Nuair a tha e air a chomharrachadh, CHA dèan an t-amalachadh ùrachadh gu fèin-obrachail — cha tèid dàta fhaighinn ach aig àm suidheachaidh agus nuair a ghairmeas tu an t-seirbheis uk_bin_collection.manual_refresh. Nuair nach eil e air a chomharrachadh, thèid dàta ùrachadh gach 'update_interval' uair."
+                },
                 "description": "Feuch an toir thu sùil [an seo](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) mura h-eil do chomhairle air a liostadh"
             },
             "council": {
@@ -46,6 +49,9 @@
                     "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir a-steach"
+                },
+                "data_description": {
+                    "manual_refresh_only": "Nuair a tha e air a chomharrachadh, CHA dèan an t-amalachadh ùrachadh gu fèin-obrachail — cha tèid dàta fhaighinn ach aig àm suidheachaidh agus nuair a ghairmeas tu an t-seirbheis uk_bin_collection.manual_refresh. Nuair nach eil e air a chomharrachadh, thèid dàta ùrachadh gach 'update_interval' uair."
                 },
                 "description": "Feuch an toir thu sùil air inntrigeadh [wiki](https://github.com/robbrad/UKBinCollectionData/wiki/Councils) na comhairle agad airson mion-fhiosrachadh air dè a chur a-steach."
             }
