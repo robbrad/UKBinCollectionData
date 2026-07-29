@@ -117,6 +117,11 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("name"): cv.string,
                     vol.Required("council"): vol.In(self.council_options),
+                    # NOTE: defaulting manual_refresh_only to True means new
+                    # installs get NO automatic refresh unless the user unticks
+                    # this box. Given the "entities only update on restart"
+                    # reports (e.g. #2193), this default is questionable and
+                    # should be revisited separately (kept as-is for this PR).
                     vol.Optional("manual_refresh_only", default=True): bool,
                     vol.Optional("icon_color_mapping", default=""): cv.string,
                 }
