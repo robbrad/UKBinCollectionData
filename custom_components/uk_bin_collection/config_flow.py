@@ -16,6 +16,19 @@ from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES, I
 
 _LOGGER = logging.getLogger(__name__)
 
+
+def resolve_auto_refresh_default(existing_data: Dict[str, Any]) -> bool:
+    """Resolve the auto_refresh_enabled checkbox default for a config entry.
+
+    Falls back to the inverse of the legacy manual_refresh_only key for entries
+    created before the rename.
+    """
+    return existing_data.get(
+        "auto_refresh_enabled",
+        not existing_data.get("manual_refresh_only", False),
+    )
+
+
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UkBinCollection."""
 
@@ -327,10 +340,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             vol.Optional(
                 "auto_refresh_enabled",
-                default=existing_data.get(
-                    "auto_refresh_enabled",
-                    not existing_data.get("manual_refresh_only", False),
-                ),
+                default=resolve_auto_refresh_default(existing_data),
             ): bool,
             vol.Required(
                 "update_interval", default=existing_data.get("update_interval", 12)
@@ -610,10 +620,7 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
             ),
             vol.Optional(
                 "auto_refresh_enabled",
-                default=existing_data.get(
-                    "auto_refresh_enabled",
-                    not existing_data.get("manual_refresh_only", False),
-                ),
+                default=resolve_auto_refresh_default(existing_data),
             ): bool,
             vol.Required(
                 "update_interval", default=existing_data.get("update_interval", 12)
