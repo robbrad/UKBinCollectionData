@@ -117,7 +117,10 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("name"): cv.string,
                     vol.Required("council"): vol.In(self.council_options),
-                    vol.Optional("manual_refresh_only", default=True): bool,
+                    # Ticked (default) enables periodic polling; unticking it
+                    # falls back to manual refresh via the
+                    # uk_bin_collection.manual_refresh service.
+                    vol.Optional("auto_refresh_enabled", default=True): bool,
                     vol.Optional("icon_color_mapping", default=""): cv.string,
                 }
             ),
@@ -225,6 +228,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # Merge the user input with existing data
                 data = {**existing_entry.data, **user_input}
                 data["icon_color_mapping"] = user_input.get("icon_color_mapping", "")
+                # Drop the legacy key so entries don't carry both flags.
+                data.pop("manual_refresh_only", None)
 
                 self.hass.config_entries.async_update_entry(
                     existing_entry,
@@ -324,8 +329,11 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self.council_options
             ),
             vol.Optional(
-                "manual_refresh_only",
-                default=existing_data.get("manual_refresh_only", False),
+                "auto_refresh_enabled",
+                default=existing_data.get(
+                    "auto_refresh_enabled",
+                    not existing_data.get("manual_refresh_only", False),
+                ),
             ): bool,
             vol.Required(
                 "update_interval", default=existing_data.get("update_interval", 12)
@@ -536,13 +544,15 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
                 ):
                     errors["icon_color_mapping"] = "Invalid JSON format."
 
-            if user_input.get("manual_refresh_only"):
+            if not user_input.get("auto_refresh_enabled"):
                 user_input["update_interval"] = None
 
             if not errors:
                 # Merge the user input with existing data
                 data = {**existing_data, **user_input}
                 data["icon_color_mapping"] = user_input.get("icon_color_mapping", "")
+                # Drop the legacy key so entries don't carry both flags.
+                data.pop("manual_refresh_only", None)
 
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
@@ -600,7 +610,13 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("council", default=council_current_wiki): vol.In(
                 self.council_options
             ),
-            vol.Optional("manual_refresh_only", default=False): bool,
+            vol.Optional(
+                "auto_refresh_enabled",
+                default=existing_data.get(
+                    "auto_refresh_enabled",
+                    not existing_data.get("manual_refresh_only", False),
+                ),
+            ): bool,
             vol.Required(
                 "update_interval", default=existing_data.get("update_interval", 12)
             ): vol.All(cv.positive_int, vol.Range(min=1)),

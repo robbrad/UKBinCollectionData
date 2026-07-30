@@ -36,5 +36,6 @@ EXCLUDED_ARG_KEYS = {
     "icon_color_mapping",
     "update_interval",
     "manual_refresh_only",
+    "auto_refresh_enabled",
     "original_parser",
 }

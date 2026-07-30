@@ -140,14 +140,21 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             raise ConfigEntryNotReady("Missing 'name' in configuration.")
 
         timeout = config_entry.data.get("timeout", 60)
-        manual_refresh = config_entry.data.get("manual_refresh_only", False)
+        # Positive framing: auto_refresh_enabled True -> poll periodically.
+        # Fall back to the legacy manual_refresh_only key for entries created
+        # before the rename (auto_refresh_enabled = not manual_refresh_only).
+        auto_refresh_enabled = config_entry.data.get("auto_refresh_enabled")
+        if auto_refresh_enabled is None:
+            auto_refresh_enabled = not config_entry.data.get(
+                "manual_refresh_only", False
+            )
         icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")
         update_interval_hours = config_entry.data.get("update_interval", 12)
 
         _LOGGER.debug(
             f"{LOG_PREFIX} Retrieved configuration: "
             f"name={name}, timeout={timeout}, "
-            f"manual_refresh_only={manual_refresh}, "
+            f"auto_refresh_enabled={auto_refresh_enabled}, "
             f"update_interval={update_interval_hours} hours, "
             f"icon_color_mapping={icon_color_mapping}"
         )
@@ -166,8 +173,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             )
             timeout = 60
 
-        # Decide update interval based on manual_refresh_only
-        if manual_refresh:
+        # Decide update interval based on auto_refresh_enabled
+        if not auto_refresh_enabled:
             update_interval = None
             _LOGGER.info(
                 "%s Manual refresh only: no automatic updates scheduled.", LOG_PREFIX

@@ -1025,8 +1025,8 @@ async def test_async_step_reconfigure_confirm_invalid_json(hass: HomeAssistant):
 
 
 @pytest.mark.asyncio
-async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
-    """Test config flow when the user selects manual_refresh_only = True."""
+async def test_config_flow_with_auto_refresh_disabled(hass: HomeAssistant):
+    """Test config flow when the user unticks auto_refresh_enabled."""
     mock_councils = {
         "CouncilWithUPRN": {
             "wiki_name": "Council with UPRN",
@@ -1041,11 +1041,11 @@ async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
         flow = UkBinCollectionConfigFlow()
         flow.hass = hass
 
-        # Step 1: user selects council + sets manual_refresh_only
+        # Step 1: user selects council + unticks automatic refresh
         user_input_initial = {
-            "name": "Test Manual Refresh",
+            "name": "Test Auto Refresh Off",
             "council": "Council with UPRN",
-            "manual_refresh_only": True,
+            "auto_refresh_enabled": False,
             # icon_color_mapping, etc. are optional
         }
 
@@ -1065,15 +1065,15 @@ async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
         # Complete council step
         result = await flow.async_step_council(user_input=user_input_council)
         assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
-        assert result["title"] == "Test Manual Refresh"
+        assert result["title"] == "Test Auto Refresh Off"
 
-        # Confirm the config entry data now includes manual_refresh_only
+        # Confirm the config entry data now stores auto_refresh_enabled
         assert result["data"] == {
-            "name": "Test Manual Refresh",
+            "name": "Test Auto Refresh Off",
             "council": "CouncilWithUPRN",
             "uprn": "1234567890",
             "timeout": 45,
-            "manual_refresh_only": True,
+            "auto_refresh_enabled": False,
         }
 
 

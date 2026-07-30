@@ -233,7 +233,8 @@ async def test_async_setup_entry_missing_name(hass, dummy_config_entry):
 async def test_async_setup_entry_manual_refresh_only_disables_polling(
     hass, dummy_config_entry
 ):
-    # dummy_config_entry has manual_refresh_only=True: no automatic polling.
+    # Legacy fallback: entry only has manual_refresh_only=True (no
+    # auto_refresh_enabled), which must be read as auto refresh disabled.
     hass.data.setdefault(DOMAIN, {})
 
     with patch(
@@ -250,7 +251,8 @@ async def test_async_setup_entry_manual_refresh_only_disables_polling(
 async def test_async_setup_entry_automatic_refresh_when_not_manual(
     hass, dummy_config_entry
 ):
-    # manual_refresh_only=False: coordinator should poll on update_interval.
+    # Legacy fallback: manual_refresh_only=False -> auto refresh enabled,
+    # coordinator should poll on update_interval.
     dummy_config_entry.data["manual_refresh_only"] = False
     hass.data.setdefault(DOMAIN, {})
 
@@ -262,6 +264,45 @@ async def test_async_setup_entry_automatic_refresh_when_not_manual(
 
     coordinator = hass.data[DOMAIN][dummy_config_entry.entry_id]["coordinator"]
     assert coordinator.update_interval == timedelta(hours=12)
+
+
+@pytest.mark.asyncio
+async def test_async_setup_entry_auto_refresh_enabled_true_polls(
+    hass, dummy_config_entry
+):
+    # New key: auto_refresh_enabled=True -> coordinator polls on interval.
+    dummy_config_entry.data.pop("manual_refresh_only", None)
+    dummy_config_entry.data["auto_refresh_enabled"] = True
+    hass.data.setdefault(DOMAIN, {})
+
+    with patch(
+        "custom_components.uk_bin_collection.UKBinCollectionApp",
+        return_value=DummyUKBinCollectionApp(),
+    ):
+        await async_setup_entry(hass, dummy_config_entry)
+
+    coordinator = hass.data[DOMAIN][dummy_config_entry.entry_id]["coordinator"]
+    assert coordinator.update_interval == timedelta(hours=12)
+
+
+@pytest.mark.asyncio
+async def test_async_setup_entry_auto_refresh_enabled_false_disables_polling(
+    hass, dummy_config_entry
+):
+    # New key: auto_refresh_enabled=False -> no automatic polling. Takes
+    # precedence over any stale legacy key.
+    dummy_config_entry.data["auto_refresh_enabled"] = False
+    dummy_config_entry.data["manual_refresh_only"] = False
+    hass.data.setdefault(DOMAIN, {})
+
+    with patch(
+        "custom_components.uk_bin_collection.UKBinCollectionApp",
+        return_value=DummyUKBinCollectionApp(),
+    ):
+        await async_setup_entry(hass, dummy_config_entry)
+
+    coordinator = hass.data[DOMAIN][dummy_config_entry.entry_id]["coordinator"]
+    assert coordinator.update_interval is None
 
 
 # --- Test async_unload_entry ---
