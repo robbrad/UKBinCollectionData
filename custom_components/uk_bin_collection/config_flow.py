@@ -541,8 +541,9 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
                 ):
                     errors["icon_color_mapping"] = "Invalid JSON format."
 
-            if not user_input.get("auto_refresh_enabled"):
-                user_input["update_interval"] = None
+            # Polling is disabled at runtime when auto_refresh_enabled is
+            # false; keep the numeric update_interval so it stays valid for the
+            # schema defaults and is remembered if polling is re-enabled.
 
             if not errors:
                 # Merge the user input with existing data

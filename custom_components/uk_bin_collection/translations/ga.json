@@ -55,5 +55,14 @@
             "selenium_unavailable": "❌ Níl freastalaí Selenium inrochtana. Cinntigh go bhfuil sé ag rith ag http://localhost:4444 nó http://selenium:4444. [Treoir Socraithe](https://example.com/selenium-setup)",
             "chromium_not_found": "❌ Níl brabhsálaí Chromium suiteáilte. Suiteáil Chromium nó Google Chrome le do thoil. [Treoir Suiteála](https://example.com/chromium-install)"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "auto_refresh_enabled": "Athnuaigh an braiteoir go huathoibríoch"
+                }
+            }
+        }
     }
 }

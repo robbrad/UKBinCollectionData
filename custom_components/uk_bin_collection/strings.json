@@ -55,5 +55,14 @@
             "selenium_unavailable": "Selenium server is not accessible. Please ensure it is running at localhost:4444 or selenium:4444",
             "chromium_not_found": "Chromium browser is not installed. Please install Chromium or Google Chrome"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "auto_refresh_enabled": "Enable automatic data refresh"
+                }
+            }
+        }
     }
 }

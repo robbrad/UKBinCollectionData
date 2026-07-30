@@ -55,5 +55,14 @@
             "selenium_unavailable": "❌ O servidor Selenium não está acessível. Por favor, certifique-se de que está em execução em http://localhost:4444 ou http://selenium:4444. [Guia de Configuração](https://example.com/selenium-setup)",
             "chromium_not_found": "❌ O navegador Chromium não está instalado. Por favor, instale o Chromium ou o Google Chrome. [Guia de Instalação](https://example.com/chromium-install)"
         }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "auto_refresh_enabled": "Atualize o sensor automaticamente"
+                }
+            }
+        }
     }
 }
