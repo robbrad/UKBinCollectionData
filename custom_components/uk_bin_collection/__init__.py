@@ -140,9 +140,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             raise ConfigEntryNotReady("Missing 'name' in configuration.")
 
         timeout = config_entry.data.get("timeout", 60)
-        # Positive framing: auto_refresh_enabled True -> poll periodically.
-        # Fall back to the legacy manual_refresh_only key for entries created
-        # before the rename (auto_refresh_enabled = not manual_refresh_only).
+        # Fall back to the legacy manual_refresh_only key for pre-rename entries.
         auto_refresh_enabled = config_entry.data.get("auto_refresh_enabled")
         if auto_refresh_enabled is None:
             auto_refresh_enabled = not config_entry.data.get(

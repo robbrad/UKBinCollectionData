@@ -117,9 +117,6 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("name"): cv.string,
                     vol.Required("council"): vol.In(self.council_options),
-                    # Ticked (default) enables periodic polling; unticking it
-                    # falls back to manual refresh via the
-                    # uk_bin_collection.manual_refresh service.
                     vol.Optional("auto_refresh_enabled", default=True): bool,
                     vol.Optional("icon_color_mapping", default=""): cv.string,
                 }
