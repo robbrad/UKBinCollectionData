@@ -7,7 +7,7 @@
                 "data": {
                     "name": "Nome da localização",
                     "council": "Conselho",
-                    "manual_refresh_only": "Atualize o sensor automaticamente",
+                    "auto_refresh_enabled": "Atualize o sensor automaticamente",
                     "icon_color_mapping": "JSON para mapear Tipo de Lixo para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData"
                 },
                 "description": "Por favor, veja [aqui](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) se o seu conselho não estiver listado"
@@ -41,7 +41,7 @@
                     "usrn": "USRN (Número de Referência Único da Rua)",
                     "web_driver": "Para executar em um Servidor Selenium remoto, adicione o URL do Servidor Selenium",
                     "headless": "Execute o Selenium no modo sem cabeça (recomendado)",
-                    "manual_refresh_only": "Atualize o sensor automaticamente",
+                    "auto_refresh_enabled": "Atualize o sensor automaticamente",
                     "local_browser": "Não execute no servidor Selenium remoto, use a instalação local do Chrome em vez disso",
                     "icon_color_mapping": "JSON para mapear Tipo de Lixo para Cor e Ícone veja: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Enviar"
@@ -54,6 +54,15 @@
             "council": "Por favor, selecione um conselho",
             "selenium_unavailable": "❌ O servidor Selenium não está acessível. Por favor, certifique-se de que está em execução em http://localhost:4444 ou http://selenium:4444. [Guia de Configuração](https://example.com/selenium-setup)",
             "chromium_not_found": "❌ O navegador Chromium não está instalado. Por favor, instale o Chromium ou o Google Chrome. [Guia de Instalação](https://example.com/chromium-install)"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "auto_refresh_enabled": "Atualize o sensor automaticamente"
+                }
+            }
         }
     }
 }

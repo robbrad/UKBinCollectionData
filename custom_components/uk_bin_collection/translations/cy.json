@@ -7,7 +7,7 @@
                 "data": {
                     "name": "Enw'r lleoliad",
                     "council": "Cyngor",
-                    "manual_refresh_only": "Adnewyddu'r synhwyrydd yn awtomatig",
+                    "auto_refresh_enabled": "Adnewyddu'r synhwyrydd yn awtomatig",
                     "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData"
                 },
                 "description": "Gweler [yma](https://github.com/robbrad/UKBinCollectionData#requesting-your-council) os nad yw eich cyngor wedi'i restru"
@@ -41,7 +41,7 @@
                     "usrn": "USRN (Rhif Cyfeirnod Stryd Unigryw)",
                     "web_driver": "I redeg ar weinydd Selenium o bell, ychwanegwch URL y Weinydd Selenium",
                     "headless": "Rhedeg Selenium yn y modd heb ben (argymhellir)",
-                    "manual_refresh_only": "Adnewyddu'r synhwyrydd yn awtomatig",
+                    "auto_refresh_enabled": "Adnewyddu'r synhwyrydd yn awtomatig",
                     "local_browser": "Peidiwch â rhedeg ar weinydd Selenium o bell, defnyddiwch osodiad lleol o Chrome yn lle",
                     "icon_color_mapping": "JSON i fapio Math y Bin ar gyfer Lliw ac Eicon gweler: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cyflwyno"
@@ -54,6 +54,15 @@
             "council": "Dewiswch gyngor os gwelwch yn dda",
             "selenium_unavailable": "❌ Nid yw gweinydd Selenium ar gael. Sicrhewch ei fod yn rhedeg yn http://localhost:4444 neu http://selenium:4444. [Canllaw Gosod](https://example.com/selenium-setup)",
             "chromium_not_found": "❌ Nid yw porwr Chromium wedi'i osod. Gosodwch Chromium neu Google Chrome os gwelwch yn dda. [Canllaw Gosod](https://example.com/chromium-install)"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "auto_refresh_enabled": "Adnewyddu'r synhwyrydd yn awtomatig"
+                }
+            }
         }
     }
 }

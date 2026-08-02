@@ -7,7 +7,7 @@
                 "data": {
                     "name": "Ainm Àite",
                     "council": "Comhairle",
-                    "manual_refresh_only": "Ùraich an sensor gu fèin-obrachail",                    
+                    "auto_refresh_enabled": "Ùraich an sensor gu fèin-obrachail",                    
                     "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData"
                 },
@@ -42,7 +42,7 @@
                     "usrn": "USRN (Àireamh Iomraidh Sràid Aonraic)",
                     "web_driver": "Gus ruith air Frithealaiche Selenium iomallach cuir a-steach an URL Frithealaiche Selenium",
                     "headless": "Ruith Selenium ann am modh gun cheann (air a mholadh)",
-                    "manual_refresh_only": "Ùraich an sensor gu fèin-obrachail",
+                    "auto_refresh_enabled": "Ùraich an sensor gu fèin-obrachail",
                     "local_browser": "Na ruith air frithealaiche Selenium iomallach, cleachd stàladh ionadail de Chrome an àite",
                     "icon_color_mapping": "JSON gus Seòrsa Biona a mhapadh airson Dath agus Ìomhaigh faic: https://github.com/robbrad/UKBinCollectionData",
                     "submit": "Cuir a-steach"
@@ -55,6 +55,15 @@
             "council": "Tagh comhairle mas e do thoil e",
             "selenium_unavailable": "❌ Chan eil frithealaiche Selenium ruigsinneach. Dèan cinnteach gu bheil e a’ ruith aig http://localhost:4444 no http://selenium:4444. [Stiùireadh Stèidheachaidh](https://example.com/selenium-setup)",
             "chromium_not_found": "❌ Chan eil brabhsair Chromium air a chuir a-steach. Stàlaich Chromium no Google Chrome mas e do thoil e. [Stiùireadh Stàlaidh](https://example.com/chromium-install)"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "auto_refresh_enabled": "Ùraich an sensor gu fèin-obrachail"
+                }
+            }
         }
     }
 }

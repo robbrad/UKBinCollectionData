@@ -12,14 +12,32 @@ from homeassistant.core import callback
 
 import collections  # At the top with other imports
 
-from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES, INPUT_JSON_URL
+from .const import (
+    CONFIG_ENTRY_VERSION,
+    DOMAIN,
+    LOG_PREFIX,
+    SELENIUM_SERVER_URLS,
+    BROWSER_BINARIES,
+    INPUT_JSON_URL,
+)
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def resolve_auto_refresh_default(existing_data: Dict[str, Any]) -> bool:
+    """Resolve the auto_refresh_enabled checkbox default for a config entry.
+
+    Config entries are migrated to carry `auto_refresh_enabled` (see
+    async_migrate_entry), so the stored value is used directly. Any entry that
+    has not yet been migrated defaults to True (automatic refresh on).
+    """
+    return existing_data.get("auto_refresh_enabled", True)
+
 
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UkBinCollection."""
 
-    VERSION = 3  # Incremented version for config flow changes
+    VERSION = CONFIG_ENTRY_VERSION
 
     def __init__(self):
         self.councils_data: Optional[Dict[str, Any]] = None
@@ -31,23 +49,6 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self.selenium_results: list = []
         self.chromium_checked: bool = False
         self.chromium_installed: bool = False
-
-    async def async_migrate_entry(
-        self, config_entry: config_entries.ConfigEntry
-    ) -> bool:
-        """Migrate old entry to the new version with manual refresh ticked."""
-        _LOGGER.info("Migrating config entry from version %s", config_entry.version)
-        data = dict(config_entry.data)
-
-        if config_entry.version < 3:
-            # If the manual_refresh_only key is not present, add it and set to True.
-            if "manual_refresh_only" not in data:
-                _LOGGER.info("Setting 'manual_refresh_only' to True in the migration")
-                data["manual_refresh_only"] = True
-
-            self.hass.config_entries.async_update_entry(config_entry, data=data)
-            _LOGGER.info("Migration to version %s successful", self.VERSION)
-        return True
 
     async def async_step_user(self, user_input: Optional[Dict[str, Any]] = None):
         """Handle the initial step."""
@@ -117,7 +118,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 {
                     vol.Required("name"): cv.string,
                     vol.Required("council"): vol.In(self.council_options),
-                    vol.Optional("manual_refresh_only", default=True): bool,
+                    vol.Optional("auto_refresh_enabled", default=True): bool,
                     vol.Optional("icon_color_mapping", default=""): cv.string,
                 }
             ),
@@ -225,6 +226,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 # Merge the user input with existing data
                 data = {**existing_entry.data, **user_input}
                 data["icon_color_mapping"] = user_input.get("icon_color_mapping", "")
+                # Drop the legacy key so entries don't carry both flags.
+                data.pop("manual_refresh_only", None)
 
                 self.hass.config_entries.async_update_entry(
                     existing_entry,
@@ -324,8 +327,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self.council_options
             ),
             vol.Optional(
-                "manual_refresh_only",
-                default=existing_data.get("manual_refresh_only", False),
+                "auto_refresh_enabled",
+                default=resolve_auto_refresh_default(existing_data),
             ): bool,
             vol.Required(
                 "update_interval", default=existing_data.get("update_interval", 12)
@@ -536,13 +539,16 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
                 ):
                     errors["icon_color_mapping"] = "Invalid JSON format."
 
-            if user_input.get("manual_refresh_only"):
-                user_input["update_interval"] = None
+            # Polling is disabled at runtime when auto_refresh_enabled is
+            # false; keep the numeric update_interval so it stays valid for the
+            # schema defaults and is remembered if polling is re-enabled.
 
             if not errors:
                 # Merge the user input with existing data
                 data = {**existing_data, **user_input}
                 data["icon_color_mapping"] = user_input.get("icon_color_mapping", "")
+                # Drop the legacy key so entries don't carry both flags.
+                data.pop("manual_refresh_only", None)
 
                 self.hass.config_entries.async_update_entry(
                     self.config_entry,
@@ -600,7 +606,10 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
             vol.Required("council", default=council_current_wiki): vol.In(
                 self.council_options
             ),
-            vol.Optional("manual_refresh_only", default=False): bool,
+            vol.Optional(
+                "auto_refresh_enabled",
+                default=resolve_auto_refresh_default(existing_data),
+            ): bool,
             vol.Required(
                 "update_interval", default=existing_data.get("update_interval", 12)
             ): vol.All(cv.positive_int, vol.Range(min=1)),

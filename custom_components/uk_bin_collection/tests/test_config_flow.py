@@ -1025,8 +1025,8 @@ async def test_async_step_reconfigure_confirm_invalid_json(hass: HomeAssistant):
 
 
 @pytest.mark.asyncio
-async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
-    """Test config flow when the user selects manual_refresh_only = True."""
+async def test_config_flow_with_auto_refresh_disabled(hass: HomeAssistant):
+    """Test config flow when the user unticks auto_refresh_enabled."""
     mock_councils = {
         "CouncilWithUPRN": {
             "wiki_name": "Council with UPRN",
@@ -1041,11 +1041,11 @@ async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
         flow = UkBinCollectionConfigFlow()
         flow.hass = hass
 
-        # Step 1: user selects council + sets manual_refresh_only
+        # Step 1: user selects council + unticks automatic refresh
         user_input_initial = {
-            "name": "Test Manual Refresh",
+            "name": "Test Auto Refresh Off",
             "council": "Council with UPRN",
-            "manual_refresh_only": True,
+            "auto_refresh_enabled": False,
             # icon_color_mapping, etc. are optional
         }
 
@@ -1065,16 +1065,103 @@ async def test_config_flow_with_manual_refresh_only(hass: HomeAssistant):
         # Complete council step
         result = await flow.async_step_council(user_input=user_input_council)
         assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
-        assert result["title"] == "Test Manual Refresh"
+        assert result["title"] == "Test Auto Refresh Off"
 
-        # Confirm the config entry data now includes manual_refresh_only
+        # Confirm the config entry data now stores auto_refresh_enabled
         assert result["data"] == {
-            "name": "Test Manual Refresh",
+            "name": "Test Auto Refresh Off",
             "council": "CouncilWithUPRN",
             "uprn": "1234567890",
             "timeout": 45,
-            "manual_refresh_only": True,
+            "auto_refresh_enabled": False,
         }
+
+
+@pytest.mark.asyncio
+async def test_reconfigure_confirm_renames_legacy_key(hass: HomeAssistant):
+    """Reconfigure saves auto_refresh_enabled and drops legacy manual_refresh_only."""
+    with patch(
+        "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.get_councils_json",
+        return_value=MOCK_COUNCILS_DATA,
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+
+        config_entry = MockConfigEntry(
+            domain=DOMAIN,
+            data={
+                "name": "Existing Entry",
+                "council": "CouncilWithUPRN",
+                "uprn": "1234567890",
+                "timeout": 60,
+                "update_interval": 12,
+                "manual_refresh_only": True,  # legacy key from before the rename
+            },
+        )
+        config_entry.add_to_hass(hass)
+        flow.context = {"entry_id": config_entry.entry_id}
+
+        hass.config_entries.async_get_entry = MagicMock(return_value=config_entry)
+        hass.config_entries.async_reload = AsyncMock()
+        hass.config_entries.async_update_entry = MagicMock()
+
+        user_input = {
+            "name": "Existing Entry",
+            "council": "Council with UPRN",
+            "uprn": "1234567890",
+            "timeout": 60,
+            "update_interval": 8,
+            "auto_refresh_enabled": True,
+            "icon_color_mapping": "{}",
+        }
+
+        result = await flow.async_step_reconfigure_confirm(user_input=user_input)
+
+        assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
+        assert result["reason"] == "Reconfigure Successful"
+        saved = hass.config_entries.async_update_entry.call_args.kwargs["data"]
+        assert saved["auto_refresh_enabled"] is True
+        assert "manual_refresh_only" not in saved
+        assert saved["update_interval"] == 8
+
+
+@pytest.mark.asyncio
+async def test_options_flow_disabling_auto_refresh_keeps_interval(hass: HomeAssistant):
+    """Options flow: unticking auto refresh drops the legacy key and keeps the
+    numeric update_interval (it is not overwritten with None)."""
+    config_entry = MockConfigEntry(
+        domain=DOMAIN,
+        data={
+            "name": "Opt Entry",
+            "council": "CouncilWithUPRN",
+            "uprn": "1234567890",
+            "timeout": 60,
+            "update_interval": 12,
+            "manual_refresh_only": False,  # legacy key from before the rename
+        },
+    )
+    config_entry.add_to_hass(hass)
+    flow = UkBinCollectionOptionsFlowHandler(config_entry)
+    flow.hass = hass
+    flow.get_councils_json = AsyncMock(return_value=MOCK_COUNCILS_DATA)
+    hass.config_entries.async_reload = AsyncMock()
+    hass.config_entries.async_update_entry = MagicMock()
+
+    user_input = {
+        "name": "Opt Entry",
+        "council": "Council with UPRN",
+        "update_interval": 6,
+        "auto_refresh_enabled": False,
+        "icon_color_mapping": "{}",
+    }
+
+    result = await flow.async_step_init(user_input=user_input)
+
+    assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+    saved = hass.config_entries.async_update_entry.call_args.kwargs["data"]
+    assert saved["auto_refresh_enabled"] is False
+    assert "manual_refresh_only" not in saved
+    assert saved["update_interval"] == 6
 
 
 # ---------------------------

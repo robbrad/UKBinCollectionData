@@ -14,7 +14,13 @@ from datetime import datetime
 
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN, LOG_PREFIX, PLATFORMS, EXCLUDED_ARG_KEYS
+from .const import (
+    CONFIG_ENTRY_VERSION,
+    DOMAIN,
+    LOG_PREFIX,
+    PLATFORMS,
+    EXCLUDED_ARG_KEYS,
+)
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
 
 
@@ -85,38 +91,71 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
-    """Migrate old config entries to new version."""
+    """Migrate old config entries to the current version."""
     try:
+        version = config_entry.version
         _LOGGER.debug(
-            f"{LOG_PREFIX} async_migrate_entry called for entry_id={config_entry.entry_id}, version={config_entry.version}"
+            f"{LOG_PREFIX} async_migrate_entry called for entry_id={config_entry.entry_id}, version={version}"
         )
 
-        if config_entry.version == 1:
-            _LOGGER.info(
-                f"{LOG_PREFIX} Migrating config entry {config_entry.entry_id} from version 1 to 2."
+        if version > CONFIG_ENTRY_VERSION:
+            # Downgrading from a newer schema is not supported.
+            _LOGGER.error(
+                "%s Cannot downgrade config entry %s from version %s to %s.",
+                LOG_PREFIX,
+                config_entry.entry_id,
+                version,
+                CONFIG_ENTRY_VERSION,
             )
+            return False
 
-            data = config_entry.data.copy()
-            if "update_interval" not in data:
-                data["update_interval"] = 12
-                _LOGGER.debug(
-                    f"{LOG_PREFIX} 'update_interval' not found. Setting default to 12 hours."
-                )
-            else:
-                _LOGGER.debug(
-                    f"{LOG_PREFIX} 'update_interval' found: {data['update_interval']} hours."
-                )
-
-            hass.config_entries.async_update_entry(config_entry, data=data)
-
-            _LOGGER.info(
-                f"{LOG_PREFIX} Migration of config entry {config_entry.entry_id} to version 2 successful."
-            )
-
-        else:
+        if version == CONFIG_ENTRY_VERSION:
             _LOGGER.debug(
                 f"{LOG_PREFIX} No migration needed for entry_id={config_entry.entry_id}"
             )
+            return True
+
+        _LOGGER.info(
+            f"{LOG_PREFIX} Migrating config entry {config_entry.entry_id} from version {version} to {CONFIG_ENTRY_VERSION}."
+        )
+
+        data = dict(config_entry.data)
+
+        # v1 -> v2: ensure an update_interval default exists.
+        if version < 2 and "update_interval" not in data:
+            data["update_interval"] = 12
+            _LOGGER.debug(
+                f"{LOG_PREFIX} 'update_interval' not found. Setting default to 12 hours."
+            )
+
+        # v3 -> v4: replace the legacy, inverted `manual_refresh_only` flag with
+        # the positive `auto_refresh_enabled` flag.
+        #
+        # The meaning of the stored `manual_refresh_only` value became ambiguous
+        # when its runtime logic was flipped (commit 4c2a9924, released in
+        # 0.171.0) without a data migration: before the flip `True` enabled
+        # automatic polling, after the flip `True` disabled it. We therefore
+        # cannot reliably infer the user's intent from the stored value. To
+        # guarantee the "sensors only update on restart" regression is resolved
+        # for every existing install, enable automatic refresh on migration.
+        # Users who genuinely want manual-only can untick the now
+        # correctly-labelled "Enable automatic data refresh" option.
+        if "manual_refresh_only" in data or "auto_refresh_enabled" not in data:
+            data.pop("manual_refresh_only", None)
+            data["auto_refresh_enabled"] = True
+            _LOGGER.info(
+                "%s Enabled automatic refresh for entry %s during migration.",
+                LOG_PREFIX,
+                config_entry.entry_id,
+            )
+
+        hass.config_entries.async_update_entry(
+            config_entry, data=data, version=CONFIG_ENTRY_VERSION
+        )
+
+        _LOGGER.info(
+            f"{LOG_PREFIX} Migration of config entry {config_entry.entry_id} to version {CONFIG_ENTRY_VERSION} successful."
+        )
 
         return True
 
@@ -140,14 +179,18 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             raise ConfigEntryNotReady("Missing 'name' in configuration.")
 
         timeout = config_entry.data.get("timeout", 60)
-        manual_refresh = config_entry.data.get("manual_refresh_only", False)
+        # Migration (async_migrate_entry) rewrites every entry to carry
+        # `auto_refresh_enabled`, so it is normally always present here. Default
+        # to True as a safe fallback: if the flag is somehow missing we prefer
+        # automatic polling over silently leaving the sensor stale.
+        auto_refresh_enabled = config_entry.data.get("auto_refresh_enabled", True)
         icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")
         update_interval_hours = config_entry.data.get("update_interval", 12)
 
         _LOGGER.debug(
             f"{LOG_PREFIX} Retrieved configuration: "
             f"name={name}, timeout={timeout}, "
-            f"manual_refresh_only={manual_refresh}, "
+            f"auto_refresh_enabled={auto_refresh_enabled}, "
             f"update_interval={update_interval_hours} hours, "
             f"icon_color_mapping={icon_color_mapping}"
         )
@@ -166,8 +209,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             )
             timeout = 60
 
-        # Decide update interval based on manual_refresh_only
-        if manual_refresh:
+        # Decide update interval based on auto_refresh_enabled
+        if not auto_refresh_enabled:
             update_interval = None
             _LOGGER.info(
                 "%s Manual refresh only: no automatic updates scheduled.", LOG_PREFIX
@@ -422,7 +465,6 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
                 _LOGGER.debug(
                     f"{LOG_PREFIX} Corrected rollover year for '{bin_type}' to {collection_date}"
                 )
-            
 
             existing_date = next_collection_dates.get(bin_type)
             if collection_date >= current_date and (
