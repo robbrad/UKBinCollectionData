@@ -12,7 +12,14 @@ from homeassistant.core import callback
 
 import collections  # At the top with other imports
 
-from .const import DOMAIN, LOG_PREFIX, SELENIUM_SERVER_URLS, BROWSER_BINARIES, INPUT_JSON_URL
+from .const import (
+    CONFIG_ENTRY_VERSION,
+    DOMAIN,
+    LOG_PREFIX,
+    SELENIUM_SERVER_URLS,
+    BROWSER_BINARIES,
+    INPUT_JSON_URL,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,19 +27,17 @@ _LOGGER = logging.getLogger(__name__)
 def resolve_auto_refresh_default(existing_data: Dict[str, Any]) -> bool:
     """Resolve the auto_refresh_enabled checkbox default for a config entry.
 
-    Falls back to the inverse of the legacy manual_refresh_only key for entries
-    created before the rename.
+    Config entries are migrated to carry `auto_refresh_enabled` (see
+    async_migrate_entry), so the stored value is used directly. Any entry that
+    has not yet been migrated defaults to True (automatic refresh on).
     """
-    return existing_data.get(
-        "auto_refresh_enabled",
-        not existing_data.get("manual_refresh_only", False),
-    )
+    return existing_data.get("auto_refresh_enabled", True)
 
 
 class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for UkBinCollection."""
 
-    VERSION = 3  # Incremented version for config flow changes
+    VERSION = CONFIG_ENTRY_VERSION
 
     def __init__(self):
         self.councils_data: Optional[Dict[str, Any]] = None

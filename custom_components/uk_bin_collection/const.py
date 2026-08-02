@@ -10,6 +10,10 @@ DEFAULT_NAME = "UK Bin Collection Data"
 
 DOMAIN = "uk_bin_collection"
 
+# Current config-entry schema version. Bumped to 4 to migrate the legacy
+# `manual_refresh_only` flag to the positive `auto_refresh_enabled` flag.
+CONFIG_ENTRY_VERSION = 4
+
 LOG_PREFIX = "[UKBinCollection]"
 
 PLATFORMS = [Platform.SENSOR]

@@ -89,8 +89,11 @@ class ConfigEntries:
         # Simulate a successful unload.
         return True
 
-    def async_update_entry(self, config_entry, data):
-        config_entry.data = data
+    def async_update_entry(self, config_entry, data=None, version=None, **kwargs):
+        if data is not None:
+            config_entry.data = data
+        if version is not None:
+            config_entry.version = version
 
 
 @pytest.fixture
@@ -195,13 +198,47 @@ async def test_async_migrate_entry_version_1(hass, dummy_config_entry):
     assert result is True
     # Now update_interval should be set to 12.
     assert dummy_config_entry.data["update_interval"] == 12
+    # ...and the entry is migrated all the way to the current version.
+    assert dummy_config_entry.version == 4
+    assert dummy_config_entry.data["auto_refresh_enabled"] is True
+    assert "manual_refresh_only" not in dummy_config_entry.data
+
+
+@pytest.mark.asyncio
+async def test_async_migrate_entry_enables_auto_refresh_for_all(
+    hass, dummy_config_entry
+):
+    # A legacy v3 entry that deliberately disabled auto refresh
+    # (manual_refresh_only=True). Because the stored value's meaning is
+    # ambiguous after the 0.171.0 logic flip, migration enables automatic
+    # refresh for everyone and drops the legacy key.
+    dummy_config_entry.version = 3
+    dummy_config_entry.data["manual_refresh_only"] = True
+    result = await async_migrate_entry(hass, dummy_config_entry)
+    assert result is True
+    assert dummy_config_entry.version == 4
+    assert dummy_config_entry.data["auto_refresh_enabled"] is True
+    assert "manual_refresh_only" not in dummy_config_entry.data
 
 
 @pytest.mark.asyncio
 async def test_async_migrate_entry_no_migration(hass, dummy_config_entry):
-    dummy_config_entry.version = 2
+    # Already at the current version: nothing to do, data left untouched.
+    dummy_config_entry.version = 4
+    dummy_config_entry.data["auto_refresh_enabled"] = False
     result = await async_migrate_entry(hass, dummy_config_entry)
     assert result is True
+    assert dummy_config_entry.version == 4
+    # An entry already on the current schema must not be rewritten.
+    assert dummy_config_entry.data["auto_refresh_enabled"] is False
+
+
+@pytest.mark.asyncio
+async def test_async_migrate_entry_downgrade_returns_false(hass, dummy_config_entry):
+    # Downgrading from a future schema version is not supported.
+    dummy_config_entry.version = 99
+    result = await async_migrate_entry(hass, dummy_config_entry)
+    assert result is False
 
 
 # --- Test async_setup_entry ---
@@ -230,11 +267,14 @@ async def test_async_setup_entry_missing_name(hass, dummy_config_entry):
 
 
 @pytest.mark.asyncio
-async def test_async_setup_entry_manual_refresh_only_disables_polling(
+async def test_async_setup_entry_missing_flag_defaults_to_polling(
     hass, dummy_config_entry
 ):
-    # Legacy fallback: entry only has manual_refresh_only=True (no
-    # auto_refresh_enabled), which must be read as auto refresh disabled.
+    # Defensive default: an entry that somehow reaches setup without
+    # auto_refresh_enabled (the legacy manual_refresh_only key is ignored at
+    # runtime) polls on update_interval rather than being left stale.
+    dummy_config_entry.data.pop("auto_refresh_enabled", None)
+    dummy_config_entry.data["manual_refresh_only"] = True
     hass.data.setdefault(DOMAIN, {})
 
     with patch(
@@ -244,16 +284,16 @@ async def test_async_setup_entry_manual_refresh_only_disables_polling(
         await async_setup_entry(hass, dummy_config_entry)
 
     coordinator = hass.data[DOMAIN][dummy_config_entry.entry_id]["coordinator"]
-    assert coordinator.update_interval is None
+    assert coordinator.update_interval == timedelta(hours=12)
 
 
 @pytest.mark.asyncio
-async def test_async_setup_entry_automatic_refresh_when_not_manual(
+async def test_async_setup_entry_automatic_refresh_when_enabled(
     hass, dummy_config_entry
 ):
-    # Legacy fallback: manual_refresh_only=False -> auto refresh enabled,
-    # coordinator should poll on update_interval.
-    dummy_config_entry.data["manual_refresh_only"] = False
+    # auto_refresh_enabled=True -> coordinator should poll on update_interval.
+    dummy_config_entry.data.pop("manual_refresh_only", None)
+    dummy_config_entry.data["auto_refresh_enabled"] = True
     hass.data.setdefault(DOMAIN, {})
 
     with patch(
