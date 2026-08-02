@@ -1497,6 +1497,60 @@ async def test_bin_sensor_in_x_days(hass, freezer, mock_config_entry):
     assert sensor.state == "In 5 days"
 
 
+@pytest.mark.asyncio
+async def test_bin_sensor_midnight_recompute_advances_countdown(
+    hass, freezer, mock_config_entry
+):
+    """The 'In N days' countdown must decrement at midnight even if the
+    coordinator data has not been refreshed (regression for #2204)."""
+    freezer.move_to("2023-10-14")
+    collection_date = dt_util.now().date() + timedelta(days=5)
+
+    coordinator = MagicMock()
+    coordinator.data = {"General Waste": collection_date}
+    coordinator.name = "Test Coordinator"
+
+    sensor = UKBinCollectionDataSensor(
+        coordinator, "General Waste", "test_gw_midnight", {}
+    )
+    assert sensor.state == "In 5 days"
+
+    # A day passes with no new coordinator data.
+    freezer.move_to("2023-10-15")
+    # Stale cached value until the midnight recompute runs.
+    assert sensor.state == "In 5 days"
+
+    with patch.object(sensor, "async_write_ha_state") as mock_write:
+        sensor._async_midnight_update(dt_util.now())
+
+    assert sensor.state == "In 4 days"
+    assert sensor.extra_state_attributes["days"] == 4
+    mock_write.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_bin_sensor_registers_midnight_tracker(hass, mock_config_entry):
+    """async_added_to_hass schedules a daily midnight recompute."""
+    coordinator = MagicMock()
+    coordinator.data = {"General Waste": datetime(2025, 1, 1).date()}
+    coordinator.name = "Test Coordinator"
+
+    sensor = UKBinCollectionDataSensor(
+        coordinator, "General Waste", "test_gw_tracker", {}
+    )
+    sensor.hass = hass
+    sensor.async_on_remove = MagicMock()
+
+    with patch(
+        "custom_components.uk_bin_collection.sensor.async_track_time_change"
+    ) as mock_track:
+        await sensor.async_added_to_hass()
+
+    mock_track.assert_called_once()
+    # Fires at local midnight (00:00:00).
+    assert mock_track.call_args.kwargs == {"hour": 0, "minute": 0, "second": 0}
+
+
 def test_data_sensor_default_icon_unknown_type():
     coordinator = MagicMock()
     coordinator.data = {"Some Custom Bin": datetime(2025, 1, 1).date()}
