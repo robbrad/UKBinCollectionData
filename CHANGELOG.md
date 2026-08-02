@@ -1,4 +1,17 @@
 =======
+## 0.171.2 (2026-08-02)
+
+### Fix
+
+- #2193 add migration to restore auto-refresh for existing entries
+- remove dead migration that forced manual_refresh_only=True
+- preserve update_interval, label options checkbox, add flow tests
+- invert refresh checkbox to positive auto_refresh_enabled
+
+### Refactor
+
+- extract shared auto_refresh_enabled default resolver
+
 ## 0.171.1 (2026-07-26)
 
 ### Fix
