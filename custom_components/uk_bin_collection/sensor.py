@@ -19,6 +19,7 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.util import dt as dt_util
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.event import async_track_time_change
 import homeassistant.helpers.config_validation as cv
 
 from .const import (
@@ -132,6 +133,30 @@ class UKBinCollectionDataSensor(CoordinatorEntity, SensorEntity):
         self._next_collection = None
         self._days = None
         self.update_state()
+
+    async def async_added_to_hass(self) -> None:
+        """Register callbacks once the entity is added to hass."""
+        await super().async_added_to_hass()
+        # The state ("In N days" / "Tomorrow" / "Today") and the days attribute
+        # are relative to the current date, but the coordinator may only refresh
+        # every few hours (or not at all in manual-refresh mode). Recompute at
+        # local midnight so the countdown stays correct between data fetches
+        # instead of being frozen at the value from the last coordinator update.
+        self.async_on_remove(
+            async_track_time_change(
+                self.hass,
+                self._async_midnight_update,
+                hour=0,
+                minute=0,
+                second=0,
+            )
+        )
+
+    @callback
+    def _async_midnight_update(self, now: datetime) -> None:
+        """Recompute the date-relative state at local midnight."""
+        self.update_state()
+        self.async_write_ha_state()
 
     @property
     def device_info(self) -> dict:
