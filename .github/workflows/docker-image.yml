@@ -21,6 +21,17 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    # Skip the version-bump commit. `cz bump` rewrites
+    # uk_bin_collection_api_server/requirements.txt to pin the just-bumped
+    # `uk-bin-collection>=<new version>`, and pushing that commit to master
+    # triggers this workflow. Building here would `pip install` the new version
+    # before it exists on PyPI (published separately by release.yml on the tag),
+    # so it races and fails. The release.yml `docker` job (needs: release)
+    # builds and pushes the image correctly *after* the PyPI publish, so this
+    # bump-commit build is redundant as well as broken — skip it.
+    if: >-
+      github.event_name != 'push' ||
+      !startsWith(github.event.head_commit.message, 'bump:')
     steps:
     - uses: actions/checkout@v7
     - name: Publish to Registry
