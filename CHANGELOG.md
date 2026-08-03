@@ -1,4 +1,10 @@
 =======
+## 0.171.3 (2026-08-03)
+
+### Fix
+
+- #2204 recompute bin countdown at local midnight
+
 ## 0.171.2 (2026-08-02)
 
 ### Fix
