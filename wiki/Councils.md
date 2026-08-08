@@ -631,14 +631,13 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Bexley
 ```commandline
-python collect_data.py BexleyCouncil https://waste.bexley.gov.uk/waste -s -u XXXXXXXX -w http://HOST:PORT/
+python collect_data.py BexleyCouncil https://waste.bexley.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number/address string to match
 - `-u` - UPRN
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
-
-Note: Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to locate it. This parser requires a Selenium webdriver.
 
 ---
 
@@ -792,13 +791,13 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Brent
 ```commandline
-python collect_data.py BrentCouncil https://recyclingservices.brent.gov.uk/waste -p "XXXX XXX" -n XX
+python collect_data.py BrentCouncil https://recyclingservices.brent.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
+- `-s` - skip get URL
 - `-p` - postcode
-- `-n` - house number
-
-Note: Pass the house number and postcode in their respective parameters.
+- `-n` - house number/address string to match
+- `-u` - UPRN
 
 ---
 
@@ -844,12 +843,13 @@ Note: Use house number and postcode. Requires Selenium.
 
 ### Bromley
 ```commandline
-python collect_data.py BromleyBoroughCouncil https://recyclingservices.bromley.gov.uk/waste/XXXXXXX -w http://HOST:PORT/
+python collect_data.py BromleyBoroughCouncil https://recyclingservices.bromley.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
-
-Note: Follow the instructions [here](https://recyclingservices.bromley.gov.uk/waste) until the "Your bin days" page then copy the URL and replace the URL in the command.
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number/address string to match
+- `-u` - UPRN
 
 ---
 
@@ -2185,12 +2185,13 @@ Note: Provide your UPRN. Find your UPRN using [FindMyAddress](https://www.findmy
 
 ### Kingston upon Thames
 ```commandline
-python collect_data.py KingstonUponThamesCouncil https://waste-services.kingston.gov.uk/waste/XXXXXXX -w http://HOST:PORT/
+python collect_data.py KingstonUponThamesCouncil https://waste-services.kingston.gov.uk/ -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
-
-Note: Follow the instructions [here](https://waste-services.kingston.gov.uk/waste) until the "Your bin days" page, then copy the URL and replace the URL in the command.
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number/address string to match
+- `-u` - UPRN
 
 ---
 
@@ -2438,12 +2439,13 @@ Note: Follow the instructions [here](https://my.redbridge.gov.uk/RecycleRefuse) 
 
 ### Sutton
 ```commandline
-python collect_data.py LondonBoroughSutton https://waste-services.sutton.gov.uk/waste -u XXXXXXXX
+python collect_data.py LondonBoroughSutton https://waste-services.sutton.gov.uk/waste -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number/address string to match
 - `-u` - UPRN
-
-Note: You will need to find your unique property reference by going to (https://waste-services.sutton.gov.uk/waste), entering your details and then using the 7 digit reference in the URL as your UPRN
 
 ---
 
@@ -2545,13 +2547,13 @@ Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.
 
 ### Merton
 ```commandline
-python collect_data.py MertonCouncil https://fixmystreet.merton.gov.uk/waste/ -s -u XXXXXXXX
+python collect_data.py MertonCouncil https://fixmystreet.merton.gov.uk/waste/ -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number/address string to match
 - `-u` - UPRN
-
-Note: To get the UPRN, you can use [FindMyAddress](https://www.findmyaddress.co.uk/search).
 
 ---
 
@@ -3051,15 +3053,13 @@ Note: Replace XXXXXXXX with your UPRN. You will need to use [FindMyAddress](http
 
 ### Peterborough
 ```commandline
-python collect_data.py PeterboroughCityCouncil https://report.peterborough.gov.uk/waste -s -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py PeterboroughCityCouncil https://report.peterborough.gov.uk/waste -s -u XXXXXXXX -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-s` - skip get URL
 - `-p` - postcode
-- `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
-
-Note: Pass the full address as it appears o nthe Peterborough website and postcode in their respective parameters. This parser requires a Selenium webdriver.
+- `-n` - house number/address string to match
+- `-u` - UPRN
 
 ---
 
