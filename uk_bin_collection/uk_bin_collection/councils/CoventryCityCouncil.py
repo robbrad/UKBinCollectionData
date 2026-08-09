@@ -37,13 +37,20 @@ class CouncilClass(AbstractGetBinDataClass):
                 for table in div.find_all("table"):
                     heading = table.find_previous_sibling("h2")
                     if not heading:
-                        continue
+                        raise ValueError(
+                            "Coventry bin calendar: found a schedule table with "
+                            "no preceding month/year heading — page structure "
+                            "may have changed"
+                        )
                     year = heading.get_text(strip=True).split()[-1]
 
                     thead = table.find("thead")
                     tbody = table.find("tbody")
                     if not thead or not tbody:
-                        continue
+                        raise ValueError(
+                            "Coventry bin calendar: schedule table is missing "
+                            "a thead/tbody — page structure may have changed"
+                        )
 
                     bin_types = [
                         re.sub(
@@ -56,14 +63,20 @@ class CouncilClass(AbstractGetBinDataClass):
 
                     for row in tbody.find_all("tr"):
                         cells = row.find_all("td")
-                        if not cells:
-                            continue
+                        if len(cells) != len(bin_types) + 1:
+                            raise ValueError(
+                                f"Coventry bin calendar: expected 1 date cell "
+                                f"plus {len(bin_types)} bin cells, found "
+                                f"{len(cells)} — page structure may have changed"
+                            )
                         date_text = cells[0].get_text(strip=True)
                         collection_date = datetime.strptime(
                             f"{date_text} {year}",
                             "%A %d %B %Y",
                         )
-                        for bin_type, cell in zip(bin_types, cells[1:]):
+                        for bin_type, cell in zip(
+                            bin_types, cells[1:], strict=True
+                        ):
                             if cell.get_text(strip=True).lower() == "yes":
                                 bindata["bins"].append(
                                     {
