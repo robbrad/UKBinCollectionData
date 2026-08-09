@@ -42,7 +42,13 @@ class CouncilClass(AbstractGetBinDataClass):
                             "no preceding month/year heading — page structure "
                             "may have changed"
                         )
-                    year = heading.get_text(strip=True).split()[-1]
+                    heading_words = heading.get_text(strip=True).split()
+                    if not heading_words:
+                        raise ValueError(
+                            "Coventry bin calendar: schedule heading has no "
+                            "year — page structure may have changed"
+                        )
+                    year = heading_words[-1]
 
                     thead = table.find("thead")
                     tbody = table.find("tbody")
@@ -60,6 +66,11 @@ class CouncilClass(AbstractGetBinDataClass):
                         )
                         for th in thead.find_all("th")[1:]
                     ]
+                    if not any(bin_types):
+                        raise ValueError(
+                            "Coventry bin calendar: no bin-type headers found "
+                            "in schedule table — page structure may have changed"
+                        )
 
                     for row in tbody.find_all("tr"):
                         cells = row.find_all("td")
