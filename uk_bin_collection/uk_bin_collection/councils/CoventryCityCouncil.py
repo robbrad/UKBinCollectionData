@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-from dateutil.relativedelta import relativedelta
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -17,7 +16,6 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
 
         bindata = {"bins": []}
-        curr_date = datetime.today()
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
@@ -36,22 +34,45 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(response.content, features="html.parser")
             divs = soup.find_all("div", {"class": "editor"})
             for div in divs:
-                lis = div.find_all("li")
-                for li in lis:
-                    collection = li.text.split(":")
-                    collection_date = datetime.strptime(
-                        collection[0],
-                        "%A %d %B",
-                    ).replace(year=curr_date.year)
-                    if curr_date.month == 12 and collection_date.month == 1:
-                        collection_date = collection_date + relativedelta(years=1)
-                    bin_types = collection[1].split(" and ")
-                    for bin_type in bin_types:
-                        dict_data = {
-                            "type": bin_type,
-                            "collectionDate": collection_date.strftime("%d/%m/%Y"),
-                        }
-                        bindata["bins"].append(dict_data)
+                for table in div.find_all("table"):
+                    heading = table.find_previous_sibling("h2")
+                    if not heading:
+                        continue
+                    year = heading.get_text(strip=True).split()[-1]
+
+                    thead = table.find("thead")
+                    tbody = table.find("tbody")
+                    if not thead or not tbody:
+                        continue
+
+                    bin_types = [
+                        re.sub(
+                            r"\s*\(.*?\)$",
+                            "",
+                            th.get_text(separator=" ", strip=True),
+                        )
+                        for th in thead.find_all("th")[1:]
+                    ]
+
+                    for row in tbody.find_all("tr"):
+                        cells = row.find_all("td")
+                        if not cells:
+                            continue
+                        date_text = cells[0].get_text(strip=True)
+                        collection_date = datetime.strptime(
+                            f"{date_text} {year}",
+                            "%A %d %B %Y",
+                        )
+                        for bin_type, cell in zip(bin_types, cells[1:]):
+                            if cell.get_text(strip=True).lower() == "yes":
+                                bindata["bins"].append(
+                                    {
+                                        "type": bin_type,
+                                        "collectionDate": collection_date.strftime(
+                                            date_format
+                                        ),
+                                    }
+                                )
         else:
             print("Failed to find bin schedule")
 
