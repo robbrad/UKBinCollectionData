@@ -49,6 +49,7 @@ class CouncilClass(AbstractGetBinDataClass):
             ).click()
 
             import time
+
             time.sleep(8)
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
@@ -68,10 +69,12 @@ class CouncilClass(AbstractGetBinDataClass):
 
                 next_date = self._parse_date(next_collection_text)
                 if next_date:
-                    data["bins"].append({
-                        "type": bin_type,
-                        "collectionDate": next_date.strftime(date_format),
-                    })
+                    data["bins"].append(
+                        {
+                            "type": bin_type,
+                            "collectionDate": next_date.strftime(date_format),
+                        }
+                    )
 
                 followed_div = collection.find(
                     lambda t: (
@@ -82,13 +85,17 @@ class CouncilClass(AbstractGetBinDataClass):
                 if followed_div:
                     following_text = followed_div.get_text(strip=True)
                     following_date = self._parse_date(
-                        following_text.replace("followed by ", "").replace("Followed by ", "")
+                        following_text.replace("followed by ", "").replace(
+                            "Followed by ", ""
+                        )
                     )
                     if following_date:
-                        data["bins"].append({
-                            "type": bin_type,
-                            "collectionDate": following_date.strftime(date_format),
-                        })
+                        data["bins"].append(
+                            {
+                                "type": bin_type,
+                                "collectionDate": following_date.strftime(date_format),
+                            }
+                        )
 
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -101,7 +108,8 @@ class CouncilClass(AbstractGetBinDataClass):
     @staticmethod
     def _parse_date(text: str):
         import re
-        text = re.sub(r"(st|nd|rd|th)", "", text).strip()
+
+        # text = re.sub(r"(st|nd|rd|th)", "", text).strip()
         try:
             parsed = dt.datetime.strptime(text, "%A %d %B").date()
         except ValueError:
