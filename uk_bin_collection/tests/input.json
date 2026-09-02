@@ -1077,10 +1077,9 @@
         "house_number": "Bracken Cottage",
         "postcode": "NE16 5LQ",
         "skip_get_url": true,
-        "url": "https://www.gateshead.gov.uk/",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.gateshead.gov.uk/article/3150/Bin-collection-day-checker",
         "wiki_name": "Gateshead",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters."
     },
     "GedlingBoroughCouncil": {
         "LAD24CD": "E07000173",
