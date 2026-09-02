@@ -1815,7 +1815,7 @@
         "uprn": "200004258529",
         "url": "https://app.newark-sherwooddc.gov.uk/bincollection/",
         "wiki_name": "Newark and Sherwood",
-        "wiki_note": "Replace XXXXXXXX with your UPRN."
+        "wiki_note": "Pass your property's PID (labelled UPRN here) on its own, or a postcode and house number to search instead."
     },
     "NewcastleCityCouncil": {
         "LAD24CD": "E08000021",
