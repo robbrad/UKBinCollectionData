@@ -82,21 +82,19 @@ class CouncilClass(AbstractGetBinDataClass):
         soup.prettify()
         data = {"bins": []}
 
-        # For whatever reason, each row contains all the information for that row, and each one after it. This code
-        # essentially gets all items from each row, but ignores the whitespace that you get when splitting using \n.
-        # This produces a big list of dates then bin types, so we split them up into a list of lists - each pair is
-        # a date and the bin type.
-        items = [
-            i
-            for i in soup.find(
-                "u1",
-                {
-                    "class": "displayinlineblock justifycontentleft alignitemscenter margin0 padding0"
-                },
-            ).text.split("\n")
-            if i != ""
-        ]
-        pairs = [items[i : i + 2] for i in range(0, len(items), 2)]
+        # Each collection date/bin type pair is rendered as its own separate
+        # <ul> with this class, rather than one shared list - collect every
+        # one of them, not just the first, and pull the date+type out of
+        # each (ignoring the whitespace text nodes from splitting on \n).
+        pairs = []
+        for row in soup.find_all(
+            "ul",
+            {
+                "class": "displayinlineblock justifycontentleft alignitemscenter margin0 padding0"
+            },
+        ):
+            items = [i for i in row.text.split("\n") if i != ""]
+            pairs.extend(items[i : i + 2] for i in range(0, len(items), 2))
 
         # Loop through the paired bin dates and types
         for pair in pairs:
