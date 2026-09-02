@@ -41,7 +41,12 @@ class SocietyWorksClass(AbstractGetBinDataClass):
             # If no lookup, assume we might have been given a property ID directly
             return uprn
         resp.raise_for_status()
-        location = resp.headers["Location"]
+        location = resp.headers.get("Location")
+        if not location:
+            raise ValueError(
+                f"Expected a redirect with a Location header resolving UPRN {uprn}, "
+                f"got status {resp.status_code} with none."
+            )
         property_id = location.split("/")[-1]
         return property_id
 
@@ -56,10 +61,13 @@ class SocietyWorksClass(AbstractGetBinDataClass):
         if not select:
             return None
         addr_lower = (addr or "").strip().lower()
-        address_list = select.find_all("option")
-        for address in address_list:
+        # Match the house name/number at the start of the option text (e.g.
+        # "54 Greyhound Road, Sutton, SM1 4BJ") rather than as a substring
+        # anywhere in it - a bare `in` check would let addr "6" wrongly
+        # match "56 Greyhound Road" before ever reaching a real "6 ...".
+        for address in select.find_all("option"):
             text = address.get_text(strip=True).lower()
-            if addr_lower in text:
+            if text.startswith(addr_lower + " ") or text == addr_lower:
                 return address.get("value")
         return None
 
