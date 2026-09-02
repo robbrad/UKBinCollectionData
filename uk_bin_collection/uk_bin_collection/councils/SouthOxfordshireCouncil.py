@@ -63,8 +63,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        current_year = datetime.now().year
-        next_year = current_year + 1
+        today = datetime.now().date()
 
         # Page has slider info side by side, which are two instances of this class
         for bin in soup.find_all("div", {"class": "binextra"}):
@@ -72,22 +71,17 @@ class CouncilClass(AbstractGetBinDataClass):
             try:
                 # On standard collection schedule, date will be contained in the first stripped string
                 if contains_date(bin_info[0]):
-                    bin_date = get_next_occurrence_from_day_month(
-                        datetime.strptime(
-                            bin_info[0],
-                            "%A %d %B -",
-                        )
-                    )
+                    raw_date = bin_info[0]
                     type_start = 1
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
-                    bin_date = get_next_occurrence_from_day_month(
-                        datetime.strptime(
-                            bin_info[1],
-                            "%A %d %B -",
-                        )
-                    )
+                    raw_date = bin_info[1]
                     type_start = 2
+
+                bin_date = datetime.strptime(
+                    f"{raw_date} {today.year}", "%A %d %B - %Y"
+                ).date()
+
                 # Strip supplementary notes (e.g. "Don't forget...", "Extra garden waste...")
                 # that follow the bin-type description.
                 type_parts = []
@@ -95,21 +89,31 @@ class CouncilClass(AbstractGetBinDataClass):
                     if "don't" in part.lower() or part.startswith("Extra"):
                         break
                     type_parts.append(part)
-                bin_type = str.capitalize(" ".join(type_parts))
-            except:
+                combined_type = " ".join(type_parts)
+            except Exception:
                 continue
 
-            if (datetime.now().month == 12) and (bin_date.month == 1):
-                bin_date = bin_date.replace(year=next_year)
-            else:
-                bin_date = bin_date.replace(year=current_year)
+            # This is a fortnightly rota, published as the current fortnight's
+            # combined collection rather than the next occurrence, so a date
+            # earlier in the same fortnight parses to the past - roll it
+            # forward (day-based, so it naturally crosses a year boundary).
+            while bin_date < today:
+                bin_date += timedelta(days=14)
 
-            # Build data dict for each entry
-            dict_data = {
-                "type": bin_type,
-                "collectionDate": bin_date.strftime(date_format),
-            }
-            data["bins"].append(dict_data)
+            # The council describes each visit as one combined sentence (e.g.
+            # "Grey bin, small electrical items and food bin") covering
+            # everything collected that day - split it into its individual
+            # bins rather than one long, uncolour-mappable type string.
+            for bin_type in combined_type.replace(" and ", ", ").split(","):
+                bin_type = bin_type.strip().capitalize()
+                if not bin_type:
+                    continue
+                data["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": bin_date.strftime(date_format),
+                    }
+                )
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
