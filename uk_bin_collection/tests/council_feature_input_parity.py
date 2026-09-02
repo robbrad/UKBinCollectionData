@@ -4,6 +4,13 @@ import sys
 from tabulate import tabulate
 import base64
 
+# Shared base classes that live alongside councils in councils/ for import
+# convenience (e.g. `from ...councils.SocietyWorks import SocietyWorksClass`)
+# but aren't themselves a selectable council - they have no wiki_name/config
+# and users configure one of their concrete subclasses (Bexley, Sutton, etc.)
+# instead. Excluded here rather than given a fake input.json entry.
+NON_COUNCIL_FILES = {"SocietyWorks"}
+
 
 def get_councils_from_files(repo, branch):
     url = f"https://api.github.com/repos/{repo}/contents/uk_bin_collection/uk_bin_collection/councils?ref={branch}"
@@ -18,6 +25,7 @@ def get_councils_from_files(repo, branch):
                     item["name"].replace(".py", "")
                     for item in data
                     if item["name"].endswith(".py")
+                    and item["name"].replace(".py", "") not in NON_COUNCIL_FILES
                 ]
             else:
                 print("Expected a list from the JSON response but got something else.")
