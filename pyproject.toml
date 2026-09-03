@@ -36,7 +36,7 @@ pytest-bdd = "*"
 pytest-xdist = {extras = ["psutil"], version = "*"}
 pyhamcrest = "*"
 tabulate = "^0.9.0"
-pytest-asyncio = "^0.24.0"
+pytest-asyncio = "^1.4.0"
 pytest-freezer = "^0.4.8"
 homeassistant = {version = "^2026.9", python = ">=3.14.2,<3.15"}
 geopandas = "^1.1.2"

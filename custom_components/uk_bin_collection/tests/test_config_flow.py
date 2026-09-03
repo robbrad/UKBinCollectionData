@@ -28,8 +28,11 @@ from .common_utils import MockConfigEntry
 
 
 @pytest.fixture
-def hass_with_loop(hass, event_loop):
-    hass.loop = event_loop
+def hass_with_loop(hass):
+    # pytest-asyncio 1.x removed the standalone `event_loop` fixture; nothing
+    # here actually runs coroutines on this loop, it's just an attribute the
+    # code under test expects to exist.
+    hass.loop = asyncio.new_event_loop()
     return hass
 
 
@@ -106,8 +109,11 @@ class DummyHass:
 
 
 @pytest.fixture
-def dummy_hass(event_loop):
-    return DummyHass(event_loop)
+def dummy_hass():
+    # pytest-asyncio 1.x removed the standalone `event_loop` fixture; nothing
+    # here actually runs coroutines on this loop, it's just an attribute the
+    # code under test expects to exist.
+    return DummyHass(asyncio.new_event_loop())
 
 
 # A sample councils data for the options flow tests.
