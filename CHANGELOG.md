@@ -1,4 +1,10 @@
 =======
+## 0.172.2 (2026-09-03)
+
+### Fix
+
+- **councils**: fix 4 real bugs found triaging PR #2222's full CI run
+
 ## 0.172.1 (2026-09-03)
 
 ### Fix
