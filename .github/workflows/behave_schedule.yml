@@ -15,6 +15,9 @@ jobs:
       - name: Install Poetry
         run: pipx install poetry==1.8.4
 
+      - name: Configure Poetry to use the active interpreter
+        run: poetry config virtualenvs.prefer-active-python true
+
       - uses: actions/setup-python@v7
         with:
           python-version: 3.14
@@ -52,6 +55,9 @@ jobs:
       - name: Install Poetry
         run: pipx install poetry==${{ matrix.poetry-version }}
 
+      - name: Configure Poetry to use the active interpreter
+        run: poetry config virtualenvs.prefer-active-python true
+
       - name: Install Dependencies
         run: make install-dev
 
@@ -82,6 +88,9 @@ jobs:
 
       - name: Install Poetry
         run: pipx install poetry==${{ matrix.poetry-version }}
+
+      - name: Configure Poetry to use the active interpreter
+        run: poetry config virtualenvs.prefer-active-python true
 
       - name: Install Dependencies
         run: make install-dev
@@ -115,6 +124,9 @@ jobs:
 
       - name: Install Poetry
         run: pipx install poetry==${{ matrix.poetry-version }}
+
+      - name: Configure Poetry to use the active interpreter
+        run: poetry config virtualenvs.prefer-active-python true
 
       - name: Install Dependencies
         run: make install-dev
