@@ -1,4 +1,13 @@
 =======
+## 0.172.1 (2026-09-03)
+
+### Fix
+
+- **deps**: bump pytest-asyncio to unblock pytest 9, closing the rest of Dependabot's open alerts
+- **ci**: make Poetry actually target the setup-python interpreter
+- **deps**: keep HA back-compat to 2023.10.0, scope homeassistant fixtures out of root conftest
+- **deps**: bump homeassistant dev dependency to clear cryptography CVEs (#2221)
+
 ## 0.172.0 (2026-09-03)
 
 ### Feat
