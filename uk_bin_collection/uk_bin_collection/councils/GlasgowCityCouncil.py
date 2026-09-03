@@ -36,6 +36,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "../Images/Bins/blueBin.gif": "Mixed recycling",
             "../Images/Bins/greenBin.gif": "General waste",
             "../Images/Bins/greyBin.gif": "Food waste",
+            "../Images/Bins/foodBin.gif": "Food waste",
             "../Images/Bins/brownBin.gif": "Organic waste",
             "../Images/Bins/purpleBin.gif": "Glass",
             "../Images/Bins/ashBin.gif": "Ash bin",
