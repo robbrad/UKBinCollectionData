@@ -51,11 +51,13 @@ class CouncilClass(AbstractGetBinDataClass):
         # undetected_chromedriver in non-headless mode via the Xvfb display
         # available on the VPS.
         import os
+
         driver = None
         try:
             if os.environ.get("DISPLAY") and web_driver is None:
                 try:
                     import undetected_chromedriver as uc
+
                     uc_opts = uc.ChromeOptions()
                     uc_opts.add_argument("--no-sandbox")
                     uc_opts.add_argument("--disable-dev-shm-usage")
@@ -75,6 +77,12 @@ class CouncilClass(AbstractGetBinDataClass):
             postcode_input = WebDriverWait(driver, 30).until(
                 EC.element_to_be_clickable((By.ID, "postcode"))
             )
+            # The postcode field is clickable/enabled well before the form's
+            # own JS finishes attaching its address-lookup handlers - typing
+            # into it too early leaves #listAddress never populated (#2212).
+            # There's no reliable DOM signal for "handlers attached", so
+            # give the form a moment to finish initialising.
+            time.sleep(2)
             postcode_input.clear()
             postcode_input.send_keys(user_postcode)
 
@@ -126,9 +134,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     }
                 )
 
-            bins.sort(
-                key=lambda x: datetime.strptime(x["collectionDate"], date_format)
-            )
+            bins.sort(key=lambda x: datetime.strptime(x["collectionDate"], date_format))
             return {"bins": bins}
 
         finally:

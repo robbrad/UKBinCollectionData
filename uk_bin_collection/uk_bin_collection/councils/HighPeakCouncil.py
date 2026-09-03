@@ -76,6 +76,18 @@ class CouncilClass(AbstractGetBinDataClass):
 
             wait.until(EC.presence_of_element_located((By.CLASS_NAME, "e-appointment")))
 
+            # The default Month view only renders appointments up to the end
+            # of the last displayed week, not a full rolling window - a bin
+            # whose next collection falls just past that cutoff (while its
+            # last one is already in the past) would show zero appointments.
+            # Switch to the built-in Agenda view, which shows a genuine
+            # rolling window from today instead of a fixed calendar month.
+            driver.find_element(
+                By.XPATH,
+                "//button[contains(@class, 'e-tbar-btn') and normalize-space(.)='Agenda']",
+            ).click()
+            wait.until(EC.presence_of_element_located((By.CLASS_NAME, "e-agenda-view")))
+
             data = {"bins": []}
             today = datetime.now().date()
             for appointment in driver.find_elements(By.CLASS_NAME, "e-appointment"):

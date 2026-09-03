@@ -71,7 +71,7 @@ class CouncilClass(AbstractGetBinDataClass):
         now = datetime.now()
         future = now + timedelta(days=60)
 
-        upcoming_events = events(ics_url, start=now, end=future)
+        upcoming_events = events(string_content=ics_text, start=now, end=future)
 
         for event in sorted(upcoming_events, key=lambda e: e.start):
             if event.summary and event.start:

@@ -1,195 +1,175 @@
-import time
+import json
+
+import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+FORM_PAGE = "https://www.gateshead.gov.uk/article/3150/Bin-collection-day-checker"
+FORM_ID = "BINCOLLECTIONCHECKER_FORM"
+NEXT_TRIGGER = "BINCOLLECTIONCHECKER_ADDRESSSEARCH_NEXTBUTTON"
 
-# import the wonderful Beautiful Soup and the URL grabber
+
+def _form_fields(soup: BeautifulSoup) -> dict:
+    form = soup.find("form", id=FORM_ID)
+    return {
+        inp.get("name"): inp.get("value") or ""
+        for inp in form.find_all("input")
+        if inp.get("name")
+    }, form.get("action")
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Gateshead Council's bin-day checker is a GOSS iCM form, the same
+    platform as Sunderland's and Powys's - a JSONP postcode lookup plus
+    a plain HTTP postback wizard. No Selenium needed.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            data = {"bins": []}
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_paon(user_paon)
-            check_postcode(user_postcode)
+        user_paon = kwargs.get("paon")
+        user_postcode = kwargs.get("postcode")
+        check_paon(user_paon)
+        check_postcode(user_postcode)
+        data = {"bins": []}
 
-            # Create Selenium webdriver with user agent to bypass Cloudflare
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(
-                "https://www.gateshead.gov.uk/article/3150/Bin-collection-day-checker"
+        # A full, realistic browser header set (not just User-Agent) - the
+        # site is fronted by Cloudflare, which scores requests on header
+        # completeness/consistency alongside IP reputation. This alone
+        # won't clear an IP-based block (e.g. flagged datacenter IPs like
+        # CI runners), but reduces the chance of also being flagged on
+        # fingerprint grounds.
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
+        }
+
+        s = requests.Session()
+        r = s.get(FORM_PAGE, headers=headers, timeout=15)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+        fields, action = _form_fields(soup)
+
+        jsonrpc = {
+            "id": 1,
+            "method": "postcodeSearch",
+            "params": {"provider": "", "postcode": user_postcode},
+        }
+        r = s.get(
+            "https://www.gateshead.gov.uk/apiserver/postcode",
+            params={"jsonrpc": json.dumps(jsonrpc), "callback": "cb"},
+            headers=headers,
+            timeout=15,
+        )
+        r.raise_for_status()
+        body = r.text
+        if body.startswith("cb(") and body.endswith(")"):
+            body = body[3:-1]
+        addresses = json.loads(body).get("result") or []
+        if len(addresses) == 1 and "Error" in addresses[0]:
+            raise ValueError(addresses[0].get("Description", "Invalid postcode"))
+        if not addresses:
+            raise ValueError("No addresses found for this postcode")
+
+        paon_upper = user_paon.strip().upper()
+        match = next(
+            (a for a in addresses if a["line1"].strip().upper() == paon_upper),
+            None,
+        ) or next(
+            (a for a in addresses if a["line1"].strip().upper().startswith(paon_upper)),
+            None,
+        )
+        if not match:
+            raise ValueError(
+                f"Could not match house name/number '{user_paon}' in address results"
             )
 
-            # Wait for initial page load
-            WebDriverWait(driver, 30).until(
-                lambda d: "Just a moment" not in d.title and d.title != ""
+        addr_text = ", ".join(
+            part
+            for part in (
+                match["line1"],
+                match["line2"],
+                match["line3"],
+                match["line4"],
+                match["town"],
+                match["postcode"],
             )
+            if part
+        )
 
-            # Additional wait for page to fully load after Cloudflare
-            time.sleep(3)
+        fields["BINCOLLECTIONCHECKER_ADDRESSSEARCH_ADDRESSLOOKUPPOSTCODE"] = (
+            user_postcode
+        )
+        fields["BINCOLLECTIONCHECKER_ADDRESSSEARCH_UPRN"] = match["udprn"]
+        fields["BINCOLLECTIONCHECKER_ADDRESSSEARCH_ADDRESSTEXT"] = addr_text
+        fields["BINCOLLECTIONCHECKER_FORMACTION_NEXT"] = NEXT_TRIGGER
 
-            # Try to accept cookies if the banner appears
+        post_headers = {**headers, "Referer": FORM_PAGE}
+        r = s.post(action, data=fields, headers=post_headers, timeout=15)
+        r.raise_for_status()
+        soup = BeautifulSoup(r.text, "html.parser")
+
+        table = soup.find("table", class_="bincollections__table")
+        if not table:
+            raise ValueError("Could not find bin collections table in page source")
+
+        current_year = datetime.now().year
+        current_month = None
+
+        for row in table.find_all("tr"):
+            th = row.find("th")
+            if th and th.get("colspan"):
+                current_month = th.get_text(strip=True)
+                continue
+
+            cells = row.find_all("td")
+            if len(cells) < 3:
+                continue
+
+            day = cells[0].get_text(strip=True)
+            bin_cell = cells[2]
+
+            bin_types = [
+                link.get_text(strip=True) for link in bin_cell.find_all("a")
+            ] or [bin_cell.get_text(strip=True)]
+            bin_types = [b for b in bin_types if b]
+
+            if not (current_month and day):
+                continue
+
             try:
-                accept_button = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.NAME, "acceptall"))
+                parsed_date = datetime.strptime(
+                    f"{day} {current_month} {current_year}", "%d %B %Y"
                 )
-                accept_button.click()
-                time.sleep(2)
-            except:
-                pass
+            except ValueError:
+                continue
 
-            # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.ID, "BINCOLLECTIONCHECKER_ADDRESSSEARCH_ADDRESSLOOKUPPOSTCODE")
+            # The site shows a rolling window that can start in the past
+            # (e.g. earlier in the current month) - a date more than 6
+            # months behind today is next year's, not a stale one.
+            if (datetime.now() - parsed_date).days > 180:
+                parsed_date = parsed_date.replace(year=current_year + 1)
+
+            for bin_type in bin_types:
+                data["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": parsed_date.strftime(date_format),
+                    }
                 )
-            )
-            inputElement_postcode.send_keys(user_postcode)
 
-            # Click search button
-            findAddress = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "BINCOLLECTIONCHECKER_ADDRESSSEARCH_ADDRESSLOOKUPSEARCH")
-                )
-            )
-            findAddress.click()
-
-            # Wait for the 'Select address' dropdown to appear and select option matching the house name/number
-            WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        "//select[@id='BINCOLLECTIONCHECKER_ADDRESSSEARCH_ADDRESSLOOKUPADDRESS']//option[contains(., '"
-                        + user_paon
-                        + "')]",
-                    )
-                )
-            ).click()
-
-            # Handle Cloudflare challenge that appears after address selection
-            try:
-                # Check for Cloudflare Turnstile "Verify you are human" checkbox
-                turnstile_checkbox = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable(
-                        (By.CSS_SELECTOR, "input[type='checkbox']")
-                    )
-                )
-                turnstile_checkbox.click()
-                # Wait for verification to complete
-                WebDriverWait(driver, 30).until(
-                    EC.presence_of_element_located((By.ID, "success"))
-                )
-                time.sleep(3)
-            except:
-                pass  # No Turnstile challenge or already completed
-
-            # Wait for page to change after address selection and handle dynamic loading
-            time.sleep(5)
-
-            # Wait for any content that indicates results are loaded
-            try:
-                WebDriverWait(driver, 15).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//*[contains(text(), 'collection') or contains(text(), 'Collection') or contains(text(), 'bin') or contains(text(), 'Bin') or contains(text(), 'refuse') or contains(text(), 'Refuse') or contains(text(), 'recycling') or contains(text(), 'Recycling')]",
-                        )
-                    )
-                )
-            except:
-                # If no specific text found, just wait for page to stabilize
-                time.sleep(10)
-
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Find the bin collections table
-            table = soup.find("table", class_="bincollections__table")
-
-            if not table:
-                raise ValueError("Could not find bin collections table in page source")
-
-            # Get current year for date parsing
-            current_year = datetime.now().year
-            current_month = None
-
-            # Parse the table rows
-            rows = table.find_all("tr")
-            for row in rows:
-                # Check if this is a month header row
-                th = row.find("th")
-                if th and th.get("colspan"):
-                    # This is a month header
-                    current_month = th.get_text(strip=True)
-                    continue
-
-                # Parse data rows
-                cells = row.find_all("td")
-                if len(cells) >= 3:
-                    # Extract day, weekday, and bin type(s)
-                    day = cells[0].get_text(strip=True)
-                    weekday = cells[1].get_text(strip=True)
-                    bin_cell = cells[2]
-
-                    # Extract all bin types from the cell (may contain multiple links)
-                    bin_links = bin_cell.find_all("a")
-                    bin_types = []
-                    for link in bin_links:
-                        bin_type = link.get_text(strip=True)
-                        if bin_type:
-                            bin_types.append(bin_type)
-
-                    # If no links found, try getting text directly
-                    if not bin_types:
-                        bin_text = bin_cell.get_text(strip=True)
-                        if bin_text:
-                            bin_types = [bin_text]
-
-                    # Parse the date
-                    if current_month and day:
-                        try:
-                            # Construct date string: "day month year"
-                            date_str = f"{day} {current_month} {current_year}"
-                            parsed_date = datetime.strptime(date_str, "%d %B %Y")
-
-                            # If the parsed date is more than 6 months in the past, it's probably next year
-                            if (datetime.now() - parsed_date).days > 180:
-                                parsed_date = parsed_date.replace(year=current_year + 1)
-
-                            # Add each bin type as a separate entry
-                            for bin_type in bin_types:
-                                dict_data = {
-                                    "type": bin_type,
-                                    "collectionDate": parsed_date.strftime(date_format),
-                                }
-                                data["bins"].append(dict_data)
-                        except Exception as e:
-                            print(f"Error parsing date for row: {e}")
-                            continue
-
-            data["bins"].sort(
-                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-            )
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
+        data["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+        )
         return data

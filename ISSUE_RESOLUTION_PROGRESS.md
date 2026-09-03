@@ -1,5 +1,105 @@
 # Issue Resolution Progress
 
+## September 2026 release: PR consolidation + reverse-order issue triage
+
+Reviewed all open PRs, folded the mergeable ones into
+[PR #2220](https://github.com/robbrad/UKBinCollectionData/pull/2220), then worked
+through every open issue newest-first.
+
+**PR consolidation:**
+- #2219/#2207/#2199 (dependabot bumps) - merged as-is, all green.
+- #2211 (TestValleyBoroughCouncil date parsing, geekball) - folded in with the dead
+  commented-out regex actually deleted and a clean commit message (the two CI
+  failures were just commitlint tripping on a trailing period, not a real problem).
+- #2209 (SocietyWorks consolidation for 7 councils, dracos) - genuinely nice
+  architectural improvement (per-council HTML polling replaced with a shared iCal
+  client). Found and fixed two real bugs while testing live before merging: an
+  unguarded `resp.headers["Location"]` access that would `KeyError` on anything
+  that isn't a 404-or-redirect-with-Location (confirmed Bexley really does 302
+  with a Location header for a valid UPRN), and address matching via bare
+  substring (`addr_lower in text`) that could wrongly match e.g. paon "6" against
+  "56 Greyhound Road" before a real "6 ..." entry - anchored to the start instead.
+  This also surfaced a parity-check gap: the new shared `SocietyWorks.py` base
+  class has no `input.json` entry (correctly - it's not itself a selectable
+  council), which the file/JSON parity script didn't know how to allow; added a
+  small `NON_COUNCIL_FILES` exclusion list rather than inventing a fake entry.
+- #2180 (South Kesteven + HA runtime hardening, Dozi3) - held per explicit
+  instruction pending the author's reply to an open maintainer question on the PR;
+  independently has real merge conflicts against master's CI-pinning work and
+  bundles 4 unrelated concerns across 199 files, so it isn't batchable as-is
+  regardless.
+
+**Issues, newest first (15 open at the start of this pass):**
+- #2218 HighPeakCouncil - fixed: switched to the site's built-in Agenda view
+  before reading appointments, since the default Month view only renders up to
+  the end of its last displayed week, not a genuine rolling window. Left the
+  "today, already collected" edge case alone - no completion-status signal
+  exists in the data to fix it safely.
+- #2217 GatesheadCouncil - fixed: same GOSS iCM platform as Sunderland/Powys,
+  rewritten as pure HTTP. The existing Cloudflare-Turnstile-handling code was
+  solving a problem that isn't real - no challenge appears anywhere in the flow.
+- #2216 WokingBoroughCouncil - fixed: a `"u1"` (numeral) vs `"ul"` (tag) typo
+  meant the lookup could never match, and the site now renders each
+  date/bin-type pair as its own separate `<ul>` (17 of them) rather than one
+  shared list - `find()` only ever saw the first. Same shape of bug already
+  fixed for Slough this cycle.
+- #2215 CanterburyCityCouncil - investigated, not fixed: the AWS API the
+  scraper calls directly now returns a bare 403 for every payload tried, and
+  tracing the site's own live flow shows it no longer calls this API from the
+  browser at all - the redirect-based flow now calls it server-side, and even
+  the council's own live site is currently stuck on a permanent loading
+  spinner. Added a clear outage-detection error (matching the EnvironmentFirst
+  precedent) rather than force a rewrite against a backend I couldn't verify
+  was even working for the council's own front end.
+- #2213 ValeofWhiteHorseCouncil - fixed: `get_next_occurrence_from_day_month()`'s
+  year adjustment was discarded by an unconditional `.replace(year=current_year)`
+  right after it, so a fortnightly bin collected earlier in the current
+  fortnight could never roll forward. Replaced with day-based 14-day rollover.
+- #2212 MidlothianCouncil - fixed: added a short settle delay before typing into
+  the postcode field - it reports clickable well before the third-party form's
+  own JS finishes wiring up its address-lookup handlers, exactly as the reporter
+  observed over VNC. Deliberately didn't build a generic implicit-wait feature
+  for this - a scraper-side fix matches this one narrow race better.
+- #2210 Broadland - investigated, not a code bug: the exact URL the scraper
+  uses resolves and responds correctly from outside the reporter's network;
+  `net::ERR_NAME_NOT_RESOLVED` points at their own Selenium container's DNS
+  resolver specifically.
+- #2202 NewarkAndSherwoodDC - fixed: `check_postcode()` was called
+  unconditionally even when a PID (uprn) was already provided, and the site's
+  PID is genuinely sufficient on its own - restructured so postcode is only
+  required as a fallback. Also fixed a second, independent bug: the results
+  table's class changed from `table-condensed` to `table-sm`, so even a
+  successful postcode search would have returned nothing. This was also why
+  the project's own test fixture for this council had silently never passed.
+- #2201 Blackpool - asked for more info: the scraper passes bin type names
+  straight through from the council's API with no filtering that could drop a
+  type; can't reproduce without the reporter's specific address.
+- #2197 SouthOxfordshireCouncil - fixed: same BINZONE platform and same
+  year-rollover bug as #2213, plus the actual reported issue - the council
+  describes each visit as one combined sentence ("Grey bin, small electrical
+  items and food bin"), which the scraper returned as a single type that no
+  `icon_color_mapping` entry could sensibly match. Split into individual bins.
+- #2195 Powys - closed: re-verified live, dates are correct; was very likely a
+  symptom of the now-resolved #2193 auto-refresh bug combined with the earlier
+  Powys pure-HTTP rewrite (0.170.6).
+- #2194 TestValley - fixed via the folded-in #2211 (see PR consolidation above).
+- #2192 Torridge - closed: council already exists and works, verified live;
+  the wiki listing just hadn't been checked recently.
+- #2191 Hinckley and Bosworth - investigated, not fixed: the scraper's whole
+  approach was built on a wrong assumption - the `round` URL parameter is a
+  round *code* (e.g. `REFUSEW2THU`), not a UPRN, and the old iCal feed endpoint
+  now returns `200 text/calendar` with a genuinely empty body regardless of
+  what's passed. The site has moved to an HTML-based flow instead, but
+  bin-type differentiation isn't clear from a single test address - needs more
+  example data before a confident rewrite.
+- #2182 Gravesham (council request) - investigated, not implemented: confirmed
+  AchieveForms platform (same family as many existing councils), but this
+  particular form has unusually elaborate parallel field groups (5 collection
+  slots, separate "parent" and "tree" collection variants) that need more
+  dedicated mapping work than fit in this pass.
+- #1881 NE Derbyshire - re-checked, no change: still no working form, PDF+area-
+  list rewrite remains the only path forward.
+
 ## Next Issue: FyldeCouncil needs a full rewrite for its new login-gated "personal
 waste account" system (if feasible without real user credentials), or GedlingBoroughCouncil's
 upstream API needs re-checking for stability

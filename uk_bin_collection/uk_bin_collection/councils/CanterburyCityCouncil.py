@@ -33,6 +33,19 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Make the GET request
         response = requests.post(URI, json=data, headers=headers)
+        if response.status_code == 403:
+            # The council's site itself now calls this API server-side
+            # (as part of a page redirect) rather than directly from the
+            # browser, and even their own live site currently gets stuck
+            # on a permanent loading spinner - the API returns a bare 403
+            # regardless of the uprn/usrn payload sent. This looks like an
+            # outage or an access restriction on the council's end, not
+            # something fixable by changing what we send.
+            raise ConnectionError(
+                "Canterbury's bin collection API is returning 403 Forbidden "
+                "- this looks like an outage or access restriction on the "
+                "council's end, not this scraper. Try again later."
+            )
         response.raise_for_status()
 
         # Parse the JSON response

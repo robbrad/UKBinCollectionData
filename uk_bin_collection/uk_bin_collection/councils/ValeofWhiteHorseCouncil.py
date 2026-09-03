@@ -62,20 +62,17 @@ class CouncilClass(AbstractGetBinDataClass):
 
         data = {"bins": []}
 
-        current_year = datetime.now().year
-        next_year = current_year + 1
+        today = datetime.now().date()
 
         # Page has slider info side by side, which are two instances of this class
         for bin in soup.find_all("div", {"class": "bintxt"}):
             try:
-                # Check bin type heading and make that bin type and colour
+                # Check bin type heading and make that bin type
                 bin_type_info = list(bin.stripped_strings)
                 if "rubbish" in bin_type_info[0]:
                     bin_type = "Rubbish"
-                    bin_colour = "Black"
                 elif "recycling" in bin_type_info[0]:
                     bin_type = "Recycling"
-                    bin_colour = "Green"
                 else:
                     raise ValueError(f"No bin info found in {bin_type_info[0]}")
 
@@ -84,27 +81,24 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
                 # On standard collection schedule, date will be contained in the first string
                 if contains_date(bin_date_info[0]):
-                    bin_date = get_next_occurrence_from_day_month(
-                        datetime.strptime(
-                            bin_date_info[0],
-                            "%A %d %B -",
-                        )
-                    )
+                    raw_date = bin_date_info[0]
                 # On exceptional collection schedule (e.g. around English Bank Holidays), date will be contained in the second stripped string
                 else:
-                    bin_date = get_next_occurrence_from_day_month(
-                        datetime.strptime(
-                            bin_date_info[1],
-                            "%A %d %B -",
-                        )
-                    )
+                    raw_date = bin_date_info[1]
+
+                bin_date = datetime.strptime(
+                    f"{raw_date} {today.year}", "%A %d %B - %Y"
+                ).date()
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
 
-            if (datetime.now().month == 12) and (bin_date.month == 1):
-                bin_date = bin_date.replace(year=next_year)
-            else:
-                bin_date = bin_date.replace(year=current_year)
+            # The page publishes the current fortnight's pair rather than the
+            # next occurrence of each bin, so a bin collected earlier in this
+            # fortnight parses to a date already in the past - roll it
+            # forward by the fortnightly cycle (day-based, so it naturally
+            # crosses a year boundary too) until it's genuinely upcoming.
+            while bin_date < today:
+                bin_date += timedelta(days=14)
 
             # Build data dict for each entry
             dict_data = {

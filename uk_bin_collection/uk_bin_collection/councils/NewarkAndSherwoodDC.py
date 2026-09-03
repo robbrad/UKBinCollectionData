@@ -13,7 +13,6 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         user_paon = kwargs.get("paon")
         user_uprn = kwargs.get("uprn")
-        check_postcode(user_postcode)
 
         base = "https://app.newark-sherwooddc.gov.uk/bincollection"
 
@@ -25,76 +24,76 @@ class CouncilClass(AbstractGetBinDataClass):
             }
         )
 
-        # Step 1: GET form to obtain ASP.NET tokens
-        r1 = s.get(f"{base}/", verify=False)
-        r1.raise_for_status()
-        soup1 = BeautifulSoup(r1.text, "html.parser")
-
-        viewstate = soup1.find("input", id="__VIEWSTATE")["value"]
-        viewstate_gen = soup1.find("input", id="__VIEWSTATEGENERATOR")["value"]
-        event_val = soup1.find("input", id="__EVENTVALIDATION")["value"]
-
-        # Step 2: POST postcode search via __doPostBack
-        search_query = user_postcode  # always search by postcode only
-
-        form_data = {
-            "__VIEWSTATE": viewstate,
-            "__VIEWSTATEGENERATOR": viewstate_gen,
-            "__EVENTVALIDATION": event_val,
-            "__EVENTTARGET": "ctl00$MainContent$LinkButtonSearch",
-            "__EVENTARGUMENT": "",
-            "ctl00$MainContent$TextBoxSearch": search_query,
-        }
-
-        r2 = s.post(f"{base}/", data=form_data, verify=False)
-        r2.raise_for_status()
-        soup2 = BeautifulSoup(r2.text, "html.parser")
-
-        # Step 3: Find address links (collection.aspx?pid=UPRN)
-        address_links = []
-        for a in soup2.find_all("a"):
-            href = a.get("href", "")
-            if "collection.aspx" in href and "pid=" in href:
-                pid = re.search(r"pid=(\d+)", href)
-                if pid:
-                    address_links.append(
-                        {
-                            "text": a.text.strip(),
-                            "pid": pid.group(1),
-                            "href": href,
-                        }
-                    )
-
-        if not address_links:
-            raise ValueError(
-                f"No addresses found for postcode {user_postcode}"
-            )
-
-        # Step 4: Select address by UPRN, house number, or first match
-        selected = None
+        # The site's own property ID (passed as "uprn") is enough on its own
+        # to fetch the calendar directly - no postcode search needed. Only
+        # fall back to searching by postcode when we don't already have one.
         if user_uprn:
-            for addr in address_links:
-                if addr["pid"] == str(user_uprn):
-                    selected = addr
-                    break
+            pid = str(user_uprn)
+        else:
+            check_postcode(user_postcode)
 
-        if not selected and user_paon:
-            paon_lower = user_paon.lower()
-            for addr in address_links:
-                if addr["text"].lower().startswith(paon_lower):
-                    selected = addr
-                    break
-            if not selected:
+            # Step 1: GET form to obtain ASP.NET tokens
+            r1 = s.get(f"{base}/", verify=False)
+            r1.raise_for_status()
+            soup1 = BeautifulSoup(r1.text, "html.parser")
+
+            viewstate = soup1.find("input", id="__VIEWSTATE")["value"]
+            viewstate_gen = soup1.find("input", id="__VIEWSTATEGENERATOR")["value"]
+            event_val = soup1.find("input", id="__EVENTVALIDATION")["value"]
+
+            # Step 2: POST postcode search via __doPostBack
+            form_data = {
+                "__VIEWSTATE": viewstate,
+                "__VIEWSTATEGENERATOR": viewstate_gen,
+                "__EVENTVALIDATION": event_val,
+                "__EVENTTARGET": "ctl00$MainContent$LinkButtonSearch",
+                "__EVENTARGUMENT": "",
+                "ctl00$MainContent$TextBoxSearch": user_postcode,
+            }
+
+            r2 = s.post(f"{base}/", data=form_data, verify=False)
+            r2.raise_for_status()
+            soup2 = BeautifulSoup(r2.text, "html.parser")
+
+            # Step 3: Find address links (collection.aspx?pid=UPRN)
+            address_links = []
+            for a in soup2.find_all("a"):
+                href = a.get("href", "")
+                if "collection.aspx" in href and "pid=" in href:
+                    pid_match = re.search(r"pid=(\d+)", href)
+                    if pid_match:
+                        address_links.append(
+                            {
+                                "text": a.text.strip(),
+                                "pid": pid_match.group(1),
+                                "href": href,
+                            }
+                        )
+
+            if not address_links:
+                raise ValueError(f"No addresses found for postcode {user_postcode}")
+
+            # Step 4: Select address by house number, or first match
+            selected = None
+            if user_paon:
+                paon_lower = user_paon.lower()
                 for addr in address_links:
-                    if paon_lower in addr["text"].lower():
+                    if addr["text"].lower().startswith(paon_lower):
                         selected = addr
                         break
+                if not selected:
+                    for addr in address_links:
+                        if paon_lower in addr["text"].lower():
+                            selected = addr
+                            break
 
-        if not selected:
-            selected = address_links[0]
+            if not selected:
+                selected = address_links[0]
 
-        # Step 5: GET calendar page (uses same pid as collection.aspx)
-        collection_url = f"{base}/calendar?pid={selected['pid']}"
+            pid = selected["pid"]
+
+        # Step 5: GET calendar page
+        collection_url = f"{base}/calendar?pid={pid}"
         r3 = s.get(collection_url, verify=False)
         r3.raise_for_status()
         soup3 = BeautifulSoup(r3.text, "html.parser")
@@ -104,7 +103,7 @@ class CouncilClass(AbstractGetBinDataClass):
         eight_weeks = today + timedelta(days=8 * 7)
         data = {"bins": []}
 
-        for month in soup3.select('table[class*="table table-condensed"]'):
+        for month in soup3.select("table.table-sm"):
             info = month.find_all("tr")
             if not info:
                 continue
