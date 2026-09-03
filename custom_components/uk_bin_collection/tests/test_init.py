@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
@@ -58,6 +58,15 @@ class DummyConfigEntry:
         self.data = data
         self.version = version
         self.entry_id = entry_id
+        # Real config entries are in this state while their platform's
+        # async_setup_entry is running - the coordinator's first refresh
+        # asserts on it.
+        self.state = ConfigEntryState.SETUP_IN_PROGRESS
+
+    def async_on_unload(self, func):
+        # Real ConfigEntry registers an unload callback; tests don't need
+        # to actually invoke it on teardown.
+        pass
 
 
 # Create a dummy HomeAssistant object.

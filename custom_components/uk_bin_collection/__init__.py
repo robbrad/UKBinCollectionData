@@ -243,6 +243,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             hass,
             ukbcd,
             name,
+            config_entry=config_entry,
             timeout=timeout,
             update_interval=update_interval,
         )
@@ -360,6 +361,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         hass: HomeAssistant,
         ukbcd: UKBinCollectionApp,
         name: str,
+        config_entry: ConfigEntry | None = None,
         timeout: int = 60,
         update_interval: timedelta = timedelta(hours=12),
     ) -> None:
@@ -367,6 +369,7 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
+            config_entry=config_entry,
             name="UK Bin Collection Data",
             update_interval=update_interval,
         )
