@@ -1324,11 +1324,12 @@
     },
     "HinckleyandBosworthBoroughCouncil": {
         "LAD24CD": "E07000132",
+        "house_number": "2",
+        "postcode": "LE10 0FT",
         "skip_get_url": true,
-        "uprn": "100030533512",
         "url": "https://www.hinckley-bosworth.gov.uk",
         "wiki_name": "Hinckley and Bosworth",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+        "wiki_note": "Pass your postcode and house number/name."
     },
     "HorshamDistrictCouncil": {
         "LAD24CD": "E07000227",
