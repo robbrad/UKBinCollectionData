@@ -41,7 +41,7 @@ This document contains guidelines on contributing to the UKBCD project including
 the environment, how we use our issue tracker, and how you can develop more scrapers.
 
 ## Getting Started
-You will need to install Python on the system you plan to run the script from. Python 3.12 is tested on this project .
+You will need to install Python on the system you plan to run the script from. Python 3.12 is tested on this project; running the full test suite (including the Home Assistant custom component tests under `custom_components/uk_bin_collection/tests`) requires Python 3.14+, since the `homeassistant` dev dependency only supports that version going forward.
 
 The project uses [poetry](https://python-poetry.org/docs/) to manage dependencies and setup the build environment.
 

@@ -11,7 +11,7 @@
     │  Automated Checks Run in Parallel:                        │
     │                                                            │
     │  ✓ behave_pull_request.yml                               │
-    │    - Unit tests (Python 3.12)                            │
+    │    - Unit tests (Python 3.14)                            │
     │    - Integration tests (changed councils only)           │
     │    - Parity check (councils/input.json/features)         │
     │                                                            │
