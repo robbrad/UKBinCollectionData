@@ -1,6 +1,7 @@
 """The UK Bin Collection integration."""
 
 import asyncio
+import inspect
 import logging
 from datetime import timedelta
 import json
@@ -243,6 +244,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             hass,
             ukbcd,
             name,
+            config_entry=config_entry,
             timeout=timeout,
             update_interval=update_interval,
         )
@@ -355,20 +357,35 @@ def build_ukbcd_args(config_data: dict) -> list:
 class HouseholdBinCoordinator(DataUpdateCoordinator):
     """Coordinator to manage fetching and updating UK Bin Collection data."""
 
+    # DataUpdateCoordinator only accepts `config_entry` from Home Assistant
+    # 2024.11.0 onward - older cores raise TypeError on an unknown kwarg. This
+    # integration documents support back to HA 2023.10.0, so only pass it
+    # through when the installed core actually supports it; otherwise fall
+    # back to the coordinator's own (deprecated but still functional) default
+    # of resolving the entry from a ContextVar.
+    _SUPPORTS_CONFIG_ENTRY_KWARG = (
+        "config_entry" in inspect.signature(DataUpdateCoordinator.__init__).parameters
+    )
+
     def __init__(
         self,
         hass: HomeAssistant,
         ukbcd: UKBinCollectionApp,
         name: str,
+        config_entry: ConfigEntry | None = None,
         timeout: int = 60,
         update_interval: timedelta = timedelta(hours=12),
     ) -> None:
         """Initialize the data coordinator."""
+        extra_kwargs = (
+            {"config_entry": config_entry} if self._SUPPORTS_CONFIG_ENTRY_KWARG else {}
+        )
         super().__init__(
             hass,
             _LOGGER,
             name="UK Bin Collection Data",
             update_interval=update_interval,
+            **extra_kwargs,
         )
         self.ukbcd = ukbcd
         self.name = name

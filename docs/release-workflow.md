@@ -15,7 +15,7 @@ This document describes the complete release workflow from pull request to publi
 - `hacs_validation.yml` - Validates Home Assistant integration
 
 **What happens:**
-- Unit tests run on Python 3.12
+- Unit tests run on Python 3.14 (needed for the `homeassistant` dev dependency; the published `uk-bin-collection` package itself still supports Python 3.12+)
 - Integration tests run only for changed council files
 - Parity check ensures councils, input.json, and feature files are in sync
 - Commit messages are validated against conventional commits format

@@ -227,7 +227,11 @@ async def test_bin_sensor(hass, mock_config_entry):
                 return_value=mock_app_instance.run.return_value,
             ):
                 coordinator = HouseholdBinCoordinator(
-                    hass, mock_app_instance, "Test Name", timeout=60
+                    hass,
+                    mock_app_instance,
+                    "Test Name",
+                    timeout=60,
+                    config_entry=mock_config_entry,
                 )
 
                 await coordinator.async_config_entry_first_refresh()
@@ -307,7 +311,11 @@ async def test_bin_sensor_custom_icon_color(hass, mock_config_entry):
         ):
             # Create the coordinator
             coordinator = HouseholdBinCoordinator(
-                hass, mock_app_instance, "Test Name", timeout=60
+                hass,
+                mock_app_instance,
+                "Test Name",
+                timeout=60,
+                config_entry=mock_config_entry,
             )
 
             # Perform the first refresh
@@ -352,7 +360,11 @@ async def test_bin_sensor_today_collection(hass, freezer, mock_config_entry):
         ):
             # Create the coordinator
             coordinator = HouseholdBinCoordinator(
-                hass, mock_app_instance, "Test Name", timeout=60
+                hass,
+                mock_app_instance,
+                "Test Name",
+                timeout=60,
+                config_entry=mock_config_entry,
             )
 
             # Perform the first refresh
@@ -396,7 +408,11 @@ async def test_bin_sensor_tomorrow_collection(hass, freezer, mock_config_entry):
         ):
             # Create the coordinator
             coordinator = HouseholdBinCoordinator(
-                hass, mock_app_instance, "Test Name", timeout=60
+                hass,
+                mock_app_instance,
+                "Test Name",
+                timeout=60,
+                config_entry=mock_config_entry,
             )
 
             # Perform the first refresh
@@ -441,7 +457,11 @@ async def test_bin_sensor_partial_custom_icon_color(hass, mock_config_entry):
         ):
             # Create the coordinator
             coordinator = HouseholdBinCoordinator(
-                hass, mock_app_instance, "Test Name", timeout=60
+                hass,
+                mock_app_instance,
+                "Test Name",
+                timeout=60,
+                config_entry=mock_config_entry,
             )
 
             # Perform the first refresh
@@ -573,7 +593,11 @@ async def test_coordinator_timeout_error(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=1
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=1,
+            config_entry=mock_config_entry,
         )
 
         # Expect ConfigEntryNotReady instead of UpdateFailed
@@ -603,7 +627,11 @@ async def test_coordinator_json_decode_error(hass, mock_config_entry):
         hass.data = {}
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         # Expect ConfigEntryNotReady instead of UpdateFailed
@@ -629,7 +657,11 @@ async def test_coordinator_general_exception(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         # Expect ConfigEntryNotReady instead of UpdateFailed
@@ -725,7 +757,11 @@ async def test_bin_sensor_state_today(hass, mock_config_entry, freezer):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -761,7 +797,11 @@ async def test_bin_sensor_state_tomorrow(hass, mock_config_entry, freezer):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -795,7 +835,11 @@ async def test_bin_sensor_state_in_days(hass, mock_config_entry, freezer):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -829,7 +873,11 @@ async def test_bin_sensor_missing_data(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -1000,7 +1048,11 @@ async def test_data_sensor_missing_icon_or_color(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -1059,7 +1111,11 @@ async def test_attribute_sensor_with_complete_mappings(hass, mock_config_entry):
         hass.data = {}
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -1110,6 +1166,7 @@ async def test_data_sensor_color_property_missing_or_none(hass, mock_config_entr
             mock_app_missing_color_instance,
             "Test Name",
             timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -1151,6 +1208,7 @@ async def test_data_sensor_color_property_missing_or_none(hass, mock_config_entr
             mock_app_none_color_instance,
             "Test Name",
             timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator_none_color.async_config_entry_first_refresh()
@@ -1229,7 +1287,11 @@ async def test_coordinator_empty_data(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -1296,7 +1358,11 @@ async def test_data_sensor_device_info(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -1341,7 +1407,11 @@ async def test_data_sensor_default_icon(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
 
         await coordinator.async_config_entry_first_refresh()
@@ -1380,7 +1450,11 @@ async def test_manual_refresh_service(hass, mock_config_entry):
         )
 
         coordinator = HouseholdBinCoordinator(
-            hass, mock_app_instance, "Test Name", timeout=60
+            hass,
+            mock_app_instance,
+            "Test Name",
+            timeout=60,
+            config_entry=mock_config_entry,
         )
         await coordinator.async_config_entry_first_refresh()
 
@@ -1404,6 +1478,7 @@ async def test_manual_refresh_service(hass, mock_config_entry):
     ) as mock_refresh:
         # Construct a mock ServiceCall that includes the entry_id
         fake_call = ServiceCall(
+            hass,
             domain=DOMAIN,
             service="manual_refresh",
             data={"entry_id": mock_config_entry.entry_id},

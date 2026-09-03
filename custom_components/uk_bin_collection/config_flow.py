@@ -494,10 +494,24 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         """Initialize options flow."""
-        self.config_entry = config_entry
+        # `OptionsFlow.config_entry` is a read-only property in newer Home
+        # Assistant versions (it looks the entry up via
+        # `hass.config_entries.async_get_known_entry`, which needs `.hass`
+        # wired up by the real flow manager first). Store it under our own
+        # name and expose it back out with a property of our own, rather
+        # than relying on `OptionsFlowWithConfigEntry` - that class still
+        # calls into Home Assistant's stack-inspecting deprecation reporter,
+        # which raises when it can't identify a genuinely-loaded integration
+        # on the call stack.
+        self._config_entry = config_entry
         self.councils_data: Optional[Dict[str, Any]] = None
         self.council_names: list = []
         self.council_options: list = []
+
+    @property
+    def config_entry(self):
+        """Return the config entry this options flow was created for."""
+        return self._config_entry
 
     async def async_step_init(self, user_input=None):
         """Manage the options."""

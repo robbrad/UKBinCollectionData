@@ -28,9 +28,23 @@ from .common_utils import MockConfigEntry
 
 
 @pytest.fixture
-def hass_with_loop(hass, event_loop):
-    hass.loop = event_loop
+def hass_with_loop(hass):
+    # pytest-asyncio 1.x removed the standalone `event_loop` fixture; nothing
+    # here actually runs coroutines on this loop, it's just an attribute the
+    # code under test expects to exist.
+    hass.loop = asyncio.new_event_loop()
     return hass
+
+
+def _wire_options_flow(flow, config_entry, hass_obj):
+    """Home Assistant's real flow manager sets `.handler`/`.hass` on an
+    options flow before running any step, and `OptionsFlow.config_entry` is
+    a read-only property that looks the entry up via
+    `hass.config_entries.async_get_known_entry(handler)` - these tests
+    construct the flow directly, bypassing that manager, so wire the same
+    lookup up by hand."""
+    flow.handler = config_entry.entry_id
+    hass_obj.config_entries.async_get_known_entry = MagicMock(return_value=config_entry)
 
 
 # Mock council data representing different scenarios
@@ -95,8 +109,11 @@ class DummyHass:
 
 
 @pytest.fixture
-def dummy_hass(event_loop):
-    return DummyHass(event_loop)
+def dummy_hass():
+    # pytest-asyncio 1.x removed the standalone `event_loop` fixture; nothing
+    # here actually runs coroutines on this loop, it's just an attribute the
+    # code under test expects to exist.
+    return DummyHass(asyncio.new_event_loop())
 
 
 # A sample councils data for the options flow tests.
@@ -126,6 +143,7 @@ def options_flow(dummy_hass):
     config_entry.add_to_hass(dummy_hass)
     flow = UkBinCollectionOptionsFlowHandler(config_entry)
     flow.hass = dummy_hass
+    _wire_options_flow(flow, config_entry, dummy_hass)
     return flow, config_entry
 
 
@@ -144,7 +162,7 @@ async def proceed_through_config_flow(
     # Start the flow and complete the `user` step
     result = await flow.async_step_user(user_input=user_input_initial)
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "council"
 
     # Complete the `council` step
@@ -336,7 +354,7 @@ async def test_config_flow_missing_name(hass: HomeAssistant):
 
         result = await flow.async_step_user(user_input=user_input_initial)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
         assert result["errors"] == {"name": "Name is required."}
 
@@ -359,7 +377,7 @@ async def test_config_flow_invalid_icon_color_mapping(hass: HomeAssistant):
         result = await flow.async_step_user(user_input=user_input_initial)
 
         # Should return to the user step with an error
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
         assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
 
@@ -421,7 +439,7 @@ async def test_reconfigure_flow(hass):
         # Configure async_init to return a FlowResultType.FORM with step_id 'reconfigure_confirm'
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "reconfigure_confirm",
         }
 
@@ -437,7 +455,7 @@ async def test_reconfigure_flow(hass):
             flow, "async_step_reconfigure_confirm", new=AsyncMock()
         ) as mock_step:
             mock_step.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_CREATE_ENTRY,
+                "type": data_entry_flow.FlowResultType.CREATE_ENTRY,
                 "title": "Test Name",
                 "data": {
                     "name": "Test Name",
@@ -489,7 +507,7 @@ async def test_get_councils_json_failure(hass: HomeAssistant):
 
         # Configure async_init to simulate flow abort due to council data being unavailable
         hass.config_entries.flow.async_init.return_value = {
-            "type": data_entry_flow.RESULT_TYPE_ABORT,
+            "type": data_entry_flow.FlowResultType.ABORT,
             "reason": "council_data_unavailable",
         }
 
@@ -518,7 +536,7 @@ async def test_config_flow_user_input_none(hass: HomeAssistant):
 
         result = await flow.async_step_user(user_input=None)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
 
 
@@ -579,7 +597,7 @@ async def test_get_councils_json_session_creation_failure(hass):
 
         # Configure async_init to simulate flow abort due to council data being unavailable
         hass.config_entries.flow.async_init.return_value = {
-            "type": data_entry_flow.RESULT_TYPE_ABORT,
+            "type": data_entry_flow.FlowResultType.ABORT,
             "reason": "council_data_unavailable",
         }
 
@@ -615,13 +633,13 @@ async def test_config_flow_council_without_url(hass):
         # Configure async_init to return a FlowResultType.FORM with step_id 'council'
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "council",
         }
 
         # Configure async_configure to return a FlowResultType.CREATE_ENTRY
         hass.config_entries.flow.async_configure.return_value = {
-            "type": data_entry_flow.RESULT_TYPE_CREATE_ENTRY,
+            "type": data_entry_flow.FlowResultType.CREATE_ENTRY,
             "title": "Test Name",
             "data": {
                 "name": "Test Name",
@@ -672,7 +690,7 @@ async def test_config_flow_missing_council(hass: HomeAssistant):
         result = await flow.async_step_user(user_input=user_input_initial)
 
         # Should return to the user step with an error
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "user"
         assert result["errors"] == {"council": "Council is required."}
 
@@ -702,7 +720,7 @@ async def test_reconfigure_flow_with_errors(hass):
         # Configure async_init to return a FlowResultType.FORM with step_id 'reconfigure_confirm'
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "reconfigure_confirm",
         }
 
@@ -718,7 +736,7 @@ async def test_reconfigure_flow_with_errors(hass):
             flow, "async_step_reconfigure_confirm", new=AsyncMock()
         ) as mock_step:
             mock_step.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_FORM,
+                "type": data_entry_flow.FlowResultType.FORM,
                 "step_id": "reconfigure_confirm",
                 "errors": {"icon_color_mapping": "invalid_json"},
             }
@@ -740,7 +758,7 @@ async def test_reconfigure_flow_with_errors(hass):
 
             # Configure async_configure to return an error
             hass.config_entries.flow.async_configure.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_FORM,
+                "type": data_entry_flow.FlowResultType.FORM,
                 "step_id": "reconfigure_confirm",
                 "errors": {"icon_color_mapping": "invalid_json"},
             }
@@ -802,7 +820,7 @@ async def test_reconfigure_flow_no_user_input(hass):
         # Mock async_init and start the reconfigure flow
         hass.config_entries.flow.async_init.return_value = {
             "flow_id": "test_flow_id",
-            "type": data_entry_flow.RESULT_TYPE_FORM,
+            "type": data_entry_flow.FlowResultType.FORM,
             "step_id": "reconfigure_confirm",
         }
 
@@ -815,7 +833,7 @@ async def test_reconfigure_flow_no_user_input(hass):
             flow, "async_step_reconfigure_confirm", new=AsyncMock()
         ) as mock_step:
             mock_step.return_value = {
-                "type": data_entry_flow.RESULT_TYPE_FORM,
+                "type": data_entry_flow.FlowResultType.FORM,
                 "step_id": "reconfigure_confirm",
                 "errors": {},
             }
@@ -898,7 +916,7 @@ async def test_async_step_council_invalid_icon_color_mapping(hass: HomeAssistant
 
         result = await flow.async_step_council(user_input=user_input)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "council"
         assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
 
@@ -943,7 +961,7 @@ async def test_async_step_reconfigure_confirm_user_input_none(hass: HomeAssistan
     hass.config_entries.async_get_entry = MagicMock(return_value=config_entry)
 
     result = await flow.async_step_reconfigure_confirm(user_input=None)
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "reconfigure_confirm"
 
 
@@ -960,7 +978,7 @@ async def test_async_step_council_missing_council_key(hass: HomeAssistant):
 
     result = await flow.async_step_council(user_input=None)
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "council"
 
 
@@ -1019,7 +1037,7 @@ async def test_async_step_reconfigure_confirm_invalid_json(hass: HomeAssistant):
         result = await flow.async_step_reconfigure_confirm(user_input=user_input)
 
         # Should return to the reconfigure_confirm step with an error
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "reconfigure_confirm"
         assert result["errors"] == {"icon_color_mapping": "Invalid JSON format."}
 
@@ -1059,12 +1077,12 @@ async def test_config_flow_with_auto_refresh_disabled(hass: HomeAssistant):
 
         # Start user step
         result = await flow.async_step_user(user_input=user_input_initial)
-        assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+        assert result["type"] == data_entry_flow.FlowResultType.FORM
         assert result["step_id"] == "council"
 
         # Complete council step
         result = await flow.async_step_council(user_input=user_input_council)
-        assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+        assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
         assert result["title"] == "Test Auto Refresh Off"
 
         # Confirm the config entry data now stores auto_refresh_enabled
@@ -1117,7 +1135,7 @@ async def test_reconfigure_confirm_renames_legacy_key(hass: HomeAssistant):
 
         result = await flow.async_step_reconfigure_confirm(user_input=user_input)
 
-        assert result["type"] == data_entry_flow.RESULT_TYPE_ABORT
+        assert result["type"] == data_entry_flow.FlowResultType.ABORT
         assert result["reason"] == "Reconfigure Successful"
         saved = hass.config_entries.async_update_entry.call_args.kwargs["data"]
         assert saved["auto_refresh_enabled"] is True
@@ -1143,6 +1161,7 @@ async def test_options_flow_disabling_auto_refresh_keeps_interval(hass: HomeAssi
     config_entry.add_to_hass(hass)
     flow = UkBinCollectionOptionsFlowHandler(config_entry)
     flow.hass = hass
+    _wire_options_flow(flow, config_entry, hass)
     flow.get_councils_json = AsyncMock(return_value=MOCK_COUNCILS_DATA)
     hass.config_entries.async_reload = AsyncMock()
     hass.config_entries.async_update_entry = MagicMock()
@@ -1157,7 +1176,7 @@ async def test_options_flow_disabling_auto_refresh_keeps_interval(hass: HomeAssi
 
     result = await flow.async_step_init(user_input=user_input)
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
     saved = hass.config_entries.async_update_entry.call_args.kwargs["data"]
     assert saved["auto_refresh_enabled"] is False
     assert "manual_refresh_only" not in saved
@@ -1448,6 +1467,7 @@ async def test_options_flow_no_councils(dummy_hass):
     config_entry.add_to_hass(dummy_hass)
     flow = UkBinCollectionOptionsFlowHandler(config_entry)
     flow.hass = dummy_hass
+    _wire_options_flow(flow, config_entry, dummy_hass)
 
     # Patch get_councils_json to return an empty dict
     flow.get_councils_json = AsyncMock(return_value={})

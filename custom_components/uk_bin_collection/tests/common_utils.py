@@ -29,7 +29,15 @@ class MockConfigEntry:
         self.source = source
         self.entry_id = entry_id or uuid.uuid4().hex
         self.version = version
-        self.state = config_entries.ConfigEntryState.NOT_LOADED
+        # Real config entries are in this state while their platform's
+        # async_setup_entry is running - matches a freshly-created entry
+        # about to have its coordinator's first refresh called.
+        self.state = config_entries.ConfigEntryState.SETUP_IN_PROGRESS
+
+    def async_on_unload(self, func):
+        """Real ConfigEntry registers an unload callback; tests don't need
+        to actually invoke it on teardown."""
+        pass
 
     def add_to_hass(self, hass):
         """Add the mock config entry to Home Assistant."""
