@@ -1392,11 +1392,13 @@
         "wiki_note": "Pass either UPRN or postcode/house number. URL is not used."
     },
     "IsleOfWightCouncil": {
+        "house_number": "County Hall",
+        "postcode": "PO30 1UD",
         "skip_get_url": true,
-        "uprn": "100060118553",
-        "url": "https://www.iow.gov.uk",
+        "url": "https://digitalservices.iow.gov.uk/wasteday",
         "web_driver": "http://selenium:4444",
-        "wiki_name": "Isle of Wight"
+        "wiki_name": "Isle of Wight",
+        "wiki_note": "Pass your postcode and house number/name in their respective parameters."
     },
     "IslingtonCouncil": {
         "LAD24CD": "E09000019",
@@ -2038,10 +2040,11 @@
         "wiki_note": "Replace UPRN in URL with your own UPRN."
     },
     "OrkneyIslandsCouncil": {
-        "postcode": "KW15 1NY",
+        "house_number": "Kirkwall",
         "skip_get_url": true,
         "url": "https://www.orkney.gov.uk",
-        "wiki_name": "Orkney Islands"
+        "wiki_name": "Orkney Islands",
+        "wiki_note": "Pass a street, area, or island name (e.g. 'Kirkwall') in the house number parameter. Search at https://www.orkney.gov.uk/mybins to find your area."
     },
     "OxfordCityCouncil": {
         "LAD24CD": "E07000178",

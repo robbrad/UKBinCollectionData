@@ -104,7 +104,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"id": "contentInner"},
             )
 
-            soup = soup.find("div", class_="umb-block-grid__layout-item")
+            # The results page now renders several
+            # `.umb-block-grid__layout-item` blocks (a "check your bin day in
+            # our new resident account" promo banner comes first) - the date
+            # headings we want aren't necessarily in the first one, so search
+            # the whole content area rather than just its first grid item.
+            # The date-parsing below already skips any non-date h2 headings.
 
             # Get the dates
             for date in soup.find_all("h2"):
@@ -112,23 +117,26 @@ class CouncilClass(AbstractGetBinDataClass):
                 if date_text != "Bank Holidays":
                     try:
                         bin_date = datetime.strptime(
-                            date_text
-                            .removesuffix("(Today)")
+                            date_text.removesuffix("(Today)")
                             .removesuffix("(Tomorrow)")
-                            .replace("&nbsp", " ")
+                            .replace("\xa0", " ")
                             + " "
                             + datetime.now().strftime("%Y"),
                             "%A, %d %B %Y",
                         )
                         bin_types_wrapper = date.find_next_sibling("div")
+                        # Matched on the full Bootstrap utility-class string
+                        # before, which broke the moment the site added its
+                        # own "bin-card-body" class alongside them - match on
+                        # that stable, purpose-specific class instead.
                         for bin_type_wrapper in bin_types_wrapper.find_all(
                             "div",
-                            {
-                                "class": "card-body ps-5 ps-md-4 ps-lg-5 position-relative bg-white"
-                            },
+                            {"class": "bin-card-body"},
                         ):
                             if bin_date and bin_type_wrapper:
-                                bin_type = bin_type_wrapper.find("a").get_text(strip=True)
+                                bin_type = bin_type_wrapper.find("a").get_text(
+                                    strip=True
+                                )
                                 bin_type += (
                                     " ("
                                     + bin_type_wrapper.find("span").get_text(strip=True)
