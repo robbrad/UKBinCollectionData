@@ -1108,6 +1108,15 @@
         "wiki_name": "Gloucester",
         "wiki_note": "Pass the house number, postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
     },
+    "GraveshamBoroughCouncil": {
+        "LAD24CD": "E07000109",
+        "house_number": "2",
+        "postcode": "DA13 9DF",
+        "skip_get_url": true,
+        "url": "https://my.gravesham.gov.uk",
+        "wiki_name": "Gravesham",
+        "wiki_note": "Pass your postcode and house number in their respective parameters, or alternatively a UPRN found via [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+    },
     "GooglePublicCalendarCouncil": {
         "skip_get_url": true,
         "supported_councils": [
@@ -1159,14 +1168,6 @@
         "url": "https://www.gosport.gov.uk/refuserecyclingdays",
         "wiki_name": "Gosport Borough Council",
         "wiki_note": "Pass the postcode parameter. This parser uses the Supatrak API."
-    },
-    "GraveshamBoroughCouncil": {
-        "LAD24CD": "E07000109",
-        "skip_get_url": true,
-        "uprn": "100060927046",
-        "url": "https://www.gravesham.gov.uk",
-        "wiki_name": "Gravesham",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "GreatYarmouthBoroughCouncil": {
         "LAD24CD": "E07000145",
