@@ -1,4 +1,10 @@
 =======
+## 0.172.3 (2026-09-05)
+
+### Fix
+
+- **buckinghamshire**: move to the council's current form-engine endpoints
+
 ## 0.172.2 (2026-09-03)
 
 ### Fix
