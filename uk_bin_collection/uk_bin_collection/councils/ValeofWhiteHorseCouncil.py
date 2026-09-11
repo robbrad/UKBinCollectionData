@@ -117,7 +117,10 @@ class CouncilClass(AbstractGetBinDataClass):
             # collects on a different day whenever there is one, and only
             # the page knows which, so an inferred date would be wrong.
             # Leave the bin out until the page catches up rather than
-            # publish a guess.
+            # publish a guess. Only the week the date lands in matters: a
+            # holiday shifts the collections of its own week and the
+            # fortnight then resumes on the usual day, so rolling through a
+            # holiday week to a later date is fine.
             if bin_date < today:
                 while bin_date < today:
                     bin_date += timedelta(days=14)

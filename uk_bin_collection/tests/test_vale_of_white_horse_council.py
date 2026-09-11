@@ -43,6 +43,7 @@ def parse_fixture(rubbish: str, recycling: str, now: real_datetime) -> dict:
 
 
 def test_a_bin_collected_earlier_this_fortnight_rolls_forward_14_days():
+    """A past date in a holiday-free fortnight is advanced by 14 days."""
     result = parse_fixture(
         "Monday 3 August -", "Monday 10 August -", real_datetime(2026, 8, 8)
     )
@@ -56,9 +57,9 @@ def test_a_bin_collected_earlier_this_fortnight_rolls_forward_14_days():
 
 
 def test_no_roll_forward_into_a_bank_holiday_week():
-    # 31 August 2026 is the late summer bank holiday, so 17 + 14 would be a
-    # day the council does not collect: the bin is left out until the page
-    # shows the real date.
+    """31 August 2026 is the late summer bank holiday, so 17 + 14 would be a
+    day the council does not collect: the bin is left out until the page shows
+    the real date."""
     result = parse_fixture(
         "Monday 17 August -", "Monday 24 August -", real_datetime(2026, 8, 22)
     )
@@ -67,6 +68,7 @@ def test_no_roll_forward_into_a_bank_holiday_week():
 
 
 def test_a_rescheduled_date_on_the_page_is_returned_as_is():
+    """A date the page states outright is the source of truth, holiday or not."""
     result = parse_fixture(
         "Tuesday 1 September -", "Monday 7 September -", real_datetime(2026, 8, 30)
     )
@@ -78,6 +80,7 @@ def test_a_rescheduled_date_on_the_page_is_returned_as_is():
 
 
 def test_roll_forward_crosses_the_year_boundary():
+    """A December date rolls into January of the following year."""
     result = parse_fixture(
         "Monday 21 December -", "Monday 28 December -", real_datetime(2026, 12, 23)
     )
@@ -89,9 +92,23 @@ def test_roll_forward_crosses_the_year_boundary():
 
 
 def test_no_roll_forward_into_christmas_week():
-    # 14 + 14 = 28 December 2026, the observed Boxing Day holiday.
+    """14 + 14 = 28 December 2026, the observed Boxing Day holiday."""
     result = parse_fixture(
         "Monday 14 December -", "Monday 21 December -", real_datetime(2026, 12, 19)
     )
 
     assert result["bins"] == [{"type": "Recycling", "collectionDate": "21/12/2026"}]
+
+
+def test_roll_forward_through_a_bank_holiday_week_to_a_normal_one():
+    """A page still showing 17 August on 2 September rolls through the bank
+    holiday week to 14 September, which is right: the holiday shifts the
+    collections of its own week and the fortnight then resumes as usual."""
+    result = parse_fixture(
+        "Monday 17 August -", "Monday 24 August -", real_datetime(2026, 9, 2)
+    )
+
+    assert result["bins"] == [
+        {"type": "Recycling", "collectionDate": "07/09/2026"},
+        {"type": "Rubbish", "collectionDate": "14/09/2026"},
+    ]
