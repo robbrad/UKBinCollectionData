@@ -5,6 +5,21 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
+def week_has_bank_holiday(collection_date) -> bool:
+    """True if an English bank holiday falls Monday to Friday of that week.
+
+    A bank holiday shifts every collection in its week, not just the day
+    itself, so the whole working week is checked.
+    """
+    monday = collection_date - timedelta(days=collection_date.weekday())
+    return any(
+        is_holiday(
+            datetime.combine(monday + timedelta(days=offset), datetime.min.time())
+        )
+        for offset in range(5)
+    )
+
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -97,8 +112,17 @@ class CouncilClass(AbstractGetBinDataClass):
             # fortnight parses to a date already in the past - roll it
             # forward by the fortnightly cycle (day-based, so it naturally
             # crosses a year boundary too) until it's genuinely upcoming.
-            while bin_date < today:
-                bin_date += timedelta(days=14)
+            #
+            # Unless that lands in a week with a bank holiday: the council
+            # collects on a different day whenever there is one, and only
+            # the page knows which, so an inferred date would be wrong.
+            # Leave the bin out until the page catches up rather than
+            # publish a guess.
+            if bin_date < today:
+                while bin_date < today:
+                    bin_date += timedelta(days=14)
+                if week_has_bank_holiday(bin_date):
+                    continue
 
             # Build data dict for each entry
             dict_data = {
