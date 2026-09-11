@@ -79,16 +79,27 @@ def test_a_rescheduled_date_on_the_page_is_returned_as_is():
     ]
 
 
-def test_roll_forward_crosses_the_year_boundary():
-    """A December date rolls into January of the following year."""
+def test_no_roll_forward_into_the_january_slippage_weeks():
+    """21 + 14 = 4 January 2027, a week with no bank holiday in it, but the
+    council's leaflet collects that Monday's bins on Wednesday 6 January:
+    Christmas slippage outlasts the holidays, so January is left to the page."""
     result = parse_fixture(
         "Monday 21 December -", "Monday 28 December -", real_datetime(2026, 12, 23)
     )
 
-    assert result["bins"] == [
-        {"type": "Recycling", "collectionDate": "28/12/2026"},
-        {"type": "Rubbish", "collectionDate": "04/01/2027"},
-    ]
+    assert result["bins"] == [{"type": "Recycling", "collectionDate": "28/12/2026"}]
+
+
+def test_a_december_date_seen_in_january_belongs_to_last_year():
+    """On 9 January 2027 the page still shows Monday 28 December, which is
+    28 December 2026, not a collection eleven months away. It rolls forward
+    into the slippage weeks and is left out; 4 January rolls to 18 January,
+    the first normal week, and is returned."""
+    result = parse_fixture(
+        "Monday 28 December -", "Monday 4 January -", real_datetime(2027, 1, 9)
+    )
+
+    assert result["bins"] == [{"type": "Recycling", "collectionDate": "18/01/2027"}]
 
 
 def test_no_roll_forward_into_christmas_week():
