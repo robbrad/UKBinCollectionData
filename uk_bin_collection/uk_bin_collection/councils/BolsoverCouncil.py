@@ -137,13 +137,18 @@ class CouncilClass(AbstractGetBinDataClass):
         WeekBlack = rows_data["WeekBlack"]
         WeekBandG = rows_data["WeekBandG"]
 
-        def determine_bin_collection(week_number, txtBlack, txtBurgGreen, week_in_sus):
-            # WeekBlack/WeekBandG aren't booleans - they hold "1" or "2" to
-            # say which of the two alternating weeks (odd/even relative to
-            # week1) that stream is collected on. Round A addresses have
-            # WeekBlack == "1"; Round B addresses have WeekBlack == "2"
-            # (and WeekBandG the complementary value).
-            parity = "1" if week_number % 2 == 1 else "2"
+        def determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_sus):
+            # WeekBlack/WeekBandG hold "1" or "2" to say which of the two
+            # alternating weeks a bin stream is collected on.  The original
+            # code used the *positional* week index (1-4) to derive parity,
+            # but that index is relative to the scraper's "next occurrence"
+            # calculation — so the same calendar date could flip between
+            # parity "1" and "2" depending on which day the scraper ran.
+            #
+            # Fix: derive parity from the ISO calendar week number, which is
+            # an absolute property of the date and stays stable across runs.
+            iso_week = collection_date.isocalendar()[1]
+            parity = "1" if iso_week % 2 == 1 else "2"
 
             if txtBlack == parity:
                 return "Black Bin"
@@ -155,10 +160,10 @@ class CouncilClass(AbstractGetBinDataClass):
 
             return ""
 
-        week1Text = determine_bin_collection(1, WeekBlack, WeekBandG, week1InSus)
-        week2Text = determine_bin_collection(2, WeekBlack, WeekBandG, week2InSus)
-        week3Text = determine_bin_collection(3, WeekBlack, WeekBandG, week3InSus)
-        week4Text = determine_bin_collection(4, WeekBlack, WeekBandG, week4InSus)
+        week1Text = determine_bin_collection(week1, WeekBlack, WeekBandG, week1InSus)
+        week2Text = determine_bin_collection(week2, WeekBlack, WeekBandG, week2InSus)
+        week3Text = determine_bin_collection(week3, WeekBlack, WeekBandG, week3InSus)
+        week4Text = determine_bin_collection(week4, WeekBlack, WeekBandG, week4InSus)
 
         # print(week1Text)
         # print(week2Text)
