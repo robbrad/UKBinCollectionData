@@ -145,10 +145,12 @@ class CouncilClass(AbstractGetBinDataClass):
             # calculation — so the same calendar date could flip between
             # parity "1" and "2" depending on which day the scraper ran.
             #
-            # Fix: derive parity from the ISO calendar week number, which is
-            # an absolute property of the date and stays stable across runs.
-            iso_week = collection_date.isocalendar()[1]
-            parity = "1" if iso_week % 2 == 1 else "2"
+            # Fix: derive parity from an absolute week count that stays
+            # stable across runs and also survives ISO week-53 year
+            # boundaries (where week 53 and week 1 of the next year are
+            # both odd, which would break a simple week % 2 approach).
+            iso_year, iso_week, _ = collection_date.isocalendar()
+            parity = "1" if (iso_year * 53 + iso_week) % 2 == 1 else "2"
 
             if txtBlack == parity:
                 return "Black Bin"
