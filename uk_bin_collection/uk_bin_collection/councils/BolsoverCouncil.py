@@ -1,4 +1,5 @@
 import time
+from datetime import date
 
 import requests
 
@@ -7,6 +8,40 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 
 # import the wonderful Beautiful Soup and the URL grabber
+
+# Continuous fortnight index epoch.  The Monday of ISO week 1, 2024
+# (2024-01-01) is used so that odd ISO weeks map to parity "1" and even
+# ISO weeks map to parity "2", matching Bolsover council's
+# WeekBlack/WeekBandG convention.  Because we count weeks from a fixed
+# Monday rather than using iso_week % 2, consecutive weeks always
+# alternate — even across ISO week-53 year boundaries and 52-week years.
+_PARITY_EPOCH = date(2024, 1, 1)
+
+
+def _determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_sus):
+    """Determine which bin is collected on *collection_date*.
+
+    WeekBlack / WeekBandG are "1" or "2" indicating which of the two
+    alternating weeks a bin stream is collected on.  Parity is derived
+    from a continuous fortnight index anchored to ``_PARITY_EPOCH`` so
+    that consecutive weeks always alternate, even across year boundaries
+    (ISO week 53 → 1, or 52 → 1 for non-53-week years).
+    """
+    monday = collection_date - timedelta(days=collection_date.weekday())
+    weeks = (monday - _PARITY_EPOCH).days // 7
+    parity = "1" if weeks % 2 == 0 else "2"
+
+    if txtBlack == parity:
+        return "Black Bin"
+
+    if txtBurgGreen == parity:
+        if week_in_sus == "Yes":
+            return "Burgundy Bin"
+        return "Burgundy Bin & Green Bin"
+
+    return ""
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -138,29 +173,7 @@ class CouncilClass(AbstractGetBinDataClass):
         WeekBandG = rows_data["WeekBandG"]
 
         def determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_sus):
-            # WeekBlack/WeekBandG hold "1" or "2" to say which of the two
-            # alternating weeks a bin stream is collected on.  The original
-            # code used the *positional* week index (1-4) to derive parity,
-            # but that index is relative to the scraper's "next occurrence"
-            # calculation — so the same calendar date could flip between
-            # parity "1" and "2" depending on which day the scraper ran.
-            #
-            # Fix: derive parity from an absolute week count that stays
-            # stable across runs and also survives ISO week-53 year
-            # boundaries (where week 53 and week 1 of the next year are
-            # both odd, which would break a simple week % 2 approach).
-            iso_year, iso_week, _ = collection_date.isocalendar()
-            parity = "1" if (iso_year * 53 + iso_week) % 2 == 1 else "2"
-
-            if txtBlack == parity:
-                return "Black Bin"
-
-            if txtBurgGreen == parity:
-                if week_in_sus == "Yes":
-                    return "Burgundy Bin"
-                return "Burgundy Bin & Green Bin"
-
-            return ""
+            return _determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_sus)
 
         week1Text = determine_bin_collection(week1, WeekBlack, WeekBandG, week1InSus)
         week2Text = determine_bin_collection(week2, WeekBlack, WeekBandG, week2InSus)
