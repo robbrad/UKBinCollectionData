@@ -31,7 +31,7 @@ def _determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_s
     (ISO week 53 → 1, or 52 → 1 for non-53-week years).
     """
     monday = collection_date - timedelta(days=collection_date.weekday())
-    weeks = (monday - _PARITY_EPOCH).days // 7
+    weeks = (monday.date() - _PARITY_EPOCH).days // 7
     parity = "1" if weeks % 2 == 0 else "2"
 
     if txtBlack == parity:
