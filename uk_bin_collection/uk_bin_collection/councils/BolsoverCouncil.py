@@ -9,13 +9,16 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 # import the wonderful Beautiful Soup and the URL grabber
 
-# Continuous fortnight index epoch.  The Monday of ISO week 1, 2024
-# (2024-01-01) is used so that odd ISO weeks map to parity "1" and even
-# ISO weeks map to parity "2", matching Bolsover council's
-# WeekBlack/WeekBandG convention.  Because we count weeks from a fixed
-# Monday rather than using iso_week % 2, consecutive weeks always
-# alternate — even across ISO week-53 year boundaries and 52-week years.
-_PARITY_EPOCH = date(2024, 1, 1)
+# Continuous fortnight index epoch.  The council's "Week 1" (where
+# WeekBandG collection falls) does NOT align with ISO week 1.  By
+# trial against the published calendar, ISO week 2 of 2024
+# (Monday 2024-01-08) matches the council's "Week 1" phase.
+# Anchor to that Monday so that (monday − epoch).days // 7 is even
+# for council-Week-1 dates and odd for council-Week-2 dates.
+# Because we count actual calendar weeks from a fixed Monday,
+# consecutive weeks always alternate — even across ISO week-53 year
+# boundaries and 52-week years.
+_PARITY_EPOCH = date(2024, 1, 8)
 
 
 def _determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_sus):
