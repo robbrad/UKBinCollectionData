@@ -1,5 +1,5 @@
 import time
-from datetime import date
+from datetime import date, datetime
 
 import requests
 
@@ -30,8 +30,10 @@ def _determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_s
     that consecutive weeks always alternate, even across year boundaries
     (ISO week 53 → 1, or 52 → 1 for non-53-week years).
     """
+    if isinstance(collection_date, datetime):
+        collection_date = collection_date.date()
     monday = collection_date - timedelta(days=collection_date.weekday())
-    weeks = (monday.date() - _PARITY_EPOCH).days // 7
+    weeks = (monday - _PARITY_EPOCH).days // 7
     parity = "1" if weeks % 2 == 0 else "2"
 
     if txtBlack == parity:
