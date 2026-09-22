@@ -21,6 +21,7 @@ from .const import (
     LOG_PREFIX,
     PLATFORMS,
     EXCLUDED_ARG_KEYS,
+    redact_config_data,
 )
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
 
@@ -34,7 +35,11 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the UK Bin Collection component."""
-    _LOGGER.debug(f"{LOG_PREFIX} async_setup called with config: {config}")
+    _LOGGER.debug(
+        "%s async_setup called with config: %s",
+        LOG_PREFIX,
+        redact_config_data(config),
+    )
     try:
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.debug(
@@ -185,15 +190,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         # to True as a safe fallback: if the flag is somehow missing we prefer
         # automatic polling over silently leaving the sensor stale.
         auto_refresh_enabled = config_entry.data.get("auto_refresh_enabled", True)
-        icon_color_mapping = config_entry.data.get("icon_color_mapping", "{}")
         update_interval_hours = config_entry.data.get("update_interval", 12)
 
         _LOGGER.debug(
             f"{LOG_PREFIX} Retrieved configuration: "
-            f"name={name}, timeout={timeout}, "
+            f"configuration={redact_config_data(config_entry.data)}, "
+            f"timeout={timeout}, "
             f"auto_refresh_enabled={auto_refresh_enabled}, "
-            f"update_interval={update_interval_hours} hours, "
-            f"icon_color_mapping={icon_color_mapping}"
+            f"update_interval={update_interval_hours} hours"
         )
 
         # Validate 'timeout'
@@ -232,7 +236,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
         # Prepare arguments for UKBinCollectionApp
         args = build_ukbcd_args(config_entry.data)
-        _LOGGER.debug(f"{LOG_PREFIX} UKBinCollectionApp args: {args}")
+        _LOGGER.debug(
+            "%s UKBinCollectionApp arguments prepared (%d values).",
+            LOG_PREFIX,
+            len(args),
+        )
 
         # Initialize the UK Bin Collection Data application
         ukbcd = UKBinCollectionApp()
@@ -394,7 +402,10 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
         self._last_good_data = {}
 
         _LOGGER.debug(
-            f"{LOG_PREFIX} HouseholdBinCoordinator __init__: name={name}, timeout={timeout}, update_interval={update_interval}"
+            "%s HouseholdBinCoordinator initialized (timeout=%s, update_interval=%s).",
+            LOG_PREFIX,
+            timeout,
+            update_interval,
         )
 
     async def _async_update_data(self) -> dict:
@@ -409,10 +420,10 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
                 self.hass.async_add_executor_job(self.ukbcd.run),
                 timeout=self.timeout,
             )
-            _LOGGER.debug(f"{LOG_PREFIX} Raw data fetched from ukbcd.run(): {data}")
+            _LOGGER.debug("%s Raw bin data fetched from ukbcd.run().", LOG_PREFIX)
 
             parsed_data = json.loads(data)
-            _LOGGER.debug(f"{LOG_PREFIX} JSON parsed data: {parsed_data}")
+            _LOGGER.debug("%s JSON response parsed successfully.", LOG_PREFIX)
 
             processed_data = self.process_bin_data(parsed_data)
 
@@ -427,7 +438,11 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
                     return {}
 
             self._last_good_data = processed_data
-            _LOGGER.debug(f"{LOG_PREFIX} Processed data: {processed_data}")
+            _LOGGER.debug(
+                "%s Processed %d bin collection entries.",
+                LOG_PREFIX,
+                len(processed_data),
+            )
 
             _LOGGER.info(f"{LOG_PREFIX} Bin collection data updated successfully.")
             return processed_data
@@ -445,17 +460,17 @@ class HouseholdBinCoordinator(DataUpdateCoordinator):
     @staticmethod
     def process_bin_data(data: dict) -> dict:
         """Process raw data to determine the next collection dates."""
-        _LOGGER.debug(f"{LOG_PREFIX} process_bin_data called with data={data}")
+        _LOGGER.debug("%s Processing bin collection response.", LOG_PREFIX)
 
         current_date = dt_util.now().date()
         next_collection_dates = {}
 
         bins = data.get("bins", [])
-        _LOGGER.debug(f"{LOG_PREFIX} Bins found: {bins}")
+        _LOGGER.debug("%s Bins found: %d", LOG_PREFIX, len(bins))
         for bin_data in bins:
             bin_type = bin_data.get("type")
             collection_date_str = bin_data.get("collectionDate")
-            _LOGGER.debug(f"{LOG_PREFIX} Processing bin_data={bin_data}")
+            _LOGGER.debug("%s Processing a bin collection entry.", LOG_PREFIX)
 
             if not bin_type or not collection_date_str:
                 _LOGGER.warning(

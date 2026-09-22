@@ -22,9 +22,34 @@ from custom_components.uk_bin_collection.config_flow import (
     async_get_options_flow,
 )
 from custom_components.uk_bin_collection.const import DOMAIN, LOG_PREFIX
+from custom_components.uk_bin_collection.const import redact_config_data
 from custom_components.uk_bin_collection.sensor import load_icon_color_mapping
 
 from .common_utils import MockConfigEntry
+
+
+def test_redact_config_data_hides_household_and_endpoint_values():
+    """Diagnostic logging must not expose address or endpoint credentials."""
+    data = {
+        "name": "Front house",
+        "postcode": "AB1 2CD",
+        "uprn": "1234567890",
+        "url": "https://example.invalid/private?id=1",
+        "web_driver": "http://user:password@example.invalid",
+        "council": "CouncilTest",
+        "timeout": 60,
+    }
+
+    assert redact_config_data(data) == {
+        "name": "<redacted>",
+        "postcode": "<redacted>",
+        "uprn": "<redacted>",
+        "url": "<redacted>",
+        "web_driver": "<redacted>",
+        "council": "CouncilTest",
+        "timeout": 60,
+    }
+    assert data["postcode"] == "AB1 2CD"
 
 
 @pytest.fixture
