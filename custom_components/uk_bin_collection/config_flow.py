@@ -86,7 +86,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if existing_entry:
                     errors["base"] = "duplicate_entry"
                     _LOGGER.warning(
-                        "Duplicate entry found: %s", existing_entry.data.get("name")
+                        "Duplicate entry found: %s",
+                        redact_config_data(existing_entry.data).get("name"),
                     )
 
             if not errors:
@@ -408,20 +409,25 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         results = []
         async with aiohttp.ClientSession() as session:
             for url in urls:
+                redacted_url = redact_config_data({"selenium_url": url})["selenium_url"]
                 try:
                     async with session.get(url, timeout=5) as response:
                         response.raise_for_status()
                         accessible = response.status == 200
                         results.append((url, accessible))
-                        _LOGGER.debug("Selenium server %s is accessible.", url)
+                        _LOGGER.debug("Selenium server %s is accessible.", redacted_url)
                 except aiohttp.ClientError as e:
                     _LOGGER.warning(
-                        "Failed to connect to Selenium server at %s: %s", url, e
+                        "Failed to connect to Selenium server at %s: %s",
+                        redacted_url,
+                        type(e).__name__,
                     )
                     results.append((url, False))
                 except Exception as e:
-                    _LOGGER.exception(
-                        "Unexpected error checking Selenium server at %s: %s", url, e
+                    _LOGGER.warning(
+                        "Unexpected error checking Selenium server at %s: %s",
+                        redacted_url,
+                        type(e).__name__,
                     )
                     results.append((url, False))
         return results
