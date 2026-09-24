@@ -2405,10 +2405,11 @@
     },
     "SouthLanarkshireCouncil": {
         "LAD24CD": "S12000029",
-        "url": "https://www.southlanarkshire.gov.uk/directory_record/579973/abbeyhill_crescent_lesmahagow",
-        "wiki_command_url_override": "https://www.southlanarkshire.gov.uk/directory_record/XXXXX/XXXXX",
+        "skip_get_url": true,
+        "postcode": "G74 5DQ",
+        "url": "https://www.southlanarkshire.gov.uk/xfp/form/831",
         "wiki_name": "South Lanarkshire",
-        "wiki_note": "Follow the instructions [here](https://www.southlanarkshire.gov.uk/info/200156/bins_and_recycling/1670/bin_collections_and_calendar) until you get the page that shows the weekly collections for your street, then copy the URL and replace the URL in the command."
+        "wiki_note": "Pass your postcode. If your postcode has more than one address, also pass the house name/number as paon."
     },
     "SouthNorfolkCouncil": {
         "LAD24CD": "E07000149",
