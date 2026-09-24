@@ -105,7 +105,14 @@ class CouncilClass(AbstractGetBinDataClass):
             },
         )
         soup = BeautifulSoup(final_resp.text, "html.parser")
-        print(f"[diagnostic] final page (first 4000 chars): {final_resp.text[:4000]}")
+        body = soup.find("body")
+        print(
+            f"[diagnostic] body text: {body.get_text(' ', strip=True)[:4000] if body else 'NO BODY'}"
+        )
+        main = soup.find("main") or soup.find("div", {"id": "content"}) or body
+        print(
+            f"[diagnostic] main/content HTML (first 6000 chars): {str(main)[:6000] if main else 'NONE'}"
+        )
 
         raise ValueError(
             "[diagnostic] stopping before parsing - structure not yet known"
