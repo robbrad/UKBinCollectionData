@@ -1,128 +1,143 @@
-import logging
-import time
-from datetime import timedelta
+import re
+from typing import Any, Dict, List, Optional
 
+import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-logger = logging.getLogger(__name__)
+FORM_URL = "https://www.southlanarkshire.gov.uk/xfp/form/831"
 
-# import the wonderful Beautiful Soup and the URL grabber
+
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    South Lanarkshire Council's old static "directory_record" bin-day page
+    was replaced (#2231) by an interactive XFP form (the same Netcall/
+    Firmstep platform used by South Ribble, Oxford, etc.): postcode ->
+    address dropdown -> collection schedule. No JavaScript execution is
+    needed - it's a plain HTML postback wizard.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
-        """
-        Parse an HTML page to extract scheduled bin collection types and their collection dates.
+    def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
+        user_postcode: Optional[str] = kwargs.get("postcode")
+        user_paon: Optional[str] = kwargs.get("paon")
+        check_postcode(user_postcode)
 
-        Parameters:
-            page: An object with a `text` attribute containing the HTML of the council's bin collection page (e.g., an HTTP response).
-
-        Returns:
-            dict: A dictionary with a "bins" key mapping to a list of collections, where each collection is a dict with:
-                - "type": the collection description string (e.g., "Garden waste")
-                - "collectionDate": the collection date formatted according to the module's `date_format`
-        """
-        data = {"bins": []}
-        collection_types = [
-            "non recyclable waste",
-            "food and garden",
-            "paper and card",
-            "glass, cans and plastics",
-        ]
-
-        # Make a BS4 object
-        soup = BeautifulSoup(page.text, features="html.parser")
-        soup.prettify()
-
-        week_details = soup.find("div", {"class": "bin-dir-snip"})
-        week_dates = week_details.find("div", {"class": "clearfix"}).find("p")
-        week_collections = week_details.find_all_next("h4")
-
-        results = re.search(
-            "([A-Za-z0-9 ]+) to ([A-Za-z0-9 ]+)", week_dates.get_text().strip()
-        )
-        if results:
-            week_start = datetime.strptime(results.groups()[0], "%A %d %B %Y")
-            week_end = datetime.strptime(results.groups()[1], "%A %d %B %Y")
-            week_days = (
-                week_start + timedelta(days=i)
-                for i in range((week_end - week_start).days + 1)
-            )
-
-            week_collection_types = []
-            for week_collection in week_collections:
-                week_collection = (
-                    week_collection.get_text().strip().lower().replace("-", " ")
+        session = requests.Session()
+        session.headers.update(
+            {
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
                 )
-                for collection_type in collection_types:
-                    if collection_type in week_collection:
-                        week_collection_types.append(collection_type)
+            }
+        )
 
-            collection_schedule = (
-                soup.find("div", {"class": "serviceDetails"})
-                .find("table")
-                .find_all_next("tr")
+        # Step 1: load the form and get the CSRF token + postcode field name.
+        get_resp = session.get(FORM_URL)
+        soup = BeautifulSoup(get_resp.text, "html.parser")
+
+        token = soup.find("input", {"name": "__token"})["value"]
+        page_id = soup.find("input", {"name": "page"})["value"]
+        postcode_field = soup.find(
+            "input", {"type": "text", "name": re.compile(r".*_0_0")}
+        )["name"]
+
+        # Step 2: submit the postcode, get back the address dropdown.
+        post_resp = session.post(
+            FORM_URL,
+            data={
+                "__token": token,
+                "page": page_id,
+                "locale": "en_GB",
+                postcode_field: user_postcode,
+                "next": "Next",
+            },
+        )
+        soup = BeautifulSoup(post_resp.text, "html.parser")
+
+        address_select = soup.find("select", {"name": re.compile(r".*_1_0")})
+        if not address_select:
+            raise ValueError(
+                f"No address dropdown returned for postcode {user_postcode} "
+                "- the form may require a different field or have changed again."
             )
-            for day in week_days:
-                for row in collection_schedule:
-                    th_cell = row.find("th")
-                    td_cell = row.find("td")
 
-                    if th_cell is None or td_cell is None:
-                        logger.warning("Skipping schedule row with missing th or td cell")
-                        continue
+        options = [
+            (opt.get("value"), opt.get_text(strip=True))
+            for opt in address_select.find_all("option")
+            if opt.get("value")
+        ]
+        if not options:
+            raise ValueError(f"No addresses found for postcode {user_postcode}")
 
-                    schedule_type = th_cell.get_text().strip()
+        chosen_value = None
+        if user_paon:
+            paon_upper = user_paon.strip().upper()
+            for value, text in options:
+                if text.upper().startswith(paon_upper):
+                    chosen_value = value
+                    break
+            if not chosen_value:
+                raise ValueError(
+                    f"Could not match house number/name '{user_paon}' among "
+                    f"{len(options)} addresses for postcode {user_postcode}"
+                )
+        else:
+            chosen_value = options[0][0]
 
-                    # collection schedule contains area name -> filter out
-                    if schedule_type == "Area":
-                        logger.debug("Skipping area row in collection schedule")
-                        continue
+        token = soup.find("input", {"name": "__token"})["value"]
+        address_field = address_select["name"]
 
-                    td_text = td_cell.get_text(" ", strip=True)
-                    results2 = re.search("([^(]+)", td_text)
+        # Step 3: submit the chosen address, get back the collection schedule.
+        final_resp = session.post(
+            FORM_URL,
+            data={
+                "__token": token,
+                "page": page_id,
+                "locale": "en_GB",
+                postcode_field: user_postcode,
+                address_field: chosen_value,
+                "next": "Next",
+            },
+        )
+        soup = BeautifulSoup(final_resp.text, "html.parser")
+        table = soup.find("table", {"id": "bin-table"})
+        if not table:
+            raise ValueError(
+                "Could not find the bin collection table - the form's final "
+                "page may have changed again."
+            )
 
-                    if " " not in td_text:
-                        logger.warning(
-                            "Skipping schedule cadence parsing for unexpected schedule text: %s",
-                            td_text,
-                        )
-                        schedule_cadence = ""
-                    else:
-                        schedule_cadence = td_text.split(" ", 1)[1]
-                    if results2:
-                        schedule_day = results2[1].strip()
-                        for collection_type in week_collection_types:
-                            collectionDate = None
-                            if collection_type in schedule_type.lower():
-                                if (
-                                    day.weekday()
-                                    == time.strptime(schedule_day, "%A").tm_wday
-                                ):
-                                    collectionDate = day.strftime(date_format)
-                            else:
-                                if "Fortnightly" in schedule_cadence:
-                                    if (
-                                        day.weekday()
-                                        == time.strptime(schedule_day, "%A").tm_wday
-                                    ):
-                                        adjusted_day = day + timedelta(days=7)
-                                        collectionDate = adjusted_day.strftime(
-                                            date_format
-                                        )
+        data: Dict[str, List[Dict[str, str]]] = {"bins": []}
+        for row in table.find_all("tr"):
+            cells = row.find_all("td")
+            if len(cells) < 3:
+                # Header row (th cells) or anything else unexpected.
+                continue
 
-                            if schedule_type and collectionDate:
-                                dict_data = {
-                                    "type": schedule_type,
-                                    "collectionDate": collectionDate,
-                                }
-                                data["bins"].append(dict_data)
+            type_link = cells[1].find("a")
+            bin_type = (
+                type_link.get_text(strip=True)
+                if type_link
+                else cells[1].get_text(strip=True)
+            )
 
+            date_text = cells[2].get_text(strip=True)
+            try:
+                collection_date = datetime.strptime(date_text, date_format)
+            except ValueError:
+                continue
+
+            data["bins"].append(
+                {
+                    "type": bin_type,
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+            )
+
+        data["bins"].sort(
+            key=lambda b: datetime.strptime(b["collectionDate"], date_format)
+        )
         return data

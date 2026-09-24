@@ -95,6 +95,25 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_API_KEY }}
 
+      # The release job's "Publish to PyPI" step can report success before
+      # the new version is actually pip-installable - PyPI's index takes a
+      # few seconds to catch up. The Docker build below pip-installs
+      # uk-bin-collection>=<this tag> from requirements.txt, so without this
+      # wait it can race the index and fail even though the release itself
+      # succeeded.
+      - name: Wait for PyPI to index the new version
+        run: |
+          for i in $(seq 1 12); do
+            if curl -sf "https://pypi.org/pypi/uk-bin-collection/${{ github.ref_name }}/json" > /dev/null; then
+              echo "uk-bin-collection ${{ github.ref_name }} is live on PyPI"
+              exit 0
+            fi
+            echo "Not indexed yet, waiting 15s (attempt $i/12)..."
+            sleep 15
+          done
+          echo "::error::uk-bin-collection ${{ github.ref_name }} still isn't on PyPI after 3 minutes"
+          exit 1
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v7
         with:
