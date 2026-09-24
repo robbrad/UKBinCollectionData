@@ -26,7 +26,10 @@ class CouncilClass(AbstractGetBinDataClass):
         # the reporter of #2240 could load the site fine in a browser while
         # this endpoint 403'd, which points at bot/fingerprint detection
         # rather than an outage. Matches the pattern already used for other
-        # councils fronted by similar protection (e.g. Gateshead, Powys).
+        # councils fronted by similar protection (e.g. Gateshead, Powys). The
+        # site's Azure Application Gateway can still 403 a flagged datacenter
+        # IP (e.g. a CI runner) regardless of headers - that's a source-IP
+        # limitation, not something fixable in the client.
         headers = {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -72,9 +75,6 @@ class CouncilClass(AbstractGetBinDataClass):
                 headers=headers,
                 timeout=30,
             )
-            print(f"[diagnostic] GET -> {response.status_code}")
-            print(f"[diagnostic] response headers: {dict(response.headers)}")
-            print(f"[diagnostic] body (first 1000 chars): {response.text[:1000]}")
             response.raise_for_status()
             data = response.json()
             if data:
