@@ -1,4 +1,11 @@
 =======
+## 0.172.5 (2026-09-24)
+
+### Fix
+
+- **south-lanarkshire**: parse the new XFP form's bin collection table
+- **ci**: wait for PyPI to index before the release Docker build
+
 ## 0.172.4 (2026-09-24)
 
 ### Fix
