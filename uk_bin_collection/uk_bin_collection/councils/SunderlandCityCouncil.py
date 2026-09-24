@@ -1,6 +1,7 @@
 import re
 
 import requests
+from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -23,10 +24,13 @@ def _form_fields(soup: BeautifulSoup) -> dict:
 class CouncilClass(AbstractGetBinDataClass):
     """
     Sunderland City Council's bin-day checker is a GOSS iCM form. It's
-    fronted by Cloudflare, but the form itself is a plain HTML postback
-    wizard - no challenge is triggered by driving it directly with
-    requests (session cookies + the same hidden fields/referer a real
-    browser would send).
+    fronted by Cloudflare, and since September 2026 every page on the
+    site serves a managed challenge to clients whose TLS fingerprint
+    does not look like a browser (plain requests/curl get a 403 with
+    "cf-mitigated: challenge" regardless of headers or source IP).
+    The form itself is still a plain HTML postback wizard, so driving
+    it with a curl_cffi session that impersonates Chrome's TLS handshake
+    is enough - no JavaScript execution or browser is needed.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -40,7 +44,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         }
 
-        s = requests.Session()
+        s = cffi_requests.Session(impersonate="chrome")
         r = s.get(FORM_PAGE, headers=headers, timeout=15)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
@@ -82,8 +86,8 @@ class CouncilClass(AbstractGetBinDataClass):
         ]
         fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_UPRN"] = match["value"]
         fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_POSTCODE"] = user_postcode
-        fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_ADDRESSTEXT"] = (
-            match.get_text(strip=True)
+        fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_ADDRESSTEXT"] = match.get_text(
+            strip=True
         )
         fields["BINCOLLECTIONCHECKERNEWV3_FORMACTION_NEXT"] = NEXT_TRIGGER
 
