@@ -72,8 +72,6 @@ class CouncilClass(AbstractGetBinDataClass):
         if not options:
             raise ValueError(f"No addresses found for postcode {user_postcode}")
 
-        print(f"[diagnostic] address dropdown options: {options}")
-
         chosen_value = None
         if user_paon:
             paon_upper = user_paon.strip().upper()
@@ -105,15 +103,41 @@ class CouncilClass(AbstractGetBinDataClass):
             },
         )
         soup = BeautifulSoup(final_resp.text, "html.parser")
-        body = soup.find("body")
-        print(
-            f"[diagnostic] body text: {body.get_text(' ', strip=True)[:4000] if body else 'NO BODY'}"
-        )
-        main = soup.find("main") or soup.find("div", {"id": "content"}) or body
-        print(
-            f"[diagnostic] main/content HTML (first 6000 chars): {str(main)[:6000] if main else 'NONE'}"
-        )
+        table = soup.find("table", {"id": "bin-table"})
+        if not table:
+            raise ValueError(
+                "Could not find the bin collection table - the form's final "
+                "page may have changed again."
+            )
 
-        raise ValueError(
-            "[diagnostic] stopping before parsing - structure not yet known"
+        data: Dict[str, List[Dict[str, str]]] = {"bins": []}
+        for row in table.find_all("tr"):
+            cells = row.find_all("td")
+            if len(cells) < 3:
+                # Header row (th cells) or anything else unexpected.
+                continue
+
+            type_link = cells[1].find("a")
+            bin_type = (
+                type_link.get_text(strip=True)
+                if type_link
+                else cells[1].get_text(strip=True)
+            )
+
+            date_text = cells[2].get_text(strip=True)
+            try:
+                collection_date = datetime.strptime(date_text, date_format)
+            except ValueError:
+                continue
+
+            data["bins"].append(
+                {
+                    "type": bin_type,
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+            )
+
+        data["bins"].sort(
+            key=lambda b: datetime.strptime(b["collectionDate"], date_format)
         )
+        return data
