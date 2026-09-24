@@ -5,6 +5,42 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
+def week_has_bank_holiday(collection_date) -> bool:
+    """True if an English bank holiday falls Monday to Friday of that week.
+
+    A bank holiday shifts every collection in its week, not just the day
+    itself, so the whole working week is checked.
+    """
+    monday = collection_date - timedelta(days=collection_date.weekday())
+    return any(
+        is_holiday(
+            datetime.combine(monday + timedelta(days=offset), datetime.min.time())
+        )
+        for offset in range(5)
+    )
+
+
+def in_christmas_period(collection_date) -> bool:
+    """True from 24 December to 17 January, when collections run late for
+    weeks after the last bank holiday.
+
+    The council's 2026/27 leaflet revises every collection from 25 December
+    to 15 January (two days late until 9 January, one day late the week
+    after), and 2025/26 returned to normal on 12 January. No bank holiday
+    falls in those January weeks, so the week check alone does not see them.
+    """
+    return (collection_date.month == 12 and collection_date.day >= 24) or (
+        collection_date.month == 1 and collection_date.day <= 17
+    )
+
+
+def collections_are_rescheduled(collection_date) -> bool:
+    """True if the council will not collect on the usual day around this date."""
+    return week_has_bank_holiday(collection_date) or in_christmas_period(
+        collection_date
+    )
+
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -92,13 +128,30 @@ class CouncilClass(AbstractGetBinDataClass):
             except Exception as ex:
                 raise ValueError(f"Error parsing bin data: {ex}")
 
+            # The page carries no year. In early January it still shows the
+            # December date of the current fortnight, which read as this
+            # year's December is eleven months away; a date that far ahead
+            # is last year's.
+            if bin_date - today > timedelta(days=180):
+                bin_date = bin_date.replace(year=bin_date.year - 1)
+
             # The page publishes the current fortnight's pair rather than the
             # next occurrence of each bin, so a bin collected earlier in this
             # fortnight parses to a date already in the past - roll it
             # forward by the fortnightly cycle (day-based, so it naturally
             # crosses a year boundary too) until it's genuinely upcoming.
-            while bin_date < today:
-                bin_date += timedelta(days=14)
+            #
+            # Unless that lands where the council collects on a different
+            # day, which only the page knows: leave the bin out until the
+            # page catches up rather than publish a guess. Only where the
+            # date lands matters: a holiday shifts the collections of its
+            # own week and the fortnight then resumes on the usual day, so
+            # rolling through a holiday week to a later date is fine.
+            if bin_date < today:
+                while bin_date < today:
+                    bin_date += timedelta(days=14)
+                if collections_are_rescheduled(bin_date):
+                    continue
 
             # Build data dict for each entry
             dict_data = {
