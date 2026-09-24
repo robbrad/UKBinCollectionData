@@ -43,3 +43,30 @@ EXCLUDED_ARG_KEYS = {
     "auto_refresh_enabled",
     "original_parser",
 }
+
+# These values can identify a household, disclose a private endpoint, or
+# contain credentials.  Keep them out of Home Assistant logs, which are often
+# collected for diagnostics and shared outside the local installation.
+SENSITIVE_CONFIG_KEYS = frozenset(
+    {
+        "name",
+        "url",
+        "uprn",
+        "postcode",
+        "number",
+        "usrn",
+        "web_driver",
+        "selenium_url",
+        "icon_color_mapping",
+        "password",
+        "token",
+    }
+)
+
+
+def redact_config_data(data: dict) -> dict:
+    """Return a shallow copy suitable for diagnostic logging."""
+    return {
+        key: "<redacted>" if key in SENSITIVE_CONFIG_KEYS else value
+        for key, value in data.items()
+    }

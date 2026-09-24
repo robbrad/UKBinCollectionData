@@ -22,11 +22,31 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata = {"bins": []}
         results_html = None
 
+        # A full, realistic browser header set (not just no headers at all) -
+        # the reporter of #2240 could load the site fine in a browser while
+        # this endpoint 403'd, which points at bot/fingerprint detection
+        # rather than an outage. Matches the pattern already used for other
+        # councils fronted by similar protection (e.g. Gateshead, Powys). The
+        # site's Azure Application Gateway can still 403 a flagged datacenter
+        # IP (e.g. a CI runner) regardless of headers - that's a source-IP
+        # limitation, not something fixable in the client.
+        headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            ),
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Referer": "https://exeter.gov.uk/",
+            "X-Requested-With": "XMLHttpRequest",
+        }
+
         # Prefer postcode+house_number lookup (works for all UPRNs)
         if user_postcode and user_paon:
             response = requests.get(
                 "https://exeter.gov.uk/repositories/hidden-pages/address-finder/",
                 params={"qsource": "POSTCODE", "qtype": "bins", "term": user_postcode},
+                headers=headers,
                 timeout=30,
             )
             response.raise_for_status()
@@ -52,6 +72,7 @@ class CouncilClass(AbstractGetBinDataClass):
             check_uprn(user_uprn)
             response = requests.get(
                 f"https://exeter.gov.uk/repositories/hidden-pages/address-finder/?qsource=UPRN&qtype=bins&term={user_uprn}",
+                headers=headers,
                 timeout=30,
             )
             response.raise_for_status()

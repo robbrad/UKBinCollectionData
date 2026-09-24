@@ -1,6 +1,7 @@
 import re
 
 import requests
+from curl_cffi import requests as cffi_requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
@@ -22,11 +23,18 @@ def _form_fields(soup: BeautifulSoup) -> dict:
 
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Sunderland City Council's bin-day checker is a GOSS iCM form. It's
-    fronted by Cloudflare, but the form itself is a plain HTML postback
-    wizard - no challenge is triggered by driving it directly with
-    requests (session cookies + the same hidden fields/referer a real
-    browser would send).
+    Sunderland City Council's bin-day checker is a GOSS iCM form - the
+    same platform as Gateshead's and Powys's - fronted by Cloudflare.
+    Since September 2026 it serves a managed challenge to clients whose
+    TLS fingerprint doesn't look like a browser, so the session
+    impersonates Chrome's TLS handshake via curl_cffi. As with the other
+    GOSS iCM councils in this codebase, a full realistic header set is
+    sent too - Cloudflare scores requests on header completeness and IP
+    reputation alongside TLS fingerprint, and a flagged datacenter IP
+    (such as a CI runner's) can still get challenged even with both of
+    those right; that's a source-IP limitation, not something fixable
+    in the client. The form itself is still a plain HTML postback
+    wizard once past the challenge - no JavaScript execution needed.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -37,10 +45,21 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata = {"bins": []}
 
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
         }
 
-        s = requests.Session()
+        s = cffi_requests.Session(impersonate="chrome")
         r = s.get(FORM_PAGE, headers=headers, timeout=15)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
@@ -82,8 +101,8 @@ class CouncilClass(AbstractGetBinDataClass):
         ]
         fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_UPRN"] = match["value"]
         fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_POSTCODE"] = user_postcode
-        fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_ADDRESSTEXT"] = (
-            match.get_text(strip=True)
+        fields["BINCOLLECTIONCHECKERNEWV3_ADDRESSSEARCH_ADDRESSTEXT"] = match.get_text(
+            strip=True
         )
         fields["BINCOLLECTIONCHECKERNEWV3_FORMACTION_NEXT"] = NEXT_TRIGGER
 

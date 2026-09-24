@@ -27,12 +27,17 @@ class CouncilClass(AbstractGetBinDataClass):
                 .strip()
                 .replace("Wheelie ", "")
             )
+            # Most cards show both "Last collected" and "Next collection"
+            # (two div.mt-1 rows, collection date second); a bin with no
+            # collection history yet (e.g. a newly added food caddy) shows
+            # only the "Next collection" row, so this can't be a fixed
+            # index. The collection date is always the last of whichever
+            # rows are present.
+            date_divs = bin.find_all("div", class_="mt-1")
+            if not date_divs:
+                continue
             bin_date_text = (
-                bin.find_all("div", class_="mt-1")[1]
-                .find("strong")
-                .get_text()
-                .strip()
-                .replace(",", "")
+                date_divs[-1].find("strong").get_text().strip().replace(",", "")
             )
             bin_date = datetime.strptime(bin_date_text, "%A %d %B %Y")
             collections.append((bin_type, bin_date))

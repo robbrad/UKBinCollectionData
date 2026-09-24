@@ -4,6 +4,7 @@
 
 import asyncio
 import json
+import logging
 from datetime import date, datetime, timedelta
 from json import JSONDecodeError
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -22,9 +23,34 @@ from custom_components.uk_bin_collection.config_flow import (
     async_get_options_flow,
 )
 from custom_components.uk_bin_collection.const import DOMAIN, LOG_PREFIX
+from custom_components.uk_bin_collection.const import redact_config_data
 from custom_components.uk_bin_collection.sensor import load_icon_color_mapping
 
 from .common_utils import MockConfigEntry
+
+
+def test_redact_config_data_hides_household_and_endpoint_values():
+    """Diagnostic logging must not expose address or endpoint credentials."""
+    data = {
+        "name": "Front house",
+        "postcode": "AB1 2CD",
+        "uprn": "1234567890",
+        "url": "https://example.invalid/private?id=1",
+        "web_driver": "http://user:password@example.invalid",
+        "council": "CouncilTest",
+        "timeout": 60,
+    }
+
+    assert redact_config_data(data) == {
+        "name": "<redacted>",
+        "postcode": "<redacted>",
+        "uprn": "<redacted>",
+        "url": "<redacted>",
+        "web_driver": "<redacted>",
+        "council": "CouncilTest",
+        "timeout": 60,
+    }
+    assert data["postcode"] == "AB1 2CD"
 
 
 @pytest.fixture
@@ -202,6 +228,33 @@ async def test_config_flow_with_uprn(hass: HomeAssistant):
             "uprn": "1234567890",
             "timeout": 60,
         }
+
+
+@pytest.mark.asyncio
+async def test_duplicate_entry_name_is_redacted_in_logs(hass, caplog):
+    """A duplicate household name must not appear in config-flow logs."""
+    private_name = "Private Household"
+    with patch(
+        "custom_components.uk_bin_collection.config_flow.UkBinCollectionConfigFlow.get_councils_json",
+        return_value=MOCK_COUNCILS_DATA,
+    ):
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+        existing_entry = DummyEntry({"name": private_name})
+        with patch.object(
+            flow, "_async_entry_exists", new=AsyncMock(return_value=existing_entry)
+        ):
+            with caplog.at_level(
+                logging.WARNING,
+                logger="custom_components.uk_bin_collection.config_flow",
+            ):
+                result = await flow.async_step_user(
+                    user_input={"name": private_name, "council": "CouncilTest"}
+                )
+
+    assert result["errors"] == {"base": "duplicate_entry"}
+    assert "Duplicate entry found: <redacted>" in caplog.text
+    assert private_name not in caplog.text
 
 
 async def test_config_flow_with_postcode_and_number(hass: HomeAssistant):
@@ -861,6 +914,51 @@ async def test_check_selenium_server_exception(hass: HomeAssistant):
             ("http://selenium:4444", False),
         ]
         assert result == expected_result
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "exception_type",
+    [None, aiohttp.ClientError, RuntimeError],
+    ids=["accessible", "connection-error", "unexpected-error"],
+)
+async def test_check_selenium_server_redacts_url_in_logs(
+    hass: HomeAssistant, caplog, exception_type
+):
+    """Selenium diagnostic logs must not expose configured URLs or credentials."""
+    configured_url = "http://user:secret@example.invalid/wd/hub"
+    caplog.set_level(
+        logging.DEBUG,
+        logger="custom_components.uk_bin_collection.config_flow",
+    )
+
+    if exception_type is None:
+        response = MagicMock(status=200)
+        response.raise_for_status.return_value = None
+        request_context = MagicMock()
+        request_context.__aenter__ = AsyncMock(return_value=response)
+        request_context.__aexit__ = AsyncMock(return_value=None)
+        get_patch = patch(
+            "aiohttp.ClientSession.get",
+            return_value=request_context,
+        )
+    else:
+        get_patch = patch(
+            "aiohttp.ClientSession.get",
+            side_effect=exception_type(f"request failed for {configured_url}"),
+        )
+
+    with patch(
+        "custom_components.uk_bin_collection.config_flow.SELENIUM_SERVER_URLS", []
+    ), get_patch:
+        flow = UkBinCollectionConfigFlow()
+        flow.hass = hass
+        result = await flow.check_selenium_server(custom_url=configured_url)
+
+    assert result == [(configured_url, exception_type is None)]
+    assert "<redacted>" in caplog.text
+    assert configured_url not in caplog.text
+    assert "secret" not in caplog.text
 
 
 @pytest.mark.asyncio
