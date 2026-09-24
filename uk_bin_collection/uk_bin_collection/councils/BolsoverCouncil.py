@@ -1,12 +1,51 @@
 import time
+from datetime import date, datetime
 
 import requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-
 # import the wonderful Beautiful Soup and the URL grabber
+
+# Continuous fortnight index epoch.  The council's "Week 1" (where
+# WeekBandG collection falls) does NOT align with ISO week 1.  By
+# trial against the published calendar, ISO week 2 of 2024
+# (Monday 2024-01-08) matches the council's "Week 1" phase.
+# Anchor to that Monday so that (monday − epoch).days // 7 is even
+# for council-Week-1 dates and odd for council-Week-2 dates.
+# Because we count actual calendar weeks from a fixed Monday,
+# consecutive weeks always alternate — even across ISO week-53 year
+# boundaries and 52-week years.
+_PARITY_EPOCH = date(2024, 1, 8)
+
+
+def _determine_bin_collection(collection_date, txtBlack, txtBurgGreen, week_in_sus):
+    """Determine which bin is collected on *collection_date*.
+
+    WeekBlack / WeekBandG are "1" or "2" indicating which of the two
+    alternating weeks a bin stream is collected on.  Parity is derived
+    from a continuous fortnight index anchored to ``_PARITY_EPOCH`` so
+    that consecutive weeks always alternate, even across year boundaries
+    (ISO week 53 → 1, or 52 → 1 for non-53-week years).
+    """
+    if isinstance(collection_date, datetime):
+        collection_date = collection_date.date()
+    monday = collection_date - timedelta(days=collection_date.weekday())
+    weeks = (monday - _PARITY_EPOCH).days // 7
+    parity = "1" if weeks % 2 == 0 else "2"
+
+    if txtBlack == parity:
+        return "Black Bin"
+
+    if txtBurgGreen == parity:
+        if week_in_sus == "Yes":
+            return "Burgundy Bin"
+        return "Burgundy Bin & Green Bin"
+
+    return ""
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -137,28 +176,17 @@ class CouncilClass(AbstractGetBinDataClass):
         WeekBlack = rows_data["WeekBlack"]
         WeekBandG = rows_data["WeekBandG"]
 
-        def determine_bin_collection(week_number, txtBlack, txtBurgGreen, week_in_sus):
-            # WeekBlack/WeekBandG aren't booleans - they hold "1" or "2" to
-            # say which of the two alternating weeks (odd/even relative to
-            # week1) that stream is collected on. Round A addresses have
-            # WeekBlack == "1"; Round B addresses have WeekBlack == "2"
-            # (and WeekBandG the complementary value).
-            parity = "1" if week_number % 2 == 1 else "2"
+        def determine_bin_collection(
+            collection_date, txtBlack, txtBurgGreen, week_in_sus
+        ):
+            return _determine_bin_collection(
+                collection_date, txtBlack, txtBurgGreen, week_in_sus
+            )
 
-            if txtBlack == parity:
-                return "Black Bin"
-
-            if txtBurgGreen == parity:
-                if week_in_sus == "Yes":
-                    return "Burgundy Bin"
-                return "Burgundy Bin & Green Bin"
-
-            return ""
-
-        week1Text = determine_bin_collection(1, WeekBlack, WeekBandG, week1InSus)
-        week2Text = determine_bin_collection(2, WeekBlack, WeekBandG, week2InSus)
-        week3Text = determine_bin_collection(3, WeekBlack, WeekBandG, week3InSus)
-        week4Text = determine_bin_collection(4, WeekBlack, WeekBandG, week4InSus)
+        week1Text = determine_bin_collection(week1, WeekBlack, WeekBandG, week1InSus)
+        week2Text = determine_bin_collection(week2, WeekBlack, WeekBandG, week2InSus)
+        week3Text = determine_bin_collection(week3, WeekBlack, WeekBandG, week3InSus)
+        week4Text = determine_bin_collection(week4, WeekBlack, WeekBandG, week4InSus)
 
         # print(week1Text)
         # print(week2Text)
