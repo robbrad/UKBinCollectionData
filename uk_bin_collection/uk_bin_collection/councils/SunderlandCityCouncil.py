@@ -46,6 +46,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         s = cffi_requests.Session(impersonate="chrome")
         r = s.get(FORM_PAGE, headers=headers, timeout=15)
+        print(f"[diagnostic] GET {FORM_PAGE} -> {r.status_code}")
+        print(f"[diagnostic] response headers: {dict(r.headers)}")
+        print(f"[diagnostic] body (first 1500 chars): {r.text[:1500]}")
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
 
