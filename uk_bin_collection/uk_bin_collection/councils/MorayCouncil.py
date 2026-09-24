@@ -15,6 +15,8 @@ class CouncilClass(AbstractGetBinDataClass):
     on day divs within month containers.
     """
 
+    # Letter codes as they appear in the calendar page's day-cell CSS
+    # classes (e.g. "day-3 B" for a Brown Bin day).
     BIN_TYPE_MAP = {
         "B": "Brown Bin",
         "O": "Glass Container",
@@ -94,8 +96,18 @@ class CouncilClass(AbstractGetBinDataClass):
         today = datetime.today().date()
 
         month_names = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December",
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
         ]
 
         for month_container in soup.find_all("div", class_="month-container"):
@@ -129,12 +141,18 @@ class CouncilClass(AbstractGetBinDataClass):
                     for char in css_class:
                         if char in self.BIN_TYPE_MAP:
                             try:
-                                collection_date = datetime(year, month_num, day_num).date()
+                                collection_date = datetime(
+                                    year, month_num, day_num
+                                ).date()
                                 if collection_date >= today:
-                                    bindata["bins"].append({
-                                        "type": self.BIN_TYPE_MAP[char],
-                                        "collectionDate": collection_date.strftime(date_format),
-                                    })
+                                    bindata["bins"].append(
+                                        {
+                                            "type": self.BIN_TYPE_MAP[char],
+                                            "collectionDate": collection_date.strftime(
+                                                date_format
+                                            ),
+                                        }
+                                    )
                             except ValueError:
                                 continue
 
