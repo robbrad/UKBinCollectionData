@@ -24,23 +24,25 @@ class CouncilClass(AbstractGetBinDataClass):
 
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-            "Accept": "application/json",
+            "Accept": "*/*",
+            "Content-Type": "application/json",
+            "Origin": "https://www.canterbury.gov.uk",
+            "Referer": "https://www.canterbury.gov.uk/",
         }
 
+        # The council retired the "Beta" stage of this API; it now 403s
+        # unconditionally regardless of the uprn/usrn payload sent. "prod"
+        # is the stage their own site's current front end calls.
         URI = (
-            "https://zbr7r13ke2.execute-api.eu-west-2.amazonaws.com/Beta/get-bin-dates"
+            "https://n6ljrw455m.execute-api.eu-west-2.amazonaws.com/prod/get-bin-dates"
         )
 
         # Make the GET request
         response = requests.post(URI, json=data, headers=headers)
         if response.status_code == 403:
-            # The council's site itself now calls this API server-side
-            # (as part of a page redirect) rather than directly from the
-            # browser, and even their own live site currently gets stuck
-            # on a permanent loading spinner - the API returns a bare 403
-            # regardless of the uprn/usrn payload sent. This looks like an
-            # outage or an access restriction on the council's end, not
-            # something fixable by changing what we send.
+            # Kept as a clear signal in case a future API change reproduces
+            # the same failure mode this scraper hit against the old "Beta"
+            # stage, rather than surfacing a bare HTTPError.
             raise ConnectionError(
                 "Canterbury's bin collection API is returning 403 Forbidden "
                 "- this looks like an outage or access restriction on the "
@@ -49,7 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
         response.raise_for_status()
 
         # Parse the JSON response
-        bin_collection = json.loads(response.json()["dates"])
+        bin_collection = response.json()["dates"]
         collections = {
             "General": bin_collection["blackBinDay"],
             "Recycling": bin_collection["recyclingBinDay"],
