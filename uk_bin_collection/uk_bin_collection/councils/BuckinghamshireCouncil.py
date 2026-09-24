@@ -156,9 +156,6 @@ class CouncilClass(AbstractGetBinDataClass):
         raise ValueError(f"Could not resolve a year for collection date: {raw_date}")
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        import time
-
-        overall_start = time.monotonic()
         user_uprn = kwargs.get("uprn") or ""
         check_uprn(user_uprn)
 
@@ -229,9 +226,6 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError(
                 f"Buckinghamshire rejected the UPRN submission: {submission}"
             )
-        print(
-            f"[diagnostic] step 1 (saveqadata) done at {time.monotonic() - overall_start:.1f}s"
-        )
 
         # 2. Fetch the form definition and locate the web-service item.
         form_data = self._get_plugin(
@@ -247,9 +241,6 @@ class CouncilClass(AbstractGetBinDataClass):
             },
         )
         item_id, ws_id = self._find_web_service_item(form_data)
-        print(
-            f"[diagnostic] step 2 (getformdata) done at {time.monotonic() - overall_start:.1f}s"
-        )
 
         service_params = {
             "P_CLIENT_ID": CLIENT_ID,
@@ -274,9 +265,6 @@ class CouncilClass(AbstractGetBinDataClass):
         }
         if not input_data:
             input_data = {"uprn": str(user_uprn)}
-        print(
-            f"[diagnostic] step 3 (getWSRInputMapping) done at {time.monotonic() - overall_start:.1f}s"
-        )
 
         # 4. Retrieve the result. Note P_USER_ID is deliberately absent here -
         #    the council's own site omits it on this call, and including it
@@ -287,9 +275,6 @@ class CouncilClass(AbstractGetBinDataClass):
             {**service_params, "P_INPUT_DATA": input_data},
         )
 
-        print(
-            f"[diagnostic] step 4 (getWSRResult) done at {time.monotonic() - overall_start:.1f}s"
-        )
         output_data = result.get("WSR_VALUE", {}).get("OUTPUT_DATA", [])
         if not output_data:
             raise ValueError(
@@ -316,15 +301,6 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         if not data["bins"]:
-            print(f"[diagnostic] VAL length: {len(output_data[0].get('VAL', ''))}")
-            print(
-                f"[diagnostic] VAL (first 3000 chars): {output_data[0].get('VAL', '')[:3000]}"
-            )
-            print(f"[diagnostic] tables found: {len(soup.find_all('table'))}")
-            for i, t in enumerate(soup.find_all("table")):
-                print(
-                    f"[diagnostic] table {i} class={t.get('class')} rows={len(t.select('tr'))}"
-                )
             raise ValueError(
                 f"Collection table was empty for UPRN {user_uprn} - the council's "
                 "output format may have changed."
