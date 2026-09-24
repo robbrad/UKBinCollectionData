@@ -19,6 +19,7 @@ from .const import (
     SELENIUM_SERVER_URLS,
     BROWSER_BINARIES,
     INPUT_JSON_URL,
+    redact_config_data,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -67,7 +68,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.debug("Loaded council data: %s", self.council_names)
 
         if user_input is not None:
-            _LOGGER.debug("User input received: %s", user_input)
+            _LOGGER.debug("User input received: %s", redact_config_data(user_input))
             # Validate user input
             if not user_input.get("name"):
                 errors["name"] = "Name is required."
@@ -85,7 +86,8 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if existing_entry:
                     errors["base"] = "duplicate_entry"
                     _LOGGER.warning(
-                        "Duplicate entry found: %s", existing_entry.data.get("name")
+                        "Duplicate entry found: %s",
+                        redact_config_data(existing_entry.data).get("name"),
                     )
 
             if not errors:
@@ -106,7 +108,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input["council"] = council_key
                 self.data.update(user_input)
 
-                _LOGGER.debug("User input after mapping: %s", self.data)
+                _LOGGER.debug(
+                    "User input after mapping: %s", redact_config_data(self.data)
+                )
 
                 # Proceed to the council step
                 return await self.async_step_council()
@@ -134,7 +138,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         requires_selenium = "web_driver" in council_info
 
         if user_input is not None:
-            _LOGGER.debug("Council step user input: %s", user_input)
+            _LOGGER.debug("Council step user input: %s", redact_config_data(user_input))
             # Validate JSON mapping if provided
             if user_input.get("icon_color_mapping"):
                 if not self.is_valid_json(user_input["icon_color_mapping"]):
@@ -151,7 +155,9 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             # If no errors, create the config entry
             if not errors:
                 _LOGGER.info(
-                    "%s Creating config entry with data: %s", LOG_PREFIX, self.data
+                    "%s Creating config entry with data: %s",
+                    LOG_PREFIX,
+                    redact_config_data(self.data),
                 )
                 return self.async_create_entry(title=self.data["name"], data=self.data)
             else:
@@ -202,7 +208,7 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         council_wiki_name = council_info.get("wiki_name", "")
 
         if user_input is not None:
-            _LOGGER.debug("Reconfigure user input: %s", user_input)
+            _LOGGER.debug("Reconfigure user input: %s", redact_config_data(user_input))
             # Map selected wiki_name back to council key
             council_key = self.map_wiki_name_to_council_key(user_input["council"])
             user_input["council"] = council_key
@@ -403,20 +409,25 @@ class UkBinCollectionConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         results = []
         async with aiohttp.ClientSession() as session:
             for url in urls:
+                redacted_url = redact_config_data({"selenium_url": url})["selenium_url"]
                 try:
                     async with session.get(url, timeout=5) as response:
                         response.raise_for_status()
                         accessible = response.status == 200
                         results.append((url, accessible))
-                        _LOGGER.debug("Selenium server %s is accessible.", url)
+                        _LOGGER.debug("Selenium server %s is accessible.", redacted_url)
                 except aiohttp.ClientError as e:
                     _LOGGER.warning(
-                        "Failed to connect to Selenium server at %s: %s", url, e
+                        "Failed to connect to Selenium server at %s: %s",
+                        redacted_url,
+                        type(e).__name__,
                     )
                     results.append((url, False))
                 except Exception as e:
-                    _LOGGER.exception(
-                        "Unexpected error checking Selenium server at %s: %s", url, e
+                    _LOGGER.warning(
+                        "Unexpected error checking Selenium server at %s: %s",
+                        redacted_url,
+                        type(e).__name__,
                     )
                     results.append((url, False))
         return results
@@ -531,7 +542,7 @@ class UkBinCollectionOptionsFlowHandler(config_entries.OptionsFlow):
         _LOGGER.debug("Loaded council data for options flow.")
 
         if user_input is not None:
-            _LOGGER.debug("Options flow user input: %s", user_input)
+            _LOGGER.debug("Options flow user input: %s", redact_config_data(user_input))
             # Map selected wiki_name back to council key
             council_key = self.map_wiki_name_to_council_key(user_input["council"])
             user_input["council"] = council_key
