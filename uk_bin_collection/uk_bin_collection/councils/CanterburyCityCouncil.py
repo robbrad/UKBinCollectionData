@@ -39,6 +39,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         # Make the GET request
         response = requests.post(URI, json=data, headers=headers)
+        print(f"[diagnostic] POST {URI} -> {response.status_code}")
+        print(f"[diagnostic] response headers: {dict(response.headers)}")
+        print(f"[diagnostic] body (first 1500 chars): {response.text[:1500]}")
         if response.status_code == 403:
             # Kept as a clear signal in case a future API change reproduces
             # the same failure mode this scraper hit against the old "Beta"

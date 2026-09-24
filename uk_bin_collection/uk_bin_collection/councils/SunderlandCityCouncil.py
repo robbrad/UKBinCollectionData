@@ -23,14 +23,18 @@ def _form_fields(soup: BeautifulSoup) -> dict:
 
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Sunderland City Council's bin-day checker is a GOSS iCM form. It's
-    fronted by Cloudflare, and since September 2026 every page on the
-    site serves a managed challenge to clients whose TLS fingerprint
-    does not look like a browser (plain requests/curl get a 403 with
-    "cf-mitigated: challenge" regardless of headers or source IP).
-    The form itself is still a plain HTML postback wizard, so driving
-    it with a curl_cffi session that impersonates Chrome's TLS handshake
-    is enough - no JavaScript execution or browser is needed.
+    Sunderland City Council's bin-day checker is a GOSS iCM form - the
+    same platform as Gateshead's and Powys's - fronted by Cloudflare.
+    Since September 2026 it serves a managed challenge to clients whose
+    TLS fingerprint doesn't look like a browser, so the session
+    impersonates Chrome's TLS handshake via curl_cffi. As with the other
+    GOSS iCM councils in this codebase, a full realistic header set is
+    sent too - Cloudflare scores requests on header completeness and IP
+    reputation alongside TLS fingerprint, and a flagged datacenter IP
+    (such as a CI runner's) can still get challenged even with both of
+    those right; that's a source-IP limitation, not something fixable
+    in the client. The form itself is still a plain HTML postback
+    wizard once past the challenge - no JavaScript execution needed.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -41,14 +45,22 @@ class CouncilClass(AbstractGetBinDataClass):
         bindata = {"bins": []}
 
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-GB,en;q=0.9",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
         }
 
         s = cffi_requests.Session(impersonate="chrome")
         r = s.get(FORM_PAGE, headers=headers, timeout=15)
-        print(f"[diagnostic] GET {FORM_PAGE} -> {r.status_code}")
-        print(f"[diagnostic] response headers: {dict(r.headers)}")
-        print(f"[diagnostic] body (first 1500 chars): {r.text[:1500]}")
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
 
