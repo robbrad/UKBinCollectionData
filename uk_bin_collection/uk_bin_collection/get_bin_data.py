@@ -50,6 +50,13 @@ class AbstractGetBinDataClass(ABC):
     Keyword arguments: None
     """
 
+    # User-Agent sent by get_data(). A council class can override this when
+    # its site rejects the default browser string.
+    USER_AGENT = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/108.0.0.0 Safari/537.36"
+    )
+
     def template_method(self, address_url: str, **kwargs) -> None:  # pragma: no cover
         """The main template method that is constructed
 
@@ -116,11 +123,7 @@ class AbstractGetBinDataClass(ABC):
         Keyword arguments:
         url -- the url to get the data from
         """
-        user_agent = (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/108.0.0.0 Safari/537.36"
-        )
-        headers = {"User-Agent": user_agent}
+        headers = {"User-Agent": cls.USER_AGENT}
         urllib3.disable_warnings(category=urllib3.exceptions.InsecureRequestWarning)
 
         try:
