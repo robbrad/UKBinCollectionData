@@ -12,6 +12,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 class CouncilClass(AbstractGetBinDataClass):
     def _parse_collections(self, html: str) -> dict:
+        """Extract each waste type's dates from the rendered collection cards."""
         soup = BeautifulSoup(html, "html.parser")
         data = {"bins": []}
         for card in soup.select(".gwBorderSlim"):
@@ -26,7 +27,11 @@ class CouncilClass(AbstractGetBinDataClass):
                 ".page_fragment[data-current_value] .value-as-text"
             ):
                 raw_date = date_element.get_text(strip=True)
-                if "suspended" in raw_date.lower() or "restarting" in raw_date.lower():
+                if (
+                    not raw_date
+                    or "suspended" in raw_date.lower()
+                    or "restarting" in raw_date.lower()
+                ):
                     continue
                 parsed_date = parse(raw_date, dayfirst=True)
                 data["bins"].append(
@@ -38,6 +43,7 @@ class CouncilClass(AbstractGetBinDataClass):
         return data
 
     def wait_for_element_conditions(self, driver, conditions, timeout: int = 5):
+        """Wait for a Selenium condition, propagating a timeout if it fails."""
         try:
             WebDriverWait(driver, timeout).until(conditions)
         except TimeoutException:
@@ -45,6 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
             raise
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """Look up a postcode and address, returning their collection dates."""
         driver = None
         try:
             web_driver = kwargs.get("web_driver")

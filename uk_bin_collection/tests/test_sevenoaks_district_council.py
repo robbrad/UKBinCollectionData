@@ -13,6 +13,7 @@ MODULE = "uk_bin_collection.uk_bin_collection.councils.SevenoaksDistrictCouncil"
 
 
 def card(name, dates):
+    """Build a reduced collection card with the live page's widget structure."""
     # Reduced structure of the live page: headings and dates are in separate
     # widgets, while each waste type is enclosed by a gwBorderSlim container.
     fragments = "".join(
@@ -43,6 +44,7 @@ RESULTS_HTML = (
 
 
 def test_new_layout_keeps_dates_with_their_waste_type():
+    """Keep waste types paired with their dates and omit unsubscribed services."""
     assert CouncilClass()._parse_collections(RESULTS_HTML) == {
         "bins": [
             {"type": "Recycling", "collectionDate": "13/10/2026"},
@@ -53,6 +55,7 @@ def test_new_layout_keeps_dates_with_their_waste_type():
 
 
 def test_food_can_be_collected_with_general_waste_on_the_alternate_week():
+    """Read food's own date when it coincides with the general waste week."""
     html = RESULTS_HTML.replace(
         card("Food", ["Tuesday, 13 October 2026"]),
         card("Food", ["Tuesday, 20 October 2026"]),
@@ -63,6 +66,7 @@ def test_food_can_be_collected_with_general_waste_on_the_alternate_week():
 
 
 def test_subscribed_garden_waste_and_multiple_dates():
+    """Return all listed collection dates for subscribed garden waste."""
     html = card(
         "Garden waste", ["Tuesday, 20 October 2026", "Tuesday, 3 November 2026"]
     )
@@ -78,12 +82,14 @@ def test_subscribed_garden_waste_and_multiple_dates():
     "message", ["Collections suspended", "Restarting in March 2027"]
 )
 def test_suspended_service_is_skipped(message):
+    """Ignore suspension and restart messages instead of parsing them as dates."""
     assert CouncilClass()._parse_collections(card("Garden waste", [message])) == {
         "bins": []
     }
 
 
 def test_parse_data_uses_new_results_and_closes_driver():
+    """Select the requested address, parse its cards and close the browser."""
     driver = MagicMock()
     driver.page_source = RESULTS_HTML
     address = MagicMock()
@@ -101,9 +107,26 @@ def test_parse_data_uses_new_results_and_closes_driver():
 
 
 def test_driver_is_closed_on_timeout():
+    """Close the browser even when waiting for the page raises a timeout."""
     driver = MagicMock()
     with patch(f"{MODULE}.create_webdriver", return_value=driver), patch.object(
         CouncilClass, "wait_for_element_conditions", side_effect=TimeoutException
     ), pytest.raises(TimeoutException):
         CouncilClass().parse_data("", postcode="TN15 6EB", paon="60 Hever Road")
     driver.quit.assert_called_once()
+
+
+@pytest.mark.parametrize("blank_date", ["", " \n\t "])
+def test_blank_date_fragments_do_not_discard_valid_collections(blank_date):
+    """Skip empty or whitespace dates while retaining dates in other cards."""
+    html = (
+        card("Recycling", [blank_date])
+        + card("Food", [blank_date, "Tuesday, 13 October 2026"])
+        + card("General waste", ["Tuesday, 20 October 2026"])
+    )
+    assert CouncilClass()._parse_collections(html) == {
+        "bins": [
+            {"type": "Food", "collectionDate": "13/10/2026"},
+            {"type": "General waste", "collectionDate": "20/10/2026"},
+        ]
+    }
