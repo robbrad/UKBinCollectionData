@@ -50,9 +50,17 @@ class CouncilClass(AbstractGetBinDataClass):
                 if len(cells) != len(headers):
                     continue
 
-                collection_date = datetime.strptime(
-                    f"{cells[0]} {year}", "%A %d %B %Y"
-                )
+                # Skip rows that aren't a plain date (notes, footnotes etc.)
+                # rather than losing the whole calendar
+                try:
+                    collection_date = datetime.strptime(
+                        remove_ordinal_indicator_from_date_string(
+                            f"{cells[0]} {year}"
+                        ),
+                        "%A %d %B %Y",
+                    )
+                except ValueError:
+                    continue
 
                 for bin_type, collected in zip(headers[1:], cells[1:]):
                     if collected.lower() == "yes":
