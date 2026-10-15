@@ -121,6 +121,28 @@ If CI still fails after that, stop. Ship the change as a "best-effort, unverifia
 fix. Reference the issue with `Targets #N`, not `Fixes #N`, so it stays open, and ask the
 reporter to confirm (§8).
 
+### Blazor Server sites: a missing link doesn't mean missing data
+
+A Blazor Server page (look for `_framework/blazor.server.js` and a `wss://.../_blazor`
+WebSocket) runs its logic on the server, so a URL can exist without ever appearing in
+the DOM. Isle of Wight's calendar `<a class="download">` became
+`<button>View Collection Calendar</button>` with no href. The URL was still there: the
+server called a one-line JS interop helper, found by reading the site's own script
+(`/js/WasteDay/wasteDay.js`), which built an `<a download href="...pdf">` and clicked it.
+
+So before concluding a council has withdrawn its data:
+
+- Read the site's own `/js/**` files. They are small and they name the interop helpers.
+- Hook the sink, click the control, and read the URL back out with `execute_script`.
+  Hook **`HTMLAnchorElement.prototype.click`**, not the named interop function: Blazor
+  caches the function it resolved off `window`, so replacing that function has no effect
+  once the page has invoked it once. Hooking the anchor also stops a real download.
+- Driving one of these by hand: setting an input's `value` from JS does **not** register,
+  because Blazor re-renders and discards it. Type with the keyboard. For a `<select>`,
+  setting `value` plus a dispatched `new Event("change", {bubbles: true})` does work.
+- Expect a `StaleElementReferenceException` on the first render: the static server render
+  is replaced wholesale when SignalR hydrates. Re-fetch the element after it settles.
+
 ---
 
 ## 5. input.json: the part most easily got wrong
