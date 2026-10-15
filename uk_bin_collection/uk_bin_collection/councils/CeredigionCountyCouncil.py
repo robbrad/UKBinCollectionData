@@ -9,6 +9,17 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+# The link through to the council's postcode form, matched on the form id in
+# its href rather than its label. This used to be
+# `//a[contains(text(), 'Postcode Search')]`, which broke when the council
+# wrapped the label in a <span>: XPath's text() selects only an element's own
+# direct text nodes, so the text moved out of the anchor's reach. Matching the
+# href also survives the Welsh translation of the label. The label match is
+# kept as a fallback in case the form id changes instead.
+POSTCODE_SEARCH_LINK_XPATH = (
+    "//a[contains(@href, 'REFUSE_ROUTES')]" " | //a[contains(., 'Postcode Search')]"
+)
+
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -46,11 +57,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
                 pass
 
-            # Wait for postcode entry box
+            # Wait for the link through to the postcode form.
             postcode_search = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//a[contains(text(), 'Postcode Search')]")
-                )
+                EC.presence_of_element_located((By.XPATH, POSTCODE_SEARCH_LINK_XPATH))
             )
             driver.execute_script("arguments[0].scrollIntoView(true);", postcode_search)
 
