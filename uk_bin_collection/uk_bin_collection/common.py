@@ -387,7 +387,16 @@ def create_webdriver(
     options.add_argument("--window-size=1920,1080")
     if user_agent:
         options.add_argument(f"--user-agent={user_agent}")
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    # Some council sites have started fronting their bin-day checkers with
+    # Cloudflare's bot management, which can flag the automation tells
+    # ChromeDriver otherwise leaves in place (navigator.webdriver, the
+    # "Chrome is being controlled by automated test software" banner) even
+    # for a real, non-headless-detected browser.
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_experimental_option(
+        "excludeSwitches", ["enable-logging", "enable-automation"]
+    )
+    options.add_experimental_option("useAutomationExtension", False)
     if session_name and web_driver:
         options.set_capability("se:name", session_name)
 
