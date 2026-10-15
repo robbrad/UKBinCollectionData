@@ -1249,7 +1249,7 @@
         "uprn": "100050414307",
         "url": "https://secure.harrogate.gov.uk/inmyarea",
         "wiki_name": "Harrogate",
-        "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
+        "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed. Harrogate Borough Council was absorbed into North Yorkshire Council in 2023; this lookup still works, but if it stops, try the NorthYorkshire council instead."
     },
     "HartDistrictCouncil": {
         "LAD24CD": "E07000089",
@@ -2464,9 +2464,10 @@
     },
     "SouthendOnSeaCityCouncil": {
         "skip_get_url": true,
-        "uprn": "100090632281",
+        "uprn": "010012148303",
         "url": "https://www.southend.gov.uk",
-        "wiki_name": "Southend-on-Sea City"
+        "wiki_name": "Southend-on-Sea City",
+        "wiki_note": "Provide your UPRN. If you don't know it, enter your postcode at `https://apps.cloud9technologies.com/southend/citizenmobile/openapi/addresses?postcode=SS1+1AA` and read it from the JSON."
     },
     "SouthwarkCouncil": {
         "LAD24CD": "E09000028",
@@ -2630,12 +2631,11 @@
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "TamworthBoroughCouncil": {
-        "postcode": "B79 7BX",
         "skip_get_url": true,
-        "uprn": "100031767448",
+        "uprn": "394007949",
         "url": "https://www.tamworth.gov.uk",
         "wiki_name": "Tamworth Borough",
-        "wiki_note": "Uses the Lichfield District Council shared portal. Provide your UPRN."
+        "wiki_note": "Uses the Lichfield District Council shared portal, which identifies properties by its own 9-digit reference rather than a national UPRN - FindMyAddress will not give you the right number. Enter your postcode on the [bin collection dates page](https://www.lichfielddc.gov.uk/homepage/6/bin-collection-dates), select your address, and take the `uprn=` value from the resulting page's address bar."
     },
     "TandridgeDistrictCouncil": {
         "LAD24CD": "E07000215",
