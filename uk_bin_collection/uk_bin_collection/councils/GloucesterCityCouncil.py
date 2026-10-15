@@ -2,6 +2,10 @@ import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import (
+    StaleElementReferenceException,
+    TimeoutException,
+)
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
@@ -55,15 +59,40 @@ class CouncilClass(AbstractGetBinDataClass):
 
             inputElement_postcodesearch.send_keys(user_postcode)
 
-            # Wait for the 'Select address' dropdown to be updated
-            time.sleep(2)
+            # The 'Select address' dropdown is populated asynchronously once the
+            # postcode lookup returns, and is present and clickable before its
+            # options arrive. Waiting on the element plus a fixed sleep raced
+            # that, so select_by_value intermittently hit "Cannot locate option
+            # with value: <uprn>" on an otherwise healthy lookup. Wait for the
+            # option itself, re-finding the select each poll so a re-render
+            # can't hand us a stale element.
+            def address_option_present(d):
+                try:
+                    options = Select(d.find_element(By.NAME, "chooseAddress")).options
+                    return any(
+                        o.get_attribute("value") == str(user_uprn) for o in options
+                    )
+                except StaleElementReferenceException:
+                    return False
 
-            dropdown = wait.until(
-                EC.element_to_be_clickable((By.NAME, "chooseAddress"))
-            )
-            # Create a 'Select' for it, then select the first address in the list
-            # (Index 0 is "Select...")
-            dropdownSelect = Select(dropdown)
+            try:
+                wait.until(address_option_present)
+            except TimeoutException:
+                offered = [
+                    o.get_attribute("value")
+                    for o in Select(
+                        driver.find_element(By.NAME, "chooseAddress")
+                    ).options
+                    if o.get_attribute("value")
+                ]
+                raise ValueError(
+                    f"UPRN {user_uprn} was not offered for postcode "
+                    f"{user_postcode}. Gloucester returned "
+                    f"{len(offered)} address(es); check the UPRN belongs to "
+                    f"this postcode."
+                )
+
+            dropdownSelect = Select(driver.find_element(By.NAME, "chooseAddress"))
             dropdownSelect.select_by_value(str(user_uprn))
 
             # Wait for 'Searching for...' to be added to page
