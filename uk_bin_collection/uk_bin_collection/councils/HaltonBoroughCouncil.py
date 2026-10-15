@@ -2,6 +2,7 @@ import time
 from datetime import datetime
 
 from bs4 import BeautifulSoup
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -24,15 +25,15 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
         Retrieve bin collection dates for a property from Halton Council's waste service.
-        
+
         This method loads the council's waste service page, submits the provided property identifier and postcode, parses the resulting collection schedule, and returns structured bin collection entries.
-        
+
         Parameters:
             paon (str, via kwargs): Property identifier — house number or property name.
             postcode (str, via kwargs): Property postcode.
             web_driver (str or selenium.webdriver, via kwargs): Optional webdriver backend identifier or instance passed to create_webdriver.
             headless (bool, via kwargs): If True, the browser is created in headless mode.
-        
+
         Returns:
             dict: A dictionary with a single key "bins" containing a list of collection entries. Each entry is a dict with:
                 - "type" (str): Waste type name (capitalized).
@@ -98,9 +99,21 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
             )
             search_btn.send_keys(Keys.ENTER)
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "collectionTabs"))
-            )
+            try:
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.ID, "collectionTabs"))
+                )
+            except TimeoutException:
+                # The form posts back to itself; if Google served an image
+                # challenge the server rejects the search and re-renders the
+                # form with this validator message instead of the results.
+                if "check is not yet completed" in driver.page_source:
+                    raise ValueError(
+                        "Halton rejected the search because the reCAPTCHA was "
+                        "not completed (Google served a challenge to the "
+                        "automated browser)."
+                    )
+                raise
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
 
