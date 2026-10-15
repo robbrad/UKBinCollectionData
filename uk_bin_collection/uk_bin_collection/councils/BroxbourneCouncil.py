@@ -17,45 +17,51 @@ class CouncilClass(AbstractGetBinDataClass):
         user_postcode = kwargs.get("postcode")
         web_driver = kwargs.get("web_driver")
         headless = kwargs.get("headless")
-        
+
         check_uprn(user_uprn)
         check_postcode(user_postcode)
-        
+
         bindata = {"bins": []}
         # Use a realistic user agent to help bypass Cloudflare
         user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
         driver = create_webdriver(web_driver, headless, user_agent, __name__)
-        
+
         try:
             driver.get("https://www.broxbourne.gov.uk/bin-collection-date")
-            
+
             # Wait for Cloudflare challenge to complete
             print("Waiting for page to load (Cloudflare check)...")
             try:
                 WebDriverWait(driver, 45).until(
-                    lambda d: "Just a moment" not in d.title and d.title != "" and len(d.find_elements(By.TAG_NAME, "input")) > 0
+                    lambda d: "Just a moment" not in d.title
+                    and d.title != ""
+                    and len(d.find_elements(By.TAG_NAME, "input")) > 0
                 )
                 print(f"Page loaded: {driver.title}")
             except:
                 print(f"Timeout waiting for page load. Current title: {driver.title}")
                 # Try to continue anyway
                 pass
-            
+
             time.sleep(8)
-            
+
             # Handle cookie banner with multiple attempts
 
             try:
                 cookie_btn = WebDriverWait(driver, 15).until(
-                    EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Allow all')]"))
+                    EC.element_to_be_clickable(
+                        (By.XPATH, "//button[contains(text(), 'Allow all')]")
+                    )
                 )
                 cookie_btn.click()
             except:
                 pass
-            
+
             # Find postcode input
             postcode_input = WebDriverWait(driver, 20).until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@autocomplete='postal-code']"))
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//input[@autocomplete='postal-code']")
+                )
             )
 
             postcode_input.clear()
@@ -73,53 +79,95 @@ class CouncilClass(AbstractGetBinDataClass):
                     )
                 )
             )
+            # The council's own address lookup currently returns nothing but
+            # "My address was not found" for every postcode - including the
+            # EN11 8EH its own page carries a workaround note for. Say so,
+            # rather than letting select_by_value blame the user's UPRN.
+            options = [o.text.strip() for o in Select(address_select).options]
+            real_addresses = [
+                o
+                for o in options
+                if o and o != "Please choose..." and "not found" not in o.lower()
+            ]
+            if not real_addresses:
+                raise ValueError(
+                    f"Broxbourne's address lookup returned no addresses for "
+                    f"postcode {user_postcode} - its own search is currently "
+                    f"broken for every postcode, so this cannot be fixed here. "
+                    f"Try again once the council has restored it."
+                )
+
             Select(address_select).select_by_value(user_uprn)
-            
+
             # Click Next button
             next_btn = WebDriverWait(driver, 15).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Next')]"))
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//button[contains(text(), 'Next')]")
+                )
             )
             next_btn.click()
-            
+
             # Get results
             WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located((By.XPATH, "//h1[contains(text(), 'When is my bin collection date?')]"))
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//h1[contains(text(), 'When is my bin collection date?')]",
+                    )
+                )
             )
-            
+
             table = WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located((By.XPATH, "//h1[contains(text(), 'When is my bin collection date?')]/following::table[1]"))
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//h1[contains(text(), 'When is my bin collection date?')]/following::table[1]",
+                    )
+                )
             )
-            
-            soup = BeautifulSoup(table.get_attribute('outerHTML'), 'html.parser')
-            rows = soup.find_all('tr')
-            
+
+            soup = BeautifulSoup(table.get_attribute("outerHTML"), "html.parser")
+            rows = soup.find_all("tr")
+
             current_year = datetime.now().year
             current_month = datetime.now().month
-            
+
             for row in rows[1:]:
-                columns = row.find_all('td')
+                columns = row.find_all("td")
                 if len(columns) >= 2:
                     collection_date_text = columns[0].get_text().strip()
                     service = columns[1].get_text().strip()
-                    
+
                     if collection_date_text:
                         try:
-                            collection_date = datetime.strptime(collection_date_text, "%a %d %b")
+                            collection_date = datetime.strptime(
+                                collection_date_text, "%a %d %b"
+                            )
                             if collection_date.month == 1 and current_month != 1:
-                                collection_date = collection_date.replace(year=current_year + 1)
+                                collection_date = collection_date.replace(
+                                    year=current_year + 1
+                                )
                             else:
-                                collection_date = collection_date.replace(year=current_year)
-                            
-                            bindata["bins"].append({
-                                "type": service,
-                                "collectionDate": collection_date.strftime("%d/%m/%Y")
-                            })
+                                collection_date = collection_date.replace(
+                                    year=current_year
+                                )
+
+                            bindata["bins"].append(
+                                {
+                                    "type": service,
+                                    "collectionDate": collection_date.strftime(
+                                        "%d/%m/%Y"
+                                    ),
+                                }
+                            )
                         except ValueError:
                             continue
-            
-            bindata["bins"].sort(key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y"))
-            
+
+            bindata["bins"].sort(
+                key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
+            )
+
         finally:
             driver.quit()
-            
+
         return bindata

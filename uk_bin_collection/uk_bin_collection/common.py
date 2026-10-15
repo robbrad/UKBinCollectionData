@@ -2,6 +2,7 @@ import calendar
 import json
 import os
 import re
+import sys
 from datetime import datetime, timedelta
 from enum import Enum
 from importlib.metadata import PackageNotFoundError, version as _pkg_version
@@ -361,6 +362,89 @@ def contains_date(string, fuzzy=False) -> bool:
         return False
 
 
+_local_chrome_major: str = ""
+
+
+def get_local_chrome_major_version() -> str:
+    """
+    Return the major version of the locally installed Chrome, e.g. "154", or an
+    empty string if it can't be determined. Cached, since the lookup shells out
+    to the OS and every council in a run would otherwise repeat it.
+    """
+    global _local_chrome_major
+    if _local_chrome_major == "":
+        try:
+            from webdriver_manager.core.os_manager import (
+                ChromeType,
+                OperationSystemManager,
+            )
+
+            full = OperationSystemManager().get_browser_version_from_os(
+                ChromeType.GOOGLE
+            )
+            _local_chrome_major = (full or "").split(".")[0]
+        except Exception:
+            _local_chrome_major = None
+    return _local_chrome_major or ""
+
+
+#         sys.platform prefix -> the platform token real Chrome sends there
+_UA_PLATFORM_TOKENS = (
+    ("win", "Windows NT 10.0; Win64; x64"),
+    ("darwin", "Macintosh; Intel Mac OS X 10_15_7"),
+    ("linux", "X11; Linux x86_64"),
+)
+
+
+def get_local_ua_platform_token() -> str:
+    """
+    Return the User-Agent platform token real Chrome sends on this OS, e.g.
+    "Windows NT 10.0; Win64; x64", or an empty string for an OS we don't map.
+    """
+    for prefix, token in _UA_PLATFORM_TOKENS:
+        if sys.platform.startswith(prefix):
+            return token
+    return ""
+
+
+def align_user_agent_to_browser(
+    user_agent: str, chrome_major: str, platform_token: str = ""
+) -> str:
+    """
+    Rewrite a user agent's Chrome major version and platform token so they
+    match the browser that will actually send them.
+
+    Councils' scrapers hardcode a User-Agent string, which goes stale as Chrome
+    moves on and is wrong on any OS but the author's. Cloudflare's bot
+    management compares the claimed values against what the browser's own
+    JavaScript reports, so announcing "Chrome/134" from a Chrome 154 binary, or
+    "X11; Linux x86_64" from Windows, earns an endless "Just a moment..."
+    interstitial - the exact symptom that looked like a CI-only IP block. GOSS
+    iCM councils serve it on the form POST rather than the first page load,
+    which made it look like a selector change instead.
+
+        :param user_agent: The User-Agent the caller asked for
+        :param chrome_major: Major version of the real browser, e.g. "154"
+        :param platform_token: The real platform token, e.g. "Windows NT 10.0; Win64; x64"
+        :return: The user agent realigned to the real browser
+    """
+    if not user_agent:
+        return user_agent
+    if chrome_major:
+        user_agent = re.sub(
+            r"\b(Chrome|Edg)/(\d+)\b",
+            lambda m: f"{m.group(1)}/{chrome_major}",
+            user_agent,
+        )
+    if platform_token:
+        user_agent = re.sub(
+            r"^(Mozilla/[\d.]+ )\(([^)]*)\)",
+            lambda m: f"{m.group(1)}({platform_token})",
+            user_agent,
+        )
+    return user_agent
+
+
 def create_webdriver(
     web_driver: str = None,
     headless: bool = True,
@@ -386,6 +470,14 @@ def create_webdriver(
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
     if user_agent:
+        # Only the local browser's version is knowable up front; a remote grid's
+        # Chrome is whatever the image ships, so leave that caller's UA alone.
+        if not web_driver:
+            user_agent = align_user_agent_to_browser(
+                user_agent,
+                get_local_chrome_major_version(),
+                get_local_ua_platform_token(),
+            )
         options.add_argument(f"--user-agent={user_agent}")
     # Some council sites have started fronting their bin-day checkers with
     # Cloudflare's bot management, which can flag the automation tells

@@ -1,10 +1,17 @@
+import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+# The council's site is fronted by an Azure Application Gateway that 403s the
+# default python-requests User-Agent - identify the scraper honestly instead.
+_HEADERS = {"User-Agent": get_scraper_user_agent()}
+
+# The old /repositories/hidden-pages/bin-finder page now 404s. The site's own
+# address lookup (scripts/TDC/autocomplete.js) loads results from this Umbraco
+# surface controller instead, which returns the same collection-card fragment.
+API_URL = "https://www.teignbridge.gov.uk/umbraco/surface/bincollection/GetCollections"
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -16,54 +23,49 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            user_uprn = kwargs.get("uprn")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_uprn(user_uprn)
-            bindata = {"bins": []}
+        user_uprn = kwargs.get("uprn")
+        check_uprn(user_uprn)
+        bindata = {"bins": []}
 
-            URI = f"https://www.teignbridge.gov.uk/repositories/hidden-pages/bin-finder?uprn={user_uprn}"
-
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(URI)
-
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            collection_dates = soup.find_all(
-                "h3"
-            )  # Assuming bin types are inside <h3> tags
-            bin_type_headers = soup.find_all(
-                "div", {"class": "binInfoContainer"}
-            )  # Assuming collection dates are inside <p> tags
-
-            # Iterate over the results and extract bin type and collection dates
-            for i, date in enumerate(collection_dates):
-                collection_date = date.get_text(strip=True)
-
-                bin_types = bin_type_headers[i].find_all("div")
-                for bin_type in bin_types:
-                    dict_data = {
-                        "type": bin_type.text.strip(),
-                        "collectionDate": datetime.strptime(
-                            collection_date,
-                            "%d %B %Y%A",
-                        ).strftime("%d/%m/%Y"),
-                    }
-                    bindata["bins"].append(dict_data)
-
-            bindata["bins"].sort(
-                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
+        response = requests.get(
+            API_URL, params={"uprn": user_uprn}, headers=_HEADERS, timeout=30
+        )
+        if response.status_code == 403:
+            raise ConnectionError(
+                "Teignbridge's website returned 403 Forbidden - its Azure "
+                "Application Gateway is blocking this client, not rejecting "
+                "the UPRN."
             )
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, features="html.parser")
+
+        # Each collection day is an <h3 class="binCollectionH3"> holding the
+        # date and weekday, followed by a container of that day's bin types.
+        collection_dates = soup.find_all("h3", class_="binCollectionH3")
+        bin_type_containers = soup.find_all("div", {"class": "binInfoContainer"})
+
+        if not collection_dates:
+            raise ValueError(
+                f"Teignbridge returned no collection days for UPRN {user_uprn}. "
+                f"Check the UPRN is a current Teignbridge household address."
+            )
+
+        for date_heading, container in zip(collection_dates, bin_type_containers):
+            # e.g. "15 October 2026Thursday" - the weekday is a nested span
+            # with no separator, which "%d %B %Y%A" consumes directly.
+            collection_date = date_heading.get_text(strip=True)
+            parsed_date = datetime.strptime(collection_date, "%d %B %Y%A")
+
+            for bin_type in container.find_all("div", {"class": "binInfoLine"}):
+                bindata["bins"].append(
+                    {
+                        "type": bin_type.get_text(strip=True),
+                        "collectionDate": parsed_date.strftime(date_format),
+                    }
+                )
+
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
+        )
         return bindata

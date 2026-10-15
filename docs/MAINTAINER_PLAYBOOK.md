@@ -121,6 +121,28 @@ If CI still fails after that, stop. Ship the change as a "best-effort, unverifia
 fix. Reference the issue with `Targets #N`, not `Fixes #N`, so it stays open, and ask the
 reporter to confirm (§8).
 
+### Blazor Server sites: a missing link doesn't mean missing data
+
+A Blazor Server page (look for `_framework/blazor.server.js` and a `wss://.../_blazor`
+WebSocket) runs its logic on the server, so a URL can exist without ever appearing in
+the DOM. Isle of Wight's calendar `<a class="download">` became
+`<button>View Collection Calendar</button>` with no href. The URL was still there: the
+server called a one-line JS interop helper, found by reading the site's own script
+(`/js/WasteDay/wasteDay.js`), which built an `<a download href="...pdf">` and clicked it.
+
+So before concluding a council has withdrawn its data:
+
+- Read the site's own `/js/**` files. They are small and they name the interop helpers.
+- Hook the sink, click the control, and read the URL back out with `execute_script`.
+  Hook **`HTMLAnchorElement.prototype.click`**, not the named interop function: Blazor
+  caches the function it resolved off `window`, so replacing that function has no effect
+  once the page has invoked it once. Hooking the anchor also stops a real download.
+- Driving one of these by hand: setting an input's `value` from JS does **not** register,
+  because Blazor re-renders and discards it. Type with the keyboard. For a `<select>`,
+  setting `value` plus a dispatched `new Event("change", {bubbles: true})` does work.
+- Expect a `StaleElementReferenceException` on the first render: the static server render
+  is replaced wholesale when SignalR hydrates. Re-fetch the element after it settles.
+
 ---
 
 ## 5. input.json: the part most easily got wrong
@@ -164,8 +186,9 @@ and occasionally `paon` or `custom_component_show_url_field`.
 ### Parity check: what it really does
 
 `council_feature_input_parity.py` checks **one thing**: the set of `councils/*.py`
-basenames (minus `NON_COUNCIL_FILES`) equals the set of input.json keys. Despite the CI
-step's name, it doesn't look at the feature file or at field correctness.
+basenames (minus `NON_COUNCIL_FILES` and `RETIRED_COUNCILS`) equals the set of
+input.json keys. Despite the CI step's name, it doesn't look at the feature file or at
+field correctness.
 
 **It reads from the GitHub API, not your working tree.** `make parity-check` without
 `repo=… branch=…` checks **master**. So either push first and run
@@ -173,16 +196,44 @@ step's name, it doesn't look at the feature file or at field correctness.
 offline equivalent, which works in the sandbox:
 
 ```bash
-python3 - <<'EOF'
-import json, pathlib
-files = {p.stem for p in pathlib.Path("uk_bin_collection/uk_bin_collection/councils").glob("*.py")} - {"SocietyWorks", "__init__"}
+poetry run python - <<'EOF'
+import importlib, json, pathlib
+# Read the exclusions out of the real check so this can't drift from it.
+# Needs the project's venv, since the parity module imports requests.
+parity = importlib.import_module("uk_bin_collection.tests.council_feature_input_parity")
+excluded = {"__init__"} | parity.NON_COUNCIL_FILES | parity.RETIRED_COUNCILS
+files = {p.stem for p in pathlib.Path("uk_bin_collection/uk_bin_collection/councils").glob("*.py")} - excluded
 keys = set(json.load(open("uk_bin_collection/tests/input.json")))
 print("missing from input.json:", sorted(files - keys)); print("no class file:", sorted(keys - files))
 EOF
 jq empty uk_bin_collection/tests/input.json && echo "input.json is valid JSON"
 ```
 
-(Add any new base class to the exclusion set here *and* in `NON_COUNCIL_FILES`.)
+(Add a new base class to `NON_COUNCIL_FILES` and a retired council to
+`RETIRED_COUNCILS`; the snippet reads both, so there's nothing to keep in step here.
+§9a has a longer version that also checks the `web_driver` field.)
+
+### Retiring a council
+
+When a council puts its bin lookup behind a login and no public endpoint is left, don't
+delete the class file - `collect_data.import_council_module` imports it by the name
+stored verbatim in each HA user's saved config, so deleting it turns an explainable
+failure into an `ImportError`. Instead:
+
+1. Replace the body of `councils/<Council>.py` with a `CouncilClass` whose `parse_data`
+   raises immediately, with a message naming and linking the portal that replaced it, and
+   a docstring giving the reason and the date.
+2. Remove the entry from `input.json`, so the live suite stops testing it and the HA
+   config flow stops offering it to new users.
+3. Add the class name to `RETIRED_COUNCILS` in `council_feature_input_parity.py` (not to
+   `NON_COUNCIL_FILES` - that's for shared base classes). The offline snippets read that
+   set, so there's nothing else to update.
+4. Add an offline test asserting the error message, as in `test_fylde_council.py`.
+
+`wiki/Councils.md` is auto-generated from input.json by the `Deploy - Wiki` workflow on
+master pushes, so leave it alone; it drops the council on merge. Existing HA users keep
+their sensors until they remove the council from their config, but now get a message
+that says why.
 
 ---
 
@@ -273,12 +324,111 @@ poetry run black --check uk_bin_collection/uk_bin_collection/councils/<File>.py
 - **Known sandbox-only failures, not bugs**: `test_check_postcode_valid` and
   `test_check_postcode_invalid` (need api.postcodes.io), and `test_create_webdriver_local`
   (chromedriver download). Mention them in the test plan and move on.
+- **`black .` checks almost nothing in this repo.** `.gitignore` opens with `*`
+  ("ignore everything") and then re-includes patterns like `!*.py`. black honours
+  `.gitignore`, and no *directory* is re-included, so handing it a directory silently
+  skips every subdirectory - `black .` sees two root-level files. Always pass the files
+  you changed explicitly, e.g.
+  `git diff --name-only origin/master..HEAD | grep '\.py$' | xargs poetry run black --check`.
+  (`bin_to_ics.py` is already unformatted on master; leave it unless you're fixing it
+  on purpose.)
 - **Add an offline unit test for every parser fix.** Feed a saved or hand-built HTML snippet
   to the parsing function, as in `test_adur_and_worthing_councils.py` and
   `test_south_lanarkshire_council.py`. It's the only part of the fix the sandbox can verify,
   and it pins the new page shape.
 - The live suite, `pytest uk_bin_collection/tests/step_defs/ -k <Council>`, can't reach
-  sites from the sandbox. Use the CI loop (§2).
+  sites from the sandbox. Use the CI loop (§2), or run it locally (§9a).
+
+---
+
+## 9a. Running the live suite locally (the fast path)
+
+A session on a **UK residential connection** can run the whole live suite itself, in
+about **9 minutes** for all ~352 councils. That is faster and far more informative than
+the CI loop, and it is the only way to tell a real breakage from an IP or fingerprint
+block. Prefer it whenever the machine has a UK connection and a real Chrome.
+
+```bash
+poetry env use python3.14 && make install-dev     # Python 3.14.2+ (the HA dev dep needs it)
+make unit-tests                                   # must be 100% green here; no sandbox excuses
+poetry run pytest uk_bin_collection/tests/step_defs/ -n 4 --local_browser True -q --tb=line --junit-xml=live.xml
+```
+
+- `--local_browser True` makes `create_webdriver` use the local Chrome instead of a grid.
+  Install Chrome; `webdriver-manager` fetches a matching chromedriver on first run.
+- **Always pass `--junit-xml`.** With `-n 4` the console output interleaves; the XML is
+  the only reliable way to get per-council pass/fail and failure messages afterwards.
+- **Always re-run the failures serially** before believing them:
+  `pytest uk_bin_collection/tests/step_defs/ -k "A or B or C" --local_browser True`.
+  In the October 2026 pass this turned 27 parallel failures into 24 real ones - Arun,
+  St Helens and Wealden were purely concurrency noise.
+
+### On Windows specifically
+
+- There is no `make`; run the Makefile's commands directly (§9 lists them).
+- `poetry env use python3.14` fails - no such executable. Use the full path:
+  `poetry env use "$LOCALAPPDATA/Programs/Python/Python314/python.exe"`.
+- Never run `chrome.exe --version` to check Chrome; it launches a browser window.
+  Use `(Get-Item "C:\Program Files\Google\Chrome\Application\chrome.exe").VersionInfo.ProductVersion`.
+- `check_selenium_url_in_input.json.py` crashes on a `UnicodeEncodeError` writing its
+  tick characters to a cp1252 console. Prefix with `PYTHONIOENCODING=utf-8`. It also
+  reads from the **GitHub API**, like the parity check (§5), so it checks master and
+  silently checks nothing at all when rate-limited. Use this offline equivalent:
+
+```bash
+poetry run python - <<'EOF'
+import importlib, json, pathlib
+# Read the exclusions out of the real check so this can't drift from it.
+parity = importlib.import_module("uk_bin_collection.tests.council_feature_input_parity")
+excluded = {"__init__"} | getattr(parity, "NON_COUNCIL_FILES", set()) \
+                        | getattr(parity, "RETIRED_COUNCILS", set())
+root = pathlib.Path("uk_bin_collection/uk_bin_collection/councils")
+data = json.load(open("uk_bin_collection/tests/input.json"))
+files = {p.stem: p.read_text(encoding="utf-8") for p in root.glob("*.py")
+         if p.stem not in excluded}
+print("missing from input.json:", sorted(set(files) - set(data)))
+print("no class file:", sorted(set(data) - set(files)))
+for name, src in sorted(files.items()):
+    uses, has = "create_webdriver" in src, "web_driver" in data.get(name, {})
+    if uses != has:
+        print(f"  web_driver mismatch: {name} uses={uses} has={has}")
+EOF
+```
+
+### "Cloudflare / WAF block" is usually not about the IP
+
+Before concluding that a council blocks the runner's IP, check what actually blocks it.
+Most of the October 2026 "Cloudflare challenge in CI" list was a **client fingerprint**
+problem reproducible anywhere:
+
+| Symptom | Real cause | What works |
+|---|---|---|
+| 403 + `server: Microsoft-Azure-Application-Gateway/v2` | the default `python-requests` User-Agent | `headers={"User-Agent": get_scraper_user_agent()}` (Herefordshire, East Devon) |
+| 403 + `server: cloudflare`, `cf-mitigated: challenge` on a plain GET | TLS/JA3 fingerprint | `curl_cffi.requests.Session(impersonate="chrome")` |
+| Selenium reaches the form, then times out on the **next** step, page title `Just a moment...` | the scraper's hardcoded UA claims a stale Chrome version and/or the wrong OS | fixed centrally in `create_webdriver` (§9b) |
+| `Just a moment...` even with a correct UA and a real local Chrome | Cloudflare Turnstile | needs `undetected-chromedriver`, non-headless |
+
+Diagnose it in one shot rather than guessing - compare a plain `requests` GET against a
+`curl_cffi` impersonated one and read `status`, `server` and `cf-mitigated`.
+
+## 9b. Scraper User-Agents: do not hardcode a Chrome version
+
+Most Selenium councils pass a literal UA such as
+`"Mozilla/5.0 (X11; Linux x86_64) ... Chrome/138.0.0.0 Safari/537.36"`. Both halves rot:
+the version goes stale, and the platform token is wrong on any OS but the author's.
+Cloudflare compares both against what the browser's own JavaScript reports, and serves
+an interstitial on the mismatch - on GOSS iCM sites it arrives on the **form POST**, so
+the scraper gets through the postcode step and then times out waiting for the address
+dropdown. That reads exactly like a selector change, which is how these ended up
+mis-triaged as IP blocks.
+
+`create_webdriver` now rewrites a local driver's UA to the real Chrome major version and
+this OS's platform token (`align_user_agent_to_browser`). A **remote** grid's Chrome is
+whatever its image ships, so a remote caller's UA is passed through untouched - keep that
+in mind when CI and a local run disagree.
+
+When writing a new Selenium scraper, pass a plain modern UA and let `create_webdriver`
+align it. Don't try to out-clever it per council.
 
 ---
 

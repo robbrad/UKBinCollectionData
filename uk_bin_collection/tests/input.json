@@ -724,11 +724,13 @@
     },
     "DoncasterCouncil": {
         "LAD24CD": "E08000017",
+        "house_number": "The Laurels Nursing Home",
+        "postcode": "DN6 9EU",
         "skip_get_url": true,
-        "uprn": "100050768956",
-        "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
+        "url": "https://doncaster-wasterecycling.oncreate.app/w/webpage/bin-query",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Doncaster",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Pass the house number (or house name) in the `house_number` parameter, wrapped in double quotes, and the postcode in the `postcode` parameter. The council's new waste app searches by postcode and property, so a UPRN is no longer accepted."
     },
     "DorsetCouncil": {
         "LAD24CD": "E06000059",
@@ -1063,15 +1065,6 @@
         "wiki_name": "Forest of Dean",
         "wiki_note": "Pass the full address in the house number and postcode parameters. This parser requires a Selenium webdriver."
     },
-    "FyldeCouncil": {
-        "LAD24CD": "E07000119",
-        "skip_get_url": true,
-        "uprn": "100010402452",
-        "url": "https://www.fylde.gov.uk",
-        "wiki_command_url_override": "https://www.fylde.gov.uk",
-        "wiki_name": "Fylde",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
-    },
     "GatesheadCouncil": {
         "LAD24CD": "E08000037",
         "house_number": "Bracken Cottage",
@@ -1249,7 +1242,7 @@
         "uprn": "100050414307",
         "url": "https://secure.harrogate.gov.uk/inmyarea",
         "wiki_name": "Harrogate",
-        "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed."
+        "wiki_note": "Pass the UPRN, which can be found at [this site](https://secure.harrogate.gov.uk/inmyarea). URL doesn't need to be passed. Harrogate Borough Council was absorbed into North Yorkshire Council in 2023; this lookup still works, but if it stops, try the NorthYorkshire council instead."
     },
     "HartDistrictCouncil": {
         "LAD24CD": "E07000089",
@@ -1390,13 +1383,13 @@
         "wiki_note": "Pass either UPRN or postcode/house number. URL is not used."
     },
     "IsleOfWightCouncil": {
-        "house_number": "County Hall",
-        "postcode": "PO30 1UD",
+        "house_number": "Orme House Nursery 125",
+        "postcode": "PO30 1JW",
         "skip_get_url": true,
         "url": "https://digitalservices.iow.gov.uk/wasteday",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Isle of Wight",
-        "wiki_note": "Pass your postcode and house number/name in their respective parameters."
+        "wiki_note": "Pass your postcode and house number/name in their respective parameters. The council only holds collection details for properties on a domestic round, so a non-domestic address returns no data. Dates come from the council's own round calendar PDF, which covers May to the following April and shows no collection on the two bank holidays that fall on a collection day (Christmas Day and New Year's Day in 2026/27)."
     },
     "IslingtonCouncil": {
         "LAD24CD": "E09000019",
@@ -1874,13 +1867,11 @@
     },
     "NorthEastDerbyshireDistrictCouncil": {
         "LAD24CD": "E07000038",
-        "postcode": "S42 5RB",
+        "house_number": "North, Monday",
         "skip_get_url": true,
-        "uprn": "010034492222",
-        "url": "https://myselfservice.ne-derbyshire.gov.uk/service/Check_your_Bin_Day",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.ne-derbyshire.gov.uk/bins-and-recycling/bin-collection-dates",
         "wiki_name": "North East Derbyshire",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
+        "wiki_note": "BREAKING CHANGE: this council no longer uses a UPRN, a postcode or a Selenium webdriver - existing users must reconfigure. The council withdrew its per-address bin-day lookup, so collections are now read from the published North and South area calendars. Pass your collection area and your normal collection weekday in the house number field, separated by a comma, e.g. 'North, Monday' or 'Clay Cross, Friday'. The area is 'North' (Calendar A) or 'South' (Calendar B), or any settlement listed under 'Which calendar do I use?' on the council page; Sutton and Temple Normanton are on both calendars, so those residents must pass 'North' or 'South' explicitly. The calendars give one entry per week, so your weekday decides the dates; bank-holiday weeks are shifted a day later automatically, but the Christmas catch-up collections are not covered."
     },
     "NorthEastLincs": {
         "LAD24CD": "E06000012",
@@ -2464,9 +2455,10 @@
     },
     "SouthendOnSeaCityCouncil": {
         "skip_get_url": true,
-        "uprn": "100090632281",
+        "uprn": "010012148303",
         "url": "https://www.southend.gov.uk",
-        "wiki_name": "Southend-on-Sea City"
+        "wiki_name": "Southend-on-Sea City",
+        "wiki_note": "Provide your UPRN. If you don't know it, enter your postcode at `https://apps.cloud9technologies.com/southend/citizenmobile/openapi/addresses?postcode=SS1+1AA` and read it from the JSON."
     },
     "SouthwarkCouncil": {
         "LAD24CD": "E09000028",
@@ -2630,12 +2622,11 @@
         "wiki_note": "Provide your UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "TamworthBoroughCouncil": {
-        "postcode": "B79 7BX",
         "skip_get_url": true,
-        "uprn": "100031767448",
+        "uprn": "394007949",
         "url": "https://www.tamworth.gov.uk",
         "wiki_name": "Tamworth Borough",
-        "wiki_note": "Uses the Lichfield District Council shared portal. Provide your UPRN."
+        "wiki_note": "Uses the Lichfield District Council shared portal, which identifies properties by its own 9-digit reference rather than a national UPRN - FindMyAddress will not give you the right number. Enter your postcode on the [bin collection dates page](https://www.lichfielddc.gov.uk/homepage/6/bin-collection-dates), select your address, and take the `uprn=` value from the resulting page's address bar."
     },
     "TandridgeDistrictCouncil": {
         "LAD24CD": "E07000215",
@@ -2647,12 +2638,11 @@
     },
     "TeignbridgeCouncil": {
         "LAD24CD": "E07000045",
+        "skip_get_url": true,
         "uprn": "100040338776",
-        "url": "https://www.google.co.uk",
-        "web_driver": "http://selenium:4444",
-        "wiki_command_url_override": "https://www.google.co.uk",
+        "url": "https://www.teignbridge.gov.uk/recycling-and-waste/bin-and-box-collections/when-are-my-bins-and-boxes-collected/",
         "wiki_name": "Teignbridge",
-        "wiki_note": "Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+        "wiki_note": "Provide the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it. URL doesn't need to be passed."
     },
     "TelfordAndWrekinCouncil": {
         "LAD24CD": "E06000020",
