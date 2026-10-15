@@ -1,0 +1,307 @@
+# UKBinCollectionData maintenance playbook (for a future Claude session)
+
+Distilled from the Sept/Oct 2026 passes (PRs #2242, #2268, #2269, #2272). Read all of it
+before touching anything; §0 and §11 are checklists you can run straight through.
+
+---
+
+## 0. Session-start checklist
+
+1. `git fetch origin master && git branch -f master origin/master`. A stale local
+   `master` makes small PRs look like 25-file diffs.
+2. Check that the **last release actually shipped**. In the latest `Release - Bump Version`
+   run on master, the conclusion should be `success` and a `bump: version X → Y` commit
+   should exist:
+   `gh api "repos/robbrad/UKBinCollectionData/actions/runs?branch=master&per_page=15" --jq '.workflow_runs[]|[.name,.head_sha[0:7],.conclusion]|@tsv'`
+3. List open PRs and open issues. Read **every comment** on each, not just the body.
+   Reporters often post the root cause, a working curl, or a second council with the same
+   failure.
+4. Skim the root-level `ISSUE_RESOLUTION_PROGRESS.md` and `CI_FAILURE_TRIAGE.md`. They
+   record earlier triage, including councils already known to be blocked.
+
+---
+
+## 1. Repo shape: what a "council" actually is
+
+Each council needs **two things kept in sync**:
+
+| Piece | Path | Consumed by |
+|---|---|---|
+| Scraper class | `uk_bin_collection/uk_bin_collection/councils/<Name>.py` | CLI, HA integration, API server |
+| Config entry | `uk_bin_collection/tests/input.json`, key = `<Name>` exactly | see §5 (it does much more than test data) |
+
+Shared base classes, such as `SocietyWorks.py`, live in `councils/` but are not councils.
+They are listed in `NON_COUNCIL_FILES` in `council_feature_input_parity.py` instead of
+getting an input.json entry.
+
+---
+
+## 2. The sandbox can't reach council sites, so CI does the live testing
+
+### How the PR integration job really works (`.github/workflows/behave_pull_request.yml`)
+
+- It triggers on `pull_request` to master only, never on a plain branch push. A **draft PR**
+  also triggers it, so open diagnostic PRs as drafts.
+- `paths-ignore` covers `**/*.md`, `wiki/**` and `uk_bin_collection_api_server/**`. A PR that
+  only touches those runs no tests.
+- **It only live-tests councils whose `councils/*.py` file changed in the PR.** The file
+  basenames are joined into `pytest -k "A or B or C"`. Consequences:
+  - Changing a **base class** (`SocietyWorks.py`) or `common.py` / `get_bin_data.py`
+    live-tests **nothing**. The October SocietyWorks UA fix was never live-tested in CI for
+    this reason. To cover dependents, make a trivial change to one subclass file in a
+    throwaway diagnostic PR.
+  - Changing only `input.json` (e.g. new test data) also live-tests nothing.
+  - To diagnose a council you haven't fixed yet, the diagnostic print in its `.py` *is*
+    what puts it in the matrix.
+- **The integration step has `continue-on-error: true`**, so the check run is green even
+  when councils fail. Never read "Run Integration Tests ✅" as "passed". Always read the
+  pytest summary line (`N failed, M passed`) in the log (§3).
+
+### The diagnostic loop
+
+1. Add `print("[diagnostic] ...")` lines covering status code, `response.url` after
+   redirects, page title, and candidate links or selectors. **Batch every council you're
+   investigating into one draft PR per round.** One CI run then tests them all in parallel.
+2. Push, wait about 3 to 5 minutes for "Run Integration Tests", then parse the log (§3).
+3. Fix, **delete the diagnostics**, push, and re-check.
+4. If a diagnostic led nowhere, revert the file completely
+   (`git checkout origin/master -- <file>`) and confirm the diff is empty.
+
+---
+
+## 3. Reading CI logs efficiently
+
+- `mcp__github__get_job_logs` with `return_content: true` usually exceeds the output limit
+  and gets saved to a file. That's fine: parse the file, don't Read it.
+- Built-in `gh api` can list runs, jobs and job **steps**
+  (`repos/.../actions/jobs/<id>` → `.steps[]`) and **annotations**. It can't fetch log
+  bodies, because those redirect to blob storage. Use the MCP tool for log content.
+
+Reusable parser. Save it once and pass it the saved file path:
+
+```python
+# parse_ci_log.py  — usage: python3 -I parse_ci_log.py <saved-tool-result.txt> [Council ...]
+import json, re, sys, warnings
+warnings.filterwarnings("ignore")
+raw = open(sys.argv[1]).read()
+try: logs = json.loads(raw)["logs_content"]
+except Exception: logs = raw
+logs = logs.encode().decode("unicode_escape", errors="ignore")
+print(*re.findall(r"=+ .*(?:passed|failed).* =+", logs), sep="\n")
+print("FAILED:", sorted(set(re.findall(r"FAILED .*?\[(\w+)\]", logs))))
+for name in sys.argv[2:]:
+    for m in re.finditer(rf"_+ test_scenario_outline\[{name}\] _+", logs):
+        print(logs[m.start(): m.start() + 6000])
+print(*sorted(set(re.findall(r"\[diagnostic\][^\n]*", logs))), sep="\n")
+```
+
+---
+
+## 4. A dead end that keeps coming back: CI IPs are blocked
+
+Some council WAFs block GitHub-runner IPs whatever the client does:
+
+- **Cloudflare**: a 403 with `cf-mitigated: challenge`, or a "Just a moment..." page even
+  for real Selenium. Seen on Sunderland, Gateshead, Stockton-on-Tees and Boston.
+- **Azure App Gateway**: a bare 403 from `Microsoft-Azure-Application-Gateway/v2`. Seen on
+  Exeter and Teignbridge.
+
+Try each of these **once**:
+
+- `from curl_cffi import requests as cffi_requests` with
+  `cffi_requests.Session(impersonate="chrome")`. This fixed Sunderland for real users
+  even though CI still got a 403.
+- The stealth flags already in `create_webdriver()` in `common.py`, now on by default.
+
+If CI still fails after that, stop. Ship the change as a "best-effort, unverifiable from CI"
+fix. Reference the issue with `Targets #N`, not `Fixes #N`, so it stays open, and ask the
+reporter to confirm (§8).
+
+---
+
+## 5. input.json: the part most easily got wrong
+
+`input.json` is **not just test fixtures**. It has four consumers:
+
+1. **Integration tests**: `test_validate_council.py` parametrises over its keys and
+   passes `url`, `uprn`, `postcode`, `house_number`/`paon`, `web_driver` and
+   `skip_get_url` to the scraper.
+2. **The Home Assistant config flow**: `custom_components/uk_bin_collection/const.py`
+   `INPUT_JSON_URL` fetches input.json **from the release tag**, e.g. `.../0.172.5/...`.
+   The fields present decide which inputs the HA UI shows the user. For example,
+   `web_driver` present means a Selenium URL field, and `skip_get_url` hides the URL field
+   unless `custom_component_show_url_field` is set. Because it's pinned to a tag, an
+   input.json change only reaches HA users **after a release**.
+3. **The wiki**: `wiki/generate_wiki.py` builds the council list from `wiki_name` and
+   `wiki_note`. `wiki.yml` runs it on master pushes that touch input.json.
+4. **The coverage map**: `LAD24CD` is the ONS local-authority code.
+
+Fields in use: `url` and `wiki_name` are always present. `wiki_note`, `LAD24CD` and
+`skip_get_url` are almost always present. Then `uprn`, `postcode`, `house_number`,
+`web_driver` (required if the class calls `create_webdriver`), `wiki_command_url_override`,
+and occasionally `paon` or `custom_component_show_url_field`.
+
+**Rules:**
+
+- **Change a scraper's inputs, change input.json in the same commit.** Examples: UPRN
+  becomes postcode + house number (Rhondda Cynon Taff, #2262, will need this), or a
+  scraper stops or starts using Selenium. Update the fields *and* the `wiki_note`. If you
+  don't, HA asks users for the wrong things and the integration test sends the wrong args.
+- Add `web_driver: "http://selenium:4444"` if and only if the scraper uses
+  `create_webdriver`. `tests/check_selenium_url_in_input.json.py` checks this.
+- Test data is **public**. Use a council office, library or other non-residential address,
+  never a reporter's home address from an issue.
+- New council: the key must equal the class filename. Add `LAD24CD`. Keep fields
+  alphabetical within the entry. The file isn't globally sorted, so put the new entry near
+  its neighbours.
+- `collect_data.py ... -d` (dev mode) writes or updates the council's entry from a real
+  run. It's handy but **review the diff**.
+
+### Parity check: what it really does
+
+`council_feature_input_parity.py` checks **one thing**: the set of `councils/*.py`
+basenames (minus `NON_COUNCIL_FILES`) equals the set of input.json keys. Despite the CI
+step's name, it doesn't look at the feature file or at field correctness.
+
+**It reads from the GitHub API, not your working tree.** `make parity-check` without
+`repo=… branch=…` checks **master**. So either push first and run
+`make parity-check repo=robbrad/UKBinCollectionData branch=<your-branch>`, or use this
+offline equivalent, which works in the sandbox:
+
+```bash
+python3 - <<'EOF'
+import json, pathlib
+files = {p.stem for p in pathlib.Path("uk_bin_collection/uk_bin_collection/councils").glob("*.py")} - {"SocietyWorks", "__init__"}
+keys = set(json.load(open("uk_bin_collection/tests/input.json")))
+print("missing from input.json:", sorted(files - keys)); print("no class file:", sorted(keys - files))
+EOF
+jq empty uk_bin_collection/tests/input.json && echo "input.json is valid JSON"
+```
+
+(Add any new base class to the exclusion set here *and* in `NON_COUNCIL_FILES`.)
+
+---
+
+## 6. Consolidating contributor PRs
+
+```bash
+git fetch origin pull/<N>/head:pr-<N>
+git diff --stat origin/master...pr-<N>       # scope check FIRST (three dots = merge-base)
+git cherry-pick -n $(git merge-base origin/master pr-<N>)..pr-<N>
+git diff --cached                            # review; fix obvious issues yourself
+git commit                                   # conventional message + "(from #N, credit @author)"
+```
+
+- **Size rule**: exclude anything touching more than about 3 files or mixing unrelated
+  councils. One huge multi-council PR went badly before. List exclusions and the reason in
+  the release PR's "Not included" section.
+- Don't include drafts.
+- Contributor PRs change the scraper but often **forget input.json** (§5). Check it.
+- `git add -A` followed later by `git add <files>` still commits everything staged. If the
+  file count looks wrong: `git reset --soft HEAD^ && git reset`, then redo.
+- Keep **two branches**: a clean release branch with only cherry-picks and dependabot
+  bumps, and a triage branch for the diagnostic loop. The noise of one never blocks the
+  other.
+
+---
+
+## 7. Commits, merge titles and releases
+
+The lesson from #2272: **every commit that lands on master must be a conventional commit,
+including the squash-merge title.**
+
+- `lint.yml` (commitlint) runs on PRs **and on pushes to master**. Use the types `fix`,
+  `feat`, `chore`, `docs`, `ci`, `refactor`, `test`, `perf`, `build` and `revert`, with an
+  optional `(scope)`.
+- `bump.yml` runs `cz bump` on every master push not under `paths-ignore` (`*.md`, `wiki/**`,
+  `.github/workflows/**`). Only `fix`, `feat`, `refactor`, `perf` and breaking changes are
+  **releasable**. In October, squash titles like "October release: …" and "Fix East
+  Lothian, …" were merged. commitizen saw no releasable commits (exit 21), the bump failed,
+  and **the fixes sat unreleased**.
+- Squash-merge title: `fix: October council fixes (Tower Hamlets, SocietyWorks, …)` or
+  `fix(east-lothian): …`. Pass `commit_title` explicitly when calling
+  `merge_pull_request`, and type a plain `&`, not `&amp;`. The MCP call escaped it once
+  and that's now permanent in history.
+- Release chain: `fix:` lands on master → bump commit plus tag `X.Y.Z` → `release.yml`
+  publishes to PyPI (with the PyPI-propagation wait added in #2242), builds Docker, and
+  bumps the HA manifest and `INPUT_JSON_URL`.
+- **After every merge**, confirm `Release - Bump Version` succeeded and a new tag exists.
+  If it failed, find out why before closing out.
+- Attribution trailers on every commit, and the "Generated with Claude Code" footer on PR
+  bodies, as given by the session's system reminder.
+
+---
+
+## 8. Issues: when and what to comment
+
+Post **one substantive comment per issue per pass**. Don't post running commentary.
+
+| Situation | Action | Comment should contain |
+|---|---|---|
+| Fixed and live-verified | PR body: `Fixes #N` | After merge: "Fixed in #PR, ships in the next release (X.Y.Z); HA users get it after updating." Verify that it auto-closed. |
+| Fix shipped, unverifiable from CI (WAF) | `Targets #N`, leave open | What changed and why, and an ask: "please update to X.Y.Z and confirm" |
+| Diagnosed, not fixable here | leave open | Root cause, **evidence** (status code, server header, final URL), and exactly what a fix needs: field names, endpoint, flow. Rhondda Cynon Taff #2262 is the model. |
+| Needs info | leave open | Ask for the **public** details needed (postcode, council-site URL that works for them, full traceback). Don't ask for a home address in public. |
+| Duplicate | close, `state_reason: duplicate`, `duplicate_of` | Link the canonical issue |
+| Feature request outside current scope | leave open | Feasibility notes (e.g. "the API doesn't expose X") |
+
+Auto-close gotcha: GitHub needs **a keyword for each issue**. `Fixes #2255, #2258, #2247`
+closed only #2255. Write `Fixes #2255, fixes #2258, fixes #2247`. After merging, re-read
+each claimed issue's state anyway.
+
+Close superseded contributor and dependabot PRs with a thank-you comment ("cherry-picked
+into #X with credit"), then close them. GitHub won't treat a cherry-pick as merging them.
+
+---
+
+## 9. Running tests locally
+
+```bash
+poetry install                       # or: make install-dev
+make unit-tests                      # what CI runs; excludes live tests, includes HA component tests
+# or a subset, ALWAYS excluding step_defs (those are the live tests):
+poetry run pytest uk_bin_collection/tests custom_components/uk_bin_collection/tests \
+    --ignore=uk_bin_collection/tests/step_defs/ -q
+poetry run pytest uk_bin_collection/tests/test_<council>.py -q
+poetry run black --check uk_bin_collection/uk_bin_collection/councils/<File>.py
+```
+
+- **Known sandbox-only failures, not bugs**: `test_check_postcode_valid` and
+  `test_check_postcode_invalid` (need api.postcodes.io), and `test_create_webdriver_local`
+  (chromedriver download). Mention them in the test plan and move on.
+- **Add an offline unit test for every parser fix.** Feed a saved or hand-built HTML snippet
+  to the parsing function, as in `test_adur_and_worthing_councils.py` and
+  `test_south_lanarkshire_council.py`. It's the only part of the fix the sandbox can verify,
+  and it pins the new page shape.
+- The live suite, `pytest uk_bin_collection/tests/step_defs/ -k <Council>`, can't reach
+  sites from the sandbox. Use the CI loop (§2).
+
+---
+
+## 10. Working faster
+
+- **Batch diagnostics.** Put all suspect councils in one draft PR per round, not one PR
+  per council.
+- **Don't sleep-poll CI.** Subscribe to PR activity, or run a single background wait, and
+  do other work (issue comments, unit tests, parity) meanwhile.
+- **Parallelise independent councils** with sub-agents, each given the council file,
+  the issue text and the CI log excerpt. Keep the git work and the PR in the main session.
+- **Triage cheaply before reaching for CI.** Many fixes are obvious from the traceback
+  alone, e.g. a renamed label or a redirected URL. Use the CI loop only when the cause is
+  unknown.
+- **Keep the paper trail in the repo.** Append the pass's outcome to
+  `ISSUE_RESOLUTION_PROGRESS.md` so the next session starts with the known-blocked list.
+
+---
+
+## 11. End-of-pass checklist
+
+- [ ] Every merged squash title is a conventional `fix:` or `feat:` (§7)
+- [ ] `Release - Bump Version` succeeded and the new tag exists, and `release.yml` published
+      to PyPI
+- [ ] Every `Fixes #N` issue is actually closed. Close stragglers manually with a comment.
+- [ ] Superseded contributor and dependabot PRs are closed with a credit comment
+- [ ] Every unfixed issue touched has one evidence-bearing comment (§8)
+- [ ] input.json matches every scraper whose inputs changed (§5), and parity is clean
+- [ ] No `[diagnostic]` prints left on master: `git grep -n "\[diagnostic\]"`
+- [ ] Progress notes appended to `ISSUE_RESOLUTION_PROGRESS.md`
