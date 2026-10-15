@@ -1,4 +1,12 @@
 =======
+## 0.173.1 (2026-10-15)
+
+### Fix
+
+- **common**: add an opt-in stealth driver for Cloudflare Turnstile councils
+- **gloucester**: wait for the address option, not a fixed two seconds
+- **ceredigion**: match the postcode link by href, not by text()
+
 ## 0.173.0 (2026-10-15)
 
 ### BREAKING CHANGE
