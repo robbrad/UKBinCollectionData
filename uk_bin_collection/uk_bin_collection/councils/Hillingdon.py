@@ -131,7 +131,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 select["name"]: _choose_address(options, user_paon, user_uprn),
                 "next": "Next",
             },
-            timeout=30,
+            # Generating the schedule is slow on the council's side; a live
+            # run timed out at 30s on this request alone.
+            timeout=(10, 90),
         )
         resp.raise_for_status()
         return _parse_results(resp.text)
