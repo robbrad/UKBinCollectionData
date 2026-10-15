@@ -1,0 +1,14 @@
+[
+  {"name": "portsmouth-dashboard", "url": "https://recyclingandrubbish.portsmouth.gov.uk/PublicDashboard"},
+  {"name": "fylde-waste-root", "url": "https://waste.fylde.gov.uk/"},
+  {"name": "fylde-dashboard", "url": "https://waste.fylde.gov.uk/PublicDashboard"},
+  {"name": "orkney-bin-collections", "url": "https://www.orkney.gov.uk/bin-collections"},
+  {"name": "orkney-calendar", "url": "https://www.orkney.gov.uk/calendar"},
+  {"name": "nederbyshire-bins", "selenium": true, "wait": 10, "url": "https://myselfservice.ne-derbyshire.gov.uk/bins"},
+  {"name": "nederbyshire-old-service", "selenium": true, "wait": 10, "url": "https://myselfservice.ne-derbyshire.gov.uk/service/Check_your_Bin_Day"},
+  {"name": "broxbourne-lookup", "selenium": true, "wait": 6, "url": "https://www.broxbourne.gov.uk/bin-collection-date",
+   "steps": [{"type": ["input[autocomplete='postal-code']", "EN8 7FL"]}, {"click": "button.btn--lookup"}, {"sleep": 12}, {"dump": "after-lookup"}]},
+  {"name": "hillingdon-lookup", "selenium": true, "wait": 6, "url": "https://www.hillingdon.gov.uk/collection-day",
+   "steps": [{"type": ["input[autocomplete='postal-code']", "UB10 8PP"]}, {"click": "button.btn--lookup"}, {"sleep": 12}, {"dump": "after-lookup"},
+             {"select_contains": ["select:not([id^=date-input])", "Milverton"]}, {"sleep": 2}, {"click_xpath": "//button[contains(normalize-space(.),'Next')]"}, {"sleep": 12}]}
+]

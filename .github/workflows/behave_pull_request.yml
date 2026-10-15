@@ -155,12 +155,16 @@ jobs:
       - name: Run Integration Tests
         env:
           HEADLESS: True
-          COUNCIL_TESTS: "SouthendOnSeaCityCouncil or TamworthBoroughCouncil or OrkneyIslandsCouncil or IsleOfWightCouncil or KnowsleyMBCouncil or BroxbourneCouncil or HaltonBoroughCouncil or Hillingdon or NorthEastDerbyshireDistrictCouncil or PortsmouthCityCouncil or FyldeCouncil or EastHampshireDC or DacorumBoroughCouncil or PrestonCityCouncil"
+          COUNCIL_TESTS: "LondonBoroughHarrow or TorbayCouncil"
           UKBCD_DIAG: "1"
           UKBCD_DIAG_FULL: "1"
           PYTEST_ADDOPTS: "--tb=line --show-capture=no"
         run: make matrix=${{ matrix.python-version }} councils="${{ env.COUNCIL_TESTS }}" integration-tests
         continue-on-error: true
+
+      - name: Probe URLs (diagnostic)
+        if: ${{ !cancelled() && hashFiles('probe.json') != '' }}
+        run: poetry run python uk_bin_collection/tests/probe.py probe.json
 
       - name: Upload Integration Test Results to Codecov
         uses: codecov/codecov-action@v7
