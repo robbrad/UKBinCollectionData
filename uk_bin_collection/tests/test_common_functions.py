@@ -645,3 +645,81 @@ def test_create_webdriver_remote_keeps_the_callers_user_agent():
 
         options = mock_remote.call_args.kwargs["options"]
     assert f"--user-agent={stale}" in options.arguments
+
+
+@pytest.mark.parametrize(
+    "platform,env,expected",
+    [
+        ("win32", {}, True),
+        ("darwin", {}, True),
+        ("linux", {}, False),
+        ("linux", {"DISPLAY": ":99"}, True),
+        ("linux", {"WAYLAND_DISPLAY": "wayland-0"}, True),
+    ],
+)
+def test_has_local_display(platform, env, expected):
+    with mock.patch("uk_bin_collection.common.sys.platform", platform), mock.patch.dict(
+        "uk_bin_collection.common.os.environ", env, clear=True
+    ):
+        assert has_local_display() is expected
+
+
+def test_create_stealth_webdriver_returns_none_without_a_display():
+    with mock.patch("uk_bin_collection.common.has_local_display", return_value=False):
+        assert create_stealth_webdriver() is None
+
+
+def test_create_stealth_webdriver_does_not_pin_the_chrome_version():
+    # Pinning version_main is what broke MidlothianCouncil once Chrome moved
+    # past the hardcoded 146, so undetected-chromedriver must detect it.
+    fake_uc = mock.MagicMock()
+    fake_uc.Chrome.return_value = mock.MagicMock()
+    with mock.patch(
+        "uk_bin_collection.common.has_local_display", return_value=True
+    ), mock.patch.dict("sys.modules", {"undetected_chromedriver": fake_uc}):
+        assert create_stealth_webdriver() is fake_uc.Chrome.return_value
+
+    assert "version_main" not in fake_uc.Chrome.call_args.kwargs
+
+
+def test_create_stealth_webdriver_returns_none_when_the_browser_wont_start():
+    fake_uc = mock.MagicMock()
+    fake_uc.Chrome.side_effect = RuntimeError("no chrome")
+    with mock.patch(
+        "uk_bin_collection.common.has_local_display", return_value=True
+    ), mock.patch.dict("sys.modules", {"undetected_chromedriver": fake_uc}):
+        assert create_stealth_webdriver() is None
+
+
+def test_create_webdriver_prefers_the_stealth_driver_when_asked():
+    sentinel = mock.MagicMock()
+    with mock.patch(
+        "uk_bin_collection.common.create_stealth_webdriver", return_value=sentinel
+    ) as stealth:
+        assert create_webdriver(None, stealth=True) is sentinel
+    stealth.assert_called_once()
+
+
+def test_create_webdriver_ignores_stealth_for_a_remote_grid():
+    # A remote grid can't open a real window, so don't waste a uc start on it.
+    with mock.patch(
+        "uk_bin_collection.common.create_stealth_webdriver"
+    ) as stealth, mock.patch(
+        "uk_bin_collection.common.webdriver.Remote"
+    ) as mock_remote:
+        mock_remote.return_value = mock.MagicMock()
+        create_webdriver("http://selenium:4444", stealth=True)
+    stealth.assert_not_called()
+
+
+def test_create_webdriver_falls_back_when_stealth_is_unavailable():
+    with mock.patch(
+        "uk_bin_collection.common.create_stealth_webdriver", return_value=None
+    ), mock.patch(
+        "uk_bin_collection.common.webdriver.Chrome"
+    ) as mock_chrome, mock.patch(
+        "uk_bin_collection.common.ChromeDriverManager"
+    ):
+        mock_chrome.return_value = mock.MagicMock()
+        create_webdriver(None, stealth=True)
+    mock_chrome.assert_called_once()

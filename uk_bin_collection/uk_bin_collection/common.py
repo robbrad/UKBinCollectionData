@@ -445,11 +445,68 @@ def align_user_agent_to_browser(
     return user_agent
 
 
+def has_local_display() -> bool:
+    """
+    Whether a real (non-headless) browser window can be opened here.
+
+    Windows and macOS always have a desktop. On Linux, a window needs an X or
+    Wayland display - which on a server means something like Xvfb being set up
+    and exported.
+    """
+    if sys.platform.startswith(("win", "darwin")):
+        return True
+    return bool(os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"))
+
+
+def create_stealth_webdriver(user_agent: str = None):
+    """
+    Create a non-headless undetected-chromedriver browser, or None if that
+    isn't possible here.
+
+    A handful of councils front their bin-day checkers with Cloudflare
+    Turnstile, which plain ChromeDriver cannot satisfy however its flags and
+    User-Agent are dressed up - the challenge is served on the form POST and
+    never clears. undetected-chromedriver patches the driver binary itself and
+    does get through, but only with a real browser window, so it needs a
+    display (see has_local_display).
+
+    Returns None rather than raising, so callers can fall back to the ordinary
+    driver and fail with their own diagnostics instead of an import error.
+
+        :param user_agent: Optional custom user agent string
+    """
+    if not has_local_display():
+        return None
+    try:
+        import undetected_chromedriver as uc
+    except ImportError:
+        return None
+
+    options = uc.ChromeOptions()
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
+    if user_agent:
+        options.add_argument(
+            f"--user-agent="
+            f"{align_user_agent_to_browser(user_agent, get_local_chrome_major_version(), get_local_ua_platform_token())}"
+        )
+    try:
+        # No version_main: undetected-chromedriver detects the installed
+        # Chrome itself. Pinning it, as MidlothianCouncil used to, goes stale
+        # the moment Chrome updates and stops the driver starting at all.
+        return uc.Chrome(options=options)
+    except Exception as e:
+        print(f"Could not start undetected-chromedriver, falling back: {e}")
+        return None
+
+
 def create_webdriver(
     web_driver: str = None,
     headless: bool = True,
     user_agent: str = None,
     session_name: str = None,
+    stealth: bool = False,
 ) -> webdriver.Chrome:
     """
     Create and return a Chrome WebDriver configured for optional headless operation.
@@ -458,9 +515,16 @@ def create_webdriver(
     :param headless: Whether to run the browser in headless mode.
     :param user_agent: Optional custom user agent string.
     :param session_name: Optional custom session name string.
+    :param stealth: Prefer a non-headless undetected-chromedriver browser, for
+        councils behind Cloudflare Turnstile. Only applies to a local driver
+        with a display available; falls back to the ordinary driver otherwise.
     :return: An instance of a Chrome WebDriver.
     :raises WebDriverException: If the WebDriver cannot be created.
     """
+    if stealth and not web_driver:
+        stealth_driver = create_stealth_webdriver(user_agent)
+        if stealth_driver is not None:
+            return stealth_driver
     options = webdriver.ChromeOptions()
     if headless:
         options.add_argument("--headless")

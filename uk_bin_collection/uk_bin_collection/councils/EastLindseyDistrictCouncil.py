@@ -28,7 +28,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+            # This council is behind Cloudflare Turnstile, which plain
+            # ChromeDriver can't satisfy - the challenge arrives on the
+            # form POST and never clears. stealth=True uses
+            # undetected-chromedriver where a display is available.
+            driver = create_webdriver(
+                web_driver, headless, user_agent, __name__, stealth=True
+            )
             driver.get("https://www.e-lindsey.gov.uk/mywastecollections")
 
             # The form's element ids are prefixed with the service year (e.g.
