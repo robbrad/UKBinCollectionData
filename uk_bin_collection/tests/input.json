@@ -2180,9 +2180,12 @@
     },
     "RochfordCouncil": {
         "LAD24CD": "E07000075",
-        "url": "https://www.rochford.gov.uk/online-bin-collections-calendar",
+        "house_number": "88",
+        "postcode": "SS4 1AS",
+        "skip_get_url": true,
+        "url": "https://www.rochford.gov.uk/bins-and-collections",
         "wiki_name": "Rochford",
-        "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'."
+        "wiki_note": "Provide your postcode and house number/name to get exact collection dates (UPRN can be used instead of house number to select the address). If no postcode is supplied, the district-wide calendar at https://www.rochford.gov.uk/online-bin-collections-calendar is used instead, and dates should be read as 'week commencing'."
     },
     "RotherDistrictCouncil": {
         "LAD24CD": "E07000064",
