@@ -7,8 +7,10 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from uk_bin_collection.uk_bin_collection.councils import (
+    HighPeakCouncil,
     PortsmouthCityCouncil,
     SloughBoroughCouncil,
+    StaffordshireMoorlandsDistrictCouncil,
 )
 
 TOKEN = '<input name="__RequestVerificationToken" type="hidden" value="tok">'
@@ -57,8 +59,13 @@ def run(council_module, **kwargs):
             "https://recyclingandrubbish.portsmouth.gov.uk/PublicDashboard",
         ),
         (SloughBoroughCouncil, "https://waste.slough.gov.uk/PublicDashboard"),
+        (HighPeakCouncil, "https://bins.highpeak.gov.uk/PublicDashboard"),
+        (
+            StaffordshireMoorlandsDistrictCouncil,
+            "https://bins.staffsmoorlands.gov.uk/PublicDashboard",
+        ),
     ],
-    ids=["portsmouth", "slough"],
+    ids=["portsmouth", "slough", "high-peak", "staffs-moorlands"],
 )
 def test_each_council_uses_its_own_dashboard(module, base):
     _, session = run(module, uprn="1775027504")
@@ -78,3 +85,17 @@ def test_uprn_selects_the_premises_and_past_dates_are_dropped():
     assert data == {
         "bins": [{"type": "Recycling", "collectionDate": FUTURE.strftime("%d/%m/%Y")}]
     }
+
+
+@pytest.mark.parametrize(
+    "paon, expected",
+    [
+        ("2", "1775027504"),
+        ("2 Example Road", "1775027504"),
+        ("2, Example Road", "1775027504"),
+    ],
+    ids=["number", "number-and-street", "punctuation-ignored"],
+)
+def test_house_number_matching(paon, expected):
+    _, session = run(HighPeakCouncil, paon=paon)
+    assert session.post.call_args_list[1].kwargs["data"]["SelectedPremises"] == expected

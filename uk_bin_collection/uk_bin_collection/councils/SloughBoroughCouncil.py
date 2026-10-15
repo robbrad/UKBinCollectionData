@@ -1,10 +1,15 @@
 import json
+import re
 
 import requests
 from bs4 import BeautifulSoup
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+
+def _normalise(text) -> str:
+    return re.sub(r"[^A-Z0-9]+", " ", str(text).upper()).strip()
 
 
 def _extract_json_array(text: str, marker: str, start_from: int = 0):
@@ -76,12 +81,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
         elif user_paon:
             check_paon(user_paon)
-            paon_norm = str(user_paon).strip().upper()
+            # Ignore punctuation so "9 Ellison Street, Glossop" matches
+            # however the dashboard formats the premises text.
+            paon_norm = _normalise(user_paon)
             match = next(
                 (
                     p
                     for p in premises
-                    if p["Premises"].upper().startswith(paon_norm + " ")
+                    if (_normalise(p["Premises"]) + " ").startswith(paon_norm + " ")
                 ),
                 None,
             )
