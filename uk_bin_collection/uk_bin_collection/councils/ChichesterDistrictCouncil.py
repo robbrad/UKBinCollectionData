@@ -49,7 +49,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
                 "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
             )
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+            # This council is behind Cloudflare Turnstile, which plain
+            # ChromeDriver can't satisfy - the challenge arrives on the
+            # form POST and never clears. stealth=True uses
+            # undetected-chromedriver where a display is available.
+            driver = create_webdriver(
+                web_driver, headless, user_agent, __name__, stealth=True
+            )
             driver.get(start_url)
 
             self._wait_for_cloudflare(driver)
@@ -171,9 +177,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 sel_element = driver.find_element(By.ID, self.DROPDOWN_ID)
                 select = Select(sel_element)
 
-        raise Exception(
-            f"Failed to select '{target_text}' after retries"
-        )
+        raise Exception(f"Failed to select '{target_text}' after retries")
 
     @staticmethod
     def _pick_option(options, house_number: str):
@@ -182,8 +186,10 @@ class CouncilClass(AbstractGetBinDataClass):
         for opt in options:
             text = opt.text.strip()
             low = text.lower()
-            if low == target or low.startswith(f"{target},") or low.startswith(
-                f"{target} "
+            if (
+                low == target
+                or low.startswith(f"{target},")
+                or low.startswith(f"{target} ")
             ):
                 return text
         # Fuzzy: substring match

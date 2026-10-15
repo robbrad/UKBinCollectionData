@@ -46,27 +46,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
         check_postcode(user_postcode)
 
-        # The fillform iframe blocks headless Chrome AND vanilla Selenium
-        # (the bot-detection scripts check for navigator.webdriver). Use
-        # undetected_chromedriver in non-headless mode via the Xvfb display
-        # available on the VPS.
-        import os
-
         driver = None
         try:
-            if os.environ.get("DISPLAY") and web_driver is None:
-                try:
-                    import undetected_chromedriver as uc
-
-                    uc_opts = uc.ChromeOptions()
-                    uc_opts.add_argument("--no-sandbox")
-                    uc_opts.add_argument("--disable-dev-shm-usage")
-                    uc_opts.add_argument("--window-size=1920,1080")
-                    driver = uc.Chrome(options=uc_opts, version_main=146)
-                except Exception:
-                    driver = None
-            if driver is None:
-                driver = create_webdriver(web_driver, False, None, __name__)
+            # The fillform iframe blocks headless Chrome AND vanilla Selenium
+            # (the bot-detection scripts check for navigator.webdriver), so ask
+            # for the stealth driver. This used to be an inline
+            # undetected-chromedriver block pinned to version_main=146, which
+            # stopped starting once Chrome moved past 146; create_webdriver
+            # lets undetected-chromedriver detect the real version instead.
+            driver = create_webdriver(web_driver, False, None, __name__, stealth=True)
             driver.get(self.START_URL)
 
             iframe = WebDriverWait(driver, 30).until(

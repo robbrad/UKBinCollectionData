@@ -28,7 +28,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Create Selenium webdriver
             user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
+            # This council is behind Cloudflare Turnstile, which plain
+            # ChromeDriver can't satisfy - the challenge arrives on the
+            # form POST and never clears. stealth=True uses
+            # undetected-chromedriver where a display is available.
+            driver = create_webdriver(
+                web_driver, headless, user_agent, __name__, stealth=True
+            )
             driver.get("https://eastrenfrewshire.gov.uk/bin-days")
 
             # Wait for the postcode field to appear then populate it
@@ -41,9 +47,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Click search button
             search_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, "//button[text()='Search']")
-                )
+                EC.element_to_be_clickable((By.XPATH, "//button[text()='Search']"))
             )
             search_button.click()
 
@@ -53,7 +57,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     (By.XPATH, "//label[text()='Addresses']/following-sibling::select")
                 )
             )
-            
+
             # Select the appropriate address based on UPRN or house number
             select = Select(addresses_select)
             if user_uprn:
@@ -79,31 +83,31 @@ class CouncilClass(AbstractGetBinDataClass):
 
             # Wait for the results table to appear
             WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//th[text()='Bin Type']")
-                )
+                EC.presence_of_element_located((By.XPATH, "//th[text()='Bin Type']"))
             )
 
             soup = BeautifulSoup(driver.page_source, features="html.parser")
-            
+
             # Find the table with bin collection data
             table = soup.find("th", string="Bin Type").find_parent("table")
             rows = table.find_all("tr")[1:]  # Skip header row
-            
+
             for row in rows:
                 cells = row.find_all("td")
                 if len(cells) >= 3:
                     date_cell = cells[0].get_text().strip()
                     bin_type_cell = cells[2]
-                    
+
                     # Only process rows that have a date
                     if date_cell:
                         # Get all text content including line breaks
-                        bin_type_text = bin_type_cell.get_text(separator='\n').strip()
-                        
+                        bin_type_text = bin_type_cell.get_text(separator="\n").strip()
+
                         # Split multiple bin types that appear on separate lines
-                        bin_types = [bt.strip() for bt in bin_type_text.split('\n') if bt.strip()]
-                        
+                        bin_types = [
+                            bt.strip() for bt in bin_type_text.split("\n") if bt.strip()
+                        ]
+
                         for bin_type in bin_types:
                             dict_data = {
                                 "type": bin_type,

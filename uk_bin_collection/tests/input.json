@@ -576,7 +576,7 @@
         "url": "https://www.chichester.gov.uk/checkyourbinday",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Chichester",
-        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday)."
+        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday). This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
     },
     "ChorleyCouncil": {
         "LAD24CD": "E07000118",
@@ -851,7 +851,7 @@
         "url": "https://www.e-lindsey.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Lindsey",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
     },
     "EastLothianCouncil": {
         "LAD24CD": "S12000010",
@@ -870,7 +870,7 @@
         "url": "https://eastrenfrewshire.gov.uk/",
         "web_driver": "http://selenium:4444",
         "wiki_name": "East Renfrewshire",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
     },
     "EastRidingCouncil": {
         "LAD24CD": "E06000011",
@@ -1747,7 +1747,7 @@
         "url": "https://www.midlothian.gov.uk/info/1054/bins_and_recycling/343/bin_collection_days",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Midlothian",
-        "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter."
+        "wiki_note": "Pass the house name/number wrapped in double quotes along with the postcode parameter. This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
     },
     "MiltonKeynesCityCouncil": {
         "LAD24CD": "E06000042",
@@ -2543,7 +2543,8 @@
         "skip_get_url": true,
         "url": "https://www.stockton.gov.uk/bin-collection-days",
         "web_driver": "http://selenium:4444",
-        "wiki_name": "Stockton-on-Tees"
+        "wiki_name": "Stockton-on-Tees",
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
     },
     "StokeOnTrentCityCouncil": {
         "LAD24CD": "E06000021",
