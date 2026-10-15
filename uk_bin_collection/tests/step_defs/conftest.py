@@ -8,7 +8,16 @@ import re
 import pytest
 
 FULL = bool(os.environ.get("UKBCD_DIAG_FULL"))
-BODY_MAX = 25000
+BODY_MAX = 80000
+
+
+def _strip(html):
+    html = html or ""
+    i = html.lower().find("<body")
+    html = html[i:] if i >= 0 else html
+    html = re.sub(r"<(script|style|svg|noscript)\b.*?</\1>", "", html, flags=re.S | re.I)
+    html = re.sub(r"<!--.*?-->", "", html, flags=re.S)
+    return re.sub(r"\s+", " ", html)[:BODY_MAX]
 
 DIAG_DIR = pathlib.Path("build/diag")
 _current = {"council": None}
@@ -51,7 +60,7 @@ def _install():
                      "srv": resp.headers.get("Server", ""), "cf": resp.headers.get("cf-mitigated", ""),
                      "ct": ct[:40], "loc": resp.headers.get("Location", "")[:120], "n": len(resp.content),
                      "title": t, "ids": ids, "body": b,
-                     **({"full": resp.text[:BODY_MAX]} if FULL else {})})
+                     **({"full": _strip(resp.text)} if FULL else {})})
         except Exception:
             pass
         return resp
@@ -72,7 +81,7 @@ def _install():
                     ".map(e => e.tagName.toLowerCase()+'#'+(e.id||e.name||'')).slice(0,25)};"
                 )
                 if FULL:
-                    info["src"] = self.page_source[:BODY_MAX]
+                    info["src"] = _strip(self.page_source)
                 _record({"k": "selenium-final", **info})
             except Exception as e:
                 _record({"k": "selenium-final-err", "e": repr(e)[:200]})
