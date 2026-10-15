@@ -1,5 +1,3 @@
 [
-  {"name": "orkney-js", "url": "https://www.orkney.gov.uk/js/bin-collections.js", "raw": true},
-  {"name": "nederbyshire-dates", "url": "https://www.ne-derbyshire.gov.uk/bins-and-recycling/bin-collection-dates", "raw": true},
-  {"name": "nederbyshire-dates-browser", "selenium": true, "wait": 10, "from": "<main", "url": "https://www.ne-derbyshire.gov.uk/bins-and-recycling/bin-collection-dates"}
+  {"name": "orkney-global-js", "url": "https://www.orkney.gov.uk/js/global.js", "raw": true, "grep": "fetch\\(|actions/_orkney|icalUrl|binCollections"}
 ]
