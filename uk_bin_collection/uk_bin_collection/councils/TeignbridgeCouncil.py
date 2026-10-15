@@ -43,7 +43,8 @@ class CouncilClass(AbstractGetBinDataClass):
                 f"[diagnostic] collection_dates (h3) count: {len(collection_dates)}, "
                 f"bin_type_headers (binInfoContainer) count: {len(bin_type_headers)}"
             )
-            if len(bin_type_headers) != len(collection_dates):
+            if len(bin_type_headers) != len(collection_dates) or not collection_dates:
+                print(f"[diagnostic] current URL: {driver.current_url}")
                 print(
                     f"[diagnostic] page source (first 4000 chars): {driver.page_source[:4000]}"
                 )

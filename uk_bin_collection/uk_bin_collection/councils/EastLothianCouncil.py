@@ -37,7 +37,15 @@ class CouncilClass(AbstractGetBinDataClass):
         if not form_build_id:
             print(f"[diagnostic] GET {base_url} -> {response.status_code}")
             print(f"[diagnostic] final URL: {response.url}")
-            print(f"[diagnostic] body (first 3000 chars): {response.text[:3000]}")
+            candidates = [
+                (a.get_text(strip=True), a.get("href"))
+                for a in soup.find_all("a", href=True)
+                if any(
+                    kw in (a.get_text(strip=True) + " " + a["href"]).lower()
+                    for kw in ("bin", "waste", "collection", "recycl")
+                )
+            ]
+            print(f"[diagnostic] candidate links on redirected page: {candidates}")
             raise ValueError("Could not find form_build_id on initial page")
 
         # Step 2: POST postcode to get address list
