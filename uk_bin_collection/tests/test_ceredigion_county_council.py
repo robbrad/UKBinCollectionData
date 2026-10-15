@@ -70,3 +70,106 @@ def test_the_label_still_matches_if_the_form_id_changes():
 def test_an_unrelated_link_is_not_matched():
     other = '<div><a href="/resident/bins-recycling/">Bins &amp; Recycling</a></div>'
     assert _find(other, POSTCODE_SEARCH_LINK_XPATH) == []
+
+
+# --- results parsing -------------------------------------------------------
+#
+# Mirrors the live results form for SY23 4RQ. Each schedule panel sits inside
+# its own auto-generated "eb-<hash>-panel" wrapper, which is what scopes
+# find_next_siblings to that panel's own bin types. Keep that nesting: flatten
+# it and the first panel claims every waste_image on the page, producing
+# duplicate bins with the wrong dates.
+
+from datetime import datetime as real_datetime
+from unittest.mock import MagicMock, patch
+
+from uk_bin_collection.uk_bin_collection.councils import CeredigionCountyCouncil
+
+MODULE_PATH = "uk_bin_collection.uk_bin_collection.councils.CeredigionCountyCouncil"
+
+
+def _panel(schedule, when, bins):
+    blocks = "".join(f'<div class="waste_image"><span>{b}</span></div>' for b in bins)
+    return (
+        f'<div class="CTID-x eb-{abs(hash(schedule)) % 99999}-panel">'
+        f'  <div class="mb-3"><span>{schedule}</span>'
+        f"  <span>Next collection: {when}</span></div>"
+        f"  {blocks}"
+        f"</div>"
+    )
+
+
+RESULTS_HTML = (
+    "<div>"
+    + _panel(
+        "Weekly, every Monday",
+        "Monday 19th October",
+        ["Clear Recycling Bag", "Food Waste"],
+    )
+    + _panel(
+        "Every 3 weeks",
+        "Monday 2nd November",
+        ["Non-Recyclable Waste", "Glass Bottles and Jars"],
+    )
+    + "</div>"
+)
+
+
+def parse_results(html):
+    """Drive parse_data far enough to exercise the results parser."""
+    element = MagicMock()
+    element.get_attribute.return_value = html
+
+    fake_wait = MagicMock()
+    fake_wait.return_value.until.return_value = element
+
+    with patch(f"{MODULE_PATH}.create_webdriver", return_value=MagicMock()), patch(
+        f"{MODULE_PATH}.WebDriverWait", fake_wait
+    ), patch(f"{MODULE_PATH}.Select"), patch(f"{MODULE_PATH}.EC"), patch(
+        f"{MODULE_PATH}.check_paon"
+    ), patch(
+        f"{MODULE_PATH}.check_postcode"
+    ), patch(
+        f"{MODULE_PATH}.sleep"
+    ):
+        return CeredigionCountyCouncil.CouncilClass().parse_data(
+            "", paon="BLAEN CWMMAGWR", postcode="SY23 4RQ", headless=True
+        )
+
+
+def test_every_schedule_panel_contributes_its_own_bins():
+    year = real_datetime.now().year
+    assert parse_results(RESULTS_HTML) == {
+        "bins": [
+            {"type": "Clear Recycling Bag", "collectionDate": f"19/10/{year}"},
+            {"type": "Food Waste", "collectionDate": f"19/10/{year}"},
+            {"type": "Non-Recyclable Waste", "collectionDate": f"02/11/{year}"},
+            {"type": "Glass Bottles and Jars", "collectionDate": f"02/11/{year}"},
+        ]
+    }
+
+
+def test_a_second_schedule_panel_is_not_dropped():
+    # Regression guard: the parser used to match one auto-generated panel class
+    # and silently lose every other schedule.
+    types = [b["type"] for b in parse_results(RESULTS_HTML)["bins"]]
+    assert "Non-Recyclable Waste" in types, "the 'Every 3 weeks' panel was dropped"
+
+
+def test_ordinal_suffixes_are_tolerated():
+    for suffix in ("1st", "2nd", "3rd", "4th"):
+        html = RESULTS_HTML.replace("19th", suffix)
+        day = suffix[:-2].zfill(2)
+        assert parse_results(html)["bins"][0]["collectionDate"].startswith(f"{day}/10/")
+
+
+def test_a_panel_without_a_parsable_date_is_skipped():
+    html = RESULTS_HTML.replace(
+        "Next collection: Monday 2nd November", "Next collection: TBC"
+    )
+    types = [b["type"] for b in parse_results(html)["bins"]]
+    assert types == ["Clear Recycling Bag", "Food Waste"]
+
+
+def test_no_panels_at_all_yields_no_bins():
+    assert parse_results("<div><p>Nothing here</p></div>") == {"bins": []}
