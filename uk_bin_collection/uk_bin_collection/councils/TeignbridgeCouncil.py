@@ -39,6 +39,15 @@ class CouncilClass(AbstractGetBinDataClass):
                 "div", {"class": "binInfoContainer"}
             )  # Assuming collection dates are inside <p> tags
 
+            print(
+                f"[diagnostic] collection_dates (h3) count: {len(collection_dates)}, "
+                f"bin_type_headers (binInfoContainer) count: {len(bin_type_headers)}"
+            )
+            if len(bin_type_headers) != len(collection_dates):
+                print(
+                    f"[diagnostic] page source (first 4000 chars): {driver.page_source[:4000]}"
+                )
+
             # Iterate over the results and extract bin type and collection dates
             for i, date in enumerate(collection_dates):
                 collection_date = date.get_text(strip=True)

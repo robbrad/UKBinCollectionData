@@ -96,6 +96,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 continue
 
         if not collections:
+            print(f"[diagnostic] bin_rows found: {len(bin_rows)}")
+            for i, row in enumerate(bin_rows[:5]):
+                print(f"[diagnostic] row {i} HTML: {str(row)[:1500]}")
             raise ValueError("No valid collection dates found")
 
         ordered_data = sorted(collections, key=lambda x: x[1])

@@ -19,7 +19,9 @@ class CouncilClass(AbstractGetBinDataClass):
         check_paon(user_paon)
         bindata = {"bins": []}
 
-        base_url = "https://collectiondates.eastlothian.gov.uk/waste-collection-schedule"
+        base_url = (
+            "https://collectiondates.eastlothian.gov.uk/waste-collection-schedule"
+        )
         headers = {
             "User-Agent": "Mozilla/5.0",
         }
@@ -33,6 +35,9 @@ class CouncilClass(AbstractGetBinDataClass):
 
         form_build_id = soup.find("input", {"name": "form_build_id"})
         if not form_build_id:
+            print(f"[diagnostic] GET {base_url} -> {response.status_code}")
+            print(f"[diagnostic] final URL: {response.url}")
+            print(f"[diagnostic] body (first 3000 chars): {response.text[:3000]}")
             raise ValueError("Could not find form_build_id on initial page")
 
         # Step 2: POST postcode to get address list

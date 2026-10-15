@@ -56,7 +56,12 @@ class CouncilClass(AbstractGetBinDataClass):
         # Parse response page and get all table rows
         soup = BeautifulSoup(response.text, features="html.parser")
         soup.prettify()
-        table_rows = soup.find("table", class_=("waste-table")).find_all("tr")
+        waste_table = soup.find("table", class_=("waste-table"))
+        if not waste_table:
+            print(f"[diagnostic] final URL: {response.url}")
+            print(f"[diagnostic] body (first 4000 chars): {response.text[:4000]}")
+            raise ValueError("Could not find the waste-table on the response page")
+        table_rows = waste_table.find_all("tr")
 
         # Find the bin type and parse the date for each row, then add to dict. First row will be just headings,
         # so skip it
