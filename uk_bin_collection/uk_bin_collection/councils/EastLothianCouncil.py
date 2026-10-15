@@ -19,7 +19,7 @@ class CouncilClass(AbstractGetBinDataClass):
         check_paon(user_paon)
         bindata = {"bins": []}
 
-        base_url = "https://collectiondates.eastlothian.gov.uk/waste-collection-schedule"
+        base_url = "https://www.eastlothian.gov.uk/waste-collection-schedule"
         headers = {
             "User-Agent": "Mozilla/5.0",
         }
@@ -94,7 +94,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         action_url = form.get("action", "")
         if action_url.startswith("/"):
-            action_url = "https://collectiondates.eastlothian.gov.uk" + action_url
+            action_url = "https://www.eastlothian.gov.uk" + action_url
 
         form_build_id = form.find("input", {"name": "form_build_id"})
         if not form_build_id:

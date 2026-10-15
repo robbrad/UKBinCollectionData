@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 from bs4 import BeautifulSoup
@@ -7,6 +8,11 @@ from uk_bin_collection.uk_bin_collection.common import (
     get_date_with_ordinal,
 )
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+# The council's label changed from "Next collection:"/"Next collections:" to
+# "Next collection dates:", and the dates themselves moved from a single
+# comma-separated line to one per <br>-separated line.
+NEXT_COLLECTION_LABEL = re.compile(r"Next collections?(?: dates)?:")
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -37,21 +43,20 @@ class CouncilClass(AbstractGetBinDataClass):
                 paragraphs = bin_row.find_all("p")
 
                 for p in paragraphs:
-                    # Check for both singular and plural "Next collection(s):"
-                    if p.get_text() and (
-                        "Next collection:" in p.get_text()
-                        or "Next collections:" in p.get_text()
-                    ):
-                        # Extract collection dates
-                        date_text = (
-                            p.get_text()
-                            .replace("Next collection:", "")
-                            .replace("Next collections:", "")
-                            .strip()
-                        )
+                    # <br> tags between dates carry no text of their own, so
+                    # get_text() needs an explicit separator to keep dates
+                    # from running into each other.
+                    text = p.get_text(separator="\n")
+                    if text and NEXT_COLLECTION_LABEL.search(text):
+                        date_text = NEXT_COLLECTION_LABEL.sub("", text, count=1).strip()
 
-                        # Split multiple dates if comma-separated
-                        date_strings = [date.strip() for date in date_text.split(",")]
+                        # Dates may be comma-separated (older layout) or one
+                        # per line (current layout) - split on either.
+                        date_strings = [
+                            date.strip()
+                            for date in re.split(r"[,\n]", date_text)
+                            if date.strip()
+                        ]
 
                         for date_str in date_strings:
                             try:

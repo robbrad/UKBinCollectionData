@@ -1,7 +1,7 @@
 import json
 
-import requests
 from bs4 import BeautifulSoup
+from curl_cffi import requests as cffi_requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
@@ -25,6 +25,12 @@ class CouncilClass(AbstractGetBinDataClass):
     Gateshead Council's bin-day checker is a GOSS iCM form, the same
     platform as Sunderland's and Powys's - a JSONP postcode lookup plus
     a plain HTTP postback wizard. No Selenium needed.
+
+    Like Sunderland, the site is now fronted by a Cloudflare managed
+    challenge keyed on TLS fingerprint rather than just IP/headers
+    (confirmed live: a plain requests session gets "cf-mitigated:
+    challenge" regardless of how browser-like its headers are), so the
+    session impersonates Chrome's TLS handshake via curl_cffi.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
@@ -34,12 +40,9 @@ class CouncilClass(AbstractGetBinDataClass):
         check_postcode(user_postcode)
         data = {"bins": []}
 
-        # A full, realistic browser header set (not just User-Agent) - the
-        # site is fronted by Cloudflare, which scores requests on header
-        # completeness/consistency alongside IP reputation. This alone
-        # won't clear an IP-based block (e.g. flagged datacenter IPs like
-        # CI runners), but reduces the chance of also being flagged on
-        # fingerprint grounds.
+        # A full, realistic browser header set (not just User-Agent) -
+        # Cloudflare scores on header completeness alongside TLS
+        # fingerprint and IP reputation.
         headers = {
             "User-Agent": (
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -55,7 +58,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "Sec-Fetch-User": "?1",
         }
 
-        s = requests.Session()
+        s = cffi_requests.Session(impersonate="chrome")
         r = s.get(FORM_PAGE, headers=headers, timeout=15)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
