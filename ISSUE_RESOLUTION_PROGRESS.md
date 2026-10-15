@@ -678,12 +678,31 @@ it:
 
 ### Consolidated into one release
 
-Fylde's retirement and the North East Derbyshire rewrite were each developed as their
-own PR (#2279, #2280) and then cherry-picked into #2277, because `bump.yml` runs on
-every master push and three merges would have cut three releases. Both originals were
-closed pointing at #2277. The squash title must carry the breaking change marker
-(`fix!:`), or North East Derbyshire's reconfiguration requirement won't reach the
-changelog.
+Fylde's retirement and the North East Derbyshire, Isle of Wight and Doncaster rewrites
+were each developed as their own PR (#2279, #2280, #2281, #2282) and then cherry-picked
+into #2277, because `bump.yml` runs on every master push and five merges would have cut
+five releases. All four originals were closed pointing at #2277. The squash title must
+carry the breaking change marker (`fix!:`), or the reconfiguration requirements for
+North East Derbyshire and Doncaster won't reach the changelog.
+
+Two of those came back with better answers than the triage expected, which is worth
+remembering before writing a council off:
+
+- **Isle of Wight** was rewritten rather than retired. The calendar PDF still exists;
+  its URL lives inside the Blazor circuit and is reachable by hooking the anchor click,
+  so the colour-coded PDF parsing survived. A non-residential fixture also turned out to
+  exist (Orme House Nursery, PO30 1JW) - the 440-postcode sweep above missed it only
+  because the keyword filter didn't include "nursery". Treat that sweep's conclusion as
+  a limit of the filter, not of the island.
+- **Doncaster**'s first fixture was `3, Sandown Gardens, Cantley, DN4 6HN`, a dwelling.
+  Caught in review and replaced with The Laurels Nursing Home, Norton, DN6 9EU. Worth
+  checking explicitly whenever a council moves from a UPRN to a postcode-plus-address
+  lookup: a bare UPRN is far less identifying than a printed street address, so the
+  switch quietly raises the privacy stakes of the fixture.
+
+Doncaster returns two past-dated collections among its 15. Harmless: the integration's
+`process_bin_data` keeps only `collection_date >= current_date`. 11 councils filter at
+the scraper instead; this one doesn't.
 
 ### Incidental findings
 
