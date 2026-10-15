@@ -2041,9 +2041,9 @@
     "OrkneyIslandsCouncil": {
         "house_number": "Kirkwall",
         "skip_get_url": true,
-        "url": "https://www.orkney.gov.uk",
+        "url": "https://www.orkney.gov.uk/bin-collections",
         "wiki_name": "Orkney Islands",
-        "wiki_note": "Pass a street, area, or island name (e.g. 'Kirkwall') in the house number parameter. Search at https://www.orkney.gov.uk/mybins to find your area."
+        "wiki_note": "Pass your address or street (e.g. '1 Albert Street, Kirkwall') in the house number parameter, or your UPRN. Collections are per area, so a street name in your area is enough."
     },
     "OxfordCityCouncil": {
         "LAD24CD": "E07000178",
