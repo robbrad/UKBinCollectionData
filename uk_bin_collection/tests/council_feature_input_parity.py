@@ -11,6 +11,20 @@ import base64
 # instead. Excluded here rather than given a fake input.json entry.
 NON_COUNCIL_FILES = {"SocietyWorks"}
 
+# Councils that can no longer be scraped - typically because the council put
+# its bin lookup behind a login - and whose input.json entry has therefore
+# been removed, so that the live test suite stops testing them and the Home
+# Assistant config flow stops offering them to new users. The class file is
+# kept, with a parse_data that raises an explanatory error, because
+# collect_data.import_council_module imports it by the name stored verbatim in
+# each existing user's saved config: deleting the file would turn that clear
+# message into an ImportError. Add a retirement here and the parity check
+# stays green.
+RETIRED_COUNCILS = {"FyldeCouncil"}
+
+# Class files in councils/ that are deliberately absent from input.json.
+EXCLUDED_FROM_PARITY = NON_COUNCIL_FILES | RETIRED_COUNCILS
+
 
 def get_councils_from_files(repo, branch):
     url = f"https://api.github.com/repos/{repo}/contents/uk_bin_collection/uk_bin_collection/councils?ref={branch}"
@@ -25,7 +39,7 @@ def get_councils_from_files(repo, branch):
                     item["name"].replace(".py", "")
                     for item in data
                     if item["name"].endswith(".py")
-                    and item["name"].replace(".py", "") not in NON_COUNCIL_FILES
+                    and item["name"].replace(".py", "") not in EXCLUDED_FROM_PARITY
                 ]
             else:
                 print("Expected a list from the JSON response but got something else.")

@@ -1063,15 +1063,6 @@
         "wiki_name": "Forest of Dean",
         "wiki_note": "Pass the full address in the house number and postcode parameters. This parser requires a Selenium webdriver."
     },
-    "FyldeCouncil": {
-        "LAD24CD": "E07000119",
-        "skip_get_url": true,
-        "uprn": "100010402452",
-        "url": "https://www.fylde.gov.uk",
-        "wiki_command_url_override": "https://www.fylde.gov.uk",
-        "wiki_name": "Fylde",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
-    },
     "GatesheadCouncil": {
         "LAD24CD": "E08000037",
         "house_number": "Bracken Cottage",
