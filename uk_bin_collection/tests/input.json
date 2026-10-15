@@ -2096,10 +2096,9 @@
         "postcode": "PO4 0LE",
         "skip_get_url": true,
         "uprn": "1775027504",
-        "url": "https://my.portsmouth.gov.uk/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-26e27e70-f771-47b1-a34d-af276075cede/AF-Stage-cd7cc291-2e59-42cc-8c3f-1f93e132a2c9/definition.json&redirectlink=%2F&cancelRedirectLink=%2F",
-        "web_driver": "http://selenium:4444",
+        "url": "https://recyclingandrubbish.portsmouth.gov.uk/PublicDashboard",
         "wiki_name": "Portsmouth",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the postcode, and either the UPRN or the house number to disambiguate."
     },
     "PowysCouncil": {
         "LAD24CD": "W06000023",
