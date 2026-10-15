@@ -50,11 +50,18 @@ jobs:
       - name: Bump version and create tag
         id: bump
         run: |
-          # Check if there are commits to bump
-          if cz bump --yes --changelog --dry-run 2>&1 | grep -q "No commits found"; then
-            echo "No version bump needed - no conventional commits since last release"
+          # Exit 3 (NO_COMMITS_FOUND) and 21 (NO_INCREMENT: commits exist but
+          # none are fix/feat/etc.) both mean "nothing to release", not a failure.
+          set +e
+          cz bump --yes --changelog --dry-run
+          rc=$?
+          set -e
+          if [ "$rc" -eq 3 ] || [ "$rc" -eq 21 ]; then
+            echo "No version bump needed - no releasable conventional commits since last release"
             echo "skip=true" >> $GITHUB_OUTPUT
             exit 0
+          elif [ "$rc" -ne 0 ]; then
+            exit "$rc"
           fi
           cz bump --yes --changelog
           echo "version=$(cz version --project)" >> $GITHUB_OUTPUT
