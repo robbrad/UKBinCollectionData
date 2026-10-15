@@ -1,3 +1,4 @@
 [
-  {"name": "orkney-global-js", "url": "https://www.orkney.gov.uk/js/global.js", "raw": true, "grep": "fetch\\(|actions/_orkney|icalUrl|binCollections"}
+  {"name": "orkney-bins-js-grep", "url": "https://www.orkney.gov.uk/js/bin-collections.js", "raw": true,
+   "grep": "fetch\\(|actions/|\\.ics|icalUrl:|lookupAddress|XMLHttpRequest|axios|\\bJ=|function J\\("}
 ]

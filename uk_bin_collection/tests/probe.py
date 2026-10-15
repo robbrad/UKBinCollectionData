@@ -37,7 +37,8 @@ def via_requests(p):
     body = r.text if p.get("raw") else strip(r.text)
     if p.get("grep"):
         for m in re.finditer(p["grep"], body):
-            print("GREP", body[max(0, m.start() - 400): m.end() + 600])
+            print("GREP", body[max(0, m.start() - 400): m.end() + 600].replace("\n", " "))
+        print(f"LEN {len(body)}")
         return
     print(body[:BODY_MAX])
 
