@@ -26,7 +26,7 @@ class CouncilClass(AbstractGetBinDataClass):
             "cache-control": "no-cache",
             # 'cookie': 'ASP.NET_SessionId=2b4gaaydt1rlu5pccgrpzamm',
             "pragma": "no-cache",
-            "referer": "https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWaste/RecyclingandWasteCollectionDays.aspx?PropertyNumber=&Postcode=CF72%209JD",
+            "referer": "https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWasteServices/Findyourrecyclingandwastecollectionday.aspx?PropertyNumber=&Postcode=CF72%209JD",
             "sec-ch-ua": '"Chromium";v="116", "Not)A;Brand";v="24", "Opera GX";v="102"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
@@ -42,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         response = requests.get(
-            "https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWaste/RecyclingandWasteCollectionDays.aspx",
+            "https://www.rctcbc.gov.uk/EN/Resident/RecyclingandWasteServices/Findyourrecyclingandwastecollectionday.aspx",
             params=params,
             headers=headers,
         )
