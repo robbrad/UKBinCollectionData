@@ -35,6 +35,16 @@ def via_requests(p):
     hops = " -> ".join(f"{h.status_code} {h.url}" for h in r.history)
     print(f"status={r.status_code} final={r.url} hops=[{hops}] ct={r.headers.get('Content-Type')}")
     body = r.text if p.get("raw") else strip(r.text)
+    if p.get("then"):
+        print(body[:BODY_MAX])
+        m = re.search(p["then"]["regex"], body)
+        if not m:
+            print("THEN: no match")
+            return
+        nxt = dict(p["then"], url=p["then"]["url"].format(m.group(1)))
+        nxt.pop("then", None)
+        print(f"\n--- THEN {nxt['url']}")
+        return via_requests(nxt)
     if p.get("grep"):
         for m in re.finditer(p["grep"], body):
             print("GREP", body[max(0, m.start() - 400): m.end() + 600].replace("\n", " "))

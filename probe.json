@@ -1,4 +1,6 @@
 [
-  {"name": "orkney-chunk-grep", "url": "https://www.orkney.gov.uk/js/chunk-RWMF463X.js", "raw": true,
-   "grep": "fetch\\(|actions/|\\.ics|icalUrl|addressId|binCollections"}
+  {"name": "orkney-search-lookup", "url": "https://www.orkney.gov.uk/actions/_orkney/address/search?q=School%20Place%20Kirkwall", "raw": true,
+   "headers": {"Accept": "application/json"},
+   "then": {"regex": "\"addressId\"\\s*:\\s*\"?([^\",}]+)", "url": "https://www.orkney.gov.uk/actions/_orkney/bin-collection/lookup-address?addressId={}", "raw": true, "headers": {"Accept": "application/json"}}},
+  {"name": "orkney-search-kirkwall", "url": "https://www.orkney.gov.uk/actions/_orkney/address/search?q=Kirkwall", "raw": true, "headers": {"Accept": "application/json"}}
 ]
