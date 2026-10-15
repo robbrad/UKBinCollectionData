@@ -164,8 +164,9 @@ and occasionally `paon` or `custom_component_show_url_field`.
 ### Parity check: what it really does
 
 `council_feature_input_parity.py` checks **one thing**: the set of `councils/*.py`
-basenames (minus `NON_COUNCIL_FILES`) equals the set of input.json keys. Despite the CI
-step's name, it doesn't look at the feature file or at field correctness.
+basenames (minus `NON_COUNCIL_FILES` and `RETIRED_COUNCILS`) equals the set of
+input.json keys. Despite the CI step's name, it doesn't look at the feature file or at
+field correctness.
 
 **It reads from the GitHub API, not your working tree.** `make parity-check` without
 `repo=… branch=…` checks **master**. So either push first and run
@@ -175,14 +176,38 @@ offline equivalent, which works in the sandbox:
 ```bash
 python3 - <<'EOF'
 import json, pathlib
-files = {p.stem for p in pathlib.Path("uk_bin_collection/uk_bin_collection/councils").glob("*.py")} - {"SocietyWorks", "__init__"}
+# Keep in step with NON_COUNCIL_FILES | RETIRED_COUNCILS in the real check.
+excluded = {"SocietyWorks", "__init__"} | {"FyldeCouncil"}
+files = {p.stem for p in pathlib.Path("uk_bin_collection/uk_bin_collection/councils").glob("*.py")} - excluded
 keys = set(json.load(open("uk_bin_collection/tests/input.json")))
 print("missing from input.json:", sorted(files - keys)); print("no class file:", sorted(keys - files))
 EOF
 jq empty uk_bin_collection/tests/input.json && echo "input.json is valid JSON"
 ```
 
-(Add any new base class to the exclusion set here *and* in `NON_COUNCIL_FILES`.)
+(Add any new base class to the exclusion set here *and* in `NON_COUNCIL_FILES`; add a
+retired council here *and* in `RETIRED_COUNCILS`.)
+
+### Retiring a council
+
+When a council puts its bin lookup behind a login and no public endpoint is left, don't
+delete the class file - `collect_data.import_council_module` imports it by the name
+stored verbatim in each HA user's saved config, so deleting it turns an explainable
+failure into an `ImportError`. Instead:
+
+1. Replace the body of `councils/<Council>.py` with a `CouncilClass` whose `parse_data`
+   raises immediately, with a message naming and linking the portal that replaced it, and
+   a docstring giving the reason and the date.
+2. Remove the entry from `input.json`, so the live suite stops testing it and the HA
+   config flow stops offering it to new users.
+3. Add the class name to `RETIRED_COUNCILS` in `council_feature_input_parity.py` (not to
+   `NON_COUNCIL_FILES` - that's for shared base classes) and to the snippet above.
+4. Add an offline test asserting the error message, as in `test_fylde_council.py`.
+
+`wiki/Councils.md` is auto-generated from input.json by the `Deploy - Wiki` workflow on
+master pushes, so leave it alone; it drops the council on merge. Existing HA users keep
+their sensors until they remove the council from their config, but now get a message
+that says why.
 
 ---
 
