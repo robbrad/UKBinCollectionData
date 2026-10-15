@@ -44,13 +44,17 @@ getting an input.json entry.
   also triggers it, so open diagnostic PRs as drafts.
 - `paths-ignore` covers `**/*.md`, `wiki/**` and `uk_bin_collection_api_server/**`. A PR that
   only touches those runs no tests.
-- **It only live-tests councils whose `councils/*.py` file changed in the PR.** The file
-  basenames are joined into `pytest -k "A or B or C"`. Consequences:
-  - Changing a **base class** (`SocietyWorks.py`) or `common.py` / `get_bin_data.py`
-    live-tests **nothing**. The October SocietyWorks UA fix was never live-tested in CI for
-    this reason. To cover dependents, make a trivial change to one subclass file in a
+- **What it live-tests depends on which `councils/*.py` files the PR changed.** The
+  changed basenames are joined into `pytest -k "A or B or C"`. Consequences:
+  - **If no council file changed at all**, the list is empty and the Makefile runs the
+    **entire live suite**, about 350 councils. That takes a long time and many fail on IP
+    blocks. Examples are a PR touching only `common.py`, `input.json`, workflows, or a
+    base class on its own. Don't mistake the resulting failures for regressions.
+  - If council files changed, **only those** run. A base-class basename such as
+    `SocietyWorks` in the `-k` list matches no `input.json` key, so its subclasses
+    aren't tested. The October SocietyWorks UA fix was never live-tested for this
+    reason. To cover dependents, make a trivial change to one subclass file in a
     throwaway diagnostic PR.
-  - Changing only `input.json` (e.g. new test data) also live-tests nothing.
   - To diagnose a council you haven't fixed yet, the diagnostic print in its `.py` *is*
     what puts it in the matrix.
 - **The integration step has `continue-on-error: true`**, so the check run is green even
