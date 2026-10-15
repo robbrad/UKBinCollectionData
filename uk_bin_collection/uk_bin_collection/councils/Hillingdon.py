@@ -1,295 +1,137 @@
-import json
-from datetime import datetime, timedelta
-from typing import Any, Dict
+import re
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import urljoin
 
+import requests
 from bs4 import BeautifulSoup
-from dateutil.parser import parse
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    StaleElementReferenceException,
-    TimeoutException,
-)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import check_postcode, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-# Dictionary mapping day names to their weekday numbers (Monday=0, Sunday=6)
-DAYS_OF_WEEK = {
-    "Monday": 0,
-    "Tuesday": 1,
-    "Wednesday": 2,
-    "Thursday": 3,
-    "Friday": 4,
-    "Saturday": 5,
-    "Sunday": 6,
-}
+FORM_URL = "https://www.hillingdon.gov.uk/collection-day"
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+)
 
 
-# This function checks for bank holiday collection changes,
-# but the page seems manually written so might break easily
-def get_bank_holiday_changes(driver: WebDriver) -> Dict[str, str]:
-    """Fetch and parse bank holiday collection changes from the council website."""
-    bank_holiday_url = "https://www.hillingdon.gov.uk/bank-holiday-collections"
-    changes: Dict[str, str] = {}
+def _normalise(text: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
 
-    try:
-        driver.get(bank_holiday_url)
 
-        # Check if the page is a 404 or has an error
-        if "404" in driver.title or "Page not found" in driver.page_source:
-            print("Bank holiday page not found (404).")
-            return changes
+def _choose_address(
+    options: List[Tuple[str, str]], paon: Optional[str], uprn: Optional[str]
+) -> str:
+    """Match by UPRN, else by address text.
 
-        # Wait for page to load
-        wait = WebDriverWait(driver, 10)
-        try:
-            wait.until(EC.presence_of_element_located((By.TAG_NAME, "table")))
-        except TimeoutException:
-            print("No tables found on the bank holiday page.")
-            return changes
+    Older configs hold the full address in the previous form's style
+    ("1, Milverton Drive, Ickenham, UB10 8PP, Ickenham, Hillingdon"), newer
+    ones may hold just the house number, so accept either.
+    """
+    if uprn:
+        for value, _ in options:
+            if value == str(uprn).strip():
+                return value
+    if paon:
+        wanted = _normalise(paon)
+        for value, text in options:
+            option = _normalise(text)
+            if wanted == option or wanted.startswith(option + " "):
+                return value
+        for value, text in options:
+            if _normalise(text).startswith(wanted + " "):
+                return value
+    raise ValueError(
+        f"Could not match address '{paon or uprn}' among {len(options)} addresses"
+    )
 
-        # Parse the page
-        soup = BeautifulSoup(driver.page_source, features="html.parser")
 
-        # Find all tables with collection changes
-        tables = soup.find_all("table")
-        if not tables:
-            print("No relevant tables found on the bank holiday page.")
-            return changes
+def _field_value(soup: BeautifulSoup, label: str) -> str:
+    for tag in soup.find_all("label"):
+        if tag.get_text(strip=True) == label and tag.get("for"):
+            field = soup.find(id=tag["for"])
+            if field is not None:
+                return field.get("value", "").replace("\\n", "").strip().strip('"')
+    raise ValueError(f"Could not find '{label}' on the results page")
 
-        for table in tables:
-            # Check if this is a collection changes table
-            headers = [th.text.strip() for th in table.find_all("th")]
-            if (
-                "Normal collection day" in headers
-                and "Revised collection day" in headers
-            ):
-                # Process each row
-                for row in table.find_all("tr")[1:]:  # Skip header row
-                    cols = row.find_all("td")
-                    if len(cols) >= 2:
-                        normal_date = cols[0].text.strip()
-                        revised_date = cols[1].text.strip()
 
-                        # Parse dates
-                        try:
-                            normal_date = parse(normal_date, fuzzy=True).strftime(
-                                "%d/%m/%Y"
-                            )
-                            revised_date = parse(revised_date, fuzzy=True).strftime(
-                                "%d/%m/%Y"
-                            )
-                            changes[normal_date] = revised_date
-                        except Exception as e:
-                            print(f"Error parsing dates: {e}")
-                            continue
-
-    except Exception as e:
-        print(f"An error occurred while fetching bank holiday changes: {e}")
-
-    return changes
+def _parse_results(html: str) -> Dict[str, List[Dict[str, str]]]:
+    soup = BeautifulSoup(html, "html.parser")
+    date_text = _field_value(soup, "Date")  # e.g. "Tuesday 20-10-2026"
+    collection_date = datetime.strptime(date_text.split()[-1], "%d-%m-%Y")
+    types = [t.strip() for t in _field_value(soup, "Types of containers").split(",")]
+    return {
+        "bins": [
+            {"type": t, "collectionDate": collection_date.strftime(date_format)}
+            for t in types
+            if t
+        ]
+    }
 
 
 class CouncilClass(AbstractGetBinDataClass):
+    """
+    Hillingdon's lookup is a Jadu XFP form: enter a postcode, press Lookup to
+    get an address list, choose an address and press Next to see the next
+    collection date and which containers are due.
+    """
+
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, Any]:
-        driver = None
-        try:
-            data: Dict[str, Any] = {"bins": []}
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            url = kwargs.get("url")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon")
+        user_uprn = kwargs.get("uprn")
+        check_postcode(user_postcode)
+        if not user_paon and not user_uprn:
+            raise ValueError("Provide a house number/address or a UPRN")
 
-            check_paon(user_paon)
-            check_postcode(user_postcode)
+        session = requests.Session()
+        session.headers.update({"User-Agent": USER_AGENT})
 
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(url)
+        resp = session.get(FORM_URL, timeout=30)
+        resp.raise_for_status()
+        soup = BeautifulSoup(resp.text, "html.parser")
+        form = soup.find("form", action=re.compile(r"/xfp/form/"))
+        if form is None:
+            raise ValueError("Could not find the collection day form")
+        action = urljoin(resp.url, form["action"])
+        postcode_field = form.find("input", autocomplete="postal-code")["name"]
+        lookup = form.find("button", class_="btn--lookup")
 
-            # Handle cookie banner if present
-            wait = WebDriverWait(driver, 30)
-            try:
-                cookie_button = wait.until(
-                    EC.element_to_be_clickable(
-                        (
-                            By.CSS_SELECTOR,
-                            "button.btn.btn--cookiemessage.btn--cancel.btn--contrast",
-                        )
-                    )
-                )
-                cookie_button.click()
-            except (TimeoutException, NoSuchElementException):
-                pass
+        def fields(f) -> Dict[str, str]:
+            return {
+                "__token": f.find("input", {"name": "__token"})["value"],
+                "page": f.find("input", {"name": "page"})["value"],
+                "locale": "en_GB",
+                postcode_field: user_postcode,
+            }
 
-            # Enter postcode
-            post_code_input = wait.until(
-                EC.element_to_be_clickable(
-                    (
-                        By.ID,
-                        "WASTECOLLECTIONDAYLOOKUPINCLUDEGARDEN_ADDRESSLOOKUPPOSTCODE",
-                    )
-                )
-            )
-            post_code_input.clear()
-            post_code_input.send_keys(user_postcode)
-            post_code_input.send_keys(Keys.TAB + Keys.ENTER)
+        resp = session.post(
+            action,
+            data={**fields(form), "callback": lookup["value"]},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        form = BeautifulSoup(resp.text, "html.parser").find(
+            "form", action=re.compile(r"/xfp/form/")
+        )
+        select = form.find("select", {"name": re.compile(r"_1_0$")}) if form else None
+        options = [
+            (o["value"], o.get_text(strip=True))
+            for o in (select.find_all("option") if select else [])
+            if o.get("value")
+        ]
+        if not options:
+            raise ValueError(f"No addresses found for postcode {user_postcode}")
 
-            # Wait for address options to populate
-            try:
-                # Wait for the address dropdown to be present and clickable
-                address_select = wait.until(
-                    EC.presence_of_element_located(
-                        (
-                            By.ID,
-                            "WASTECOLLECTIONDAYLOOKUPINCLUDEGARDEN_ADDRESSLOOKUPADDRESS",
-                        )
-                    )
-                )
-
-                # Wait for actual address options to appear
-                wait.until(
-                    lambda driver: len(driver.find_elements(By.TAG_NAME, "option")) > 1
-                )
-
-                # Find and select address
-                options = address_select.find_elements(By.TAG_NAME, "option")[
-                    1:
-                ]  # Skip placeholder
-                if not options:
-                    raise Exception(f"No addresses found for postcode: {user_postcode}")
-
-                # Normalize user input by keeping only alphanumeric characters
-                normalized_user_input = "".join(
-                    c for c in user_paon if c.isalnum()
-                ).lower()
-
-                # Find matching address in dropdown
-                for option in options:
-                    # Normalize option text by keeping only alphanumeric characters
-                    normalized_option = "".join(
-                        c for c in option.text if c.isalnum()
-                    ).lower()
-                    if normalized_user_input in normalized_option:
-                        option.click()
-                        break
-            except TimeoutException:
-                raise Exception("Timeout waiting for address options to populate")
-
-            # Wait for collection table and day text
-            wait.until(
-                EC.presence_of_element_located(
-                    (By.ID, "WASTECOLLECTIONDAYLOOKUPINCLUDEGARDEN_COLLECTIONTABLE")
-                )
-            )
-
-            # Wait for collection day text to be fully populated
-            wait.until(
-                lambda driver: len(
-                    driver.find_element(
-                        By.ID, "WASTECOLLECTIONDAYLOOKUPINCLUDEGARDEN_COLLECTIONTABLE"
-                    )
-                    .find_elements(By.TAG_NAME, "tr")[2]
-                    .find_elements(By.TAG_NAME, "td")[1]
-                    .text.strip()
-                    .split()
-                )
-                > 1
-            )
-
-            # Parse the table
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-            table = soup.find(
-                "div", id="WASTECOLLECTIONDAYLOOKUPINCLUDEGARDEN_COLLECTIONTABLE"
-            ).find("table")
-
-            # Get collection day
-            collection_day_text = table.find_all("tr")[2].find_all("td")[1].text.strip()
-            day_of_week = next(
-                (
-                    day
-                    for day in DAYS_OF_WEEK
-                    if day.lower() in collection_day_text.lower()
-                ),
-                None,
-            )
-            if not day_of_week:
-                raise Exception(
-                    f"Could not determine collection day from text: '{collection_day_text}'"
-                )
-
-            # Calculate next collection date
-            today = datetime.now()
-            days_ahead = (DAYS_OF_WEEK[day_of_week] - today.weekday()) % 7
-            if days_ahead == 0:  # If today is collection day, get next week's date
-                days_ahead = 7
-            next_collection = today + timedelta(days=days_ahead)
-
-            # Add collection dates for each bin type
-            bin_types = ["General Waste", "Recycling", "Food Waste"]
-            for bin_type in bin_types:
-                data["bins"].append(
-                    {
-                        "type": bin_type,
-                        "collectionDate": next_collection.strftime("%d/%m/%Y"),
-                    }
-                )
-
-            # Process collection details
-            bin_rows = soup.select("div.bin--row:not(:first-child)")
-            for row in bin_rows:
-                try:
-                    bin_type = row.select_one("div.col-md-3").text.strip()
-                    collection_dates_div = row.select("div.col-md-3")[1]
-                    next_collection_text = "".join(
-                        collection_dates_div.find_all(text=True, recursive=False)
-                    ).strip()
-                    cleaned_date_text = remove_ordinal_indicator_from_date_string(
-                        next_collection_text
-                    )
-                    parsed_date = parse(cleaned_date_text, fuzzy=True)
-                    bin_date = parsed_date.strftime("%d/%m/%Y")
-
-                    if bin_type and bin_date:
-                        data["bins"].append(
-                            {
-                                "type": bin_type,
-                                "collectionDate": bin_date,
-                            }
-                        )
-                except Exception as e:
-                    print(f"Error processing item: {e}")
-                    continue
-
-            # Get bank holiday changes
-            print("\nChecking for bank holiday collection changes...")
-            bank_holiday_changes = get_bank_holiday_changes(driver)
-
-            # Apply any bank holiday changes to collection dates
-            for bin_data in data["bins"]:
-                original_date = bin_data["collectionDate"]
-                if original_date in bank_holiday_changes:
-                    new_date = bank_holiday_changes[original_date]
-                    print(
-                        f"Bank holiday change: {bin_data['type']} collection moved from {original_date} to {new_date}"
-                    )
-                    bin_data["collectionDate"] = new_date
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            raise
-        finally:
-            if driver:
-                driver.quit()
-
-        # Print the final data dictionary for debugging
-        print("\nFinal data dictionary:")
-        print(json.dumps(data, indent=2))
-
-        return data
+        resp = session.post(
+            action,
+            data={
+                **fields(form),
+                select["name"]: _choose_address(options, user_paon, user_uprn),
+                "next": "Next",
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+        return _parse_results(resp.text)

@@ -1319,9 +1319,8 @@
         "postcode": "UB10 8PP",
         "skip_get_url": true,
         "url": "https://www.hillingdon.gov.uk/collection-day",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Hillingdon",
-        "wiki_note": "Pass the postcode and the full address as it appears in the address pulldown menu."
+        "wiki_note": "Pass the postcode and either the house number/name (e.g. \"2a\" or the start of the address) or the UPRN."
     },
     "HinckleyandBosworthBoroughCouncil": {
         "LAD24CD": "E07000132",
