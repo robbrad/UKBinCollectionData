@@ -724,11 +724,13 @@
     },
     "DoncasterCouncil": {
         "LAD24CD": "E08000017",
+        "house_number": "3",
+        "postcode": "DN4 6HN",
         "skip_get_url": true,
-        "uprn": "100050768956",
-        "url": "https://www.doncaster.gov.uk/Compass/Entity/Launch/D3/",
+        "url": "https://doncaster-wasterecycling.oncreate.app/w/webpage/bin-query",
+        "web_driver": "http://selenium:4444",
         "wiki_name": "Doncaster",
-        "wiki_note": "Pass the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Pass the house number (or house name) in the `house_number` parameter, wrapped in double quotes, and the postcode in the `postcode` parameter. The council's new waste app searches by postcode and property, so a UPRN is no longer accepted."
     },
     "DorsetCouncil": {
         "LAD24CD": "E06000059",
