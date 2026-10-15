@@ -7,6 +7,9 @@ import re
 
 import pytest
 
+FULL = bool(os.environ.get("UKBCD_DIAG_FULL"))
+BODY_MAX = 25000
+
 DIAG_DIR = pathlib.Path("build/diag")
 _current = {"council": None}
 _failed = set()
@@ -39,7 +42,7 @@ def _install():
         try:
             resp = orig_send(self, request, **kwargs)
         except Exception as e:
-            _record({"k": "req-err", "m": request.method, "u": request.url, "e": repr(e)[:200]})
+            _record({"k": "req-err", "m": request.method, "u": request.url, "e": repr(e)[:800]})
             raise
         try:
             ct = resp.headers.get("Content-Type", "")
@@ -47,7 +50,8 @@ def _install():
             _record({"k": "req", "m": request.method, "u": request.url[:160], "s": resp.status_code,
                      "srv": resp.headers.get("Server", ""), "cf": resp.headers.get("cf-mitigated", ""),
                      "ct": ct[:40], "loc": resp.headers.get("Location", "")[:120], "n": len(resp.content),
-                     "title": t, "ids": ids, "body": b})
+                     "title": t, "ids": ids, "body": b,
+                     **({"full": resp.text[:BODY_MAX]} if FULL else {})})
         except Exception:
             pass
         return resp
@@ -67,6 +71,8 @@ def _install():
                     " ids: Array.from(document.querySelectorAll('form,select,input,button,iframe'))"
                     ".map(e => e.tagName.toLowerCase()+'#'+(e.id||e.name||'')).slice(0,25)};"
                 )
+                if FULL:
+                    info["src"] = self.page_source[:BODY_MAX]
                 _record({"k": "selenium-final", **info})
             except Exception as e:
                 _record({"k": "selenium-final-err", "e": repr(e)[:200]})
@@ -108,5 +114,5 @@ def pytest_terminal_summary(terminalreporter):
             tr.write_line("  (no requests recorded)")
             continue
         lines = path.read_text().splitlines()
-        for line in lines[-12:]:
-            tr.write_line("  " + line[:700])
+        for line in (lines if FULL else lines[-12:]):
+            tr.write_line("  " + (line if FULL else line[:700]))
