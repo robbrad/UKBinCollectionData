@@ -510,3 +510,138 @@ def test_get_scraper_user_agent_custom_fallback():
     assert result == (
         "uk-bin-collection/dev (+https://github.com/robbrad/UKBinCollectionData)"
     )
+
+
+def test_align_user_agent_to_browser_rewrites_a_stale_chrome_version():
+    stale = (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+    )
+    assert align_user_agent_to_browser(stale, "154") == (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+    )
+
+
+def test_align_user_agent_to_browser_leaves_a_matching_version_alone():
+    current = "Mozilla/5.0 Chrome/154.0.0.0 Safari/537.36"
+    assert align_user_agent_to_browser(current, "154") == current
+
+
+def test_align_user_agent_to_browser_rewrites_edge_too():
+    agent = "Mozilla/5.0 Chrome/138.0.0.0 Safari/537.36 Edg/138.0.0.0"
+    assert align_user_agent_to_browser(agent, "154") == (
+        "Mozilla/5.0 Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0"
+    )
+
+
+def test_align_user_agent_to_browser_does_not_touch_other_version_numbers():
+    agent = "Mozilla/5.0 AppleWebKit/537.36 Chrome/138.0.0.0 Safari/537.36"
+    aligned = align_user_agent_to_browser(agent, "154")
+    assert "AppleWebKit/537.36" in aligned
+    assert "Safari/537.36" in aligned
+
+
+@pytest.mark.parametrize("missing", [None, ""])
+def test_align_user_agent_to_browser_is_a_no_op_without_both_inputs(missing):
+    agent = "Mozilla/5.0 Chrome/138.0.0.0"
+    assert align_user_agent_to_browser(agent, missing) == agent
+    assert align_user_agent_to_browser(missing, "154") == missing
+
+
+def test_get_local_chrome_major_version_is_empty_when_undetectable():
+    import uk_bin_collection.common as common_module
+
+    original = common_module._local_chrome_major
+    try:
+        common_module._local_chrome_major = ""
+        with mock.patch(
+            "webdriver_manager.core.os_manager.OperationSystemManager."
+            "get_browser_version_from_os",
+            side_effect=OSError("no chrome here"),
+        ):
+            assert common_module.get_local_chrome_major_version() == ""
+    finally:
+        common_module._local_chrome_major = original
+
+
+def test_align_user_agent_to_browser_rewrites_a_wrong_platform_token():
+    linux_ua = (
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
+    )
+    assert align_user_agent_to_browser(
+        linux_ua, "154", "Windows NT 10.0; Win64; x64"
+    ) == (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36"
+    )
+
+
+def test_align_user_agent_to_browser_leaves_the_platform_alone_by_default():
+    linux_ua = "Mozilla/5.0 (X11; Linux x86_64) Chrome/138.0.0.0"
+    assert align_user_agent_to_browser(linux_ua, "154") == (
+        "Mozilla/5.0 (X11; Linux x86_64) Chrome/154.0.0.0"
+    )
+
+
+def test_align_user_agent_to_browser_rewrites_the_platform_without_a_version():
+    linux_ua = "Mozilla/5.0 (X11; Linux x86_64) Chrome/138.0.0.0"
+    assert align_user_agent_to_browser(linux_ua, "", "Windows NT 10.0; Win64; x64") == (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/138.0.0.0"
+    )
+
+
+@pytest.mark.parametrize(
+    "platform,expected",
+    [
+        ("win32", "Windows NT 10.0; Win64; x64"),
+        ("darwin", "Macintosh; Intel Mac OS X 10_15_7"),
+        ("linux", "X11; Linux x86_64"),
+        ("aix7", ""),
+    ],
+)
+def test_get_local_ua_platform_token(platform, expected):
+    with mock.patch("uk_bin_collection.common.sys.platform", platform):
+        assert get_local_ua_platform_token() == expected
+
+
+def test_create_webdriver_local_aligns_the_user_agent_to_the_real_browser():
+    stale = "Mozilla/5.0 (X11; Linux x86_64) Chrome/138.0.0.0 Safari/537.36"
+    with mock.patch(
+        "uk_bin_collection.common.webdriver.Chrome"
+    ) as mock_chrome, mock.patch(
+        "uk_bin_collection.common.ChromeDriverManager"
+    ), mock.patch(
+        "uk_bin_collection.common.get_local_chrome_major_version", return_value="154"
+    ), mock.patch(
+        "uk_bin_collection.common.get_local_ua_platform_token",
+        return_value="Windows NT 10.0; Win64; x64",
+    ):
+        mock_chrome.return_value = mock.MagicMock()
+        create_webdriver(None, headless=True, user_agent=stale)
+
+        options = mock_chrome.call_args.kwargs["options"]
+    assert (
+        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "Chrome/154.0.0.0 Safari/537.36" in options.arguments
+    )
+
+
+def test_create_webdriver_remote_keeps_the_callers_user_agent():
+    # A remote grid's Chrome version isn't knowable from here, so don't guess.
+    stale = "Mozilla/5.0 Chrome/138.0.0.0 Safari/537.36"
+    with mock.patch(
+        "uk_bin_collection.common.webdriver.Remote"
+    ) as mock_remote, mock.patch(
+        "uk_bin_collection.common.get_local_chrome_major_version",
+        return_value="154",
+    ), mock.patch(
+        "uk_bin_collection.common.get_local_ua_platform_token",
+        return_value="Windows NT 10.0; Win64; x64",
+    ):
+        mock_remote.return_value = mock.MagicMock()
+        create_webdriver("http://selenium:4444", headless=True, user_agent=stale)
+
+        options = mock_remote.call_args.kwargs["options"]
+    assert f"--user-agent={stale}" in options.arguments
