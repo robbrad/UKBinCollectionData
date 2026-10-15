@@ -53,7 +53,9 @@ def via_selenium(p):
         src = d.page_source
         if not p.get("scripts"):
             src = re.sub(r"<script\b.*?</script>", "", src, flags=re.S | re.I)
-        print(strip(src))
+        if p.get("from") and p["from"] in src:
+            src = src[src.index(p["from"]):]
+        print(strip(src) if not p.get("from") else re.sub(r"\s+", " ", src)[:BODY_MAX])
 
     try:
         d.get(p["url"])

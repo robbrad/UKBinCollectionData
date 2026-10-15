@@ -155,7 +155,7 @@ jobs:
       - name: Run Integration Tests
         env:
           HEADLESS: True
-          COUNCIL_TESTS: "LondonBoroughHarrow or TorbayCouncil"
+          COUNCIL_TESTS: "ArmaghBanbridgeCraigavonCouncil"
           UKBCD_DIAG: "1"
           UKBCD_DIAG_FULL: "1"
           PYTEST_ADDOPTS: "--tb=line --show-capture=no"
