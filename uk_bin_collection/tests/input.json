@@ -2754,12 +2754,13 @@
         "wiki_note": "Provide your UPRN."
     },
     "TowerHamletsCouncil": {
+        "LAD24CD": "E09000030",
         "postcode": "E1 6QR",
         "skip_get_url": true,
-        "uprn": "6093334",
+        "uprn": "6001104",
         "url": "https://www.towerhamlets.gov.uk",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "Tower Hamlets"
+        "wiki_name": "Tower Hamlets",
+        "wiki_note": "Provide your UPRN, or your postcode and house number or name (-n). No web driver is needed."
     },
     "TunbridgeWellsCouncil": {
         "LAD24CD": "E07000116",
