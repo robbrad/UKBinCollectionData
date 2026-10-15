@@ -1,4 +1,10 @@
 =======
+## 0.172.6 (2026-10-15)
+
+### Fix
+
+- **ci**: skip version bump when no commits are releasable; add maintainer playbook
+
 ## 0.172.5 (2026-09-24)
 
 ### Fix
