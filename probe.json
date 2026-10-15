@@ -1,8 +1,5 @@
 [
-  {"name": "broxbourne-lookup", "selenium": true, "wait": 6, "from": "<main", "url": "https://www.broxbourne.gov.uk/bin-collection-date",
-   "steps": [{"type": ["input[autocomplete='postal-code']", "EN8 7FL"]}, {"click": "button.btn--lookup"}, {"sleep": 12}, {"dump": "after-lookup"},
-             {"select_contains": ["select:not([id^=date-input])", "1"]}, {"sleep": 2}, {"click_xpath": "//button[contains(normalize-space(.),'Next')]"}, {"sleep": 12}]},
-  {"name": "orkney-bin-collections-browser", "selenium": true, "wait": 12, "url": "https://www.orkney.gov.uk/bin-collections"},
-  {"name": "orkney-bin-collections-scripts", "url": "https://www.orkney.gov.uk/bin-collections", "raw": true},
-  {"name": "nederbyshire-bins-iframe", "selenium": true, "wait": 12, "url": "https://myselfservice.ne-derbyshire.gov.uk/appshost/firmstep/self/apps/custompage/bins?language=en"}
+  {"name": "orkney-js", "url": "https://www.orkney.gov.uk/js/bin-collections.js", "raw": true},
+  {"name": "nederbyshire-dates", "url": "https://www.ne-derbyshire.gov.uk/bins-and-recycling/bin-collection-dates", "raw": true},
+  {"name": "nederbyshire-dates-browser", "selenium": true, "wait": 10, "from": "<main", "url": "https://www.ne-derbyshire.gov.uk/bins-and-recycling/bin-collection-dates"}
 ]
