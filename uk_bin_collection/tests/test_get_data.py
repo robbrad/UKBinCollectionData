@@ -62,6 +62,9 @@ def test_setup_logging_valid_config():
     # Example of a minimal valid logging configuration dictionary
     logging_config = {
         "version": 1,
+        # Without this, dictConfig disables every logger created so far,
+        # silencing them for any later test in the same session.
+        "disable_existing_loggers": False,
         "handlers": {
             "console": {
                 "class": "logging.StreamHandler",
