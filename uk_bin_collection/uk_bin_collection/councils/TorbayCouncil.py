@@ -155,7 +155,9 @@ class CouncilClass(AbstractGetBinDataClass):
             submit_button = WebDriverWait(driver, 10).until(
                 EC.element_to_be_clickable((By.ID, "submit-button"))
             )
-            submit_button.click()
+            # An overlay can sit over the button ("element click intercepted"),
+            # so click it via JavaScript rather than at its screen position.
+            driver.execute_script("arguments[0].click();", submit_button)
             time.sleep(1)  # Brief pause to let the navigation start
 
             # Wait for the collection details to appear

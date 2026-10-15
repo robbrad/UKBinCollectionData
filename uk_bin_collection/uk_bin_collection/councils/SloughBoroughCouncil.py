@@ -1,4 +1,5 @@
 import json
+import re
 
 import requests
 from bs4 import BeautifulSoup
@@ -6,7 +7,9 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
-BASE_URL = "https://waste.slough.gov.uk/PublicDashboard"
+
+def _normalise(text) -> str:
+    return re.sub(r"[^A-Z0-9]+", " ", str(text).upper()).strip()
 
 
 def _extract_json_array(text: str, marker: str, start_from: int = 0):
@@ -22,7 +25,10 @@ class CouncilClass(AbstractGetBinDataClass):
     Slough Borough Council uses a Syncfusion-based "Public Dashboard"
     (waste.slough.gov.uk) that renders premises and the collection schedule
     as plain server-rendered JSON embedded in the page - no browser needed.
+    Other councils on the same platform subclass this with their own BASE_URL.
     """
+
+    BASE_URL = "https://waste.slough.gov.uk/PublicDashboard"
 
     def parse_data(self, page: str, **kwargs) -> dict:
         user_postcode = kwargs.get("postcode")
@@ -36,19 +42,19 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         s = requests.Session()
-        r = s.get(BASE_URL, headers=headers, timeout=15)
+        r = s.get(self.BASE_URL, headers=headers, timeout=15)
         r.raise_for_status()
         soup = BeautifulSoup(r.text, "html.parser")
         token = soup.find("input", {"name": "__RequestVerificationToken"})["value"]
 
         post_headers = {
             **headers,
-            "Referer": BASE_URL,
+            "Referer": self.BASE_URL,
             "Content-Type": "application/x-www-form-urlencoded",
         }
 
         r = s.post(
-            f"{BASE_URL}?handler=SearchPostcode",
+            f"{self.BASE_URL}?handler=SearchPostcode",
             data={
                 "SelectedPostcode": user_postcode,
                 "__RequestVerificationToken": token,
@@ -75,12 +81,14 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
         elif user_paon:
             check_paon(user_paon)
-            paon_norm = str(user_paon).strip().upper()
+            # Ignore punctuation so "9 Ellison Street, Glossop" matches
+            # however the dashboard formats the premises text.
+            paon_norm = _normalise(user_paon)
             match = next(
                 (
                     p
                     for p in premises
-                    if p["Premises"].upper().startswith(paon_norm + " ")
+                    if (_normalise(p["Premises"]) + " ").startswith(paon_norm + " ")
                 ),
                 None,
             )
@@ -96,7 +104,7 @@ class CouncilClass(AbstractGetBinDataClass):
             )
 
         r = s.post(
-            f"{BASE_URL}?handler=SelectPrem",
+            f"{self.BASE_URL}?handler=SelectPrem",
             data={
                 "SelectedPostcode": user_postcode,
                 "SelectedPremises": str(int(match["UPRN"])),

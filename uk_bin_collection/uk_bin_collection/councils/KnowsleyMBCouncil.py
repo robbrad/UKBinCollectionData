@@ -10,6 +10,45 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
+def _date_values(html: str) -> list:
+    """Return (label, value) pairs for each "... bin next collection date" field."""
+    soup = BeautifulSoup(html, "html.parser")
+    pairs = []
+    for group in soup.find_all("div", class_="form-group"):
+        label = group.find("label")
+        value = group.find("div", class_="form-control-static")
+        if not label or not value:
+            continue
+        label_text = label.get_text().strip()
+        if "bin next collection date" in label_text.lower():
+            # Mendix renders the empty field as "&nbsp;" until data arrives
+            pairs.append((label_text, value.get_text().replace("\xa0", " ").strip()))
+    return pairs
+
+
+def _has_collection_dates(html: str) -> bool:
+    """True once Mendix has filled at least one bin date (not just the labels)."""
+    return any(value for _, value in _date_values(html))
+
+
+def _parse_bin_info(html: str) -> dict:
+    bindata = {"bins": []}
+    for label_text, value_text in _date_values(html):
+        bin_type = label_text.split(" bin")[0]
+        try:
+            collection_date = datetime.strptime(value_text, "%A %d/%m/%Y").strftime(
+                "%d/%m/%Y"
+            )
+        except ValueError:
+            continue
+        bindata["bins"].append({"type": bin_type, "collectionDate": collection_date})
+
+    bindata["bins"].sort(
+        key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
+    )
+    return bindata
+
+
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         driver = None
@@ -89,11 +128,12 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             address_selection_button.send_keys(Keys.RETURN)
 
-            # Step 4: Wait until the bin info is present
+            # Step 4: Wait until the bin dates are populated. The labels
+            # ("Maroon bin next collection date" etc.) are rendered with empty
+            # "&nbsp;" values before Mendix loads the data, so waiting for the
+            # labels alone parsed an empty form and returned no bins.
             WebDriverWait(driver, 60).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//label[contains(text(), 'collection')]")
-                )
+                lambda d: _has_collection_dates(d.page_source)
             )
 
             bin_info_container = driver.find_element(
@@ -101,38 +141,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 "//label[contains(text(), 'collection')]/ancestor::div[contains(@class, 'mx-dataview-content')]",
             )
 
-            soup = BeautifulSoup(
-                bin_info_container.get_attribute("innerHTML"), "html.parser"
-            )
-
-            for group in soup.find_all("div", class_="form-group"):
-                label = group.find("label")
-                value = group.find("div", class_="form-control-static")
-                if not label or not value:
-                    continue
-
-                label_text = label.text.strip()
-                value_text = value.text.strip()
-
-                if "bin next collection date" in label_text.lower():
-                    bin_type = label_text.split(" bin")[0]
-                    try:
-                        collection_date = datetime.strptime(
-                            value_text, "%A %d/%m/%Y"
-                        ).strftime("%d/%m/%Y")
-                    except ValueError:
-                        continue
-
-                    bindata["bins"].append(
-                        {
-                            "type": bin_type,
-                            "collectionDate": collection_date,
-                        }
-                    )
-
-            bindata["bins"].sort(
-                key=lambda x: datetime.strptime(x["collectionDate"], "%d/%m/%Y")
-            )
+            bindata = _parse_bin_info(bin_info_container.get_attribute("innerHTML"))
 
         except Exception as e:
             print(f"An error occurred: {e}")

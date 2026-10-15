@@ -264,6 +264,13 @@ def _extract_collection_info(html):
         collection_day = (
             collection_day_el.parent.get_text().replace("Collection Day:", "").strip()
         )
+    elif soup.find(string=re.compile(r"no waste collection details", re.I)):
+        # e.g. non-domestic properties: "Sorry, no waste collection details
+        # are currently available for this property"
+        raise ValueError(
+            "Isle of Wight Council has no waste collection details for this "
+            "property - check the address is a domestic property"
+        )
     else:
         raise ValueError("Could not find collection day in page")
 

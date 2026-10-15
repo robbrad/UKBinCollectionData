@@ -1300,9 +1300,8 @@
         "postcode": "SK13 8BX",
         "skip_get_url": true,
         "url": "https://bins.highpeak.gov.uk/PublicDashboard",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "High Peak",
-        "wiki_note": "Pass the name of the street with the house number parameter, wrapped in double quotes. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the postcode and the house number (or the start of the address, e.g. \"9 Ellison Street\"), or the UPRN."
     },
     "HighlandCouncil": {
         "LAD24CD": "S12000017",
@@ -1319,9 +1318,8 @@
         "postcode": "UB10 8PP",
         "skip_get_url": true,
         "url": "https://www.hillingdon.gov.uk/collection-day",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Hillingdon",
-        "wiki_note": "Pass the postcode and the full address as it appears in the address pulldown menu."
+        "wiki_note": "Pass the postcode and either the house number/name (e.g. \"2a\" or the start of the address) or the UPRN."
     },
     "HinckleyandBosworthBoroughCouncil": {
         "LAD24CD": "E07000132",
@@ -2042,9 +2040,9 @@
     "OrkneyIslandsCouncil": {
         "house_number": "Kirkwall",
         "skip_get_url": true,
-        "url": "https://www.orkney.gov.uk",
+        "url": "https://www.orkney.gov.uk/bin-collections",
         "wiki_name": "Orkney Islands",
-        "wiki_note": "Pass a street, area, or island name (e.g. 'Kirkwall') in the house number parameter. Search at https://www.orkney.gov.uk/mybins to find your area."
+        "wiki_note": "Pass your address or street (e.g. '1 Albert Street, Kirkwall') in the house number parameter, or your UPRN. Collections are per area, so a street name in your area is enough."
     },
     "OxfordCityCouncil": {
         "LAD24CD": "E07000178",
@@ -2096,10 +2094,9 @@
         "postcode": "PO4 0LE",
         "skip_get_url": true,
         "uprn": "1775027504",
-        "url": "https://my.portsmouth.gov.uk/en/AchieveForms/?form_uri=sandbox-publish://AF-Process-26e27e70-f771-47b1-a34d-af276075cede/AF-Stage-cd7cc291-2e59-42cc-8c3f-1f93e132a2c9/definition.json&redirectlink=%2F&cancelRedirectLink=%2F",
-        "web_driver": "http://selenium:4444",
+        "url": "https://recyclingandrubbish.portsmouth.gov.uk/PublicDashboard",
         "wiki_name": "Portsmouth",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the postcode, and either the UPRN or the house number to disambiguate."
     },
     "PowysCouncil": {
         "LAD24CD": "W06000023",
@@ -2518,10 +2515,9 @@
         "postcode": "ST8 6HN",
         "skip_get_url": true,
         "uprn": "100031863037",
-        "url": "https://www.staffsmoorlands.gov.uk/",
-        "web_driver": "http://selenium:4444",
+        "url": "https://bins.staffsmoorlands.gov.uk/PublicDashboard",
         "wiki_name": "Staffordshire Moorlands",
-        "wiki_note": "Provide your UPRN and postcode. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
+        "wiki_note": "Pass the postcode and either the UPRN or the house number. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find your UPRN."
     },
     "StevenageBoroughCouncil": {
         "LAD24CD": "E07000243",

@@ -38,6 +38,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         soup = BeautifulSoup(response.text, "html.parser")
 
+        if "no collection information for this property" in soup.get_text().lower():
+            raise ValueError(
+                f"Lichfield DC (which runs Tamworth's collections) has no collection "
+                f"information for UPRN {user_uprn}. Check the UPRN is a current "
+                f"Tamworth household address."
+            )
+
         bins = soup.find_all("h3", class_="bin-collection-tasks__heading")
         dates = soup.find_all("p", class_="bin-collection-tasks__date")
 

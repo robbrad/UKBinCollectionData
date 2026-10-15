@@ -1,3 +1,5 @@
+import re
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -47,7 +49,13 @@ class CouncilClass(AbstractGetBinDataClass):
             content_col = section_heading.find_next("div", class_="col-sm-12 col-md-9")
             if not content_col:
                 return []
-            return [h4.get_text(strip=True) for h4 in content_col.find_all("h4")]
+            # Headings were "23/10/2026" and are now "Friday 23/10/2026".
+            dates = []
+            for h4 in content_col.find_all("h4"):
+                match = re.search(r"\d{2}/\d{2}/\d{4}", h4.get_text(strip=True))
+                if match:
+                    dates.append(match.group(0))
+            return dates
 
         url = f"https://www.armaghbanbridgecraigavon.gov.uk/resident/binday-result/?address={user_uprn}"
 
