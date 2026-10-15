@@ -83,6 +83,7 @@ jobs:
         run: make unit-tests
 
       - name: Upload Test Results to Codecov
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: false

@@ -60,8 +60,11 @@ parity-check:
 
 unit-tests:
 	poetry run coverage erase
-	- poetry run coverage run --append --omit "*/tests/*" -m pytest -vv -s --log-cli-level=DEBUG uk_bin_collection/tests custom_components/uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/ 
-	poetry run coverage xml
+	# Write coverage.xml even when tests fail, but still fail the target.
+	poetry run coverage run --append --omit "*/tests/*" -m pytest -vv -s --log-cli-level=DEBUG uk_bin_collection/tests custom_components/uk_bin_collection/tests --ignore=uk_bin_collection/tests/step_defs/; \
+	status=$$?; \
+	poetry run coverage xml; \
+	exit $$status
 
 update-wiki:
 	poetry run python wiki/generate_wiki.py
