@@ -61,7 +61,9 @@ def run(responses, **kwargs):
     form = FakeForm(responses)
     with patch.object(
         TowerHamletsCouncil, "AchieveFormsSession", return_value=form
-    ), patch.object(TowerHamletsCouncil, "datetime", FixedDatetime):
+    ), patch.object(TowerHamletsCouncil, "datetime", FixedDatetime), patch.object(
+        TowerHamletsCouncil, "check_postcode", return_value=True
+    ):
         return CouncilClass().parse_data("", **kwargs), form
 
 

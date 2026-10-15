@@ -83,6 +83,7 @@ jobs:
         run: make unit-tests
 
       - name: Upload Test Results to Codecov
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v7
         with:
           fail_ci_if_error: false
@@ -131,6 +132,11 @@ jobs:
       selenium:
         image: selenium/standalone-chrome:latest
         options: --shm-size=2gb --name selenium --hostname selenium
+        env:
+          # Match pytest -n logical (4 workers on GitHub runners); the default
+          # of 1 session made Selenium councils queue and time out.
+          SE_NODE_MAX_SESSIONS: 4
+          SE_NODE_OVERRIDE_MAX_SESSIONS: true
         ports:
           - 4444:4444
     steps:
