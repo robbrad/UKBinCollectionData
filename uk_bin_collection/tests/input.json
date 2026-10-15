@@ -2647,12 +2647,11 @@
     },
     "TeignbridgeCouncil": {
         "LAD24CD": "E07000045",
+        "skip_get_url": true,
         "uprn": "100040338776",
-        "url": "https://www.google.co.uk",
-        "web_driver": "http://selenium:4444",
-        "wiki_command_url_override": "https://www.google.co.uk",
+        "url": "https://www.teignbridge.gov.uk/recycling-and-waste/bin-and-box-collections/when-are-my-bins-and-boxes-collected/",
         "wiki_name": "Teignbridge",
-        "wiki_note": "Provide Google as the URL as the real URL breaks the integration. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+        "wiki_note": "Provide the UPRN. You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it. URL doesn't need to be passed."
     },
     "TelfordAndWrekinCouncil": {
         "LAD24CD": "E06000020",
