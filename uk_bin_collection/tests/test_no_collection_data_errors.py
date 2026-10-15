@@ -58,3 +58,24 @@ def test_southend_still_parses_real_collections():
             "", uprn="100090632281"
         )
     assert result == {"bins": [{"type": "Refuse Bin", "collectionDate": "20/10/2026"}]}
+
+
+LICHFIELD_DATES = """
+<h3 class="bin-collection-tasks__heading">Your next household waste collection</h3>
+<p class="bin-collection-tasks__date">20th October</p>
+<h3 class="bin-collection-tasks__heading">Your next blue bin collection</h3>
+<p class="bin-collection-tasks__date">27th October</p>
+"""
+
+
+def test_tamworth_parses_collection_tasks():
+    with patch.object(
+        TamworthBoroughCouncil.requests,
+        "get",
+        return_value=MagicMock(text=LICHFIELD_DATES),
+    ):
+        data = TamworthBoroughCouncil.CouncilClass().parse_data("", uprn="100031767448")
+    assert [b["type"] for b in data["bins"]] == ["household waste", "blue bin"]
+    assert all(
+        b["collectionDate"].startswith(("20/10/", "27/10/")) for b in data["bins"]
+    )
