@@ -19,14 +19,17 @@ class SocietyWorksClass(AbstractGetBinDataClass):
     def BASE_URL(self):
         pass
 
+    # The SocietyWorks/FixMyStreet sites answer 503 to any full browser
+    # User-Agent (Chrome or Firefox, old or current) since around 2 Oct 2026,
+    # but accept this one. It also covers get_data(), which councils that
+    # are configured with a URL still call before parse_data().
+    USER_AGENT = "uk-bin-collection/1.0 (+https://github.com/robbrad/UKBinCollectionData)"
+
     def __init__(self, *args, **kwargs):
         """Set up a shared requests session"""
         super().__init__(*args, **kwargs)
         self.session = requests.Session()
-        headers = {
-            "User-Agent": "uk-bin-collection/1.0 (+https://github.com/robbrad/UKBinCollectionData)",
-        }
-        self.session.headers.update(headers)
+        self.session.headers.update({"User-Agent": self.USER_AGENT})
 
     def _get(self, url):
         resp = self.session.get(

@@ -3210,10 +3210,14 @@ Note: Provide your UPRN and postcode. You can find your UPRN using [FindMyAddres
 
 ### Rochford
 ```commandline
-python collect_data.py RochfordCouncil https://www.rochford.gov.uk/online-bin-collections-calendar
+python collect_data.py RochfordCouncil https://www.rochford.gov.uk/bins-and-collections -s -p "XXXX XXX" -n XX
 ```
+Additional parameters:
+- `-s` - skip get URL
+- `-p` - postcode
+- `-n` - house number
 
-Note: No extra parameters are required. Dates presented should be read as 'week commencing'.
+Note: Provide your postcode and house number/name to get exact collection dates (UPRN can be used instead of house number to select the address). If no postcode is supplied, the district-wide calendar at https://www.rochford.gov.uk/online-bin-collections-calendar is used instead, and dates should be read as 'week commencing'.
 
 ---
 

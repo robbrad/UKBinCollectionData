@@ -1,8 +1,6 @@
-import time
-from typing import Any
-
+from bs4 import BeautifulSoup
 from dateutil.parser import parse
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -13,7 +11,39 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 
 class CouncilClass(AbstractGetBinDataClass):
-    def wait_for_element_conditions(self, driver, conditions, timeout: int = 5):
+    def _parse_collections(self, html: str) -> dict:
+        """Extract each waste type's dates from the rendered collection cards."""
+        soup = BeautifulSoup(html, "html.parser")
+        data = {"bins": []}
+        for card in soup.select(".gwBorderSlim"):
+            heading = card.find("h2")
+            if heading is None:
+                continue
+
+            # Each waste type has its own date listing. Informational text and
+            # unsubscribed services have no date fragment and must be skipped.
+            for date_element in card.select(
+                ".system_widget_foundation_listing "
+                ".page_fragment[data-current_value] .value-as-text"
+            ):
+                raw_date = date_element.get_text(strip=True)
+                if (
+                    not raw_date
+                    or "suspended" in raw_date.lower()
+                    or "restarting" in raw_date.lower()
+                ):
+                    continue
+                parsed_date = parse(raw_date, dayfirst=True)
+                data["bins"].append(
+                    {
+                        "type": heading.get_text(strip=True),
+                        "collectionDate": parsed_date.strftime(date_format),
+                    }
+                )
+        return data
+
+    def wait_for_element_conditions(self, driver, conditions, timeout: int = 15):
+        """Wait for a Selenium condition, propagating a timeout if it fails."""
         try:
             WebDriverWait(driver, timeout).until(conditions)
         except TimeoutException:
@@ -21,6 +51,7 @@ class CouncilClass(AbstractGetBinDataClass):
             raise
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """Look up a postcode and address, returning their collection dates."""
         driver = None
         try:
             web_driver = kwargs.get("web_driver")
@@ -65,40 +96,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 # If we've not been supplied an address, pick the second entry
                 select_address_dropdown.select_by_index(1)
 
-            # Grab the response blocks
-            response_xpath_selector = "//div[@data-class_name]//h4/../../../.."
+            # Wait for the collection cards on the address details page.
             self.wait_for_element_conditions(
                 driver,
-                EC.presence_of_element_located((By.XPATH, response_xpath_selector)),
+                EC.presence_of_element_located((By.CSS_SELECTOR, ".gwBorderSlim h2")),
             )
-            elements = driver.find_elements(By.XPATH, response_xpath_selector)
-
-            # Iterate through them
-            data = {"bins": []}
-            for element in elements:
-                try:
-                    raw_bin_name = element.find_element(By.TAG_NAME, "h4").text
-                    raw_next_collection_date = element.find_elements(
-                        By.XPATH, ".//div[input]"
-                    )[1].text
-
-                    # Skip if the message indicates service suspension
-                    if "suspended" in raw_next_collection_date.lower() or "restarting" in raw_next_collection_date.lower():
-                        continue
-
-                    parsed_bin_date = parse(
-                        raw_next_collection_date, fuzzy_with_tokens=True
-                    )[0]
-
-                    dict_data = {
-                        "type": raw_bin_name,
-                        "collectionDate": parsed_bin_date.strftime(date_format),
-                    }
-
-                    data["bins"].append(dict_data)
-
-                except (IndexError, NoSuchElementException):
-                    print("Error finding element for bin")
+            data = self._parse_collections(driver.page_source)
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")

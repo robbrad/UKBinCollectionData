@@ -640,10 +640,10 @@
     },
     "CoventryCityCouncil": {
         "LAD24CD": "E08000026",
-        "url": "https://www.coventry.gov.uk/directory-record/62310/abberton-way-",
-        "wiki_command_url_override": "https://www.coventry.gov.uk/directory_record/XXXXXX/XXXXXX",
+        "url": "https://www.coventry.gov.uk/ThursAfwMonbincollectioncalendar",
+        "wiki_command_url_override": "https://www.coventry.gov.uk/XXXXXX",
         "wiki_name": "Coventry",
-        "wiki_note": "Follow the instructions [here](https://www.coventry.gov.uk/bin-collection-calendar) until you get the page that shows the weekly collections for your address then copy the URL and replace the URL in the command."
+        "wiki_note": "Use 'Find your collection day by postcode' at https://www.coventry.gov.uk/bin-collection-calendar, then follow the link to your full bin collection calendar and use that page's URL."
     },
     "CrawleyBoroughCouncil": {
         "LAD24CD": "E07000226",
@@ -2180,9 +2180,12 @@
     },
     "RochfordCouncil": {
         "LAD24CD": "E07000075",
-        "url": "https://www.rochford.gov.uk/online-bin-collections-calendar",
+        "house_number": "88",
+        "postcode": "SS4 1AS",
+        "skip_get_url": true,
+        "url": "https://www.rochford.gov.uk/bins-and-collections",
         "wiki_name": "Rochford",
-        "wiki_note": "No extra parameters are required. Dates presented should be read as 'week commencing'."
+        "wiki_note": "Provide your postcode and house number/name to get exact collection dates (UPRN can be used instead of house number to select the address). If no postcode is supplied, the district-wide calendar at https://www.rochford.gov.uk/online-bin-collections-calendar is used instead, and dates should be read as 'week commencing'."
     },
     "RotherDistrictCouncil": {
         "LAD24CD": "E07000064",
@@ -2754,12 +2757,13 @@
         "wiki_note": "Provide your UPRN."
     },
     "TowerHamletsCouncil": {
+        "LAD24CD": "E09000030",
         "postcode": "E1 6QR",
         "skip_get_url": true,
-        "uprn": "6093334",
+        "uprn": "6001104",
         "url": "https://www.towerhamlets.gov.uk",
-        "web_driver": "http://selenium:4444",
-        "wiki_name": "Tower Hamlets"
+        "wiki_name": "Tower Hamlets",
+        "wiki_note": "Provide your UPRN, or your postcode and house number or name (-n). No web driver is needed."
     },
     "TunbridgeWellsCouncil": {
         "LAD24CD": "E07000116",
