@@ -278,7 +278,94 @@ poetry run black --check uk_bin_collection/uk_bin_collection/councils/<File>.py
   `test_south_lanarkshire_council.py`. It's the only part of the fix the sandbox can verify,
   and it pins the new page shape.
 - The live suite, `pytest uk_bin_collection/tests/step_defs/ -k <Council>`, can't reach
-  sites from the sandbox. Use the CI loop (§2).
+  sites from the sandbox. Use the CI loop (§2), or run it locally (§9a).
+
+---
+
+## 9a. Running the live suite locally (the fast path)
+
+A session on a **UK residential connection** can run the whole live suite itself, in
+about **9 minutes** for all ~352 councils. That is faster and far more informative than
+the CI loop, and it is the only way to tell a real breakage from an IP or fingerprint
+block. Prefer it whenever the machine has a UK connection and a real Chrome.
+
+```bash
+poetry env use python3.14 && make install-dev     # Python 3.14.2+ (the HA dev dep needs it)
+make unit-tests                                   # must be 100% green here; no sandbox excuses
+poetry run pytest uk_bin_collection/tests/step_defs/ -n 4 --local_browser True -q --tb=line --junit-xml=live.xml
+```
+
+- `--local_browser True` makes `create_webdriver` use the local Chrome instead of a grid.
+  Install Chrome; `webdriver-manager` fetches a matching chromedriver on first run.
+- **Always pass `--junit-xml`.** With `-n 4` the console output interleaves; the XML is
+  the only reliable way to get per-council pass/fail and failure messages afterwards.
+- **Always re-run the failures serially** before believing them:
+  `pytest uk_bin_collection/tests/step_defs/ -k "A or B or C" --local_browser True`.
+  In the October 2026 pass this turned 27 parallel failures into 24 real ones - Arun,
+  St Helens and Wealden were purely concurrency noise.
+
+### On Windows specifically
+
+- There is no `make`; run the Makefile's commands directly (§9 lists them).
+- `poetry env use python3.14` fails - no such executable. Use the full path:
+  `poetry env use "$LOCALAPPDATA/Programs/Python/Python314/python.exe"`.
+- Never run `chrome.exe --version` to check Chrome; it launches a browser window.
+  Use `(Get-Item "C:\Program Files\Google\Chrome\Application\chrome.exe").VersionInfo.ProductVersion`.
+- `check_selenium_url_in_input.json.py` crashes on a `UnicodeEncodeError` writing its
+  tick characters to a cp1252 console. Prefix with `PYTHONIOENCODING=utf-8`. It also
+  reads from the **GitHub API**, like the parity check (§5), so it checks master and
+  silently checks nothing at all when rate-limited. Use this offline equivalent:
+
+```bash
+poetry run python - <<'EOF'
+import json, pathlib
+root = pathlib.Path("uk_bin_collection/uk_bin_collection/councils")
+data = json.load(open("uk_bin_collection/tests/input.json"))
+files = {p.stem: p.read_text(encoding="utf-8") for p in root.glob("*.py")
+         if p.stem not in {"SocietyWorks", "__init__"}}
+print("missing from input.json:", sorted(set(files) - set(data)))
+print("no class file:", sorted(set(data) - set(files)))
+for name, src in sorted(files.items()):
+    uses, has = "create_webdriver" in src, "web_driver" in data.get(name, {})
+    if uses != has:
+        print(f"  web_driver mismatch: {name} uses={uses} has={has}")
+EOF
+```
+
+### "Cloudflare / WAF block" is usually not about the IP
+
+Before concluding that a council blocks the runner's IP, check what actually blocks it.
+Most of the October 2026 "Cloudflare challenge in CI" list was a **client fingerprint**
+problem reproducible anywhere:
+
+| Symptom | Real cause | What works |
+|---|---|---|
+| 403 + `server: Microsoft-Azure-Application-Gateway/v2` | the default `python-requests` User-Agent | `headers={"User-Agent": get_scraper_user_agent()}` (Herefordshire, East Devon) |
+| 403 + `server: cloudflare`, `cf-mitigated: challenge` on a plain GET | TLS/JA3 fingerprint | `curl_cffi.requests.Session(impersonate="chrome")` |
+| Selenium reaches the form, then times out on the **next** step, page title `Just a moment...` | the scraper's hardcoded UA claims a stale Chrome version and/or the wrong OS | fixed centrally in `create_webdriver` (§9b) |
+| `Just a moment...` even with a correct UA and a real local Chrome | Cloudflare Turnstile | needs `undetected-chromedriver`, non-headless |
+
+Diagnose it in one shot rather than guessing - compare a plain `requests` GET against a
+`curl_cffi` impersonated one and read `status`, `server` and `cf-mitigated`.
+
+## 9b. Scraper User-Agents: do not hardcode a Chrome version
+
+Most Selenium councils pass a literal UA such as
+`"Mozilla/5.0 (X11; Linux x86_64) ... Chrome/138.0.0.0 Safari/537.36"`. Both halves rot:
+the version goes stale, and the platform token is wrong on any OS but the author's.
+Cloudflare compares both against what the browser's own JavaScript reports, and serves
+an interstitial on the mismatch - on GOSS iCM sites it arrives on the **form POST**, so
+the scraper gets through the postcode step and then times out waiting for the address
+dropdown. That reads exactly like a selector change, which is how these ended up
+mis-triaged as IP blocks.
+
+`create_webdriver` now rewrites a local driver's UA to the real Chrome major version and
+this OS's platform token (`align_user_agent_to_browser`). A **remote** grid's Chrome is
+whatever its image ships, so a remote caller's UA is passed through untouched - keep that
+in mind when CI and a local run disagree.
+
+When writing a new Selenium scraper, pass a plain modern UA and let `create_webdriver`
+align it. Don't try to out-clever it per council.
 
 ---
 
