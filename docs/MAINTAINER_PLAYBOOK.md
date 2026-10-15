@@ -174,10 +174,12 @@ field correctness.
 offline equivalent, which works in the sandbox:
 
 ```bash
-python3 - <<'EOF'
-import json, pathlib
-# Keep in step with NON_COUNCIL_FILES | RETIRED_COUNCILS in the real check.
-excluded = {"SocietyWorks", "__init__"} | {"FyldeCouncil"}
+poetry run python - <<'EOF'
+import importlib, json, pathlib
+# Read the exclusions out of the real check so this can't drift from it.
+# Needs the project's venv, since the parity module imports requests.
+parity = importlib.import_module("uk_bin_collection.tests.council_feature_input_parity")
+excluded = {"__init__"} | parity.NON_COUNCIL_FILES | parity.RETIRED_COUNCILS
 files = {p.stem for p in pathlib.Path("uk_bin_collection/uk_bin_collection/councils").glob("*.py")} - excluded
 keys = set(json.load(open("uk_bin_collection/tests/input.json")))
 print("missing from input.json:", sorted(files - keys)); print("no class file:", sorted(keys - files))
@@ -185,8 +187,9 @@ EOF
 jq empty uk_bin_collection/tests/input.json && echo "input.json is valid JSON"
 ```
 
-(Add any new base class to the exclusion set here *and* in `NON_COUNCIL_FILES`; add a
-retired council here *and* in `RETIRED_COUNCILS`.)
+(Add a new base class to `NON_COUNCIL_FILES` and a retired council to
+`RETIRED_COUNCILS`; the snippet reads both, so there's nothing to keep in step here.
+§9a has a longer version that also checks the `web_driver` field.)
 
 ### Retiring a council
 
@@ -201,7 +204,8 @@ failure into an `ImportError`. Instead:
 2. Remove the entry from `input.json`, so the live suite stops testing it and the HA
    config flow stops offering it to new users.
 3. Add the class name to `RETIRED_COUNCILS` in `council_feature_input_parity.py` (not to
-   `NON_COUNCIL_FILES` - that's for shared base classes) and to the snippet above.
+   `NON_COUNCIL_FILES` - that's for shared base classes). The offline snippets read that
+   set, so there's nothing else to update.
 4. Add an offline test asserting the error message, as in `test_fylde_council.py`.
 
 `wiki/Councils.md` is auto-generated from input.json by the `Deploy - Wiki` workflow on
@@ -298,6 +302,14 @@ poetry run black --check uk_bin_collection/uk_bin_collection/councils/<File>.py
 - **Known sandbox-only failures, not bugs**: `test_check_postcode_valid` and
   `test_check_postcode_invalid` (need api.postcodes.io), and `test_create_webdriver_local`
   (chromedriver download). Mention them in the test plan and move on.
+- **`black .` checks almost nothing in this repo.** `.gitignore` opens with `*`
+  ("ignore everything") and then re-includes patterns like `!*.py`. black honours
+  `.gitignore`, and no *directory* is re-included, so handing it a directory silently
+  skips every subdirectory - `black .` sees two root-level files. Always pass the files
+  you changed explicitly, e.g.
+  `git diff --name-only origin/master..HEAD | grep '\.py$' | xargs poetry run black --check`.
+  (`bin_to_ics.py` is already unformatted on master; leave it unless you're fixing it
+  on purpose.)
 - **Add an offline unit test for every parser fix.** Feed a saved or hand-built HTML snippet
   to the parsing function, as in `test_adur_and_worthing_councils.py` and
   `test_south_lanarkshire_council.py`. It's the only part of the fix the sandbox can verify,

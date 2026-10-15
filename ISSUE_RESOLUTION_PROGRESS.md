@@ -676,6 +676,15 @@ it:
   cookie-banner-interception problem rather than a renamed selector. Needs its own
   investigation.
 
+### Consolidated into one release
+
+Fylde's retirement and the North East Derbyshire rewrite were each developed as their
+own PR (#2279, #2280) and then cherry-picked into #2277, because `bump.yml` runs on
+every master push and three merges would have cut three releases. Both originals were
+closed pointing at #2277. The squash title must carry the breaking change marker
+(`fix!:`), or North East Derbyshire's reconfiguration requirement won't reach the
+changelog.
+
 ### Incidental findings
 
 - 14 councils carry a stale `web_driver` in input.json without calling
@@ -685,6 +694,13 @@ it:
   WokinghamBorough. Harmless to the scrapers, but it makes the HA config flow ask for a
   Selenium URL that is never used. Left alone deliberately - a 14-council input.json
   commit is the kind of sprawl the playbook warns against.
+- `black .` silently checks almost nothing here: `.gitignore` opens with `*` and
+  re-includes only file patterns, never directories, so black skips every
+  subdirectory and sees two root-level files. Pass changed files explicitly.
+  `bin_to_ics.py` is already unformatted on master.
+- Boston is **intermittent** rather than cleanly fixed: 6 passes to 1 failure observed
+  after the User-Agent change, against a consistent failure before it. Cloudflare still
+  challenges it occasionally.
 - `check_selenium_url_in_input.json.py` reads from the GitHub API and prints nothing but
   an empty table when rate-limited, so it can silently pass without checking anything.
   Offline equivalent added to the playbook (9a).
