@@ -1,4 +1,10 @@
 =======
+## 0.172.7 (2026-10-15)
+
+### Fix
+
+- repair 8 councils (Armagh, Knowsley, Portsmouth, Hillingdon, Torbay, Orkney, High Peak, Staffs Moorlands)
+
 ## 0.172.6 (2026-10-15)
 
 ### Fix
