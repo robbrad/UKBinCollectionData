@@ -164,11 +164,6 @@ class CouncilClass(AbstractGetBinDataClass):
         except Exception as e:
             # Here you can log the exception if needed
             print(f"An error occurred: {e}")
-            if driver:
-                print(f"[diagnostic] current URL: {driver.current_url}")
-                print(
-                    f"[diagnostic] page source (first 4000 chars): {driver.page_source[:4000]}"
-                )
             # Optionally, re-raise the exception if you want it to propagate
             raise
         finally:
