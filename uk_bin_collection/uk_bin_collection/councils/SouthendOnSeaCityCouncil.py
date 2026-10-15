@@ -55,4 +55,10 @@ class CouncilClass(AbstractGetBinDataClass):
                 }
             )
 
+        if not data["bins"]:
+            raise ValueError(
+                f"Southend's collections API returned no containers for UPRN "
+                f"{user_uprn}. Check the UPRN is a current Southend household address."
+            )
+
         return data
