@@ -1390,13 +1390,13 @@
         "wiki_note": "Pass either UPRN or postcode/house number. URL is not used."
     },
     "IsleOfWightCouncil": {
-        "house_number": "County Hall",
-        "postcode": "PO30 1UD",
+        "house_number": "Orme House Nursery 125",
+        "postcode": "PO30 1JW",
         "skip_get_url": true,
         "url": "https://digitalservices.iow.gov.uk/wasteday",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Isle of Wight",
-        "wiki_note": "Pass your postcode and house number/name in their respective parameters."
+        "wiki_note": "Pass your postcode and house number/name in their respective parameters. The council only holds collection details for properties on a domestic round, so a non-domestic address returns no data. Dates come from the council's own round calendar PDF, which covers May to the following April and shows no collection on the two bank holidays that fall on a collection day (Christmas Day and New Year's Day in 2026/27)."
     },
     "IslingtonCouncil": {
         "LAD24CD": "E09000019",
