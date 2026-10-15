@@ -318,11 +318,15 @@ poetry run pytest uk_bin_collection/tests/step_defs/ -n 4 --local_browser True -
 
 ```bash
 poetry run python - <<'EOF'
-import json, pathlib
+import importlib, json, pathlib
+# Read the exclusions out of the real check so this can't drift from it.
+parity = importlib.import_module("uk_bin_collection.tests.council_feature_input_parity")
+excluded = {"__init__"} | getattr(parity, "NON_COUNCIL_FILES", set()) \
+                        | getattr(parity, "RETIRED_COUNCILS", set())
 root = pathlib.Path("uk_bin_collection/uk_bin_collection/councils")
 data = json.load(open("uk_bin_collection/tests/input.json"))
 files = {p.stem: p.read_text(encoding="utf-8") for p in root.glob("*.py")
-         if p.stem not in {"SocietyWorks", "__init__"}}
+         if p.stem not in excluded}
 print("missing from input.json:", sorted(set(files) - set(data)))
 print("no class file:", sorted(set(data) - set(files)))
 for name, src in sorted(files.items()):
