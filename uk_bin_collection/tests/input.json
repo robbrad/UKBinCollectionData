@@ -1865,13 +1865,11 @@
     },
     "NorthEastDerbyshireDistrictCouncil": {
         "LAD24CD": "E07000038",
-        "postcode": "S42 5RB",
+        "house_number": "North, Monday",
         "skip_get_url": true,
-        "uprn": "010034492222",
-        "url": "https://myselfservice.ne-derbyshire.gov.uk/service/Check_your_Bin_Day",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.ne-derbyshire.gov.uk/bins-and-recycling/bin-collection-dates",
         "wiki_name": "North East Derbyshire",
-        "wiki_note": "Pass the postcode and UPRN. This parser requires a Selenium webdriver."
+        "wiki_note": "BREAKING CHANGE: this council no longer uses a UPRN, a postcode or a Selenium webdriver - existing users must reconfigure. The council withdrew its per-address bin-day lookup, so collections are now read from the published North and South area calendars. Pass your collection area and your normal collection weekday in the house number field, separated by a comma, e.g. 'North, Monday' or 'Clay Cross, Friday'. The area is 'North' (Calendar A) or 'South' (Calendar B), or any settlement listed under 'Which calendar do I use?' on the council page; Sutton and Temple Normanton are on both calendars, so those residents must pass 'North' or 'South' explicitly. The calendars give one entry per week, so your weekday decides the dates; bank-holiday weeks are shifted a day later automatically, but the Christmas catch-up collections are not covered."
     },
     "NorthEastLincs": {
         "LAD24CD": "E06000012",
