@@ -5,6 +5,11 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+# herefordshire.gov.uk sits behind an Azure Application Gateway that 403s any
+# request using the default python-requests User-Agent - identify the scraper
+# honestly instead.
+_HEADERS = {"User-Agent": get_scraper_user_agent()}
+
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -44,11 +49,19 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError(f"Error getting identifier: {str(e)}")
 
         # Make a BS4 object
-        page = requests.get(url)
+        page = requests.get(url, headers=_HEADERS)
+        if page.status_code == 403:
+            raise ConnectionError(
+                "Herefordshire's website returned 403 Forbidden - its Azure "
+                "Application Gateway is blocking this client, not rejecting "
+                "the UPRN."
+            )
         soup = BeautifulSoup(page.text, "html.parser")
         soup.prettify
 
-        checkValid = any("Your next collection days" in h2.get_text() for h2 in soup.find_all("h2"))
+        checkValid = any(
+            "Your next collection days" in h2.get_text() for h2 in soup.find_all("h2")
+        )
         if not checkValid:
             raise ValueError("Address/UPRN not found")
 
@@ -79,7 +92,9 @@ class CouncilClass(AbstractGetBinDataClass):
             data["bins"].append(
                 {
                     "type": bin_type,
-                    "collectionDate": datetime.strptime(next_date, "%A %d %B %Y").strftime(date_format),
+                    "collectionDate": datetime.strptime(
+                        next_date, "%A %d %B %Y"
+                    ).strftime(date_format),
                 }
             )
 
