@@ -1,4 +1,5 @@
 import os
+import sys
 from unittest import mock
 import tempfile
 
@@ -87,6 +88,33 @@ def test_setup_logging_valid_config():
 def test_get_data(mock_get):
     page_data = agbdc.get_data("aurl")
     assert page_data.text == {"test_data": "test"}
+
+
+@mock.patch("requests.Session.get", side_effect=mocked_requests_get)
+def test_get_data_uses_class_user_agent(mock_get):
+    class CustomAgent(agbdc):
+        USER_AGENT = "custom-agent/1.0"
+
+        def parse_data(self, page, **kwargs):  # pragma: no cover
+            return {}
+
+    module = sys.modules[agbdc.__module__]
+    with mock.patch.object(
+        module, "build_retry_session", wraps=module.build_retry_session
+    ) as mock_session:
+        CustomAgent.get_data("aurl")
+    assert mock_session.call_args.kwargs["headers"] == {
+        "User-Agent": "custom-agent/1.0"
+    }
+
+
+def test_societyworks_user_agent_is_not_a_browser_string():
+    from uk_bin_collection.uk_bin_collection.councils.MertonCouncil import (
+        CouncilClass,
+    )
+
+    assert "Chrome" not in CouncilClass.USER_AGENT
+    assert CouncilClass().session.headers["User-Agent"] == CouncilClass.USER_AGENT
 
 
 @pytest.mark.parametrize(
