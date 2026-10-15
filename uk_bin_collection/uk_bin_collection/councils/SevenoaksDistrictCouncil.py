@@ -42,7 +42,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 )
         return data
 
-    def wait_for_element_conditions(self, driver, conditions, timeout: int = 5):
+    def wait_for_element_conditions(self, driver, conditions, timeout: int = 15):
         """Wait for a Selenium condition, propagating a timeout if it fails."""
         try:
             WebDriverWait(driver, timeout).until(conditions)
