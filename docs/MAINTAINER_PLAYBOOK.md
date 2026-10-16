@@ -251,6 +251,14 @@ git commit                                   # conventional message + "(from #N,
   councils. One huge multi-council PR went badly before. List exclusions and the reason in
   the release PR's "Not included" section.
 - Don't include drafts.
+- **Squashing with an explicit subject destroys the contributor's authorship.** Dropping
+  `-n` from the cherry-pick above keeps them as the commit author, and a squash merge of a
+  single-commit PR normally carries that through - *unless* you pass `--subject`/`--body`
+  to `gh pr merge`, which re-authors the squashed commit to whoever merged. That happened
+  to #2276 in 0.173.3: the contributor's fix is credited to the maintainer on master, and
+  it can't be undone without rewriting history. So either let the squash take the PR's own
+  title, or add an explicit `Co-authored-by:` trailer to the body. Either way, comment on
+  their PR saying where it landed.
 - Contributor PRs change the scraper but often **forget input.json** (§5). Check it.
 - `git add -A` followed later by `git add <files>` still commits everything staged. If the
   file count looks wrong: `git reset --soft HEAD^ && git reset`, then redo.
