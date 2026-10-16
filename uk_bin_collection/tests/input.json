@@ -2599,12 +2599,12 @@
     },
     "SwanseaCouncil": {
         "LAD24CD": "W06000011",
-        "postcode": "SA43PQ",
+        "house_number": "14",
+        "postcode": "SA4 3PQ",
         "skip_get_url": true,
-        "uprn": "100100324821",
-        "url": "https://www1.swansea.gov.uk/recyclingsearch/",
+        "url": "https://www.swansea.gov.uk/recyclingsearch",
         "wiki_name": "Swansea",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Provide your house name/number and postcode. Swansea's collection search looks addresses up by postcode, so a UPRN is no longer needed."
     },
     "SwindonBoroughCouncil": {
         "LAD24CD": "E06000030",
