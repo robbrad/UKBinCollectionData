@@ -2599,8 +2599,8 @@
     },
     "SwanseaCouncil": {
         "LAD24CD": "W06000011",
-        "house_number": "14",
-        "postcode": "SA4 3PQ",
+        "house_number": "SKETTY LIBRARY",
+        "postcode": "SA2 0UN",
         "skip_get_url": true,
         "url": "https://www.swansea.gov.uk/recyclingsearch",
         "wiki_name": "Swansea",
