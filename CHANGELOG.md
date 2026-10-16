@@ -1,4 +1,10 @@
 =======
+## 0.173.2 (2026-10-16)
+
+### Fix
+
+- **east-hampshire**: read the calendar's four month columns correctly
+
 ## 0.173.1 (2026-10-15)
 
 ### Fix
