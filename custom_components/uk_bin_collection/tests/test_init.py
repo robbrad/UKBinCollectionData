@@ -20,6 +20,7 @@ from custom_components.uk_bin_collection import (
 )
 from custom_components.uk_bin_collection.const import DOMAIN, LOG_PREFIX, PLATFORMS
 from uk_bin_collection.uk_bin_collection.collect_data import UKBinCollectionApp
+from uk_bin_collection.uk_bin_collection.common import check_paon
 
 
 class DummyUKBinCollectionApp:
@@ -398,6 +399,31 @@ async def test_household_bin_coordinator_update(hass):
     # Expect the data to be a dict with at least one bin type.
     assert isinstance(data, dict)
     assert "waste" in data or "recycling" in data
+
+
+@pytest.mark.asyncio
+async def test_coordinator_surfaces_validator_error_as_update_failed(hass):
+    """A missing house number must surface as UpdateFailed, not kill the coroutine.
+
+    `check_paon` used to call `exit(1)`, and the resulting SystemExit is a
+    BaseException that `_async_update_data`'s `except Exception` cannot catch.
+    Now that it raises ValueError, the coordinator reports it like any other
+    update failure and the error text reaches the user.
+    """
+    failing_app = DummyUKBinCollectionApp()
+    failing_app.run = MagicMock(side_effect=lambda: check_paon(None))
+
+    coordinator = HouseholdBinCoordinator(
+        hass,
+        failing_app,
+        name="Test Bin",
+        timeout=1,
+        update_interval=timedelta(hours=1),
+    )
+
+    with pytest.raises(UpdateFailed) as exc_info:
+        await coordinator._async_update_data()
+    assert "Invalid house number" in str(exc_info.value)
 
 
 def test_process_bin_data_valid():
