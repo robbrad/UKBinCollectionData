@@ -268,10 +268,8 @@
     "duration": "1.075"
   },
   "easthampshiredc": {
-    "status": "fail",
-    "error_category": "empty_bins",
-    "error_summary": "jsonschema.exceptions.ValidationError: [] should be non-empty",
-    "duration": "3.204"
+    "status": "pass",
+    "duration": "11.282"
   },
   "coventrycitycouncil": {
     "status": "pass",
