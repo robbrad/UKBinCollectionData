@@ -723,3 +723,106 @@ the scraper instead; this one doesn't.
 - `check_selenium_url_in_input.json.py` reads from the GitHub API and prints nothing but
   an empty table when rate-limited, so it can silently pass without checking anything.
   Offline equivalent added to the playbook (9a).
+
+---
+
+## Releases 0.173.0, 0.173.1 and 0.173.2 (2026-10-15/16)
+
+Continuation of the local live-suite pass above. Three releases in two days, all
+driven from the full live suite run on a UK residential connection.
+
+### Where the council list ended up
+
+| | councils | pass | fail |
+|---|---|---|---|
+| start of the pass (0.172.7) | 352 | 325 | 27 (24 after serial re-check) |
+| after 0.173.1 | 351 | 335 | 16 (10 after serial re-check) |
+| after 0.173.2 | 351 | **341** | **10** |
+
+The ten still failing are all council-side or in someone else's PR: Ashfield (the
+council's own JS throws), Canterbury (#2215), Gedling (API read timeouts), Halton
+(reCAPTCHA), Horsham (connection resets), **Neath Port Talbot** (new - the council has
+withdrawn its bin day finder; its page now says to use myNPT), **Newark and Sherwood**
+(new - intermittent ASP.NET error page, passed one serial re-run and failed the next),
+Rhondda Cynon Taff (#2276) and Swansea (#2252), plus Torfaen (itouchvision 403).
+
+**No scraper bugs remain on the list.**
+
+### 0.173.0 - the big one
+
+Herefordshire, Teignbridge, Boston, Great Yarmouth; Fylde retired; North East
+Derbyshire, Isle of Wight and Doncaster rewritten; Southend and Tamworth test data
+replaced. Detail in the section above.
+
+Five PRs (#2279, #2280, #2281, #2282) were consolidated into #2277 before merging,
+because `bump.yml` fires on every master push and five merges would have cut five
+releases. That pattern - develop separately, cherry-pick into one PR, close the
+originals with a pointer - is now the house style for a multi-council pass.
+
+### 0.173.1 - Ceredigion, Gloucester, and the Turnstile four
+
+- **Ceredigion**: the council wrapped the "Postcode Search" link's label in a `<span>`.
+  XPath's `text()` selects only an element's *own* direct text nodes, so
+  `contains(text(), 'Postcode Search')` stopped matching an anchor whose text was
+  plainly on the page, and the scraper timed out on a 10s wait. Now matched on the form
+  id in the href, which also survives the Welsh label. 0/3 runs -> 2/2.
+- **Gloucester**: the address `<select>` is present and clickable before its options
+  arrive, so a fixed `sleep(2)` raced the data and roughly one run in three died with
+  "Cannot locate option with value". Waits for the option itself now. 2/3 -> 5/5.
+- **Chichester, East Lindsey, East Renfrewshire, Stockton-on-Tees**: Cloudflare
+  Turnstile. `create_webdriver` gained an opt-in `stealth` flag using
+  undetected-chromedriver where a visible browser window is available. Verified live on
+  all four, with no changes to the scrapers' own logic - only the driver.
+
+  **This does not help Home Assistant users.** It needs a real Chrome window: the CLI or
+  API server on a desktop, or a Linux server with Xvfb. It does *not* work through the
+  remote headless Selenium grid the HA add-on provides. Each council's `wiki_note` says
+  so, and #2249 was told the same rather than being closed.
+
+  It also collapsed `MidlothianCouncil`'s inline copy of the same trick, which pinned
+  `version_main=146` and had stopped starting once Chrome passed 146.
+
+### 0.173.2 - East Hampshire
+
+`maps.easthants.gov.uk`'s TLS certificate has been **renewed** (valid to May 2027), so
+the SSL failure that had this council written off as unfixable is gone. Behind it was a
+PDF parser that never worked: the calendar is four month columns side by side, so one
+line of extracted text holds days for four different months under a header reading
+"OCT 2025 JAN 2026 APR 2026 JUL 2026". The parser read line by line and took the first
+month it matched, iterating a dict that starts at JAN, so every day in the block was
+filed under January - and the year was stamped as `datetime.now().year` regardless.
+57 dates, 52 of them in Jan-Mar, none in the future, so zero bins.
+
+Now parses the layout by position and takes the bin type from the colour of the cell
+each day number sits on, which is the only place the PDF says which bin goes out.
+Also removed a hardcoded `"/home/mark/pdf-scrapers/easthants"` cache path.
+
+**Lesson worth keeping: a council written off for an environmental reason is worth
+re-checking.** Certificates get renewed, outages end. Broxbourne's address lookup was
+stone dead for several hours in the same pass and had recovered by the afternoon.
+
+### Things that bit, and are worth remembering
+
+- **Stale hardcoded User-Agents were most of the "Cloudflare IP block" list.** Covered
+  in the section above and in playbook 9b. Chrome updated 154 -> 155 on the test machine
+  *during* this pass and the new alignment tracked it automatically, which is as good a
+  demonstration as any of why the old hardcoded strings rot.
+- **The parallel suite lies.** Always re-run failures serially. Flakes rose from 3 to 6
+  after the stealth work landed, plausibly because four non-headless Chrome windows now
+  open partway through an `-n 4` run. If a run looks unusually bad, deselect the five
+  Turnstile councils first.
+- **`black .` checks almost nothing here** - `.gitignore` opens with `*` and re-includes
+  only file patterns, never directories. Pass changed files explicitly. See playbook 9.
+- **codecov/patch is the one to read.** A failing `codecov/project` can be a fair
+  consequence of adding Selenium lines; a failing `codecov/patch` means the code you
+  just wrote isn't tested. It caught exactly that on the East Hampshire rewrite, where
+  only the pure parsing function had tests and the whole network-facing half didn't.
+- **PyPI's JSON API updates before the `simple` index pip reads.** `release.yml`'s
+  propagation wait polled the JSON API, so it declared 0.173.2 live and the Docker build
+  then failed to install the version it had just confirmed - twice. Fixed to poll pip
+  itself. PyPI, the GitHub release and the tag were all fine throughout; only the Docker
+  image was delayed.
+- **Merging is the one step that needs the maintainer.** `master` requires one approving
+  review and PRs are opened under the maintainer's own account, so they can never
+  self-approve; every release this pass needed either the GitHub UI or an admin
+  override.
