@@ -1,4 +1,10 @@
 =======
+## 0.173.3 (2026-10-16)
+
+### Fix
+
+- **rhondda-cynon-taff**: follow the council page move
+
 ## 0.173.2 (2026-10-16)
 
 ### Fix
