@@ -101,17 +101,24 @@ jobs:
       # uk-bin-collection>=<this tag> from requirements.txt, so without this
       # wait it can race the index and fail even though the release itself
       # succeeded.
+      #
+      # Ask pip itself rather than PyPI's JSON API. The JSON API updates
+      # before the "simple" index pip actually reads, so polling it reports
+      # the version live while pip still can't find it - which is exactly how
+      # 0.173.2 shipped to PyPI but failed to build a Docker image, twice.
       - name: Wait for PyPI to index the new version
         run: |
-          for i in $(seq 1 12); do
-            if curl -sf "https://pypi.org/pypi/uk-bin-collection/${{ github.ref_name }}/json" > /dev/null; then
-              echo "uk-bin-collection ${{ github.ref_name }} is live on PyPI"
+          for i in $(seq 1 24); do
+            if python3 -m pip download "uk-bin-collection==${{ github.ref_name }}" \
+                 --no-deps --no-cache-dir --dest /tmp/pypi-propagation-check \
+                 --quiet > /dev/null 2>&1; then
+              echo "uk-bin-collection ${{ github.ref_name }} is installable from PyPI"
               exit 0
             fi
-            echo "Not indexed yet, waiting 15s (attempt $i/12)..."
+            echo "Not installable yet, waiting 15s (attempt $i/24)..."
             sleep 15
           done
-          echo "::error::uk-bin-collection ${{ github.ref_name }} still isn't on PyPI after 3 minutes"
+          echo "::error::uk-bin-collection ${{ github.ref_name }} still isn't installable from PyPI after 6 minutes"
           exit 1
 
       - name: Build and push Docker image
