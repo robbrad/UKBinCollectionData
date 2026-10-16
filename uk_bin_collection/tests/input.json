@@ -2604,7 +2604,7 @@
         "uprn": "100100324821",
         "url": "https://www1.swansea.gov.uk/recyclingsearch/",
         "wiki_name": "Swansea",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Provide your postcode. Swansea's search is by postcode, so a UPRN is accepted but not used."
     },
     "SwindonBoroughCouncil": {
         "LAD24CD": "E06000030",
@@ -2661,7 +2661,7 @@
         "url": "https://tendring-self.achieveservice.com/en/service/Rubbish_and_recycling_collection_days",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Tendring",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Provide your postcode. Swansea's search is by postcode, so a UPRN is accepted but not used."
     },
     "TestValleyBoroughCouncil": {
         "LAD24CD": "E07000093",
@@ -2697,7 +2697,7 @@
         "url": "https://my.threerivers.gov.uk/en/AchieveForms/?mode=fill&consentMessage=yes&form_uri=sandbox-publish://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b/AF-Stage-01ee28aa-1584-442c-8d1f-119b6e27114a/definition.json&process=1&process_uri=sandbox-processes://AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&process_id=AF-Process-52df96e3-992a-4b39-bba3-06cfaabcb42b&noLoginPrompt=1",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Three Rivers",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Provide your postcode. Swansea's search is by postcode, so a UPRN is accepted but not used."
     },
     "ThurrockCouncil": {
         "LAD24CD": "E06000034",
@@ -2987,7 +2987,7 @@
         "uprn": "010093942934",
         "url": "https://apps.wigan.gov.uk/MyNeighbourhood/",
         "wiki_name": "Wigan",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Provide your postcode. Swansea's search is by postcode, so a UPRN is accepted but not used."
     },
     "WiltshireCouncil": {
         "LAD24CD": "E06000054",
@@ -3085,7 +3085,7 @@
         "url": "https://selfservice.wychavon.gov.uk/wdcroundlookup/wdc_search.jsp",
         "web_driver": "http://selenium:4444",
         "wiki_name": "Wychavon",
-        "wiki_note": "Provide your UPRN and postcode. Find your UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Provide your postcode. Swansea's search is by postcode, so a UPRN is accepted but not used."
     },
     "WyreCouncil": {
         "LAD24CD": "E07000128",
