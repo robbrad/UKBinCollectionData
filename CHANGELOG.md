@@ -1,4 +1,10 @@
 =======
+## 0.173.5 (2026-10-17)
+
+### Fix
+
+- **common**: raise instead of exiting when a PAON, UPRN or USRN is missing (#2291)
+
 ## 0.173.4 (2026-10-17)
 
 ### Fix
