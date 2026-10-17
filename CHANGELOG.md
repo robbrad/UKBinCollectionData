@@ -1,4 +1,10 @@
 =======
+## 0.173.4 (2026-10-17)
+
+### Fix
+
+- **swansea**: follow the council's move to the new GOSS collection search
+
 ## 0.173.3 (2026-10-16)
 
 ### Fix
