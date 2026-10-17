@@ -29,14 +29,18 @@ def test_check_paon():
     assert result is True
 
 
-def test_check_paon_invalid(capfd):
-    invalid_house_num = None
-    with pytest.raises(SystemExit) as exc_info:
-        result = check_paon(invalid_house_num)
+@pytest.mark.parametrize("invalid_house_num", [None, ""])
+def test_check_paon_invalid(invalid_house_num, capfd):
+    """A missing house number raises, rather than terminating the process.
+
+    The Home Assistant integration runs the scraper in-process, so an `exit()`
+    here took the update coroutine down instead of surfacing a config error.
+    """
+    with pytest.raises(ValueError) as exc_info:
+        check_paon(invalid_house_num)
+    assert "Invalid house number" in str(exc_info.value)
     out, err = capfd.readouterr()
-    assert out.startswith("Exception encountered: Invalid house number")
-    assert exc_info.type == SystemExit
-    assert exc_info.value.code == 1
+    assert out == ""
 
 
 def test_get_data_check_uprn():
@@ -45,11 +49,14 @@ def test_get_data_check_uprn():
     assert result is True
 
 
-def test_get_data_check_uprn_exception(capfd):
-    uprn = None
-    result = check_uprn(uprn)
+@pytest.mark.parametrize("uprn", [None, ""])
+def test_get_data_check_uprn_exception(uprn, capfd):
+    """A missing UPRN raises, rather than printing and returning None."""
+    with pytest.raises(ValueError) as exc_info:
+        check_uprn(uprn)
+    assert "Invalid UPRN" in str(exc_info.value)
     out, err = capfd.readouterr()
-    assert out.startswith("Exception encountered: ")
+    assert out == ""
 
 
 def test_get_data_check_usrn():
@@ -58,11 +65,14 @@ def test_get_data_check_usrn():
     assert result is True
 
 
-def test_get_data_check_usrn_exception(capfd):
-    usrn = None
-    result = check_usrn(usrn)
+@pytest.mark.parametrize("usrn", [None, ""])
+def test_get_data_check_usrn_exception(usrn, capfd):
+    """A missing USRN raises, rather than printing and returning None."""
+    with pytest.raises(ValueError) as exc_info:
+        check_usrn(usrn)
+    assert "Invalid USRN" in str(exc_info.value)
     out, err = capfd.readouterr()
-    assert out.startswith("Exception encountered: ")
+    assert out == ""
 
 
 def test_get_date_with_ordinal():

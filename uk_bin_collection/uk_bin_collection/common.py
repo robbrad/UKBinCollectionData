@@ -57,43 +57,33 @@ def check_paon(paon: str):
     """
     Checks that PAON data exists
         :param paon: PAON data to check, usually house number
+        :raises ValueError: if no house number was provided
     """
-    try:
-        if paon is None:
-            raise ValueError("Invalid house number")
-        return True
-    except Exception as ex:
-        print(f"Exception encountered: {ex}")
-        print("Please check the provided house number.")
-        exit(1)
+    if paon is None or paon == "":
+        raise ValueError("Invalid house number. Please check the provided PAON.")
+    return True
 
 
 def check_uprn(uprn: str):
     """
     Checks that the UPRN exists
         :param uprn: UPRN to check
+        :raises ValueError: if no UPRN was provided
     """
-    try:
-        if uprn is None or uprn == "":
-            raise ValueError("Invalid UPRN")
-        return True
-    except Exception as ex:
-        print(f"Exception encountered: {ex}")
-        print("Please check the provided UPRN.")
+    if uprn is None or uprn == "":
+        raise ValueError("Invalid UPRN. Please check the provided UPRN.")
+    return True
 
 
 def check_usrn(usrn: str):
     """
     Checks that the USRN exists
-        :param uprn: USRN to check
+        :param usrn: USRN to check
+        :raises ValueError: if no USRN was provided
     """
-    try:
-        if usrn is None or usrn == "":
-            raise ValueError("Invalid USRN")
-        return True
-    except Exception as ex:
-        print(f"Exception encountered: {ex}")
-        print("Please check the provided USRN.")
+    if usrn is None or usrn == "":
+        raise ValueError("Invalid USRN. Please check the provided USRN.")
+    return True
 
 
 def get_date_with_ordinal(date_number: int) -> str:
