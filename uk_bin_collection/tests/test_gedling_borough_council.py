@@ -44,14 +44,15 @@ class FakePortal:
     """Answers the portal's requests the way the live site does, and keeps
     the address form that was submitted."""
 
-    def __init__(self, addresses=ADDRESSES):
+    def __init__(self, addresses=ADDRESSES, page_html=PAGE_HTML):
         self.addresses = addresses
+        self.page_html = page_html
         self.headers = {}
         self.submitted = None
 
     def get(self, url, timeout=None):
         path = urlparse(url).path
-        text = PAGE_HTML if path == "/w/webpage/bin-collections" else COLLECTIONS_PAGE_HTML
+        text = self.page_html if path == "/w/webpage/bin-collections" else COLLECTIONS_PAGE_HTML
         return SimpleNamespace(text=text, raise_for_status=lambda: None)
 
     def post(self, url, headers=None, data=None, timeout=None):
@@ -119,3 +120,10 @@ def test_a_postcode_without_addresses_is_an_error():
 def test_the_postcode_and_house_are_both_needed():
     with pytest.raises(ValueError, match="postcode and a house number or name"):
         CouncilClass().parse_data("", postcode="NG5 6NQ")
+
+
+def test_a_page_without_its_action_url_is_reported_as_changed():
+    # Not a search of a malformed URL, which would look like "no addresses"
+    page_html = PAGE_HTML.split("var AJAX_DYNAMIC_URL")[0] + "</script>"
+    with pytest.raises(ValueError, match="no action URL"):
+        run(FakePortal(page_html=page_html), "11")
