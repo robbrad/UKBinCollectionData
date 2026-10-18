@@ -1076,11 +1076,12 @@
     },
     "GedlingBoroughCouncil": {
         "LAD24CD": "E07000173",
-        "house_number": "Friday G4, Friday J",
+        "house_number": "11",
+        "postcode": "NG5 6NQ",
         "skip_get_url": true,
-        "url": "https://www.gedling.gov.uk/",
+        "url": "https://waste.digital.gedling.gov.uk/w/webpage/bin-collections",
         "wiki_name": "Gedling",
-        "wiki_note": "Use [this site](https://www.gbcbincalendars.co.uk/) to find the collections for your address. Use the `-n` parameter to add them in a comma-separated list inside quotes, such as: 'Friday G4, Friday J'."
+        "wiki_note": "Pass the house number or name in the `house_number` parameter, wrapped in double quotes, and the postcode in the `postcode` parameter. The address is matched by its start, so a house number and street (\"11 Gedling Road\") also works."
     },
     "GlasgowCityCouncil": {
         "LAD24CD": "S12000049",
