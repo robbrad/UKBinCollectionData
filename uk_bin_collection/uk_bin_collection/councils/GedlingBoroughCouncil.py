@@ -99,14 +99,14 @@ class CouncilClass(AbstractGetBinDataClass):
         return {"bins": bins}
 
     def _get(self, path):
-        """(page HTML, form token, the page's own URL for its actions)."""
+        """(page HTML, form token, the page's own URL for its actions, or None)."""
         response = self.session.get(BASE_URL + path, timeout=TIMEOUT)
         response.raise_for_status()
         token = re.search(r'"csrf":"([0-9a-f]+)"', response.text)
         if not token:
             raise ValueError("Gedling's portal page has changed: no form token")
         own_url = re.search(r"var AJAX_DYNAMIC_URL =\s*'([^']+)'", response.text)
-        return response.text, token.group(1), own_url.group(1) if own_url else path
+        return response.text, token.group(1), own_url.group(1) if own_url else None
 
     def _post(self, path, data, token, stack=()):
         """The JSON the portal answers a page's POST with."""
@@ -128,6 +128,8 @@ class CouncilClass(AbstractGetBinDataClass):
     def _open_form(self):
         """The address form, its token and the page's URL for its actions."""
         _, token, own_url = self._get(PAGE)
+        if not own_url:
+            raise ValueError("Gedling's portal page has changed: no action URL")
         content = self._post(PAGE, {"_dummy": 1}, token)["data"]
         submit = BeautifulSoup(content, "html.parser").find(
             "input", attrs={"name": re.compile(SUBMIT_FIELD)}
