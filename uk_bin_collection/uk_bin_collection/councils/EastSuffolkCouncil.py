@@ -10,6 +10,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 
 from datetime import datetime
 
+import re
 
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
@@ -101,11 +102,8 @@ class CouncilClass(AbstractGetBinDataClass):
                         bin_type.encode("ascii", "ignore").decode("ascii").strip()
                     )
 
-                    # Strip " - standard bin"
-                    lower_bin_type = bin_type.lower()
-                    if " - standard bin" in lower_bin_type:
-                        idx = lower_bin_type.find(" - standard bin")
-                        bin_type = bin_type[:idx]
+                    # Strip bin type inside brackets
+                    bin_type = re.sub(r'\(.*\)', '', bin_type)
 
                     bin_type = bin_type.strip().title()
 
