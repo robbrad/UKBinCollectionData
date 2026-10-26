@@ -6,6 +6,23 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+ADDRESS_URL = "https://www.armaghbanbridgecraigavon.gov.uk/resident/binday-address/"
+
+
+def match_address(options, paon):
+    """Pick the option whose label starts with (or contains) the house number/name.
+
+    options: list of (value, label). Prefers "<paon> <street>" over "<paon> <flat>",
+    then any whole-word occurrence. Raises ValueError if nothing matches.
+    """
+    paon = str(paon).strip()
+    p = re.escape(paon)
+    for pattern in (rf"^{p}[\s,]+[A-Za-z]", rf"^{p}[\s,]", rf"(^|[\s,]){p}([\s,]|$)"):
+        for value, label in options:
+            if re.search(pattern, label.strip(), re.I):
+                return value
+    raise ValueError(f"No address matching '{paon}' found for this postcode")
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -21,13 +38,15 @@ class CouncilClass(AbstractGetBinDataClass):
         Parameters:
             page (str): Ignored by this implementation.
             kwargs:
-                uprn (str): Unique Property Reference Number used to look up the address schedule; required.
+                uprn (str): Unique Property Reference Number used to look up the address schedule.
+                postcode (str), paon (str): used to look up the UPRN when no uprn is given.
 
         Returns:
             dict: Dictionary with a "bins" key mapping to a list of collections.
         """
         user_uprn = kwargs.get("uprn")
-        check_uprn(user_uprn)
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         bindata = {"bins": []}
 
         # The council's WAF closes the connection on bare or minimal User-Agent
@@ -57,10 +76,26 @@ class CouncilClass(AbstractGetBinDataClass):
                     dates.append(match.group(0))
             return dates
 
-        url = f"https://www.armaghbanbridgecraigavon.gov.uk/resident/binday-result/?address={user_uprn}"
-
         session = requests.Session()
         session.headers.update(headers)
+
+        if not user_uprn and user_postcode and user_paon:
+            response = session.get(
+                ADDRESS_URL, params={"postcode": user_postcode}, timeout=30
+            )
+            response.raise_for_status()
+            options = [
+                (o.get("value"), o.get_text(strip=True))
+                for o in BeautifulSoup(response.text, "html.parser").find_all("option")
+                if o.get("value")
+            ]
+            if not options:
+                raise ValueError(f"No addresses found for postcode {user_postcode}")
+            user_uprn = match_address(options, user_paon)
+        check_uprn(user_uprn)
+
+        url = f"https://www.armaghbanbridgecraigavon.gov.uk/resident/binday-result/?address={user_uprn}"
+
         response = session.get(url, timeout=30)
         response.raise_for_status()
 
