@@ -1,3 +1,4 @@
+import re
 import time
 
 import requests
@@ -55,15 +56,20 @@ def _resolve_uprn_from_postcode(postcode, paon=None):
         raise ValueError(f"No addresses found for postcode: {postcode}")
 
     if paon:
-        paon_norm = str(paon).strip().upper()
+        # Word-boundary match so "1" doesn't pick "11, ..." or "FLAT 1, 11, ...".
+        paon_pattern = re.compile(
+            rf"(?<!\w){re.escape(str(paon).strip())}(?!\w)", re.IGNORECASE
+        )
         for opt in options:
-            label = opt["label"].upper()
-            if label.startswith(paon_norm + " ") or label.startswith(paon_norm + ","):
+            if paon_pattern.match(opt["label"]):
                 return opt["uprn"]
         for opt in options:
-            label = opt["label"].upper()
-            if paon_norm in label:
+            if paon_pattern.search(opt["label"]):
                 return opt["uprn"]
+        raise ValueError(
+            f"Could not match house number/name '{paon}' among "
+            f"{len(options)} addresses for postcode {postcode}"
+        )
 
     return options[0]["uprn"]
 
@@ -94,6 +100,7 @@ class CouncilClass(AbstractGetBinDataClass):
         URI = f"https://www.wolverhampton.gov.uk/find-my-nearest/{user_postcode_encoded}/{user_uprn}"
 
         response = requests.get(URI, timeout=30)
+        response.raise_for_status()
 
         soup = BeautifulSoup(response.content, "html.parser")
 
@@ -101,28 +108,54 @@ class CouncilClass(AbstractGetBinDataClass):
         if not jumbotron:
             raise ValueError("Could not find bin collection data on page")
 
-        for bin_div in jumbotron.select("div.col-md-4"):
+        today = datetime.now().date()
+
+        # Each service is a div.col-md-N (was col-md-4, now col-md-3) holding
+        # an <h3> service name and <h4> lines. The date line used to read
+        # "Next date: October 27, 2026"; it is now a bare "October 27" with
+        # no year, alongside a "Day: Tuesday" line.
+        for bin_div in jumbotron.find_all(
+            "div", class_=lambda c: c and c.startswith("col-")
+        ):
             h3 = bin_div.find("h3")
             if not h3:
                 continue
 
-            next_date_h4 = bin_div.find(
-                "h4", text=lambda x: x and "Next date" in x
-            )
-            if not next_date_h4:
+            collection_date = None
+            for h4 in bin_div.find_all("h4"):
+                text = h4.get_text(strip=True)
+                if text.lower().startswith("next date:"):
+                    text = text.split(":", 1)[1].strip()
+                try:
+                    collection_date = datetime.strptime(text, "%B %d, %Y").date()
+                    break
+                except ValueError:
+                    pass
+                # No year shown: take the next occurrence on or after today.
+                try:
+                    collection_date = datetime.strptime(
+                        f"{text} {today.year}", "%B %d %Y"
+                    ).date()
+                except ValueError:
+                    continue
+                if collection_date < today:
+                    collection_date = datetime.strptime(
+                        f"{text} {today.year + 1}", "%B %d %Y"
+                    ).date()
+                break
+
+            if not collection_date:
                 continue
 
-            service_name = h3.text.strip()
-            next_date = next_date_h4.text.split(": ")[1]
+            bindata["bins"].append(
+                {
+                    "type": h3.get_text(strip=True),
+                    "collectionDate": collection_date.strftime(date_format),
+                }
+            )
 
-            dict_data = {
-                "type": service_name,
-                "collectionDate": datetime.strptime(
-                    next_date,
-                    "%B %d, %Y",
-                ).strftime(date_format),
-            }
-            bindata["bins"].append(dict_data)
+        if not bindata["bins"]:
+            raise ValueError("No bin collection dates found on page")
 
         bindata["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
