@@ -1559,11 +1559,13 @@
     },
     "LondonBoroughLambeth": {
         "LAD24CD": "E09000022",
+        "house_number": "5",
+        "postcode": "SW4 6BS",
         "skip_get_url": true,
         "uprn": "100021881738",
         "url": "https://wasteservice.lambeth.gov.uk/WhitespaceComms/GetServicesByUprn",
         "wiki_name": "Lambeth",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Pass the postcode and house number, or a UPRN. The UPRN is used when both are given."
     },
     "LondonBoroughLewisham": {
         "LAD24CD": "E09000023",
