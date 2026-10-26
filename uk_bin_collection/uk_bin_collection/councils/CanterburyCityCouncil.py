@@ -1,12 +1,12 @@
-import time
+import json
+from datetime import datetime
 
 import requests
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import check_uprn, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -14,59 +14,62 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
-    def parse_data(self, page: str, **kwargs) -> dict:
+    # Endpoint used by the bins widget on
+    # https://www.canterbury.gov.uk/bins-and-waste/find-your-bin-collection-dates
+    # (the old /Beta/get-bin-dates endpoint now returns 403 for every request).
+    API_URL = "https://n6ljrw455m.execute-api.eu-west-2.amazonaws.com/prod/get-bin-dates"
 
+    BIN_TYPES = {
+        "blackBinDay": "General",
+        "recyclingBinDay": "Recycling",
+        "redRecyclingBinDay": "Red Recycling",
+        "blueRecyclingBinDay": "Blue Recycling",
+        "foodBinDay": "Food",
+        "communalFoodBinDay": "Communal Food",
+        "gardenBinDay": "Garden",
+    }
+
+    def parse_data(self, page: str, **kwargs) -> dict:
         user_uprn = kwargs.get("uprn")
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
-        data = {"uprn": user_uprn, "usrn": "1"}
+        # The API keys on the UPRN; the USRN is required in the payload but
+        # its value is not used for the lookup.
+        data = {"uprn": str(user_uprn), "usrn": "1"}
 
+        # The API Gateway rejects requests without a browser-like User-Agent.
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
             "Accept": "application/json",
+            "Origin": "https://www.canterbury.gov.uk",
+            "Referer": "https://www.canterbury.gov.uk/",
         }
 
-        URI = (
-            "https://zbr7r13ke2.execute-api.eu-west-2.amazonaws.com/Beta/get-bin-dates"
-        )
-
-        # Make the GET request
-        response = requests.post(URI, json=data, headers=headers)
-        if response.status_code == 403:
-            # The council's site itself now calls this API server-side
-            # (as part of a page redirect) rather than directly from the
-            # browser, and even their own live site currently gets stuck
-            # on a permanent loading spinner - the API returns a bare 403
-            # regardless of the uprn/usrn payload sent. This looks like an
-            # outage or an access restriction on the council's end, not
-            # something fixable by changing what we send.
-            raise ConnectionError(
-                "Canterbury's bin collection API is returning 403 Forbidden "
-                "- this looks like an outage or access restriction on the "
-                "council's end, not this scraper. Try again later."
-            )
+        response = requests.post(self.API_URL, json=data, headers=headers, timeout=30)
         response.raise_for_status()
 
-        # Parse the JSON response
-        bin_collection = json.loads(response.json()["dates"])
-        collections = {
-            "General": bin_collection["blackBinDay"],
-            "Recycling": bin_collection["recyclingBinDay"],
-            "Food": bin_collection["foodBinDay"],
-            "Garden": bin_collection["gardenBinDay"],
-        }
-        # Loop through each collection in bin_collection
-        for collection in collections:
-            print(collection)
+        dates = response.json().get("dates")
+        # Older versions of the API returned the dates as a JSON string
+        if isinstance(dates, str):
+            dates = json.loads(dates)
+        if not dates:
+            raise ValueError(f"No collection data returned for UPRN {user_uprn}")
 
-            if len(collections[collection]) <= 0:
-                continue
-            for date in collections[collection]:
-                date = (
-                    datetime.strptime(date, "%Y-%m-%dT%H:%M:%S").strftime("%d/%m/%Y"),
+        for key, bin_type in self.BIN_TYPES.items():
+            for date in dates.get(key) or []:
+                collection_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S")
+                bindata["bins"].append(
+                    {
+                        "type": bin_type,
+                        "collectionDate": collection_date.strftime(date_format),
+                    }
                 )
-                dict_data = {"type": collection, "collectionDate": date[0]}
-                bindata["bins"].append(dict_data)
 
+        if not bindata["bins"]:
+            raise ValueError(f"No collections found for UPRN {user_uprn}")
+
+        bindata["bins"].sort(
+            key=lambda x: datetime.strptime(x["collectionDate"], date_format)
+        )
         return bindata
