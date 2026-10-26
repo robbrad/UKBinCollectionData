@@ -13,6 +13,45 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 AREA = "NewcastleUponTyneUK"
 SERVICE = "50007"
+SUGGEST_URL = (
+    f"https://api.eu.recollect.net/api/areas/{AREA}/services/{SERVICE}/address-suggest"
+)
+
+
+def _normalise(text: str) -> str:
+    return re.sub(r"[^A-Z0-9]+", " ", str(text).upper()).strip()
+
+
+def _suggest(q: str, **extra) -> list:
+    params = {"q": q, "locale": "en-GB", **extra}
+    response = requests.get(SUGGEST_URL, headers=HEADERS, params=params, timeout=30)
+    response.raise_for_status()
+    return response.json()
+
+
+def _parcels(results: list) -> list:
+    return [r for r in results if r.get("type") == "parcel" and r.get("place_id")]
+
+
+def _starts_with_paon(name: str, paon: str) -> bool:
+    # Word-boundary prefix match so "1" does not match "10 Some Street"
+    return re.match(rf"{re.escape(_normalise(paon))}\b", _normalise(name)) is not None
+
+
+def _pick(parcels: list, paon: str, postcode: str):
+    """Pick the parcel matching the paon (and postcode, when given)."""
+    if paon:
+        parcels = [p for p in parcels if _starts_with_paon(p.get("name", ""), paon)]
+    if postcode:
+        pc = _normalise(postcode)
+        in_postcode = [
+            p for p in parcels if _normalise(p.get("name", "")).endswith(pc)
+        ]
+        if in_postcode:
+            parcels = in_postcode
+        elif paon:
+            return None
+    return parcels[0]["place_id"] if parcels else None
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -24,89 +63,56 @@ class CouncilClass(AbstractGetBinDataClass):
 
         if user_paon and postcode:
             user_paon = re.sub(
-                r",?\s*" + re.escape(postcode) + r"\s*$", "", user_paon
+                r",?\s*" + re.escape(postcode) + r"\s*$", "", user_paon, flags=re.I
             ).strip()
-
-        suggest_url = f"https://api.eu.recollect.net/api/areas/{AREA}/services/{SERVICE}/address-suggest"
 
         place_id = None
 
+        # ReCollect's address search is a prefix match on "<number> <street>, <town>",
+        # so a full address with extra locality parts ("..., Gosforth, Newcastle upon
+        # Tyne") finds nothing. Try the address, then progressively shorter comma prefixes.
         if user_paon and not user_paon.strip().isdigit():
-            params = {"q": user_paon, "locale": "en-GB"}
-            response = requests.get(
-                suggest_url, headers=HEADERS, params=params, timeout=30
-            )
-            response.raise_for_status()
-            for result in response.json():
-                if result.get("type") == "parcel" and result.get("place_id"):
-                    place_id = result["place_id"]
+            parts = [p.strip() for p in user_paon.split(",") if p.strip()]
+            if len(parts) > 1 and parts[0].isdigit():
+                # "1, Some Street, Town" -> "1 Some Street, Town"
+                parts = [f"{parts[0]} {parts[1]}"] + parts[2:]
+            candidates = [", ".join(parts[:i]) for i in range(len(parts), 0, -1)]
+            for q in candidates:
+                place_id = _pick(_parcels(_suggest(q)), q, postcode)
+                if place_id:
                     break
 
         if not place_id and postcode:
-            params = {"q": postcode, "locale": "en-GB"}
-            response = requests.get(
-                suggest_url, headers=HEADERS, params=params, timeout=30
-            )
-            response.raise_for_status()
-            results = response.json()
-
-            parcels = [
-                r for r in results if r.get("type") == "parcel" and r.get("place_id")
-            ]
+            results = _suggest(postcode)
+            parcels = _parcels(results)
             if parcels:
                 if user_paon:
-                    for p in parcels:
-                        name = p.get("name", "")
-                        if name.lower().startswith(user_paon.lower()):
-                            place_id = p["place_id"]
-                            break
-                if not place_id and parcels:
+                    place_id = _pick(parcels, user_paon, None)
+                elif len(parcels) == 1:
                     place_id = parcels[0]["place_id"]
 
-            if not place_id:
+            if not place_id and user_paon:
                 qualifiers = [r for r in results if r.get("type") == "place_qualifier"]
-                if qualifiers and user_paon:
-                    qual = qualifiers[0]
-                    params2 = {
-                        "q": f"{user_paon} {postcode}",
-                        "locale": "en-GB",
-                        "place_qualifier_id": qual["qualifier_id"],
-                    }
-                    response2 = requests.get(
-                        suggest_url, headers=HEADERS, params=params2, timeout=30
+                if qualifiers:
+                    addresses = _parcels(
+                        _suggest(
+                            f"{user_paon} {postcode}",
+                            place_qualifier_id=qualifiers[0]["qualifier_id"],
+                        )
                     )
-                    response2.raise_for_status()
-                    addresses = [
-                        r
-                        for r in response2.json()
-                        if r.get("type") == "parcel" and r.get("place_id")
-                    ]
-
-                    if addresses:
-                        for addr in addresses:
-                            name = addr.get("name", "")
-                            if name.lower().startswith(user_paon.lower()):
-                                place_id = addr["place_id"]
-                                break
-                        if not place_id:
-                            place_id = addresses[0]["place_id"]
+                    place_id = _pick(addresses, user_paon, None)
 
         if not place_id and user_paon and postcode:
             for q in [f"{user_paon} {postcode}", user_paon]:
-                params = {"q": q, "locale": "en-GB"}
-                response = requests.get(
-                    suggest_url, headers=HEADERS, params=params, timeout=30
-                )
-                response.raise_for_status()
-                for result in response.json():
-                    if result.get("type") == "parcel" and result.get("place_id"):
-                        place_id = result["place_id"]
-                        break
+                place_id = _pick(_parcels(_suggest(q)), user_paon, postcode)
                 if place_id:
                     break
 
         if not place_id:
-            raise ValueError(f"No address found for: {user_paon or postcode}")
+            raise ValueError(
+                f"No address found for: {user_paon or postcode}. "
+                "Newcastle's address search needs the house number and street name."
+            )
 
         now = datetime.now()
         after = now.strftime("%Y-%m-%d")
@@ -148,6 +154,9 @@ class CouncilClass(AbstractGetBinDataClass):
                             "collectionDate": collection_date,
                         }
                     )
+
+        if not data["bins"]:
+            raise ValueError("No collections found for this address")
 
         data["bins"].sort(
             key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
