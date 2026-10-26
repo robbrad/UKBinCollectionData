@@ -9,6 +9,21 @@ from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
+def match_address(options, paon):
+    """Pick the option whose label starts with (or contains) the house number/name.
+
+    options: list of (value, label). Prefers "<paon> <street>" over "<paon> <flat>",
+    then any whole-word occurrence. Raises ValueError if nothing matches.
+    """
+    paon = str(paon).strip()
+    p = re.escape(paon)
+    for pattern in (rf"^{p}[\s,]+[A-Za-z]", rf"^{p}[\s,]", rf"(^|[\s,]){p}([\s,]|$)"):
+        for value, label in options:
+            if re.search(pattern, label.strip(), re.I):
+                return value
+    raise ValueError(f"No address matching '{paon}' found for this postcode")
+
+
 # import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -36,10 +51,11 @@ class CouncilClass(AbstractGetBinDataClass):
 
         user_uprn = kwargs.get("uprn")
         user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
         URL = "https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx"
 
         # Build initial ASP.NET variables for Postcode Find address
-        response = session.get(URL)
+        response = session.get(URL, timeout=30)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
         form_data = {
@@ -59,9 +75,22 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Build intermediate ASP.NET variables for uprn Select address
-        response = session.post(URL, data=form_data)
+        response = session.post(URL, data=form_data, timeout=30)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
+
+        # No UPRN given: pick it from the council's own address list by house number
+        if not user_uprn and user_paon:
+            dropdown = soup.find("select", {"name": "ctl00$MainContent$lstAddresses"})
+            options = [
+                (o.get("value"), o.get_text(strip=True))
+                for o in (dropdown.find_all("option") if dropdown else [])
+                if o.get("value")
+            ]
+            if not options:
+                raise ValueError(f"No addresses found for postcode {user_postcode}")
+            user_uprn = match_address(options, user_paon)
+
         form_data = {
             "__EVENTTARGET": "",
             "__EVENTARGUMENT": "",
@@ -80,7 +109,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         # Actual http call to get Bins Data
-        response = session.post(URL, data=form_data)
+        response = session.post(URL, data=form_data, timeout=30)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
 
