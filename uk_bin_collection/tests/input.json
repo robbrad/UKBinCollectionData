@@ -2728,6 +2728,7 @@
         "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
     "TorfaenCouncil": {
+        "LAD24CD": "W06000020",
         "house_number": "2 Rowan Crescent",
         "postcode": "NP4 5AA",
         "skip_get_url": true,
