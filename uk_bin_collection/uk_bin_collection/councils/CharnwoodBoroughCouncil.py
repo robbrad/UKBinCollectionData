@@ -37,6 +37,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     and property_id[3:].isdigit()
                 ):
                     check_uprn(user_uprn)
+                url = parsed_url._replace(scheme="https").geturl()
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
 

@@ -102,15 +102,25 @@ def test_invalid_property_url_fails_before_request(council_page, uprn_kwargs, ur
 
 
 @pytest.mark.parametrize(
-    "url",
+    "url, expected_url",
     [
-        "http://my.charnwood.gov.uk/location?put=cbc12345678901",
-        "https://my.charnwood.gov.uk/location?redirect=%2F&put=cbc12345678901",
+        (
+            "http://my.charnwood.gov.uk/location?put=cbc12345678901",
+            "https://my.charnwood.gov.uk/location?put=cbc12345678901",
+        ),
+        (
+            "http://my.charnwood.gov.uk/location?redirect=%2F&put=cbc12345678901",
+            "https://my.charnwood.gov.uk/location?redirect=%2F&put=cbc12345678901",
+        ),
+        (
+            "https://my.charnwood.gov.uk/location?redirect=%2F&put=cbc12345678901",
+            "https://my.charnwood.gov.uk/location?redirect=%2F&put=cbc12345678901",
+        ),
     ],
 )
-def test_property_url_variants_are_preserved(council_page, url):
-    """Accept property URLs with HTTP or reordered optional query parameters."""
+def test_property_url_variants_use_https(council_page, url, expected_url):
+    """Upgrade legacy HTTP URLs while preserving property query parameters."""
     result = CharnwoodBoroughCouncil.CouncilClass().parse_data("", url=url)
 
-    council_page.assert_called_once_with(url)
+    council_page.assert_called_once_with(expected_url)
     assert len(result["bins"]) == 3
