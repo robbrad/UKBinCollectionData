@@ -1,4 +1,5 @@
 from datetime import timedelta
+from urllib.parse import parse_qs, urlparse
 
 from bs4 import BeautifulSoup
 from dateutil.relativedelta import relativedelta
@@ -16,6 +17,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """Fetch collections using an explicit UPRN or a legacy property URL."""
         try:
             user_uprn = kwargs.get("uprn")
             if user_uprn:
@@ -24,7 +26,16 @@ class CouncilClass(AbstractGetBinDataClass):
             else:
                 # Legacy Home Assistant entries may only contain the property URL.
                 url = kwargs.get("url")
-                if not url:
+                parsed_url = urlparse(url or "")
+                property_id = parse_qs(parsed_url.query).get("put", [""])[0]
+                if not (
+                    parsed_url.scheme in ("http", "https")
+                    and parsed_url.hostname == "my.charnwood.gov.uk"
+                    and parsed_url.path == "/location"
+                    and property_id.startswith("cbc")
+                    and property_id[3:].isascii()
+                    and property_id[3:].isdigit()
+                ):
                     check_uprn(user_uprn)
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
