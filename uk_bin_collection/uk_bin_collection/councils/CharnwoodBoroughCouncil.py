@@ -18,10 +18,14 @@ class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         try:
             user_uprn = kwargs.get("uprn")
-            check_uprn(user_uprn)
-            url = f"https://my.charnwood.gov.uk/location?put=cbc{user_uprn}&rememberme=0&redirect=%2F"
-            if not user_uprn:
+            if user_uprn:
+                check_uprn(user_uprn)
+                url = f"https://my.charnwood.gov.uk/location?put=cbc{user_uprn}&rememberme=0&redirect=%2F"
+            else:
+                # Legacy Home Assistant entries may only contain the property URL.
                 url = kwargs.get("url")
+                if not url:
+                    check_uprn(user_uprn)
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
 
