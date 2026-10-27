@@ -23,6 +23,7 @@ COLLECTION_HTML = """
 
 @pytest.fixture
 def council_page():
+    """Mock council requests and freeze dates for deterministic collections."""
     with (
         patch(f"{MODULE_PATH}.requests.get") as get,
         patch(f"{MODULE_PATH}.datetime", wraps=datetime) as clock,
@@ -35,6 +36,7 @@ def council_page():
 
 @pytest.mark.parametrize("uprn_kwargs", [{}, {"uprn": None}, {"uprn": ""}])
 def test_legacy_property_url_without_separate_uprn(council_page, uprn_kwargs):
+    """Use a property URL when the separate UPRN is absent or empty."""
     result = CharnwoodBoroughCouncil.CouncilClass().get_and_parse_data(
         PROPERTY_URL, skip_get_url=True, **uprn_kwargs
     )
@@ -51,6 +53,7 @@ def test_legacy_property_url_without_separate_uprn(council_page, uprn_kwargs):
 
 @pytest.mark.parametrize("url", [None, "", PROPERTY_URL])
 def test_explicit_uprn_takes_precedence_over_url(council_page, url):
+    """Build the property URL from an explicit UPRN regardless of the URL."""
     result = CharnwoodBoroughCouncil.CouncilClass().parse_data(
         "", uprn="12345678902", url=url
     )
@@ -64,7 +67,50 @@ def test_explicit_uprn_takes_precedence_over_url(council_page, url):
 
 @pytest.mark.parametrize("kwargs", [{}, {"uprn": None, "url": ""}, {"uprn": ""}])
 def test_missing_uprn_and_url_fails_before_request(council_page, kwargs):
+    """Reject missing identifiers without requesting an unscoped council page."""
     with pytest.raises(ValueError, match="Error getting identifier: Invalid UPRN"):
         CharnwoodBoroughCouncil.CouncilClass().parse_data("", **kwargs)
 
     council_page.assert_not_called()
+
+
+@pytest.mark.parametrize("uprn_kwargs", [{}, {"uprn": None}, {"uprn": ""}])
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://my.charnwood.gov.uk/waste-calendar",
+        "https://my.charnwood.gov.uk/location",
+        "https://my.charnwood.gov.uk/location?put=",
+        "https://my.charnwood.gov.uk/location?put=cbc",
+        "https://my.charnwood.gov.uk/location?put=cbcnot-a-uprn",
+        "https://my.charnwood.gov.uk/location?put=12345678901",
+        "https://my.charnwood.gov.uk/waste-calendar?put=cbc12345678901",
+        "https://example.com/location?put=cbc12345678901",
+        "https://my.charnwood.gov.uk.example.com/location?put=cbc12345678901",
+        "/location?put=cbc12345678901",
+        "ftp://my.charnwood.gov.uk/location?put=cbc12345678901",
+    ],
+)
+def test_invalid_property_url_fails_before_request(council_page, uprn_kwargs, url):
+    """Reject general or invalid property URLs when no UPRN is configured."""
+    with pytest.raises(ValueError, match="Error getting identifier: Invalid UPRN"):
+        CharnwoodBoroughCouncil.CouncilClass().get_and_parse_data(
+            url, skip_get_url=True, **uprn_kwargs
+        )
+
+    council_page.assert_not_called()
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://my.charnwood.gov.uk/location?put=cbc12345678901",
+        "https://my.charnwood.gov.uk/location?redirect=%2F&put=cbc12345678901",
+    ],
+)
+def test_property_url_variants_are_preserved(council_page, url):
+    """Accept property URLs with HTTP or reordered optional query parameters."""
+    result = CharnwoodBoroughCouncil.CouncilClass().parse_data("", url=url)
+
+    council_page.assert_called_once_with(url)
+    assert len(result["bins"]) == 3
