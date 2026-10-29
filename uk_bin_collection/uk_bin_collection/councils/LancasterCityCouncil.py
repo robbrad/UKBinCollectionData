@@ -31,6 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """Scrape the Lancaster waste portal and return scheduled collections by bin type."""
         # data to return
         data = {"bins": []}
 
