@@ -7,9 +7,12 @@ from uk_bin_collection.uk_bin_collection.common import date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
 
+# Specific recycling streams must precede the generic "Recycling" prefix.
 BIN_TYPES = (
     "Domestic Waste",
     "Garden Waste",
+    "Recycling Red",
+    "Recycling Yellow",
     "Recycling",
     "Food Waste",
 )
@@ -28,6 +31,7 @@ class CouncilClass(AbstractGetBinDataClass):
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
+        """Scrape the Lancaster waste portal and return scheduled collections by bin type."""
         # data to return
         data = {"bins": []}
 
