@@ -15,6 +15,7 @@ ADDRESS_HTML = '<a href="mop.php?serviceID=A&seq=3&pIndex=1">1 Test Street</a>'
 
 
 def collection(date: str, service: str) -> str:
+    """Return the portal markup for a single scheduled collection."""
     return f"""
     <ul>
       <li><img src="img/{service}.png" alt="Collection Item" /></li>
@@ -25,11 +26,13 @@ def collection(date: str, service: str) -> str:
 
 
 def schedule_html(*items: tuple[str, str]) -> str:
+    """Return a scheduled-collections section containing the given collections."""
     body = "".join(collection(date, service) for date, service in items)
     return f'<section id="scheduled-collections">{body}</section>'
 
 
 def parse_fixture(html: str):
+    """Run the parser with the portal requests mocked to return the given schedule."""
     session = MagicMock()
     session.get.side_effect = [
         SimpleNamespace(text=HOME_HTML),
@@ -42,6 +45,7 @@ def parse_fixture(html: str):
 
 
 def test_parse_data_keeps_recycling_streams_separate():
+    """Red and Yellow recycling streams are reported as distinct bin types."""
     result = parse_fixture(
         schedule_html(
             ("29/10/2026", "Domestic Waste Collection Service"),
@@ -62,6 +66,7 @@ def test_parse_data_keeps_recycling_streams_separate():
 
 
 def test_parse_data_maps_unspecified_recycling_stream_to_recycling():
+    """The "refer to calendar for stream" wording still maps to Recycling."""
     result = parse_fixture(
         schedule_html(
             (
