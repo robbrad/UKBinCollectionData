@@ -522,10 +522,9 @@
         "LAD24CD": "E07000070",
         "house_number": "1 Celeborn Street, South Woodham Ferrers, Chelmsford, CM3 7AE",
         "postcode": "CM3 7AE",
-        "url": "https://www.chelmsford.gov.uk/myhome/",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/",
         "wiki_name": "Chelmsford",
-        "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your address, then copy the entire address text and use that in the house number field."
+        "wiki_note": "Enter your postcode and your house number (or the start of the address, e.g. `1 Celeborn Street`) so it matches a single row on the [council's collection day search](https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/)."
     },
     "CheltenhamBoroughCouncil": {
         "LAD24CD": "E07000078",
