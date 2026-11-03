@@ -2,7 +2,7 @@
 
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from typing import Any, Dict, List, Optional
 
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
@@ -72,8 +72,13 @@ class UKBinCollectionCalendar(CoordinatorEntity, CalendarEntity):
         if not collection_date:
             return events
 
-        # The test expects comparison between date parts.
-        if start_date.date() <= collection_date <= end_date.date():
+        # The all-day event spans [collection_date, collection_date + 1 day).
+        # end_date is exclusive, so a collection on the day the range ends
+        # at midnight is outside it.
+        event_start = datetime.combine(
+            collection_date, time.min, tzinfo=start_date.tzinfo
+        )
+        if event_start < end_date and event_start + timedelta(days=1) > start_date:
             events.append(self._create_calendar_event(collection_date))
 
         return events
