@@ -175,6 +175,67 @@ async def test_async_get_events_no_events_in_range(hass_instance, mock_coordinat
     assert events == []
 
 
+
+@pytest.mark.asyncio
+async def test_async_get_events_excludes_collection_on_range_end(
+    hass_instance, mock_coordinator
+):
+    """Test that a collection on the day a midnight-bounded range ends is excluded.
+
+    Asking for tomorrow's events must not return the day after tomorrow's
+    collection.
+    """
+    mock_coordinator.data = {"Recycling": date(2024, 4, 26)}
+
+    calendar = UKBinCollectionCalendar(
+        coordinator=mock_coordinator,
+        bin_type="Recycling",
+        unique_id="test_entry_id_Recycling_calendar",
+        name="Test Council Recycling Calendar",
+    )
+
+    start_date = datetime(2024, 4, 25)
+    end_date = datetime(2024, 4, 26)
+
+    events = await calendar.async_get_events(hass_instance, start_date, end_date)
+    assert events == []
+
+
+@pytest.mark.asyncio
+async def test_async_get_events_single_day_range(hass_instance, mock_coordinator):
+    """Test that a one-day range returns that day's collection."""
+    mock_coordinator.data = {"Recycling": date(2024, 4, 25)}
+
+    calendar = UKBinCollectionCalendar(
+        coordinator=mock_coordinator,
+        bin_type="Recycling",
+        unique_id="test_entry_id_Recycling_calendar",
+        name="Test Council Recycling Calendar",
+    )
+
+    events = await calendar.async_get_events(
+        hass_instance, datetime(2024, 4, 25), datetime(2024, 4, 26)
+    )
+    assert [e.start for e in events] == [date(2024, 4, 25)]
+
+
+@pytest.mark.asyncio
+async def test_async_get_events_range_ending_mid_day(hass_instance, mock_coordinator):
+    """Test that a range ending part-way through the collection day includes it."""
+    mock_coordinator.data = {"Recycling": date(2024, 4, 26)}
+
+    calendar = UKBinCollectionCalendar(
+        coordinator=mock_coordinator,
+        bin_type="Recycling",
+        unique_id="test_entry_id_Recycling_calendar",
+        name="Test Council Recycling Calendar",
+    )
+
+    events = await calendar.async_get_events(
+        hass_instance, datetime(2024, 4, 25, 12), datetime(2024, 4, 26, 9)
+    )
+    assert [e.start for e in events] == [date(2024, 4, 26)]
+
 def test_calendar_update_on_coordinator_change(hass_instance, mock_coordinator):
     """Test that the calendar entity updates when the coordinator's data changes."""
     collection_date_initial = date(2024, 4, 25)
