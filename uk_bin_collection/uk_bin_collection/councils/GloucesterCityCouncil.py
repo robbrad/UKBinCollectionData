@@ -121,12 +121,13 @@ class CouncilClass(AbstractGetBinDataClass):
                 return any("Next collection" in c for c in t.children)
 
             for next_collection in soup.find_all(is_a_collection_date):
-                bin_info = list(
-                    next_collection.parent.select_one("div:nth-child(1)").children
-                )
-                if not bin_info:
+                # The bin type is the first text in the card's first <div>.
+                # Communal cards prefix that <div> with a <br/>, so it isn't
+                # always the first child (div:nth-child(1) misses it).
+                type_div = next_collection.parent.find("div", recursive=False)
+                bin = next(type_div.stripped_strings, None) if type_div else None
+                if not bin:
                     continue
-                bin = bin_info[0].get_text()
                 date = next_collection.select_one("strong").get_text(strip=True)
                 bin_date = datetime.strptime(date, "%d %b %Y")
                 dict_data = {
