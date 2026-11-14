@@ -6,6 +6,23 @@ from bs4 import BeautifulSoup
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+ADDRESS_API_URL = "https://ardsandnorthdownbincalendar.azurewebsites.net/api/addresses/{}"
+
+
+def match_address(options, paon):
+    """Pick the option whose label starts with (or contains) the house number/name.
+
+    options: list of (value, label). Prefers "<paon> <street>" over "<paon> <flat>",
+    then any whole-word occurrence. Raises ValueError if nothing matches.
+    """
+    paon = str(paon).strip()
+    p = re.escape(paon)
+    for pattern in (rf"^{p}[\s,]+[A-Za-z]", rf"^{p}[\s,]", rf"(^|[\s,]){p}([\s,]|$)"):
+        for value, label in options:
+            if re.search(pattern, label.strip(), re.I):
+                return value
+    raise ValueError(f"No address matching '{paon}' found for this postcode")
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
@@ -14,9 +31,25 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
+    def find_uprn(self, postcode, paon):
+        """Resolve a UPRN from postcode + house number via the council's address API."""
+        response = requests.get(
+            ADDRESS_API_URL.format(postcode.replace(" ", "").upper()), timeout=30
+        )
+        response.raise_for_status()
+        addresses = response.json().get("addresses") or []
+        if not addresses:
+            raise ValueError(f"No addresses found for postcode {postcode}")
+        options = [(a["uprn"], a.get("addressText", "")) for a in addresses]
+        return match_address(options, paon)
+
     def parse_data(self, page: str, **kwargs) -> dict:
-        # Get and check UPRN
+        # UPRN if given, otherwise resolve it from postcode + house number
         user_uprn = kwargs.get("uprn")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
+        if not user_uprn and user_postcode and user_paon:
+            user_uprn = self.find_uprn(user_postcode, user_paon)
         check_uprn(user_uprn)
         bindata = {"bins": []}
 
@@ -43,6 +76,7 @@ class CouncilClass(AbstractGetBinDataClass):
             API_URL,
             data=PAYLOAD,
             headers={"Content-Type": "text/xml; charset=utf-8"},
+            timeout=30,
         )
         r.raise_for_status()
 

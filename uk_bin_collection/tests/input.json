@@ -49,12 +49,14 @@
     },
     "ArdsAndNorthDownCouncil": {
         "LAD24CD": "N09000011",
+        "house_number": "12",
+        "postcode": "BT20 5DW",
         "skip_get_url": true,
         "uprn": "187136177",
         "url": "https://www.ardsandnorthdown.gov.uk",
         "wiki_command_url_override": "https://www.ardsandnorthdown.gov.uk",
         "wiki_name": "Ards and North Down",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+        "wiki_note": "Pass the postcode and house number, or a UPRN. The UPRN is used when both are given."
     },
     "ArgyllandButeCouncil": {
         "LAD24CD": "S12000035",
