@@ -208,7 +208,7 @@
         "uprn": "185086469",
         "url": "https://online.belfastcity.gov.uk/find-bin-collection-day/Default.aspx",
         "wiki_name": "Belfast",
-        "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
+        "wiki_note": "Pass the postcode plus either the house number or the UPRN. The UPRN is used when both are given."
     },
     "BexleyCouncil": {
         "LAD24CD": "E09000004",
