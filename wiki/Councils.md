@@ -1037,14 +1037,13 @@ Note: You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/searc
 
 ### Chelmsford
 ```commandline
-python collect_data.py ChelmsfordCityCouncil https://www.chelmsford.gov.uk/myhome/ -p "XXXX XXX" -n XX -w http://HOST:PORT/
+python collect_data.py ChelmsfordCityCouncil https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/ -p "XXXX XXX" -n XX
 ```
 Additional parameters:
 - `-p` - postcode
 - `-n` - house number
-- `-w` - remote Selenium web driver URL (required for Home Assistant)
 
-Note: Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your address, then copy the entire address text and use that in the house number field.
+Note: Enter your postcode and your house number (or the start of the address, e.g. `1 Celeborn Street`) so it matches a single row on the [council's collection day search](https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/).
 
 ---
 
