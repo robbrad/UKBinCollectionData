@@ -28,11 +28,11 @@ FORM_HTML = """<form>
 <input type="submit" name="payload[P][W][PCL0004556GBSHB1][formtable][C_2][PCF0015021GBSHB1]" value="View collection days">
 </form>"""
 ADDRESSES = [
-    {"id": "53123", "summary_address": "11 Gedling Road Arnold Nottingham NG5 6NQ"},
-    {"id": "53124", "summary_address": "11A Gedling Road Arnold Nottingham NG5 6NQ"},
+    {"id": "53123", "summary_address": "11 Arnot Hill Park Arnold Nottingham NG5 6LU"},
+    {"id": "53124", "summary_address": "11A Arnot Hill Park Arnold Nottingham NG5 6LU"},
     {
         "id": "24433",
-        "summary_address": "Rose Cottage Gedling Road Arnold Nottingham NG5 6NQ",
+        "summary_address": "Rose Cottage Arnot Hill Park Arnold Nottingham NG5 6LU",
     },
 ]
 COLLECTIONS_HTML = """<table>
@@ -78,7 +78,7 @@ class FakePortal:
         return SimpleNamespace(json=lambda: body, raise_for_status=lambda: None)
 
 
-def run(portal, house, postcode="NG5 6NQ"):
+def run(portal, house, postcode="NG5 6LU"):
     with patch(f"{MODULE_PATH}.requests.Session", return_value=portal):
         return CouncilClass().parse_data("", postcode=postcode, paon=house)
 
@@ -97,7 +97,7 @@ def test_parse_data_returns_the_addresses_collections_in_date_order():
     [
         ("11", "53123"),  # not 11A
         ("11a", "53124"),
-        ("11 Gedling Road", "53123"),
+        ("11 Arnot Hill Park", "53123"),
         ("Rose Cottage", "24433"),
     ],
 )
@@ -118,18 +118,18 @@ def test_the_submit_leaves_out_the_type_ahead_box():
 
 
 def test_an_address_not_at_the_postcode_is_an_error_not_a_guess():
-    with pytest.raises(ValueError, match="could not find '12'.*11 Gedling Road"):
+    with pytest.raises(ValueError, match="could not find '12'.*11 Arnot Hill Park"):
         run(FakePortal(), "12")
 
 
 def test_a_postcode_without_addresses_is_an_error():
-    with pytest.raises(ValueError, match="no addresses for postcode NG5 6NQ"):
+    with pytest.raises(ValueError, match="no addresses for postcode NG5 6LU"):
         run(FakePortal(addresses=[]), "11")
 
 
 def test_the_postcode_and_house_are_both_needed():
     with pytest.raises(ValueError, match="postcode and a house number or name"):
-        CouncilClass().parse_data("", postcode="NG5 6NQ")
+        CouncilClass().parse_data("", postcode="NG5 6LU")
 
 
 def test_a_page_without_its_action_url_is_reported_as_changed():
@@ -141,8 +141,8 @@ def test_a_page_without_its_action_url_is_reported_as_changed():
 
 def test_two_addresses_starting_the_same_way_are_an_error_not_a_guess():
     addresses = [
-        {"id": "1", "summary_address": "11 Gedling Road Arnold Nottingham NG5 6NQ"},
-        {"id": "2", "summary_address": "11 Gedling Road Arnold Nottingham NG5 6NQ"},
+        {"id": "1", "summary_address": "11 Arnot Hill Park Arnold Nottingham NG5 6LU"},
+        {"id": "2", "summary_address": "11 Arnot Hill Park Arnold Nottingham NG5 6LU"},
     ]
     with pytest.raises(ValueError, match="more than one address starting '11'"):
         run(FakePortal(addresses=addresses), "11")

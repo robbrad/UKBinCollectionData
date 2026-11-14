@@ -19,7 +19,7 @@ with a plain POST carrying the page's form token, so no browser is needed:
 
 The address is chosen by its start: the house number or name in
 ``house_number`` ("11", "Rose Cottage"), or the start of the street address
-("11 Gedling Road").
+("11 Arnot Hill Park").
 """
 
 import json
@@ -63,7 +63,7 @@ class CouncilClass(AbstractGetBinDataClass):
         if not postcode or not house:
             raise ValueError(
                 "Gedling needs a postcode and a house number or name, "
-                "e.g. postcode 'NG5 6NQ' and house number '11'."
+                "e.g. postcode 'NG5 6LU' and house number '11'."
             )
 
         self.session = requests.Session()
@@ -159,7 +159,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
     def _search(self, postcode, token, own_url, page_id):
-        """[(portal id, "11 Gedling Road Arnold Nottingham NG5 6NQ")] for a postcode."""
+        """[(portal id, "11 Arnot Hill Park Arnold Nottingham NG5 6LU")] for a postcode."""
         answer = self._post(
             own_url + "&widget_action=fragment_action",
             {
@@ -198,7 +198,7 @@ class CouncilClass(AbstractGetBinDataClass):
             # Never guess between households: that returns someone else's days.
             raise ValueError(
                 f"Gedling found more than one address starting {house!r} at that "
-                "postcode; give more of the address, e.g. '11 Gedling Road'. "
+                "postcode; give more of the address, e.g. '11 Arnot Hill Park'. "
                 "Matches: " + "; ".join(label for _, label in matches)
             )
         raise ValueError(
