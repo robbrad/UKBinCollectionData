@@ -21,11 +21,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         try:
             user_uprn = kwargs.get("uprn")
-            check_uprn(user_uprn)
-            url = f"https://liverpool.gov.uk/Bins/BinDatesTable?UPRN={user_uprn}"
-            if not user_uprn:
+            if user_uprn:
+                url = f"https://liverpool.gov.uk/Bins/BinDatesTable?UPRN={user_uprn}"
+            elif kwargs.get("url"):
                 # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
                 url = kwargs.get("url")
+            else:
+                check_uprn(user_uprn)  # raises a clear "Invalid UPRN" error
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
 
