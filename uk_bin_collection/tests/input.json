@@ -808,7 +808,7 @@
         "uprn": "100091190587",
         "url": "https://www.eastcambs.gov.uk/",
         "wiki_name": "East Cambridgeshire",
-        "wiki_note": "Pass the UPRN. You can find it using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
+        "wiki_note": "Pass the UPRN, or your postcode and house number. You can find the UPRN using [FindMyAddress](https://www.findmyaddress.co.uk/search)."
     },
     "EastDevonDC": {
         "LAD24CD": "E07000040",
