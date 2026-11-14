@@ -1,3 +1,5 @@
+import re
+
 from bs4 import BeautifulSoup
 from dateutil.parser import parse
 from selenium.common.exceptions import TimeoutException
@@ -8,6 +10,29 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 from uk_bin_collection.uk_bin_collection.common import create_webdriver, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+
+def choose_address(labels, paon, postcode=""):
+    """The one dropdown label that starts with the house number or name.
+
+    Matching the number anywhere in the label ("40" in "140 High St", or in
+    "Flat 40") picked the wrong household, or nothing at all, and the page then
+    timed out waiting for collections.
+    """
+    paon = str(paon).strip()
+    pattern = re.compile(rf"(?<!\w){re.escape(paon)}(?!\w)", re.IGNORECASE)
+    matches = [label for label in labels if pattern.match(label.strip())]
+    if len(matches) == 1:
+        return matches[0]
+    if matches:
+        raise ValueError(
+            f"More than one address starts '{paon}' at {postcode}; give more of "
+            "the address. Matches: " + "; ".join(matches)
+        )
+    raise ValueError(
+        f"Could not match house number/name '{paon}' among {len(labels)} "
+        f"addresses for postcode {postcode}"
+    )
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -88,10 +113,13 @@ class CouncilClass(AbstractGetBinDataClass):
             select_address_dropdown = Select(driver.find_element(By.XPATH, "//select"))
 
             if user_paon is not None:
-                for option in select_address_dropdown.options:
-                    if user_paon in option.text:
-                        select_address_dropdown.select_by_visible_text(option.text)
-                        break
+                chosen = choose_address(
+                    # Option 0 is the "select an address" prompt
+                    [option.text for option in select_address_dropdown.options[1:]],
+                    user_paon,
+                    user_postcode,
+                )
+                select_address_dropdown.select_by_visible_text(chosen)
             else:
                 # If we've not been supplied an address, pick the second entry
                 select_address_dropdown.select_by_index(1)

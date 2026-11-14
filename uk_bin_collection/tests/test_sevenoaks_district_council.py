@@ -7,6 +7,7 @@ from selenium.common.exceptions import TimeoutException
 
 from uk_bin_collection.uk_bin_collection.councils.SevenoaksDistrictCouncil import (
     CouncilClass,
+    choose_address,
 )
 
 MODULE = "uk_bin_collection.uk_bin_collection.councils.SevenoaksDistrictCouncil"
@@ -92,12 +93,14 @@ def test_parse_data_uses_new_results_and_closes_driver():
     """Select the requested address, parse its cards and close the browser."""
     driver = MagicMock()
     driver.page_source = RESULTS_HTML
+    prompt = MagicMock()
+    prompt.text = "Select an address"
     address = MagicMock()
     address.text = "60 Hever Road, West Kingsdown, Sevenoaks, TN15 6EB"
     with patch(f"{MODULE}.create_webdriver", return_value=driver), patch(
         f"{MODULE}.Select"
     ) as select, patch.object(CouncilClass, "wait_for_element_conditions"):
-        select.return_value.options = [address]
+        select.return_value.options = [prompt, address]
         result = CouncilClass().parse_data(
             "", postcode="TN15 6EB", paon="60 Hever Road"
         )
@@ -130,3 +133,59 @@ def test_blank_date_fragments_do_not_discard_valid_collections(blank_date):
             {"type": "General waste", "collectionDate": "20/10/2026"},
         ]
     }
+
+
+# --- #2305: house number 40 found nothing -----------------------------------
+
+LABELS = [
+    "4 Hever Road, Edenbridge TN8 5AA",
+    "140 Hever Road, Edenbridge TN8 5AA",
+    "Flat 40, Hever Court, Edenbridge TN8 5AA",
+    "40 Hever Road, Edenbridge TN8 5AA",
+    "40A Hever Road, Edenbridge TN8 5AA",
+    "Rose Cottage, Hever Road, Edenbridge TN8 5AA",
+]
+
+
+@pytest.mark.parametrize(
+    "paon, expected",
+    [
+        ("40", "40 Hever Road, Edenbridge TN8 5AA"),  # not 140, Flat 40 or 40A
+        ("40a", "40A Hever Road, Edenbridge TN8 5AA"),
+        ("4", "4 Hever Road, Edenbridge TN8 5AA"),  # not 40, 40A or 140
+        ("40 Hever Road", "40 Hever Road, Edenbridge TN8 5AA"),
+        ("Flat 40", "Flat 40, Hever Court, Edenbridge TN8 5AA"),
+        ("rose cottage", "Rose Cottage, Hever Road, Edenbridge TN8 5AA"),
+    ],
+)
+def test_the_address_is_chosen_by_its_start(paon, expected):
+    assert choose_address(LABELS, paon) == expected
+
+
+def test_a_number_not_in_the_list_is_an_error_not_the_first_label_that_contains_it():
+    with pytest.raises(ValueError, match="Could not match.*'400'.*6 addresses"):
+        choose_address(LABELS, "400", "TN8 5AA")
+
+
+def test_two_addresses_starting_the_same_way_are_an_error_not_a_guess():
+    labels = ["40 Hever Road TN8 5AA", "40 Hever Close TN8 5AB"]
+    with pytest.raises(ValueError, match="More than one address.*Hever Close"):
+        choose_address(labels, "40")
+
+
+def test_parse_data_selects_the_address_starting_with_the_number_not_the_first_containing_it():
+    driver = MagicMock()
+    driver.page_source = RESULTS_HTML
+    options = []
+    for text in ["Select an address", *LABELS]:
+        option = MagicMock()
+        option.text = text
+        options.append(option)
+    with patch(f"{MODULE}.create_webdriver", return_value=driver), patch(
+        f"{MODULE}.Select"
+    ) as select, patch.object(CouncilClass, "wait_for_element_conditions"):
+        select.return_value.options = options
+        CouncilClass().parse_data("", postcode="TN8 5AA", paon="40")
+    select.return_value.select_by_visible_text.assert_called_once_with(
+        "40 Hever Road, Edenbridge TN8 5AA"
+    )
