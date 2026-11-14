@@ -833,8 +833,8 @@ stone dead for several hours in the same pass and had recovered by the afternoon
 ## November release pass (2026-11-14)
 
 Prepared from the cloud sandbox (no council-site access; live evidence came from PR CI).
-Nothing was merged or released without the maintainer's say-so; status at the time of
-writing is in the PR list below.
+Nothing was merged or released without the maintainer's say-so. **Released as 0.173.6,
+0.173.7 and 0.173.8** (outcome in "Release outcome" below).
 
 ### What was assembled
 
@@ -842,9 +842,9 @@ writing is in the PR list below.
 |---|---|---|---|
 | #2341 | `claude/fix-time-bomb-tests` | Orkney test fixtures relative to today; Broxbourne tests stub `check_postcode` | no (`test:`) |
 | #2342 | `claude/november-deps` | 10 dependabot bumps (HA 2026.11.1, Pillow 13, soupsieve 4, cryptography 50, ...); #2297 dropped as superseded by #2339 | no (`chore:`) |
-| #2343 | `claude/november-release` | 11 contributor PRs cherry-picked with authorship kept, plus my follow-ups (below) | yes |
-| #2344 | `claude/fix-legacy-url-regression` | `check_uprn` now raises (0.173.5), which broke the legacy stored-URL fallback in 8 scrapers | yes |
-| #2345 | `claude/lazy-holidays-import` | `holidays` imported inside `is_holiday()` instead of at import time of `common.py` | yes |
+| #2343 | `claude/november-release` | 11 contributor PRs cherry-picked with authorship kept, plus my follow-ups (below) | yes (0.173.6) |
+| #2344 | `claude/fix-legacy-url-regression` | `check_uprn` now raises (0.173.5), which broke the legacy stored-URL fallback in 8 scrapers | yes (0.173.7) |
+| #2345 | `claude/lazy-holidays-import` | `holidays` imported inside `is_holiday()` instead of at import time of `common.py` | yes (0.173.8) |
 
 #2343 must be merged with a **merge commit or rebase**, not a squash, or all contributor
 authorship is lost (see playbook §6).
@@ -893,10 +893,45 @@ data), #2309 East Cambridgeshire (28-day window down from 42, first-address fall
 #2332 Chelmsford (edits generated `wiki/Councils.md`, RGB PDF parse with no fixture,
 substring matching), #2252 Swansea (already fixed on master).
 
+### Release outcome
+
+Merged in this order, each bump checked before the next merge: #2341 (squash, `test:`),
+#2342 (merge commit, `chore(deps):`), #2343 (merge commit, so contributor authorship is
+kept), #2344 and #2345 (squash, `fix:`). `Release - Bump Version` succeeded for each and
+`Release - Publish to PyPI` succeeded for 0.173.6, 0.173.7 and 0.173.8.
+
+Things that went differently from the plan:
+
+- **Two commit-message checks fail differently.** `lint.yml` disables `body-max-line-length`;
+  `validate-release-ready.yml` (PR-only, "Validate Release Prerequisites") does not. A
+  contributor's Lancaster commit body had a line over 100 characters and failed it, so it
+  was re-worded (author kept) before merging. My own Sevenoaks title was 103 characters
+  and failed both. Run commitlint locally with the *strict* config too.
+- **Gedling test data**: replaced the contributor's home address with Gedling Civic Centre
+  (NG5 6LU), with the maintainer's OK. Live CI could not be read per-council from the
+  sandbox, so whether the portal lists that address is unconfirmed; swap it if the
+  nightly Gedling test fails.
+- **Contributor PRs closed with a credit comment** (they landed via the release branch,
+  not as merged PRs): #2295, #2300, #2308, #2310, #2313, #2314, #2315, #2323, #2324,
+  #2330, #2336. Dependabot #2270, #2271, #2301, #2302, #2325, #2326, #2339, #2340
+  closed (landed via #2342).
+- **Issues commented, left open until the reporter confirms**: #2294 (0.173.7), #2305,
+  #2334 (0.173.6), #2335 (0.173.8). #2292 answered (HA's default colour is black unless
+  `icon_color_mapping` has an entry for the bin type).
+- **Review comments posted, PRs left open for the authors**: #2309, #2311, #2312,
+  #2316-#2321, #2332 (what would make each mergeable; none of the six postcode-to-UPRN PRs
+  has tests, and #2320's `input.json` doesn't even exercise the new lookup).
+- **The Lancaster sensor rename** (single "Recycling" becomes "Recycling Red" and
+  "Recycling Yellow") has no automated flag; the release page can't be edited from the
+  sandbox, so a paragraph was handed to the maintainer to paste into the 0.173.6 release.
+- **Reading CI**: the MCP `get_job_logs` call returns only the tail of a log and the blob
+  URL it returns is blocked by the sandbox proxy, so per-council pytest results for a
+  live integration run could not be read this time. Use the CI check conclusions plus a
+  local run, and say so rather than implying live verification.
+
 ### Decisions for the maintainer
 
-- **Gedling test data** in `input.json` (`NG5 6NQ` / `11`) looks residential. Needs a
-  council office or library instead.
+- ~~Gedling test data looked residential~~: replaced with the Civic Centre (see above).
 - **Lancaster** splits "Recycling" into red and yellow: a breaking sensor rename for HA
   users. Release-note line. Pre-existing and unfixed: its address loop keeps the *last*
   match, not the first.
