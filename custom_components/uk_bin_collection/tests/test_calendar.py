@@ -175,7 +175,6 @@ async def test_async_get_events_no_events_in_range(hass_instance, mock_coordinat
     assert events == []
 
 
-
 @pytest.mark.asyncio
 async def test_async_get_events_excludes_collection_on_range_end(
     hass_instance, mock_coordinator
@@ -235,6 +234,7 @@ async def test_async_get_events_range_ending_mid_day(hass_instance, mock_coordin
         hass_instance, datetime(2024, 4, 25, 12), datetime(2024, 4, 26, 9)
     )
     assert [e.start for e in events] == [date(2024, 4, 26)]
+
 
 def test_calendar_update_on_coordinator_change(hass_instance, mock_coordinator):
     """Test that the calendar entity updates when the coordinator's data changes."""
@@ -631,3 +631,50 @@ async def test_async_setup_entry_handles_coordinator_partial_data(
             ),
             name="Test Council Garden Waste Calendar",
         )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "collection, expected_days",
+    [
+        (date(2026, 7, 2), ["today"]),
+        (date(2026, 7, 3), ["tomorrow"]),
+        (date(2026, 7, 4), []),
+    ],
+    ids=["collected-today", "collected-tomorrow", "collected-day-after"],
+)
+async def test_local_midnight_ranges_during_bst_pick_exactly_one_day(
+    hass_instance, mock_coordinator, collection, expected_days
+):
+    """Home Assistant passes timezone-aware local datetimes (dt_util.as_local).
+
+    In summer a "tomorrow" range is 23:00 UTC the day before; the event for
+    today must not leak into it, and the one for the day after must not either.
+    """
+    from zoneinfo import ZoneInfo
+
+    london = ZoneInfo("Europe/London")
+    mock_coordinator.data = {"Recycling": collection}
+    calendar = UKBinCollectionCalendar(
+        coordinator=mock_coordinator,
+        bin_type="Recycling",
+        unique_id="test_entry_id_Recycling_calendar",
+        name="Test Council Recycling Calendar",
+    )
+
+    ranges = {
+        "today": (
+            datetime(2026, 7, 2, tzinfo=london),
+            datetime(2026, 7, 3, tzinfo=london),
+        ),
+        "tomorrow": (
+            datetime(2026, 7, 3, tzinfo=london),
+            datetime(2026, 7, 4, tzinfo=london),
+        ),
+    }
+    found = [
+        label
+        for label, (start, end) in ranges.items()
+        if await calendar.async_get_events(hass_instance, start, end)
+    ]
+    assert found == expected_days
