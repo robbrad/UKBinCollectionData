@@ -1,6 +1,6 @@
 """Offline tests for Orkney's address search + bin lookup API (shapes from a live CI capture)."""
 
-from datetime import date
+from datetime import date, timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -14,22 +14,35 @@ SEARCH = {
         {"addressId": "134007585", "address": "1, HORDALAND, KIRKWALL, KW15 1UN"},
     ],
 }
+# Dates are relative to today: the scraper drops past dates, so a fixed calendar
+# silently turns these tests into "no collections" once it expires.
+TODAY = date.today()
+
+
+def _in(days: int) -> str:
+    return (TODAY + timedelta(days=days)).isoformat()
+
+
+def _dmy(days: int) -> str:
+    return (TODAY + timedelta(days=days)).strftime("%d/%m/%Y")
+
+
 LOOKUP = {
     "success": True,
     "binCollectionArea": {
         "area": "Area 3",
         "paper_and_metal": [
             {
-                "date": "2026-10-28",
+                "date": _in(13),
                 "summary": "Area 03 - Paper/thin card and metal cans",
             }
         ],
         "general_waste": [
-            {"date": "2026-10-07", "summary": "Area 03 - Black/grey bins"},
-            {"date": "2026-10-21", "summary": "Area 03 - Black/grey bins"},
+            {"date": _in(-8), "summary": "Area 03 - Black/grey bins"},
+            {"date": _in(6), "summary": "Area 03 - Black/grey bins"},
         ],
         "glass_and_plastic": [
-            {"date": "2026-11-11", "summary": "Area 03 - Glass and plastic"}
+            {"date": _in(27), "summary": "Area 03 - Glass and plastic"}
         ],
         "other": [],
     },
@@ -43,11 +56,12 @@ LOOKUP = {
 
 
 def test_upcoming_collections_are_labelled_and_sorted():
-    assert OrkneyIslandsCouncil._parse_collections(LOOKUP, date(2026, 10, 15)) == {
+    # The collection 8 days ago is dropped; the rest come back in date order.
+    assert OrkneyIslandsCouncil._parse_collections(LOOKUP, TODAY) == {
         "bins": [
-            {"type": "General Waste", "collectionDate": "21/10/2026"},
-            {"type": "Paper & Metal", "collectionDate": "28/10/2026"},
-            {"type": "Glass & Plastic", "collectionDate": "11/11/2026"},
+            {"type": "General Waste", "collectionDate": _dmy(6)},
+            {"type": "Paper & Metal", "collectionDate": _dmy(13)},
+            {"type": "Glass & Plastic", "collectionDate": _dmy(27)},
         ]
     }
 
@@ -68,7 +82,7 @@ def test_area_or_street_text_is_searched_and_first_address_looked_up():
     search, lookup = session.get.call_args_list
     assert search.kwargs["params"] == {"q": "Kirkwall"}
     assert lookup.kwargs["params"] == {"addressId": "134007618"}
-    assert data["bins"]
+    assert [b["collectionDate"] for b in data["bins"]] == [_dmy(6), _dmy(13), _dmy(27)]
 
 
 def test_uprn_skips_the_search():
