@@ -29,10 +29,15 @@ class CouncilClass(AbstractGetBinDataClass):
             soup = BeautifulSoup(search_response.content, "html.parser")
             street_link_tags = soup.find_all("a", class_="list__link")
 
-            street_name = kwargs.get("paon").lower()
+            street_name = kwargs.get("paon").strip().lower()
             matches = [
                 tag for tag in street_link_tags if street_name in tag.text.lower()
             ]
+            # "Newdigate Road" also matches "Newdigate Road East": an exact
+            # name wins, otherwise the user has to say which one they meant.
+            exact = [tag for tag in matches if tag.text.strip().lower() == street_name]
+            if len(exact) == 1:
+                matches = exact
 
             if len(matches) == 1:
                 street_url = matches[0]["href"]
@@ -52,11 +57,21 @@ class CouncilClass(AbstractGetBinDataClass):
                 return data
 
             elif len(matches) > 1:
-                Exception("Multiple street URLs found. Please refine your search.")
+                names = "; ".join(tag.text.strip() for tag in matches)
+                raise ValueError(
+                    f"More than one street matches '{kwargs.get('paon')}'; use the "
+                    f"full street name exactly as the council shows it. Matches: {names}"
+                )
             else:
-                Exception("Street URL not found.")
+                raise ValueError(
+                    f"No street matching '{kwargs.get('paon')}' was found on the "
+                    "council's website."
+                )
         else:
-            Exception("Failed to retrieve search results.")
+            raise ConnectionError(
+                f"Nuneaton and Bedworth street search failed "
+                f"(HTTP {search_response.status_code})."
+            )
 
         return data
 
@@ -1708,12 +1723,22 @@ class CouncilClass(AbstractGetBinDataClass):
                     },
                 }
 
+                if filename not in bin_data:
+                    raise ValueError(
+                        f"The council's calendar '{filename}' is not one this "
+                        "scraper knows about; the council has probably added or "
+                        "renamed a round."
+                    )
                 output = bin_data[filename]
             else:
-                print(bin_day_response.content)
-                Exception("Bin data Download link not found.")
+                raise ValueError(
+                    "No bin calendar download link found on the street's page."
+                )
 
         else:
-            Exception("Failed to retrieve bin data.")
+            raise ConnectionError(
+                f"Nuneaton and Bedworth street page failed "
+                f"(HTTP {bin_day_response.status_code})."
+            )
 
         return output
