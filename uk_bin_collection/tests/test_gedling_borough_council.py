@@ -30,7 +30,10 @@ FORM_HTML = """<form>
 ADDRESSES = [
     {"id": "53123", "summary_address": "11 Gedling Road Arnold Nottingham NG5 6NQ"},
     {"id": "53124", "summary_address": "11A Gedling Road Arnold Nottingham NG5 6NQ"},
-    {"id": "24433", "summary_address": "Rose Cottage Gedling Road Arnold Nottingham NG5 6NQ"},
+    {
+        "id": "24433",
+        "summary_address": "Rose Cottage Gedling Road Arnold Nottingham NG5 6NQ",
+    },
 ]
 COLLECTIONS_HTML = """<table>
 <tr><th>Service</th><th>Day</th><th>Date</th></tr>
@@ -52,7 +55,11 @@ class FakePortal:
 
     def get(self, url, timeout=None):
         path = urlparse(url).path
-        text = self.page_html if path == "/w/webpage/bin-collections" else COLLECTIONS_PAGE_HTML
+        text = (
+            self.page_html
+            if path == "/w/webpage/bin-collections"
+            else COLLECTIONS_PAGE_HTML
+        )
         return SimpleNamespace(text=text, raise_for_status=lambda: None)
 
     def post(self, url, headers=None, data=None, timeout=None):
@@ -60,7 +67,10 @@ class FakePortal:
             body = {"result": "success", "response": {"options": self.addresses}}
         elif "submit_fragment_id" in data:
             self.submitted = data
-            body = {"status": "redirect", "redirect_url": "/w/webpage/bin-collections-4-weeks?id=9"}
+            body = {
+                "status": "redirect",
+                "redirect_url": "/w/webpage/bin-collections-4-weeks?id=9",
+            }
         elif "4-weeks" in url:
             body = {"data": COLLECTIONS_HTML}
         else:
@@ -127,3 +137,20 @@ def test_a_page_without_its_action_url_is_reported_as_changed():
     page_html = PAGE_HTML.split("var AJAX_DYNAMIC_URL")[0] + "</script>"
     with pytest.raises(ValueError, match="no action URL"):
         run(FakePortal(page_html=page_html), "11")
+
+
+def test_two_addresses_starting_the_same_way_are_an_error_not_a_guess():
+    addresses = [
+        {"id": "1", "summary_address": "11 Gedling Road Arnold Nottingham NG5 6NQ"},
+        {"id": "2", "summary_address": "11 Gedling Road Arnold Nottingham NG5 6NQ"},
+    ]
+    with pytest.raises(ValueError, match="more than one address starting '11'"):
+        run(FakePortal(addresses=addresses), "11")
+
+
+def test_a_page_with_no_dated_collections_is_an_error_not_an_empty_list(monkeypatch):
+    monkeypatch.setattr(
+        f"{MODULE_PATH}.CouncilClass.parse_collections", staticmethod(lambda html: [])
+    )
+    with pytest.raises(ValueError, match="no collection dates"):
+        run(FakePortal(), "11")

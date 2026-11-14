@@ -76,7 +76,11 @@ class CouncilClass(AbstractGetBinDataClass):
             raise ValueError(f"Gedling found no addresses for postcode {postcode}")
         address_id = self._choose(addresses, house)
 
-        data = {name: value for name, value in fields.items() if TYPE_AHEAD_FIELD not in name}
+        data = {
+            name: value
+            for name, value in fields.items()
+            if TYPE_AHEAD_FIELD not in name
+        }
         prefix = next(name for name in fields if SEARCH_CELL in name).rsplit("[", 1)[0]
         submit = form.find("input", attrs={"name": re.compile(SUBMIT_FIELD)})
         data.update(
@@ -95,6 +99,11 @@ class CouncilClass(AbstractGetBinDataClass):
         _, token, _ = self._get(answer["redirect_url"])
         collections = self._post(answer["redirect_url"], {"_dummy": 1}, token)["data"]
         bins = self.parse_collections(collections)
+        if not bins:
+            raise ValueError(
+                "Gedling's portal returned no collection dates for that address; "
+                "the page may have changed."
+            )
         bins.sort(key=lambda b: datetime.strptime(b["collectionDate"], date_format))
         return {"bins": bins}
 
@@ -135,7 +144,9 @@ class CouncilClass(AbstractGetBinDataClass):
             "input", attrs={"name": re.compile(SUBMIT_FIELD)}
         )
         if submit is None:
-            raise ValueError("Gedling's bin collections page has changed: no address form")
+            raise ValueError(
+                "Gedling's bin collections page has changed: no address form"
+            )
         return submit.find_parent("form"), token, own_url
 
     @staticmethod
@@ -157,7 +168,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 "fragment_action": "handle_event",
                 "fragment_id": ADDRESS_FIELD,
                 "fragment_collection_class": "formtable",
-                "fragment_collection_editable_values": json.dumps({MANUAL_ADDRESS_FIELD: "0"}),
+                "fragment_collection_editable_values": json.dumps(
+                    {MANUAL_ADDRESS_FIELD: "0"}
+                ),
                 "action_cell_id": SEARCH_CELL,
                 "action_page_id": page_id,
             },
@@ -174,9 +187,20 @@ class CouncilClass(AbstractGetBinDataClass):
             return re.sub(r"[\s,]+", " ", text or "").strip().upper()
 
         wanted = words(house)
-        for address_id, label in addresses:
-            if (words(label) + " ").startswith(wanted + " "):
-                return address_id
+        matches = [
+            (address_id, label)
+            for address_id, label in addresses
+            if (words(label) + " ").startswith(wanted + " ")
+        ]
+        if len(matches) == 1:
+            return matches[0][0]
+        if matches:
+            # Never guess between households: that returns someone else's days.
+            raise ValueError(
+                f"Gedling found more than one address starting {house!r} at that "
+                "postcode; give more of the address, e.g. '11 Gedling Road'. "
+                "Matches: " + "; ".join(label for _, label in matches)
+            )
         raise ValueError(
             f"Gedling could not find {house!r} at that postcode. Addresses found: "
             + "; ".join(label for _, label in addresses)
@@ -196,6 +220,8 @@ class CouncilClass(AbstractGetBinDataClass):
             except ValueError:
                 continue
             # "General Collection Service" -> "General", "Glass Collection Service" -> "Glass"
-            name = re.sub(r"\s+Collection Service$", "", service["data-current_value"].strip())
+            name = re.sub(
+                r"\s+Collection Service$", "", service["data-current_value"].strip()
+            )
             bins.append({"type": name, "collectionDate": day.strftime(date_format)})
         return bins
