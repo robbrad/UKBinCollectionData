@@ -21,7 +21,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
     def parse_data(self, page: str, **kwargs: Any) -> Dict[str, List[Dict[str, str]]]:
         user_postcode: Optional[str] = kwargs.get("postcode")
-        user_paon: Optional[str] = kwargs.get("paon")
+        user_paon: Optional[str] = kwargs.get("paon") or kwargs.get("house_number")
         check_postcode(user_postcode)
 
         session = requests.Session()
@@ -35,7 +35,8 @@ class CouncilClass(AbstractGetBinDataClass):
         )
 
         # Step 1: load the form and get the CSRF token + postcode field name.
-        get_resp = session.get(FORM_URL)
+        get_resp = session.get(FORM_URL, timeout=30)
+        get_resp.raise_for_status()
         soup = BeautifulSoup(get_resp.text, "html.parser")
 
         token = soup.find("input", {"name": "__token"})["value"]
@@ -54,7 +55,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 postcode_field: user_postcode,
                 "next": "Next",
             },
+            timeout=30,
         )
+        post_resp.raise_for_status()
         soup = BeautifulSoup(post_resp.text, "html.parser")
 
         address_select = soup.find("select", {"name": re.compile(r".*_1_0")})
@@ -67,18 +70,30 @@ class CouncilClass(AbstractGetBinDataClass):
         options = [
             (opt.get("value"), opt.get_text(strip=True))
             for opt in address_select.find_all("option")
-            if opt.get("value")
+            # Skip the "Please choose..." placeholder (empty value) and the
+            # "I cannot find my property" sentinel (value 111111).
+            if opt.get("value") and opt.get("value") != "111111"
         ]
         if not options:
             raise ValueError(f"No addresses found for postcode {user_postcode}")
 
         chosen_value = None
         if user_paon:
-            paon_upper = user_paon.strip().upper()
+            # Word-boundary match so "1" doesn't pick "10 ..." and "21" still
+            # matches flat-style labels like "0-1, 21 Victoria Street".
+            paon_pattern = re.compile(
+                rf"(?<![\w-]){re.escape(user_paon.strip())}(?![\w-])", re.IGNORECASE
+            )
+            # Prefer an address that starts with the paon, then any match.
             for value, text in options:
-                if text.upper().startswith(paon_upper):
+                if paon_pattern.match(text):
                     chosen_value = value
                     break
+            if not chosen_value:
+                for value, text in options:
+                    if paon_pattern.search(text):
+                        chosen_value = value
+                        break
             if not chosen_value:
                 raise ValueError(
                     f"Could not match house number/name '{user_paon}' among "
@@ -101,7 +116,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 address_field: chosen_value,
                 "next": "Next",
             },
+            timeout=30,
         )
+        final_resp.raise_for_status()
         soup = BeautifulSoup(final_resp.text, "html.parser")
         table = soup.find("table", {"id": "bin-table"})
         if not table:
@@ -135,6 +152,11 @@ class CouncilClass(AbstractGetBinDataClass):
                     "type": bin_type,
                     "collectionDate": collection_date.strftime(date_format),
                 }
+            )
+
+        if not data["bins"]:
+            raise ValueError(
+                "No upcoming collection dates found for the selected address"
             )
 
         data["bins"].sort(
