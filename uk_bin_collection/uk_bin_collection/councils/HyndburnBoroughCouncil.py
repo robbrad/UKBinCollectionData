@@ -1,16 +1,42 @@
-import time
+import json
+import re
+from datetime import datetime
 
-from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select, WebDriverWait
+import requests
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+# iTouchVision iApp. The React front end at iapp.itouchvision.com calls these
+# JSON endpoints with an AES-CBC encrypted query in the P_PARAMETER header and
+# returns an AES-CBC encrypted hex body. Key/IV are static in the public JS
+# bundle (same values as NewportCityCouncil).
+API_URL = "https://itouchvision.app/portal/itouchvision/"
+HYNDBURN_UUID = "FEBA68993831481FD81B2E605364D00A8DC017A4"
+KEY_HEX = "F57E76482EE3DC3336495DEDEEF3962671B054FE353E815145E29C5689F72FEC"
+IV_HEX = "2CBF4FC35C69B82362D393A4F0B9971A"
 
-# import the wonderful Beautiful Soup and the URL grabber
+
+def _encrypt(payload: dict) -> str:
+    padder = padding.PKCS7(128).padder()
+    data = padder.update(json.dumps(payload).encode("utf-8")) + padder.finalize()
+    encryptor = Cipher(
+        algorithms.AES(bytes.fromhex(KEY_HEX)), modes.CBC(bytes.fromhex(IV_HEX))
+    ).encryptor()
+    return (encryptor.update(data) + encryptor.finalize()).hex()
+
+
+def _decrypt(hex_text: str):
+    decryptor = Cipher(
+        algorithms.AES(bytes.fromhex(KEY_HEX)), modes.CBC(bytes.fromhex(IV_HEX))
+    ).decryptor()
+    padded = decryptor.update(bytes.fromhex(hex_text.strip())) + decryptor.finalize()
+    unpadder = padding.PKCS7(128).unpadder()
+    return json.loads(unpadder.update(padded) + unpadder.finalize())
+
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     Concrete classes have to implement all abstract operations of the
@@ -18,127 +44,108 @@ class CouncilClass(AbstractGetBinDataClass):
     implementation.
     """
 
+    def _call(self, session: requests.Session, path: str, payload: dict):
+        response = session.get(
+            API_URL + path,
+            headers={
+                "P_PARAMETER": _encrypt(payload),
+                "Accept": "application/json",
+                "Content-type": "application/json; charset=UTF-8",
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+        text = response.text.strip()
+        if not re.fullmatch(r"[0-9A-Fa-f]+", text):
+            raise ValueError(f"Unexpected response from iTouchVision {path}")
+        return _decrypt(text)
+
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            user_postcode = kwargs.get("postcode")
+        user_uprn = kwargs.get("uprn")
+        user_postcode = kwargs.get("postcode")
+        user_paon = kwargs.get("paon") or kwargs.get("house_number")
+
+        session = requests.Session()
+        session.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+                "Origin": "https://iapp.itouchvision.com",
+                "Referer": "https://iapp.itouchvision.com/",
+            }
+        )
+
+        client = self._call(
+            session, "gdsv5/util/igetclientdetails", {"P_UID": HYNDBURN_UUID}
+        )
+        if client.get("P_IS_VALID") != 1:
+            raise ValueError("iTouchVision rejected the Hyndburn client UUID")
+        client_id = client["P_CLIENT_ID"]
+        council_id = client["P_COUNCIL_ID"]
+
+        if not user_uprn:
             if not user_postcode:
-                raise ValueError("No postcode provided.")
+                raise ValueError("A UPRN or postcode must be provided")
             check_postcode(user_postcode)
-
-            user_uprn = kwargs.get("uprn")
-            headless = kwargs.get("headless")
-            web_driver = kwargs.get("web_driver")
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            page = "https://iapp.itouchvision.com/iappcollectionday/collection-day/?uuid=FEBA68993831481FD81B2E605364D00A8DC017A4"
-
-            driver.get(page)
-
-            postcode_input = WebDriverWait(driver, 60).until(
-                EC.presence_of_element_located((By.ID, "postcodeSearch"))
-            )
-
-            postcode_input.send_keys(user_postcode)
-            postcode_input.send_keys(Keys.TAB + Keys.RETURN)
-
-            # Wait for address box to be visible
-            select_address_input = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        '//*[@id="addressSelect"]',
+            addresses = self._call(
+                session,
+                "kmbd/address",
+                {
+                    "P_POSTCODE": user_postcode.strip().upper(),
+                    "P_LANG_CODE": "EN",
+                    "P_CLIENT_ID": client_id,
+                    "P_COUNCIL_ID": council_id,
+                },
+            ).get("ADDRESS", [])
+            if not addresses:
+                raise ValueError(f"No addresses found for postcode {user_postcode}")
+            if user_paon:
+                pattern = re.compile(rf"\b{re.escape(str(user_paon).strip())}\b", re.I)
+                matches = [a for a in addresses if pattern.search(a["FULL_ADDRESS"])]
+                if not matches:
+                    raise ValueError(
+                        f"Address '{user_paon}' not found for postcode {user_postcode}"
                     )
-                )
-            )
+                user_uprn = matches[0]["UPRN"]
+            elif len(addresses) == 1:
+                user_uprn = addresses[0]["UPRN"]
+            else:
+                raise ValueError("Multiple addresses found; provide a UPRN or house number")
 
-            # Select address based on UPRN
-            select = Select(select_address_input)
-            if not user_uprn:
-                raise ValueError("No UPRN provided")
+        check_uprn(str(user_uprn))
 
-            try:
-                select.select_by_value(str(user_uprn))
-            except Exception as e:
-                raise ValueError(f"Could not find address with UPRN: {user_uprn}")
+        result = self._call(
+            session,
+            "kmbd/collectionDay",
+            {
+                "P_UPRN": str(user_uprn),
+                "P_CLIENT_ID": client_id,
+                "P_COUNCIL_ID": council_id,
+                "P_LANG_CODE": "EN",
+            },
+        )
 
-            # Wait for address selection to complete
-            time.sleep(5)
-
-            # Wait for the main container with bin collection data
-            WebDriverWait(driver, 60).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "div.ant-row.d-flex.justify-content-between")
-                )
-            )
-
-            # Verify bin collection data is loaded by checking for specific elements
-            WebDriverWait(driver, 60).until(
-                EC.presence_of_all_elements_located(
-                    (By.CSS_SELECTOR, "div.ant-col h3.text-white")
-                )
-            )
-
-            # Remove unnecessary waits and div ID check
-            time.sleep(2)  # Short wait for any final rendering
-
-            # Continue with BeautifulSoup parsing
-            soup = BeautifulSoup(driver.page_source, "html.parser")
-            bin_data = {"bins": []}
-
-            # Find all bin collection divs
-            bin_divs = soup.find_all("div", class_="ant-col")
-
-            for bin_div in bin_divs:
-                # Find bin type from h3
-                bin_type_elem = bin_div.find("h3", class_="text-white")
-                if not bin_type_elem:
+        bins = []
+        seen = set()
+        for item in result.get("collectionDay", []) or []:
+            bin_type = (item.get("binType") or "").strip()
+            if not bin_type:
+                continue
+            for field in ("collectionDay", "followingDay"):
+                raw = item.get(field)
+                if not raw:
                     continue
-
-                bin_type = bin_type_elem.text.strip()
-
-                # Find collection date
-                date_elem = bin_div.find("div", class_="text-white fw-bold")
-                if not date_elem:
-                    continue
-
-                collection_date_string = date_elem.text.strip()
-
-                # Handle date formatting
-                current_date = datetime.now()
-                # Parse the date string (e.g. "Monday 28 April")
                 try:
-                    parsed_date = datetime.strptime(
-                        collection_date_string + f" {current_date.year}", "%A %d %B %Y"
-                    )
-
-                    # Check if the parsed date is in the past
-                    if parsed_date.date() < current_date.date():
-                        # If so, set the year to the next year
-                        parsed_date = parsed_date.replace(year=current_date.year + 1)
-
-                    formatted_date = parsed_date.strftime("%d/%m/%Y")
-                    contains_date(formatted_date)
-
-                    bin_info = {"type": bin_type, "collectionDate": formatted_date}
-                    bin_data["bins"].append(bin_info)
-                except ValueError as e:
-                    print(f"Error parsing date {collection_date_string}: {e}")
+                    date = datetime.strptime(raw, "%d-%m-%Y").strftime(date_format)
+                except ValueError:
                     continue
+                if (bin_type, date) in seen:
+                    continue
+                seen.add((bin_type, date))
+                bins.append({"type": bin_type, "collectionDate": date})
 
-            if not bin_data["bins"]:
-                raise ValueError("No collection data found")
+        if not bins:
+            raise ValueError("No collection data found")
 
-            print(bin_data)
-
-            return bin_data
-
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
+        bins.sort(key=lambda x: datetime.strptime(x["collectionDate"], date_format))
+        return {"bins": bins}
