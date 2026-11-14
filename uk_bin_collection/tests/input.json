@@ -42,10 +42,12 @@
     },
     "AntrimAndNewtonabbeyCouncil": {
         "LAD24CD": "N09000001",
+        "house_number": "73",
+        "postcode": "BT41 2QE",
         "url": "https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=643",
         "wiki_command_url_override": "https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule/?Id=XXXX",
         "wiki_name": "Antrim and Newtownabbey",
-        "wiki_note": "Navigate to [https://antrimandnewtownabbey.gov.uk/residents/bins-recycling/bins-schedule] and search for your street name. Use the URL with the ID to replace XXXXXXXX with your specific ID."
+        "wiki_note": "Pass the postcode and house number and the scraper looks up the council property ID. Alternatively pass the bins-schedule URL with your own ?Id= from the council site."
     },
     "ArdsAndNorthDownCouncil": {
         "LAD24CD": "N09000011",
