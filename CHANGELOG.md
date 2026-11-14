@@ -1,4 +1,10 @@
 =======
+## 0.173.8 (2026-11-14)
+
+### Fix
+
+- **common**: import holidays lazily so a broken install cannot stop every council
+
 ## 0.173.7 (2026-11-14)
 
 ### Fix
