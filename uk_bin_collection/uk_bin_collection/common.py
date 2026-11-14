@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 from enum import Enum
 from importlib.metadata import PackageNotFoundError, version as _pkg_version
 
-import holidays
 import pandas as pd
 import requests
 from dateutil.parser import parse
@@ -147,6 +146,12 @@ def is_holiday(date_to_check: datetime, region: Region = Region.ENG) -> bool:
         :param region: The UK nation to check. Defaults to ENG.
         :return: Bool - true if a holiday, false if not
     """
+    # Imported here rather than at the top of the module: only one scraper needs
+    # it, but every scraper imports this module, so a broken `holidays` install
+    # (e.g. a half-upgraded package in a Home Assistant container, as in #2335)
+    # would otherwise stop the whole integration from loading.
+    import holidays
+
     uk_holidays = holidays.country_holidays("GB", subdiv=region.name)
 
     if date_to_check in uk_holidays:
