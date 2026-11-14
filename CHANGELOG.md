@@ -1,4 +1,32 @@
 =======
+## 0.173.6 (2026-11-14)
+
+### Fix
+
+- November council fixes from contributor PRs (Gedling, Canterbury, Newcastle, Charnwood, Lancaster, East Herts, East Suffolk, Torfaen, East Hampshire, Wolverhampton, Nuneaton, Sevenoaks)
+- November council fixes from 9 contributor PRs (Gedling, Canterbury, Newcastle, Charnwood, Lancaster, East Herts, East Suffolk, Torfaen, East Hampshire)
+- **gedling**: use the council offices as test data instead of a home address
+- **sevenoaks**: match the address that starts with the house number, not one containing it
+- **nuneaton-bedworth**: raise when the street can't be resolved instead of returning nothing
+- **wolverhampton**: never guess an address, read only the innermost columns
+- handle wolverhampton's updated bin collection page layout
+- treat calendar get_events end_date as exclusive
+- **gedling**: refuse an ambiguous house number and an empty result
+- **east-suffolk**: keep the old "standard bin" wording alongside brackets
+- **canterbury**: keep a clear message for a 403 and add offline tests
+- **gedling**: report a portal page without its action URL as changed
+- **gedling**: read the council's new bin collections portal, without a browser
+- **EastSuffolkCouncil**: strip bin descriptors in brackets
+- switch canterbury to the council's new bin dates endpoint
+- **east-herts**: follow the council's new collection-days lookup
+- separate Lancaster red and yellow recycling streams
+- upgrade Charnwood legacy URLs to HTTPS
+- validate Charnwood legacy property URLs
+- restore Charnwood legacy property URL support
+- improve newcastle address matching against recollect
+- send a desktop user agent for torfaen and add its lad code
+- add missing lad code for east hampshire
+
 ## 0.173.5 (2026-10-17)
 
 ### Fix
