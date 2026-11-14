@@ -9,6 +9,7 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 This module provides bin collection data for Cheshire East Council.
 """
 
+
 class CouncilClass(AbstractGetBinDataClass):
     """
     A class to fetch and parse bin collection data for Cheshire East Council.
@@ -18,11 +19,13 @@ class CouncilClass(AbstractGetBinDataClass):
 
         try:
             user_uprn = kwargs.get("uprn")
-            check_uprn(user_uprn)
-            url = f"https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn={user_uprn}"
-            if not user_uprn:
+            if user_uprn:
+                url = f"https://online.cheshireeast.gov.uk/MyCollectionDay/SearchByAjax/GetBartecJobList?uprn={user_uprn}"
+            elif kwargs.get("url"):
                 # This is a fallback for if the user stored a URL in old system. Ensures backwards compatibility.
                 url = kwargs.get("url")
+            else:
+                check_uprn(user_uprn)  # raises a clear "Invalid UPRN" error
         except Exception as e:
             raise ValueError(f"Error getting identifier: {str(e)}")
 
