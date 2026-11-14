@@ -48,7 +48,7 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         params = {
-            "id": "683d9ff0e299d",
+            "id": "6accfd6441228",
             "repeat_against": "",
             "noRetry": "true",
             "getOnlyTokens": "undefined",
@@ -73,6 +73,9 @@ class CouncilClass(AbstractGetBinDataClass):
         r.raise_for_status()
 
         data = r.json()
+        # A retired lookup id still answers 200, with only an error message.
+        if "error" in data:
+            raise ValueError(f"East Herts Council lookup failed: {data['error']}")
         rows_data = data["integration"]["transformed"]["rows_data"]["0"]
         if not isinstance(rows_data, dict):
             raise ValueError("Invalid data returned from API")
@@ -86,7 +89,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 BinType = key.replace("NextDate", "ServiceName")
                 for key2, value2 in rows_data.items():
                     if key2 == BinType:
-                        BinType = value2
+                        BinType = value2.strip()
                 next_collection = datetime.strptime(
                     remove_ordinal_indicator_from_date_string(value), "%A %d %B"
                 ).replace(year=datetime.now().year)
@@ -99,4 +102,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 }
                 bindata["bins"].append(dict_data)
 
+        bindata["bins"].sort(
+            key=lambda bin_: datetime.strptime(bin_["collectionDate"], date_format)
+        )
         return bindata

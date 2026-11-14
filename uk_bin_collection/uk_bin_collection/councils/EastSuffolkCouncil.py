@@ -8,7 +8,24 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+import re
 from datetime import datetime
+
+
+def clean_bin_type(raw: str) -> str:
+    """Tidy a bin name from the council's table.
+
+    The council has changed its wording more than once, so both forms are
+    handled: a trailing " - standard bin" and a bracketed descriptor such as
+    "(green bin)", which can also sit mid-name.
+    """
+    # Strip emojis by keeping only ASCII
+    bin_type = raw.encode("ascii", "ignore").decode("ascii").strip()
+    idx = bin_type.lower().find(" - standard bin")
+    if idx != -1:
+        bin_type = bin_type[:idx]
+    bin_type = re.sub(r"\([^)]*\)", "", bin_type)
+    return " ".join(bin_type.split()).title()
 
 
 # import the wonderful Beautiful Soup and the URL grabber
@@ -96,18 +113,7 @@ class CouncilClass(AbstractGetBinDataClass):
                     collection_date = cols[1].text.strip()
                     bin_type = cols[2].text.strip()
 
-                    # Strip emojis by keeping only ASCII
-                    bin_type = (
-                        bin_type.encode("ascii", "ignore").decode("ascii").strip()
-                    )
-
-                    # Strip " - standard bin"
-                    lower_bin_type = bin_type.lower()
-                    if " - standard bin" in lower_bin_type:
-                        idx = lower_bin_type.find(" - standard bin")
-                        bin_type = bin_type[:idx]
-
-                    bin_type = bin_type.strip().title()
+                    bin_type = clean_bin_type(bin_type)
 
                     collection_date = datetime.strptime(
                         collection_date, "%d/%m/%Y"

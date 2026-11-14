@@ -45,7 +45,12 @@ class CouncilClass(AbstractGetBinDataClass):
             web_driver = kwargs.get("web_driver")
             headless = kwargs.get("headless")
 
-            driver = create_webdriver(web_driver, headless, None, __name__)
+            # iportal.itouchvision.com returns 403 to the HeadlessChrome UA
+            user_agent = (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36"
+            )
+            driver = create_webdriver(web_driver, headless, user_agent, __name__)
             driver.get(ITV_URL)
             time.sleep(8)
 

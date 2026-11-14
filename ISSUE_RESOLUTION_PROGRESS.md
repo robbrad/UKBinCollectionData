@@ -826,3 +826,91 @@ stone dead for several hours in the same pass and had recovered by the afternoon
   review and PRs are opened under the maintainer's own account, so they can never
   self-approve; every release this pass needed either the GitHub UI or an admin
   override.
+
+
+---
+
+## November release pass (2026-11-14)
+
+Prepared from the cloud sandbox (no council-site access; live evidence came from PR CI).
+Nothing was merged or released without the maintainer's say-so; status at the time of
+writing is in the PR list below.
+
+### What was assembled
+
+| PR | Branch | Contents | Release? |
+|---|---|---|---|
+| #2341 | `claude/fix-time-bomb-tests` | Orkney test fixtures relative to today; Broxbourne tests stub `check_postcode` | no (`test:`) |
+| #2342 | `claude/november-deps` | 10 dependabot bumps (HA 2026.11.1, Pillow 13, soupsieve 4, cryptography 50, ...); #2297 dropped as superseded by #2339 | no (`chore:`) |
+| #2343 | `claude/november-release` | 11 contributor PRs cherry-picked with authorship kept, plus my follow-ups (below) | yes |
+| #2344 | `claude/fix-legacy-url-regression` | `check_uprn` now raises (0.173.5), which broke the legacy stored-URL fallback in 8 scrapers | yes |
+| #2345 | `claude/lazy-holidays-import` | `holidays` imported inside `is_holiday()` instead of at import time of `common.py` | yes |
+
+#2343 must be merged with a **merge commit or rebase**, not a squash, or all contributor
+authorship is lost (see playbook §6).
+
+### Real defects found while reviewing (not reported by anyone)
+
+- **Nightly unit job red since 12 Nov**: my own Orkney test had hardcoded future dates
+  against code that filters past dates. A time bomb. Broxbourne tests hit api.postcodes.io.
+- **`check_uprn` regression (#2294)**: 0.173.5 made it raise. Eight scrapers called it
+  *before* falling back to a legacy `url` kwarg, so every stored-URL config broke.
+- **`Exception(...)` built but never raised (Nuneaton, #2334)**: five sites. An unknown
+  street returned an empty result, a failed street page crashed with `UnboundLocalError`.
+  This is the "blank JSON report" in the issue.
+- **Address matching that guesses**: Wolverhampton (number matched anywhere in the label,
+  first address as fallback), Sevenoaks (#2305: `"40" in option.text` picks "140 ..." or
+  nothing), Gedling (silent first match on ties), Newcastle (`parcels[0]` fallback). All
+  now start-anchored, whole-word, and raise on no match or ambiguity. The same flaw is in
+  every one of the six postcode-to-UPRN PRs (#2316-#2321), which is why they are not in.
+- **Wolverhampton page layout**: outer `col-*` wrapper repeated its first service because
+  every nested column was read; now only innermost columns.
+
+### Issue triage (no external comments posted yet; all held for release time)
+
+| Issue | Finding |
+|---|---|
+| #2294 | Fixed by #2344 (`Targets`, unverifiable offline) |
+| #2335 | Fixed by #2345 plus environment advice |
+| #2334 | Wolverhampton (#2310 + follow-up) and Nuneaton raise fix (in #2343) |
+| #2305 | Sevenoaks matching fixed in #2343 |
+| #2292 | **Not a bug.** HA's `get_color()` returns `"black"` for any bin type without an `icon_color_mapping` entry. Reply with a mapping example for `Green Recycling Bin` |
+| #2327 | Chelmsford: #2332 deferred (see below) |
+| #2322, #2249 | East Lindsey / Stockton: Turnstile, not solvable on the HA remote grid |
+| #2293 | Sevenoaks log is from another integration (waste_collection_schedule) |
+| #2303 | South Glos: council-side API error |
+| #2298 | Wigan/Brent 502s: council-side, check nightly |
+| #2240, #2238, #2228 | Reporter-confirmed or transient: close |
+| #1881 | NE Derbyshire rewritten in 0.173.0: verify then close |
+| #2253 | Burnley: needs live API data from someone with an address |
+| #2329 | Carmarthenshire: probably the expected unavailable blue-bag sensor |
+
+### Contributor PRs not taken, with reasons (draft feedback not yet posted)
+
+#2316-#2321 (shared unsafe `match_address`; HA form still requires UPRN; residential test
+data), #2309 East Cambridgeshire (28-day window down from 42, first-address fallback),
+#2311 South Lanarkshire (breaks existing tests), #2312 Hyndburn (unverifiable API),
+#2332 Chelmsford (edits generated `wiki/Councils.md`, RGB PDF parse with no fixture,
+substring matching), #2252 Swansea (already fixed on master).
+
+### Decisions for the maintainer
+
+- **Gedling test data** in `input.json` (`NG5 6NQ` / `11`) looks residential. Needs a
+  council office or library instead.
+- **Lancaster** splits "Recycling" into red and yellow: a breaking sensor rename for HA
+  users. Release-note line. Pre-existing and unfixed: its address loop keeps the *last*
+  match, not the first.
+- Whether to rework #2316-#2321 around one tested helper.
+- 14 councils still carry a stale `web_driver` in `input.json`; deliberately untouched.
+- Still failing and needing a local look: St Helens (`[] should be non-empty`), Leicester
+  and North Ayrshire (`JSONDecodeError`), Torbay (timeout).
+- Canterbury moved to a new API that rejects unrecognised callers; unverifiable from CI.
+
+### Lessons (also in playbook §12)
+
+- A test that passes today against fixtures with a hardcoded future date will fail the
+  night the clock passes it. Use dates relative to today.
+- Mutation-test new tests: revert the fix and watch them fail. One Wolverhampton test
+  passed with the guard removed because deduplication masked it.
+- Dependabot bumps of HA's dev dependency pull a whole transitive set; apply the HA bump
+  first and drop the PRs it supersedes.

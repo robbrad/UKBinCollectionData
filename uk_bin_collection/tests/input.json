@@ -829,6 +829,7 @@
         "wiki_note": "You will need to use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find the UPRN."
     },
     "EastHampshireDC": {
+        "LAD24CD": "E07000085",
         "house_number": "15 College Street",
         "postcode": "GU31 4AG",
         "skip_get_url": true,
@@ -1076,11 +1077,12 @@
     },
     "GedlingBoroughCouncil": {
         "LAD24CD": "E07000173",
-        "house_number": "Friday G4, Friday J",
+        "house_number": "Civic Centre",
+        "postcode": "NG5 6LU",
         "skip_get_url": true,
-        "url": "https://www.gedling.gov.uk/",
+        "url": "https://waste.digital.gedling.gov.uk/w/webpage/bin-collections",
         "wiki_name": "Gedling",
-        "wiki_note": "Use [this site](https://www.gbcbincalendars.co.uk/) to find the collections for your address. Use the `-n` parameter to add them in a comma-separated list inside quotes, such as: 'Friday G4, Friday J'."
+        "wiki_note": "Pass the house number or name in the `house_number` parameter, wrapped in double quotes, and the postcode in the `postcode` parameter. The address is matched by its start, so a house number and street (\"11 Arnot Hill Park\") also works."
     },
     "GlasgowCityCouncil": {
         "LAD24CD": "S12000049",
@@ -2728,6 +2730,7 @@
         "wiki_note": "Provide your UPRN. Use [FindMyAddress](https://www.findmyaddress.co.uk/search) to find it."
     },
     "TorfaenCouncil": {
+        "LAD24CD": "W06000020",
         "house_number": "2 Rowan Crescent",
         "postcode": "NP4 5AA",
         "skip_get_url": true,
@@ -3049,7 +3052,7 @@
     },
     "WolverhamptonCityCouncil": {
         "LAD24CD": "E08000031",
-        "house_number": "32",
+        "house_number": "20",
         "postcode": "WV3 9NZ",
         "skip_get_url": true,
         "uprn": "100071205205",

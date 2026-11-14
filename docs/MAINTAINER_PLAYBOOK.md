@@ -467,3 +467,39 @@ align it. Don't try to out-clever it per council.
 - [ ] input.json matches every scraper whose inputs changed (§5), and parity is clean
 - [ ] No `[diagnostic]` prints left on master: `git grep -n "\[diagnostic\]"`
 - [ ] Progress notes appended to `ISSUE_RESOLUTION_PROGRESS.md`
+- [ ] `make unit-tests` is green on master, and the nightly unit job isn't red (§12)
+
+---
+
+## 12. Lessons from November (2026-11)
+
+- **Time-bomb tests.** A fixture with a hard-coded future date passes until the clock
+  passes it, then the nightly goes red with no code change. Build fixtures from
+  `date.today()`. To check a suspect test, freeze the clock forward with freezegun, but
+  import pandas/numpy/bs4/requests *before* `freeze_time` or the process segfaults.
+- **Network in unit tests.** `check_postcode` calls api.postcodes.io. Tests of a council
+  that calls it must patch it; otherwise they fail in any sandbox and flake in CI.
+- **Strict validators break fallbacks.** When a helper like `check_uprn` starts raising,
+  grep for every caller that validates *before* reading an alternative input (`url`).
+  Eight scrapers regressed this way in 0.173.5. Test the legacy path explicitly.
+- **Scan for silent empties.** `Exception("...")` without `raise` is easy to write and
+  invisible in review. An AST pass for `Expr(Call(Name('Exception')))` finds them; so do
+  loops that `continue` past every failure and return `{"bins": []}`.
+- **Never guess an address.** Required properties for any house-number match: anchored at
+  the start of the label, whole-word (`(?<!\w)...(?!\w)`), exactly one match, otherwise
+  raise and list the candidates. No `paon in label`, no "first address" fallback.
+- **Mutation-test the tests.** Revert the fix and confirm the new test fails. A test that
+  still passes with the fix removed is not testing it.
+- **`Fixes` vs `Targets`.** `Fixes #N` closes the issue on merge. When the fix can't be
+  verified (sandbox, CI-blocked council), write `Targets #N` and close after confirmation.
+  One keyword per issue number.
+- **Consolidated branches need a merge commit or rebase**, not a squash, to keep each
+  contributor as author (see §6). Say so at the top of the PR.
+- **Dependabot and Home Assistant.** The HA dev dependency pins a large transitive set, so
+  apply the HA bump first; Pillow and others it supersedes then conflict and should be
+  dropped. soupsieve is a real runtime dependency (via bs4), so its bump deserves the full
+  live suite, not just unit tests.
+- **Check commit messages locally.** Run commitlint from npm in a scratch directory with
+  the repo's rules before pushing; it's faster than finding out from `lint.yml`.
+- **When a PR changes no council file, CI runs the whole ~350-council live suite**, and the
+  step is `continue-on-error`, so "success" means nothing. Read the pytest summary.
