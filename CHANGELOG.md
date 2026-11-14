@@ -1,4 +1,10 @@
 =======
+## 0.173.7 (2026-11-14)
+
+### Fix
+
+- restore the legacy stored-URL fallback that check_uprn broke in 8 councils
+
 ## 0.173.6 (2026-11-14)
 
 ### Fix
