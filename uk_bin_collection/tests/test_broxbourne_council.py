@@ -33,9 +33,12 @@ def _driver_returning(options):
 
 def _run_with(options):
     driver, select_element, opts = _driver_returning(options)
-    with patch(f"{MODULE_PATH}.create_webdriver", return_value=driver), patch(
-        f"{MODULE_PATH}.WebDriverWait"
-    ) as wait, patch(f"{MODULE_PATH}.Select") as select_cls:
+    # check_postcode calls api.postcodes.io; stub it so these stay offline.
+    with patch(f"{MODULE_PATH}.check_postcode", return_value=True), patch(
+        f"{MODULE_PATH}.create_webdriver", return_value=driver
+    ), patch(f"{MODULE_PATH}.WebDriverWait") as wait, patch(
+        f"{MODULE_PATH}.Select"
+    ) as select_cls:
         wait.return_value.until.return_value = select_element
         select_cls.return_value.options = opts
         return BroxbourneCouncil.CouncilClass().parse_data(
