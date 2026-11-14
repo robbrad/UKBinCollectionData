@@ -499,7 +499,14 @@ align it. Don't try to out-clever it per council.
   apply the HA bump first; Pillow and others it supersedes then conflict and should be
   dropped. soupsieve is a real runtime dependency (via bs4), so its bump deserves the full
   live suite, not just unit tests.
-- **Check commit messages locally.** Run commitlint from npm in a scratch directory with
-  the repo's rules before pushing; it's faster than finding out from `lint.yml`.
+- **Check commit messages locally, with the strict config too.** Run commitlint from npm in
+  a scratch directory before pushing. `lint.yml` disables `body-max-line-length`, but the
+  PR-only `validate-release-ready.yml` ("Validate Release Prerequisites") does not, so a
+  contributor commit with a body line over 100 characters fails it. Lint with both configs;
+  fix by re-wording (the author is kept).
 - **When a PR changes no council file, CI runs the whole ~350-council live suite**, and the
   step is `continue-on-error`, so "success" means nothing. Read the pytest summary.
+- **Reading CI from the cloud sandbox is limited.** `get_job_logs` returns only the tail of
+  a log and its blob URL is blocked by the proxy, so per-council results of a live
+  integration run can't be read there. Report check conclusions honestly (integration is
+  `continue-on-error`, so green means little) and prefer a local run for evidence.
