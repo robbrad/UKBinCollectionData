@@ -17,7 +17,9 @@ class CouncilClass(AbstractGetBinDataClass):
     # Endpoint used by the bins widget on
     # https://www.canterbury.gov.uk/bins-and-waste/find-your-bin-collection-dates
     # (the old /Beta/get-bin-dates endpoint now returns 403 for every request).
-    API_URL = "https://n6ljrw455m.execute-api.eu-west-2.amazonaws.com/prod/get-bin-dates"
+    API_URL = (
+        "https://n6ljrw455m.execute-api.eu-west-2.amazonaws.com/prod/get-bin-dates"
+    )
 
     BIN_TYPES = {
         "blackBinDay": "General",
@@ -47,6 +49,12 @@ class CouncilClass(AbstractGetBinDataClass):
         }
 
         response = requests.post(self.API_URL, json=data, headers=headers, timeout=30)
+        if response.status_code == 403:
+            raise ConnectionError(
+                "Canterbury's bin collection API returned 403 Forbidden. It "
+                "rejects callers it doesn't recognise, so this is a block on "
+                "your network or an outage on the council's side, not a bad UPRN."
+            )
         response.raise_for_status()
 
         dates = response.json().get("dates")
