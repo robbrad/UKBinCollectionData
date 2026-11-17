@@ -961,12 +961,11 @@
     },
     "EppingForestDistrictCouncil": {
         "LAD24CD": "E07000072",
-        "postcode": "IG9 6EP",
+        "uprn": "100091624148",
         "skip_get_url": true,
-        "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
-        "web_driver": "http://selenium:4444",
+        "url": "https://eppingforestdc-self.achieveservice.com/en/service/Check_your_collection_day",
         "wiki_name": "Epping Forest",
-        "wiki_note": "Add your postcode."
+        "wiki_note": "Add your property UPRN. Uses the current council AchieveService lookup; Selenium is not required."
     },
     "EpsomandEwellBoroughCouncil": {
         "LAD24CD": "E07000208",
