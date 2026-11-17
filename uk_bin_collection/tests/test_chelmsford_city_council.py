@@ -63,7 +63,12 @@ def _marker(kind, number, cx, cy):
     return shape, _word(str(number), cx - 4, cy - 4, cx + 4, cy + 4)
 
 
-def _fake_pdf(headers, markers):
+def _bare_marker(kind, cx, cy):
+    """A marker-coloured shape with no day number printed inside it."""
+    return _marker(kind, 0, cx, cy)[0]
+
+
+def _fake_pdf(headers, markers, bare=()):
     rects, curves, words = [], [], []
     for month, year, x0, top in headers:
         rect, w = _header(month, year, x0, top)
@@ -73,6 +78,8 @@ def _fake_pdf(headers, markers):
         shape, w = _marker(kind, number, cx, cy)
         (rects if kind == "brown" else curves).append(shape)
         words.append(w)
+    for kind, cx, cy in bare:
+        (rects if kind == "brown" else curves).append(_bare_marker(kind, cx, cy))
     page = MagicMock(rects=rects, curves=curves)
     page.extract_words.return_value = words
     pdf = MagicMock(pages=[page])
@@ -116,6 +123,28 @@ def test_no_month_headers_raises():
     with _fake_pdf([], [("black", 2, 170, 100)]):
         with pytest.raises(ValueError, match="No month grids"):
             _parse_calendar_pdf(b"%PDF")
+
+
+def test_unreadable_collection_marker_raises_instead_of_partial_schedule():
+    # One good marker plus one inside the same grid with no readable day number.
+    with _fake_pdf(HEADERS[:1], [("black", 2, 170, 100)], bare=[("black", 170, 120)]):
+        with pytest.raises(ValueError, match="no readable day number"):
+            _parse_calendar_pdf(b"%PDF")
+
+
+def test_marker_with_invalid_day_raises():
+    with _fake_pdf([("February", 2027, 100, 65)], [("black", 30, 170, 100)]):
+        with pytest.raises(ValueError, match="invalid day number '30'"):
+            _parse_calendar_pdf(b"%PDF")
+
+
+def test_legend_marker_outside_month_grids_is_ignored():
+    # Same colour and size as a collection marker, no number, but in the gutter
+    # beside the grid rather than under a month header.
+    with _fake_pdf(HEADERS[:1], [("black", 2, 170, 100)], bare=[("black", 250, 120)]):
+        result = _parse_calendar_pdf(b"%PDF")
+
+    assert result == [(datetime(2026, 12, 2), BLACK_BIN_WEEK)]
 
 
 def test_no_markers_raises():

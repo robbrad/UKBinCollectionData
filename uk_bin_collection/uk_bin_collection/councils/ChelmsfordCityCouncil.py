@@ -110,12 +110,19 @@ def _parse_calendar_pdf(pdf_bytes):
             ),
             None,
         )
+        where = f"{MONTHS[grid['month'] - 1].title()} {grid['year']}"
         if number is None:
-            continue
+            raise ValueError(
+                f"Collection marker in {where} at ({cx:.0f}, {cy:.0f}) has no "
+                "readable day number in PDF calendar"
+            )
         try:
             results.append((datetime(grid["year"], grid["month"], int(number)), bins))
         except ValueError:
-            continue
+            raise ValueError(
+                f"Collection marker in {where} has invalid day number "
+                f"'{number}' in PDF calendar"
+            ) from None
 
     if not results:
         raise ValueError("No collection markers found in PDF calendar")
