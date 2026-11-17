@@ -66,11 +66,14 @@ def test_properties_without_all_services_are_supported():
     }
 
 
-def test_expired_garden_service_is_omitted_without_losing_other_collections():
+@pytest.mark.parametrize("collection_date", ["2026-11-10", "2026-11-24"])
+def test_expired_garden_service_is_omitted_without_losing_other_collections(
+    collection_date,
+):
     assert council.parse_response(
         payload(
             GeneralWasteServiceNextCollection="2026-11-17T00:00:00",
-            GardenWasteServiceNextCollection="2026-11-24T00:00:00",
+            GardenWasteServiceNextCollection=f"{collection_date}T00:00:00",
             GardenWasteServiceTo="2026-03-31T23:59:59",
         )
     ) == {"bins": [{"type": "Black Bin", "collectionDate": "17/11/2026"}]}

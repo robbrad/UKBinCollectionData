@@ -70,12 +70,6 @@ def parse_response(payload: dict) -> dict:
         ("FoodWaste", "Food Waste Bin"),
         ("GardenWaste", "Green-lidded Bin"),
     ):
-        value = row.get(f"{service}ServiceNextCollection")
-        if not value or value.startswith("0001-"):
-            continue
-        collection = datetime.fromisoformat(value).date()
-        if collection < today:
-            raise ValueError(f"Epping Forest returned a past {label} collection date")
         if service == "GardenWaste":
             end = row.get("GardenWasteServiceTo")
             if (
@@ -84,6 +78,12 @@ def parse_response(payload: dict) -> dict:
                 and datetime.fromisoformat(end).date() < today
             ):
                 continue
+        value = row.get(f"{service}ServiceNextCollection")
+        if not value or value.startswith("0001-"):
+            continue
+        collection = datetime.fromisoformat(value).date()
+        if collection < today:
+            raise ValueError(f"Epping Forest returned a past {label} collection date")
         bins.append({"type": label, "collectionDate": collection.strftime(date_format)})
     if not bins:
         raise ValueError("Epping Forest returned no collection dates for this UPRN")
