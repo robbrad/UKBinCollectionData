@@ -21,8 +21,18 @@ BLACK_BIN_WEEK = ["Food Waste", "Black Bin", "Green Box", "Card Sack"]
 BROWN_BIN_WEEK = ["Food Waste", "Brown Bin", "Plastics & Cartons", "Paper Sack"]
 
 MONTHS = [
-    "january", "february", "march", "april", "may", "june",
-    "july", "august", "september", "october", "november", "december",
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
 ]
 
 
@@ -50,13 +60,23 @@ def _parse_calendar_pdf(pdf_bytes):
         inside = [
             w["text"]
             for w in words
-            if rect["x0"] - 1 <= w["x0"] and w["x1"] <= rect["x1"] + 1
-            and rect["top"] - 1 <= w["top"] and w["bottom"] <= rect["bottom"] + 1
+            if rect["x0"] - 1 <= w["x0"]
+            and w["x1"] <= rect["x1"] + 1
+            and rect["top"] - 1 <= w["top"]
+            and w["bottom"] <= rect["bottom"] + 1
         ]
-        month = next((MONTHS.index(t.lower()) + 1 for t in inside if t.lower() in MONTHS), None)
+        month = next(
+            (MONTHS.index(t.lower()) + 1 for t in inside if t.lower() in MONTHS), None
+        )
         year = next((int(t) for t in inside if re.fullmatch(r"20\d{2}", t)), None)
         if month and year:
-            headers.append({**{k: rect[k] for k in ("x0", "x1", "bottom")}, "month": month, "year": year})
+            headers.append(
+                {
+                    **{k: rect[k] for k in ("x0", "x1", "bottom")},
+                    "month": month,
+                    "year": year,
+                }
+            )
     if not headers:
         raise ValueError("No month grids found in PDF calendar")
 
@@ -76,9 +96,7 @@ def _parse_calendar_pdf(pdf_bytes):
     for shape, bins in markers:
         cx = (shape["x0"] + shape["x1"]) / 2
         cy = (shape["top"] + shape["bottom"]) / 2
-        grids = [
-            h for h in headers if h["x0"] <= cx <= h["x1"] and h["bottom"] <= cy
-        ]
+        grids = [h for h in headers if h["x0"] <= cx <= h["x1"] and h["bottom"] <= cy]
         if not grids:
             continue
         grid = max(grids, key=lambda h: h["bottom"])
@@ -104,6 +122,89 @@ def _parse_calendar_pdf(pdf_bytes):
     return sorted(results, key=lambda r: r[0])
 
 
+def _clean(text):
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _extract_candidates(soup):
+    """Return [{"address", "calendar_url"}] for each property in the search results.
+
+    Results normally come as table rows (`<td>address</td><td>covered by the
+    Tuesday B collection round</td>`); if there is no table, fall back to
+    <details> cards whose summary is the address and which link to the calendar.
+    `calendar_url` is None when the council can't show a round for the property.
+    """
+    base = "https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/"
+    candidates = []
+    table = soup.find("table", class_="directories-table__table") or soup.find("table")
+    if table is not None:
+        for row in table.find_all("tr"):
+            cells = row.find_all("td")
+            if not cells:
+                continue
+            round_match = re.search(
+                r"(Monday|Tuesday|Wednesday|Thursday|Friday)\s+([AB])\b",
+                " ".join(c.get_text(" ") for c in cells[1:]),
+            )
+            calendar_url = (
+                f"{base}{round_match.group(1).lower()}-{round_match.group(2).lower()}"
+                f"-collection-calendar/"
+                if round_match
+                else None
+            )
+            candidates.append(
+                {
+                    "address": _clean(cells[0].get_text(" ")),
+                    "calendar_url": calendar_url,
+                }
+            )
+    else:
+        for details in soup.find_all("details"):
+            summary = details.find("summary")
+            link = details.find("a", href=lambda h: h and "collection-calendar" in h)
+            candidates.append(
+                {
+                    "address": _clean((summary or details).get_text(" ")),
+                    "calendar_url": (
+                        requests.compat.urljoin(base, link["href"]) if link else None
+                    ),
+                }
+            )
+    return candidates
+
+
+def _match_address(candidates, paon):
+    """Return the one candidate whose address starts with `paon` as a whole word.
+
+    "1" matches "1 High St" but not "11 High St" or "1A High St"; "1 High St"
+    matches "1 High St, Chelmsford, CM1 1AA". Raises ValueError, listing the
+    candidates, when no address or more than one address matches.
+    """
+    check_paon(paon)
+    wanted = _clean(paon)
+    pattern = re.compile(rf"{re.escape(wanted)}(?!\w)", re.IGNORECASE)
+    seen, unique = set(), []
+    for c in candidates:
+        if c["address"].lower() not in seen:
+            seen.add(c["address"].lower())
+            unique.append(c)
+    matches = [c for c in unique if pattern.match(c["address"])]
+    if len(matches) == 1:
+        return matches[0]
+    listing = (
+        "\n".join(f"  - {c['address']}" for c in (matches or unique)) or "  (none)"
+    )
+    if matches:
+        raise ValueError(
+            f"House number '{paon}' matches {len(matches)} addresses, please be more "
+            f"specific (e.g. include the street name):\n{listing}"
+        )
+    raise ValueError(
+        f"No address starting with '{paon}' was found for this postcode. "
+        f"Addresses found:\n{listing}"
+    )
+
+
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
         """
@@ -125,16 +226,15 @@ class CouncilClass(AbstractGetBinDataClass):
 
         Raises:
             ValueError: If no collection round is found for `paon`, or the .ics calendar
-                link for the identified round can't be located.
+                link for the identified round can't be located, or `paon` doesn't match exactly
+                one address (start of the address, whole word) in the search results.
         """
         try:
             data = {"bins": []}
             postcode = kwargs.get("postcode")
             user_paon = kwargs.get("paon")
 
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-            }
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
             session = requests.Session()
             base_url = "https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/"
 
@@ -162,50 +262,14 @@ class CouncilClass(AbstractGetBinDataClass):
             r.raise_for_status()
             soup = BeautifulSoup(r.text, "html.parser")
 
-            # Step 3: walk the results table to find the row matching `paon`.
-            # The row format is `<tr><td>full address</td><td><p>This property is
-            # covered by the Tuesday B collection round...</p></td></tr>`.
-            table = soup.find("table", class_="directories-table__table")
-            if table is None:
-                # Fallback: any table on the page
-                table = soup.find("table")
-
-            calendar_url = None
-            if table is not None:
-                for row in table.find_all("tr"):
-                    if user_paon in row.get_text():
-                        row_text = row.get_text()
-                        round_match = re.search(
-                            r"(Monday|Tuesday|Wednesday|Thursday|Friday)\s+([AB])",
-                            row_text,
-                        )
-                        if round_match:
-                            day = round_match.group(1).lower()
-                            letter = round_match.group(2).lower()
-                            calendar_url = (
-                                f"https://www.chelmsford.gov.uk/bins-and-recycling/"
-                                f"check-your-collection-day/{day}-{letter}-collection-calendar/"
-                            )
-                            break
-
-            if calendar_url is None:
-                # Fallback: the search page also exposes per-property cards as
-                # <details> blocks containing a paragraph with the round name and
-                # a calendar link. Use the first card whose summary contains the
-                # paon.
-                for details in soup.find_all("details"):
-                    if user_paon in details.get_text():
-                        a = details.find(
-                            "a",
-                            href=lambda h: h and "collection-calendar" in h,
-                        )
-                        if a:
-                            calendar_url = a["href"]
-                            break
-
+            # Step 3: pick the single result whose address starts with `paon`.
+            candidates = _extract_candidates(soup)
+            match = _match_address(candidates, user_paon)
+            calendar_url = match["calendar_url"]
             if calendar_url is None:
                 raise ValueError(
-                    f"Could not find collection round for address: {user_paon}"
+                    f"Found address '{match['address']}' but no collection round "
+                    f"for it on the council's page"
                 )
 
             # Step 4: fetch the round's calendar page. The council used to publish
@@ -258,9 +322,7 @@ class CouncilClass(AbstractGetBinDataClass):
                         data["bins"].append(
                             {
                                 "type": bin_type,
-                                "collectionDate": collection_date.strftime(
-                                    date_format
-                                ),
+                                "collectionDate": collection_date.strftime(date_format),
                             }
                         )
         except Exception as e:
