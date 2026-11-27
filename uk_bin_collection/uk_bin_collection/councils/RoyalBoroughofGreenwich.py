@@ -140,9 +140,9 @@ class CouncilClass(AbstractGetBinDataClass):
         elif week == 1:
             blackstartDate = datetime(2026, 1, 5)
 
-        green_dates = get_dates_every_x_days(greenstartDate, 7, 100)
-        blue_dates = get_dates_every_x_days(bluestartDate, 7, 100)
-        black_dates = get_dates_every_x_days(blackstartDate, 14, 50)
+        green_dates = get_dates_every_x_days_ahead(greenstartDate, 7)
+        blue_dates = get_dates_every_x_days_ahead(bluestartDate, 7)
+        black_dates = get_dates_every_x_days_ahead(blackstartDate, 14)
 
         self._add_bin_dates(
             green_dates, "Green Bin", bindata, holiday_dict, offset_days

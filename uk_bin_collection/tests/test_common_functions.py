@@ -196,6 +196,21 @@ def test_get_dates_every_x_days_bad():
     assert result[6] != "27/03/2022"
 
 
+@pytest.mark.parametrize("anchor_years_ago", [0, 1, 3])
+@pytest.mark.parametrize("step", [7, 14])
+def test_get_dates_every_x_days_ahead_never_runs_out(anchor_years_ago, step):
+    anchor = datetime.now() - timedelta(days=365 * anchor_years_ago)
+    result = get_dates_every_x_days_ahead(anchor, step, 400)
+    last = datetime.strptime(result[-1], date_format)
+    assert last >= datetime.now() + timedelta(days=400 - step)
+    assert result[0] == anchor.strftime(date_format)
+
+
+def test_get_dates_every_x_days_ahead_future_anchor():
+    anchor = datetime.now() + timedelta(days=1000)
+    assert len(get_dates_every_x_days_ahead(anchor, 14, 400)) == 1
+
+
 def test_remove_ordinal_indicator_from_date_string():
     test_string = "June 12th 2022"
     result = remove_ordinal_indicator_from_date_string(test_string)
