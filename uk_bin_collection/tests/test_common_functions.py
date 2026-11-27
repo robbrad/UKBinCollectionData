@@ -201,8 +201,8 @@ def test_get_dates_every_x_days_bad():
 def test_get_dates_every_x_days_ahead_never_runs_out(anchor_years_ago, step):
     anchor = datetime.now() - timedelta(days=365 * anchor_years_ago)
     result = get_dates_every_x_days_ahead(anchor, step, 400)
-    last = datetime.strptime(result[-1], date_format)
-    assert last >= datetime.now() + timedelta(days=400 - step)
+    last = datetime.strptime(result[-1], date_format).date()
+    assert last >= (datetime.now() + timedelta(days=400)).date()
     assert result[0] == anchor.strftime(date_format)
 
 
