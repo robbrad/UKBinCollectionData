@@ -223,6 +223,25 @@ def get_dates_every_x_days(start: datetime, step: int, amount: int = 8) -> list:
     )
 
 
+def get_dates_every_x_days_ahead(
+    start: datetime, step: int, horizon_days: int = 400
+) -> list:
+    """
+    Like `get_dates_every_x_days`, but sized so the dates reach `horizon_days` past today
+    instead of a fixed count. Use this when `start` is a fixed anchor date, otherwise the
+    schedule silently runs out once the anchor ages.
+        :param start: Anchor date to step forward from
+        :param step: X amount of days
+        :param horizon_days: How far past today the last date must reach
+        :return: List of dates every X days from the anchor, covering the horizon
+        :rtype: list
+    """
+    horizon = datetime.now() + timedelta(days=horizon_days)
+    return get_dates_every_x_days(
+        start, step, max(1, (horizon - start).days // step + 1)
+    )
+
+
 def get_next_occurrence_from_day_month(date: datetime) -> datetime:
     current_date = datetime.now()
     # Get the current day and month as integers

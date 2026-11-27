@@ -166,7 +166,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
         bindata = {"bins": []}
 
-        for base_date in get_dates_every_x_days(greengrey_start, 14, 28):
+        for base_date in get_dates_every_x_days_ahead(greengrey_start, 14):
             collection_date = (
                 datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=offset_days)
             ).strftime(date_format)
@@ -174,7 +174,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"type": "Green/Grey Bin", "collectionDate": collection_date}
             )
 
-        for base_date in get_dates_every_x_days(bluebrown_start, 14, 28):
+        for base_date in get_dates_every_x_days_ahead(bluebrown_start, 14):
             collection_date = (
                 datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=offset_days)
             ).strftime(date_format)
@@ -185,7 +185,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"type": "Brown Bin", "collectionDate": collection_date}
             )
 
-        for base_date in get_dates_every_x_days(greengrey_start, 7, 56):
+        for base_date in get_dates_every_x_days_ahead(greengrey_start, 7):
             collection_date = (
                 datetime.strptime(base_date, "%d/%m/%Y") + timedelta(days=offset_days)
             ).strftime(date_format)
