@@ -90,9 +90,8 @@
         "house_number": "1",
         "postcode": "NG16 6RH",
         "url": "https://www.ashfield.gov.uk",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Ashfield",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes."
     },
     "AshfordBoroughCouncil": {
         "LAD24CD": "E07000105",
@@ -287,7 +286,6 @@
         "postcode": "PE20 1AY",
         "skip_get_url": true,
         "url": "https://www.boston.gov.uk/findwastecollections",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Boston",
         "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
@@ -522,10 +520,9 @@
         "LAD24CD": "E07000070",
         "house_number": "1 Celeborn Street, South Woodham Ferrers, Chelmsford, CM3 7AE",
         "postcode": "CM3 7AE",
-        "url": "https://www.chelmsford.gov.uk/myhome/",
-        "web_driver": "http://selenium:4444",
+        "url": "https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/",
         "wiki_name": "Chelmsford",
-        "wiki_note": "Follow the instructions [here](https://www.chelmsford.gov.uk/myhome/) until you get the page listing your address, then copy the entire address text and use that in the house number field."
+        "wiki_note": "Enter your postcode and the start of your address as it appears on the [council's collection day search](https://www.chelmsford.gov.uk/bins-and-recycling/check-your-collection-day/), e.g. `1` or `1 Celeborn Street`. The house number must match the beginning of exactly one address in the results (so `1` will not match `11` or `1A`); if it matches none or several, the error lists the addresses found."
     },
     "CheltenhamBoroughCouncil": {
         "LAD24CD": "E07000078",
@@ -574,9 +571,8 @@
         "postcode": "RH14 0JT",
         "skip_get_url": true,
         "url": "https://www.chichester.gov.uk/checkyourbinday",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Chichester",
-        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday). This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
+        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday)."
     },
     "ChorleyCouncil": {
         "LAD24CD": "E07000118",
@@ -850,9 +846,8 @@
         "postcode": "PE22 0YD",
         "skip_get_url": true,
         "url": "https://www.e-lindsey.gov.uk/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "East Lindsey",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters."
     },
     "EastLothianCouncil": {
         "LAD24CD": "S12000010",
@@ -869,9 +864,8 @@
         "postcode": "G46 6RG",
         "skip_get_url": true,
         "url": "https://eastrenfrewshire.gov.uk/",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "East Renfrewshire",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters."
     },
     "EastRidingCouncil": {
         "LAD24CD": "E06000011",
@@ -961,12 +955,11 @@
     },
     "EppingForestDistrictCouncil": {
         "LAD24CD": "E07000072",
-        "postcode": "IG9 6EP",
+        "uprn": "100091624148",
         "skip_get_url": true,
-        "url": "https://eppingforestdc.maps.arcgis.com/apps/instant/lookup/index.html?appid=bfca32b46e2a47cd9c0a84f2d8cdde17&find=IG9%206EP",
-        "web_driver": "http://selenium:4444",
+        "url": "https://eppingforestdc-self.achieveservice.com/en/service/Check_your_collection_day",
         "wiki_name": "Epping Forest",
-        "wiki_note": "Add your postcode."
+        "wiki_note": "Add your property UPRN. Uses the current council AchieveService lookup; Selenium is not required."
     },
     "EpsomandEwellBoroughCouncil": {
         "LAD24CD": "E07000208",
@@ -1170,9 +1163,8 @@
         "skip_get_url": true,
         "uprn": "100090834792",
         "url": "https://myaccount.great-yarmouth.gov.uk/article/6456/Find-my-waste-collection-days",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Great Yarmouth",
-        "wiki_note": "Pass the postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the postcode, and UPRN in their respective parameters."
     },
     "GuildfordCouncil": {
         "LAD24CD": "E07000209",
@@ -2544,9 +2536,8 @@
         "postcode": "TS19 0RF",
         "skip_get_url": true,
         "url": "https://www.stockton.gov.uk/bin-collection-days",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Stockton-on-Tees",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters. This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters."
     },
     "StokeOnTrentCityCouncil": {
         "LAD24CD": "E06000021",

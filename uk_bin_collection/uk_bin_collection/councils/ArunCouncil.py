@@ -1,3 +1,4 @@
+import re
 import time
 
 from bs4 import BeautifulSoup
@@ -17,6 +18,22 @@ class CouncilClass(AbstractGetBinDataClass):
     base class. They can also override some operations with a default
     implementation.
     """
+
+    @staticmethod
+    def _pick_address_option(options: list, house_number: str) -> str:
+        """Return the one option whose text starts with house_number as a whole word.
+
+        Raises ValueError when none, or more than one, option matches.
+        """
+        wanted = house_number.strip().upper()
+        pattern = re.compile(rf"^{re.escape(wanted)}(?![A-Z0-9])")
+        matches = [text for text in options if pattern.match(text.strip().upper())]
+        if len(matches) != 1:
+            raise ValueError(
+                f"Expected exactly one address starting with '{house_number}', "
+                f"found {len(matches)}: {matches or options}"
+            )
+        return matches[0]
 
     def parse_data(self, page: str, **kwargs) -> dict:
         try:
@@ -49,13 +66,16 @@ class CouncilClass(AbstractGetBinDataClass):
             )
             continue_button.click()
 
-            address_selection_menu = Select(driver.find_element(By.ID, "address"))
-            for idx, addr_option in enumerate(address_selection_menu.options):
-                option_name = addr_option.text[0 : len(user_paon)]
-                if option_name == user_paon:
-                    selected_address = addr_option
-                    break
-            address_selection_menu.select_by_visible_text(selected_address.text)
+            # The address page loads after the postcode submit; wait for it
+            # rather than looking the dropdown up straight away.
+            address_dropdown = WebDriverWait(driver, 30).until(
+                EC.presence_of_element_located((By.ID, "address"))
+            )
+            address_selection_menu = Select(address_dropdown)
+            selected_address = self._pick_address_option(
+                [option.text for option in address_selection_menu.options], user_paon
+            )
+            address_selection_menu.select_by_visible_text(selected_address)
 
             continue_button = WebDriverWait(driver, timeout=15).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "govuk-button"))

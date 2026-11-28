@@ -414,7 +414,8 @@ problem reproducible anywhere:
 | 403 + `server: Microsoft-Azure-Application-Gateway/v2` | the default `python-requests` User-Agent | `headers={"User-Agent": get_scraper_user_agent()}` (Herefordshire, East Devon) |
 | 403 + `server: cloudflare`, `cf-mitigated: challenge` on a plain GET | TLS/JA3 fingerprint | `curl_cffi.requests.Session(impersonate="chrome")` |
 | Selenium reaches the form, then times out on the **next** step, page title `Just a moment...` | the scraper's hardcoded UA claims a stale Chrome version and/or the wrong OS | fixed centrally in `create_webdriver` (§9b) |
-| `Just a moment...` even with a correct UA and a real local Chrome | Cloudflare Turnstile | needs `undetected-chromedriver`, non-headless |
+| `Just a moment...` on a **form POST** even with a correct UA and a real local headless Chrome | Cloudflare challenging the browser's POST | try `curl_cffi.requests.Session(impersonate="chrome")` for the whole flow first: on six councils in Nov 2026 (Boston, East Lindsey, Stockton, Chichester, East Renfrewshire, Great Yarmouth) the same POSTs passed where Chrome's were challenged, so no browser was needed at all |
+| a real Turnstile checkbox that still shows after the above | Cloudflare Turnstile | needs `undetected-chromedriver`, non-headless, with a display (`$DISPLAY`) |
 
 Diagnose it in one shot rather than guessing - compare a plain `requests` GET against a
 `curl_cffi` impersonated one and read `status`, `server` and `cf-mitigated`.
@@ -510,3 +511,69 @@ align it. Don't try to out-clever it per council.
   a log and its blob URL is blocked by the proxy, so per-council results of a live
   integration run can't be read there. Report check conclusions honestly (integration is
   `continue-on-error`, so green means little) and prefer a local run for evidence.
+
+---
+
+## 13. Lessons from running locally (2026-11-28)
+
+The first local pass after the cloud-sandbox releases. Differences from the sandbox, and what bit.
+
+**Setting up a fresh machine**
+- There may be no clone, no Poetry and no Chrome. `uv tool install poetry` is enough for Poetry.
+  Chrome is Google's `.deb` (`dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb`,
+  then `sudo apt-get install ./...deb`). Playwright's bundled Chromium is not what
+  `webdriver-manager` looks for.
+- No Node? `uv venv x && uv pip install nodejs-wheel-binaries` gives one without touching the
+  system. Its `bin/npm` shim is broken; run `node <pkg>/lib/node_modules/npm/bin/npm-cli.js`.
+  Then `npm install @commitlint/cli @commitlint/config-conventional` in a scratch directory and
+  lint with two configs: the lax one from `lint.yml` and plain `config-conventional`. Run the CLI
+  from inside the repo (`--cwd` elsewhere silently lints nothing).
+- Passing a header over 100 characters, a sentence-case subject, or a body line that reads like
+  a trailer (`word: text`) fails the strict config. Reword in place without losing authors:
+  `GIT_SEQUENCE_EDITOR=<script> GIT_EDITOR=<script> git rebase -i origin/master`. `git commit
+  --fixup=reword:` refuses `-m`.
+
+**Reading a live run**
+- The full run took 7 minutes with `-n 4` and gave 18 failures (the October pass was 24; the
+  nightly was 58, mostly CI-IP blocks). Every one of the 18 also failed serially this time, so
+  concurrency noise is not a given. Still re-run serially before judging.
+- A schema pass (`bins` non-empty) only proves the shape. Run the council and read the output
+  (types, first dates) before saying it works. `/tmp`-style helper: build the CLI args from the
+  council's `input.json` entry, exactly as `step_defs/test_validate_council.py` does.
+- The CI-only failures (St Helens, Leicester, North Ayrshire, Canterbury, Lancaster) all passed
+  locally. A council that fails the nightly but passes at home is a CI-IP block, not a scraper bug.
+- A parameter that is overridden by another is by design, not a bug: Wolverhampton ignores
+  `house_number` when `uprn` is also given. To test a matcher live, drop the UPRN.
+
+**Traps found**
+- **Time bombs again.** Adur & Worthing fixtures had year-less October dates; the parser rolls
+  dates over 30 days old into next year, so the unit job went red on 26 Nov. Build date fixtures
+  from `date.today()`.
+- **Missing intermediate certificates.** Havering, Cotswold and West Oxfordshire serve a leaf
+  with no intermediate; Chrome fetches it via AIA, `requests` cannot. Check with
+  `openssl s_client -connect host:443 | openssl x509 -noout -dates -issuer`. A cert renewed days
+  ago points at a council-side regression. Do not reach for `verify=False`. If you must ship the
+  intermediate, embed the PEM as a string: `.gitignore` starts with `*`, so a `.pem` data file
+  would be left out of the sdist and wheel.
+- **`stealth=True` with no `$DISPLAY`.** `create_stealth_webdriver` returns `None`, the scraper
+  falls back to the ordinary driver, and a scraper that also passed `headless=False` then
+  launches visible Chrome with no display (`Chrome instance exited`). Pass the caller's
+  `headless` and let stealth be a bonus. Midlothian was fixed this way.
+- **Salesforce Lightning pages.** Inputs and buttons now sit in nested shadow roots, so XPath
+  lookups raise `StaleElementReferenceException` persistently and CSS finds nothing; retrying and
+  `WebDriverWait` do not help. Drive the page through JavaScript that walks the shadow roots and
+  return only plain values (`salesforce_property_flow.py`).
+- **A council can move behind a login.** Burnley's "find my bin day" now lives on a Salesforce
+  site that needs an account; the old AchieveForms lookup still answers but is a partial legacy
+  feed. When a reporter sees data the scraper cannot, compare the council's *current* page (and
+  Wayback) before assuming the API is incomplete.
+- **A reCAPTCHA is a stop.** Halton's form has a v2 checkbox. Do not try to defeat it; mark the
+  council unsupported or find another data source.
+
+**Working with sub-agents in one clone**
+- Four to five agents can edit different council files in one working tree. What kept it safe:
+  agents never ran state-changing git, I did all the commits; every browser run went through
+  `flock /tmp/ukbin/chrome.lock`; `input.json` was edited by me only. Wait for them all before
+  rebasing, since a rebase refuses on a dirty tree.
+- Verify agent output yourself: re-run every touched council serially, run the unit suite, and
+  check the committed tree against the stash you took.

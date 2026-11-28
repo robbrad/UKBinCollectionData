@@ -1,3 +1,4 @@
+import logging
 import re
 import requests
 from bs4 import BeautifulSoup
@@ -8,6 +9,8 @@ from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataC
 DIRECTORY_SEARCH = "https://www.edinburgh.gov.uk/directory/search"
 DIRECTORY_RECORD = "https://www.edinburgh.gov.uk/directory-record"
 NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
+
+logger = logging.getLogger(__name__)
 
 HEADERS = {
     "User-Agent": "UKBinCollectionData/1.0 (+https://github.com/robbrad/UKBinCollectionData)"
@@ -186,6 +189,14 @@ def _get_best_url(street_name, record):
     return best_url
 
 
+# Published "we won't collect garden waste from ... to ..." windows. Edinburgh
+# announces these in each year's calendar; add the next one when it is published.
+GARDEN_WINTER_BREAKS = [
+    (datetime(2025, 12, 15), datetime(2026, 1, 11)),
+    (datetime(2026, 12, 14), datetime(2027, 1, 10)),
+]
+
+
 days_of_week = [
     "Monday",
     "Tuesday",
@@ -255,10 +266,7 @@ def _get_garden_bin(street_name):
     else:
         garden_start = datetime(2025, 11, 3)
 
-    no_garden_waste_start = datetime(2025, 12, 15)
-    no_garden_waste_end = datetime(2026, 1, 11)
-
-    return garden_start, garden_offset_day, no_garden_waste_start, no_garden_waste_end
+    return garden_start, garden_offset_day, GARDEN_WINTER_BREAKS
 
 
 class CouncilClass(AbstractGetBinDataClass):
@@ -278,15 +286,22 @@ class CouncilClass(AbstractGetBinDataClass):
             street_name
         )
         food_offset_day = _get_food_bin(street_name)
-        garden_start, garden_offset_day, no_garden_waste_start, no_garden_waste_end = (
-            _get_garden_bin(street_name)
-        )
+        garden_start, garden_offset_day, winter_breaks = _get_garden_bin(street_name)
+
+        today = datetime.now()
+        if today.month >= 10 and not any(end >= today for _, end in winter_breaks):
+            logger.warning(
+                "No published garden waste winter break on or after today is known "
+                "for Edinburgh; garden waste collections over Christmas may be shown "
+                "when the council has suspended them. Add the new dates to "
+                "GARDEN_WINTER_BREAKS."
+            )
 
         bindata = {"bins": []}
 
         food_start = min([refuse_start, recycling_start, glass_start])
 
-        for base_date in get_dates_every_x_days(food_start, 7, 56):
+        for base_date in get_dates_every_x_days_ahead(food_start, 7):
             collection_date = (
                 datetime.strptime(base_date, "%d/%m/%Y")
                 + timedelta(days=food_offset_day)
@@ -295,18 +310,12 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"type": "Food Waste Bin", "collectionDate": collection_date}
             )
 
-        for base_date in get_dates_every_x_days(garden_start, 14, 28):
+        for base_date in get_dates_every_x_days_ahead(garden_start, 14):
             collection_date = datetime.strptime(base_date, "%d/%m/%Y") + timedelta(
                 days=garden_offset_day
             )
-            if (no_garden_waste_start is not None) and (
-                no_garden_waste_end is not None
-            ):
-                # No garden waste collection between these dates
-                if (collection_date >= no_garden_waste_start) and (
-                    collection_date <= no_garden_waste_end
-                ):
-                    continue
+            if any(start <= collection_date <= end for start, end in winter_breaks):
+                continue
 
             collection_date = (collection_date).strftime(date_format)
 
@@ -314,7 +323,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"type": "Brown Garden Waste Bin", "collectionDate": collection_date}
             )
 
-        for base_date in get_dates_every_x_days(refuse_start, 14, 28):
+        for base_date in get_dates_every_x_days_ahead(refuse_start, 14):
             collection_date = (
                 datetime.strptime(base_date, "%d/%m/%Y")
                 + timedelta(days=three_offset_days)
@@ -323,7 +332,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"type": "Grey Bin", "collectionDate": collection_date}
             )
 
-        for base_date in get_dates_every_x_days(recycling_start, 14, 28):
+        for base_date in get_dates_every_x_days_ahead(recycling_start, 14):
             collection_date = (
                 datetime.strptime(base_date, "%d/%m/%Y")
                 + timedelta(days=three_offset_days)
@@ -332,7 +341,7 @@ class CouncilClass(AbstractGetBinDataClass):
                 {"type": "Green Bin", "collectionDate": collection_date}
             )
 
-        for base_date in get_dates_every_x_days(glass_start, 14, 28):
+        for base_date in get_dates_every_x_days_ahead(glass_start, 14):
             collection_date = (
                 datetime.strptime(base_date, "%d/%m/%Y")
                 + timedelta(days=three_offset_days)

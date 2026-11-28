@@ -1,3 +1,4 @@
+import re
 import time
 from datetime import datetime
 
@@ -48,13 +49,14 @@ class CouncilClass(AbstractGetBinDataClass):
 
         driver = None
         try:
-            # The fillform iframe blocks headless Chrome AND vanilla Selenium
-            # (the bot-detection scripts check for navigator.webdriver), so ask
-            # for the stealth driver. This used to be an inline
-            # undetected-chromedriver block pinned to version_main=146, which
-            # stopped starting once Chrome moved past 146; create_webdriver
-            # lets undetected-chromedriver detect the real version instead.
-            driver = create_webdriver(web_driver, False, None, __name__, stealth=True)
+            # Prefer the stealth driver where a display exists. It used to be
+            # forced non-headless, which made Chrome exit at start-up on a
+            # machine with no display ("SessionNotCreatedException"); without
+            # a display create_webdriver now falls back to the ordinary driver
+            # and honours `headless` (the fillform iframe loads fine headless).
+            driver = create_webdriver(
+                web_driver, headless, None, __name__, stealth=True
+            )
             driver.get(self.START_URL)
 
             iframe = WebDriverWait(driver, 30).until(
@@ -84,12 +86,9 @@ class CouncilClass(AbstractGetBinDataClass):
             WebDriverWait(driver, 30).until(dropdown_populated)
 
             select = Select(driver.find_element(By.ID, "listAddress"))
-            target = self._pick_address_option(select, house_identifier)
-            if target is None:
-                raise Exception(
-                    f"Could not find address '{house_identifier}' in options: "
-                    f"{[o.text.strip() for o in select.options]}"
-                )
+            target = self.pick_address_text(
+                [opt.text for opt in select.options], house_identifier
+            )
             select.select_by_visible_text(target)
 
             # Give the form time to pull the per-bin dates down.
@@ -130,17 +129,23 @@ class CouncilClass(AbstractGetBinDataClass):
                 driver.quit()
 
     @staticmethod
-    def _pick_address_option(select, house_identifier):
-        target = house_identifier.upper().strip()
-        for opt in select.options:
-            text = opt.text.strip()
-            if not text or text.lower().startswith("select"):
-                continue
-            up = text.upper()
-            if up.startswith(f"{target} ") or up.startswith(f"{target},"):
-                return text
-        for opt in select.options:
-            text = opt.text.strip()
-            if target in text.upper():
-                return text
-        return None
+    def pick_address_text(option_texts, house_identifier):
+        """Return the one option starting with house_identifier as a whole word.
+
+        Raises ValueError when none, or more than one, option matches.
+        """
+        wanted = re.escape(house_identifier.strip().upper())
+        pattern = re.compile(rf"^{wanted}(?![A-Z0-9])")
+        matches = [
+            text.strip()
+            for text in option_texts
+            if text.strip()
+            and not text.strip().lower().startswith("select")
+            and pattern.match(text.strip().upper())
+        ]
+        if len(matches) != 1:
+            raise ValueError(
+                f"Expected exactly one address starting with '{house_identifier}', "
+                f"found {len(matches)}: {matches or [t.strip() for t in option_texts]}"
+            )
+        return matches[0]

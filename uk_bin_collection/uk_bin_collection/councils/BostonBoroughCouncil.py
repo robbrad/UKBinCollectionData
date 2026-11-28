@@ -1,234 +1,162 @@
-import time
+import re
+from datetime import date, datetime, timedelta
+from urllib.parse import urljoin
 
-from bs4 import BeautifulSoup
-from selenium.common.exceptions import (
-    ElementClickInterceptedException,
-    NoSuchElementException,
-    TimeoutException,
-)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+from bs4 import BeautifulSoup, Tag
+from curl_cffi import requests as cffi_requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+FORM_PAGE = "https://www.boston.gov.uk/findwastecollections"
+REQUEST_TIMEOUT_SECONDS = 30
+POSTCODE_FIELD_SUFFIX = "_COLLECTIONS_SEARCHPOSTCODE"
+ADDRESS_FIELD_SUFFIX = "_ADDRESS_ADDRESSUPRN"
+NEXT_BUTTON_NAME_SUFFIX = "_FORMACTION_NEXT"
+
+
+def select_address(options: list[tuple[str, str]], paon: str) -> str:
+    """Return the value of the one address option starting with the house name/number.
+
+    `options` are (value, text) pairs. The match is anchored at the start and
+    ends on a word boundary, so "7" matches "7 Some Road" but not "17 Some
+    Road" or "7A Some Road". Raises ValueError if zero or several options match.
+    """
+    wanted = re.compile(rf"^{re.escape(paon.strip())}(?!\w)", re.IGNORECASE)
+    matches = [
+        (value, text)
+        for value, text in options
+        if value and wanted.match(re.sub(r"\s*,\s*", " ", text.strip()))
+    ]
+    if len(matches) != 1:
+        listed = "; ".join(text for _, text in matches) or "none"
+        raise ValueError(
+            f"Expected exactly one address starting with '{paon}', "
+            f"found {len(matches)}: {listed}"
+        )
+    return matches[0][0]
+
+
+def resolve_collection_date(day_text: str, today: date) -> date:
+    """Turn 'Thursday 3rd December' into the next matching date on or after today.
+
+    The council omits the year, so try this year and next and keep the one
+    whose weekday agrees with the text.
+    """
+    cleaned = remove_ordinal_indicator_from_date_string(day_text.strip())
+    for year in (today.year, today.year + 1):
+        try:
+            candidate = datetime.strptime(f"{cleaned} {year}", "%A %d %B %Y").date()
+        except ValueError:
+            continue
+        # strptime ignores the weekday, so check it ourselves. The page only
+        # shows upcoming dates; tolerate a day of clock skew.
+        weekday_agrees = candidate.strftime("%A").lower() == cleaned.split()[0].lower()
+        if weekday_agrees and candidate >= today - timedelta(days=1):
+            return candidate
+    raise ValueError(f"Could not work out a date from '{day_text}'")
+
+
+def parse_results(html: str, today: date) -> dict:
+    """Convert the 'Next: <date>' list items to the standard bins dict."""
+    soup = BeautifulSoup(html, "html.parser")
+    bins = []
+    for item in soup.find_all("div", class_="grid__cell--listitem"):
+        title = item.find("h2", class_="item__title")
+        content = item.find("div", class_="item__content")
+        next_line = content.find("div") if content else None
+        if not title or not next_line:
+            continue
+        day_text = next_line.get_text(" ", strip=True).replace("Next:", "").strip()
+        bins.append(
+            {
+                "type": title.get_text(strip=True),
+                "collectionDate": resolve_collection_date(day_text, today).strftime(
+                    date_format
+                ),
+            }
+        )
+    if not bins:
+        raise ValueError("Could not find any collection dates in the results page")
+    bins.sort(key=lambda b: datetime.strptime(b["collectionDate"], date_format))
+    return {"bins": bins}
+
+
+def _find_form(soup: BeautifulSoup) -> Tag:
+    form = soup.find("form", action=re.compile("processsubmission"))
+    if form is None:
+        raise ValueError("Could not find the form on the page")
+    return form
+
+
+def _form_fields(form: Tag) -> dict:
+    """Hidden state plus any pre-filled text inputs, as the browser would send."""
+    return {
+        field["name"]: field.get("value") or ""
+        for field in form.find_all("input")
+        if field.get("name") and field.get("type") in ("hidden", "text")
+    }
+
+
+def _press_next(form: Tag, fields: dict) -> None:
+    button = form.find(
+        "button", attrs={"name": re.compile(NEXT_BUTTON_NAME_SUFFIX + "$")}
+    )
+    if button is None:
+        raise ValueError("Could not find the Next button on the form")
+    fields[button["name"]] = button["value"]
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    Boston Borough Council: a GOSS iCM form at boston.gov.uk/findwastecollections
+    driven as plain HTTP postbacks. Cloudflare serves automated Chrome a
+    "Just a moment..." interstitial on the first form POST, but not a session
+    that impersonates Chrome's TLS handshake via curl_cffi, so no browser is
+    needed.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        """
-        Retrieve bin collection types and upcoming collection dates for the given address.
-        
-        Parameters:
-            page (str): Unused by this implementation (kept for interface compatibility).
-            paon (str, in kwargs): Property/PAON text used to select the correct address option.
-            postcode (str, in kwargs): Postcode to search for addresses.
-            web_driver (optional, in kwargs): Selenium WebDriver instance or web driver identifier to use when creating the driver.
-            headless (bool, optional, in kwargs): Whether to run the browser in headless mode.
-        
-        Returns:
-            data (dict): Dictionary with a single key "bins" whose value is a list of dictionaries. Each entry contains:
-                - "type" (str): The bin/collection type name.
-                - "collectionDate" (str): The next collection date formatted according to the module's date_format.
-        """
-        driver = None
-        try:
-            data = {"bins": []}
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_paon(user_paon)
-            check_postcode(user_postcode)
+        user_paon = kwargs.get("paon")
+        user_postcode = kwargs.get("postcode")
+        check_paon(user_paon)
+        check_postcode(user_postcode)
 
-            # Create Selenium webdriver
-            user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get("https://www.boston.gov.uk/findwastecollections")
+        session = cffi_requests.Session(impersonate="chrome")
+        response = session.get(FORM_PAGE, timeout=REQUEST_TIMEOUT_SECONDS)
+        response.raise_for_status()
+        form = _find_form(BeautifulSoup(response.text, "html.parser"))
+        fields = _form_fields(form)
+        postcode_field = next(
+            name for name in fields if name.endswith(POSTCODE_FIELD_SUFFIX)
+        )
+        fields[postcode_field] = user_postcode
+        _press_next(form, fields)
 
-            # Wait for initial page load and Cloudflare bypass
-            WebDriverWait(driver, 30).until(
-                lambda d: "Just a moment" not in d.title and d.title != ""
-            )
-            time.sleep(3)
+        response = session.post(
+            urljoin(FORM_PAGE, form["action"]),
+            data=fields,
+            headers={"Referer": FORM_PAGE},
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        form = _find_form(BeautifulSoup(response.text, "html.parser"))
+        address_select = form.find("select", id=re.compile(ADDRESS_FIELD_SUFFIX + "$"))
+        if address_select is None:
+            raise ValueError(f"No address list returned for postcode {user_postcode}")
+        options = [
+            (option.get("value", ""), option.get_text(strip=True))
+            for option in address_select.find_all("option")
+        ]
+        fields = _form_fields(form)
+        fields[address_select["name"]] = select_address(options, user_paon)
+        _press_next(form, fields)
 
-            # Try to accept cookies if the banner appears
-            try:
-                accept_button = WebDriverWait(driver, timeout=10).until(
-                    EC.element_to_be_clickable((By.NAME, "acceptall"))
-                )
-                accept_button.click()
-                time.sleep(2)
-            except (
-                TimeoutException,
-                NoSuchElementException,
-                ElementClickInterceptedException,
-            ):
-                # Cookie banner not present or not clickable; continue without accepting
-                pass
-
-            # Wait for the postcode field to appear then populate it
-            # Updated field ID for V2 form
-            inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.ID, "BBCWASTECOLLECTIONSV2_COLLECTIONS_SEARCHPOSTCODE")
-                )
-            )
-            inputElement_postcode.send_keys(user_postcode)
-
-            # Click search button - Updated ID for V2 form
-            findAddress = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.ID, "BBCWASTECOLLECTIONSV2_COLLECTIONS_START10_NEXT")
-                )
-            )
-            findAddress.click()
-
-            # Wait for the address selection page to load
-            time.sleep(3)
-
-            # Wait for the address dropdown/selection to be available.
-            # 2026 form renames ADDRESSSELECTION → ADDRESSUPRN; keep the older
-            # pattern as a fallback in case the council re-renames it again.
-            WebDriverWait(driver, 15).until(
-                EC.presence_of_element_located(
-                    (By.XPATH,
-                     "//select[contains(@id, 'ADDRESSUPRN') or contains(@id, 'ADDRESSSELECTION')]"
-                     " | //div[contains(@id, 'ADDRESSUPRN_chosen') or contains(@id, 'ADDRESSSELECTION_chosen') or contains(@class, 'chosen-container')]")
-                )
-            )
-
-            # The underlying <select> is hidden by chosen.js, so drive the
-            # chosen widget directly. Select the matching option via JS on the
-            # native select and let chosen re-render.
-            dropdown_containers = driver.find_elements(
-                By.XPATH,
-                "//div[contains(@id, 'ADDRESSUPRN_chosen') or contains(@id, 'ADDRESSSELECTION_chosen')]"
-                " | //div[contains(@class, 'chosen-container')]"
-            )
-            if dropdown_containers:
-                dropdown = dropdown_containers[0]
-                driver.execute_script("arguments[0].scrollIntoView({block:'center'});", dropdown)
-                try:
-                    dropdown.click()
-                except ElementClickInterceptedException:
-                    driver.execute_script("arguments[0].click();", dropdown)
-                time.sleep(1)
-
-                # Type into the chosen search input to filter
-                try:
-                    search_input = driver.find_element(
-                        By.XPATH,
-                        "//div[contains(@class, 'chosen-container')]//input[contains(@class, 'chosen-search-input') or @type='text']"
-                    )
-                    search_input.clear()
-                    search_input.send_keys(user_paon)
-                    time.sleep(1)
-                except NoSuchElementException:
-                    pass
-
-                WebDriverWait(driver, 10).until(
-                    EC.visibility_of_element_located((By.CLASS_NAME, "chosen-results"))
-                )
-
-                desired_option = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((
-                        By.XPATH,
-                        f"//li[contains(@class, 'active-result') and contains(., '{user_paon}')]"
-                    ))
-                )
-                desired_option.click()
-            else:
-                # Fallback: set select.value via JS and dispatch change so chosen picks it up
-                driver.execute_script(
-                    """
-                    const sel = document.querySelector("select[id*='ADDRESSUPRN'], select[id*='ADDRESSSELECTION']");
-                    if (!sel) throw new Error('no address select found');
-                    const needle = arguments[0];
-                    const match = Array.from(sel.options).find(o => o.textContent.includes(needle));
-                    if (!match) throw new Error('no option matched: ' + needle);
-                    sel.value = match.value;
-                    sel.dispatchEvent(new Event('change', {bubbles: true}));
-                    if (window.jQuery) window.jQuery(sel).trigger('chosen:updated');
-                    """,
-                    user_paon,
-                )
-                time.sleep(1)
-
-            # Click the next button to proceed
-            next_button = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//button[contains(@id, 'NEXT') and contains(@id, 'BBCWASTECOLLECTIONSV2')]")
-                )
-            )
-            next_button.click()
-
-            # Wait for the collections information to appear
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//div[contains(@class, 'item__title') or contains(@class, 'grid__cell--listitem')]")
-                )
-            )
-
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Find the container with the bin information
-            bins = soup.find_all(
-                "div", class_="grid__cell grid__cell--listitem grid__cell--cols1"
-            )
-
-            current_year = datetime.now().year
-            next_year = current_year + 1
-
-            # Loop through each bin container to extract the details
-            for bin_div in bins:
-                # Find the bin type (title text)
-                bin_type_elem = bin_div.find("h2", class_="item__title")
-                if not bin_type_elem:
-                    continue
-                    
-                bin_type = bin_type_elem.text.strip()
-
-                # Find the next collection date
-                content_div = bin_div.find("div", class_="item__content")
-                if not content_div:
-                    continue
-                    
-                date_div = content_div.find("div")
-                if not date_div:
-                    continue
-                    
-                next_collection = date_div.text.strip().replace("Next: ", "")
-
-                next_collection = datetime.strptime(
-                    remove_ordinal_indicator_from_date_string(next_collection),
-                    "%A %d %B",
-                )
-
-                if (datetime.now().month == 12) and (next_collection.month == 1):
-                    next_collection = next_collection.replace(year=next_year)
-                else:
-                    next_collection = next_collection.replace(year=current_year)
-
-                dict_data = {
-                    "type": bin_type,
-                    "collectionDate": next_collection.strftime(date_format),
-                }
-                data["bins"].append(dict_data)
-
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
-        finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
-        return data
+        response = session.post(
+            urljoin(FORM_PAGE, form["action"]),
+            data=fields,
+            headers={"Referer": FORM_PAGE},
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
+        response.raise_for_status()
+        return parse_results(response.text, date.today())

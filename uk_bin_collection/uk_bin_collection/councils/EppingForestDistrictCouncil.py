@@ -1,71 +1,91 @@
+"""Fetch Epping Forest collections from its AchieveService address lookup."""
+
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 import requests
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import check_uprn, date_format
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+
+BASE_URL = "https://eppingforestdc-self.achieveservice.com"
+COLLECTION_URL = f"{BASE_URL}/en/service/Check_your_collection_day"
 
 
 class CouncilClass(AbstractGetBinDataClass):
     def parse_data(self, page: str, **kwargs) -> dict:
-        postcode = kwargs.get("postcode", "")
-        data = {"bins": []}
+        uprn = kwargs.get("uprn")
+        check_uprn(uprn)
+        uprn = str(uprn).strip()
+        if not uprn.isdigit() or len(uprn) > 12:
+            raise ValueError("Epping Forest requires a valid property UPRN")
 
-        # Use postcodes.io to get BNG eastings/northings for the postcode
-        pc_clean = postcode.replace(" ", "")
-        geo_resp = requests.get(f"https://api.postcodes.io/postcodes/{pc_clean}")
-        geo_resp.raise_for_status()
-        geo_data = geo_resp.json()
-        if geo_data.get("status") != 200 or not geo_data.get("result"):
-            raise ValueError(f"Could not geocode postcode {postcode}")
+        # Reuse the anonymous session pattern used by Watford and East Herts.
+        with requests.Session() as session:
+            session.headers.update(
+                {
+                    "Accept": "application/json",
+                    "User-Agent": "Mozilla/5.0",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Referer": f"{BASE_URL}/fillform/?iframe_id=fillform-frame-1&db_id=",
+                }
+            )
+            response = session.get(
+                f"{BASE_URL}/authapi/isauthenticated",
+                params={
+                    "uri": COLLECTION_URL,
+                    "hostname": "eppingforestdc-self.achieveservice.com",
+                    "withCredentials": "true",
+                },
+                timeout=20,
+            )
+            response.raise_for_status()
+            sid = response.json().get("auth-session")
+            if not sid:
+                raise ValueError("Epping Forest did not provide a lookup session")
+            response = session.post(
+                f"{BASE_URL}/apibroker/runLookup",
+                params={"id": "6651dfb99a74d", "sid": sid},
+                json={"formValues": {"Section 1": {"LookupUPRN": {"value": uprn}}}},
+                timeout=30,
+            )
+            response.raise_for_status()
+            return parse_response(response.json())
 
-        eastings = geo_data["result"]["eastings"]
-        northings = geo_data["result"]["northings"]
 
-        # Query the ArcGIS feature layer directly with a point geometry
-        feature_url = (
-            "https://services-eu1.arcgis.com/SDWAhoV6ICvQHz6h/arcgis/rest/services/"
-            "Website_WasteCollectionRoutes/FeatureServer/0/query"
-        )
-        params = {
-            "geometry": f'{{"x":{eastings},"y":{northings},"spatialReference":{{"wkid":27700}}}}',
-            "geometryType": "esriGeometryPoint",
-            "spatialRel": "esriSpatialRelIntersects",
-            "outFields": "WasteCollectionDates_ResidualDa,WasteCollectionDates_RecyclingD,WasteCollectionDates_FoodAndGar",
-            "returnGeometry": "false",
-            "f": "json",
-        }
-        resp = requests.get(feature_url, params=params)
-        resp.raise_for_status()
-        result = resp.json()
-
-        features = result.get("features", [])
-        if not features:
-            raise ValueError(f"No waste collection zone found for postcode {postcode}")
-
-        attrs = features[0]["attributes"]
-
-        # Map field names to bin types
-        bin_map = {
-            "WasteCollectionDates_ResidualDa": "Black Bin",
-            "WasteCollectionDates_RecyclingD": "Blue Box and Recycling Sack",
-            "WasteCollectionDates_FoodAndGar": "Green-lidded Bin",
-        }
-
-        for field, bin_type in bin_map.items():
-            date_str = attrs.get(field)
-            if date_str:
-                try:
-                    parsed = datetime.strptime(date_str.strip(), "%d/%m/%Y")
-                    data["bins"].append(
-                        {
-                            "type": bin_type,
-                            "collectionDate": parsed.strftime(date_format),
-                        }
-                    )
-                except ValueError:
-                    continue
-
-        data["bins"].sort(
-            key=lambda x: datetime.strptime(x.get("collectionDate"), date_format)
-        )
-
-        return data
+def parse_response(payload: dict) -> dict:
+    """Reject missing/stale results instead of manufacturing collection dates."""
+    if payload.get("error") or payload.get("status") != "done":
+        raise ValueError("Epping Forest collection lookup failed")
+    rows = payload.get("integration", {}).get("transformed", {}).get("rows_data", {})
+    row = rows.get("0") if isinstance(rows, dict) else None
+    if not isinstance(row, dict):
+        raise ValueError("Epping Forest returned no collection services")
+    today = datetime.now(ZoneInfo("Europe/London")).date()
+    bins = []
+    # Keep existing bin names; item descriptions can instead mention batteries/WEEE.
+    for service, label in (
+        ("GeneralWaste", "Black Bin"),
+        ("Recycling", "Blue Box and Recycling Sack"),
+        ("FoodWaste", "Food Waste Bin"),
+        ("GardenWaste", "Green-lidded Bin"),
+    ):
+        if service == "GardenWaste":
+            end = row.get("GardenWasteServiceTo")
+            if (
+                end
+                and not end.startswith("0001-")
+                and datetime.fromisoformat(end).date() < today
+            ):
+                continue
+        value = row.get(f"{service}ServiceNextCollection")
+        if not value or value.startswith("0001-"):
+            continue
+        collection = datetime.fromisoformat(value).date()
+        if collection < today:
+            raise ValueError(f"Epping Forest returned a past {label} collection date")
+        bins.append({"type": label, "collectionDate": collection.strftime(date_format)})
+    if not bins:
+        raise ValueError("Epping Forest returned no collection dates for this UPRN")
+    bins.sort(key=lambda item: datetime.strptime(item["collectionDate"], date_format))
+    return {"bins": bins}
