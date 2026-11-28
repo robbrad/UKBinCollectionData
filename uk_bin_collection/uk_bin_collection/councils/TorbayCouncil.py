@@ -67,10 +67,7 @@ class CouncilClass(AbstractGetBinDataClass):
 
             bin_collection_button = wait.until(
                 EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        "/html/body/main/div[4]/div/div[1]/div/div/div/div/div[2]/div/div/div/p/a",
-                    )
+                    (By.PARTIAL_LINK_TEXT, "Find your bin collection dates")
                 ),
             )
             bin_collection_button.click()
@@ -137,8 +134,9 @@ class CouncilClass(AbstractGetBinDataClass):
                     break
 
             if not found:
-                print(f"No matching address found for UPRN: {user_uprn}")
-                return data
+                raise ValueError(
+                    f"No address with UPRN {user_uprn} in the list for {user_postcode}"
+                )
 
             print("Address selected successfully")
             time.sleep(1)  # Give time for the selection to take effect
@@ -216,6 +214,9 @@ class CouncilClass(AbstractGetBinDataClass):
                 except Exception as e:
                     print(f"Error processing collection row: {e}")
                     continue
+
+            if not data["bins"]:
+                raise ValueError("Torbay results page listed no bin collections")
 
             # Debug: Print the complete dict_data
             print("\nFinal bin collection data:")
