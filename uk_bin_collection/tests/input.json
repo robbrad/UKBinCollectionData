@@ -1163,9 +1163,8 @@
         "skip_get_url": true,
         "uprn": "100090834792",
         "url": "https://myaccount.great-yarmouth.gov.uk/article/6456/Find-my-waste-collection-days",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Great Yarmouth",
-        "wiki_note": "Pass the postcode, and UPRN in their respective parameters. This parser requires a Selenium webdriver."
+        "wiki_note": "Pass the postcode, and UPRN in their respective parameters."
     },
     "GuildfordCouncil": {
         "LAD24CD": "E07000209",
