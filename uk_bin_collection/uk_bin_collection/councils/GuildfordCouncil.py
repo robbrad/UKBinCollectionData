@@ -1,150 +1,97 @@
-# This script pulls (in one hit) the data from Bromley Council Bins Data
-import datetime
-import re
 import time
-from datetime import datetime
 
-import requests
-from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import WebDriverWait
 
-from uk_bin_collection.uk_bin_collection.common import *
+from uk_bin_collection.uk_bin_collection.common import create_webdriver
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
+from uk_bin_collection.uk_bin_collection.salesforce_property_flow import (
+    build_bins,
+    run_in_page,
+    select_address_option,
+)
+
+URL = "https://my.guildford.gov.uk/customers/s/view-bin-collections"
+USER_AGENT = (
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+    "Chrome/138.0.0.0 Safari/537.36"
+)
+WAIT_SECONDS = 120
 
 
-# import the wonderful Beautiful Soup and the URL grabber
 class CouncilClass(AbstractGetBinDataClass):
-    """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
-    """
+    """Guildford: Salesforce portal; driven in page JS, see salesforce_property_flow."""
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
+        postcode = kwargs.get("postcode")
+        house_number = kwargs.get("paon")
+        if not postcode or not house_number:
+            raise ValueError("Both a house number/name and a postcode are required")
+
+        driver = create_webdriver(
+            kwargs.get("web_driver"), kwargs.get("headless"), USER_AGENT, __name__
+        )
         try:
-            postcode = kwargs.get("postcode")
-            house_number = kwargs.get("paon")
-
-            url = "https://my.guildford.gov.uk/customers/s/view-bin-collections"
-
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            driver = create_webdriver(web_driver, headless, user_agent, __name__)
-            driver.get(kwargs.get("url"))
-
-            wait = WebDriverWait(driver, 120)
-            post_code_search = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//input[contains(@class, 'slds-input')]")
-                )
+            driver.get(URL)
+            wait = WebDriverWait(driver, WAIT_SECONDS)
+            wait.until(
+                lambda d: run_in_page(d, "return deep('input.slds-input').length > 0")
+            )
+            run_in_page(
+                driver, "const i = deep('input.slds-input')[0]; i.focus(); i.click();"
+            )
+            ActionChains(driver).send_keys(postcode).perform()
+            if not run_in_page(driver, "return deep('input.slds-input')[0].value"):
+                raise RuntimeError("The postcode box did not keep the typed text")
+            run_in_page(
+                driver,
+                """
+                deep('button')
+                    .find(b => b.innerText.trim() === 'Find address').click();
+                """,
             )
 
-            post_code_search.send_keys(postcode)
-
-            post_code_submit_btn = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//button[contains(@class,'slds-button')]")
-                )
+            address_script = """
+                return deep('input[type=radio]').map(
+                    r => r.closest('tr').innerText.trim().split('\\n').pop());
+            """
+            wait.until(lambda d: run_in_page(d, address_script))
+            addresses = run_in_page(driver, address_script)
+            options = [
+                {"address": address, "value": index}
+                for index, address in enumerate(addresses)
+            ]
+            chosen = select_address_option(options, house_number, postcode)
+            run_in_page(
+                driver,
+                "deep('input[type=radio]')[arguments[0]].click();",
+                chosen["value"],
             )
-            post_code_submit_btn.send_keys(Keys.ENTER)
+            if not run_in_page(
+                driver,
+                "return deep('input[type=radio]')[arguments[0]].checked;",
+                chosen["value"],
+            ):
+                raise RuntimeError(f"Could not select the address {chosen['address']}")
+            run_in_page(driver, "deep('button[name=NEXT]')[0].click();")
 
-            # Locate the element containing the specified address text
-            address_element = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        f"//lightning-base-formatted-text[contains(text(), '{house_number}')]",
-                    )
-                )
-            )
-
-            # Find the associated radio button in the same row (preceding sibling)
-            radio_button = address_element.find_element(
-                By.XPATH, "../../../../preceding-sibling::td//input[@type='radio']"
-            )
-
-            radio_button.send_keys(Keys.SPACE)
-            address_submit_btn = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//button[contains(@name,'NEXT')]")
-                )
-            )
-            address_submit_btn.send_keys(Keys.ENTER)
-
-            results = wait.until(
-                EC.presence_of_element_located((By.CLASS_NAME, "cBinScheduleDisplay"))
-            )
-
-            results2 = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, f'//div[contains(@title,"Bin Job")]')
-                )
-            )
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-            # Find all table rows containing bin information
-            rows = soup.find_all("tr", class_="slds-hint-parent")
-
-            data = {"bins": []}
-
-            # Extract bin type and next collection date for each row
-            for row in rows:
-                bin_type = (
-                    row.find("td", {"data-label": "Bin Job"})
-                    .find("strong")
-                    .text.strip()
-                    if row.find("td", {"data-label": "Bin Job"})
-                    else None
-                )
-
-                next_collection_date = (
-                    row.find("td", {"data-label": "Next Collection"}).text.strip()
-                    if row.find("td", {"data-label": "Next Collection"})
-                    else None
-                )
-
-                if bin_type and next_collection_date:
-                    # Convert date string to datetime object
-                    date_format = (
-                        "%A, %d %B"  # Adjust the format according to your date string
-                    )
-                    try:
-                        next_collection_date = datetime.strptime(
-                            next_collection_date, date_format
-                        )
-
-                        # Logic to determine year
-                        current_date = datetime.now()
-                        if next_collection_date.month < current_date.month:
-                            year = current_date.year + 1
-                        else:
-                            year = current_date.year
-
-                        # Format the date
-                        next_collection_date = next_collection_date.replace(
-                            year=year
-                        ).strftime("%d/%m/%Y")
-                    except ValueError:
-                        pass
-
-                    dict_data = {
-                        "type": bin_type,
-                        "collectionDate": next_collection_date,
-                    }
-                    data["bins"].append(dict_data)
-        except Exception as e:
-            # Here you can log the exception if needed
-            print(f"An error occurred: {e}")
-            # Optionally, re-raise the exception if you want it to propagate
-            raise
+            rows_script = """
+                return deep('tr.slds-hint-parent').map(r => {
+                    const job = r.querySelector('td[data-label="Bin Job"]');
+                    const next = r.querySelector('td[data-label="Next Collection"]');
+                    if (!job || !next) return null;
+                    const strong = job.querySelector('strong');
+                    return [(strong || job).innerText.trim(), next.innerText.trim()];
+                }).filter(row => row);
+            """
+            deadline = time.monotonic() + WAIT_SECONDS
+            rows = []
+            while not rows and time.monotonic() < deadline:
+                rows = run_in_page(driver, rows_script)
+                if not rows:
+                    time.sleep(1)
+            if not rows:
+                raise TimeoutError("No bin collection table appeared")
         finally:
-            # This block ensures that the driver is closed regardless of an exception
-            if driver:
-                driver.quit()
-        return data
+            driver.quit()
+        return build_bins([(bin_type, day) for bin_type, day in rows])
