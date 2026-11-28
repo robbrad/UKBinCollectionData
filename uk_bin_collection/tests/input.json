@@ -90,9 +90,8 @@
         "house_number": "1",
         "postcode": "NG16 6RH",
         "url": "https://www.ashfield.gov.uk",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Ashfield",
-        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes. This parser requires a Selenium webdriver"
+        "wiki_note": "Pass the house name/number and postcode in their respective parameters, both wrapped in double quotes."
     },
     "AshfordBoroughCouncil": {
         "LAD24CD": "E07000105",
