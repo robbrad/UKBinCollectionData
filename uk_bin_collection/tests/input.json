@@ -286,7 +286,6 @@
         "postcode": "PE20 1AY",
         "skip_get_url": true,
         "url": "https://www.boston.gov.uk/findwastecollections",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Boston",
         "wiki_note": "Provide your house number in the `house_number` parameter and postcode in the `postcode` parameter."
     },
