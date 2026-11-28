@@ -1,4 +1,30 @@
 =======
+## 0.173.9 (2026-11-28)
+
+### Fix
+
+- November local pass (16 councils fixed live, 5 contributor PRs consolidated)
+- **salesforce**: drive shadow-DOM flows in page JavaScript for four councils
+- **torbay**: find the bin dates link by its text, not an absolute XPath
+- **midlothian**: honour headless so Chrome starts without a display
+- **stockton**: use curl_cffi and skip past garden-waste dates
+- **great-yarmouth**: use curl_cffi and infer the year of dates that have none
+- **east-renfrewshire**: use curl_cffi because headless Chrome meets a Turnstile page
+- **east-lindsey**: use curl_cffi because headless Chrome meets a Turnstile page
+- **chichester**: use curl_cffi because headless Chrome meets a Turnstile page
+- **cherwell**: read results from forms.cherwell.gov.uk and raise when none are found
+- **boston**: post the form with curl_cffi instead of Selenium
+- **ashfield**: read the council's address API instead of the retired Selenium portal
+- **arun**: wait for the address page and match the house number whole-word
+- **chelmsford**: raise on silent errors found in review
+- **chelmsford**: update test data and input.json for the new lookup
+- **chelmsford**: read the PDF calendar instead of the retired ICS file
+- exclude ended garden services before validating dates
+- use current Epping Forest AchieveService collections
+- **carmarthenshire**: read collections for homes on the new separated recycling service
+- updated new fn so that new dates work achor=today and inclusive on last date (today+400 incl.)
+- **councils**: build Edinburgh, Thurrock and Greenwich schedules from today so they never run out
+
 ## 0.173.8 (2026-11-14)
 
 ### Fix
