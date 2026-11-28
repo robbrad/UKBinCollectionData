@@ -949,3 +949,81 @@ Things that went differently from the plan:
   passed with the guard removed because deduplication masked it.
 - Dependabot bumps of HA's dev dependency pull a whole transitive set; apply the HA bump
   first and drop the PRs it supersedes.
+
+## Local live pass (2026-11-28)
+
+Run from a UK residential machine with Chrome 158. First local look at the 0.173.6 to 0.173.8
+releases. Nothing was merged or released; the work is one branch (`claude/november-local-pass`)
+for one PR, which must be merged with a **merge commit** to keep contributor authorship.
+
+### Baseline
+
+- `make unit-tests` on master was **not green**: 2 failures in `test_adur_and_worthing_councils.py`
+  (year-less October fixtures; the parser rolls dates over 30 days old into 2027). The nightly
+  unit job had been red since 26 Nov for the same reason. Fixed by contributor PR #2350.
+- Live suite, 4 workers: **18 failed, 333 passed** (nightly of 28 Nov: 58 failed). All 18 also
+  failed serially, so none was concurrency noise. 42 of the nightly's 58 pass locally, i.e. CI-IP
+  blocks (including Canterbury, Lancaster, St Helens, Leicester, North Ayrshire).
+
+### The 0.173.6 councils, checked live (output read, not just the schema)
+
+Gedling, Canterbury, Wolverhampton, Nuneaton and Bedworth, Sevenoaks, Newcastle, Charnwood,
+East Herts, East Suffolk, Torfaen, East Hampshire and Lancaster all return sensible data.
+- Gedling's Civic Centre address is listed by the portal but returns only *Trade* bins.
+- The four tightened address matchers (Gedling, Wolverhampton, Sevenoaks, Newcastle) resolve a
+  valid number and raise on an invalid one, listing candidates (Wolverhampton: with no UPRN given).
+- Nuneaton returns the whole year calendar including past dates; upcoming dates are present.
+- East Hampshire emits a "Collection (bank holiday change)" type, and Liverpool's first Refuse
+  date is 06/01/2026 (a past date). Both look pre-existing and were left alone.
+
+### What went into the PR
+
+Contributor commits, authorship kept (messages reworded only where commitlint required it):
+#2350 Adur & Worthing test (Sean Stoube); #2354 Edinburgh/Thurrock/Greenwich schedules
+(calmathan); #2349 Carmarthenshire separated recycling (Sean Stoube); #2348 Epping Forest new
+lookup (James Radley); #2332 Chelmsford PDF calendar (Ethan John).
+
+My commits, each live-verified serially with an offline test that was mutation-checked:
+
+| Council | Cause | Fix |
+|---|---|---|
+| Arun | address select read before the page loaded | wait; anchored match |
+| Ashfield | portal is a redirector; council page calls a JSON API | requests |
+| Boston, East Lindsey, Stockton, Chichester, East Renfrewshire, Great Yarmouth | Cloudflare challenges the browser's form POST | curl_cffi, no browser |
+| Cherwell | search page no longer renders results; returned `[]` | forms.cherwell.gov.uk, raises when empty |
+| Midlothian | `headless=False` + stealth with no `$DISPLAY` | honour headless |
+| Torbay | absolute XPath stale | partial link text |
+| Cotswold, Forest of Dean, Guildford, West Oxfordshire | Salesforce shadow DOM | shared JS-driven helper |
+
+Ashfield, Boston, Chichester, East Lindsey, East Renfrewshire, Great Yarmouth and Stockton lose
+`web_driver` and the Turnstile/Xvfb wording in `input.json`. Every address matcher touched is now
+start-anchored, whole-word and raises on none or several (the old code picked the last option, the
+second item, the first address, or a substring).
+
+### Not fixed
+
+- **Halton**: reCAPTCHA v2 checkbox on the form. Deliberately not attempted.
+- **Havering**: server sends no intermediate certificate (leaf issued 25 Nov). Needs a decision.
+- **Burnley #2253**: the council moved "Find my Bin Day" behind a Salesforce login; the scraper's
+  lookup is a partial legacy feed with no food waste. Not fixable without per-user credentials.
+
+### Issues (nothing posted at the time of writing)
+
+Reporter-confirmed: #2294 (Cheshire East on 0.173.8), #2305, #2334. #2335 only thanked us, so
+unconfirmed. #2303 (South Glos), #2298 (Brent, Wigan) return data again. #2329 is not just an
+unavailable sensor: Carmarthenshire changed its service (#2349). #2322 and #2249 were not
+unsolvable after all: curl_cffi POSTs pass.
+
+### Open contributor PRs
+
+#2309, #2311, #2312, #2316-#2321 (InertiaUK) and #2252: no replies or commits since the 14 Nov
+review. #2332 was updated by the author and is included above, except that its test address is
+still residential (carried over from master).
+
+### Needs the maintainer
+
+Residential addresses still in public `input.json` (all on master already): Ashfield, Chichester,
+East Renfrewshire, Great Yarmouth, Guildford, Cotswold, Chelmsford; West Oxfordshire looks
+commercial; Cherwell, Torbay and Midlothian not checked.
+Release-note lines for breaking changes: Carmarthenshire sensor names, Epping Forest (postcode to
+UPRN), Lancaster (already known).
