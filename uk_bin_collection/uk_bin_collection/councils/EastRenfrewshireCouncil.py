@@ -1,127 +1,144 @@
+import re
+from datetime import datetime
+
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support.ui import Select
+from curl_cffi import requests as cffi_requests
 
 from uk_bin_collection.uk_bin_collection.common import *
 from uk_bin_collection.uk_bin_collection.get_bin_data import AbstractGetBinDataClass
 
+FORM_PAGE = "https://eastrenfrewshire.gov.uk/bin-days"
+REQUEST_TIMEOUT_SECONDS = 30
+COUNCIL_DATE_FORMAT = "%d/%m/%Y"
+
+
+def parse_form(html: str) -> tuple[str, dict, str]:
+    """Return (action URL, hidden fields, submit-button field name) of the wizard form.
+
+    The submit button's name is sent with its value, exactly as a browser would.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    form = soup.find("form", action=re.compile("processsubmission"))
+    if form is None:
+        raise ValueError("Could not find the bin day form in the page")
+    fields = {
+        inp["name"]: inp.get("value") or ""
+        for inp in form.find_all("input", type="hidden")
+        if inp.get("name")
+    }
+    button = form.find("button", attrs={"name": re.compile("FORMACTION_NEXT$")})
+    if button is None:
+        raise ValueError("Could not find the submit button in the bin day form")
+    fields[button["name"]] = button["value"]
+    return form["action"], fields, button["name"]
+
+
+def parse_address_options(html: str) -> tuple[str, list[tuple[str, str]]]:
+    """Return (select field name, [(address text, UPRN), ...]) from the address page."""
+    soup = BeautifulSoup(html, "html.parser")
+    select = soup.find("select", id=re.compile("UPRN$"))
+    if select is None:
+        raise ValueError("No address list in the page: is the postcode valid?")
+    options = [
+        (option.get_text(" ", strip=True), option["value"])
+        for option in select.find_all("option")
+        if option.get("value")
+    ]
+    if not options:
+        raise ValueError("The council found no addresses for this postcode")
+    return select["name"], options
+
+
+def select_address(
+    options: list[tuple[str, str]], paon: str | None, uprn: str | None
+) -> str:
+    """Return the UPRN value of the one address matching the UPRN or house number.
+
+    A house number must match at the start of the address as a whole word
+    ("23" matches "23 Woodvale Avenue", not "123 ..." or "23A ..."). Raises
+    ValueError if nothing, or more than one address, matches.
+    """
+    if uprn:
+        matches = [
+            (text, value)
+            for text, value in options
+            if value.lstrip("0") == str(uprn).strip().lstrip("0")
+        ]
+        wanted = f"UPRN {uprn}"
+    elif paon:
+        pattern = re.compile(rf"^{re.escape(paon.strip())}(?!\w)", re.IGNORECASE)
+        matches = [(text, value) for text, value in options if pattern.match(text)]
+        wanted = f"house number/name '{paon}'"
+    else:
+        raise ValueError("Provide a house number (-n) or a UPRN (-u)")
+    if len(matches) != 1:
+        listed = "; ".join(text for text, _ in matches) or "none"
+        raise ValueError(
+            f"Expected exactly one address for {wanted}, "
+            f"found {len(matches)}: {listed}"
+        )
+    return matches[0][1]
+
+
+def parse_results(html: str) -> dict:
+    """Convert the results table (Date, Day, Bin Type) to the standard bins dict."""
+    soup = BeautifulSoup(html, "html.parser")
+    header = soup.find("th", string="Bin Type")
+    if header is None:
+        raise ValueError("Could not find the collection results table in the page")
+    bins = []
+    for row in header.find_parent("table").find_all("tr")[1:]:
+        cells = row.find_all("td")
+        if len(cells) < 3 or not cells[0].get_text(strip=True):
+            continue
+        collection_date = cells[0].get_text(strip=True)
+        datetime.strptime(collection_date, COUNCIL_DATE_FORMAT)
+        for line in cells[2].get_text(separator="\n").split("\n"):
+            if line.strip():
+                bins.append({"type": line.strip(), "collectionDate": collection_date})
+    if not bins:
+        raise ValueError("The collection results table was empty")
+    bins.sort(key=lambda b: datetime.strptime(b["collectionDate"], COUNCIL_DATE_FORMAT))
+    return {"bins": bins}
+
 
 class CouncilClass(AbstractGetBinDataClass):
     """
-    Concrete classes have to implement all abstract operations of the
-    base class. They can also override some operations with a default
-    implementation.
+    East Renfrewshire's bin-day checker is a GOSS iCM form: a plain HTTP
+    postback wizard (postcode -> address list -> results). Cloudflare
+    serves a Turnstile "Just a moment" challenge to automated Chrome but
+    not to a session that impersonates Chrome's TLS handshake via curl_cffi,
+    so no browser is needed.
     """
 
     def parse_data(self, page: str, **kwargs) -> dict:
-        driver = None
-        try:
-            data = {"bins": []}
-            user_paon = kwargs.get("paon")
-            user_postcode = kwargs.get("postcode")
-            user_uprn = kwargs.get("uprn")
-            web_driver = kwargs.get("web_driver")
-            headless = kwargs.get("headless")
-            check_postcode(user_postcode)
+        user_paon = kwargs.get("paon")
+        user_postcode = kwargs.get("postcode")
+        user_uprn = kwargs.get("uprn")
+        check_postcode(user_postcode)
 
-            # Create Selenium webdriver
-            user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
-            # This council is behind Cloudflare Turnstile, which plain
-            # ChromeDriver can't satisfy - the challenge arrives on the
-            # form POST and never clears. stealth=True uses
-            # undetected-chromedriver where a display is available.
-            driver = create_webdriver(
-                web_driver, headless, user_agent, __name__, stealth=True
-            )
-            driver.get("https://eastrenfrewshire.gov.uk/bin-days")
+        session = cffi_requests.Session(impersonate="chrome")
+        response = session.get(FORM_PAGE, timeout=REQUEST_TIMEOUT_SECONDS)
+        response.raise_for_status()
+        action, fields, _ = parse_form(response.text)
+        fields[self._input_name(response.text, "postal-code")] = user_postcode
 
-            # Wait for the postcode field to appear then populate it
-            inputElement_postcode = WebDriverWait(driver, 30).until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, "input[autocomplete='postal-code']")
-                )
-            )
-            inputElement_postcode.send_keys(user_postcode)
+        response = session.post(action, data=fields, timeout=REQUEST_TIMEOUT_SECONDS)
+        response.raise_for_status()
+        action, fields, _ = parse_form(response.text)
+        select_name, options = parse_address_options(response.text)
+        fields[select_name] = select_address(options, user_paon, user_uprn)
 
-            # Click search button
-            search_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[text()='Search']"))
-            )
-            search_button.click()
+        response = session.post(action, data=fields, timeout=REQUEST_TIMEOUT_SECONDS)
+        response.raise_for_status()
+        return parse_results(response.text)
 
-            # Wait for the addresses dropdown to appear
-            addresses_select = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//label[text()='Addresses']/following-sibling::select")
-                )
-            )
-
-            # Select the appropriate address based on UPRN or house number
-            select = Select(addresses_select)
-            if user_uprn:
-                # Select by UPRN value
-                select.select_by_value(user_uprn)
-            elif user_paon:
-                # Select by house number/name in the text
-                for option in select.options:
-                    if user_paon in option.text:
-                        select.select_by_visible_text(option.text)
-                        break
-            else:
-                # Select the first non-default option
-                select.select_by_index(1)
-
-            # Click the "Find my collection dates" button
-            find_dates_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, "//button[text()='Find my collection dates']")
-                )
-            )
-            find_dates_button.click()
-
-            # Wait for the results table to appear
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//th[text()='Bin Type']"))
-            )
-
-            soup = BeautifulSoup(driver.page_source, features="html.parser")
-
-            # Find the table with bin collection data
-            table = soup.find("th", string="Bin Type").find_parent("table")
-            rows = table.find_all("tr")[1:]  # Skip header row
-
-            for row in rows:
-                cells = row.find_all("td")
-                if len(cells) >= 3:
-                    date_cell = cells[0].get_text().strip()
-                    bin_type_cell = cells[2]
-
-                    # Only process rows that have a date
-                    if date_cell:
-                        # Get all text content including line breaks
-                        bin_type_text = bin_type_cell.get_text(separator="\n").strip()
-
-                        # Split multiple bin types that appear on separate lines
-                        bin_types = [
-                            bt.strip() for bt in bin_type_text.split("\n") if bt.strip()
-                        ]
-
-                        for bin_type in bin_types:
-                            dict_data = {
-                                "type": bin_type,
-                                "collectionDate": date_cell,
-                            }
-                            data["bins"].append(dict_data)
-
-            data["bins"].sort(
-                key=lambda x: datetime.strptime(x.get("collectionDate"), "%d/%m/%Y")
-            )
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            raise
-        finally:
-            if driver:
-                driver.quit()
-        return data
+    @staticmethod
+    def _input_name(html: str, autocomplete: str) -> str:
+        """Name of the text input with the given autocomplete hint (the postcode box)."""
+        soup = BeautifulSoup(html, "html.parser")
+        form = soup.find("form", action=re.compile("processsubmission"))
+        field = form.find("input", attrs={"autocomplete": autocomplete})
+        if field is None:
+            raise ValueError("Could not find the postcode field in the form")
+        return field["name"]
