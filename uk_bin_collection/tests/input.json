@@ -571,9 +571,8 @@
         "postcode": "RH14 0JT",
         "skip_get_url": true,
         "url": "https://www.chichester.gov.uk/checkyourbinday",
-        "web_driver": "http://selenium:4444",
         "wiki_name": "Chichester",
-        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday). This council is behind Cloudflare Turnstile, which a headless browser cannot get past. It needs a real, visible Chrome window on the same machine, so it works from the CLI or API server on a desktop (or a Linux server with Xvfb and DISPLAY set) but NOT via a remote/headless Selenium grid, which is what the Home Assistant Selenium add-on provides."
+        "wiki_note": "Needs the full address and postcode as it appears on [this page](https://www.chichester.gov.uk/checkyourbinday)."
     },
     "ChorleyCouncil": {
         "LAD24CD": "E07000118",
